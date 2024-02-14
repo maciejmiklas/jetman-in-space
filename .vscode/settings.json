@@ -1,0 +1,7 @@
+{
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.fontSize": 13, 
+	"editor.rulers": [140],
+	"z80-macroasm.format.uppercaseKeywords": true
+}

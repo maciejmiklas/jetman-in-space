@@ -1,0 +1,24 @@
+BMP must have 320256 with 8bit palette (Image -> Mode -> Indexed)
+gfx2next -bitmap -pal-std -preview l002_background.bmp
+
+
+AI text for title:
+Headline text "Jetman in Space". Jetman flying from one planet to another. Carries backpack shooting down flames. Carries laser gun that shuts blue beam. Background contains space and planets, highly detailed retro graphics, dynamic movement across space
+
+AI text for planetes:
+retro planet, black background
+
+
+
+AI już potrafi w ZX Spectrum? Na znanym portalu z grafikami pojawił się ten obrazek autorstwa Nodeus. Podano też pełny prompt do AI:
+
+zxspectrum style Daft Punk characters, portrait digital art, trending on artstation, highly detailed, intricate, sharp focus, beautiful, ambient background, dynamic, full color, elegant, crisp, vibrant, composition, advanced, cool, great light, cinematic, fine detail, awesome colors, perfect, stunning, symmetry, iconic, amazing, creative, positive, joyful
+
+https://zxart.ee/eng/authors/n/nodeus/daftpunkai-on-dihalt2024/
+
+
+
+
+Maybe  a couple more tweaks to make and hen its 100% correct but heres the code etc 
+
+https://github.com/seedy1812/Gen4/releases/tag/0.2
