@@ -1,0 +1,14 @@
+{
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.snippetSuggestions": "none",
+    "editor.suggest.insertMode": "replace",
+    "editor.suggest.selectionMode": "never",
+    "editor.quickSuggestionsDelay": 10000,
+    "editor.inlineSuggest.suppressSuggestions": true,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.fontSize": 13, 
+	"editor.rulers": [140],
+	"z80-macroasm.format.uppercaseKeywords": true,
+}
