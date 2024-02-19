@@ -62,4 +62,6 @@ HandleJoystingInput:
 	AND %01110000							; Any of three fires pressed?
 	CALL NZ, PressFire	
 
+; TODO pause
+
 	RET

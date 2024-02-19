@@ -12,7 +12,7 @@ start:
 ;----------------------------------------------------------;
 MainLoop:
 	CALL HandleJoystingInput
-	
+	CALL WaitForScanlineUnderUla
 	JR MainLoop
 
 ;----------------------------------------------------------;
@@ -24,6 +24,7 @@ MainLoop:
 	INCLUDE "src/sprites.asm"
 	INCLUDE "src/game_input.asm"
 	INCLUDE "src/jetman_move.asm"
+	INCLUDE "src/display_sync.asm"
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;

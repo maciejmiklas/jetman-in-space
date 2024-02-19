@@ -15,11 +15,6 @@ MoveDown:
 	NEXTREG SPR_NR, SPR_JETMAN_ID			; Player
 	NEXTREG SPR_X, A
 
-	LD A, 255
-	INC A
-	INC A
-	JR $
-
 	RET
 
 MoveRight:
