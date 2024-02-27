@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
-;                     Input processing                     ;
+;                   #HandleJoystickInput                   ;
 ;----------------------------------------------------------;
-HandleJoystingInput:
+HandleJoystickInput:
 	; Key Up pressed ?
 	LD A, KB_6_TO_0							; $EF -> A (6...0)
 	IN A, (KB_REG) 							; Read keyboard input into A
@@ -61,7 +61,5 @@ HandleJoystingInput:
 	IN A, (JOY_REG) 						; Read joystick input into A
 	AND %01110000							; Any of three fires pressed?
 	CALL NZ, PressFire	
-
-; TODO pause
 
 	RET

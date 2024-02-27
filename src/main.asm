@@ -1,37 +1,51 @@
 	
-	DEVICE ZXSPECTRUMNEXT					; Allow the Next paging and instructions	
+	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions	
 	ORG $8000
 
-start:
-	CALL Setup
+spritesFile INCBIN "assets/sprites.spr"
 
-	CALL ShowSprites
-	
+start:
+	DI											; Disable Interupts, use wait_for_scanline instead.					
+
+	NEXTREG REG_TURBO, %00000011    			; Switch to 28MHz
+	NEXTREG REG_LAYER2, %10000000     			; Layer 2 screen resolution 256 x 192 x 8bpp
+
+	CALL ClearScreen
+
+	; Load sprites to Hardware
+	LD HL, spritesFile							; Sprites binary data
+	LD BC, 16*16*63								; Copy 63 sprites, each 16x16 pixels
+	CALL LoadSprites						
+
+	CALL IntiJetman
+
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
-MainLoop:
-	CALL HandleJoystingInput
-	CALL WaitForScanlineUnderUla
+MainLoop:	
+	CALL WaitOneFrame
+	CALL HandleJoystickInput
+	CALL UpdateJetman
+	CALL AnimateSprites
 	JR MainLoop
 
 ;----------------------------------------------------------;
-;                      Routines                            ;
+;                       Imports                            ;
 ;----------------------------------------------------------;
-	INCLUDE "src/constants.asm"
-	INCLUDE "src/setup.asm"
-	INCLUDE "src/data.asm"
-	INCLUDE "src/sprites.asm"
-	INCLUDE "src/game_input.asm"
-	INCLUDE "src/jetman_move.asm"
-	INCLUDE "src/display_sync.asm"
+	INCLUDE "_constants.asm"
+	INCLUDE "api_sprite.asm"
+	INCLUDE "api_display.asm"
+	INCLUDE "api_joystick.asm"
+	INCLUDE "jetman.asm"
+	INCLUDE "enemies.asm"
+	INCLUDE "game.asm"
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;
 	; https://z00m128.github.io/sjasmplus/documentation.html
 
-	CSPECTMAP "jetman.map"					; Generate a map file for use with Cspect
+	CSPECTMAP "jetman.map"						; Generate a map file for use with Cspect
 
 	; This sets the name of the project, the start address, 
 	; and the initial stack pointer.
