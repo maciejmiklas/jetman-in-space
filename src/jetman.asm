@@ -19,9 +19,11 @@ JET_DIR_DOWN_BM			EQU %00001000
 
 jetMoveDirection 		BYTE JET_DIR_DOWN_BM	; Current moving direction.
 
+;  #jetSprPaterntIdx and #etSprPaternEnd contain data for currently executed animation, #jetSprPaterntNextID contains an ID 
+; for the animation that will play once the current has ended.
 jetSprPaterntIdx		BYTE 6					; Current index  of Jetman's sprite pattern
 jetSprPaternEnd			BYTE 9					; End offset (inculsive) of Jetman's sprite pattern
-jetSprPaterntRecord		BYTE JET_SDB_FALL		; Active sprite record in sprite DB (#jetSpriteDB)
+jetSprPaterntNextID		BYTE JET_SDB_FALL		; ID in #jetSpriteDB for next animation
 
 ; IDs for #jetSpriteDB
 JET_SDB_FLY				EQU 201								; Jetman is flaying
@@ -35,16 +37,18 @@ JET_SDB_RS				EQU 3								; Sieze of single sprite DB record
 JET_SDB_OFF_ST			EQU 0								; DB offset from ID to pattern start
 JET_SDB_OFF_EN			EQU 1								; DB offset from ID to pattern end
 JET_SDB_OFF_NX			EQU 2								; DB offset from ID to next record
+JET_SDB_OFF_NX_ADD		EQU -100							; -100 for OFF_NX that CPIR finds ID and not OFF_NX
+
 
 ; The animation system uses a state machine. It's a DB where each record contains a start and end offset to the animation pattern and 
 ; finally offset to a new DB record containing animation that will be played next.
-; DB Record:[ID], [OFF_ST: sprite offset start], [OFF_EN: sprite offset end], [OFF_NX:next animation ID]
-jetSpriteDB				DB JET_SDB_FLY,		00, 02, JET_SDB_FLY	
-						DB JET_SDB_LAND,	01, 12, JET_SDB_WALK
-						DB JET_SDB_WALK,	16, 18, JET_SDB_WALK
-						DB JET_SDB_WALK,	44, 47, JET_SDB_FLY
-						DB JET_SDB_FALL, 	06, 09, JET_SDB_FLY
-						DB JET_SDB_DIR, 	06, 07, JET_SDB_FLY	
+; DB Record:[ID], [OFF_ST: sprite offset start], [OFF_EN: sprite offset end], [OFF_NX:next animation ID-100]
+jetSpriteDB				DB JET_SDB_FLY,		00, 02, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
+						DB JET_SDB_LAND,	01, 12, JET_SDB_WALK	+ JET_SDB_OFF_NX_ADD
+						DB JET_SDB_WALK,	16, 18, JET_SDB_WALK	+ JET_SDB_OFF_NX_ADD
+						DB JET_SDB_WALK,	44, 47, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
+						DB JET_SDB_FALL, 	06, 09, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
+						DB JET_SDB_DIR, 	06, 07, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD				
 
 JET_SDB_ID				EQU $0					; ID of Jetman/Player sprite
 
@@ -92,22 +96,12 @@ UpdateJetmanSpritePattern
 	JR NZ, .updateRegister
 
 	; The sprite pattern is done, switch to a new one.
-	; First, find the current DB record, read the last entry to obtain offset to the next DB record, and read the sprite pattern from it.
-
-	; Move HL to the currently active DB record. 
 	LD HL, jetSpriteDB							; HL points to the beginning of the animation patterns DB
-	LD A, (jetSprPaterntRecord)					; CPIR will keep increasing HL until it finds record ID from A
+	LD A, (jetSprPaterntNextID)					; CPIR will keep increasing HL until it finds record ID from A
 	LD BC, 0									; Do not limit CPIR search
 	CPIR
 
-	; Now HL points to the ID of the current record (the one for which the amination has just been played). 
-	LD IX, HL	
-	LD HL, jetSpriteDB							; HL points to the begin
-	LD A, (IX + JET_SDB_OFF_NX)				; Load into A the ID of the DB record that we intend to find.
-	LD BC, 0									; Do not limit CPIR search	
-	CPIR
-
-	; Read the new animation pattern for Jetman
+	; Now, HL points to the ID of the next record, which contains data for the new animation pattern.
 	LD IX, HL
 
 	LD A, (IX + JET_SDB_OFF_ST)
@@ -117,7 +111,8 @@ UpdateJetmanSpritePattern
 	LD (jetSprPaternEnd), A
 
 	LD A, (IX + JET_SDB_OFF_NX)
-	LD (jetSprPaterntRecord), A
+	ADD 100
+	LD (jetSprPaterntNextID), A					; ID for the following animation pattern that will play once this one is done.
 
 .updateRegister	
 	LD A, (jetSprPaterntIdx)
