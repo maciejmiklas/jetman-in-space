@@ -9,7 +9,7 @@ REG_TURBO				EQU $07					; bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 
 ; bit 2	- Enable Layer 2 read-only paging
 ; bit 1	- Layer 2 visible - Layer 2 RAM Page Register ($12)
 ; bit 0	- Enable Layer 2 write-only paging
-REG_LAYER2				EQU $123B
+REG_LAYER2				EQU $69
 
 REG_SELECT				EQU $243B				; This Port is used to set the register number
 REG_VL					EQU $1F					; Active video line (LSB)
@@ -41,6 +41,33 @@ PR_CR					EQU $0C
 PR_ENTER				EQU $0D
 
 ;----------------------------------------------------------;
+;                     RAM 8K Slots                         ;
+;----------------------------------------------------------;
+RAM_SLOT_0_START		EQU $0000
+RAM_SLOT_0_END			EQU $1FFF
+
+RAM_SLOT_1_START		EQU $2000
+RAM_SLOT_1_END			EQU $3FFF
+
+RAM_SLOT_2_START		EQU $4000
+RAM_SLOT_2_END			EQU $5FFF
+
+RAM_SLOT_3_START		EQU $6000
+RAM_SLOT_3_END			EQU $7FFF
+
+RAM_SLOT_4_START		EQU $8000
+RAM_SLOT_4_END			EQU $9FFF
+
+RAM_SLOT_5_START		EQU $A000
+RAM_SLOT_5_END			EQU $BFFF
+
+RAM_SLOT_6_START		EQU $C000
+RAM_SLOT_6_END			EQU $DFFF
+
+RAM_SLOT_7_START		EQU $E000
+RAM_SLOT_7_END			EQU $FFFF
+
+;----------------------------------------------------------;
 ;                          MMU                             ;
 ;----------------------------------------------------------;
 MMU_SLOT_0 				EQU $50
@@ -51,7 +78,6 @@ MMU_SLOT_4 				EQU $54
 MMU_SLOT_5 				EQU $55
 MMU_SLOT_6 				EQU $56
 MMU_SLOT_7 				EQU $57	
-
 
 ;----------------------------------------------------------;
 ;          		         Sprites	   	                   ;
@@ -100,7 +126,7 @@ SPR_SETUP				EQU $15
 SPR_PORT				EQU $303B
 
 ;----------------------------------------------------------;
-;                           DMA                            ;
+;                         DMA                              ;
 ;----------------------------------------------------------;
 DMA_PORT				EQU $6B					; Datagear DMA Port in zxnDMA mode, https://wiki.specnext.dev/DMA
 
@@ -143,3 +169,6 @@ DI_SYNC_SL				EQU 192					; Scanline to synch to. 192 for 60FPS, value above/bel
 DI_COL_ST				EQU $5800				; Start of Display Color RAM
 DI_COL_EN				EQU $5AFF				; End of Display Color RAM
 DI_COL_SIZE				EQU 768					; Size of color RAM: $5AFF - $5800
+DI_X_MIN_POS			EQU 0
+DI_X_MAX_POS			EQU 320
+DI_Y_RES				EQU 256

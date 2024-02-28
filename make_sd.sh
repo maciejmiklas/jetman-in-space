@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SD_CARD=/dev/disk4
+SD_CARD=/dev/disk6
 CP_FROM=bin/jetman.nex 
 CP_TO=/Volumes/ZX_NEXT/home/DEV/prj/test_asm/project.nex
 SJASMPLUS=/Users/mmiklas/Development/ZX_Spectrum/opt/sjasmplus/sjasmplus 

@@ -1,21 +1,27 @@
-	
-	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions	
-	ORG $8000
+	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
+	ORG RAM_SLOT_4_START
 
-spritesFile INCBIN "assets/sprites.spr"
+
 
 start:
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
 	NEXTREG REG_TURBO, %00000011    			; Switch to 28MHz
 	NEXTREG REG_LAYER2, %10000000     			; Layer 2 screen resolution 256 x 192 x 8bpp
+	NEXTREG SPR_SETUP, %01000011 				; Sprite 0 on top, SLU, over border, sprites visible
 
 	CALL ClearScreen
 
-	; Load sprites to Hardware
+; The #spritesFile has been loaded into slot 6,7 using MMU (see Data section below)
+	NEXTREG MMU_SLOT_6, 40					
+	NEXTREG MMU_SLOT_7, 41	
+
 	LD HL, spritesFile							; Sprites binary data
 	LD BC, 16*16*63								; Copy 63 sprites, each 16x16 pixels
 	CALL LoadSprites						
+
+	NEXTREG MMU_SLOT_6, 6					
+	NEXTREG MMU_SLOT_7, 7	
 
 	CALL IntiJetman
 
@@ -36,9 +42,17 @@ MainLoop:
 	INCLUDE "api_sprite.asm"
 	INCLUDE "api_display.asm"
 	INCLUDE "api_joystick.asm"
-	INCLUDE "jetman.asm"
+	INCLUDE "player.asm"
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"
+
+;----------------------------------------------------------;
+;                         Data                             ;
+;----------------------------------------------------------;
+; Load sprites into MMU slot 40,41 (16KB) mapping it to Bank: 6 and 7
+	MMU 6 7, 40   
+	ORG RAM_SLOT_6_START
+spritesFile INCBIN "assets/sprites.spr"
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;

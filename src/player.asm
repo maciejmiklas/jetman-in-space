@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                        Globals                           ;
 ;----------------------------------------------------------;
-JetX					BYTE 100				; 0-320px
+JetX					WORD 100				; 0-320px
 JetY 					BYTE 100				; 0-256px
 
 ; Possible move directions
@@ -19,18 +19,18 @@ JET_DIR_DOWN_BM			EQU %00001000
 
 jetMoveDirection 		BYTE JET_DIR_DOWN_BM	; Current moving direction.
 
-;  #jetSprPaterntIdx and #etSprPaternEnd contain data for currently executed animation, #jetSprPaterntNextID contains an ID 
+; #jetSprPaterntIdx and #etSprPaternEnd contain data for currently executed animation, #jetSprPaterntNextID contains an ID 
 ; for the animation that will play once the current has ended.
 jetSprPaterntIdx		BYTE 6					; Current index  of Jetman's sprite pattern
 jetSprPaternEnd			BYTE 9					; End offset (inculsive) of Jetman's sprite pattern
-jetSprPaterntNextID		BYTE JET_SDB_FALL		; ID in #jetSpriteDB for next animation
+jetSprPaterntNextID		BYTE JET_SDB_FLY		; ID in #jetSpriteDB for next animation
 
 ; IDs for #jetSpriteDB
 JET_SDB_FLY				EQU 201								; Jetman is flaying
 JET_SDB_LAND			EQU 202								; Jetman is landing
 JET_SDB_WALK			EQU 203								; Jetman is walking
 JET_SDB_START			EQU 203								; Jetman is starting
-JET_SDB_FALL			EQU 205								; Jetman is falling down
+JET_SDB_DOWN			EQU 205								; Jetman is falling down
 JET_SDB_DIR				EQU 206								; Jetman changes direction left/right
 
 JET_SDB_RS				EQU 3								; Sieze of single sprite DB record
@@ -47,7 +47,7 @@ jetSpriteDB				DB JET_SDB_FLY,		00, 02, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
 						DB JET_SDB_LAND,	01, 12, JET_SDB_WALK	+ JET_SDB_OFF_NX_ADD
 						DB JET_SDB_WALK,	16, 18, JET_SDB_WALK	+ JET_SDB_OFF_NX_ADD
 						DB JET_SDB_WALK,	44, 47, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
-						DB JET_SDB_FALL, 	06, 09, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
+						DB JET_SDB_DOWN, 	06, 09, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
 						DB JET_SDB_DIR, 	06, 07, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD				
 
 JET_SDB_ID				EQU $0					; ID of Jetman/Player sprite
@@ -60,11 +60,7 @@ IntiJetman
 	; Load Sprite
 	NEXTREG SPR_NR, JET_SDB_ID					; Set the ID of the Jetman's sprite for the following commands
 
-	LD A, (JetX)								; Set X position
-	NEXTREG SPR_X, A						
-
-	LD A, (JetY)								; Set Y position
-	NEXTREG SPR_Y, A						
+	CALL UpdateJetmanCoordinateRegisters							
 
 	NEXTREG SPR_ATTR_2, %00000000 				; Palette offset, no mirror, no rotation
 
@@ -74,11 +70,50 @@ IntiJetman
 	RET
 
 ;----------------------------------------------------------;
+;         #UpdateJetmanCoordinateRegisters                 ;
+;----------------------------------------------------------;
+UpdateJetmanCoordinateRegisters	
+
+/*
+	NEXTREG $34,a            	; select sprite      
+	ld a,l                		; X coord, 8 bit
+	NEXTREG SPRITE_ATTR0,a		; $35 -  Write ATTR_0  -  HL is 9 bit, value over 2 bytes, see attr 2??
+	ld a,d                		; Y coord, 8 bit
+	NEXTREG SPRITE_ATTR1,a		; $36 -  Write ATTR_1
+	ld a,h				; 9th bit of X 16 bit coordinate
+	and %00000001			; mask off bits 7-1, keeping bit 0, the x MSB coord bit of 9 bytes
+	or c				; XXXX'0000 Palette Offset - or MIRROR_H/MIRROR_V
+	NEXTREG SPRITE_ATTR2,a		; $37 -  load attr 2 with data
+	xor a                     
+	or b 				; visibility
+	or e				
+	NEXTREG SPRITE_ATTR3,a		; Pattern Number    
+	ret
+*/
+
+	; Move Jetman Sprite to the current X position, the 9-bit value requires a few tricks.
+	LD BC, (JetX)								
+	LD A, C										
+	NEXTREG SPR_X, A			; Set LSB from BC into X, below in next lines we handle overflow bit
+	LD A, B						; Load MSB from X into A
+	AND %00000001				; Keep only an overflow bit
+	NEXTREG SPR_ATTR_2, A		; store 9-th bit from X coordinate
+
+	; Move Jetman Sprite to current Y postion, 8-bit value is easy
+	LD A, (JetY)								
+	NEXTREG SPR_Y, A			; Set Y position
+
+	RET
+;----------------------------------------------------------;
 ;              #ChangeJetmanSpritePattern                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - A: Number of a sprite pattern from #jesSprites
 ChangeJetmanSpritePattern
+	LD (jetSprPaterntNextID), A
+
+	LD (jetSprPaterntIdx), A					; Set both to the same value to quickly end the current animation
+	LD (jetSprPaternEnd), A
 	RET
 ;----------------------------------------------------------;
 ;            #UpdateJetmanSpritePattern                    ;
@@ -125,36 +160,37 @@ UpdateJetmanSpritePattern
 UpdateJetman:
 	; Update Sprite
 	NEXTREG SPR_NR, JET_SDB_ID					; Set the ID of the Jetman's sprite for the following commands
-
-	LD A, (JetX)								; Set X position
-	NEXTREG SPR_X, A						
-
-	LD A, (JetY)								; Set Y position
-	NEXTREG SPR_Y, A	
-
+	CALL UpdateJetmanCoordinateRegisters	
 	RET
 ;----------------------------------------------------------;
 ;                    Handle Movement                       ;
 ;----------------------------------------------------------;
 MoveUp:
-	; Update Y position
+	; Decrement Y position
 	LD A, (JetY)	
 	DEC A
 	LD (JetY), A
 	RET
 
 MoveDown:
-	; Update Y position
+	; Increment Y position
 	LD A, (JetY)	
 	INC A
 	LD (JetY), A
 	RET
 
 MoveRight:
-	; Update X position
-	LD A, (JetX)	
-	INC A
-	LD (JetX), A
+	; Increment X position
+	LD BC, (JetX)	
+	INC BC
+
+	; Limit X postion to 320
+;	CP A, DI_X_MAX_POS
+;	JR C, .withinScreen							; 320 -> 0
+;	LD A, DI_X_MIN_POS
+
+;.withinScreen	
+	LD (JetX), BC								; Update new X postion
 
 	; Direction change?
 	LD A, (jetMoveDirection)
@@ -167,15 +203,15 @@ MoveRight:
 	CALL ChangeJetmanSpritePattern
 	
 	LD A, (jetMoveDirection)					; Update #jetMoveDirection by reseting Left and setting Right
-	RES JET_DIR_LEFT_BIT, A
-	SET JET_DIR_RIGHT_BIT, A
+	RES JET_DIR_LEFT_BIT, A						; Reset Left as we are going now right	
+	SET JET_DIR_RIGHT_BIT, A					; Set Right
 	LD (jetMoveDirection), A
 
 .noDirectionChange
 	RET
 
 MoveLeft:
-	; Update X position
+	; Decrement X position
 	LD A, (JetX)	
 	DEC A
 	LD (JetX), A
@@ -191,10 +227,9 @@ MoveLeft:
 	CALL ChangeJetmanSpritePattern
 	
 	LD A, (jetMoveDirection)					; Update #jetMoveDirection by reseting Right and setting Left
-	RES JET_DIR_RIGHT_BIT, A
+	RES JET_DIR_RIGHT_BIT, A					; Reset Right and set Left
 	SET JET_DIR_LEFT_BIT, A
 	LD (jetMoveDirection), A
-	JR $
 
 .noDirectionChange
 	RET	
