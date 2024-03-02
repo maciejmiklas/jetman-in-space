@@ -170,5 +170,6 @@ DI_COL_ST				EQU $5800				; Start of Display Color RAM
 DI_COL_EN				EQU $5AFF				; End of Display Color RAM
 DI_COL_SIZE				EQU 768					; Size of color RAM: $5AFF - $5800
 DI_X_MIN_POS			EQU 0
-DI_X_MAX_POS			EQU 320
-DI_Y_RES				EQU 256
+DI_X_MAX_POS			EQU 315
+DI_Y_MIN_POS			EQU 1
+DI_Y_MAX_POS			EQU 240

@@ -31,7 +31,7 @@ start:
 MainLoop:	
 	CALL WaitOneFrame
 	CALL HandleJoystickInput
-	CALL UpdateJetman
+	CALL UpdateJetmanSpritePosition
 	CALL AnimateSprites
 	JR MainLoop
 
