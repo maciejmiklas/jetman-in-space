@@ -30,21 +30,24 @@ WaitOneFrame:
 	IN A, (C)								; Read the raster line LSB into A
 	CP D
 	JR NZ, .waitAgainForScanline
+
 	RET
 
 ;----------------------------------------------------------;
-;                     #ClearScreen                         ;
+;                     #SetupScreen                         ;
 ;----------------------------------------------------------;
-ClearScreen:
+SetupScreen:
+	;NEXTREG REG_LAYER2, %10000000     		; Layer 2 screen resolution 256 x 192 x 8bpp
+
 	CALL ROM_CLS							; Clear screen
 
 	LD A, COL_YELLOW						; Set the border color
 	OUT	(BORDER_IO), A
 
-	; Set screen color
+	; ### Set screen color ###
 	LD HL, DI_COL_ST						; Load into HL beginning address of color RAM, we will iterate over it
 	LD BC, 0								; Counter for iteration over color memory, from 0 to 768
-	LD D, COL_BLACK							; Color to be set
+	LD D, COL_GREEN							; Color to be set
 .loop
 	LD (HL), D								; Set color for current 
 	INC HL									; Set the color for the current position of color memory
@@ -52,4 +55,5 @@ ClearScreen:
 	LD A, B									; 768 is $0300 -> B=03, C=00
 	CP $03									; We have filled whole color memory when B is at 03
 	JP NZ, .loop							; Keep looping untill whole color memory is set
+	
 	RET

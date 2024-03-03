@@ -1,50 +1,35 @@
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
 	ORG RAM_SLOT_4_START
 
-
-
 start:
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
 	NEXTREG REG_TURBO, %00000011    			; Switch to 28MHz
-	NEXTREG REG_LAYER2, %10000000     			; Layer 2 screen resolution 256 x 192 x 8bpp
 	NEXTREG SPR_SETUP, %01000011 				; Sprite 0 on top, SLU, over border, sprites visible
 
-	CALL ClearScreen
+	CALL SetupScreen
 
-; The #spritesFile has been loaded into slot 6,7 using MMU (see Data section below)
-	NEXTREG MMU_SLOT_6, 40					
-	NEXTREG MMU_SLOT_7, 41	
 
-	LD HL, spritesFile							; Sprites binary data
-	LD BC, 16*16*63								; Copy 63 sprites, each 16x16 pixels
-	CALL LoadSprites						
-
-	NEXTREG MMU_SLOT_6, 6					
-	NEXTREG MMU_SLOT_7, 7	
-
-	CALL IntiJetman
 
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
 MainLoop:	
-	CALL WaitOneFrame
-	CALL HandleJoystickInput
-	CALL UpdateJetmanSpritePosition
-	CALL AnimateSprites
+	CALL GameLoop
+
 	JR MainLoop
 
 ;----------------------------------------------------------;
-;                       Imports                            ;
+;                       Includes                           ;
 ;----------------------------------------------------------;
 	INCLUDE "_constants.asm"
 	INCLUDE "api_sprite.asm"
-	INCLUDE "api_display.asm"
+	INCLUDE "api_screen.asm"
 	INCLUDE "api_joystick.asm"
 	INCLUDE "player.asm"
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"
+	INCLUDE "util.asm"
 
 ;----------------------------------------------------------;
 ;                         Data                             ;

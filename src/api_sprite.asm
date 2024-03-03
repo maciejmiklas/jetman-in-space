@@ -1,7 +1,19 @@
 ;----------------------------------------------------------;
-;                       #ImportSprites                     ;
+;                      #LoadSpritesMMU                     ;
 ;----------------------------------------------------------;
+LoadSpritesMMU:
+; The #spritesFile has been loaded into slot 6,7 using MMU on banks 40, 41
+	NEXTREG MMU_SLOT_6, 40						; Set banks 40, 41 containing sprite binaries to RAM slots 6,7.
+	NEXTREG MMU_SLOT_7, 41
 
+	LD HL, spritesFile							; Sprites binary data
+	LD BC, 16*16*63								; Copy 63 sprites, each 16x16 pixels
+	CALL LoadSprites						
+
+	NEXTREG MMU_SLOT_6, 6						; Set back orginal RAM to slots 6 and 7
+	NEXTREG MMU_SLOT_7, 7	
+
+	RET
 ;----------------------------------------------------------;
 ;                        #LoadSprites                      ;
 ;----------------------------------------------------------;
@@ -20,7 +32,6 @@ LoadSprites:
 	LD B, spriteDMAProgramLength 			; Setup length for OTIR
 	LD C, DMA_PORT							; Setup DMA port
 	OTIR									; Upload DMA program and execute
-	RET
 
 ; DMA  is a program that executes in hardware. This program consists of a series of commands from WR0 to WR6. 
 ; Each command is a single byte with a unique signature given by setting a few bits:
@@ -81,3 +92,5 @@ spriteDMADataLength:
 	DB %1'00001'11							; Again WR6, now enable DMA and copy!
 
 spriteDMAProgramLength = $ - spriteDMAProgram	
+
+	RET
