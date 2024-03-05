@@ -1,4 +1,12 @@
 ;----------------------------------------------------------;
+;                        Globals                           ;
+;----------------------------------------------------------;
+DI_X_MIN_POS			EQU 0
+DI_X_MAX_POS			EQU 315
+DI_Y_MIN_POS			EQU 1
+DI_Y_MAX_POS			EQU 240
+
+;----------------------------------------------------------;
 ;                     #WaitOneFrame                        ;
 ;----------------------------------------------------------;
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
@@ -10,8 +18,8 @@
 
 WaitOneFrame:     
 ; Read NextReg $1F - LSB of current raster line
-	LD BC, REG_SELECT						; TBBlue Register Select
-	LD A, REG_VL							; Port to access - Active Video Line LSB Register
+	LD BC, GL_REG_SELECT					; TBBlue Register Select
+	LD A, GL_REG_VL							; Port to access - Active Video Line LSB Register
 	OUT (C), A								; Select NextReg $1F
 	INC B									; TBBlue Register Access
 	LD A, DI_SYNC_SL						; Set Scanline to wait for
@@ -31,19 +39,19 @@ WaitOneFrame:
 	CP D
 	JR NZ, .waitAgainForScanline
 
-	RET
+	RET										; END WaitOneFrame
 
 ;----------------------------------------------------------;
 ;                     #SetupScreen                         ;
 ;----------------------------------------------------------;
 SetupScreen:
-	;NEXTREG REG_LAYER2, %10000000     		; Layer 2 screen resolution 256 x 192 x 8bpp
+	NEXTREG DC_REG_CONTROL1,	%11000000  	; Layer 2 screen resolution 256 x 192 x 8bpp
 
 	CALL ROM_CLS							; Clear screen
 
 	LD A, COL_YELLOW						; Set the border color
 	OUT	(BORDER_IO), A
-
+/*
 	; ### Set screen color ###
 	LD HL, DI_COL_ST						; Load into HL beginning address of color RAM, we will iterate over it
 	LD BC, 0								; Counter for iteration over color memory, from 0 to 768
@@ -55,5 +63,5 @@ SetupScreen:
 	LD A, B									; 768 is $0300 -> B=03, C=00
 	CP $03									; We have filled whole color memory when B is at 03
 	JP NZ, .loop							; Keep looping untill whole color memory is set
-	
-	RET
+*/
+	RET										; END SetupScreen

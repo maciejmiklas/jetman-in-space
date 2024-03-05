@@ -63,4 +63,5 @@ HandleJoystickInput:
 	CALL NZ, JoyPressFire	
 	
 	CALL JoyEnd
-	RET
+
+	RET										; END HandleJoystickInput

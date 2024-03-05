@@ -30,8 +30,8 @@ JET_HOVER_START			EQU 15
  
 ; #jetSprPaterntIdx and #etSprPaternEnd contain data for currently executed animation, #jetSprPaterntNextID contains an ID 
 ; for the animation that will play once the current has ended.
-jetSprPaterntIdx		BYTE 6					; Current index  of Jetman's sprite pattern
-jetSprPaternEnd			BYTE 9					; End offset (inculsive) of Jetman's sprite pattern
+jetSprPaterntIdx		BYTE 40					; Current index  of Jetman's sprite pattern
+jetSprPaternEnd			BYTE 41					; End offset (inculsive) of Jetman's sprite pattern
 jetSprPaterntNextID		BYTE JET_SDB_HOVER		; ID in #jetSpriteDB for next animation
 
 ; IDs for #jetSpriteDB
@@ -41,7 +41,7 @@ JET_SDB_DOWN			EQU 203					; Jetman is moving down
 JET_SDB_HOVER			EQU 204					; Jetman hovers
 
 JET_SDB_T_WF			EQU 220					; Transition: walking -> flaying
-JET_SDB_T_FW			EQU 221					; Transition: flaying -> walking
+JET_SDB_T_FW			EQU 221					; TDBransition: flaying -> walking
 JET_SDB_T_WL			EQU 222					; Transition: walking -> falling
 
 JET_SDB_RS				EQU 3					; Sieze of single sprite DB record
@@ -62,38 +62,36 @@ jetSpriteDB				DB JET_SDB_FLY,		36, 37, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
 						DB JET_SDB_T_FW,	01, 12, JET_SDB_T_FW	+ JET_SDB_OFF_NX_ADD
 						DB JET_SDB_T_WL, 	08, 39, JET_SDB_T_WL	+ JET_SDB_OFF_NX_ADD
 
-JET_SDB_ID				EQU $0					; ID of Jetman/Player sprite
+JET_SPRITE_ID			EQU $0					; ID of Jetman/Player sprite
 
 ;----------------------------------------------------------;
 ;                  #IntiJetmanSprite                       ;
 ;----------------------------------------------------------;
 IntiJetmanSprite
-
-	; Load Sprite
-	NEXTREG SPR_NR, JET_SDB_ID					; Set the ID of the Jetman's sprite for the following commands
-
 	CALL UpdateJetmanSpritePosition							
-
-	NEXTREG SPR_ATTR_2, %00000000 				; Palette offset, no mirror, no rotation
+	CALL UpdateJetmanSpritePattern
 
 	; bit 7 = Visible flag (1 = displayed)
 	; bits 5-0 = Pattern used by sprite (0-63), we will use pattern 0
-	NEXTREG SPR_ATTR_3, %10000000
-	RET
+	NEXTREG SPR_REG_ATTR_3, %10000000
+
+	RET											; END IntiJetmanSprite
 
 ;----------------------------------------------------------;
 ;               #UpdateJetmanSpritePosition                ;
 ;----------------------------------------------------------;
 UpdateJetmanSpritePosition	
 
-	; ### Move Jetman Sprite to the current X position, the 9-bit value requires a few tricks. ###
+	NEXTREG SPR_REG_NR, JET_SPRITE_ID				; Set the ID of the Jetman's sprite for the following commands
+
+	; Move Jetman Sprite to the current X position, the 9-bit value requires a few tricks. 
 	LD BC, (JetX)								
 	LD A, C										
-	NEXTREG SPR_X, A			; Set LSB from BC into X, below in next lines we handle overflow bit
+	NEXTREG SPR_REG_X, A			; Set LSB from BC into X, below in next lines we handle overflow bit
 	LD A, B						; Load MSB from X into A
 	AND %00000001				; Keep only an overflow bit
 	
-	; ### Rotate sprite for Left/Right movement	####
+	; Rotate sprite for Left/Right movement	
 	LD E, A						; Store A in E to use A for loading data from RAM.
 	LD A, (jetState)			
 	LD D, A
@@ -106,14 +104,13 @@ UpdateJetmanSpritePosition
 	RES 3, A					; Rotate sprite right
 .afterRotate
 
-	; ### Update Attr 2 ###
-	NEXTREG SPR_ATTR_2, A		
+	NEXTREG SPR_REG_ATTR_2, A		
 
-	; ### Move Jetman sprite to current Y postion, 8-bit value is easy ####
+	; Move Jetman sprite to current Y postion, 8-bit value is easy 
 	LD A, (JetY)								
-	NEXTREG SPR_Y, A			; Set Y position
+	NEXTREG SPR_REG_Y, A			; Set Y position
 
-	RET
+	RET							; END UpdateJetmanSpritePosition
 ;----------------------------------------------------------;
 ;              #ChangeJetmanSpritePattern                  ;
 ;----------------------------------------------------------;
@@ -130,7 +127,7 @@ ChangeJetmanSpritePattern
 ;----------------------------------------------------------;
 ; Update sprite pattern - next animation frame.
 UpdateJetmanSpritePattern
-	NEXTREG SPR_NR, JET_SDB_ID					; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG SPR_REG_NR, JET_SPRITE_ID				; Set the ID of the Jetman's sprite for the following commands
 
 	LD HL, jetSprPaterntIdx
 	INC (HL)
@@ -150,7 +147,7 @@ UpdateJetmanSpritePattern
 
 	; Now, HL points to the ID of the next record, which contains data for the new animation pattern.
 	LD IX, HL
-
+	
 	LD A, (IX + JET_SDB_OFF_ST)					; Update #jetSprPaterntIdx
 	LD (jetSprPaterntIdx), A
 
@@ -162,10 +159,11 @@ UpdateJetmanSpritePattern
 	LD (jetSprPaterntNextID), A					; ID for the following animation pattern that will play once this one is done.
 
 .updateRegister	
-	LD A, (jetSprPaterntIdx)
+	LD A, (jetSprPaterntIdx)	
 	OR %10000000								; Store pattern number into Sprite Attribute	
-	NEXTREG SPR_ATTR_3, A	
-	RET
+	NEXTREG SPR_REG_ATTR_3, A	
+
+	RET											; END UpdateJetmanSpritePattern				
 ;----------------------------------------------------------;
 ;                    Handle Movement                       ;
 ;----------------------------------------------------------;
@@ -180,7 +178,7 @@ JoyMoveUp:
 	LD (JetY), A
 .afterDec	
 
-	; ### Direction change? ### 
+	; Direction change? 
 	LD A, (jetState)
 	AND JET_STATE_UP_BM							; Are we moving Up already?
 	CP JET_STATE_UP_BM
@@ -199,14 +197,14 @@ JoyMoveUp:
 JoyMoveDown:
 	CALL JetmanMoves						
 
-	; ### Increment Y position ###
+; Increment Y position
 	LD A, (JetY)
 	CP DI_Y_MAX_POS								; Do not increment if Jetman has reached the bottom of the screen.
 	JR Z, .afterInc						
 	INC A
 	LD (JetY), A
 
-	; ### Direction change? ### 
+; Direction change? 
 	LD A, (jetState)
 	AND JET_STATE_DOWN_BM						; Are we moving down already?
 	CP JET_STATE_DOWN_BM
@@ -227,7 +225,7 @@ JoyMoveDown:
 JoyMoveRight:
 	CALL JetmanMoves						
 
-	; ### Increment X position ###
+	; Increment X position
 	LD BC, (JetX)	
 	INC BC
 

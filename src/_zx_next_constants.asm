@@ -1,19 +1,30 @@
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
 ;----------------------------------------------------------;
-REG_TURBO				EQU $07					; bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
+GL_REG_TURBO			EQU $07					; bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
+GL_REG_SELECT			EQU $243B				; This Port is used to set the register number
+GL_REG_VL				EQU $1F					; Active video line (LSB)
 
-; bit 7-6 - Video RAM bank select (write/read paging)
-; bit 5-4 - Reserved, write 0
-; bit 3	- Use Shadow Layer 2 for paging - Layer 2 RAM Shadow Page Register ($13)
-; bit 2	- Enable Layer 2 read-only paging
-; bit 1	- Layer 2 visible - Layer 2 RAM Page Register ($12)
-; bit 0	- Enable Layer 2 write-only paging
-REG_LAYER2				EQU $69
+;----------------------------------------------------------;
+;                   Display Control                        ;
+;----------------------------------------------------------;
 
-REG_SELECT				EQU $243B				; This Port is used to set the register number
-REG_VL					EQU $1F					; Active video line (LSB)
+; bit 7: 1 to enable Layer 2 (alias for bit 1 in Layer 2 Access Port $123B)
+; bit 6: 1 to enable ULA shadow display (alias for bit 3 in Memory Paging Control $7FFD)
+; bit 5-0: Alias for bits 5-0 in Timex Sinclair Video Mode Control $xxFF
+DC_REG_CONTROL1			EQU $69
 
+; bit 7-6: Reserved, must be 0
+; bit 5-4: Layer 2 resolution (0 after soft reset)
+;			- '00': 256x192, 8BPP
+;			- '01': 320x256, 8BPP
+;			- '10': 640x256, 4BPP
+; bit 3-0: Palette offset (0 after soft reset)
+DC_REG_LAYER_2			EQU $70
+
+; bit 7-1: 7-1 Reserved, must be 0
+; bit 0: MSB for X pixel offset
+DC_REG_LAYER_2_OFFSET	EQU $71
 ;----------------------------------------------------------;
 ;                     ROM routines                         ;
 ;----------------------------------------------------------;
@@ -70,33 +81,33 @@ RAM_SLOT_7_END			EQU $FFFF
 ;----------------------------------------------------------;
 ;                          MMU                             ;
 ;----------------------------------------------------------;
-MMU_SLOT_0 				EQU $50
-MMU_SLOT_1 				EQU $51
-MMU_SLOT_2 				EQU $52
-MMU_SLOT_3 				EQU $53
-MMU_SLOT_4 				EQU $54
-MMU_SLOT_5 				EQU $55
-MMU_SLOT_6 				EQU $56
-MMU_SLOT_7 				EQU $57	
+MMU_REG_SLOT_0 			EQU $50
+MMU_REG_SLOT_1 			EQU $51
+MMU_REG_SLOT_2 			EQU $52
+MMU_REG_SLOT_3 			EQU $53
+MMU_REG_SLOT_4 			EQU $54
+MMU_REG_SLOT_5 			EQU $55
+MMU_REG_SLOT_6 			EQU $56
+MMU_REG_SLOT_7 			EQU $57	
 
 ;----------------------------------------------------------;
 ;          		         Sprites	   	                   ;
 ;----------------------------------------------------------;
-SPR_NR					EQU $34					; Sprite Number (R/W)
-SPR_X					EQU $35					; Sprite X coordinate
-SPR_Y					EQU $36					; Sprite Y coordinate
+SPR_REG_NR				EQU $34					; Sprite Number (R/W)
+SPR_REG_X				EQU $35					; Sprite X coordinate
+SPR_REG_Y				EQU $36					; Sprite Y coordinate
 
 ; bits 7-4 = Palette offset added to top 4 bits of sprite colour index
 ; bit 3 = X mirror
 ; bit 2 = Y mirror
 ; bit 1 = Rotate
 ; bit 0 = MSB of X coordinate (palette offset indicator for relative sprites)
-SPR_ATTR_2				EQU $37
+SPR_REG_ATTR_2			EQU $37
 
 ; bit 7 = Visible flag (1 = displayed)
 ; bit 6 = Extended attribute (1 = Sprite Attribute 4 is active)
 ; bits 5-0 = Pattern used by sprite (0-63)
-SPR_ATTR_3				EQU $38
+SPR_REG_ATTR_3			EQU $38
 
 ; bit 7 = H (1 = sprite uses 4-bit patterns)
 ; bit 6 = N6 (0 = use the first 128 bytes of the pattern else use the last 128 bytes)
@@ -104,7 +115,7 @@ SPR_ATTR_3				EQU $38
 ; bits 4-3 = X scaling (00 = 1x, 01 = 2x, 10 = 4x, 11 = 8x)
 ; bits 2-1 = Y scaling (00 = 1x, 01 = 2x, 10 = 4x, 11 = 8x)
 ; bit 0 = MSB of Y coordinate
-SPR_ATTR_4				EQU $39
+SPR_REG_ATTR_4			EQU $39
 
 ; Sprite and Layers system
 ; bit 7 = LoRes mode, 128 x 96 x 256 colours (1 = enabled)
@@ -122,7 +133,7 @@ SPR_ATTR_4				EQU $39
 ; 111 - S(U+L-5) ULA and Layer 2 combined, colours clamped to [0,7]
 ; bit 1 = Over border (1 = yes)(Back to 0 after a reset)
 ; bit 0 = Sprites visible (1 = visible)(Back to 0 after a reset)
-SPR_SETUP				EQU $15
+SPR_REG_SETUP			EQU $15
 SPR_PORT				EQU $303B
 
 ;----------------------------------------------------------;
@@ -131,16 +142,9 @@ SPR_PORT				EQU $303B
 DMA_PORT				EQU $6B					; Datagear DMA Port in zxnDMA mode, https://wiki.specnext.dev/DMA
 
 ;----------------------------------------------------------;
-;                   Charactes Codes                        ;
-;----------------------------------------------------------;
-CH_ENTER				EQU $0D					; Character code for Enter key
-
-
-;----------------------------------------------------------;
 ;                        Colors                            ;
 ;----------------------------------------------------------;
 BORDER_IO				EQU $FE					
-
 COL_BLACK				EQU 0
 COL_BLUE				EQU 1
 COL_RED					EQU 2
@@ -169,7 +173,3 @@ DI_SYNC_SL				EQU 192					; Scanline to synch to. 192 for 60FPS, value above/bel
 DI_COL_ST				EQU $5800				; Start of Display Color RAM
 DI_COL_EN				EQU $5AFF				; End of Display Color RAM
 DI_COL_SIZE				EQU 768					; Size of color RAM: $5AFF - $5800
-DI_X_MIN_POS			EQU 0
-DI_X_MAX_POS			EQU 315
-DI_Y_MIN_POS			EQU 1
-DI_Y_MAX_POS			EQU 240

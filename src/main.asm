@@ -4,41 +4,33 @@
 start:
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
-	NEXTREG REG_TURBO, %00000011    			; Switch to 28MHz
-	NEXTREG SPR_SETUP, %01000011 				; Sprite 0 on top, SLU, over border, sprites visible
+	NEXTREG GL_REG_TURBO, %00000011    			; Switch to 28MHz
+	NEXTREG SPR_REG_SETUP, %01000011 			; Sprite 0 on top, SLU, over border, sprites visible
+
+					
 
 	CALL SetupScreen
-
-
-
+	CALL GameInit
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
-MainLoop:	
+mainLoop:	
 	CALL GameLoop
 
-	JR MainLoop
+	JR mainLoop
 
 ;----------------------------------------------------------;
 ;                       Includes                           ;
 ;----------------------------------------------------------;
-	INCLUDE "_constants.asm"
-	INCLUDE "api_sprite.asm"
-	INCLUDE "api_screen.asm"
-	INCLUDE "api_joystick.asm"
-	INCLUDE "player.asm"
+	INCLUDE "_zx_next_constants.asm"
+	INCLUDE "sprite.asm"
+	INCLUDE "screen.asm"
+	INCLUDE "oystick.asm"
+	INCLUDE "jetman.asm"
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"
 	INCLUDE "util.asm"
-
-;----------------------------------------------------------;
-;                         Data                             ;
-;----------------------------------------------------------;
-; Load sprites into MMU slot 40,41 (16KB) mapping it to Bank: 6 and 7
-	MMU 6 7, 40   
-	ORG RAM_SLOT_6_START
-spritesFile INCBIN "assets/sprites.spr"
-
+	INCLUDE "data_bin.asm"
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;

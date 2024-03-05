@@ -1,28 +1,18 @@
 ;----------------------------------------------------------;
-;                      #LoadSpritesMMU                     ;
+;                        Globals                           ;
 ;----------------------------------------------------------;
-LoadSpritesMMU:
-; The #spritesFile has been loaded into slot 6,7 using MMU on banks 40, 41
-	NEXTREG MMU_SLOT_6, 40						; Set banks 40, 41 containing sprite binaries to RAM slots 6,7.
-	NEXTREG MMU_SLOT_7, 41
+SPR_SLOT1		EQU 40					; Sprites for Level 1 are on bank 40, 41
+SPR_SLOT2		EQU 41	
 
-	LD HL, spritesFile							; Sprites binary data
-	LD BC, 16*16*63								; Copy 63 sprites, each 16x16 pixels
-	CALL LoadSprites						
-
-	NEXTREG MMU_SLOT_6, 6						; Set back orginal RAM to slots 6 and 7
-	NEXTREG MMU_SLOT_7, 7	
-
-	RET
 ;----------------------------------------------------------;
-;                        #LoadSprites                      ;
+;                     #LoadSpritesFPGA                     ;
 ;----------------------------------------------------------;
 ; Loads sprites from file into hardware using DMA.
 ;
 ; Method Parameters:
 ;    - HL - RAM address containing sprite binary data.
 ;    - BC - Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
-LoadSprites:
+LoadSpritesFPGA:
 	; Store dynamic values into DMA program
 	LD (spriteDMAPortA), HL					; Copy sprite sheet address from HL
 	LD (spriteDMADataLength), BC			; Copy sprite file lenght into WR0
@@ -50,7 +40,6 @@ LoadSprites:
 ; Finally OTIR uploads the DMA program to memory through port $xx6B, and it executes.
 ;
 ; More Info: https://wiki.specnext.dev/DMA
-
 spriteDMAProgram:
 	DB %1'00000'11							; WR6: Disable DMA (last command will re-enable it)
 
@@ -93,4 +82,26 @@ spriteDMADataLength:
 
 spriteDMAProgramLength = $ - spriteDMAProgram	
 
-	RET
+	RET										; END LoadSpritesFPGA
+
+;----------------------------------------------------------;
+;                    #AnimateSprites                       ;
+;----------------------------------------------------------;
+ANIM_FR				EQU 5						; Change sprite pattern every few frames     
+frameCnt			BYTE 0						; The animation counter is used to update the sprite pattern every few FP
+
+AnimateSprites:
+	LD A, (frameCnt)
+	INC A
+	LD (frameCnt), A							
+
+	CP ANIM_FR								
+	RET C										; Return if #frameCnt <  #ANIM_FR
+
+	LD A, 0										; #frameCnt == #ANIM_FR -> reset counter and update the animation pattern
+	LD (frameCnt), A
+
+	; Update sprite patterns
+	CALL UpdateJetmanSpritePattern
+
+	RET											; END AnimateSprites	
