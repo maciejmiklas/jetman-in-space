@@ -1,14 +1,13 @@
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
-	ORG RAM_SLOT_4_START
+	ORG RAM_SLOT_4_START_H8000
 
 start:
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
-	NEXTREG GL_REG_TURBO, %00000011    			; Switch to 28MHz
-	NEXTREG SPR_REG_SETUP, %01000011 			; Sprite 0 on top, SLU, over border, sprites visible
+	NEXTREG GL_REG_TURBO_H07, %00000011    		; Switch to 28MHz
+	NEXTREG SPR_REG_SETUP_H15, %01000011 		; Sprite 0 on top, SLU, over border, sprites visible					
 
-					
-
+	INCLUDE "data_load.asm"
 	CALL SetupScreen
 	CALL GameInit
 ;----------------------------------------------------------;
@@ -25,7 +24,7 @@ mainLoop:
 	INCLUDE "_zx_next_constants.asm"
 	INCLUDE "sprite.asm"
 	INCLUDE "screen.asm"
-	INCLUDE "oystick.asm"
+	INCLUDE "joystick.asm"
 	INCLUDE "jetman.asm"
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"

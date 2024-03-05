@@ -14,14 +14,14 @@ SPR_SLOT2		EQU 41
 ;    - BC - Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
 LoadSpritesFPGA:
 	; Store dynamic values into DMA program
-	LD (spriteDMAPortA), HL					; Copy sprite sheet address from HL
-	LD (spriteDMADataLength), BC			; Copy sprite file lenght into WR0
+	LD (spriteDMAPortA), HL						; Copy sprite sheet address from HL
+	LD (spriteDMADataLength), BC				; Copy sprite file lenght into WR0
 
 	; Execute DMA program
-	LD HL, spriteDMAProgram					; Setup source for OTIR
-	LD B, spriteDMAProgramLength 			; Setup length for OTIR
-	LD C, DMA_PORT							; Setup DMA port
-	OTIR									; Upload DMA program and execute
+	LD HL, spriteDMAProgram						; Setup source for OTIR
+	LD B, spriteDMAProgramLength 				; Setup length for OTIR
+	LD C, DMA_PORT_H6B							; Setup DMA port
+	OTIR										; Upload DMA program and execute
 
 ; DMA  is a program that executes in hardware. This program consists of a series of commands from WR0 to WR6. 
 ; Each command is a single byte with a unique signature given by setting a few bits:
@@ -41,7 +41,7 @@ LoadSpritesFPGA:
 ;
 ; More Info: https://wiki.specnext.dev/DMA
 spriteDMAProgram:
-	DB %1'00000'11							; WR6: Disable DMA (last command will re-enable it)
+	DB %1'00000'11								; WR6: Disable DMA (last command will re-enable it)
 
 	; WR0 - Direction, Operation, Port A Configuration:
 	;  - D2 = 1 -> Port A is source, port B destination
@@ -51,10 +51,10 @@ spriteDMAProgram:
 	DB %0'11111'01
 
 spriteDMAPortA:
-	DW 0									; WR0 parameter pointing to RAM containing sprite data
+	DW 0										; WR0 parameter pointing to RAM containing sprite data
 
 spriteDMADataLength:										
-	DW 0									; WR0 parameter defining a amount of bytes for sprite data
+	DW 0										; WR0 parameter defining a amount of bytes for sprite data
 
 	; WR1 - Port A configuration.
 	;   - D3 = 0 -> Port A is memory
@@ -64,11 +64,11 @@ spriteDMADataLength:
 	; WR2 - Port B configuration.
 	;   - D3 = 1 -> Port B is IO (FPGA Sprite Hardware)
 	;   - D5 = 0 -> Port B address is fixed
-	DB %0'0101'000							; WR2 - B fixed, B=I/O
+	DB %0'0101'000								; WR2 - B fixed, B=I/O
 
 	; WR4 - Port B, Timing, Interrupt Control
-	DB %1'01011'01							; WR4 - continuous mode, append port B address
-	DW $005B								; 16-bit port B starting address
+	DB %1'01011'01								; WR4 - continuous mode, append port B address
+	DW $005B									; 16-bit port B starting address
 
 	; WR5 - Ready and stop configuration
 	;   - D4 = 0 -> CE only (the only option anyway)
@@ -78,11 +78,11 @@ spriteDMADataLength:
 	; WR6 - Command register
 	;   - D6,D5,D4,D3,D2 = 10011 -> LOAD command, to start copy from A to B
 	DB %1'10011'11
-	DB %1'00001'11							; Again WR6, now enable DMA and copy!
+	DB %1'00001'11								; Again WR6, now enable DMA and copy!
 
 spriteDMAProgramLength = $ - spriteDMAProgram	
 
-	RET										; END LoadSpritesFPGA
+	RET											; END LoadSpritesFPGA
 
 ;----------------------------------------------------------;
 ;                    #AnimateSprites                       ;

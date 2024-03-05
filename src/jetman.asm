@@ -73,7 +73,7 @@ IntiJetmanSprite
 
 	; bit 7 = Visible flag (1 = displayed)
 	; bits 5-0 = Pattern used by sprite (0-63), we will use pattern 0
-	NEXTREG SPR_REG_ATTR_3, %10000000
+	NEXTREG SPR_REG_ATTR_3_H38, %10000000
 
 	RET											; END IntiJetmanSprite
 
@@ -82,35 +82,35 @@ IntiJetmanSprite
 ;----------------------------------------------------------;
 UpdateJetmanSpritePosition	
 
-	NEXTREG SPR_REG_NR, JET_SPRITE_ID				; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG SPR_REG_NR_H34, JET_SPRITE_ID		; Set the ID of the Jetman's sprite for the following commands
 
 	; Move Jetman Sprite to the current X position, the 9-bit value requires a few tricks. 
 	LD BC, (JetX)								
 	LD A, C										
-	NEXTREG SPR_REG_X, A			; Set LSB from BC into X, below in next lines we handle overflow bit
-	LD A, B						; Load MSB from X into A
-	AND %00000001				; Keep only an overflow bit
+	NEXTREG SPR_REG_X_H35, A					; Set LSB from BC into X, below in next lines we handle overflow bit
+	LD A, B										; Load MSB from X into A
+	AND %00000001								; Keep only an overflow bit
 	
 	; Rotate sprite for Left/Right movement	
-	LD E, A						; Store A in E to use A for loading data from RAM.
+	LD E, A										; Store A in E to use A for loading data from RAM.
 	LD A, (jetState)			
 	LD D, A
-	LD A, E						; Now, A has it's original value, and D contains a value from #jetState
-	BIT JET_STATE_LEFT_BIT, D	; Moving left bit set?
+	LD A, E										; Now, A has it's original value, and D contains a value from #jetState
+	BIT JET_STATE_LEFT_BIT, D					; Moving left bit set?
 	JR Z, .rotateRight
-	SET 3, A					; Rotate sprite left	
+	SET 3, A									; Rotate sprite left	
 	JR .afterRotate	
 .rotateRight	
-	RES 3, A					; Rotate sprite right
+	RES 3, A									; Rotate sprite right
 .afterRotate
 
-	NEXTREG SPR_REG_ATTR_2, A		
+	NEXTREG SPR_REG_ATTR_2_H37, A		
 
 	; Move Jetman sprite to current Y postion, 8-bit value is easy 
 	LD A, (JetY)								
-	NEXTREG SPR_REG_Y, A			; Set Y position
+	NEXTREG SPR_REG_Y_H36, A					; Set Y position
 
-	RET							; END UpdateJetmanSpritePosition
+	RET											; END UpdateJetmanSpritePosition
 ;----------------------------------------------------------;
 ;              #ChangeJetmanSpritePattern                  ;
 ;----------------------------------------------------------;
@@ -127,7 +127,7 @@ ChangeJetmanSpritePattern
 ;----------------------------------------------------------;
 ; Update sprite pattern - next animation frame.
 UpdateJetmanSpritePattern
-	NEXTREG SPR_REG_NR, JET_SPRITE_ID				; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG SPR_REG_NR_H34, JET_SPRITE_ID		; Set the ID of the Jetman's sprite for the following commands
 
 	LD HL, jetSprPaterntIdx
 	INC (HL)
@@ -161,7 +161,7 @@ UpdateJetmanSpritePattern
 .updateRegister	
 	LD A, (jetSprPaterntIdx)	
 	OR %10000000								; Store pattern number into Sprite Attribute	
-	NEXTREG SPR_REG_ATTR_3, A	
+	NEXTREG SPR_REG_ATTR_3_H38, A	
 
 	RET											; END UpdateJetmanSpritePattern				
 ;----------------------------------------------------------;
