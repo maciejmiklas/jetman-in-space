@@ -1,3 +1,6 @@
 ZX Spectrum Next game inspired by Jetpack
 
-Lot's of ideas traken from: [[Dougie Do][https://github.com/robgmoran/DougieDoSource]]
+Based on:
+* [[Dougie Do][https://github.com/robgmoran/DougieDoSource]]
+* ZX Spectrum Next Assembly Developer Guide by Tomaˇz Kragelj
+* https://www.specnext.com/tbblue-io-port-system/

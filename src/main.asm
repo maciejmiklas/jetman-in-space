@@ -5,11 +5,11 @@ start:
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
 	NEXTREG GL_REG_TURBO_H07, %00000011    		; Switch to 28MHz
-	NEXTREG SPR_REG_SETUP_H15, %01000011 		; Sprite 0 on top, SLU, over border, sprites visible					
-
+			
 	INCLUDE "data_load.asm"
 	CALL SetupScreen
 	CALL GameInit
+	CALL LoadTiles	
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
@@ -29,6 +29,9 @@ mainLoop:
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"
 	INCLUDE "util.asm"
+	INCLUDE "tiles.asm"
+
+	; LAST import due to bank offset!
 	INCLUDE "data_bin.asm"
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
