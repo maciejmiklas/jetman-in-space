@@ -1,15 +1,17 @@
 ;----------------------------------------------------------;
 ;                        Globals                           ;
 ;----------------------------------------------------------;
-SPR_BANK1_40		EQU 40					; Sprites for Level 1 are on bank 40, 41
-SPR_BANK2_41		EQU 41	
-
+BANK40_SPR1				EQU 40				; Sprites for Level 1 are on bank 40, 41
+BANK41_SPR2				EQU 41
+BANK42_PALETTE			EQU 42
 
 ;-------------------------------------------------------------------------------------;
-;             Load tilemap into bank 42 mapping it to Slot: 6,7                       ;
+;             Load tilemap into bank 42 mapping it to Slot: 6                         ;
 ;-------------------------------------------------------------------------------------;
+	MMU 6, BANK42_PALETTE
+	ORG RAM_SLOT_6_START_HC000
 
-; Tilemap settings: 8px, 40x32,2 bytes pre pixel, disable "include header" when downloading, file is then usabe as is.
+; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usabe as is.
 tilemapBin INCBIN "assets/tiles.map"
 tilemapBinLength: EQU $ - tilemapBin
 
@@ -17,15 +19,15 @@ tilemapBinLength: EQU $ - tilemapBin
 tilesBin INCBIN "assets/tiles.spr"
 tilesBinLength: EQU $ - tilesBin
 
-tilePaletteBin:						; RGB332
-	db $e3, $0, $2, $13, $17, $37, $5b, $1f, $8, $9, $a, $b, $c, $d, $e, $f
-	db $e3, $21, $21, $20, $20, $12, $16, $17, $d, $e, $1a, $1b, $1c, $1d, $1e, $1f
+tilePaletteBin:									; RGB332
+	DB $E3, $0, $2, $13, $17, $37, $5B, $1F, $8, $9, $A, $B, $C, $D, $E, $F
+	DB $E3, $21, $21, $20, $20, $12, $16, $17, $D, $E, $1A, $1B, $1C, $1D, $1E, $1F
 tilePaletteBinLength: EQU $ - tilePaletteBin
 
 ;-------------------------------------------------------------------------------------;
 ;           Load sprites (16KB) into bank 40,41 mapping it to Slot: 6,7               ;
 ;-------------------------------------------------------------------------------------;
-	MMU 6 7, SPR_BANK1_40
+	MMU 6 7, BANK40_SPR1
 	ORG RAM_SLOT_6_START_HC000
 spritesBin INCBIN "assets/sprites.spr"
 spritesBinLength: EQU $ - spritesBin

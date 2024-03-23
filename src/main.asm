@@ -9,13 +9,12 @@ start:
 	INCLUDE "data_load.asm"
 	CALL SetupScreen
 	CALL GameInit
-	CALL LoadTiles	
+
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
 mainLoop:	
 	CALL GameLoop
-
 	JR mainLoop
 
 ;----------------------------------------------------------;
