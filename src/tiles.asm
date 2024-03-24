@@ -1,15 +1,15 @@
 ; Tiles should be stored between $4000 and $7FFF. This area is called Bank 5 (16K Banks). However, ULA uses $4000-$6000. For this reason, 
 ; we start loading tiles from $6000. Hardware expects tiles in Bank 5; therefore, we only have to provide offsets starting from $4000.
-START_OF_BANK_5		EQU $4000	
+START_OF_BANK_5		= $4000	
 
-START_OF_TILEMAP	EQU $6000					; Just after ULA attributes
-START_OF_TILES		EQU $6A00					; Just after tilemap -> 40x32x2 (2 bytes for tile)
+START_OF_TILEMAP	= $6000					; Just after ULA attributes
+START_OF_TILES		= $6A00					; Just after tilemap -> 40x32x2 (2 bytes for tile)
 
 ; START_OF_TILEMAP - START_OF_BANK_5 = $2000  -> >> 8 =  $20 = 32
-OFFSET_OF_MAP		EQU (START_OF_TILEMAP - START_OF_BANK_5) >> 8
+OFFSET_OF_MAP		= (START_OF_TILEMAP - START_OF_BANK_5) >> 8
 
 ; START_OF_TILES - START_OF_BANK_5 = $2600  -> >> 8 =  $26 = 38
-OFFSET_OF_TILES		EQU (START_OF_TILES - START_OF_BANK_5) >> 8
+OFFSET_OF_TILES		= (START_OF_TILES - START_OF_BANK_5) >> 8
 
 LoadTiles:
 	; Enable tilemap mode

@@ -52,7 +52,7 @@ mainLoop:
 	; close file handle as we're not going to access the project.nex 
 	; file after starting.  See sjasmplus documentation), whether
 	; we preserve the next registers (0 = no, we set to default), and 
-	; whether we require the full 2MB expansion (0 = no we don't).
+	; whether we r=ire the full 2MB expansion (0 = no we don't).
 	SAVENEX CFG 7,0,0,0
 
 	; Generate the Nex file automatically based on which pages you use.

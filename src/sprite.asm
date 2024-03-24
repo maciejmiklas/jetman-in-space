@@ -81,7 +81,7 @@ spriteDMAProgramLength = $ - spriteDMAProgram
 ;----------------------------------------------------------;
 ;                    #AnimateSprites                       ;
 ;----------------------------------------------------------;
-ANIM_FR				EQU 5						; Change sprite pattern every few frames     
+ANIM_FR				= 5						; Change sprite pattern every few frames     
 frameCnt			BYTE 0						; The animation counter is used to update the sprite pattern every few FP
 
 AnimateSprites:
