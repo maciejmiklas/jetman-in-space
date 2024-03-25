@@ -1,49 +1,38 @@
 ;----------------------------------------------------------;
 ;                         #PrintNumHL                      ;
 ;----------------------------------------------------------;
-formatted16:
-	DB "00000"									; Contains a number formatted into a string
-
-; Print 16 bit numer from HL  
-; Params:
+; Print 16 bit numer from HL. Each character takes 8x8 pixels
+; Method Parameters:
+;  - IN: HL = 16-bit number to print
+;        B - Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
+;            For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.	 
 PrintNumHL
-	LD DE, formatted16							; Point to output buffor.
-	CALL num16ToString						
 
-	; Text is formatted and stored at the Label: "formatted16", now it's time to show it on the monitor.
-	LD A, PR_AT_H16								; AT control character
-	RST ROM_PRINT_H10
+	; Print number from HL into formatted16
+	PUSH BC
+	LD DE, formatted16
+	CALL Num16ToString
+	POP BC
 
-	LD A, 0										; Y text coordinate (row)
-	RST ROM_PRINT_H10
-
-	LD A, 12									; X text coordinate (collumn)
-	RST ROM_PRINT_H10
-
-	LD A, PR_INK_H10							; Set ink color
-	RST ROM_PRINT_H10
-	LD A, COL_RED
-	RST ROM_PRINT_H10
-
-	LD A, PR_PAPER_H11							; Set paper color
-	RST ROM_PRINT_H10
-	LD A, COL_GREEN
-	RST ROM_PRINT_H10
-
-	; Print label: "formatted16" on display 
-	LD DE, formatted16							; The RAM address containing the text to be printed.
-	LD BC, 5									; Contains the number of characters to be printed.
-	CALL ROM_PRINT_TEXT_H203C
+	; Print text from formatted16 on screen using tiles
+	LD DE, formatted16							; Contains 16-bit number as ASCII
+	LD C, B										; C - Character offset from top left corner.
+	LD B, 5										; Print 5 characters
+	CALL PrintText
 
 	RET
 
+formatted16:
+	DB "00000"									; Contains a number formatted into a string
+
 ;----------------------------------------------------------;
-;                      #num16ToString                      ;
+;                      #Num16ToString                      ;
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros. 
-; IN:  HL = 16-bit number to convert.
-; OUT: ASCII string at DE, 5-charactes long, 0 padded.
-num16ToString
+; Method Parameters:
+;   - IN:  HL = 16-bit number to convert
+;   - OUT: ASCII string at DE, 5-charactes long, 0 padded.
+Num16ToString
 
 	; Each line prints one digit into DE, starting with the most significant. 
 	ld	BC, -10000						

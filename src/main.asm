@@ -10,10 +10,12 @@ start:
 	CALL SetupScreen
 	CALL GameInit
 
+vv BYTE  0
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
 mainLoop:	
+
 	CALL GameLoop
 	JR mainLoop
 
@@ -27,7 +29,7 @@ mainLoop:
 	INCLUDE "jetman.asm"
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"
-	INCLUDE "util.asm"
+	INCLUDE "text.asm"
 	INCLUDE "tiles.asm"
 
 	; LAST import due to bank offset!

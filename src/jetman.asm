@@ -4,45 +4,51 @@
 JetX					WORD 100				; 0-320px
 JetY 					BYTE 100				; 0-256px
 
-; Possible move directions
-JET_STATE_LEFT_BIT		= 0						; Bit 0 - Jetman moving left
-JET_STATE_LEFT_BM		= %00000001	
+; ###### Possible move directions #####
+JET_MOVE_INACTIVE		= 0						; No movement
 
-JET_STATE_RIGHT_BIT		= 1						; Bit 1 - Jetman moving right
-JET_STATE_RIGHT_BM		= %00000010
+JET_MOVE_LEFT_BIT		= 0						; Bit 0 - Jetman moving left
+JET_MOVE_LEFT_BM		= %0000'0001
 
-JET_STATE_UP_BIT		= 2						; Bit 2 - Jetman moving up
-JET_STATE_UP_BM			= %00000100		
+JET_MOVE_RIGHT_BIT		= 1						; Bit 1 - Jetman moving right
+JET_MOVE_RIGHT_BM		= %0000'0010
 
-JET_STATE_DOWN_BIT		= 3						; Bit 3 - Jetman moving down
-JET_STATE_DOWN_BM		= %00001000
+JET_MOVE_UP_BIT			= 2						; Bit 2 - Jetman moving up
+JET_MOVE_UP_BM			= %0000'0100
 
-JET_STATE_HOVER_BIT		= 4						; Bit 4 - Jetman hovers
-JET_STATE_HOVER_BM		= %00010000
+JET_MOVE_DOWN_BIT		= 3						; Bit 3 - Jetman moving down
+JET_MOVE_DOWN_BM		= %0000'1000
 
-JET_STATE_GROUND_BIT	= 5						; Bit 5 - Jetman walks on the ground
-JET_STATE_GROUND_BM		= %00100000
+jetMove 				BYTE JET_MOVE_INACTIVE	; Jetman initially hovers, no movement
+jetLoopMove 			BYTE JET_MOVE_INACTIVE	; State will be reset right on the beginnig of each joysting loop
 
-JET_STATE_PLATFORM_BIT	= 6						; Bit 6 - Jetman walks on the platform
-JET_STATE_PLATFORM_BM	= %01000000
+; ###### States for Jetmain in the air, 0 for not in the air ######
+JET_AIR_INACTIVE		= 0						; Jetman is not in the air
+JET_AIR_FLY				= 1						; Jetman is flaying
+JET_AIR_HOOVER			= 2						; Jetman is hovering
+JET_AIR_FALL			= 3						; jetman falls from platform
 
-JET_STATE_STAND_BIT		= 7						; Bit 7 - Jetman stands on the platform/ground
-JET_STATE_STAND_BM		= %10000000
+jetAir					BYTE JET_AIR_FLY		; Jetman initially hovers, no movement
 
-JET_STATE_PLATFORM_BITS	= JET_STATE_GROUND_BM | JET_STATE_PLATFORM_BM
+; ###### States for Jetman on the platform/ground ######
+JET_GND_INACTIVE		= 0					; Jetman is not on platform/ground
+JET_GND_WALK			= 1					; Jetman walks on the platform/ground
+JET_GND_STAND			= 2					; Jetman stands on the platform/ground
 
-jetState 				BYTE %00010010			; Hover, face Rright
-jetLoopState 			BYTE 0					; State will be reset right on the beginnig of each joysting loop
+jetGnd					BYTE JET_GND_INACTIVE; Jetman initially hovers, no movement
 
-jetHoverCnt				BYTE 0					; The counter increases with each frame when no up/down is pressed. 
-												; When it reaches #JET_HOVER_START, Jetman will start hovering
-JET_HOVER_START			= 15					
+; ###### Hovering ######
+jetHoverCnt				BYTE 0				; The counter increases with each frame when no up/down is pressed. 
+											; When it reaches #JET_HOVER_START, Jetman will start hovering
+JET_HOVER_START			= 50					
  
+; ###### Sprites ######
+
 ; #jetSprPaterntIdx and #etSprPaternEnd contain data for currently executed animation, #jetSprPaterntNextID contains an ID 
 ; for the animation that will play once the current has ended.
 jetSprPaterntIdx		BYTE 40					; Current index  of Jetman's sprite pattern
 jetSprPaternEnd			BYTE 41					; End offset (inculsive) of Jetman's sprite pattern
-jetSprPaterntNextID		BYTE JET_SDB_HOVER		; ID in #jetSpriteDB for next animation
+jetSprPaterntNextID		BYTE JET_SDB_FLY		; ID in #jetSpriteDB for next animation
 
 ; IDs for #jetSpriteDB
 JET_SDB_FLY				= 201					; Jetman is flaying
@@ -77,7 +83,9 @@ jetSpriteDB				DB JET_SDB_FLY,		36, 37, JET_SDB_FLY		+ JET_SDB_OFF_NX_ADD
 
 JET_SPRITE_ID			= $0					; ID of Jetman/Player sprite
 
+; ###### Misc ######
 GROUND_LEVEL			= 235					; The lowest walking platform.
+
 ;----------------------------------------------------------;
 ;                  #IntiJetmanSprite                       ;
 ;----------------------------------------------------------;
@@ -107,10 +115,10 @@ UpdateJetmanSpritePosition
 	
 	; Rotate sprite for Left/Right movement	
 	LD E, A										; Store A in E to use A for loading data from RAM.
-	LD A, (jetState)			
+	LD A, (jetMove)			
 	LD D, A
 	LD A, E										; Now, A has it's original value, and D contains a value from #jetState
-	BIT JET_STATE_LEFT_BIT, D					; Moving left bit set?
+	BIT JET_MOVE_LEFT_BIT, D					; Moving left bit set?
 	JR Z, .rotateRight
 	SET 3, A									; Rotate sprite left	
 	JR .afterRotate	
@@ -184,9 +192,9 @@ UpdateJetmanSpritePattern
 JoyMoveUp:
 
 	; Update temp state
-	LD A, (jetLoopState)
-	SET JET_STATE_UP_BIT, A	
-	LD (jetLoopState), A
+	LD A, (jetLoopMove)
+	SET JET_MOVE_UP_BIT, A	
+	LD (jetLoopMove), A
 
 	CALL JetmanMoves							
 
@@ -198,49 +206,44 @@ JoyMoveUp:
 	LD (JetY), A
 .afterDec	
 
-	; Transition from walking to flaying?
-	LD A, (jetState)
-	AND JET_STATE_PLATFORM_BITS						
-	CP 0										; Check if one on the walking bits is set
+	; ##### Direction change: down -> up #####
+	LD A, (jetMove)
+	AND JET_MOVE_UP_BM							; Are we moving Up already?
+	CP JET_MOVE_UP_BM
+	JR Z, .afterDirectionChange
+
+	; We have direction change!	
+	LD A, (jetMove)								; Update #jetState by reseting down and setting up
+	RES JET_MOVE_DOWN_BIT, A
+	SET JET_MOVE_UP_BIT, A
+	LD (jetMove), A
+.afterDirectionChange
+
+	; ###### Transition from walking to flaying ######
+	LD A, (jetGnd)
+	CP JET_GND_INACTIVE							; Check if Jetnan is on the ground/platform
 	JR Z, .afterTakeoff
 
-	; Takingoff
-	LD A, (jetState)
-	RES JET_STATE_GROUND_BIT, A					; Reset walking bits	
-	RES JET_STATE_PLATFORM_BIT, A
-	RES JET_STATE_STAND_BIT, A
-	SET JET_STATE_UP_BIT, A						; Set flaying bit
-	LD (jetState), A
+	; Jetman is taking off - set #jetAir and reset #jetGnd
+	LD A, JET_AIR_FLY
+	LD (jetAir), A
+
+	LD A, JET_GND_INACTIVE
+	LD (jetGnd), A
 
 	; Play takeoff animation					
 	LD A, JET_SDB_T_WL
 	CALL ChangeJetmanSpritePattern
 	JR .afterTakeoff
-
-	; Direction change? 
-	LD A, (jetState)
-	AND JET_STATE_UP_BM							; Are we moving Up already?
-	CP JET_STATE_UP_BM
-	JR Z, .afterDirectionChange
-
-	; We have direction change!	
-	LD A, (jetState)							; Update #jetState by reseting Down/Hover and setting Down
-	RES JET_STATE_DOWN_BIT, A
-	RES JET_STATE_HOVER_BIT, A
-	RES JET_STATE_STAND_BIT, A
-	SET JET_STATE_UP_BIT, A
-	LD (jetState), A
-
-.afterDirectionChange
 .afterTakeoff
 
 	RET											; END #JoyMoveUp
 
 JoyMoveDown:
 	; Update temp state
-	LD A, (jetLoopState)
-	SET JET_STATE_DOWN_BIT, A	
-	LD (jetLoopState), A
+	LD A, (jetLoopMove)
+	SET JET_MOVE_DOWN_BIT, A	
+	LD (jetLoopMove), A
 
 	CALL JetmanMoves						
 
@@ -253,30 +256,36 @@ JoyMoveDown:
 	INC A
 	LD (JetY), A
 
-	; Landing on the ground?
+	; ##### Landing on the ground ######
 	CP GROUND_LEVEL
 	JR NZ, .afterLanding
+
 	; Yes, Jemans is landing, trigger ransition: falying -> landing -> walking
 	LD A, JET_SDB_T_FW
 	CALL ChangeJetmanSpritePattern
-	
-	LD A, (jetState)							; Update state
-	SET JET_STATE_GROUND_BIT, A	
-	LD (jetState), A
+
+	; Reset #jetAir as we are walking
+	LD A, JET_AIR_INACTIVE						
+	LD (jetAir), A
+
+	; Update #jetGnd as we are walking
+	LD A, JET_GND_WALK						
+	LD (jetGnd), A	
+
 .afterLanding
 
 	; Direction change? 
-	LD A, (jetState)
-	AND JET_STATE_DOWN_BM						; Are we moving down already?
-	CP JET_STATE_DOWN_BM
+	LD A, (jetMove)
+	AND JET_MOVE_DOWN_BM						; Are we moving down already?
+	CP JET_MOVE_DOWN_BM
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-	LD A, (jetState)							; Update #jetState by reseting Up/Hover and setting Down
-	RES JET_STATE_UP_BIT, A
-	RES JET_STATE_HOVER_BIT, A
-	SET JET_STATE_DOWN_BIT, A	
-	LD (jetState), A
+	LD A, (jetMove)							; Update #jetState by reseting Up/Hover and setting Down
+	RES JET_MOVE_UP_BIT, A
+	//RES JET_STATE_HOVER_BIT, A
+	SET JET_MOVE_DOWN_BIT, A	
+	LD (jetMove), A
 .afterDirectionChange
 .afterInc	
 
@@ -284,13 +293,13 @@ JoyMoveDown:
 
 JoyMoveRight:
 	; Update temp state
-	LD A, (jetLoopState)
-	SET JET_STATE_RIGHT_BIT, A	
-	LD (jetLoopState), A
+	LD A, (jetLoopMove)
+	SET JET_MOVE_RIGHT_BIT, A	
+	LD (jetLoopMove), A
 
 	CALL JetmanMoves						
 
-	; ###### START: Increment X position ######
+	; ###### Increment X position ######
 	LD BC, (JetX)	
 	INC BC
 
@@ -305,18 +314,17 @@ JoyMoveRight:
 	LD BC, 1									; Jetman is above 320 -> set to 0
 .lessThanMaxX
 	LD (JetX), BC								; Update new X postion
-	; ###### END: Increment X position ######
 
-	; ##### START: Direction change (left -> right) #####
-	LD A, (jetState)
-	AND JET_STATE_RIGHT_BM						; Are we moving right already?
-	CP JET_STATE_RIGHT_BM
+	; ##### Direction change: left -> right #####
+	LD A, (jetMove)
+	AND JET_MOVE_RIGHT_BM						; Are we moving right already?
+	CP JET_MOVE_RIGHT_BM
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-
+/*
 	; Transition from standing on platform/ground to walking?
-	LD A, (jetState)
+	LD A, (jetMove)
 	BIT JET_STATE_STAND_BIT, A
 	JR Z, .afterWalking							; Jerman is not standing on platform/ground -> end
 	 
@@ -324,28 +332,26 @@ JoyMoveRight:
 	LD A, JET_SDB_WALK
 	CALL ChangeJetmanSpritePattern
 .afterWalking
-
-	; Update state
-	LD A, (jetState)							; Update #jetState by reseting left/hover and setting right
-	RES JET_STATE_LEFT_BIT, A					; Reset left/hover/stand and set right
-	RES JET_STATE_HOVER_BIT, A
-	RES JET_STATE_STAND_BIT, A
-	SET JET_STATE_RIGHT_BIT, A
-	LD (jetState), A
+*/
+	; Update #jetMove: reset left and set right
+	LD A, (jetMove)								
+	RES JET_MOVE_LEFT_BIT, A
+	SET JET_MOVE_RIGHT_BIT, A
+	LD (jetMove), A
+	
 .afterDirectionChange
-	; ##### END: Direction change (left -> right) #####
 	
 	RET											; END #JoyMoveRight
 
 JoyMoveLeft:
 	; Update temp state
-	LD A, (jetLoopState)
-	SET JET_STATE_LEFT_BIT, A	
-	LD (jetLoopState), A
+	LD A, (jetLoopMove)
+	SET JET_MOVE_LEFT_BIT, A	
+	LD (jetLoopMove), A
 
 	CALL JetmanMoves						
 
-	; ###### START: Decrement X position ######
+	; ###### Decrement X position ######
 	LD BC, (JetX)	
 	DEC BC
 
@@ -360,18 +366,17 @@ JoyMoveLeft:
 	JR NZ, .afterResetX
 .afterResetX
 	LD (JetX), BC
-	; ###### END: Decrement X position ######
 
-	; ###### START: Direction change ######
-	LD A, (jetState)
-	AND JET_STATE_LEFT_BM						; Are we moving left already?
-	CP JET_STATE_LEFT_BM
+	; ##### Direction change: right -> left #####
+	LD A, (jetMove)
+	AND JET_MOVE_LEFT_BM						; Are we moving left already?
+	CP JET_MOVE_LEFT_BM
 	JR Z, .afterDirectionChange					; Jetman is moving left already -> end
 
 	; We have direction change!	
-
+/*
 	; Transition from standing on platform/ground to walking?
-	LD A, (jetState)
+	LD A, (jetMove)
 	BIT JET_STATE_STAND_BIT, A
 	JR Z, .afterWalking							; Jerman is not standing on platform/ground -> end
 	 
@@ -379,16 +384,13 @@ JoyMoveLeft:
 	LD A, JET_SDB_WALK
 	CALL ChangeJetmanSpritePattern
 .afterWalking
-
-	; Update state 
-	LD A, (jetState)							; Update #jetState by reseting right and setting left
-	RES JET_STATE_RIGHT_BIT, A					; Reset right/hover/stand and set left
-	RES JET_STATE_HOVER_BIT, A
-	RES JET_STATE_STAND_BIT, A
-	SET JET_STATE_LEFT_BIT, A
-	LD (jetState), A
+*/
+	; Update #jetMove: reset right and set left 
+	LD A, (jetMove)							
+	RES JET_MOVE_RIGHT_BIT, A
+	SET JET_MOVE_LEFT_BIT, A
+	LD (jetMove), A
 .afterDirectionChange
-	; ###### END: Direction change ######
 
 	RET											; END #JoyMoveLeft
 
@@ -399,88 +401,110 @@ JoyPressFire:
 ; Method gets called on any movement, but not fire pressed
 JetmanMoves
 
-	; ####### START: Hoovering #######
-	; Reset hoover counter as we have movement
-	LD A, 0									
+	; ####### Reset hover counter as we have movement #######
+	LD A, 0
 	LD (jetHoverCnt), A
 
-	; Transition from hoovering to flying?
-	LD A, (jetState)
-	BIT JET_STATE_HOVER_BIT, A					; Is Jetman hovering?
-	JR Z, .afterHovering
+	; ####### Transition from hovering to flying? #######
+	LD A, (jetAir)
+	CP JET_AIR_HOOVER							; Is Jemtman hovering?			
+	JR NZ, .afterHovering						; Jump if not hovering
 
-	RES JET_STATE_HOVER_BIT, A					; He was hovering, reset hover bit
-	LD (jetState), A
+	; Jetman is hovering, but be have movement, so switch state to fly
+	LD A, JET_AIR_FLY
+	LD (jetAir), A
 	
 	LD A, JET_SDB_FLY							; Switch to flaying animation
 	CALL ChangeJetmanSpritePattern
 .afterHovering	
-	; ####### END: Hoovering #######
 
 	RET 										; END #JetmanMoves
 
 JoyStart:
 	; Reset temp state
 	LD A, 0										; Update #jetState by reseting left/hover and setting right
-	LD (jetLoopState), A
+	LD (jetLoopMove), A
 
 	RET 										; END #JoyStart
 
 JoyEnd:											; After input processing, #JoyEnd gets executed as the last procedure. 
-	; ####### START: Hoovering #######
-	LD A, (jetState)
-	BIT JET_STATE_HOVER_BIT, A					; Already hovering?				
-	JR NZ, .afterHovering	
 
-	; Jetman is not hovering, should he?
-	AND JET_STATE_PLATFORM_BITS						; Hoovering is only possible when not walking
-	CP 0										; Check if one on the walking bits is set
-	JR NZ, .afterHovering
-	
-	; First, increase the counter. It will be reset once any direction button is pressed. 
+	; ####### Hovering #######
+	LD A, (jetAir)
+	CP JET_AIR_INACTIVE							; Is Jemtan in the air already?
+	JR Z, .afterHovering						; Jump if #jetAir inactive -> not flaying
+
+	CP JET_AIR_HOOVER							; #jetAir is set, but is Jemtman already hovering?			
+	JR Z, .afterHovering						; Jump if already hovering
+
+	LD A, (jetLoopMove)
+	CP JET_MOVE_INACTIVE
+	JR NZ, .afterHovering						; We have movement - ignore hovering
+
+	; Jetman is in the air, but is he not moving long enough?
+	; Increase the counter. It will be reset once any direction button is pressed. 
 	; Otherwise, the counter is not reset and gets increased here.
 	LD A, (jetHoverCnt)							; Increment hover counter
 	INC A
 	LD (jetHoverCnt), A
 
 	CP JET_HOVER_START
-	JR C, .afterHovering						; Jetman is not moving, by sill not long enough to start hovering
+	JR NZ, .afterHovering						; Jetman is not moving, by sill not long enough to start hovering
 
-	LD A, (jetState)
-	SET JET_STATE_HOVER_BIT, A					; Jetamn hovers!	
-	LD (jetState), A
+	; Jetamn starts to hover!
+	LD A, JET_AIR_HOOVER
+	LD (jetAir), A
 
 	LD A, JET_SDB_HOVER
 	CALL ChangeJetmanSpritePattern
-	JR .afterStanding							; Alerady hoovering, do not check standing	
+	JR .afterStanding							; Alerady hovering, do not check standing	
 .afterHovering
-	; ####### END: Hoovering #######
 
-	; ####### START: Jetman standing without movement #######
-	LD A, (jetState)
-	BIT JET_STATE_STAND_BIT, A
-	JR NZ, .afterStanding						; Jerman is already standing -> end procedure. 
+	; ####### Jetman standing without movement #######
+	
+	; End procedure if there is movement
+	LD A, (jetLoopMove)
+	CP JET_MOVE_INACTIVE
+	JR NZ, .afterStanding
 
-	AND JET_STATE_PLATFORM_BITS					; Is Jetman on the a platform/ground?
-	CP 0										
-	JR Z, .afterStanding						; Jerman is not on the platform/ground -> end procedure. 
+	; End procedure if Jetman is not walking
+	LD A, (jetGnd)
+	CP JET_GND_WALK
+	JR NZ, .afterStanding						; Jump is if not walking
 
-	LD A, (jetLoopState)
-	AND JET_STATE_LEFT_BM | JET_STATE_RIGHT_BM	; Is Jetman moving right or left?
-	CP 0
-	JR NZ, .afterStanding						; Jerman going left or right -> end procedure. 
-
-	; Jetman is on the platform/ground and dnoes not move!
-	LD A, (jetState)
-	RES JET_STATE_LEFT_BIT, A					; Reset left/right and set stand bits
-	RES JET_STATE_RIGHT_BIT, A
-	SET JET_STATE_STAND_BIT, A
-	LD (jetState), A
+	; Jetman is on the platform/ground and does not move!
+	LD A, JET_GND_STAND							; Store new state
+	LD (jetGnd), A
 
 	LD A, JET_SDB_STAND							; Change animation
 	CALL ChangeJetmanSpritePattern
-.afterStanding	
-	; ####### END: Jetman standing without movement #######
+.afterStanding
 
+	; PRINT START
+	LD B, 0
+	LD H, 0
+	LD A, (jetMove)
+	LD L, A
+	CALL PrintNumHL
+
+	LD B, 10
+	LD H, 0
+	LD A, (jetLoopMove)
+	LD L, A
+	CALL PrintNumHL		
+
+	LD B, 20
+	LD H, 0
+	LD A, (jetAir)
+	LD L, A
+	CALL PrintNumHL	
+
+	LD B, 30
+	LD H, 0
+	LD A, (jetGnd)
+	LD L, A
+	CALL PrintNumHL		
+
+	; PRINT END
 
 	RET											; END #JoyEnd
