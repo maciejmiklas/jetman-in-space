@@ -322,17 +322,6 @@ JoyMoveRight:
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-/*
-	; Transition from standing on platform/ground to walking?
-	LD A, (jetMove)
-	BIT JET_STATE_STAND_BIT, A
-	JR Z, .afterWalking							; Jerman is not standing on platform/ground -> end
-	 
-	; Jetman was standing and starts walking now
-	LD A, JET_SDB_WALK
-	CALL ChangeJetmanSpritePattern
-.afterWalking
-*/
 	; Update #jetMove: reset left and set right
 	LD A, (jetMove)								
 	RES JET_MOVE_LEFT_BIT, A
@@ -341,6 +330,19 @@ JoyMoveRight:
 	
 .afterDirectionChange
 	
+	; ##### Transition from standing on platform/ground to walking ######
+	LD A, (jetGnd)
+	CP JET_GND_STAND
+	JR NZ, .afterWalking						; Jump if Jerman is not standing
+	 
+	; Jetman is standing and starts walking now
+	LD A, JET_GND_WALK
+	LD (jetGnd), A
+
+	LD A, JET_SDB_WALK
+	CALL ChangeJetmanSpritePattern
+.afterWalking
+
 	RET											; END #JoyMoveRight
 
 JoyMoveLeft:
@@ -374,17 +376,7 @@ JoyMoveLeft:
 	JR Z, .afterDirectionChange					; Jetman is moving left already -> end
 
 	; We have direction change!	
-/*
-	; Transition from standing on platform/ground to walking?
-	LD A, (jetMove)
-	BIT JET_STATE_STAND_BIT, A
-	JR Z, .afterWalking							; Jerman is not standing on platform/ground -> end
-	 
-	; Jetman was standing and starts walking now
-	LD A, JET_SDB_WALK
-	CALL ChangeJetmanSpritePattern
-.afterWalking
-*/
+	
 	; Update #jetMove: reset right and set left 
 	LD A, (jetMove)							
 	RES JET_MOVE_RIGHT_BIT, A
@@ -392,6 +384,18 @@ JoyMoveLeft:
 	LD (jetMove), A
 .afterDirectionChange
 
+	; ##### Transition from standing on platform/ground to walking ######
+	LD A, (jetGnd)
+	CP JET_GND_STAND
+	JR NZ, .afterWalking						; Jump if Jerman is not standing
+	 
+	; Jetman is standing and starts walking now
+	LD A, JET_GND_WALK
+	LD (jetGnd), A
+	
+	LD A, JET_SDB_WALK
+	CALL ChangeJetmanSpritePattern
+.afterWalking
 	RET											; END #JoyMoveLeft
 
 JoyPressFire:
