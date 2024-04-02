@@ -35,5 +35,5 @@ tilePaletteBinLength: = $ - tilePaletteBin
 ;-------------------------------------------------------------------------------------;
 	MMU 6 7, BANK40_SPR1
 	ORG RAM_SLOT_6_START_HC000
-spritesBin INCBIN "assets/sprites.spr"
+spritesBin INCBIN "assets/jetman.spr"
 spritesBinLength: = $ - spritesBin
