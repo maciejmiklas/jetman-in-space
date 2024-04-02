@@ -80,8 +80,8 @@ JET_SDB_FRAME_SIZE		= 2
 ;	DB [ID], [SIZE], [OFF_NX], [[FRAME_UP],[FRAME_LW] ,...], 
 jetSpriteDB	
 	DB JET_SDB_FLY,		JET_SDB_FLY 	- JET_SDB_SUB,	40, 00,12, 00,13, 01,14, 01,15, 02,12, 02,13, 03,14, 03,15, 04,12, 04,13, 05,14, 05,15, 03,12, 03,13, 04,14, 04,15, 05,12, 05,13, 03,14, 03,15 
-	DB JET_SDB_WALK_ST,	JET_SDB_WALK 	- JET_SDB_SUB, 	02, 09,04
-	DB JET_SDB_WALK, 	JET_SDB_WALK 	- JET_SDB_SUB,	40, 00,09, 00,10, 01,11, 01,09, 02,10, 02,11, 03,09, 03,10, 04,11, 04,09, 05,10, 05,11, 03,09, 03,10, 04,11, 04,09, 05,10, 05,11, 03,09, 03,10, 04,11 
+	DB JET_SDB_WALK_ST,	JET_SDB_WALK 	- JET_SDB_SUB, 	02, 00,09
+	DB JET_SDB_WALK, 	JET_SDB_WALK 	- JET_SDB_SUB,	42, 00,09, 00,10, 01,11, 01,09, 02,10, 02,11, 03,09, 03,10, 04,11, 04,09, 05,10, 05,11, 03,09, 03,10, 04,11, 04,09, 05,10, 05,11, 03,09, 03,10, 04,11 
 	DB JET_SDB_HOVER,	JET_SDB_HOVER 	- JET_SDB_SUB, 	40, 00,12, 00,13, 01,14, 01,15, 02,12, 02,13, 03,14, 03,15, 04,12, 04,13, 05,14, 05,15, 03,12, 03,13, 04,14, 04,15, 05,12, 05,13, 03,14, 03,15 
 	DB JET_SDB_T_WF,	JET_SDB_FLY 	- JET_SDB_SUB, 	08, 03,18, 04,18, 05,19, 03,19
 	DB JET_SDB_T_FW, 	JET_SDB_WALK	- JET_SDB_SUB,	08, 03,16, 04,16, 05,17, 03,17
@@ -475,7 +475,7 @@ JoyEnd:											; After input processing, #JoyEnd gets executed as the last pr
 	INC A
 	LD (jetInactivityCnt), A
 
-	; Should Jetman hover?
+	; ###### Should Jetman hover? ######
 	LD A, (jetAir)
 	CP JET_AIR_INACTIVE							; Is Jemtan in the air already?
 	JR Z, .afterHoover							; Jump if not flaying
@@ -497,7 +497,7 @@ JoyEnd:											; After input processing, #JoyEnd gets executed as the last pr
 	JR .afterInactivity							; Alerady hovering, do not check standing	
 .afterHoover
 
-	; Jetman is not hovering, but should he stand?
+	; ###### Jetman is not hovering, but should he stand? #######
 	LD A, (jetGnd)
 	CP JET_AIR_INACTIVE							; Is Jemtan on the ground already?
 	JR Z, .afterInactivity						; Jump if not on the ground
@@ -519,6 +519,7 @@ JoyEnd:											; After input processing, #JoyEnd gets executed as the last pr
 	JR .afterInactivity
 .afterStand
 	
+	; Code is here because: jetInactivityCnt > 0 AND jetInactivityCnt < JET_STAND_START 
 	; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.	
 	LD A, (jetGnd)
 	CP JET_GND_WALK

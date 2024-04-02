@@ -12,43 +12,18 @@ DI_Y_MAX_POS			= 240
 SetupScreen:
 
 	; Sprite and Layers system
-;  - 7: LoRes mode, 128 x 96 x 256 colours (1 = enabled)
-;  - 6: Sprite priority (1 = sprite 0 on top, 0 = sprite 127 on top)
-;  - 5: Enable sprite clipping in over border mode (1 = enabled)
-;  - 4-2: set layers priorities:
-;   Reset default is 000, sprites over the Layer 2, over the ULA graphics:
-;    - 000: S L U
-;    - 001: L S U
-;    - 010: S U L - (Top - Sprites, Enhanced_ULA, Layer 2)
-;    - 011: L U S
-;    - 100: U S L
-;    - 101: U L S
-;    - 110: S(U+L) ULA and Layer 2 combined, colours clamped to 7
-;    - 111: S(U+L-5) ULA and Layer 2 combined, colours clamped to [0,7]
-;  - 1: Over border (1 = yes)(Back to 0 after a reset)
-;  - 0: Sprites visible (1 = visible)(Back to 0 after a reset)
-
-
-	NEXTREG SPR_REG_SETUP_H15, %010000011 		; Sprite 0 on top, SLU, over border, sprites visible	
-//	NEXTREG DC_REG_CONTROL_1_H69, %11000000  	; Layer 2 screen resolution 256 x 192 x 8bpp
-
+	; Bits:
+	;  - 7		= '0': LowRes off
+	;  - 6		= '1': Sprites on top
+	;  - 5		= '0': Sprites over border
+	;  - 4-2 	= '010': SUL -> Top - Sprites, enhanced ULA, Layer 2
+	;  - 1 		= '1': over border
+	;  - 0 		= '1': sprites visible
+	NEXTREG SPR_REG_SETUP_H15, %0'1'0'010'1'1 	; Sprite 0 on top('1'), SLU('000'), over border('1'), sprites visible('1')
+	NEXTREG DC_REG_CONTROL_1_H69, %00'01'0000  	; Layer 2 screen resolution 320 x 256 x 8bpp
+	nextreg DC_REG_TILE_TRANSP_H4C, $00			; Black for tilemap transparency
 	CALL ROM_CLS_H0DAF							; Clear screen
-
-//	LD A, COL_YELLOW							; Set the border color
-//	OUT	(BORDER_IO), A
-/*
-	; ### Set screen color ###
-	LD HL, DI_COLOR_START_H5800					; Load into HL beginning address of color RAM, we will iterate over it
-	LD BC, 0									; Counter for iteration over color memory, from 0 to 768
-	LD D, COL_GREEN								; Color to be set
-.loop
-	LD (HL), D									; Set color for current 
-	INC HL										; Set the color for the current position of color memory
-	INC BC										; Increment BC
-	LD A, B										; 768 is $0300 -> B=03, C=00
-	CP $03										; We have filled whole color memory when B is at 03
-	JP NZ, .loop								; Keep looping untill whole color memory is set
-*/
+	
 	RET											; END SetupScreen
 
 ;----------------------------------------------------------;

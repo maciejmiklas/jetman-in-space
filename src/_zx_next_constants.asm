@@ -23,6 +23,13 @@ DC_REG_CONTROL_1_H69	= $69
 ;  - 3-0: Palette offset (0 after soft reset)
 DC_REG_LAYER_2_H70		= $70
 
+
+; Transparency index for the tilemap
+; Bits:
+;  - 7-4 = Reserved, must be 0
+;  - 3-0 = Set the index value (0xF after reset)
+DC_REG_TILE_TRANSP_H4C		= $4C
+
 ; Bits:
 ;  -  7-1: 7-1 Reserved, must be 0
 ;  -  0: MSB for X pixel offset
