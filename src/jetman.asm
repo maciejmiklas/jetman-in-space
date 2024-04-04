@@ -33,7 +33,6 @@ jetMove 			BYTE JET_MOVE_INACTIVE
 JET_AIR_INACTIVE		= 0						; Jetman is not in the air
 JET_AIR_FLY				= 1						; Jetman is flaying
 JET_AIR_HOOVER			= 2						; Jetman is hovering
-JET_AIR_FALL			= 3						; jetman falls from platform
 
 jetAir					BYTE JET_AIR_FLY		; Jetman initially hovers, no movement
 
@@ -312,7 +311,7 @@ JetmanTakesoff
 	LD (jetGnd), A
 
 	; Play takeoff animation					
-	LD A, JET_SDB_T_WL
+	LD A, JET_SDB_T_WF
 	CALL ChangeJetmanSpritePattern
 	RET											; END #JetmanTakesoff
 
@@ -382,8 +381,8 @@ HandleLandingOnPlatform
 	CP JET_AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no landing ;)
 
-	LD HL, platforms							; Load into B the number of platforms to check
-	LD B, (HL)
+	LD HL, platforms
+	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
 	INC HL										; HL points to [Y]
 	LD C, (HL)									; C contains [Y]
@@ -396,7 +395,7 @@ HandleLandingOnPlatform
 	
 	LD A, (jetY)								; A holds current Y position
 	CP C
-	JR C, .platformsLoopEnd						; Jump if Jetman is on a different level than the current platform
+	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
 	LD A, (jetX)								; A holds current X position
@@ -419,10 +418,10 @@ HandleLandingOnPlatform
 HandleFallingFromPlatform
 	LD A, (jetGnd)
 	CP JET_GND_WALK								; Is Jemtan in the air?
-	RET Z										; Return if not walking, no walking - no falling ;)
+	RET NZ										; Return if not walking, no walking - no falling ;)
 
-	LD HL, platforms							; Load into B the number of platforms to check
-	LD B, (HL)
+	LD HL, platforms							
+	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
 	INC HL										; HL points to [Y]
 	LD C, (HL)									; C contains [Y]
@@ -432,27 +431,36 @@ HandleFallingFromPlatform
 
 	INC HL										; HL points to [X end]
 	LD E, (HL)									; E contains [X end]		
-	
+
 	LD A, (jetY)								; A holds current Y position
 	CP C
-	JR C, .platformsLoopEnd						; Jump if Jetman is on a different level than the current platform
+	JR NZ, .platformsLoopEnd						; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
 	LD A, (jetX)								; A holds current X position
 	CP D										; Compare #jetX postion to [X start]
-	JR NC, .platformsLoopEnd					; Jump if #jetX > [X start]
+	JR C, .falling								; Jump if #jetX < [X start], meaning Jetman is falling from the left side of the platform
 
-	; Jetman is on the current platform level after it's begun, we have to check if he is not too far to the right
 	CP E
-	JR C, .platformsLoopEnd						; Jump if #jetX < [X end]
-
-	; Jetman is falling from the platform!
-	JR $
-	;CALL JetmanLanding
-	RET
+	JR NC, .falling								; Jump if #jetX > [X end], meaning Jetman is falling from the right side of the platform
 
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
+	RET											; Jetman is still on the platform
+
+.falling										; Jetman is falling from the platform!
+
+	; Jemans is falling, trigger ransition: walking -> falling
+	LD A, JET_SDB_T_WL
+	CALL ChangeJetmanSpritePattern
+
+	; Update #jetAir as we are flaying 
+	LD A, JET_AIR_FLY						
+	LD (jetAir), A
+
+	; Reset #jetGnd as we are not walking anymore
+	LD A, JET_GND_INACTIVE						
+	LD (jetGnd), A	
 
 	RET											; END HandleFallingFromPlatform
 
