@@ -58,7 +58,7 @@ JET_SDB_FLY				= 201					; Jetman is flaying
 JET_SDB_WALK			= 202					; Jetman is walking
 JET_SDB_WALK_ST			= 203					; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
 JET_SDB_HOVER			= 204					; Jetman hovers
-JET_SDB_STAND			= 205					; Jetman stands in place with transition
+JET_SDB_STAND			= 205					; Jetman stands in place
 JET_SDB_JSTAND			= 206					; Jetman quickly stops walking
 
 JET_SDB_T_WF			= 220					; Transition: walking -> flaying
@@ -78,17 +78,46 @@ JET_SDB_FRAME_SIZE		= 2
 ;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
 ; 	
 ;	DB [ID], [SIZE], [OFF_NX], [[FRAME_UP],[FRAME_LW] ,...], 
-jetSpriteDB	
-	DB JET_SDB_FLY,		JET_SDB_FLY 	- JET_SDB_SUB,	40, 00,12, 00,13, 01,14, 01,15, 02,12, 02,13, 03,14, 03,15, 04,12, 04,13, 05,14, 05,15, 03,12, 03,13, 04,14, 04,15, 05,12, 05,13, 03,14, 03,15 
-	DB JET_SDB_WALK_ST,	JET_SDB_WALK 	- JET_SDB_SUB, 	02, 00,09
-	DB JET_SDB_WALK, 	JET_SDB_WALK 	- JET_SDB_SUB,	42, 00,09, 00,10, 01,11, 01,09, 02,10, 02,11, 03,09, 03,10, 04,11, 04,09, 05,10, 05,11, 03,09, 03,10, 04,11, 04,09, 05,10, 05,11, 03,09, 03,10, 04,11 
-	DB JET_SDB_HOVER,	JET_SDB_HOVER 	- JET_SDB_SUB, 	40, 00,12, 00,13, 01,14, 01,15, 02,12, 02,13, 03,14, 03,15, 04,12, 04,13, 05,14, 05,15, 03,12, 03,13, 04,14, 04,15, 05,12, 05,13, 03,14, 03,15 
-	DB JET_SDB_T_WF,	JET_SDB_FLY 	- JET_SDB_SUB, 	08, 03,18, 04,18, 05,19, 03,19
-	DB JET_SDB_T_FW, 	JET_SDB_WALK	- JET_SDB_SUB,	08, 03,16, 04,16, 05,17, 03,17
-	DB JET_SDB_T_WL,	JET_SDB_FLY		- JET_SDB_SUB, 	08, 03,16, 04,16, 05,17, 03,17
-	DB JET_SDB_STAND,	JET_SDB_STAND	- JET_SDB_SUB, 	40, 00,08, 00,08, 01,08, 01,11, 02,11, 02,11, 03,11, 03,08, 04,08, 04,08, 05,08, 05,08, 03,11, 03,11, 04,11, 04,11, 05,11, 05,11, 03,11, 03,11 
-	DB JET_SDB_JSTAND,	JET_SDB_JSTAND	- JET_SDB_SUB, 	02, 00,08
+;
+; Jetman sprite frames:
+;   - 00-03: top, breathe 
+;   - 03-05: top, no breathe
+;   - 06-11: low, walk
+;   - 12-17: low, fly
+;   - 18-21: low, hover
+;   - 22-25: low, walk -> fly
+;   - 26-29: low, fly -> walk
+;   - 30-33: low, walk -> fall
+;   - 34-37: low, stand
+jetSpriteDB
+	; Jetman is flaying
+	DB JET_SDB_FLY,		JET_SDB_FLY 	- JET_SDB_SUB,	48, 00,12, 00,13, 01,14, 01,15, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17
 
+	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
+	DB JET_SDB_WALK_ST,	JET_SDB_WALK 	- JET_SDB_SUB, 	02, 00,07
+
+	; Jetman is walking
+	DB JET_SDB_WALK, 	JET_SDB_WALK 	- JET_SDB_SUB,	48, 00,06, 00,07, 01,08, 01,09, 02,10, 02,11, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11
+
+	; Jetman hovers
+	DB JET_SDB_HOVER,	JET_SDB_HOVER 	- JET_SDB_SUB, 	48, 00,18, 00,19, 01,20, 01,21, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17
+
+	; Transition: walking -> flaying
+	DB JET_SDB_T_WF,	JET_SDB_FLY 	- JET_SDB_SUB, 	08, 03,22, 04,23, 05,24, 03,25
+
+	; Transition: flaying -> walking
+	DB JET_SDB_T_FW, 	JET_SDB_WALK	- JET_SDB_SUB,	08, 03,26, 04,27, 05,28, 03,29
+
+	; Transition: walking -> falling
+	DB JET_SDB_T_WL,	JET_SDB_FLY		- JET_SDB_SUB, 	08, 03,30, 04,31, 05,32, 03,33
+
+	; Jetman stands in place
+	DB JET_SDB_STAND,	JET_SDB_STAND	- JET_SDB_SUB, 	48, 00,34, 00,35, 01,36, 01,37, 02,34, 02,35, 03,36, 03,37, 04,34, 04,35, 05,36, 05,37, 03,34, 03,35, 04,36, 04,37, 05,34, 05,35, 03,36, 03,37, 04,34, 04,35, 05,36, 05,37
+
+	; Jetman stands on the ground for a very short time
+	DB JET_SDB_JSTAND,	JET_SDB_JSTAND	- JET_SDB_SUB, 	02, 00,36
+
+; 	48, 00,xx, 00,xx, 01,xx, 01,xx, 02,xx, 02,xx, 03,xx, 03,xx, 04,xx, 04,xx, 05,xx, 05,xx, 03,xx, 03,xx, 04,xx, 04,xx, 05,xx, 05,xx, 03,xx, 03,xx, 04,xx, 04,xx, 05,xx, 05,xx
 jetSpriteDBIdx			WORD 0					; Current position in DB
 jetSpriteDBRemain		BYTE 0					; Amount of bytes that have to be still processed from the current record
 jetSprDBNextID			BYTE JET_SDB_FLY		; ID in #jetSpriteDB for next animation/DB record						
