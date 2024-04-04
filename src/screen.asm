@@ -9,7 +9,7 @@ DI_Y_MAX_POS			= 240
 ;----------------------------------------------------------;
 ;                     #SetupScreen                         ;
 ;----------------------------------------------------------;
-SetupScreen:
+SetupScreen
 
 	; Sprite and Layers system
 	; Bits:
@@ -36,7 +36,7 @@ SetupScreen:
 ; 
 ; Based on: https://github.com/robgmoran/DougieDoSource
 
-WaitOneFrame:     
+WaitOneFrame     
 ; Read NextReg $1F - LSB of current raster line
 	LD BC, GL_REG_SELECT_H243B					; TBBlue Register Select
 	LD A, GL_REG_VL_H1F							; Port to access - Active Video Line LSB Register
@@ -46,7 +46,7 @@ WaitOneFrame:
 	LD D, A
 
 ; Wait for Scanline given by param H, i.e. 192
-.waitForScanline:
+.waitForScanline
 	IN A, (C)									; Read the raster line LSB into A
 	CP D
 	JR Z, .waitForScanline						; Keep looping until Scanline changes from given to next, 192->193
@@ -54,7 +54,7 @@ WaitOneFrame:
 ; Now we are past 192 -> on 193
 
 ; Wait the whole frame again for given Scanline (192)
-.waitAgainForScanline:
+.waitAgainForScanline
 	IN A, (C)									; Read the raster line LSB into A
 	CP D
 	JR NZ, .waitAgainForScanline

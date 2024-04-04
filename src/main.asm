@@ -1,7 +1,7 @@
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
 	ORG RAM_SLOT_4_START_H8000
 
-start:
+start
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
 	NEXTREG GL_REG_TURBO_H07, %00000011    		; Switch to 28MHz
@@ -14,8 +14,7 @@ vv BYTE  0
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
-mainLoop:	
-
+mainLoop	
 	CALL GameLoop
 	JR mainLoop
 

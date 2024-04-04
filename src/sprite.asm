@@ -6,7 +6,7 @@
 ; Method Parameters:
 ;    - HL - RAM address containing sprite binary data.
 ;    - BC - Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
-LoadSpritesFPGA:
+LoadSpritesFPGA
 	; Store dynamic values into DMA program
 	LD (spriteDMAPortA), HL						; Copy sprite sheet address from HL
 	LD (spriteDMADataLength), BC				; Copy sprite file lenght into WR0
@@ -34,7 +34,7 @@ LoadSpritesFPGA:
 ; Finally OTIR uploads the DMA program to memory through port $xx6B, and it executes.
 ;
 ; More Info: https://wiki.specnext.dev/DMA
-spriteDMAProgram:
+spriteDMAProgram
 	DB %1'00000'11								; WR6: Disable DMA (last command will re-enable it)
 
 	; WR0 - Direction, Operation, Port A Configuration:
@@ -44,10 +44,10 @@ spriteDMAProgram:
 	; DW0 consists of 4 bytes: DW0 -> A address -> data length (LSB) -> data lenght (MSB)
 	DB %0'11111'01
 
-spriteDMAPortA:
+spriteDMAPortA
 	DW 0										; WR0 parameter pointing to RAM containing sprite data
 
-spriteDMADataLength:										
+spriteDMADataLength										
 	DW 0										; WR0 parameter defining a amount of bytes for sprite data
 
 	; WR1 - Port A configuration.
@@ -84,7 +84,7 @@ spriteDMAProgramLength = $ - spriteDMAProgram
 ANIM_FR				= 5							; Change sprite pattern every few frames     
 frameCnt			BYTE 0						; The animation counter is used to update the sprite pattern every few FP
 
-AnimateSprites:
+AnimateSprites
 	LD A, (frameCnt)
 	INC A
 	LD (frameCnt), A							

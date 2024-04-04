@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                   #HandleJoystickInput                   ;
 ;----------------------------------------------------------;
-HandleJoystickInput:
+HandleJoystickInput
 	CALL JoyStart
 	
 	; Key Up pressed ?

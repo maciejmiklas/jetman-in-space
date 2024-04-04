@@ -50,7 +50,7 @@ PrintText
 ;----------------------------------------------------------;
 ;                        #LoadTiles                        ;
 ;----------------------------------------------------------;
-LoadTiles:
+LoadTiles
     ; Enable tilemap mode
     NEXTREG $6B, %10000001                      ; 40x32, 16-bit entries = 320x256
     NEXTREG $6C, %00000000                      ; palette offset, visuals
@@ -67,7 +67,7 @@ LoadTiles:
     ; Copy palette
     LD HL, tilePaletteBin                       ; Address of palette data in memory
     LD B, tilePaletteBinLength                  ; Number of colours to copy
-.copyPalette:
+.copyPalette
     LD A, (HL)                                  ; Load RRRGGGBB into A
     INC HL                                      ; Increment to next entry
     NEXTREG $41, A                              ; Send entry to Next HW

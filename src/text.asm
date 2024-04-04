@@ -22,7 +22,7 @@ PrintNumHL
 
 	RET
 
-formatted16:
+formatted16
 	DB "00000"									; Contains a number formatted into a string
 
 ;----------------------------------------------------------;
