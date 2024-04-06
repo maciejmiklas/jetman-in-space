@@ -4,7 +4,7 @@
 jetX					WORD 100				; 0-320px
 jetY 					BYTE 100				; 0-256px
 
-; ### Possible move directions #####
+; Possible move directions##
 JET_MOVE_INACTIVE		= 0						; No movement
 
 JET_MOVE_LEFT_BIT		= 0						; Bit 0 - Jetman moving left
@@ -29,14 +29,18 @@ jetDirection 		BYTE JET_MOVE_INACTIVE		; Jetman initially hovers, no movement
 ; Holds currently pressed direction button. State will be reset right on the beginnig of each joysting loop.
 jetMove 			BYTE JET_MOVE_INACTIVE
 
-; ### States for Jetmain in the air, 0 for not in the air ###
+; States for Jetmain in the air, 0 for not in the air
 JET_AIR_INACTIVE		= 0						; Jetman is not in the air
 JET_AIR_FLY				= 1						; Jetman is flaying
 JET_AIR_HOOVER			= 2						; Jetman is hovering
+JET_AIR_FALL_RIGHT		= 3						; Jetmal falls from paltform on the right
+JET_AIR_FALL_LEFT		= 4						; Jetmal falls from paltform on the left
+
+JET_FALL_JOY_DISABLE	= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
 
 jetAir					BYTE JET_AIR_FLY		; Jetman initially hovers, no movement
 
-; ### States for Jetman on the platform/ground ###
+; States for Jetman on the platform/ground
 JET_GND_INACTIVE		= 0						; Jetman is not on ground
 JET_GND_WALK			= 1						; Jetman walks on the ground
 JET_GND_JSTAND			= 3						; Jetman stands on the ground for a very short time, not enougt to switch to #JET_GND_STAND
@@ -44,13 +48,13 @@ JET_GND_STAND			= 4						; Jetman stands on the ground
 
 jetGnd					BYTE JET_GND_INACTIVE	; Jetman initially hovers, no movement
 
-; ### Hovering/Standing ###
+; Hovering/Standing
 jetInactivityCnt		BYTE 0					; The counter increases with each frame when no up/down is pressed. 
 												; When it reaches #JET_HOVER_START, Jetman will start hovering
 JET_HOVER_START			= 40
 JET_STAND_START			= 30
 
-; ### Sprites ###
+; Sprites
 
 ; IDs for #jetSpriteDB
 JET_SDB_FLY				= 201					; Jetman is flaying
@@ -113,7 +117,7 @@ jetSpriteDB
 														 DB 04,34, 05,35, 05,36
 
 	; Jetman stands on the ground for a very short time
-	DB JET_SDB_JSTAND,	JET_SDB_JSTAND	- JET_SDB_SUB, 	02, 03,36
+	DB JET_SDB_JSTAND,	JET_SDB_STAND	- JET_SDB_SUB, 	02, 03,36
 
 	; Transition: walking -> flaying
 	DB JET_SDB_T_WF,	JET_SDB_FLY 	- JET_SDB_SUB, 	08, 03,22, 04,23, 05,24, 03,25
@@ -128,19 +132,19 @@ jetSpriteDBIdx			WORD 0					; Current position in DB
 jetSpriteDBRemain		BYTE 0					; Amount of bytes that have to be still processed from the current record
 jetSprDBNextID			BYTE JET_SDB_FLY		; ID in #jetSpriteDB for next animation/DB record						
 
-JET_SPRITE_UP_ID		= $0					; ID of Jetman upper sprite
+JET_SPRITE_UP_ID		= 0						; ID of Jetman upper sprite
 
 ; bit 7 = Visible flag (1 = displayed)
 ; bits 5-0 = Pattern used by sprite (0-63), we will use pattern 0
 JET_SPRITE_PAT			= %10000000
 
-JET_SPRITE_LW_ID		= $1					; ID of Jetman lower sprite
+JET_SPRITE_LW_ID		= 1						; ID of Jetman lower sprite
 
-; ### Misc ###
+; Misc
 GROUND_LEVEL			= 230					; The lowest walking platform.
 
 ; [amount of plaftorms], [[Y], [X start], [X end]],...,[[Y], [X start], [X end]]
-platforms DB 3, 94,6,50, 142,76,121, 54,196,255
+platforms DB 3, 94,6,65, 142,85,128, 54,196,245
 	
 ;----------------------------------------------------------;
 ;                  #IntiJetmanSprite                       ;
@@ -157,6 +161,56 @@ IntiJetmanSprite
 ;               #UpdateJetmanSpritePosition                ;
 ;----------------------------------------------------------;
 UpdateJetmanSpritePosition	
+
+	; Handle disabled joystick
+	LD A, (joystickDisabledCnt)
+	CP 0
+	JR Z, .afterjoystickDisabled				; Jump if joystick is disabled -> #joystickDisabledCnt == 0
+
+	; Joystick is disabled
+
+	; Is Jetman falling from the platform on the right side?
+	LD A, (jetAir)
+	CP JET_AIR_FALL_RIGHT
+	JR NZ, .afterFallingRight
+
+	; Yes, Jetman is falling from the platform
+	LD A, (jetX)
+	INC A
+	LD (jetX), A
+
+	LD A, (jetY)
+	INC A
+	INC A
+	LD (jetY), A
+
+	JR .afterFallingLeft						; Do not check left because Jetman is already on the right side
+.afterFallingRight	
+
+	; Is Jetman falling from the platform on the left side?
+	LD A, (jetAir)
+	CP JET_AIR_FALL_LEFT
+	JR NZ, .afterFallingLeft
+
+	; Yes, Jetman is falling from the platform
+	LD A, (jetX)
+	DEC A
+	LD (jetX), A
+
+	LD A, (jetY)
+	INC A
+	INC A
+	LD (jetY), A
+.afterFallingLeft	
+
+	; Reset the #jetAir on the last frame of the disabled joystick
+	CP 1
+	JR NZ, .afterjoystickDisabled				; Jump if it's not the last frame
+	LD A, JET_AIR_FLY
+	LD (jetAir), A
+
+.afterjoystickDisabled
+	
 	; Move Jetman Sprite to the current X position, the 9-bit value r=ires a few tricks. 
 	LD BC, (jetX)								
 	LD A, C			
@@ -199,6 +253,31 @@ UpdateJetmanSpritePosition
 	ADD 16										; Lower part is 16px below upper					
 	NEXTREG SPR_REG_Y_H36, A					; Set Y position
 
+	; PRINT START
+	LD B, 0
+	LD H, 0
+	LD HL, (jetX)
+	CALL PrintNumHL
+
+	LD B, 10
+	LD H, 0
+	LD A,  (jetY)
+	LD L, A
+	CALL PrintNumHL		
+
+	LD B, 20
+	LD H, 0
+	LD A, (jetAir)
+	LD L, A
+	CALL PrintNumHL	
+
+	LD B, 30
+	LD H, 0
+	LD A, (jetGnd)
+	LD L, A
+	CALL PrintNumHL		
+	; PRINT END
+
 	RET											; END UpdateJetmanSpritePosition
 ;----------------------------------------------------------;
 ;              #ChangeJetmanSpritePattern                  ;
@@ -225,7 +304,7 @@ UpdateJetmanSpritePattern
 	CP 0
 	JR NZ, .afterRecordChange					; Jump if there are still bytes to be processed
 	
-	; ### Load new record ###
+	; Load new record
 	LD HL, jetSpriteDB							; HL points to the beginning of the DB
 	LD A, (jetSprDBNextID)						; CPIR will keep increasing HL until it finds record ID from A
 	LD BC, 0									; Do not limit CPIR search
@@ -275,14 +354,14 @@ UpdateJetmanSpritePattern
 ;----------------------------------------------------------;
 JoyMoveUp
 
-	; ### Update temp state ###
+	; Update temp state
 	LD A, (jetMove)
 	SET JET_MOVE_UP_BIT, A	
 	LD (jetMove), A
 
 	CALL JetmanMoves							
 
-	; ### Decrement Y position ###
+	; Decrement Y position
 	LD A, (jetY)	
 	CP DI_Y_MIN_POS 							; Do not decrement if Jetman has reached the top of the screen.
 	JR Z, .afterDec
@@ -290,7 +369,7 @@ JoyMoveUp
 	LD (jetY), A
 .afterDec	
 
-	; ### Direction change: down -> up ###
+	; Direction change: down -> up
 	LD A, (jetDirection)
 	AND JET_MOVE_UP_BM							; Are we moving Up already?
 	CP JET_MOVE_UP_BM
@@ -303,7 +382,7 @@ JoyMoveUp
 	LD (jetDirection), A
 .afterDirectionChange
 
-	; ### Transition from walking to flaying ###
+	; Transition from walking to flaying
 	LD A, (jetGnd)
 	CP JET_GND_INACTIVE							; Check if Jetnan is on the ground/platform
 	CALL NZ, JetmanTakesoff
@@ -324,19 +403,19 @@ JetmanTakesoff
 	RET											; END #JetmanTakesoff
 
 JoyMoveDown
-	; ### Cannot move down when walking ###
+	; Cannot move down when walking
 	LD A, (jetGnd)
 	CP JET_GND_INACTIVE
 	RET NZ	
 
-	; ### Update temp state ###
+	; Update temp state
 	LD A, (jetMove)
 	SET JET_MOVE_DOWN_BIT, A	
 	LD (jetMove), A
 
 	CALL JetmanMoves						
 
-	; ### Increment Y position ####
+	; Increment Y position#
 	LD A, (jetY)
 	CP GROUND_LEVEL								; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
@@ -345,12 +424,12 @@ JoyMoveDown
 	INC A
 	LD (jetY), A
 
-	; ### Landing on the ground ###
+	; Landing on the ground
 	CP GROUND_LEVEL
 	CALL Z, JetmanLanding						; Execute landing on the ground if Jetman has reached the ground.
-	CALL HandleLandingOnPlatform					; Or should he land on one of the platforms?
+	CALL HandleLandingOnPlatform				; Or should he land on one of the platforms?
 
-	; ### Direction change?  ###
+	; Direction change? 
 	LD A, (jetDirection)
 	AND JET_MOVE_DOWN_BM						; Are we moving down already?
 	CP JET_MOVE_DOWN_BM
@@ -447,33 +526,43 @@ HandleFallingFromPlatform
 	; Jetman is on Y of the current platform, now check X
 	LD A, (jetX)								; A holds current X position
 	CP D										; Compare #jetX postion to [X start]
-	JR C, .falling								; Jump if #jetX < [X start], meaning Jetman is falling from the left side of the platform
+	JR C, .fallingLeft							; Jump if #jetX < [X start], meaning Jetman is falling from the left side of the platform
 
 	CP E
-	JR NC, .falling								; Jump if #jetX > [X end], meaning Jetman is falling from the right side of the platform
+	JR NC, .fallingRight						; Jump if #jetX > [X end], meaning Jetman is falling from the right side of the platform
 
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET											; Jetman is still on the platform
+	JR .afterFalling							; Jetman is still on the platform
 
-.falling										; Jetman is falling from the platform!
+; Jetman is falling from the platform, left or right
+.fallingLeft									
+	LD A, JET_AIR_FALL_LEFT						
+	LD (jetAir), A
+	JR .afterFallingRight
 
-	; Jemans is falling, trigger ransition: walking -> falling
+.fallingRight
+	LD A, JET_AIR_FALL_RIGHT						
+	LD (jetAir), A
+
+.afterFallingRight
+	; Trigger ransition: walking -> falling
 	LD A, JET_SDB_T_WL
 	CALL ChangeJetmanSpritePattern
 
-	; Update #jetAir as we are flaying 
-	LD A, JET_AIR_FLY						
-	LD (jetAir), A
-
+	; Disable joystick, because Jetman looses control for #JET_FALL_JOY_DISABLE frames
+	LD A, JET_FALL_JOY_DISABLE						
+	LD (joystickDisabledCnt), A
+	
 	; Reset #jetGnd as we are not walking anymore
 	LD A, JET_GND_INACTIVE						
 	LD (jetGnd), A	
 
+.afterFalling
 	RET											; END HandleFallingFromPlatform
 
 JoyMoveRight
-	; ### Update temp state ###
+	; Update temp state
 	LD A, (jetMove)
 	SET JET_MOVE_RIGHT_BIT, A	
 	LD (jetMove), A
@@ -481,7 +570,7 @@ JoyMoveRight
 	CALL JetmanMoves						
 	CALL WalkToStand
 
-	; ### Increment X position ###
+	; Increment X position
 	LD BC, (jetX)	
 	INC BC
 
@@ -497,7 +586,7 @@ JoyMoveRight
 .lessThanMaxX
 	LD (jetX), BC								; Update new X postion
 
-	; ##### Direction change: left -> right #####
+	; ##Direction change: left -> right##
 	LD A, (jetDirection)
 	AND JET_MOVE_RIGHT_BM						; Are we moving right already?
 	CP JET_MOVE_RIGHT_BM
@@ -523,7 +612,7 @@ JoyMoveLeft
 	CALL JetmanMoves	
 	CALL WalkToStand					
 
-	; ### Decrement X position ###
+	; Decrement X position
 	LD BC, (jetX)	
 	DEC BC
 
@@ -539,7 +628,7 @@ JoyMoveLeft
 .afterResetX
 	LD (jetX), BC
 
-	; ##### Direction change: right -> left #####
+	; ##Direction change: right -> left##
 	LD A, (jetDirection)
 	AND JET_MOVE_LEFT_BM						; Are we moving left already?
 	CP JET_MOVE_LEFT_BM
@@ -576,11 +665,11 @@ WalkToStand
 ; Method gets called on any movement, but not fire pressed
 JetmanMoves
 
-	; #### Reset hover counter as we have movement ####
+	; #Reset hover counter as we have movement#
 	LD A, 0
 	LD (jetInactivityCnt), A
 
-	; #### Transition from hovering to flying? ####
+	; #Transition from hovering to flying?#
 	LD A, (jetAir)
 	CP JET_AIR_HOOVER							; Is Jemtman hovering?			
 	JR NZ, .afterHovering						; Jump if not hovering
@@ -604,7 +693,7 @@ JoyStart
 
 JoyEnd											; After input processing, #JoyEnd gets executed as the last procedure. 
 
-	; #### Jetman inactivity ####
+	; #Jetman inactivity#
 	LD A, (jetMove)
 	CP JET_MOVE_INACTIVE
 	JR NZ, .afterInactivity						; Jump to the end if there is a movement
@@ -613,7 +702,7 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	INC A
 	LD (jetInactivityCnt), A
 
-	; ### Should Jetman hover? ###
+	; Should Jetman hover?
 	LD A, (jetAir)
 	CP JET_AIR_INACTIVE							; Is Jemtan in the air already?
 	JR Z, .afterHoover							; Jump if not flaying
@@ -635,7 +724,7 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	JR .afterInactivity							; Alerady hovering, do not check standing	
 .afterHoover
 
-	; ### Jetman is not hovering, but should he stand? ####
+	; Jetman is not hovering, but should he stand?#
 	LD A, (jetGnd)
 	CP JET_AIR_INACTIVE							; Is Jemtan on the ground already?
 	JR Z, .afterInactivity						; Jump if not on the ground
@@ -673,32 +762,6 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	CALL ChangeJetmanSpritePattern
 
 .afterInactivity
-
-	; PRINT START
-	LD B, 0
-	LD H, 0
-	LD HL, (jetX)
-	CALL PrintNumHL
-
-	LD B, 10
-	LD H, 0
-	LD A,  (jetY)
-	LD L, A
-	CALL PrintNumHL		
-
-	LD B, 20
-	LD H, 0
-	LD A, (jetAir)
-	LD L, A
-	CALL PrintNumHL	
-
-	LD B, 30
-	LD H, 0
-	LD A, (jetGnd)
-	LD L, A
-	CALL PrintNumHL		
-
-	; PRINT END
 
 	RET											; END #JoyEnd
 

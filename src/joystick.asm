@@ -1,7 +1,24 @@
 ;----------------------------------------------------------;
 ;                   #HandleJoystickInput                   ;
 ;----------------------------------------------------------;
+
+; The counter turns off the joystick for a few iterations. Each call #HandleJoystickInput decreases it by one. 
+; It's used for effects like bumping from the platform's edge or falling.
+joystickDisabledCnt		BYTE 0
+
 HandleJoystickInput
+
+	; Handle disabled joystick
+	LD A, (joystickDisabledCnt)
+	CP 0
+	JR Z, .afterjoystickDisabled				; Jump if joystick is not disabled -> #joystickDisabledCnt > 0
+
+	; Joystick is disabled
+	DEC A										; Decrement disabled counter
+	LD (joystickDisabledCnt), A
+	RET											; Do not process input, as joystick is disabled
+.afterjoystickDisabled	
+
 	CALL JoyStart
 	
 	; Key Up pressed ?
