@@ -79,7 +79,7 @@ JET_SDB_FRAME_SIZE		= 2
 ;	DB [ID], [SIZE], [OFF_NX], [[FRAME_UP],[FRAME_LW] ,...], 
 ;
 ; Jetman sprite frames:
-;   - 00-03: top, breathe 
+;   - 00-02: top, breathe 
 ;   - 03-05: top, no breathe
 ;   - 06-11: low, walk
 ;   - 12-17: low, fly
@@ -90,16 +90,30 @@ JET_SDB_FRAME_SIZE		= 2
 ;   - 34-37: low, stand
 jetSpriteDB
 	; Jetman is flaying
-	DB JET_SDB_FLY,		JET_SDB_FLY 	- JET_SDB_SUB,	48, 00,12, 00,13, 01,14, 01,15, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17
-
-	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
-	DB JET_SDB_WALK_ST,	JET_SDB_WALK 	- JET_SDB_SUB, 	02, 00,07
-
-	; Jetman is walking
-	DB JET_SDB_WALK, 	JET_SDB_WALK 	- JET_SDB_SUB,	48, 00,06, 00,07, 01,08, 01,09, 02,10, 02,11, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11
+	DB JET_SDB_FLY,		JET_SDB_FLY 	- JET_SDB_SUB,	48, 00,12, 00,13, 01,14, 01,15, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15
+														 DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
+														 DB 04,14, 04,15, 05,16, 05,17
 
 	; Jetman hovers
-	DB JET_SDB_HOVER,	JET_SDB_HOVER 	- JET_SDB_SUB, 	48, 00,18, 00,19, 01,20, 01,21, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17
+	DB JET_SDB_HOVER,	JET_SDB_HOVER 	- JET_SDB_SUB, 	48, 00,18, 00,19, 01,20, 01,21, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15 
+														 DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
+														 DB 04,14, 04,15, 05,16, 05,17
+
+	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
+	DB JET_SDB_WALK_ST,	JET_SDB_WALK 	- JET_SDB_SUB, 	02, 03,07
+
+	; Jetman is walking
+	DB JET_SDB_WALK, 	JET_SDB_WALK 	- JET_SDB_SUB,	48, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11, 03,06, 03,07, 04,08, 04,09
+														 DB 05,10, 05,11, 00,06, 00,07, 01,08, 01,09, 02,10, 02,11, 03,06, 03,07 
+														 DB 04,08, 04,09, 05,10, 05,11
+
+	; Jetman stands in place
+	DB JET_SDB_STAND,	JET_SDB_STAND	- JET_SDB_SUB, 	46, 03,34, 03,35, 04,36, 04,37, 05,34, 05,35, 03,36, 03,37, 04,34, 04,35
+														 DB 05,36, 05,37, 00,34, 00,35, 01,36, 01,37, 02,34, 02,35, 03,36, 03,37
+														 DB 04,34, 05,35, 05,36
+
+	; Jetman stands on the ground for a very short time
+	DB JET_SDB_JSTAND,	JET_SDB_JSTAND	- JET_SDB_SUB, 	02, 03,36
 
 	; Transition: walking -> flaying
 	DB JET_SDB_T_WF,	JET_SDB_FLY 	- JET_SDB_SUB, 	08, 03,22, 04,23, 05,24, 03,25
@@ -109,12 +123,6 @@ jetSpriteDB
 
 	; Transition: walking -> falling
 	DB JET_SDB_T_WL,	JET_SDB_FLY		- JET_SDB_SUB, 	08, 03,30, 04,31, 05,32, 03,33
-
-	; Jetman stands in place
-	DB JET_SDB_STAND,	JET_SDB_STAND	- JET_SDB_SUB, 	48, 00,34, 00,35, 01,36, 01,37, 02,34, 02,35, 03,36, 03,37, 04,34, 04,35, 05,36, 05,37, 03,34, 03,35, 04,36, 04,37, 05,34, 05,35, 03,36, 03,37, 04,34, 04,35, 05,36, 05,37
-
-	; Jetman stands on the ground for a very short time
-	DB JET_SDB_JSTAND,	JET_SDB_JSTAND	- JET_SDB_SUB, 	02, 00,36
 
 jetSpriteDBIdx			WORD 0					; Current position in DB
 jetSpriteDBRemain		BYTE 0					; Amount of bytes that have to be still processed from the current record
