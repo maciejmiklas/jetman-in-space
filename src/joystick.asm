@@ -21,30 +21,6 @@ HandleJoystickInput
 
 	CALL JoyStart
 	
-	; Key Up pressed ?
-	LD A, KB_6_TO_0_HEF							; $EF -> A (6...0)
-	IN A, (KB_REG_HFE) 							; Read keyboard input into A
-	BIT 3, A									; Bit 3 reset -> Up pessed
-	CALL Z, JoyMoveUp	
-
-	; Joystick up pressed ?
-	LD A, JOY_MASK_H20							; Activete joystick register
-	IN A, (JOY_REG_H1F) 						; Read joystick input into A
-	BIT 3, A									; Bit 3 set -> Up pessed
-	CALL NZ, JoyMoveUp
-
-	; Key Down pressed ?
-	LD A, KB_6_TO_0_HEF							; $EF -> A (6...0)
-	IN A, (KB_REG_HFE) 							; Read keyboard input into A
-	BIT 4, A									; Bit 4 reset -> Down pessed
-	CALL Z, JoyMoveDown				
-
-	; Joystick down pressed ?
-	LD A, JOY_MASK_H20							; Activete joystick register
-	IN A, (JOY_REG_H1F) 						; Read joystick input into A
-	BIT 2, A									; Bit 2 set -> Down pessed
-	CALL NZ, JoyMoveDown
-
 	; Key Rright pressed ?
 	LD A, KB_6_TO_0_HEF							; $EF -> A (6...0)
 	IN A, (KB_REG_HFE) 							; Read keyboard input into A
@@ -68,6 +44,30 @@ HandleJoystickInput
 	IN A, (JOY_REG_H1F) 						; Read joystick input into A
 	BIT 1, A									; Bit 1 set -> Left pessed
 	CALL NZ, JoyMoveLeft
+
+	; Key Up pressed ?
+	LD A, KB_6_TO_0_HEF							; $EF -> A (6...0)
+	IN A, (KB_REG_HFE) 							; Read keyboard input into A
+	BIT 3, A									; Bit 3 reset -> Up pessed
+	CALL Z, JoyMoveUp	
+
+	; Joystick up pressed ?
+	LD A, JOY_MASK_H20							; Activete joystick register
+	IN A, (JOY_REG_H1F) 						; Read joystick input into A
+	BIT 3, A									; Bit 3 set -> Up pessed
+	CALL NZ, JoyMoveUp
+
+	; Key Down pressed ?
+	LD A, KB_6_TO_0_HEF							; $EF -> A (6...0)
+	IN A, (KB_REG_HFE) 							; Read keyboard input into A
+	BIT 4, A									; Bit 4 reset -> Down pessed
+	CALL Z, JoyMoveDown				
+
+	; Joystick down pressed ?
+	LD A, JOY_MASK_H20							; Activete joystick register
+	IN A, (JOY_REG_H1F) 						; Read joystick input into A
+	BIT 2, A									; Bit 2 set -> Down pessed
+	CALL NZ, JoyMoveDown
 
 	; Key Fire (Z) pressed ?
 	LD A, KB_V_TO_Z_HFE							; $FD -> A (5...1)
