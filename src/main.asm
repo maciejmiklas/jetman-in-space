@@ -26,6 +26,8 @@ mainLoop
 	INCLUDE "screen.asm"
 	INCLUDE "joystick.asm"
 	INCLUDE "jetman.asm"
+	INCLUDE "jetman_sprite.asm"
+	INCLUDE "jetman_platform.asm"
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"
 	INCLUDE "text.asm"

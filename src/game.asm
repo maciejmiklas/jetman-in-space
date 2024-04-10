@@ -9,8 +9,9 @@ GameInit
 ;----------------------------------------------------------;
 GameLoop	
 	CALL WaitOneFrame
-	CALL HandleJoystickInput
+	CALL JoystickInput
 	CALL UpdateJetmanSpritePosition
+	CALL JoystickDisabled
 	CALL AnimateSprites
 	
 	RET
