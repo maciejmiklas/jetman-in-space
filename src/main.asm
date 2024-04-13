@@ -1,13 +1,13 @@
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
-	ORG RAM_SLOT_4_START_H8000
+	ORG _RAM_SLOT_4_START_H8000
 
 start
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
-	NEXTREG GL_REG_TURBO_H07, %00000011    		; Switch to 28MHz
+	NEXTREG _GL_REG_TURBO_H07, %00000011    		; Switch to 28MHz
 			
-	INCLUDE "data_load.asm"
-	CALL SetupScreen
+	INCLUDE "dl_data_load.asm"
+	CALL ScSetupScreen
 	CALL GameInit
 
 vv BYTE  0
@@ -21,20 +21,20 @@ mainLoop
 ;----------------------------------------------------------;
 ;                       Includes                           ;
 ;----------------------------------------------------------;
-	INCLUDE "_zx_next_constants.asm"
-	INCLUDE "sprite.asm"
-	INCLUDE "screen.asm"
-	INCLUDE "joystick.asm"
-	INCLUDE "jetman.asm"
-	INCLUDE "jetman_sprite.asm"
-	INCLUDE "jetman_platform.asm"
+	INCLUDE "_constants.asm"
+	INCLUDE "sp_sprite.asm"
+	INCLUDE "sc_screen.asm"
+	INCLUDE "jo_jetman_joystick.asm"
+	INCLUDE "jt_jetman.asm"
+	INCLUDE "js_jetman_sprite.asm"
+	INCLUDE "jp_jetman_platform.asm"
 	INCLUDE "enemies.asm"
 	INCLUDE "game.asm"
-	INCLUDE "text.asm"
-	INCLUDE "tiles.asm"
+	INCLUDE "tx_text.asm"
+	INCLUDE "ti_tiles.asm"
 
 	; LAST import due to bank offset!
-	INCLUDE "data_bin.asm"
+	INCLUDE "di_data_bin.asm"
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;

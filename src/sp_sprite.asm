@@ -1,20 +1,20 @@
 ;----------------------------------------------------------;
-;                     #LoadSpritesFPGA                     ;
+;                     #SpLoadSpritesFPGA                     ;
 ;----------------------------------------------------------;
 ; Loads sprites from file into hardware using DMA.
 ;
 ; Method Parameters:
 ;    - HL - RAM address containing sprite binary data.
 ;    - BC - Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
-LoadSpritesFPGA
+SpLoadSpritesFPGA
 	; Store dynamic values into DMA program
-	LD (spriteDMAPortA), HL						; Copy sprite sheet address from HL
-	LD (spriteDMADataLength), BC				; Copy sprite file lenght into WR0
+	LD (spSpriteDMAPortA), HL						; Copy sprite sheet address from HL
+	LD (spSpriteDMADataLength), BC				; Copy sprite file lenght into WR0
 
 	; Execute DMA program
-	LD HL, spriteDMAProgram						; Setup source for OTIR
-	LD B, spriteDMAProgramLength 				; Setup length for OTIR
-	LD C, DMA_PORT_H6B							; Setup DMA port
+	LD HL, spSpriteDMAProgram						; Setup source for OTIR
+	LD B, spSpriteDMAProgramLength 				; Setup length for OTIR
+	LD C, _DMA_PORT_H6B							; Setup DMA port
 	OTIR										; Upload DMA program and execute
 
 ; DMA  is a program that executes in hardware. This program consists of a series of commands from WR0 to WR6. 
@@ -34,7 +34,7 @@ LoadSpritesFPGA
 ; Finally OTIR uploads the DMA program to memory through port $xx6B, and it executes.
 ;
 ; More Info: https://wiki.specnext.dev/DMA
-spriteDMAProgram
+spSpriteDMAProgram
 	DB %1'00000'11								; WR6: Disable DMA (last command will re-enable it)
 
 	; WR0 - Direction, Operation, Port A Configuration:
@@ -44,10 +44,10 @@ spriteDMAProgram
 	; DW0 consists of 4 bytes: DW0 -> A address -> data length (LSB) -> data lenght (MSB)
 	DB %0'11111'01
 
-spriteDMAPortA
+spSpriteDMAPortA
 	DW 0										; WR0 parameter pointing to RAM containing sprite data
 
-spriteDMADataLength										
+spSpriteDMADataLength										
 	DW 0										; WR0 parameter defining a amount of bytes for sprite data
 
 	; WR1 - Port A configuration.
@@ -74,28 +74,28 @@ spriteDMADataLength
 	DB %1'10011'11
 	DB %1'00001'11								; Again WR6, now enable DMA and copy!
 
-spriteDMAProgramLength = $ - spriteDMAProgram	
+spSpriteDMAProgramLength = $ - spSpriteDMAProgram	
 
-	RET											; END LoadSpritesFPGA
+	RET											; END SpLoadSpritesFPGA
 
 ;----------------------------------------------------------;
-;                    #AnimateSprites                       ;
+;                    #SpAnimateSprites                       ;
 ;----------------------------------------------------------;
-ANIM_FR				= 5							; Change sprite pattern every few frames     
-frameCnt			BYTE 0						; The animation counter is used to update the sprite pattern every few FP
+SP_ANIM_FR			= 5							; Change sprite pattern every few frames     
+spFrameCnt			BYTE 0						; The animation counter is used to update the sprite pattern every few FP
 
-AnimateSprites
-	LD A, (frameCnt)
+SpAnimateSprites
+	LD A, (spFrameCnt)
 	INC A
-	LD (frameCnt), A							
+	LD (spFrameCnt), A							
 
-	CP ANIM_FR								
-	RET C										; Return if #frameCnt <  #ANIM_FR
+	CP SP_ANIM_FR								
+	RET C										; Return if #spFrameCnt <  #SP_ANIM_FR
 
-	LD A, 0										; #frameCnt == #ANIM_FR -> reset counter and update the animation pattern
-	LD (frameCnt), A
+	LD A, 0										; #spFrameCnt == #SP_ANIM_FR -> reset counter and update the animation pattern
+	LD (spFrameCnt), A
 
 	; Update sprite patterns
-	CALL UpdateJetmanSpritePattern
+	CALL JsUpdateJetmanSpritePattern
 
-	RET											; END AnimateSprites	
+	RET											; END SpAnimateSprites	

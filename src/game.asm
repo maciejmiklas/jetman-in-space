@@ -2,16 +2,16 @@
 ;                      #GameInit                           ;
 ;----------------------------------------------------------;
 GameInit	
-	CALL IntiJetmanSprite
+	CALL JsIntiJetmanSprite
 	RET
 ;----------------------------------------------------------;
 ;                      #GameLoop                           ;
 ;----------------------------------------------------------;
 GameLoop	
-	CALL WaitOneFrame
-	CALL JoystickInput
-	CALL UpdateJetmanSpritePosition
-	CALL JoystickDisabled
-	CALL AnimateSprites
+	CALL ScWaitOneFrame
+	CALL JoInput
+	CALL JsUpdateJetmanSpritePosition
+	CALL JoDisabled
+	CALL SpAnimateSprites
 	
 	RET
