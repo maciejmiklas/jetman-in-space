@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                         #TxPrintNumHL                      ;
+;                        #TxPrintNumHL                     ;
 ;----------------------------------------------------------;
 ; Print 16 bit numer from HL. Each character takes 8x8 pixels
 ; Method Parameters:
@@ -26,7 +26,7 @@ formatted16
 	DB "00000"									; Contains a number formatted into a string
 
 ;----------------------------------------------------------;
-;                      #TxNum16ToString                      ;
+;                     #TxNum16ToString                     ;
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros. 
 ; Method Parameters:

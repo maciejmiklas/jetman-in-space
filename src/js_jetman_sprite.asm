@@ -1,15 +1,15 @@
 ; IDs for #jsSpriteDB
 JS_SDB_FLY				= 201					; Jetman is flaying
-JS_SDB_WALK			= 202					; Jetman is walking
+JS_SDB_WALK				= 202					; Jetman is walking
 JS_SDB_WALK_ST			= 203					; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
 JS_SDB_HOVER			= 204					; Jetman hovers
 JS_SDB_STAND			= 205					; Jetman stands in place
 JS_SDB_JSTAND			= 206					; Jetman quickly stops walking
 
-JS_SDB_T_WF			= 220					; Transition: walking -> flaying
-JS_SDB_T_FS			= 221					; Transition: flaying -> standing
-JS_SDB_T_FW			= 222					; Transition: flaying -> walking
-JS_SDB_T_WL			= 223					; Transition: walking -> falling
+JS_SDB_T_WF				= 220					; Transition: walking -> flaying
+JS_SDB_T_FS				= 221					; Transition: flaying -> standing
+JS_SDB_T_FW				= 222					; Transition: flaying -> walking
+JS_SDB_T_WL				= 223					; Transition: walking -> falling
 
 JS_SDB_SUB				= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
 JS_SDB_FRAME_SIZE		= 2
@@ -35,6 +35,8 @@ JS_SDB_FRAME_SIZE		= 2
 ;   - 26-29: low, fly -> walk
 ;   - 30-33: low, walk -> fall
 ;   - 34-37: low, stand
+;   - 38-41: explosion
+;   - 42-44: fire
 jsSpriteDB
 	; Jetman is flaying
 	DB JS_SDB_FLY,		JS_SDB_FLY 	- JS_SDB_SUB,	48, 00,12, 00,13, 01,14, 01,15, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15
@@ -76,18 +78,14 @@ jsSpriteDB
 
 jsSpriteDBIdx			WORD 0					; Current position in DB
 jsSpriteDBRemain		BYTE 0					; Amount of bytes that have to be still processed from the current record
-jsSprDBNextID			BYTE JS_SDB_FLY		; ID in #jsSpriteDB for next animation/DB record						
-
-JS_SPRITE_UP_ID		= 0						; ID of Jetman upper sprite
+jsSprDBNextID			BYTE JS_SDB_FLY			; ID in #jsSpriteDB for next animation/DB record						
 
 ; bit 7 = Visible flag (1 = displayed)
 ; bits 5-0 = Pattern used by sprite (0-63), we will use pattern 0
 JS_SPRITE_PAT			= %10000000
 
-JS_SPRITE_LW_ID		= 1						; ID of Jetman lower sprite
-
 ;----------------------------------------------------------;
-;                  #JsIntiJetmanSprite                       ;
+;                 #JsIntiJetmanSprite                      ;
 ;----------------------------------------------------------;
 JsIntiJetmanSprite
 	CALL JsUpdateJetmanSpritePosition							
@@ -98,7 +96,7 @@ JsIntiJetmanSprite
 	RET											; END JsIntiJetmanSprite
 
 ;----------------------------------------------------------;
-;               #JsUpdateJetmanSpritePosition                ;
+;              #JsUpdateJetmanSpritePosition               ;
 ;----------------------------------------------------------;
 JsUpdateJetmanSpritePosition	
 
@@ -106,10 +104,10 @@ JsUpdateJetmanSpritePosition
 	LD BC, (jtX)								
 	LD A, C			
 
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_UP_ID	; Set the ID of the Jetman's sprite for the following commands								
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands								
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC into X, below in next lines we handle overflow bit
 
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_LW_ID	; Set the ID of the Jetman's sprite for the following commands								
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands								
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC into X, below in next lines we handle overflow bit
 
 	LD A, B										; Load MSB from X into A
@@ -120,7 +118,7 @@ JsUpdateJetmanSpritePosition
 	LD A, (jtDirection)			
 	LD D, A
 	LD A, E										; Now, A has it's original value, and D contains a value from #jetState
-	BIT JT_MOVE_LEFT_BIT, D					; Moving left bit set?
+	BIT JT_MOVE_LEFT_BIT, D						; Moving left bit set?
 	JR Z, .rotateRight
 	SET 3, A									; Rotate sprite left	
 	JR .afterRotate	
@@ -128,19 +126,19 @@ JsUpdateJetmanSpritePosition
 	RES 3, A									; Rotate sprite right
 .afterRotate
 
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_UP_ID	; Set the ID of the Jetman's sprite for the following commands	
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands	
 	NEXTREG _SPR_REG_ATTR_2_H37, A
 
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_LW_ID	; Set the ID of the Jetman's sprite for the following commands	
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands	
 	NEXTREG _SPR_REG_ATTR_2_H37, A
 
 	; Move Jetman sprite to current Y postion, 8-bit value is easy 
 	LD A, (jtY)		
 	
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_UP_ID	; Set the ID of the Jetman's sprite for the following commands							
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands							
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_LW_ID	; Set the ID of the Jetman's sprite for the following commands		
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands		
 	ADD 16										; Lower part is 16px below upper					
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
@@ -172,7 +170,7 @@ JsUpdateJetmanSpritePosition
 	RET											; END JsUpdateJetmanSpritePosition
 
 ;----------------------------------------------------------;
-;              #JsChangeJetmanSpritePattern                  ;
+;              #JsChangeJetmanSpritePattern                ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - A: ID for #jesSprites, to siwtch to the next animation record
@@ -182,12 +180,12 @@ JsChangeJetmanSpritePattern
 	LD A, 0
 	LD (jsSpriteDBRemain), A					; No more bytes to process within the current DB record will cause the fast switch to the next.
 
-	CALL JsUpdateJetmanSpritePattern				; Update next animation frame imedatelly
+	CALL JsUpdateJetmanSpritePattern			; Update next animation frame imedatelly
 	
 	RET											; END #JsChangeJetmanSpritePattern 
 
 ;----------------------------------------------------------;
-;            #JsUpdateJetmanSpritePattern                    ;
+;            #JsUpdateJetmanSpritePattern                  ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
 JsUpdateJetmanSpritePattern	
@@ -225,20 +223,20 @@ JsUpdateJetmanSpritePattern
 	LD HL, (jsSpriteDBIdx)
 
 	; Update upper sprite
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_UP_ID	; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
 	LD A, (HL)
 	OR JS_SPRITE_PAT							; Store pattern number into Sprite Attribute	
 	NEXTREG _SPR_REG_ATTR_3_H38, A	
 
 	; Update lower sprite
-	NEXTREG _SPR_REG_NR_H34, JS_SPRITE_LW_ID	; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_NR_H34, SP_SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
 	INC HL
 	LD A, (HL)
-	OR JS_SPRITE_PAT							; Store pattern number into Sprite Attribute	
+	OR JS_SPRITE_PAT							; Store pattern number into Sprite Attribute
 	NEXTREG _SPR_REG_ATTR_3_H38, A	
 
 	; Update pointer to DB
 	INC HL
 	LD (jsSpriteDBIdx), HL
 
-	RET											; END #JsUpdateJetmanSpritePattern	
+	RET											; END #JsUpdateJetmanSpritePattern

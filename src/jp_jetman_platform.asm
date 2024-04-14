@@ -88,7 +88,7 @@ JpBumpOnJoystickDisabled
 
 .afterBumping
 
-	RET												; END #JpBumpOnJoystickDisabled	
+	RET											; END #JpBumpOnJoystickDisabled	
 ;----------------------------------------------------------;
 ;                   #JpJetmanTakesoff                      ;
 ;----------------------------------------------------------;
@@ -160,12 +160,12 @@ JpLandingOnPlatform
 	INC HL										; HL points to [X end]
 	LD E, (HL)									; E contains [X end]		
 	
-	LD A, (jtY)								; A holds current Y position
+	LD A, (jtY)									; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
-	LD A, (jtX)								; A holds current X position
+	LD A, (jtX)									; A holds current X position
 	CP D										; Compare #jtX postion to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jtX < [X start]
 
@@ -202,7 +202,7 @@ JpBumpIntoPlatformBottom
 	INC HL										; HL points to [Y end]
 	LD E, (HL)									; E contains [Y end]
 
-	LD A, (jtY)								; A holds current Y position
+	LD A, (jtY)									; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not close to the bottom of the platform
 
@@ -224,7 +224,7 @@ JpBumpIntoPlatformBottom
 	CALL JsChangeJetmanSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
-	LD A, JT_JOY_DISABLE_BUMP						
+	LD A, JT_JOY_DISABLED_BUMP						
 	LD (joDisabledCnt), A
 
 	POP BC
@@ -254,12 +254,12 @@ JpBumpIntoPlatformLR
 	INC IX										; HL points to [Y end]
 	LD E, (IX)									; E contains [Y end]
 
-	LD A, (jtX)								; A holds current X position
+	LD A, (jtX)									; A holds current X position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not close to the right edge of the platform
 
 	; Jetman is close to the right edge of the platform
-	LD A, (jtY)								; A holds current Y position
+	LD A, (jtY)									; A holds current Y position
 	CP D										; Compare #jtY postion to [Y start]
 	JR C, .platformsLoopEnd						; Jump if #jtY < [Y start]
 
@@ -276,7 +276,7 @@ JpBumpIntoPlatformLR
 	CALL JsChangeJetmanSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
-	LD A, JT_JOY_DISABLE_BUMP						
+	LD A, JT_JOY_DISABLED_BUMP						
 	LD (joDisabledCnt), A
 
 	POP BC
@@ -305,12 +305,12 @@ JpFallingFromPlatform
 	INC HL										; HL points to [X end]
 	LD E, (HL)									; E contains [X end]		
 
-	LD A, (jtY)								; A holds current Y position
+	LD A, (jtY)									; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
-	LD A, (jtX)								; A holds current X position
+	LD A, (jtX)									; A holds current X position
 	CP D										; Compare #jtX postion to [X start]
 	JR C, .fallingLeft							; Jump if #jtX < [X start], meaning Jetman is falling from the left side of the platform
 
@@ -328,7 +328,7 @@ JpFallingFromPlatform
 	JR .afterFallingRight
 
 .fallingRight
-	LD A, JT_AIR_FALL_RIGHT						
+	LD A, JT_AIR_FALL_RIGHT
 	LD (jtAir), A
 
 .afterFallingRight
@@ -336,8 +336,8 @@ JpFallingFromPlatform
 	LD A, JS_SDB_T_WL
 	CALL JsChangeJetmanSpritePattern
 
-	; Disable joystick, because Jetman looses control for #JT_JOY_DISABLE_FALL frames
-	LD A, JT_JOY_DISABLE_FALL						
+	; Disable joystick, because Jetman looses control for #JT_JOY_DISABLED_FALL frames
+	LD A, JT_JOY_DISABLED_FALL						
 	LD (joDisabledCnt), A
 	
 	; Reset #jtGnd as we are not walking anymore

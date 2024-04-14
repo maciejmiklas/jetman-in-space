@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                      #JoInput                      ;
+;                         #JoInput                         ;
 ;----------------------------------------------------------;
 
 ; The counter turns off the joystick for a few iterations. Each call #JoInput decreases it by one. 
@@ -22,8 +22,8 @@ JoInput
 	CALL JoStart
 	
 	; Key Rright pressed ?
-	LD A, _KB_6_TO_0_HEF							; $EF -> A (6...0)
-	IN A, (_KB_REG_HFE) 							; Read keyboard input into A
+	LD A, _KB_6_TO_0_HEF						; $EF -> A (6...0)
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A
 	BIT 2, A									; Bit 2 reset -> Rright pessed
 	CALL Z, JoMoveRight
 
@@ -34,8 +34,8 @@ JoInput
 	CALL NZ, JoMoveRight			
 
 	; Key Left pressed ?
-	LD A, _KB_5_TO_1_HF7							; $FD -> A (5...1)
-	IN A, (_KB_REG_HFE) 							; Read keyboard input into A
+	LD A, _KB_5_TO_1_HF7						; $FD -> A (5...1)
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A
 	BIT 4, A									; Bit 4 reset -> Left pessed
 	CALL Z, JoMoveLeft		
 
@@ -46,8 +46,8 @@ JoInput
 	CALL NZ, JoMoveLeft
 
 	; Key Up pressed ?
-	LD A, _KB_6_TO_0_HEF							; $EF -> A (6...0)
-	IN A, (_KB_REG_HFE) 							; Read keyboard input into A
+	LD A, _KB_6_TO_0_HEF						; $EF -> A (6...0)
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A
 	BIT 3, A									; Bit 3 reset -> Up pessed
 	CALL Z, JoMoveUp	
 
@@ -58,8 +58,8 @@ JoInput
 	CALL NZ, JoMoveUp
 
 	; Key Down pressed ?
-	LD A, _KB_6_TO_0_HEF							; $EF -> A (6...0)
-	IN A, (_KB_REG_HFE) 							; Read keyboard input into A
+	LD A, _KB_6_TO_0_HEF						; $EF -> A (6...0)
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A
 	BIT 4, A									; Bit 4 reset -> Down pessed
 	CALL Z, JoMoveDown				
 
@@ -70,8 +70,8 @@ JoInput
 	CALL NZ, JoMoveDown
 
 	; Key Fire (Z) pressed ?
-	LD A, _KB_V_TO_Z_HFE							; $FD -> A (5...1)
-	IN A, (_KB_REG_HFE) 							; Read keyboard input into A
+	LD A, _KB_V_TO_Z_HFE						; $FD -> A (5...1)
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A
 	BIT 1, A									; Bit 1 reset -> Z pessed
 	CALL Z, JoPressFire
 
@@ -112,7 +112,7 @@ JoMoveUp
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-	LD A, (jtDirection)						; Update #jetState by reseting down and setting up
+	LD A, (jtDirection)							; Update #jetState by reseting down and setting up
 	RES JT_MOVE_DOWN_BIT, A
 	SET JT_MOVE_UP_BIT, A
 	LD (jtDirection), A
@@ -146,7 +146,7 @@ JoMoveRight
 	JR Z, .afterDirectionChange
 
 	; We have direction change!		
-	LD A, (jtDirection)						; Reset left and set right						
+	LD A, (jtDirection)							; Reset left and set right						
 	RES JT_MOVE_LEFT_BIT, A
 	SET JT_MOVE_RIGHT_BIT, A
 	LD (jtDirection), A
@@ -176,12 +176,12 @@ JoMoveLeft
 
 	; Direction change: right -> left
 	LD A, (jtDirection)
-	AND JT_MOVE_LEFT_BM						; Are we moving left already?
+	AND JT_MOVE_LEFT_BM							; Are we moving left already?
 	CP JT_MOVE_LEFT_BM
 	JR Z, .afterDirectionChange					; Jetman is moving left already -> end
 
 	; We have direction change!		
-	LD A, (jtDirection)						; Reset right and set left 					
+	LD A, (jtDirection)							; Reset right and set left 					
 	RES JT_MOVE_RIGHT_BIT, A
 	SET JT_MOVE_LEFT_BIT, A
 	LD (jtDirection), A
@@ -197,14 +197,14 @@ JoMoveLeft
 	RET											; END #JoMoveLeft
 
 ;----------------------------------------------------------;
-;                     #JoPressFire                        ;
+;                     #JoPressFire                         ;
 ;----------------------------------------------------------;
 JoPressFire
 
 	RET	
 
 ;----------------------------------------------------------;
-;                       #JoMoveDown                       ;
+;                       #JoMoveDown                        ;
 ;----------------------------------------------------------;
 JoMoveDown
 	; Update #jtMove state
@@ -231,7 +231,7 @@ JoMoveDown
 	; Landing on the ground
 	CP JT_GROUND_LEVEL
 	CALL Z, JpJetmanLanding						; Execute landing on the ground if Jetman has reached the ground.
-	CALL JpLandingOnPlatform				; Or should he land on one of the platforms?
+	CALL JpLandingOnPlatform					; Or should he land on one of the platforms?
 
 	; Direction change? 
 	LD A, (jtDirection)
@@ -247,10 +247,10 @@ JoMoveDown
 .afterDirectionChange
 .afterInc	
 
-	RET											; END #JoMoveDown
+	RET										; END #JoMoveDown
 
 ;----------------------------------------------------------;
-;                         #JoStart                        ;
+;                         #JoStart                         ;
 ;----------------------------------------------------------;
 JoStart
 	LD A, JT_MOVE_INACTIVE						; Update #jetState by reseting left/hover and setting right
@@ -259,7 +259,7 @@ JoStart
 	RET 										; END #JoStart
 
 ;----------------------------------------------------------;
-;                          #JoEnd                         ;
+;                          #JoEnd                          ;
 ;----------------------------------------------------------;
 JoEnd											; After input processing, #JoEnd gets executed as the last procedure. 
 
@@ -268,7 +268,7 @@ JoEnd											; After input processing, #JoEnd gets executed as the last proce
 	CP JT_MOVE_INACTIVE
 	JR NZ, .afterInactivity						; Jump to the end if there is a movement
 
-	LD A, (jtInactivityCnt)					; Increment inactivity counter
+	LD A, (jtInactivityCnt)						; Increment inactivity counter
 	INC A
 	LD (jtInactivityCnt), A
 
@@ -299,7 +299,7 @@ JoEnd											; After input processing, #JoEnd gets executed as the last proce
 	CP JT_AIR_INACTIVE							; Is Jemtan on the ground already?
 	JR Z, .afterInactivity						; Jump if not on the ground
 
-	CP JT_GND_STAND							; Jetman is on the ground, but is he stainding already?
+	CP JT_GND_STAND								; Jetman is on the ground, but is he stainding already?
 	JR Z, .afterInactivity						; Jump if already standing
 
 	; Jetman is on the ground and does not move, but is he not moving long enough?
@@ -332,7 +332,7 @@ JoEnd											; After input processing, #JoEnd gets executed as the last proce
 	LD A, JT_GND_JSTAND
 	LD (jtGnd), A
 
-	LD A, JS_SDB_JSTAND						; Change animation
+	LD A, JS_SDB_JSTAND							; Change animation
 	CALL JsChangeJetmanSpritePattern
 
 .afterInactivity
@@ -353,8 +353,8 @@ JoDisabled
 	; Reset the #jtAir on the last frame of the disabled joystick
 	LD A, (jtAir)
 	CP 1
-	RET NZ 											; Jump if it's not the last frame (!=1)
+	RET NZ										; Jump if it's not the last frame (!=1)
 	LD A, JT_AIR_FLY
 	LD (jtAir), A
 
-	RET												; END #JoDisabled	
+	RET											; END #JoDisabled	

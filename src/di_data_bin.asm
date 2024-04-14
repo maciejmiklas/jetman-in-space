@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                        Globals                           ;
 ;----------------------------------------------------------;
-DI_BANK40_SPR1			= 40				; Sprites for Level 1 are on bank 40, 41
+DI_BANK40_SPR1			= 40					; Sprites for Level 1 are on bank 40, 41
 DI_BANK41_SPR2			= 41
 DI_BANK42_PALETTE		= 42
 
@@ -19,7 +19,7 @@ diTilemapBinLength = $ - diTilemapBin
 diTilesBin INCBIN "assets/tiles.spr"
 diTilesBinLength = $ - diTilesBin
 
-diTilePaletteBin									; RGB332
+diTilePaletteBin								; RGB332
 
 /* Values for Remy's editor
   $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F

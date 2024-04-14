@@ -4,7 +4,7 @@
 start
 	DI											; Disable Interupts, use wait_for_scanline instead.					
 
-	NEXTREG _GL_REG_TURBO_H07, %00000011    		; Switch to 28MHz
+	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz
 			
 	INCLUDE "dl_data_load.asm"
 	CALL ScSetupScreen
@@ -32,6 +32,7 @@ mainLoop
 	INCLUDE "game.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
+	INCLUDE "jf_jetman_fire.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "di_data_bin.asm"

@@ -38,10 +38,10 @@ JT_AIR_BUMP_RIGHT		= 5						; Jetban bumps into a platform from the right
 JT_AIR_BUMP_LEFT		= 6						; Jetban bumps into a platform from the left
 JT_AIR_BUMP_BOTTOM		= 7						; Jetban bumps into a platform from the bottom
 
-JT_JOY_DISABLE_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
-JT_JOY_DISABLE_BUMP		= 6						; Disable the joystick for a few frames because Jetman is bumping into the platform
+JT_JOY_DISABLED_FALL	= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
+JT_JOY_DISABLED_BUMP	= 6						; Disable the joystick for a few frames because Jetman is bumping into the platform
 
-jtAir					BYTE JT_AIR_FLY		; Jetman initially hovers, no movement
+jtAir					BYTE JT_AIR_FLY			; Jetman initially hovers, no movement
 
 ; States for Jetman on the platform/ground
 JT_GND_INACTIVE			= 0						; Jetman is not on ground
@@ -62,7 +62,7 @@ JT_JSTAND_START			= 5
 JT_GROUND_LEVEL			= 230					; The lowest walking platform.
 
 ;----------------------------------------------------------;
-;                          #JtIncJetX                        ;
+;                         #JtIncJetX                       ;
 ;----------------------------------------------------------;
 ; Increment X position
 JtIncJetX
@@ -84,7 +84,7 @@ JtIncJetX
 	RET											; END #JtIncJetX 
 
 ;----------------------------------------------------------;
-;                        #JtDecJetX                          ;
+;                       #JtDecJetX                         ;
 ;----------------------------------------------------------;
 ; Decrement X position
 JtDecJetX
@@ -105,7 +105,7 @@ JtDecJetX
 	RET											; END #JtDecJetX
 
 ;----------------------------------------------------------;
-;                       #JtStandToWalk                       ; 
+;                      #JtStandToWalk                      ; 
 ;----------------------------------------------------------;
 ; Transition from standing on ground to walking
 JtStandToWalk
@@ -126,7 +126,7 @@ JtStandToWalk
 	RET											; END #JtStandToWalk
 
 ;----------------------------------------------------------;
-;                       #JtJetmanMoves                       ;
+;                      #JtJetmanMoves                      ;
 ;----------------------------------------------------------;
 ; Method gets called on any movement, but not fire pressed
 JtJetmanMoves

@@ -1,5 +1,12 @@
 ;----------------------------------------------------------;
-;                     #SpLoadSpritesFPGA                     ;
+;                    Reservers Sprite IDs                  ;
+;----------------------------------------------------------;
+SP_SPR_ID_JET_UP		= 0						; ID of Jetman upper sprite
+SP_SPR_ID_JET_LW		= 1						; ID of Jetman lower sprite
+
+
+;----------------------------------------------------------;
+;                    #SpLoadSpritesFPGA                    ;
 ;----------------------------------------------------------;
 ; Loads sprites from file into hardware using DMA.
 ;
@@ -8,11 +15,11 @@
 ;    - BC - Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
 SpLoadSpritesFPGA
 	; Store dynamic values into DMA program
-	LD (spSpriteDMAPortA), HL						; Copy sprite sheet address from HL
+	LD (spSpriteDMAPortA), HL					; Copy sprite sheet address from HL
 	LD (spSpriteDMADataLength), BC				; Copy sprite file lenght into WR0
 
 	; Execute DMA program
-	LD HL, spSpriteDMAProgram						; Setup source for OTIR
+	LD HL, spSpriteDMAProgram					; Setup source for OTIR
 	LD B, spSpriteDMAProgramLength 				; Setup length for OTIR
 	LD C, _DMA_PORT_H6B							; Setup DMA port
 	OTIR										; Upload DMA program and execute
@@ -74,12 +81,12 @@ spSpriteDMADataLength
 	DB %1'10011'11
 	DB %1'00001'11								; Again WR6, now enable DMA and copy!
 
-spSpriteDMAProgramLength = $ - spSpriteDMAProgram	
+spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 
 	RET											; END SpLoadSpritesFPGA
 
 ;----------------------------------------------------------;
-;                    #SpAnimateSprites                       ;
+;                   #SpAnimateSprites                      ;
 ;----------------------------------------------------------;
 SP_ANIM_FR			= 5							; Change sprite pattern every few frames     
 spFrameCnt			BYTE 0						; The animation counter is used to update the sprite pattern every few FP
@@ -87,9 +94,9 @@ spFrameCnt			BYTE 0						; The animation counter is used to update the sprite pa
 SpAnimateSprites
 	LD A, (spFrameCnt)
 	INC A
-	LD (spFrameCnt), A							
+	LD (spFrameCnt), A
 
-	CP SP_ANIM_FR								
+	CP SP_ANIM_FR
 	RET C										; Return if #spFrameCnt <  #SP_ANIM_FR
 
 	LD A, 0										; #spFrameCnt == #SP_ANIM_FR -> reset counter and update the animation pattern

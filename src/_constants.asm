@@ -2,7 +2,7 @@
 ;                  General Registers                       ;
 ;----------------------------------------------------------;
 _GL_REG_TURBO_H07		= $07				; bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
-_GL_REG_SELECT_H243B	= $243B			; This Port is used to set the register number
+_GL_REG_SELECT_H243B	= $243B				; This Port is used to set the register number
 _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 
 ;----------------------------------------------------------;
@@ -199,7 +199,7 @@ _DMA_PORT_H6B			= $6B					; Datagear DMA Port in zxnDMA mode, https://wiki.specn
 ;----------------------------------------------------------;
 ;                        Colors                            ;
 ;----------------------------------------------------------;
-_BORDER_IO				= $FE					
+_BORDER_IO				= $FE
 _COL_BLACK				= 0
 _COL_BLUE				= 1
 _COL_RED				= 2
@@ -216,15 +216,15 @@ _KB_6_TO_0_HEF			= $EF					; Mask for keyboard input from 6 to 0 (to read arrow 
 _KB_5_TO_1_HF7			= $F7					; Mask for keyboard input from 5 to 1 (to read left arrow key)
 _KB_V_TO_Z_HFE			= $FE					; Mask for keyboard input from V to Z to read X for fire
 
-_KB_REG_HFE				= $FE 				; Activated keyboard input
+_KB_REG_HFE				= $FE					; Activated keyboard input
 
-_JOY_MASK_H20			= $20 				; Mask to read Kempston input
+_JOY_MASK_H20			= $20					; Mask to read Kempston input
 _JOY_REG_H1F			= $1F					; Activates Kempston input
 
 ;----------------------------------------------------------;
 ;                         Display                          ;
 ;----------------------------------------------------------;
 _DI_SYNC_SL				= 192					; Scanline to synch to. 192 for 60FPS, value above/below changes pause time
-_DI_COLOR_START_H5800	= $5800				; Start of Display Color RAM
-_DI_COLOR_ENND_H5AFF	= $5AFF				; End of Display Color RAM
+_DI_COLOR_START_H5800	= $5800					; Start of Display Color RAM
+_DI_COLOR_ENND_H5AFF	= $5AFF					; End of Display Color RAM
 _DI_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800

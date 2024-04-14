@@ -7,7 +7,7 @@ SC_Y_MIN_POS			= 1
 SC_Y_MAX_POS			= 240
 
 ;----------------------------------------------------------;
-;                     #ScSetupScreen                         ;
+;                    #ScSetupScreen                        ;
 ;----------------------------------------------------------;
 ScSetupScreen
 
@@ -20,14 +20,14 @@ ScSetupScreen
 	;  - 1 		= '1': over border
 	;  - 0 		= '1': sprites visible
 	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'010'1'1 	; Sprite 0 on top('1'), SLU('000'), over border('1'), sprites visible('1')
-	NEXTREG _DC_REG_CONTROL_1_H69, %00'01'0000  	; Layer 2 screen resolution 320 x 256 x 8bpp
-	nextreg _DC_REG_TILE_TRANSP_H4C, $00			; Black for tilemap transparency
+	NEXTREG _DC_REG_CONTROL_1_H69, %00'01'0000	; Layer 2 screen resolution 320 x 256 x 8bpp
+	nextreg _DC_REG_TILE_TRANSP_H4C, $00		; Black for tilemap transparency
 	CALL _ROM_CLS_H0DAF							; Clear screen
 	
 	RET											; END ScSetupScreen
 
 ;----------------------------------------------------------;
-;                     #ScWaitOneFrame                        ;
+;                    #ScWaitOneFrame                       ;
 ;----------------------------------------------------------;
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
 ;
@@ -39,7 +39,7 @@ ScSetupScreen
 ScWaitOneFrame     
 ; Read NextReg $1F - LSB of current raster line
 	LD BC, _GL_REG_SELECT_H243B					; TBBlue Register Select
-	LD A, _GL_REG_VL_H1F							; Port to access - Active Video Line LSB Register
+	LD A, _GL_REG_VL_H1F						; Port to access - Active Video Line LSB Register
 	OUT (C), A									; Select NextReg $1F
 	INC B										; TBBlue Register Access
 	LD A, _DI_SYNC_SL							; Set Scanline to wait for
