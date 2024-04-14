@@ -1,8 +1,6 @@
 ;----------------------------------------------------------;
-;                    Reservers Sprite IDs                  ;
+;                     Common Sprite API                    ;
 ;----------------------------------------------------------;
-SP_SPR_ID_JET_UP		= 0						; ID of Jetman upper sprite
-SP_SPR_ID_JET_LW		= 1						; ID of Jetman lower sprite
 
 
 ;----------------------------------------------------------;

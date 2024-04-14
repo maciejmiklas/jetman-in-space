@@ -1,6 +1,7 @@
 ;----------------------------------------------------------;
-;                        Globals                           ;
+;                Binary Data Loader - Part 1               ;
 ;----------------------------------------------------------;
+
 DI_BANK40_SPR1			= 40					; Sprites for Level 1 are on bank 40, 41
 DI_BANK41_SPR2			= 41
 DI_BANK42_PALETTE		= 42
@@ -35,5 +36,19 @@ diTilePaletteBinLength = $ - diTilePaletteBin
 ;-------------------------------------------------------------------------------------;
 	MMU 6 7, DI_BANK40_SPR1
 	ORG _RAM_SLOT_6_START_HC000
+
+; Sprites:
+;   - 00-02: top, breathe 
+;   - 03-05: top, no breathe
+;   - 06-11: low, walk
+;   - 12-17: low, fly
+;   - 18-21: low, hover
+;   - 22-25: low, walk -> fly
+;   - 26-29: low, fly -> walk
+;   - 30-33: low, walk -> fall
+;   - 34-37: low, stand
+;   - 38-41: explosion
+;   - 42-44: fire	
 diSpritesBin INCBIN "assets/jetman.spr"
+
 diSpritesBinLength = $ - diSpritesBin

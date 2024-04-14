@@ -1,3 +1,7 @@
+;----------------------------------------------------------;
+;              Jetman Movement, States and Logic           ;
+;----------------------------------------------------------;
+
 jtX						WORD 100				; 0-320px
 jtY 					BYTE 100				; 0-256px
 
@@ -23,10 +27,10 @@ JT_MOVE_MSK_LR			= %0000'0011			; Left + Right
 ; However, only opposite directions are reset, so for example, when Jetman is facing right, and the right button is released, 
 ; it still looks right; now, when up is pressed, it will look upright, and the right will be reset only when left is pressed. 
 ; Prolonged inactivity resets #jtDirection to #JT_MOVE_INACTIVE.
-jtDirection 		BYTE JT_MOVE_INACTIVE		; Jetman initially hovers, no movement
+jtDirection 			BYTE JT_MOVE_INACTIVE	; Jetman initially hovers, no movement
 
 ; Holds currently pressed direction button. State will be updated right on the beginnig of each joysting loop
-jtMove 			BYTE JT_MOVE_INACTIVE
+jtMove 					BYTE JT_MOVE_INACTIVE
 
 ; States for Jetmain in the air, 0 for not in the air
 JT_AIR_INACTIVE			= 0						; Jetman is not in the air

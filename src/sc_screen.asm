@@ -1,6 +1,7 @@
 ;----------------------------------------------------------;
-;                        Globals                           ;
+;          Screen Setup, Synchronization and Timing        ;
 ;----------------------------------------------------------;
+
 SC_X_MIN_POS			= 0
 SC_X_MAX_POS			= 315
 SC_Y_MIN_POS			= 1

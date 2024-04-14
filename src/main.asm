@@ -1,3 +1,7 @@
+;----------------------------------------------------------;
+;                         Main File                        ;
+;----------------------------------------------------------;
+
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
 	ORG _RAM_SLOT_4_START_H8000
 
@@ -32,7 +36,7 @@ mainLoop
 	INCLUDE "game.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
-	INCLUDE "jf_jetman_fire.asm"
+	INCLUDE "jw_jetman_weapon.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "di_data_bin.asm"

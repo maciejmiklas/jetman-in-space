@@ -1,11 +1,14 @@
 ;----------------------------------------------------------;
-;                         #JoInput                         ;
+;                        Joystick Input                    ;
 ;----------------------------------------------------------;
 
 ; The counter turns off the joystick for a few iterations. Each call #JoInput decreases it by one. 
 ; It's used for effects like bumping from the platform's edge or falling.
 joDisabledCnt		BYTE 0
 
+;----------------------------------------------------------;
+;                         #JoInput                         ;
+;----------------------------------------------------------;
 JoInput
 
 	; Handle disabled joystick

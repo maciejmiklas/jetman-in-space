@@ -1,3 +1,7 @@
+;----------------------------------------------------------;
+;                           Tiles                          ;
+;----------------------------------------------------------;
+
 ; Tiles should be stored between $4000 and $7FFF. This area is called Bank 5 (16K Banks). However, ULA uses $4000-$6000. For this reason, 
 ; we start loading tiles from $6000. Hardware expects tiles in Bank 5; therefore, we only have to provide offsets starting from $4000.
 TI_START_OF_BANK_5		= $4000 

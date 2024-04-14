@@ -1,3 +1,6 @@
+;----------------------------------------------------------;
+;                    Platforms and Ground                  ;
+;----------------------------------------------------------;
 
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
