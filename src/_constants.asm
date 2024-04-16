@@ -153,6 +153,11 @@ _SPR_REG_SETUP_H15		= $15
 
 _SPR_PORT_H303B			= $303B
 
+; bit 7 = Visible flag (1 = displayed)
+; bits 5-0 = Pattern used by sprite (0-63), we will use pattern 0
+_SPR_PATTERN_SHOW		= %10000000
+_SPR_PATTERN_HIDE		= %00000000
+
 ;----------------------------------------------------------;
 ;          		         Tiles  	   	                   ;
 ;----------------------------------------------------------;
@@ -184,7 +189,7 @@ _TILE_ATTRIBTE_H6C		= $6C
 ;
 ; bits 7-6: Read back as zero, write values ignored
 ; bits 5-0: MSB of address of the tilemap in Bank 5 ($A000 - $BFFF)
-_TILE_MAP_ADDRESS_H6E	= $6E
+_TILE_MAP_ADDRESR_H6E	= $6E
 
 ; Tile Definitions Base Address
 ; The value written is an offset into Bank 5 allowing tile definitions to be placed at any multiple of 256 bytes.
@@ -193,7 +198,7 @@ _TILE_MAP_ADDRESS_H6E	= $6E
 ; Bits:
 ;  - 7-6: Read back as zero, write values ignored
 ;  - 5-0: MSB of address of tile definitions in Bank 5
-_TILE_DEF_ADDRESS_H6F	= $6F
+_TILE_DEF_ADDRESR_H6F	= $6F
 
 ;----------------------------------------------------------;
 ;                         DMA                              ;

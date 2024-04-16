@@ -30,54 +30,54 @@ JS_SDB_FRAME_SIZE		= 2
 ;	- FRAME_LW: 	Start offset for the lower part of the Jetman
 ;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
 ; 	
-;	DB [ID], [SIZE], [OFF_NX], [[FRAME_UP],[FRAME_LW] ,...], 
+;	DB [ID], [OFF_NX], [SIZE], [[FRAME_UP],[FRAME_LW] ,...], 
 ;
 jsSpriteDB
 	; Jetman is flaying
-	DB JS_SDB_FLY,		JS_SDB_FLY 	- JS_SDB_SUB,	48, 00,12, 00,13, 01,14, 01,15, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15
-														 DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
-														 DB 04,14, 04,15, 05,16, 05,17
+	DB JS_SDB_FLY,		JS_SDB_FLY - JS_SDB_SUB,		48
+														DB 00,12, 00,13, 01,14, 01,15, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15
+														DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
+														DB 04,14, 04,15, 05,16, 05,17
 
 	; Jetman hovers
-	DB JS_SDB_HOVER,	JS_SDB_HOVER 	- JS_SDB_SUB, 	48, 00,18, 00,19, 01,20, 01,21, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15 
-														 DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
-														 DB 04,14, 04,15, 05,16, 05,17
+	DB JS_SDB_HOVER,	JS_SDB_HOVER - JS_SDB_SUB,		48 
+														DB 00,18, 00,19, 01,20, 01,21, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15 
+														DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
+														DB 04,14, 04,15, 05,16, 05,17
 
 	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
-	DB JS_SDB_WALK_ST,	JS_SDB_WALK 	- JS_SDB_SUB, 	02, 03,07
+	DB JS_SDB_WALK_ST,	JS_SDB_WALK	- JS_SDB_SUB,		02, 03,07
 
 	; Jetman is walking
-	DB JS_SDB_WALK, 	JS_SDB_WALK 	- JS_SDB_SUB,	48, 03,06, 03,07, 04,08, 04,09, 05,10, 05,11, 03,06, 03,07, 04,08, 04,09
-														 DB 05,10, 05,11, 00,06, 00,07, 01,08, 01,09, 02,10, 02,11, 03,06, 03,07 
-														 DB 04,08, 04,09, 05,10, 05,11
+	DB JS_SDB_WALK, 	JS_SDB_WALK - JS_SDB_SUB,		48
+														DB 03,06, 03,07, 04,08, 04,09, 05,10, 05,11, 03,06, 03,07, 04,08, 04,09
+														DB 05,10, 05,11, 00,06, 00,07, 01,08, 01,09, 02,10, 02,11, 03,06, 03,07 
+														DB 04,08, 04,09, 05,10, 05,11
 
 	; Jetman stands in place
-	DB JS_SDB_STAND,	JS_SDB_STAND	- JS_SDB_SUB, 	46, 03,34, 03,35, 04,36, 04,37, 05,34, 05,35, 03,36, 03,37, 04,34, 04,35
-														 DB 05,36, 05,37, 00,34, 00,35, 01,36, 01,37, 02,34, 02,35, 03,36, 03,37
-														 DB 04,34, 05,35, 05,36
+	DB JS_SDB_STAND,	JS_SDB_STAND - JS_SDB_SUB,		46 
+														DB 03,34, 03,35, 04,36, 04,37, 05,34, 05,35, 03,36, 03,37, 04,34, 04,35
+														DB 05,36, 05,37, 00,34, 00,35, 01,36, 01,37, 02,34, 02,35, 03,36, 03,37
+														DB 04,34, 05,35, 05,36
 
 	; Jetman stands on the ground for a very short time
-	DB JS_SDB_JSTAND,	JS_SDB_STAND	- JS_SDB_SUB, 	02, 03,36
+	DB JS_SDB_JSTAND,	JS_SDB_STAND - JS_SDB_SUB, 		02, 03,36
 
 	; Transition: walking -> flaying
-	DB JS_SDB_T_WF,	JS_SDB_FLY 	- JS_SDB_SUB, 	08, 03,22, 04,23, 05,24, 03,25
+	DB JS_SDB_T_WF,		JS_SDB_FLY - JS_SDB_SUB, 		08, 03,22, 04,23, 05,24, 03,25
 
 	; Transition: flaying -> standing
-	DB JS_SDB_T_FS, 	JS_SDB_STAND	- JS_SDB_SUB,	4, 03,26, 04,27, 05,28, 03,29
+	DB JS_SDB_T_FS, 	JS_SDB_STAND - JS_SDB_SUB,		4, 03,26, 04,27, 05,28, 03,29
 
 	; Transition: flaying -> walking
-	DB JS_SDB_T_FW, 	JS_SDB_WALK	- JS_SDB_SUB,	4, 03,26, 04,27, 05,28, 03,29
+	DB JS_SDB_T_FW, 	JS_SDB_WALK	- JS_SDB_SUB,		4, 03,26, 04,27, 05,28, 03,29
 
 	; Transition: walking -> falling
-	DB JS_SDB_T_WL,	JS_SDB_FLY		- JS_SDB_SUB, 	08, 03,30, 04,31, 05,32, 03,33
+	DB JS_SDB_T_WL,		JS_SDB_FLY - JS_SDB_SUB, 		08, 03,30, 04,31, 05,32, 03,33
 
 jsSpriteDBIdx			WORD 0					; Current position in DB
 jsSpriteDBRemain		BYTE 0					; Amount of bytes that have to be still processed from the current record
 jsSprDBNextID			BYTE JS_SDB_FLY			; ID in #jsSpriteDB for next animation/DB record						
-
-; bit 7 = Visible flag (1 = displayed)
-; bits 5-0 = Pattern used by sprite (0-63), we will use pattern 0
-JS_SPRITE_PAT			= %10000000
 
 ;----------------------------------------------------------;
 ;                 #JsIntiJetmanSprite                      ;
@@ -85,9 +85,6 @@ JS_SPRITE_PAT			= %10000000
 JsIntiJetmanSprite
 	CALL JsUpdateJetmanSpritePosition							
 	CALL JsUpdateJetmanSpritePattern
-
-	NEXTREG _SPR_REG_ATTR_3_H38, JS_SPRITE_PAT
-
 	RET											; END JsIntiJetmanSprite
 
 ;----------------------------------------------------------;
@@ -100,10 +97,10 @@ JsUpdateJetmanSpritePosition
 	LD A, C			
 
 	NEXTREG _SPR_REG_NR_H34, JS_SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands								
-	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC into X, below in next lines we handle overflow bit
+	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
 
 	NEXTREG _SPR_REG_NR_H34, JS_SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands								
-	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC into X, below in next lines we handle overflow bit
+	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
 
 	LD A, B										; Load MSB from X into A
 	AND %00000001								; Keep only an overflow bit
@@ -220,14 +217,14 @@ JsUpdateJetmanSpritePattern
 	; Update upper sprite
 	NEXTREG _SPR_REG_NR_H34, JS_SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
 	LD A, (HL)
-	OR JS_SPRITE_PAT							; Store pattern number into Sprite Attribute	
+	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
 	NEXTREG _SPR_REG_ATTR_3_H38, A	
 
 	; Update lower sprite
 	NEXTREG _SPR_REG_NR_H34, JS_SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
 	INC HL
 	LD A, (HL)
-	OR JS_SPRITE_PAT							; Store pattern number into Sprite Attribute
+	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute
 	NEXTREG _SPR_REG_ATTR_3_H38, A	
 
 	; Update pointer to DB
