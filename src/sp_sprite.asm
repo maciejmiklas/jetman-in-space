@@ -2,6 +2,11 @@
 ;                     Common Sprite API                    ;
 ;----------------------------------------------------------;
 
+;----------------------------------------------------------;
+;                   Reserved Sprite IDs                    ;
+;----------------------------------------------------------;
+; js_jetman_sprite: 	00-09
+; jw_jetman_weapon:		10-20
 
 ;----------------------------------------------------------;
 ;                    #SpLoadSpritesFPGA                    ;
@@ -102,6 +107,5 @@ SpAnimateSprites
 
 	; Update sprite patterns
 	CALL JsUpdateJetmanSpritePattern
-	CALL SrUpdateSpritePattern
 	
 	RET											; END SpAnimateSprites	

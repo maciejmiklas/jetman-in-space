@@ -5,32 +5,13 @@
 jtX						WORD 100				; 0-320px
 jtY 					BYTE 100				; 0-256px
 
-; Possible move directions##
-JT_MOVE_INACTIVE		= 0						; No movement
-
-JT_MOVE_LEFT_BIT		= 0						; Bit 0 - Jetman moving left
-JT_MOVE_LEFT_BM			= %0000'0001
-
-JT_MOVE_RIGHT_BIT		= 1						; Bit 1 - Jetman moving right
-JT_MOVE_RIGHT_BM		= %0000'0010
-
-JT_MOVE_UP_BIT			= 2						; Bit 2 - Jetman moving up
-JT_MOVE_UP_BM			= %0000'0100
-
-JT_MOVE_DOWN_BIT		= 3						; Bit 3 - Jetman moving down
-JT_MOVE_DOWN_BM			= %0000'1000
-
-JT_MOVE_MSK_LR			= %0000'0011			; Left + Right
-
 ; This byte holds the direction in which Jetman is facing. It takes movement bits as arguments but gets updated only when 
 ; the opsite direction changes. Pressing left will reset the right bit and set left; pressing up will reset the down bit and set up. 
 ; However, only opposite directions are reset, so for example, when Jetman is facing right, and the right button is released, 
 ; it still looks right; now, when up is pressed, it will look upright, and the right will be reset only when left is pressed. 
-; Prolonged inactivity resets #jtDirection to #JT_MOVE_INACTIVE.
-jtDirection 			BYTE JT_MOVE_INACTIVE	; Jetman initially hovers, no movement
+; Prolonged inactivity resets #jtDirection to #JO_MOVE_INACTIVE.
+jtDirection 			BYTE JO_MOVE_INACTIVE	; Jetman initially hovers, no movement
 
-; Holds currently pressed direction button. State will be updated right on the beginnig of each joysting loop
-jtMove 					BYTE JT_MOVE_INACTIVE
 
 ; States for Jetmain in the air, 0 for not in the air
 JT_AIR_INACTIVE			= 0						; Jetman is not in the air

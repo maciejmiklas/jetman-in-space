@@ -110,7 +110,7 @@ JsUpdateJetmanSpritePosition
 	LD A, (jtDirection)			
 	LD D, A
 	LD A, E										; Now, A has it's original value, and D contains a value from #jetState
-	BIT JT_MOVE_LEFT_BIT, D						; Moving left bit set?
+	BIT JO_MOVE_LEFT_BIT, D						; Moving left bit set?
 	JR Z, .rotateRight
 	SET 3, A									; Rotate sprite left	
 	JR .afterRotate	
@@ -151,12 +151,12 @@ JsUpdateJetmanSpritePosition
 	LD A, (jtGnd)
 	LD L, A
 	CALL TxPrintNumHL	
-
+/*
 	LD B, 30
 	LD H, 0
-	LD A, (jtMove)
+	LD A, (joDirection)
 	LD L, A
-	CALL TxPrintNumHL		
+	CALL TxPrintNumHL		*/
 	; PRINT END
 
 	RET											; END JsUpdateJetmanSpritePosition

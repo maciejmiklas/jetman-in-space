@@ -114,8 +114,8 @@ JpJetmanTakesoff
 JpJetmanLanding
 
 	; Jemans is landing, trigger transition: falying -> standing/walking
-	LD A, (jtMove)
-	AND JT_MOVE_MSK_LR
+	LD A, (joDirection)
+	AND JO_MOVE_MSK_LR
 	CP 1	
 	JR C, .afterMoveLR							; Jump, if there is no movement right/left (A >= 1) -> Jemtan lands and stands still
 	

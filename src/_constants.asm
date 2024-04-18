@@ -134,6 +134,7 @@ _SPR_REG_ATTR_3_H38		= $38
 _SPR_REG_ATTR_4_H39		= $39
 
 ; Sprite and Layers system
+; Bits:
 ;  - 7: LoRes mode, 128 x 96 x 256 colours (1 = enabled)
 ;  - 6: Sprite priority (1 = sprite 0 on top, 0 = sprite 127 on top)
 ;  - 5: Enable sprite clipping in over border mode (1 = enabled)

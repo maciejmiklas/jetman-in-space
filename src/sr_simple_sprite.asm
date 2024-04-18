@@ -12,22 +12,33 @@ sample
 ;----------------------------------------------------------;
 ; WORD 	[#SR_MS_: X position]
 ; BYTE 	[#SR_MS_Y: Y position], 
-;	   	[#SR_MS_VISIBLE: 0-hiden, 1-visible], 
+;	   	[#SR_MS_STATE, bit: 0 = Visible flag (1 = displayed), bit: 1-7 used by particular sprite engine], 
 ;		[#SR_MS_SPRITE_ID: Sprite ID for #_SPR_REG_ATTR_3_H38],
 ;	   	[#SR_MS_NEXT: ID in #ssSpriteDB for next animation record/state]
 ;	   	[#SR_MS_REMAINING: Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record]
 ; WORD 	[#SR_MS_DB_POINTER: pointer to current #srSpriteDB record]
+; Example:
+;	 WORD 300
+;	 DB 50, 1, 3, SR_SDB_EXPLODE, 0, 0
+;	 WORD 0
+
+; Offsets for Memmory Structure
 SR_MS_X						= 0		
 SR_MS_Y						= 2
-SR_MS_VISIBLE				= 3
+SR_MS_STATE					= 3
 SR_MS_SPRITE_ID				= 4
 SR_MS_NEXT					= 5
 SR_MS_REMAINING				= 6
 SR_MS_DB_POINTER			= 7
 
-; Possible values for #SR_MS_VISIBLE
-SR_MS_VISIBLE_YES			= 1
-SR_MS_VISIBLE_NO			= 0
+SR_MS_SIZE					= 10					; Size for single memmory structure
+
+; Possible values for #SR_MS_STATE.
+; Bits:
+;   - 0: 	Visible flag, 1 = displayed, 0 = hiden
+;   - 1-7: 	Used by particluar sprite engine
+SR_MS_STATE_VISIBLE			= %00000001
+SR_MS_STATE_VISIBLE_BIT		= 0
 
 ; DB IDs
 SR_SDB_EXPLODE				= 201					; Explositon
@@ -47,19 +58,20 @@ SR_SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see
 ;	DB [ID], [OFF_NX], [SIZE], [[FRAME] ,...]
 srSpriteDB
 	; Explosion, and afterward, the sprite disappears
-	DB SR_SDB_EXPLODE,	SR_SDB_FIRE - SR_SDB_SUB,		40,		38, 39, 40, 41,   38, 39, 40, 41,38, 39, 40, 41,38, 39, 40, 41,38, 39, 40, 41,38, 39, 40, 41,38, 39, 40, 41,38, 39, 40, 41,38, 39, 40, 41,38, 39, 40, 41
+	DB SR_SDB_EXPLODE,	SR_SDB_HIDE - SR_SDB_SUB,		03,		38, 39, 40, 41
 	DB SR_SDB_FIRE,		SR_SDB_FIRE - SR_SDB_SUB,		03,		42, 43, 44
 
+/*
 ;----------------------------------------------------------;
 ;                           #SrTest                        ;
 ;----------------------------------------------------------;
 SrTest
 	LD IX, sample
 	LD A, SR_SDB_EXPLODE
-	CALL SetSpritePattern
+	CALL SrSetSpritePattern
 
 	CALL SrUpdateSpritePosition
-RET
+RET*/
 
 ;----------------------------------------------------------;
 ;                #SrUpdateSpritePosition                   ;
@@ -67,9 +79,12 @@ RET
 ; Input
 ;  - IX - pointer to "Memmory Structure for Single Sprite"
 SrUpdateSpritePosition
-	LD A, (IX + SR_MS_VISIBLE)
-	CP A, SR_MS_VISIBLE_NO
-	RET Z										; Return if sprite is hidden
+
+	; Return if sprite is hidden
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_VISIBLE
+	CP A, 0
+	RET Z										
 
 	LD A, (IX + SR_MS_SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the Jetman's sprite for the following commands
@@ -91,13 +106,13 @@ SrUpdateSpritePosition
 	RET											; END #SrShowSprite 
 
 ;----------------------------------------------------------;
-;                  #SetSpritePattern                       ;
+;                  #SrSetSpritePattern                       ;
 ;----------------------------------------------------------;
 ; Set given pointer IX to animation pattern from #srSpriteDB given by B
 ; Input
 ;  - IX - pointer to "Memmory Structure for Single Sprite"
 ;  - A - ID in #srSpriteDB 
-SetSpritePattern
+SrSetSpritePattern
 	
 	; Find DB record
 	LD HL, srSpriteDB							; HL points to the beginning of the DB				
@@ -116,7 +131,8 @@ SetSpritePattern
 	INC HL										; HL points to [FRAME] in DB
 	LD (IX + SR_MS_DB_POINTER), HL				; Update #SR_MS_DB_POINTER
 
-	RET 										; END #SetSpritePattern
+	RET 										; END #SrSetSpritePattern
+
 ;----------------------------------------------------------;
 ;                #SrUpdateSpritePattern                    ;
 ;----------------------------------------------------------;
@@ -124,11 +140,11 @@ SetSpritePattern
 ; Input
 ;  - IX - pointer to "Memmory Structure for Single Sprite"
 SrUpdateSpritePattern
-	LD IX, sample								; TODO remove it!
 
 	; Return if sprite is already hidden
-	LD A, (IX + SR_MS_VISIBLE)
-	CP A, SR_MS_VISIBLE_NO
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_VISIBLE
+	CP A, 0
 	RET Z
 
 	LD A, (IX + SR_MS_SPRITE_ID)
@@ -150,14 +166,15 @@ SrUpdateSpritePattern
 	LD A, _SPR_PATTERN_HIDE						; Hide sprite on display	
 	NEXTREG _SPR_REG_ATTR_3_H38, A
 
-	LD A, SR_MS_VISIBLE_NO						; Mark sprite as hidden
-	LD (IX + SR_MS_VISIBLE), A
+	LD A, (IX + SR_MS_STATE)					; Mark sprite as hidden
+	RES SR_MS_STATE_VISIBLE_BIT, A
+	LD (IX + SR_MS_STATE), A
 	RET 										; Exit
 .afterHide
 
 	; Load new DB record
 	LD A, (IX + SR_MS_NEXT)	
-	CALL SetSpritePattern			
+	CALL SrSetSpritePattern			
 
 .afterRecordChange
 

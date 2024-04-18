@@ -7,7 +7,6 @@
 ;----------------------------------------------------------;
 GameInit	
 	CALL JsIntiJetmanSprite
-	CALL SrTest
 	RET
 ;----------------------------------------------------------;
 ;                      #GameLoop                           ;
@@ -18,5 +17,5 @@ GameLoop
 	CALL JsUpdateJetmanSpritePosition
 	CALL JoDisabled
 	CALL SpAnimateSprites
-	
+	CALL JwAnimateSprites
 	RET
