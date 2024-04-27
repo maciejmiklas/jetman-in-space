@@ -107,7 +107,7 @@ JsUpdateJetmanSpritePosition
 	
 	; Rotate sprite for Left/Right movement	
 	LD E, A										; Store A in E to use A for loading data from RAM.
-	LD A, (jtDirection)			
+	LD A, (joJetmanDirection)			
 	LD D, A
 	LD A, E										; Now, A has it's original value, and D contains a value from #jetState
 	BIT JO_MOVE_LEFT_BIT, D						; Moving left bit set?
@@ -154,9 +154,10 @@ JsUpdateJetmanSpritePosition
 /*
 	LD B, 30
 	LD H, 0
-	LD A, (joDirection)
+	LD A, (joJoyDirection)
 	LD L, A
-	CALL TxPrintNumHL		*/
+	CALL TxPrintNumHL		
+	*/
 	; PRINT END
 
 	RET											; END JsUpdateJetmanSpritePosition

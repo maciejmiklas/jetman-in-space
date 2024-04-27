@@ -38,6 +38,7 @@ mainLoop
 	INCLUDE "ti_tiles.asm"
 	INCLUDE "jw_jetman_weapon.asm"
 	INCLUDE "sr_simple_sprite.asm"
+	INCLUDE "ut_util.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "di_data_bin.asm"

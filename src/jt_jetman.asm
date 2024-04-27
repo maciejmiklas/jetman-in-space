@@ -5,14 +5,6 @@
 jtX						WORD 100				; 0-320px
 jtY 					BYTE 100				; 0-256px
 
-; This byte holds the direction in which Jetman is facing. It takes movement bits as arguments but gets updated only when 
-; the opsite direction changes. Pressing left will reset the right bit and set left; pressing up will reset the down bit and set up. 
-; However, only opposite directions are reset, so for example, when Jetman is facing right, and the right button is released, 
-; it still looks right; now, when up is pressed, it will look upright, and the right will be reset only when left is pressed. 
-; Prolonged inactivity resets #jtDirection to #JO_MOVE_INACTIVE.
-jtDirection 			BYTE JO_MOVE_INACTIVE	; Jetman initially hovers, no movement
-
-
 ; States for Jetmain in the air, 0 for not in the air
 JT_AIR_INACTIVE			= 0						; Jetman is not in the air
 JT_AIR_FLY				= 1						; Jetman is flaying
@@ -62,7 +54,7 @@ JtIncJetX
 	LD A, C										; Load MSB from X into A
 	CP 59										; MSB > 59 
 	JR C, .lessThanMaxX
-	LD BC, 1									; Jetman is above 320 -> set to 0
+	LD BC, 1									; Jetman is above 315 -> set to 1
 .lessThanMaxX
 	LD (jtX), BC								; Update new X postion
 
@@ -78,13 +70,12 @@ JtDecJetX
 
 	; If X == 0 (SC_X_MIN_POS) then set it to 315. X == 0 when B and C are 0
 	LD A, B
-	CP SC_X_MIN_POS								; If B > 0 then X is also X > 0
+	CP SC_X_MIN_POS								; If B > 0 then X is also > 0
 	JR NZ, .afterResetX
 	LD A, C
-	CP SC_X_MIN_POS								; If C > 0 then X is also X > 0
+	CP SC_X_MIN_POS								; If C > 0 then X is also > 0
 	JR NZ, .afterResetX
 	LD BC, SC_X_MAX_POS							; X == 0 (both A and B are 0) -> set X to 315
-	JR NZ, .afterResetX
 .afterResetX
 	LD (jtX), BC
 	RET											; END #JtDecJetX

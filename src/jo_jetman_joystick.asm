@@ -4,27 +4,35 @@
 
 ; The counter turns off the joystick for a few iterations. Each call #JoInput decreases it by one. 
 ; It's used for effects like bumping from the platform's edge or falling.
-joDisabledCnt		BYTE 0
+joDisabledCnt			BYTE 0
 
 ; Possible move directions##
 JO_MOVE_INACTIVE		= 0						; No movement
 
 JO_MOVE_LEFT_BIT		= 0						; Bit 0 - Jetman moving left
-JO_MOVE_LEFT_BM			= %0000'0001
+JO_MOVE_LEFT_MASK		= %0000'0001
 
 JO_MOVE_RIGHT_BIT		= 1						; Bit 1 - Jetman moving right
-JO_MOVE_RIGHT_BM		= %0000'0010
+JO_MOVE_RIGHT_MASK		= %0000'0010
 
 JO_MOVE_UP_BIT			= 2						; Bit 2 - Jetman moving up
-JO_MOVE_UP_BM			= %0000'0100
+JO_MOVE_UP_MASK			= %0000'0100
 
 JO_MOVE_DOWN_BIT		= 3						; Bit 3 - Jetman moving down
-JO_MOVE_DOWN_BM			= %0000'1000
+JO_MOVE_DOWN_MASK		= %0000'1000
 
 JO_MOVE_MSK_LR			= %0000'0011			; Left + Right
 
 ; Holds currently pressed direction button. State will be updated right on the beginnig of each joysting loop
-joDirection 					BYTE JO_MOVE_INACTIVE
+joJoyDirection			BYTE JO_MOVE_INACTIVE
+
+; This byte holds the direction in which Jetman is facing(#JO_MOVE_XXX). It takes movement bits as arguments but gets updated only when 
+; the opsite direction changes. Pressing left will reset the right bit and set left; pressing up will reset the down bit and set up. 
+; However, only opposite directions are reset, so for example, when Jetman is facing right, and the right button is released, 
+; it still looks right; now, when up is pressed, it will look upright, and the right will be reset only when left is pressed. 
+; Prolonged inactivity resets #joJetmanDirection to #JO_MOVE_INACTIVE.
+joJetmanDirection		BYTE JO_MOVE_INACTIVE	; Jetman initially hovers, no movement
+
 
 ;----------------------------------------------------------;
 ;                         #JoInput                         ;
@@ -113,10 +121,10 @@ JoInput
 ;----------------------------------------------------------;
 JoMoveUp
 
-	; Update #joDirection state
-	LD A, (joDirection)
+	; Update #joJoyDirection state
+	LD A, (joJoyDirection)
 	SET JO_MOVE_UP_BIT, A	
-	LD (joDirection), A
+	LD (joJoyDirection), A
 
 	CALL JtJetmanMoves							
 
@@ -129,16 +137,16 @@ JoMoveUp
 .afterDec	
 
 	; Direction change: down -> up
-	LD A, (jtDirection)
-	AND JO_MOVE_UP_BM							; Are we moving Up already?
-	CP JO_MOVE_UP_BM
+	LD A, (joJetmanDirection)
+	AND JO_MOVE_UP_MASK							; Are we moving Up already?
+	CP JO_MOVE_UP_MASK
 	JR Z, .afterDirectionChange
 
-	; We have direction change!	
-	LD A, (jtDirection)							; Update #jetState by reseting down and setting up
+	; We have direction change!
+	LD A, (joJetmanDirection)					; Update #jetState by reseting down and setting up
 	RES JO_MOVE_DOWN_BIT, A
 	SET JO_MOVE_UP_BIT, A
-	LD (jtDirection), A
+	LD (joJetmanDirection), A
 .afterDirectionChange
 
 	; Transition from walking to flaying
@@ -154,25 +162,25 @@ JoMoveUp
 ;----------------------------------------------------------;
 JoMoveRight
 	; Update temp state
-	LD A, (joDirection)
+	LD A, (joJoyDirection)
 	SET JO_MOVE_RIGHT_BIT, A	
-	LD (joDirection), A
+	LD (joJoyDirection), A
 
 	CALL JtJetmanMoves						
 	CALL JtStandToWalk
 	CALL JtIncJetX
 
 	; ##Direction change: left -> right##
-	LD A, (jtDirection)
-	AND JO_MOVE_RIGHT_BM						; Are we moving right already?
-	CP JO_MOVE_RIGHT_BM
+	LD A, (joJetmanDirection)
+	AND JO_MOVE_RIGHT_MASK						; Are we moving right already?
+	CP JO_MOVE_RIGHT_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!		
-	LD A, (jtDirection)							; Reset left and set right						
+	LD A, (joJetmanDirection)					; Reset left and set right						
 	RES JO_MOVE_LEFT_BIT, A
 	SET JO_MOVE_RIGHT_BIT, A
-	LD (jtDirection), A
+	LD (joJetmanDirection), A
 	
 .afterDirectionChange
 
@@ -185,29 +193,29 @@ JoMoveRight
 	RET											; END #JoMoveRight
 
 ;----------------------------------------------------------;
-;                       #JoMoveLeft                       ;
+;                       #JoMoveLeft                        ;
 ;----------------------------------------------------------;
 JoMoveLeft
-	; Update #joDirection state
-	LD A, (joDirection)
+	; Update #joJoyDirection state
+	LD A, (joJoyDirection)
 	SET JO_MOVE_LEFT_BIT, A	
-	LD (joDirection), A
+	LD (joJoyDirection), A
 
 	CALL JtJetmanMoves	
 	CALL JtStandToWalk					
 	CALL JtDecJetX
 
 	; Direction change: right -> left
-	LD A, (jtDirection)
-	AND JO_MOVE_LEFT_BM							; Are we moving left already?
-	CP JO_MOVE_LEFT_BM
+	LD A, (joJetmanDirection)
+	AND JO_MOVE_LEFT_MASK						; Are we moving left already?
+	CP JO_MOVE_LEFT_MASK
 	JR Z, .afterDirectionChange					; Jetman is moving left already -> end
 
 	; We have direction change!		
-	LD A, (jtDirection)							; Reset right and set left 					
+	LD A, (joJetmanDirection)					; Reset right and set left 					
 	RES JO_MOVE_RIGHT_BIT, A
 	SET JO_MOVE_LEFT_BIT, A
-	LD (jtDirection), A
+	LD (joJetmanDirection), A
 .afterDirectionChange
 
 	CALL JpFallingFromPlatform
@@ -230,10 +238,10 @@ JoPressFire
 ;                       #JoMoveDown                        ;
 ;----------------------------------------------------------;
 JoMoveDown
-	; Update #joDirection state
-	LD A, (joDirection)
+	; Update #joJoyDirection state
+	LD A, (joJoyDirection)
 	SET JO_MOVE_DOWN_BIT, A	
-	LD (joDirection), A
+	LD (joJoyDirection), A
 
 	; Cannot move down when walking
 	LD A, (jtGnd)
@@ -244,7 +252,7 @@ JoMoveDown
 
 	; Increment Y position#
 	LD A, (jtY)
-	CP JT_GROUND_LEVEL								; Do not increment if Jetman has reached the ground
+	CP JT_GROUND_LEVEL							; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
 
 	; Move Jetman 1px down
@@ -257,27 +265,27 @@ JoMoveDown
 	CALL JpLandingOnPlatform					; Or should he land on one of the platforms?
 
 	; Direction change? 
-	LD A, (jtDirection)
-	AND JO_MOVE_DOWN_BM						; Are we moving down already?
-	CP JO_MOVE_DOWN_BM
+	LD A, (joJetmanDirection)
+	AND JO_MOVE_DOWN_MASK						; Are we moving down already?
+	CP JO_MOVE_DOWN_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-	LD A, (jtDirection)						; Update #jetState by reseting Up/Hover and setting Down
+	LD A, (joJetmanDirection)					; Update #jetState by reseting Up/Hover and setting Down
 	RES JO_MOVE_UP_BIT, A
 	SET JO_MOVE_DOWN_BIT, A	
-	LD (jtDirection), A
+	LD (joJetmanDirection), A
 .afterDirectionChange
 .afterInc	
 
-	RET										; END #JoMoveDown
+	RET											; END #JoMoveDown
 
 ;----------------------------------------------------------;
 ;                         #JoStart                         ;
 ;----------------------------------------------------------;
 JoStart
 	LD A, JO_MOVE_INACTIVE						; Update #jetState by reseting left/hover and setting right
-	LD (joDirection), A
+	LD (joJoyDirection), A
 
 	RET 										; END #JoStart
 
@@ -287,7 +295,7 @@ JoStart
 JoEnd											; After input processing, #JoEnd gets executed as the last procedure. 
 
 	; #Jetman inactivity#
-	LD A, (joDirection)
+	LD A, (joJoyDirection)
 	CP JO_MOVE_INACTIVE
 	JR NZ, .afterInactivity						; Jump to the end if there is a movement
 

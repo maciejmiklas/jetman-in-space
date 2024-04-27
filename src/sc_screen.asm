@@ -46,7 +46,7 @@ ScWaitOneFrame
 	LD A, _DI_SYNC_SL							; Set Scanline to wait for
 	LD D, A
 
-; Wait for Scanline given by param H, i.e. 192
+; Wait for Scanline given by H, i.e. 192
 .waitForScanline
 	IN A, (C)									; Read the raster line LSB into A
 	CP D

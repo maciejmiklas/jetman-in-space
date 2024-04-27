@@ -107,5 +107,6 @@ SpAnimateSprites
 
 	; Update sprite patterns
 	CALL JsUpdateJetmanSpritePattern
+	CALL JwAnimateShots
 	
 	RET											; END SpAnimateSprites	

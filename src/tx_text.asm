@@ -12,6 +12,8 @@
 ;            For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.	 
 TxPrintNumHL
 
+	PUSH DE
+
 	; Print number from HL into formatted16
 	PUSH BC
 	LD DE, formatted16
@@ -24,6 +26,7 @@ TxPrintNumHL
 	LD B, 5										; Print 5 characters
 	CALL TiPrintText
 
+	POP DE
 	RET
 
 formatted16

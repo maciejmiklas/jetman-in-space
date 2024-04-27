@@ -17,5 +17,5 @@ GameLoop
 	CALL JsUpdateJetmanSpritePosition
 	CALL JoDisabled
 	CALL SpAnimateSprites
-	CALL JwAnimateSprites
+	CALL JwMoveShots
 	RET
