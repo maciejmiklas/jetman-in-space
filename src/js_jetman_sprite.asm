@@ -109,7 +109,7 @@ JsUpdateJetmanSpritePosition
 	LD E, A										; Store A in E to use A for loading data from RAM.
 	LD A, (joJetmanDirection)			
 	LD D, A
-	LD A, E										; Now, A has it's original value, and D contains a value from #jetState
+	LD A, E										; Now, A has its original value, and D contains a value from #jetState
 	BIT JO_MOVE_LEFT_BIT, D						; Moving left bit set?
 	JR Z, .rotateRight
 	SET 3, A									; Rotate sprite left	
@@ -173,7 +173,7 @@ JsChangeJetmanSpritePattern
 	LD A, 0
 	LD (jsSpriteDBRemain), A					; No more bytes to process within the current DB record will cause the fast switch to the next.
 
-	CALL JsUpdateJetmanSpritePattern			; Update next animation frame imedatelly
+	CALL JsUpdateJetmanSpritePattern			; Update the next animation frame immediately
 	
 	RET											; END #JsChangeJetmanSpritePattern 
 
@@ -190,12 +190,12 @@ JsUpdateJetmanSpritePattern
 	
 	; Load new record
 	LD HL, jsSpriteDB							; HL points to the beginning of the DB
-	LD A, (jsSprDBNextID)						; CPIR will keep increasing HL until it finds record ID from A
+	LD A, (jsSprDBNextID)						; CPIR will keep increasing HL until it finds the record ID from A
 	LD BC, 0									; Do not limit CPIR search
 	CPIR
 
 	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern. 	
-	LD A, (HL)									; Update next pointer to next animiation record
+	LD A, (HL)									; Update next pointer to next animation record
 	ADD JS_SDB_SUB								; Add 100 because DB value had  -100, to avoid collision with ID
 	LD (jsSprDBNextID), A
 
@@ -203,7 +203,7 @@ JsUpdateJetmanSpritePattern
 	LD A, (HL)									; Update SIZE
 	LD (jsSpriteDBRemain), A
 
-	INC HL										; HL points to first sprite data (uper/lower parts)
+	INC HL										; HL points to first sprite data (upper/lower parts)
 	LD (jsSpriteDBIdx), HL						; Database offset points to be bytes containing sprite offsets from sprite file
 
 .afterRecordChange

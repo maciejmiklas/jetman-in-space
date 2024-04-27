@@ -6,7 +6,7 @@
 	ORG _RAM_SLOT_4_START_H8000
 
 start
-	DI											; Disable Interupts, use wait_for_scanline instead.					
+	DI											; Disable Interrupts, use wait_for_scanline instead.					
 
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz
 			
@@ -57,8 +57,8 @@ mainLoop
 	; you are developing on.
 	SAVENEX CORE 2,0,0
 
-	; This sets the border colour while loading (in this case white),
-	; what to do with the file handle of the nex file when starting (0 = 
+	; This sets the border color while loading (in this case white),
+	; what to do with the file handle of the next file when starting (0 = 
 	; close file handle as we're not going to access the project.nex 
 	; file after starting.  See sjasmplus documentation), whether
 	; we preserve the next registers (0 = no, we set to default), and 

@@ -11,7 +11,7 @@
 ;----------------------------------------------------------;
 ;                    #SpLoadSpritesFPGA                    ;
 ;----------------------------------------------------------;
-; Loads sprites from file into hardware using DMA.
+; Loads sprites from a file into hardware using DMA.
 ;
 ; Method Parameters:
 ;    - HL - RAM address containing sprite binary data.
@@ -19,7 +19,7 @@
 SpLoadSpritesFPGA
 	; Store dynamic values into DMA program
 	LD (spSpriteDMAPortA), HL					; Copy sprite sheet address from HL
-	LD (spSpriteDMADataLength), BC				; Copy sprite file lenght into WR0
+	LD (spSpriteDMADataLength), BC				; Copy sprite file length into WR0
 
 	; Execute DMA program
 	LD HL, spSpriteDMAProgram					; Setup source for OTIR
@@ -45,27 +45,27 @@ SpLoadSpritesFPGA
 ;
 ; More Info: https://wiki.specnext.dev/DMA
 spSpriteDMAProgram
-	DB %1'00000'11								; WR6: Disable DMA (last command will re-enable it)
+	DB %1'00000'11								; WR6: Disable DMA (the last command will re-enable it)
 
 	; WR0 - Direction, Operation, Port A Configuration:
-	;  - D2 = 1 -> Port A is source, port B destination
+	;  - D2 = 1 -> Port A is a source, port B destination
 	;  - D4,D3 = 11 -> Port A address is a byte that directly follows DW0 byte
 	;  - D6,D5 = 11 -> The number of bytes to be copied by DMA is 16-bit and directly follows the Port A address
-	; DW0 consists of 4 bytes: DW0 -> A address -> data length (LSB) -> data lenght (MSB)
+	; DW0 consists of 4 bytes: DW0 -> A address -> data length (LSB) -> data length (MSB)
 	DB %0'11111'01
 
 spSpriteDMAPortA
 	DW 0										; WR0 parameter pointing to RAM containing sprite data
 
 spSpriteDMADataLength										
-	DW 0										; WR0 parameter defining a amount of bytes for sprite data
+	DW 0										; WR0 parameter defining the amount of bytes for sprite data
 
-	; WR1 - Port A configuration.
+	; WR1 - port A configuration.
 	;   - D3 = 0 -> Port A is memory
 	;   - D5,D4 = 01 -> Port A address increments
 	DB %0'0010'100
 
-	; WR2 - Port B configuration.
+	; WR2 - port B configuration.
 	;   - D3 = 1 -> Port B is IO (FPGA Sprite Hardware)
 	;   - D5 = 0 -> Port B address is fixed
 	DB %0'0101'000								; WR2 - B fixed, B=I/O
@@ -74,12 +74,12 @@ spSpriteDMADataLength
 	DB %1'01011'01								; WR4 - continuous mode, append port B address
 	DW $005B									; 16-bit port B starting address
 
-	; WR5 - Ready and stop configuration
+	; WR5 - ready and stop configuration
 	;   - D4 = 0 -> CE only (the only option anyway)
 	;   - D5 = 0 -> Stop operation on end of block
 	DB %1'00000'10							
 
-	; WR6 - Command register
+	; WR6 - command register
 	;   - D6,D5,D4,D3,D2 = 10011 -> LOAD command, to start copy from A to B
 	DB %1'10011'11
 	DB %1'00001'11								; Again WR6, now enable DMA and copy!

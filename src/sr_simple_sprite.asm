@@ -8,7 +8,7 @@ sample
 	WORD 0
 
 ;----------------------------------------------------------;
-;           Memmory Structure for Single Sprite            ;
+;           Memory Structure for Single Sprite            ;
 ;----------------------------------------------------------;
 ; WORD 	[#SR_MS_: X position]
 ; BYTE 	[#SR_MS_Y: Y position], 
@@ -22,7 +22,7 @@ sample
 ;	 DB 50, 1, 3, SR_SDB_EXPLODE, 0, 0
 ;	 WORD 0
 
-; Offsets for Memmory Structure
+; Offsets for Memory Structure
 SR_MS_X						= 0		
 SR_MS_Y						= 2
 SR_MS_STATE					= 3
@@ -31,17 +31,17 @@ SR_MS_NEXT					= 5
 SR_MS_REMAINING				= 6
 SR_MS_DB_POINTER			= 7
 
-SR_MS_SIZE					= 10					; Size for single memmory structure
+SR_MS_SIZE					= 10					; Size for single memory structure
 
 ; Possible values for #SR_MS_STATE.
 ; Bits:
-;   - 0: 	Visible flag, 1 = displayed, 0 = hiden
-;   - 1-7: 	Used by particluar sprite engine
+;   - 0: 	Visible flag, 1 = displayed, 0 = hidden
+;   - 1-7: 	Used by particular sprite engine
 SR_MS_STATE_VISIBLE			= %00000001
 SR_MS_STATE_VISIBLE_BIT		= 0
 
 ; DB IDs
-SR_SDB_EXPLODE				= 201					; Explositon
+SR_SDB_EXPLODE				= 201					; Explosion
 SR_SDB_FIRE					= 202					; Fire
 SR_SDB_HIDE					= 255					; Hides Sprite
 
@@ -80,7 +80,7 @@ SrSetSpriteId
 ;  - IX - pointer to "Memmory Structure for Single Sprite"
 SrUpdateSpritePosition
 
-	; Move the sprite to the X position, the 9-bit value reqires a few tricks. 
+	; Move the sprite to the X position, the 9-bit value requires a few tricks. 
 	LD BC, (IX + SR_MS_X)						
 
 	LD A, C										; Set LSB from BC (X)
@@ -119,7 +119,7 @@ SrHideSprite
 ;----------------------------------------------------------;
 ; Show the current sprite pattern and switch the pointer to the next one so the following method call will display it
 ; Input
-;  - IX - pointer to "Memmory Structure for Single Sprite"
+;  - IX - pointer to "Memory Structure for Single Sprite"
 SrUpdateSpritePattern
 
 	; Switch to the next DB record if all bytes from the current one have been used
@@ -142,7 +142,7 @@ SrUpdateSpritePattern
 
 .afterRecordChange
 
-	; "Memmory Structure for Single Sprite" has been fully updated to current frame from #srSpriteDB
+	; "Memmory Structure for Single Sprite" has been fully updated to a current frame from #srSpriteDB
 	; Update the remaining animation frames counter.
 	LD A, (IX + SR_MS_REMAINING)				
 	DEC A
@@ -150,7 +150,7 @@ SrUpdateSpritePattern
 
 	; Show sprite pattern
 	LD HL, (IX + SR_MS_DB_POINTER)				; HL points to a memory location holding a pointer to the current DB position with the next sprite pattern
-	LD A, (HL)									; A holds next sprite pattern
+	LD A, (HL)									; A holds the next sprite pattern
 	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
 	NEXTREG _SPR_REG_ATTR_3_H38, A
 
@@ -173,7 +173,7 @@ SrSetSpritePattern
 	; Find DB record
 	LD HL, srSpriteDB							; HL points to the beginning of the DB				
 	LD BC, 0									; Do not limit CPIR search
-	CPIR										; CPIR will keep increasing HL until it finds record ID from A
+	CPIR										; CPIR will keep increasing HL until it finds a record ID from A
 
 	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern. 	
 	LD A, (HL)	

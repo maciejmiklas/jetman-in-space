@@ -3,7 +3,5 @@
     "editor.insertSpaces": false,
     "editor.fontSize": 13, 
 	"editor.rulers": [140],
-	"editor.hover.enabled": false,
-	"z80-macroasm.format.uppercaseKeywords": true,
-	"editor.acceptSuggestionOnCommitCharacter": false,
+	"z80-macroasm.format.uppercaseKeywords": true
 }

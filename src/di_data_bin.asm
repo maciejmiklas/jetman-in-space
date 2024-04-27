@@ -12,11 +12,11 @@ DI_BANK42_PALETTE		= 42
 	MMU 6, DI_BANK42_PALETTE
 	ORG _RAM_SLOT_6_START_HC000
 
-; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usabe as is.
+; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 diTilemapBin INCBIN "assets/tiles.map"
 diTilemapBinLength = $ - diTilemapBin
 
-; Sprite editor settings: 4bit, 8x8. After downloading manually removed empty data!.
+; Sprite editor settings: 4bit, 8x8. After downloading manually removed empty data!
 diTilesBin INCBIN "assets/tiles.spr"
 diTilesBinLength = $ - diTilesBin
 

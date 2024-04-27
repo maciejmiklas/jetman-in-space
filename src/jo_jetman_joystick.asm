@@ -23,7 +23,7 @@ JO_MOVE_DOWN_MASK		= %0000'1000
 
 JO_MOVE_MSK_LR			= %0000'0011			; Left + Right
 
-; Holds currently pressed direction button. State will be updated right on the beginnig of each joysting loop
+; Holds currently pressed direction button. State will be updated right at the beginning of each joystick loop
 joJoyDirection			BYTE JO_MOVE_INACTIVE
 
 ; This byte holds the direction in which Jetman is facing(#JO_MOVE_XXX). It takes movement bits as arguments but gets updated only when 
@@ -47,7 +47,7 @@ JoInput
 	; Joystick is disabled
 	DEC A										; Decrement disabled counter
 	LD (joDisabledCnt), A
-	RET											; Do not process input, as joystick is disabled
+	RET											; Do not process input, as the joystick is disabled
 .afterjoystickDisabled	
 
 	CALL JoStart
@@ -55,55 +55,55 @@ JoInput
 	; Key Rright pressed ?
 	LD A, _KB_6_TO_0_HEF						; $EF -> A (6...0)
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A
-	BIT 2, A									; Bit 2 reset -> Rright pessed
+	BIT 2, A									; Bit 2 reset -> Rright pressed
 	CALL Z, JoMoveRight
 
 	; Joystick right pressed ?
 	LD A, _JOY_MASK_H20							; Activete joystick register
 	IN A, (_JOY_REG_H1F) 						; Read joystick input into A
-	BIT 0, A									; Bit 0 set -> Right pessed
+	BIT 0, A									; Bit 0 set -> Right pressed
 	CALL NZ, JoMoveRight			
 
 	; Key Left pressed ?
 	LD A, _KB_5_TO_1_HF7						; $FD -> A (5...1)
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A
-	BIT 4, A									; Bit 4 reset -> Left pessed
+	BIT 4, A									; Bit 4 reset -> Left pressed
 	CALL Z, JoMoveLeft		
 
 	; Joystick left pressed ?
 	LD A, _JOY_MASK_H20							; Activete joystick register
 	IN A, (_JOY_REG_H1F) 						; Read joystick input into A
-	BIT 1, A									; Bit 1 set -> Left pessed
+	BIT 1, A									; Bit 1 set -> Left pressed
 	CALL NZ, JoMoveLeft
 
 	; Key Up pressed ?
 	LD A, _KB_6_TO_0_HEF						; $EF -> A (6...0)
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A
-	BIT 3, A									; Bit 3 reset -> Up pessed
+	BIT 3, A									; Bit 3 reset -> Up pressed
 	CALL Z, JoMoveUp	
 
 	; Joystick up pressed ?
 	LD A, _JOY_MASK_H20							; Activete joystick register
 	IN A, (_JOY_REG_H1F) 						; Read joystick input into A
-	BIT 3, A									; Bit 3 set -> Up pessed
+	BIT 3, A									; Bit 3 set -> Up pressed
 	CALL NZ, JoMoveUp
 
 	; Key Down pressed ?
 	LD A, _KB_6_TO_0_HEF						; $EF -> A (6...0)
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A
-	BIT 4, A									; Bit 4 reset -> Down pessed
+	BIT 4, A									; Bit 4 reset -> Down pressed
 	CALL Z, JoMoveDown				
 
 	; Joystick down pressed ?
 	LD A, _JOY_MASK_H20							; Activete joystick register
 	IN A, (_JOY_REG_H1F) 						; Read joystick input into A
-	BIT 2, A									; Bit 2 set -> Down pessed
+	BIT 2, A									; Bit 2 set -> Down pressed
 	CALL NZ, JoMoveDown
 
 	; Key Fire (Z) pressed ?
 	LD A, _KB_V_TO_Z_HFE						; $FD -> A (5...1)
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A
-	BIT 1, A									; Bit 1 reset -> Z pessed
+	BIT 1, A									; Bit 1 reset -> Z pressed
 	CALL Z, JoPressFire
 
 	; Joystick fire pressed ?
@@ -143,7 +143,7 @@ JoMoveUp
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (joJetmanDirection)					; Update #jetState by reseting down and setting up
+	LD A, (joJetmanDirection)					; Update #jetState by resetting down and setting up
 	RES JO_MOVE_DOWN_BIT, A
 	SET JO_MOVE_UP_BIT, A
 	LD (joJetmanDirection), A
@@ -271,7 +271,7 @@ JoMoveDown
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-	LD A, (joJetmanDirection)					; Update #jetState by reseting Up/Hover and setting Down
+	LD A, (joJetmanDirection)					; Update #jetState by resetting Up/Hover and setting Down
 	RES JO_MOVE_UP_BIT, A
 	SET JO_MOVE_DOWN_BIT, A	
 	LD (joJetmanDirection), A
@@ -284,7 +284,7 @@ JoMoveDown
 ;                         #JoStart                         ;
 ;----------------------------------------------------------;
 JoStart
-	LD A, JO_MOVE_INACTIVE						; Update #jetState by reseting left/hover and setting right
+	LD A, JO_MOVE_INACTIVE						; Update #jetState by resetting left/hover and setting right
 	LD (joJoyDirection), A
 
 	RET 										; END #JoStart

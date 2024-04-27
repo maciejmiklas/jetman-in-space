@@ -56,7 +56,7 @@ JtIncJetX
 	JR C, .lessThanMaxX
 	LD BC, 1									; Jetman is above 315 -> set to 1
 .lessThanMaxX
-	LD (jtX), BC								; Update new X postion
+	LD (jtX), BC								; Update new X position
 
 	RET											; END #JtIncJetX 
 

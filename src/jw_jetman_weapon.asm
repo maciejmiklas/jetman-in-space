@@ -2,11 +2,11 @@
 ;                      Jetman Weapon                       ;
 ;----------------------------------------------------------;
 
-; Sprites for single shots (#jwShot), based on "Memmory Structure for Single Sprite" from "sr_simple_sprite.asm"
+; Sprites for single shots (#jwShot), based on "Memory Structure for Single Sprite" from "sr_simple_sprite.asm"
 ;
 ; Possible values for #SR_MS_STATE
 ; Bits:
-;   - 0: 	Visible flag, 1 = displayed, 0 = hiden  (reserved in sr_simple_sprite.asm)
+;   - 0: 	Visible flag, 1 = displayed, 0 = hidden (reserved in sr_simple_sprite.asm)
 ;   - 1: 	1 = shot moving left, 0 = shot moving right
 ;   - 2-7: 	Not used
 
@@ -53,7 +53,7 @@ jwShotDelayCnt
 JW_FIRE_DELAY					= 3
 
 JW_SHOT_SIZE					= 6				; Amount of shots that can be simultaneously fired
-JW_SHOT_INC_X					= 3				; The amount of pixels to move single shot horizontally on single frame
+JW_SHOT_INC_X					= 3				; The amount of pixels to move a single shot horizontally on a single frame
 
 ;----------------------------------------------------------;
 ;                    #JwMoveShots                          ;
@@ -67,7 +67,7 @@ JwMoveShots
 	PUSH BC										; Preserve B for loop counter
 
 	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_VISIBLE						; Reset all bits but visiblity
+	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
 	; Shot is visible
@@ -83,7 +83,7 @@ JwMoveShots
 	LD BC, (IX + SR_MS_X)	
 	ADD BC, -JW_SHOT_INC_X
 
-	; Check whether shot is outside screen 
+	; Check whether a shot is outside the screen 
 	LD A, B
 	CP SC_X_MIN_POS								; If B > 0 then X is also > 0
 	JR NZ, .afterMoving
@@ -108,11 +108,11 @@ JwMoveShots
 	CP 59										; MSB > 59 
 	JR C, .afterMoving
 	
-	; Shot ist after 315 -> hide it
+	; Shot is after 315 -> hide it
 	CALL SrHideSprite
 	JR .continue	
 .afterMoving
-	LD (IX + SR_MS_X), BC						; Update new X postion
+	LD (IX + SR_MS_X), BC						; Update new X position
 	CALL SrUpdateSpritePosition
 
 .continue
@@ -144,7 +144,7 @@ JwAnimateShots
 	PUSH BC										; Preserve B for loop counter
 
 	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_VISIBLE						; Reset all bits but visiblity
+	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
 	; Shot is visible
@@ -210,7 +210,7 @@ JwFire
 
 	; Check whether the current #jwShotX is not visible and can be reused
 	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_VISIBLE						; Reset all bits but visiblity
+	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
 	CP 0
 	JR Z, .afterFound							; Jump if visibility is not set -> hidden, can be reused
 
@@ -254,13 +254,13 @@ JwFire
 .afterMoving
 	LD (IX + SR_MS_STATE), A					; Store state
 
-	; Setup laser beam pattern, IX already points to the right memmory address
+	; Setup laser beam pattern, IX already points to the right memory address
 	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
 
 	LD A, SR_SDB_FIRE
 	CALL SrSetSpritePattern						; Set sprite pattern to laser beam
 
-	CALL SrUpdateSpritePosition					; Set X,Y position for laser beam
+	CALL SrUpdateSpritePosition					; Set X, Y position for laser beam
 	CALL SrUpdateSpritePattern					; Render laser beam
 
 	RET											; END #JoPressFire

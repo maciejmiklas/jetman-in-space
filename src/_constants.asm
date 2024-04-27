@@ -146,8 +146,8 @@ _SPR_REG_ATTR_4_H39		= $39
 ;    - 011: L U S
 ;    - 100: U S L
 ;    - 101: U L S
-;    - 110: S(U+L) ULA and Layer 2 combined, colours clamped to 7
-;    - 111: S(U+L-5) ULA and Layer 2 combined, colours clamped to [0,7]
+;    - 110: S(U+L) ULA and Layer 2 combined, colors clamped to 7
+;    - 111: S(U+L-5) ULA and Layer 2 combined, colors clamped to [0,7]
 ;  - 1: Over border (1 = yes)(Back to 0 after a reset)
 ;  - 0: Sprites visible (1 = visible)(Back to 0 after a reset)
 _SPR_REG_SETUP_H15		= $15
@@ -189,7 +189,7 @@ _TILE_ATTRIBTE_H6C		= $6C
 ; The value read back should be treated as having a fully significant 8-bit value.
 ;
 ; bits 7-6: Read back as zero, write values ignored
-; bits 5-0: MSB of address of the tilemap in Bank 5 ($A000 - $BFFF)
+; bits 5-0: MSB of the address of the tilemap in Bank 5 ($A000 - $BFFF)
 _TILE_MAP_ADDRESR_H6E	= $6E
 
 ; Tile Definitions Base Address
@@ -198,7 +198,7 @@ _TILE_MAP_ADDRESR_H6E	= $6E
 ; The value read back should be treated as having a fully significant 8-bit value.
 ; Bits:
 ;  - 7-6: Read back as zero, write values ignored
-;  - 5-0: MSB of address of tile definitions in Bank 5
+;  - 5-0: MSB of the address of tile definitions in Bank 5
 _TILE_DEF_ADDRESR_H6F	= $6F
 
 ;----------------------------------------------------------;

@@ -1,11 +1,7 @@
 ;----------------------------------------------------------;
-;                        Text on Screen                    ;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
 ;                        #TxPrintNumHL                     ;
 ;----------------------------------------------------------;
-; Print 16 bit numer from HL. Each character takes 8x8 pixels
+; Print 16 bit number from HL. Each character takes 8x8 pixels
 ; Method Parameters:
 ;  - IN: HL = 16-bit number to print
 ;        B - Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
@@ -22,7 +18,7 @@ TxPrintNumHL
 
 	; Print text from formatted16 on screen using tiles
 	LD DE, formatted16							; Contains 16-bit number as ASCII
-	LD C, B										; C - Character offset from top left corner.
+	LD C, B										; C - Character offset from the top left corner.
 	LD B, 5										; Print 5 characters
 	CALL TiPrintText
 
@@ -38,7 +34,7 @@ formatted16
 ; Converts a given 16-bit number into a 5-character string with padding zeros. 
 ; Method Parameters:
 ;   - IN:  HL = 16-bit number to convert
-;   - OUT: ASCII string at DE, 5-charactes long, 0 padded.
+;   - OUT: ASCII string at DE, 5-characters long, 0 padded.
 TxNum16ToString
 
 	; Each line prints one digit into DE, starting with the most significant. 
@@ -67,6 +63,6 @@ TxNum16ToString
 	JR	C, .loop
 	
 	SUB	HL, BC									; ADD above caused an overflow. Subsctract will turn the value one step back, ie: 59857 -> 4321 for input: 54321
-	LD (DE), A									; A contains the ASCII value of the most significant number, store it in DE.
-	INC DE										; Move DE offset to the next position to store next number
+	LD (DE), A									; A contains the ASCII value of the most significant number, stored in DE
+	INC DE										; Move DE offset to the next position to store the next number
 	RET

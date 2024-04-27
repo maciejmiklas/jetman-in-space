@@ -24,17 +24,17 @@ TI_CHAR_PALETTE_BYTE	= 0						; Palette byte for tile characters
 ; Method Parameters:
 ;  - IN: DE - pointer to the text
 ;       B - amount of characters in DE  
-;       C - Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
+;       C - Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
 ;           For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.         
 TiPrintText
 	LD HL, TI_START_OF_TILEMAP					; HL points to screen memory containing tilemap 
 	DEC HL
 	
-	; Move HL by 2*C so that HL points to the position of first character
+	; Move HL by 2*C so that HL points to the position of the first character
 	PUSH DE
 	LD D, 0
 	LD E, C
-	SLA E										; E*2 becaues each tile has 2 bytes
+	SLA E										; E*2 because each tile has 2 bytes
 	ADD HL, DE
 	POP DE  
 
@@ -70,7 +70,7 @@ TiLoadTiles
 
 	; Copy palette
 	LD HL, diTilePaletteBin						; Address of palette data in memory
-	LD B, diTilePaletteBinLength				; Number of colours to copy
+	LD B, diTilePaletteBinLength				; Number of colors to copy
 .copyPalette
 	LD A, (HL)									; Load RRRGGGBB into A
 	INC HL										; Increment to next entry
