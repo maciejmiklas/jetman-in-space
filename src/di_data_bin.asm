@@ -49,6 +49,6 @@ diTilePaletteBinLength = $ - diTilePaletteBin
 ;   - 34-37: low, stand
 ;   - 38-41: explosion
 ;   - 42-44: fire	
-diSpritesBin INCBIN "assets/jetman.spr"
+diSpritesBin INCBIN "assets/sprites_001.spr"
 
 diSpritesBinLength = $ - diSpritesBin

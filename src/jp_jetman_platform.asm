@@ -4,7 +4,7 @@
 
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
-jpPlatformWalk DB 3, 94,12,65, 142,83,136, 54,190,240
+jpPlatformWalk DB 3, 94,12,65, 142,75,136, 54,190,240
 
 ; Coordinates for bumping right into a platform
 ; [amount of plaftorms], [[X], [Y start], [Y end]],...]

@@ -21,6 +21,10 @@ JW_MS_STATE_RIGHT_VAL			= 0
 JW_MS_STATE_LEFT				= 1
 JW_MS_STATE_LEFT				= 1
 
+; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
+JW_ADJUST_FIRE_X				= 10			
+JW_ADJUST_FIRE_Y				= 4
+
 jwShot
 	WORD 0
 	DB 0, 0, 10, SR_SDB_FIRE, 0, 0
@@ -149,22 +153,7 @@ JwAnimateShots
 	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
 	; Shot is visible
 
-	; xxxxxxx
-	/*
-	PUSH BC
-	PUSH DE
-	PUSH HL
-	LD B, 30
-	LD HL, IX
-	CALL TxPrintNumHL
-	LD D, 2
-	CALL UtPause
-	POP HL
-	POP DE
-	POP BC
-	*/
-	; xxxxxxx
-	
+
 	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
 	CALL SrUpdateSpritePattern
 
@@ -174,18 +163,6 @@ JwAnimateShots
 	ADD IX, DE
 	POP BC
 	DJNZ .loop									; Jump if B > 0 (starts with B = #SR_MS_SIZE)
-
-	; xxxxxxx
-	/*
-	LD D, 2
-	CALL UtPause
-	LD HL, 0
-	LD B, 30
-	CALL TxPrintNumHL
-	LD D, 2
-	CALL UtPause
-	*/
-	; xxxxxxx
 
 	RET											; END #JwAnimateShots
 
@@ -222,14 +199,6 @@ JwFire
 .afterFound										
 	; We are here because free #jwShotX has been found, and IX points to it
 
-	; Set X coordinate for laser beam
-	LD BC, (jtX)
-	LD (IX + SR_MS_X), BC
-
-	; Set Y coordinate for laser beam
-	LD A, (jtY)
-	LD (IX + SR_MS_Y), A
-
 	; Set sprite flags
 	LD A, SR_MS_STATE_VISIBLE					; Sprite is visible
 	LD B, A										; Store A in B terporarly
@@ -245,14 +214,30 @@ JwFire
 	LD A, B										; Restore A
 	RES JW_MS_STATE_DIRECTION_BIT, A
 
+	; Set X coordinate for laser beam
+	LD HL, (jtX)
+	ADD HL, JW_ADJUST_FIRE_X
+	LD (IX + SR_MS_X), HL
+
 	JR .afterMoving
 .afterMovingRight
 	; Jetman is moving left
+
+	; Set X coordinate for laser beam
+	LD HL, (jtX)
+	ADD HL, -JW_ADJUST_FIRE_X
+	LD (IX + SR_MS_X), HL
+
 	LD A, B										; Restore A
 	SET JW_MS_STATE_DIRECTION_BIT, A
 
 .afterMoving
 	LD (IX + SR_MS_STATE), A					; Store state
+
+	; Set Y coordinate for laser beam
+	LD A, (jtY)
+	ADD A, JW_ADJUST_FIRE_Y
+	LD (IX + SR_MS_Y), A
 
 	; Setup laser beam pattern, IX already points to the right memory address
 	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
