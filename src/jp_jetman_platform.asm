@@ -6,11 +6,11 @@
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
 jpPlatformWalk DB 3, 94,12,65, 142,75,136, 54,190,240
 
-; Coordinates for bumping right into a platform
+; Coordinates for bumping right into a platform (Jetman faces left to bump from the right) 
 ; [amount of plaftorms], [[X], [Y start], [Y end]],...]
 jpPlatformBumpRight DB 3, 70,93,119, 140,142,164 ,245,54,76
 
-; Coordinates for bumping right into a platform
+; Coordinates for bumping right into a platform 
 ; [amount of plaftorms], [[X], [Y start], [Y end]],...]
 jpPlatformBumpLeft DB 3, 9,93,119, 71,142,164 ,181,54,76
 
@@ -233,11 +233,12 @@ JpBumpIntoPlatformBottom
 	POP BC
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET											; END #JpBumpIntoPlatformLR
+	RET											; END #JpBumpIntoPlatformBottom
 
 ;----------------------------------------------------------;
 ;                 #JpBumpIntoPlatformLR                    ;
 ;----------------------------------------------------------;
+; Bump into a platform from left or right
 ; Input
 ;  - IX:	jpPlatformBumpLeft or jpPlatformBumpRight
 ;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
@@ -259,9 +260,9 @@ JpBumpIntoPlatformLR
 
 	LD A, (jtX)									; A holds current X position
 	CP C
-	JR NZ, .platformsLoopEnd					; Jump if Jetman is not close to the right edge of the platform
+	JR NZ, .platformsLoopEnd					; Jump if Jetman is not close to the left/right edge of the platform
 
-	; Jetman is close to the right edge of the platform
+	; Jetman is close to the left/right edge of the platform
 	LD A, (jtY)									; A holds current Y position
 	CP D										; Compare #jtY position to [Y start]
 	JR C, .platformsLoopEnd						; Jump if #jtY < [Y start]
@@ -269,7 +270,7 @@ JpBumpIntoPlatformLR
 	CP E
 	JR NC, .platformsLoopEnd					; Jump if #jtY > [Y end]
 
-	; Jetman hits the platform from the right!
+	; Jetman hits the platform from the left/right!
 	LD A, H										; Change air state, H is a method param
 	LD (jtAir), A
 

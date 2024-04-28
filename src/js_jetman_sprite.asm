@@ -145,13 +145,13 @@ JsUpdateJetmanSpritePosition
 	LD A,  (jtY)
 	LD L, A
 	CALL TxPrintNumHL		
-
+/*
 	LD B, 20
 	LD H, 0
 	LD A, (jtGnd)
 	LD L, A
 	CALL TxPrintNumHL	
-/*
+
 	LD B, 30
 	LD H, 0
 	LD A, (joJoyDirection)

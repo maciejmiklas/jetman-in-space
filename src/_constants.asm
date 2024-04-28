@@ -155,7 +155,7 @@ _SPR_REG_SETUP_H15		= $15
 _SPR_PORT_H303B			= $303B
 
 ; bit 7 = Visible flag (1 = displayed)
-; bits 5-0 = Pattern used by sprite (0-63), we will use pattern 0
+; bits 5-0 = Pattern used by sprite (0-63)
 _SPR_PATTERN_SHOW		= %10000000
 _SPR_PATTERN_HIDE		= %00000000
 

@@ -55,13 +55,16 @@ jwShotDelayCnt
 	DB 0
 
 JW_FIRE_DELAY					= 3
-
 JW_SHOT_SIZE					= 6				; Amount of shots that can be simultaneously fired
-JW_SHOT_INC_X					= 3				; The amount of pixels to move a single shot horizontally on a single frame
+
+; We are using platform coordinates for bumping, which are too thick for the thin shot
+JW_PLATFROM_MARGIN_UP			= 12
+JW_PLATFROM_MARGIN_DOWN			= 5
 
 ;----------------------------------------------------------;
 ;                    #JwMoveShots                          ;
 ;----------------------------------------------------------;
+; Modifies: ALL
 JwMoveShots
 	; Loop ever all jwShot# skipping hidden sprites
 	LD IX, jwShot	
@@ -85,14 +88,20 @@ JwMoveShots
 
 	; Moving left - decrease X coordinate
 	LD BC, (IX + SR_MS_X)	
-	ADD BC, -JW_SHOT_INC_X
+	DEC BC
+
+	; Check the collision with the platform from the left side
+	PUSH BC
+	LD IY, jpPlatformBumpRight					; Jetman faces left, the shot can hit platform from the right
+	CALL JwHitPlaftormLR
+	POP BC
 
 	; Check whether a shot is outside the screen 
 	LD A, B
-	CP SC_X_MIN_POS								; If B > 0 then X is also > 0
+	CP SC_X_MIN_POS								; B holds MSB from X, if B > 0 than X > 256
 	JR NZ, .afterMoving
 	LD A, C
-	CP SC_X_MIN_POS + 2 * JW_SHOT_INC_X			; If C > 0 then X is also > 0
+	CP SC_X_MIN_POS + 5							; C holds LSB from X, ff C != 5 then X is> 5
 	JR NC, .afterMoving
 	; X == 0 (both A and B are 0) -> shot out of screen - hide it
 	CALL SrHideSprite
@@ -102,7 +111,14 @@ JwMoveShots
 
 	; Moving right - increase X coordinate
 	LD BC, (IX + SR_MS_X)	
-	ADD BC, JW_SHOT_INC_X
+	INC BC
+
+	; Check the collision with the platform from the right side
+	PUSH BC
+	LD IY, jpPlatformBumpLeft					; Jetman faces rgiht, the shot can hit platform from the left
+	CALL JwHitPlaftormLR
+	POP BC
+
 	; If X >= 315 then hide shot 
 	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
 	LD A, B										; Load MSB from X into A
@@ -114,19 +130,69 @@ JwMoveShots
 	
 	; Shot is after 315 -> hide it
 	CALL SrHideSprite
-	JR .continue	
+	JR .continue
 .afterMoving
 	LD (IX + SR_MS_X), BC						; Update new X position
 	CALL SrUpdateSpritePosition
 
 .continue
-	; Move HL to the beginning of the next #jwShotX
+	; Move HL to the beginning of the next #jwShotXX
 	LD DE, SR_MS_SIZE
 	ADD IX, DE
 	POP BC
 	DJNZ .loop									; Jump if B > 0 (starts with B = #SR_MS_SIZE)
 
 	RET 										; END #JwMoveShots
+
+;----------------------------------------------------------;
+;                  #JwHitPlaftormLR                        ;
+;----------------------------------------------------------;
+; A shot can hit platform from left or right
+; Input
+;  - IX: 	#jwShotXX - shot data
+;  - IY:	jpPlatformBumpLeft or jpPlatformBumpRight
+; Modifies: ALL
+JwHitPlaftormLR
+
+	LD B, (IY)									; Load into B the number of platforms to check
+.platformsLoop	
+	INC IY										; HL points to [X]
+	LD C, (IY)									; C contains [X]
+
+	INC IY										; HL points to [Y start]
+	LD A, (IY)	
+	ADD JW_PLATFROM_MARGIN_UP					; Increase start Y to make platform thinner
+	LD D, A										; D contains [Y start]								
+
+	INC IY										; HL points to [Y end]
+	LD A, (IY)
+	SUB JW_PLATFROM_MARGIN_DOWN					; Decrease end Y to make the platform thinner
+	LD E, A										; E contains [Y end]
+
+	LD A, (IX + SR_MS_X)						; A holds shot current X position (only LSB, platrofrm are limited to X <= 255)
+	CP C
+
+	JR NZ, .platformsLoopEnd					; Jump if shot is not close to the let/right edge of the platform
+
+	; Shot is close to the let/right edge of the platform. Now, check whether it's within vertical bounds
+	LD A, (IX + SR_MS_Y)						; A holds current shot Y position
+	
+	CP D										; Compare shot position to [Y start]
+	JR C, .platformsLoopEnd						; Jump if shot < [Y start]
+
+	CP E
+	JR NC, .platformsLoopEnd					; Jump if shot > [Y end]
+
+	; Shot hits the platform from the let/right!
+	PUSH BC
+	CALL SrSetSpriteId
+	LD A, SR_SDB_EXPLODE
+	CALL SrSetSpritePattern						; shot expoldes
+	POP BC
+
+.platformsLoopEnd
+	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
+	RET											; END #JwHitPlaftormLR
 
 ;----------------------------------------------------------;
 ;                  #JwAnimateShots                         ;
