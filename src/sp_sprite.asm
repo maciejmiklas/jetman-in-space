@@ -6,7 +6,9 @@
 ;                   Reserved Sprite IDs                    ;
 ;----------------------------------------------------------;
 ; js_jetman_sprite: 	00-09
-; jw_jetman_weapon:		10-20
+; jw_jetman_weapon:		10-19
+; ef_enemy_fly_XX:		20-39
+
 
 ;----------------------------------------------------------;
 ;                    #SpLoadSpritesFPGA                    ;
@@ -91,19 +93,19 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 ;----------------------------------------------------------;
 ;                   #SpAnimateSprites                      ;
 ;----------------------------------------------------------;
-SP_ANIM_FR			= 5							; Change sprite pattern every few frames     
-spFrameCnt			BYTE 0						; The animation counter is used to update the sprite pattern every few FP
+SP_ANIMATE_DELAY		= 10					; Change sprite pattern every few lops. Loop speed is controled by: #ScWaitForScanline     
+spDelayCnt				BYTE 0					; The delay counter for sprite animation
 
 SpAnimateSprites
-	LD A, (spFrameCnt)
+	LD A, (spDelayCnt)
 	INC A
-	LD (spFrameCnt), A
+	LD (spDelayCnt), A
 
-	CP SP_ANIM_FR
-	RET C										; Return if #spFrameCnt <  #SP_ANIM_FR
+	CP SP_ANIMATE_DELAY
+	RET C										; Return if #spDelayCnt <  #SP_ANIMATE_DELAY
 
-	LD A, 0										; #spFrameCnt == #SP_ANIM_FR -> reset counter and update the animation pattern
-	LD (spFrameCnt), A
+	LD A, 0										; Reset delay counter
+	LD (spDelayCnt), A
 
 	; Update sprite patterns
 	CALL JsUpdateJetmanSpritePattern

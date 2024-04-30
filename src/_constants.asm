@@ -234,7 +234,6 @@ _JOY_REG_H1F			= $1F					; Activates Kempston input
 ;----------------------------------------------------------;
 ;                         Display                          ;
 ;----------------------------------------------------------;
-_DI_SYNC_SL				= 192					; Scanline to synch to. 192 for 60FPS, value above/below changes pause time
 _DI_COLOR_START_H5800	= $5800					; Start of Display Color RAM
 _DI_COLOR_ENND_H5AFF	= $5AFF					; End of Display Color RAM
 _DI_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800

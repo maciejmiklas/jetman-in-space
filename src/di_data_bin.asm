@@ -48,6 +48,8 @@ diTilePaletteBinLength = $ - diTilePaletteBin
 ;   - 34-37: low, stand
 ;   - 38-41: explosion
 ;   - 42-44: fire	
+;   - 45-47: Flying enemey 1
+;   - 48-50: Flying enemey 2
 diSpritesBin INCBIN "assets/sprites_001.spr"
 
 diSpritesBinLength = $ - diSpritesBin

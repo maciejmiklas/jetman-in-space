@@ -12,7 +12,7 @@ GameInit
 ;                      #GameLoop                           ;
 ;----------------------------------------------------------;
 GameLoop	
-	CALL ScWaitOneFrame
+	CALL ScWaitForScanline
 	CALL JoInput
 	CALL JsUpdateJetmanSpritePosition
 	CALL JoDisabled

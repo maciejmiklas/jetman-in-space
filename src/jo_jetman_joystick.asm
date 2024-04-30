@@ -33,11 +33,24 @@ joJoyDirection			BYTE JO_MOVE_INACTIVE
 ; Prolonged inactivity resets #joJetmanDirection to #JO_MOVE_INACTIVE.
 joJetmanDirection		BYTE JO_MOVE_INACTIVE	; Jetman initially hovers, no movement
 
+JO_JOY_DELAY			= 2					; Probe joystick every few loops. Loop speed is controled by: #ScWaitForScanline     
+joDelayCnt				BYTE 0					; The delay counter for joisting input and Jetman movement speed
 
 ;----------------------------------------------------------;
 ;                         #JoInput                         ;
 ;----------------------------------------------------------;
 JoInput
+
+	; Slow down jousting input and, therefore, speed on jet man movement
+	LD A, (joDelayCnt)
+	INC A
+	LD (joDelayCnt), A
+
+	CP JO_JOY_DELAY
+	RET C										; Return if #joDelayCnt <  #JO_JOY_DELAY
+
+	LD A, 0										; Reset delay counter
+	LD (joDelayCnt), A
 
 	; Handle disabled joystick
 	LD A, (joDisabledCnt)

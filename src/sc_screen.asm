@@ -7,6 +7,8 @@ SC_X_MAX_POS			= 315
 SC_Y_MIN_POS			= 10
 SC_Y_MAX_POS			= 240
 
+SC_SYNC_SL				= 1						; Scanline to synch to
+
 ;----------------------------------------------------------;
 ;                    #ScSetupScreen                        ;
 ;----------------------------------------------------------;
@@ -28,22 +30,22 @@ ScSetupScreen
 	RET											; END ScSetupScreen
 
 ;----------------------------------------------------------;
-;                    #ScWaitOneFrame                       ;
+;                    #ScWaitForScanline                       ;
 ;----------------------------------------------------------;
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
 ;
-; The code waits for the given scanline (192) in the first loop, and then in the second loop, it waits again for the same scanline (192). 
-; This method pauses for the whole frame or a bit more, depending on which scanline display is when calling "ScWaitOneFrame".
+; The code waits for the given scanline (#SC_SYNC_SL) in the first loop, and then in the second loop, it waits again for the same scanline. 
+; This method pauses for the whole frame or a bit more, depending on which scanline display is when calling "ScWaitForScanline".
 ; 
 ; Based on: https://github.com/robgmoran/DougieDoSource
 
-ScWaitOneFrame     
+ScWaitForScanline     
 ; Read NextReg $1F - LSB of current raster line
 	LD BC, _GL_REG_SELECT_H243B					; TBBlue Register Select
 	LD A, _GL_REG_VL_H1F						; Port to access - Active Video Line LSB Register
 	OUT (C), A									; Select NextReg $1F
 	INC B										; TBBlue Register Access
-	LD A, _DI_SYNC_SL							; Set Scanline to wait for
+	LD A, SC_SYNC_SL							; Set Scanline to wait for
 	LD D, A
 
 ; Wait for Scanline given by H, i.e. 192
@@ -60,4 +62,4 @@ ScWaitOneFrame
 	CP D
 	JR NZ, .waitAgainForScanline
 
-	RET											; END ScWaitOneFrame
+	RET											; END ScWaitForScanline

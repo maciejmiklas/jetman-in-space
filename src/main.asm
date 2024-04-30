@@ -32,7 +32,7 @@ mainLoop
 	INCLUDE "jt_jetman.asm"
 	INCLUDE "js_jetman_sprite.asm"
 	INCLUDE "jp_jetman_platform.asm"
-	INCLUDE "enemies.asm"
+	INCLUDE "ef_enemy_fly_01.asm"
 	INCLUDE "game.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
