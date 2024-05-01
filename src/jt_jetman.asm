@@ -11,8 +11,8 @@ JT_AIR_FLY				= 1						; Jetman is flaying
 JT_AIR_HOOVER			= 2						; Jetman is hovering
 JT_AIR_FALL_RIGHT		= 3						; Jetmal falls from paltform on the right
 JT_AIR_FALL_LEFT		= 4						; Jetmal falls from paltform on the left
-JT_AIR_BUMP_RIGHT		= 5						; Jetban bumps into a platform from the right
-JT_AIR_BUMP_LEFT		= 6						; Jetban bumps into a platform from the left
+JT_AIR_BUMP_RIGHT		= 5						; Jetban bumps into a platform from the right, he faces/moves left
+JT_AIR_BUMP_LEFT		= 6						; Jetban bumps into a platform from the left, he faces/moves right
 JT_AIR_BUMP_BOTTOM		= 7						; Jetban bumps into a platform from the bottom
 
 JT_JOY_DISABLED_FALL	= 6						; Disable the joystick for a few frames because Jetman is falling from the platform

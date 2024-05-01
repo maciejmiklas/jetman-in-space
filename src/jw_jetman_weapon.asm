@@ -92,7 +92,8 @@ JwMoveShots
 
 	; Check the collision with the platform from the left side
 	PUSH BC
-	LD IY, jpPlatformBumpRight					; Jetman faces left, the shot can hit platform from the right
+	LD IY, jpPlatformBump						; Jetman faces left, the shot can hit platform from the right
+	LD H, JT_AIR_BUMP_RIGHT
 	CALL JwHitPlaftormLR
 	POP BC
 
@@ -115,7 +116,8 @@ JwMoveShots
 
 	; Check the collision with the platform from the right side
 	PUSH BC
-	LD IY, jpPlatformBumpLeft					; Jetman faces rgiht, the shot can hit platform from the left
+	LD IY, jpPlatformBump					; Jetman faces rgiht, the shot can hit platform from the left
+	LD H, JT_AIR_BUMP_LEFT
 	CALL JwHitPlaftormLR
 	POP BC
 
@@ -144,20 +146,40 @@ JwMoveShots
 
 	RET 										; END #JwMoveShots
 
+/*
+; [amount of plaftorms], [[X start],[X end], [Y start], [Y end]],...]
+jpPlatformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
+*/
 ;----------------------------------------------------------;
 ;                  #JwHitPlaftormLR                        ;
 ;----------------------------------------------------------;
 ; A shot can hit platform from left or right
 ; Input
 ;  - IX: 	#jwShotXX - shot data
-;  - IY:	jpPlatformBumpLeft or jpPlatformBumpRight
+;  - IY:	jpPlatformBump
+;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
 ; Modifies: ALL
 JwHitPlaftormLR
 
 	LD B, (IY)									; Load into B the number of platforms to check
 .platformsLoop	
-	INC IY										; HL points to [X]
-	LD C, (IY)									; C contains [X]
+
+	; Check whether we should consider the left or right side of the platform.
+	LD A, H										; A holds JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
+	CP JT_AIR_BUMP_LEFT
+	JR Z, .bumpLeft
+
+	; We will check whether Jetman bumps into the platform from the right
+	INC IY										; HL points to [X start]
+	INC IY										; HL points to [X end]
+	LD C, (IY)									; C contains [X end]
+	JR .afterBumpSideCheck
+.bumpLeft	
+	; We will check whether Jetman bumps into the platform from the left
+	INC IY										; HL points to [X start]
+	LD C, (IY)									; C contains [X start]
+	INC IY										; Moving the pointer to the correct position for further reading
+.afterBumpSideCheck
 
 	INC IY										; HL points to [Y start]
 	LD A, (IY)	

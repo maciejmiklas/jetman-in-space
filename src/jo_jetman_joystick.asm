@@ -55,7 +55,7 @@ JoInput
 	; Handle disabled joystick
 	LD A, (joDisabledCnt)
 	CP 0
-	JR Z, .afterjoystickDisabled				; Jump if joystick is not disabled -> #joDisabledCnt > 0
+	JR Z, .afterjoystickDisabled				; Jump if joystick is enabled -> #joDisabledCnt > 0
 
 	; Joystick is disabled
 	DEC A										; Decrement disabled counter
@@ -133,7 +133,6 @@ JoInput
 ;                       #JoMoveUp                          ;
 ;----------------------------------------------------------;
 JoMoveUp
-
 	; Update #joJoyDirection state
 	LD A, (joJoyDirection)
 	SET JO_MOVE_UP_BIT, A	
@@ -163,15 +162,14 @@ JoMoveUp
 .afterDirectionChange
 
 	; Transition from walking to flaying
-	LD A, (jtGnd)
-	CP JT_GND_INACTIVE							; Check if Jetnan is on the ground/platform
-	CALL NZ, JpJetmanTakesoff
+	CALL JpJetmanTakesoff
 
-	CALL JpBumpIntoPlatformBottom
+	; Bumping from below into the platform?
+	CALL JpBumpIntoPlatFormBelow
 	RET											; END #JoMoveUp	
 
 ;----------------------------------------------------------;
-;                      #JoMoveRight                       ;
+;                      #JoMoveRight                        ;
 ;----------------------------------------------------------;
 JoMoveRight
 	; Update temp state
@@ -198,7 +196,6 @@ JoMoveRight
 .afterDirectionChange
 
 	; Bupm from the left side of the platform?
-	LD IX, jpPlatformBumpLeft
 	LD H, JT_AIR_BUMP_LEFT
 	CALL JpBumpIntoPlatformLR
 
@@ -231,13 +228,11 @@ JoMoveLeft
 	LD (joJetmanDirection), A
 .afterDirectionChange
 
-	CALL JpFallingFromPlatform
-
 	; Bupm from the right side of the platform?
-	LD IX, jpPlatformBumpRight
 	LD H, JT_AIR_BUMP_RIGHT
 	CALL JpBumpIntoPlatformLR
 
+	CALL JpFallingFromPlatform
 	RET											; END #JoMoveLeft
 
 ;----------------------------------------------------------;
@@ -390,7 +385,7 @@ JoDisabled
 	; Handle disabled joystick
 	LD A, (joDisabledCnt)
 	CP 0
-	RET Z										; Jump if joystick is disabled -> #joDisabledCnt == 0
+	RET Z										; Jump if joystick is enabled -> #joDisabledCnt == 0
 
 	CALL JpBumpOnJoystickDisabled
 

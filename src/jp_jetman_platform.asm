@@ -4,19 +4,10 @@
 
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
-jpPlatformWalk DB 3, 94,12,65, 142,75,136, 54,190,240
+jpPlatformWalk DB 3, 094,012,065, 142,075,136, 054,190,240
 
-; Coordinates for bumping right into a platform (Jetman faces left to bump from the right) 
-; [amount of plaftorms], [[X], [Y start], [Y end]],...]
-jpPlatformBumpRight DB 3, 70,93,119, 140,142,164 ,245,54,76
-
-; Coordinates for bumping right into a platform 
-; [amount of plaftorms], [[X], [Y start], [Y end]],...]
-jpPlatformBumpLeft DB 3, 9,93,119, 71,142,164 ,181,54,76
-
-; Coordinates for bumping into the platform from below
-; [amount of plaftorms], [[Y], [X start], [X end]],...]
-jpPlatformBumpBottom DB 3, 119,12,65, 167,83,136, 80,190,240
+; [amount of plaftorms], [[X start],[X end], [Y start], [Y end]],...]
+jpPlatformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
 
 ;----------------------------------------------------------;
 ;               #JpBumpOnJoystickDisabled                  ;
@@ -96,6 +87,12 @@ JpBumpOnJoystickDisabled
 ;                   #JpJetmanTakesoff                      ;
 ;----------------------------------------------------------;
 JpJetmanTakesoff
+
+	; Transition from walking to flaying
+	LD A, (jtGnd)
+	CP JT_GND_INACTIVE							; Check if Jetnan is on the ground/platform
+	RET Z
+
 	; Jetman is taking off - set #jtAir and reset #jtGnd
 	LD A, JT_AIR_FLY
 	LD (jtAir), A
@@ -185,32 +182,34 @@ JpLandingOnPlatform
 	RET											; END JpLandingOnPlatform
 
 ;----------------------------------------------------------;
-;              #JpBumpIntoPlatformBottom                   ;
+;              #JpBumpIntoPlatFormBelow                   ;
 ;----------------------------------------------------------;
-JpBumpIntoPlatformBottom
+JpBumpIntoPlatFormBelow
 
 	LD A, (jtAir)
 	CP JT_AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
-	LD HL, jpPlatformBumpBottom
+	LD HL, jpPlatformBump
 	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
-	INC HL										; HL points to [Y]
-	LD C, (HL)									; C contains [Y]
-
 	INC HL										; HL points to [X start]
 	LD D, (HL)									; D contains [X start]	
 
 	INC HL										; HL points to [Y end]
 	LD E, (HL)									; E contains [Y end]
 
+	INC HL										; HL points to [Y start]
+	INC HL										; HL points to [Y end]
+	LD C, (HL)									; C contains [Y end]
+
 	LD A, (jtY)									; A holds current Y position
 	CP C
-	JR NZ, .platformsLoopEnd					; Jump if Jetman is not close to the bottom of the platform
+	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jtY
 
-	; Jetman is close to the bottom of the platform
-	LD A, (jtX)								; A holds current X position
+	; Jetman is on the bottom of the platform, now check whether he is withing its horizonlat bounds
+	LD A, (jtX)									; A holds current X position
+
 	CP D										; Compare #jtX position to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jtX < [X start]
 
@@ -233,24 +232,39 @@ JpBumpIntoPlatformBottom
 	POP BC
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET											; END #JpBumpIntoPlatformBottom
+	RET											; END #JpBumpIntoPlatFormBelow
 
 ;----------------------------------------------------------;
 ;                 #JpBumpIntoPlatformLR                    ;
 ;----------------------------------------------------------;
 ; Bump into a platform from left or right
 ; Input
-;  - IX:	jpPlatformBumpLeft or jpPlatformBumpRight
 ;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
 JpBumpIntoPlatformLR
 	LD A, (jtAir)
 	CP JT_AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
+	LD IX, jpPlatformBump
 	LD B, (IX)									; Load into B the number of platforms to check
 .platformsLoop	
-	INC IX										; HL points to [X]
-	LD C, (IX)									; C contains [X]
+
+	; Check whether we should consider the left or right side of the platform.
+	LD A, H										; A holds JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
+	CP JT_AIR_BUMP_LEFT
+	JR Z, .bumpLeft
+
+	; We will check whether Jetman bumps into the platform from the right
+	INC IX										; HL points to [X start]
+	INC IX										; HL points to [X end]
+	LD C, (IX)									; C contains [X end]
+	JR .afterBumpSideCheck
+.bumpLeft	
+	; We will check whether Jetman bumps into the platform from the left
+	INC IX										; HL points to [X start]
+	LD C, (IX)									; C contains [X start]
+	INC IX										; Moving the pointer to the correct position for further reading
+.afterBumpSideCheck
 
 	INC IX										; HL points to [Y start]
 	LD D, (IX)									; D contains [Y start]	
@@ -287,7 +301,6 @@ JpBumpIntoPlatformLR
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET											; END #JpBumpIntoPlatformLR
-
 ;----------------------------------------------------------;
 ;                 #JpFallingFromPlatform                   ;
 ;----------------------------------------------------------;
