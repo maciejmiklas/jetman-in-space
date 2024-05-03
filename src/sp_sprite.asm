@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
 ; js_jetman_sprite: 	00-09
 ; jw_jetman_weapon:		10-19
-; ef_enemy_fly_XX:		20-39
+; ea_enemy_fly_01:		20-29
 
 
 ;----------------------------------------------------------;
@@ -88,7 +88,7 @@ spSpriteDMADataLength
 
 spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 
-	RET											; END SpLoadSpritesFPGA
+	RET
 
 ;----------------------------------------------------------;
 ;                   #SpAnimateSprites                      ;
@@ -111,4 +111,4 @@ SpAnimateSprites
 	CALL JsUpdateJetmanSpritePattern
 	CALL JwAnimateShots
 	
-	RET											; END SpAnimateSprites	
+	RET

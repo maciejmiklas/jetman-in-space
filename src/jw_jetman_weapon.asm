@@ -2,56 +2,38 @@
 ;                      Jetman Weapon                       ;
 ;----------------------------------------------------------;
 
-; Sprites for single shots (#jwShot), based on "Memory Structure for Single Sprite" from "sr_simple_sprite.asm"
-;
-; Possible values for #SR_MS_STATE
-; Bits:
-;   - 0: 	Visible flag, 1 = displayed, 0 = hidden (reserved in sr_simple_sprite.asm)
-;   - 1: 	1 = shot moving left, 0 = shot moving right
-;   - 2-7: 	Not used
-
-JW_MS_STATE_DIRECTION_BIT		= 1
-
-JW_MS_STATE_LEFT_MASK			= %00000010
-JW_MS_STATE_LEFT_VAL			= 1
-
-JW_MS_STATE_RIGHT_MASK			= %00000000
-JW_MS_STATE_RIGHT_VAL			= 0
-
-JW_MS_STATE_LEFT				= 1
-JW_MS_STATE_LEFT				= 1
-
 ; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
 JW_ADJUST_FIRE_X				= 10			
 JW_ADJUST_FIRE_Y				= 4
 
-jwShot
+; Sprites for single shots (#jwSprite), based on "Memory Structure for Single Sprite" from "sr_simple_sprite.asm"
+jwSprite
 	WORD 0
-	DB 0, 0, 10, SR_SDB_FIRE, 0, 0
+	DB 0, 0, 10, 0, 0, 0
 	WORD 0
-jwShot2
+jwSprite2
 	WORD 0
-	DB 0, 0, 11, SR_SDB_FIRE, 0, 0
+	DB 0, 0, 11, 0, 0, 0
 	WORD 0
-jwShot3
+jwSprite3
 	WORD 0
-	DB 0, 0, 12, SR_SDB_FIRE, 0, 0
+	DB 0, 0, 12, 0, 0, 0
 	WORD 0
-jwShot4
+jwSprite4
 	WORD 0
-	DB 0, 0, 13, SR_SDB_FIRE, 0, 0
+	DB 0, 0, 13, 0, 0, 0
 	WORD 0
-jwShot5
+jwSprite5
 	WORD 0
-	DB 0, 0, 14, SR_SDB_FIRE, 0, 0
+	DB 0, 0, 14, 0, 0, 0
 	WORD 0
-jwShot6
+jwSprite6
 	WORD 0
-	DB 0, 0, 15, SR_SDB_FIRE, 0, 0
+	DB 0, 0, 15, 0, 0, 0
 	WORD 0						
 
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JW_FIRE_DELAY
-jwShotDelayCnt
+jwSpriteDelayCnt
 	DB 0
 
 JW_FIRE_DELAY					= 3
@@ -66,8 +48,8 @@ JW_PLATFROM_MARGIN_DOWN			= 5
 ;----------------------------------------------------------;
 ; Modifies: ALL
 JwMoveShots
-	; Loop ever all jwShot# skipping hidden sprites
-	LD IX, jwShot	
+	; Loop ever all jwSprite# skipping hidden sprites
+	LD IX, jwSprite	
 	LD B, JW_SHOT_SIZE 
 
 .loop
@@ -82,9 +64,9 @@ JwMoveShots
 	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
 
 	LD A, (IX + SR_MS_STATE)
-	AND JW_MS_STATE_LEFT_MASK					; Reset all bits but left
-	CP JW_MS_STATE_LEFT_MASK
-	JR NZ, .afterMovingLeft						; Jump if moving right
+	AND SR_MS_STATE_RIGHT_MASK					; Reset all bits but right
+	CP SR_MS_STATE_RIGHT_MASK
+	JR Z, .afterMovingLeft						; Jump if moving right
 
 	; Moving left - decrease X coordinate
 	LD BC, (IX + SR_MS_X)	
@@ -138,24 +120,20 @@ JwMoveShots
 	CALL SrUpdateSpritePosition
 
 .continue
-	; Move HL to the beginning of the next #jwShotXX
+	; Move IX to the beginning of the next #jwSpriteXX
 	LD DE, SR_MS_SIZE
 	ADD IX, DE
 	POP BC
-	DJNZ .loop									; Jump if B > 0 (starts with B = #SR_MS_SIZE)
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #SR_MS_SIZE)
 
-	RET 										; END #JwMoveShots
+	RET
 
-/*
-; [amount of plaftorms], [[X start],[X end], [Y start], [Y end]],...]
-jpPlatformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
-*/
 ;----------------------------------------------------------;
 ;                  #JwHitPlaftormLR                        ;
 ;----------------------------------------------------------;
 ; A shot can hit platform from left or right
 ; Input
-;  - IX: 	#jwShotXX - shot data
+;  - IX: 	#jwSpriteXX - shot data
 ;  - IY:	jpPlatformBump
 ;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
 ; Modifies: ALL
@@ -214,22 +192,22 @@ JwHitPlaftormLR
 
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET											; END #JwHitPlaftormLR
+	RET
 
 ;----------------------------------------------------------;
 ;                  #JwAnimateShots                         ;
 ;----------------------------------------------------------;
 JwAnimateShots
 	; Increase shot counter
-	LD A, (jwShotDelayCnt)
+	LD A, (jwSpriteDelayCnt)
 	CP A, JW_FIRE_DELAY
 	JR NC, .afterIncDelay						; Do increase the delay counter when it has reached the required value
 	INC A
-	LD (jwShotDelayCnt), A
+	LD (jwSpriteDelayCnt), A
 .afterIncDelay
 	 
-	; Loop ever all jwShot# skipping hidden sprites
-	LD IX, jwShot	
+	; Loop ever all jwSprite# skipping hidden sprites
+	LD IX, jwSprite	
 	LD B, JW_SHOT_SIZE 
 
 .loop
@@ -241,18 +219,17 @@ JwAnimateShots
 	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
 	; Shot is visible
 
-
 	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
 	CALL SrUpdateSpritePattern
 
 .continue
-	; Move HL to the beginning of the next #jwShotX
+	; Move HL to the beginning of the next #jwSpriteX
 	LD DE, SR_MS_SIZE
 	ADD IX, DE
 	POP BC
 	DJNZ .loop									; Jump if B > 0 (starts with B = #SR_MS_SIZE)
 
-	RET											; END #JwAnimateShots
+	RET
 
 ;----------------------------------------------------------;
 ;                        #JwFire                           ;
@@ -260,32 +237,32 @@ JwAnimateShots
 JwFire
 
 	; Check delay to limit fire speed
-	LD A, (jwShotDelayCnt)
+	LD A, (jwSpriteDelayCnt)
 	CP JW_FIRE_DELAY
 	RET C										; Return if the delay counter did not reach the defined value
 	; we can fire, reset counter
 	LD A, 0
-	LD (jwShotDelayCnt), A
+	LD (jwSpriteDelayCnt), A
 
 	; Find the first inactive (sprite hidden) shot
-	LD IX, jwShot
+	LD IX, jwSprite
 	LD DE, SR_MS_SIZE
 	LD B, JW_SHOT_SIZE 
 .findLoop
 
-	; Check whether the current #jwShotX is not visible and can be reused
+	; Check whether the current #jwSpriteX is not visible and can be reused
 	LD A, (IX + SR_MS_STATE)
 	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
 	CP 0
 	JR Z, .afterFound							; Jump if visibility is not set -> hidden, can be reused
 
-	; Move HL to the beginning of the next #jwShotX (see "LD DE, SR_MS_SIZE" above)
+	; Move HL to the beginning of the next #jwSpriteX (see "LD DE, SR_MS_SIZE" above)
 	ADD IX, DE
 	DJNZ .findLoop								; Jump if B > 0 (starts with B = #SR_MS_SIZE)
-	RET											; Loop has ended without finding free #jwShotX
+	RET											; Loop has ended without finding free #jwSpriteX
 
 .afterFound										
-	; We are here because free #jwShotX has been found, and IX points to it
+	; We are here because free #jwSpriteX has been found, and IX points to it
 
 	; Set sprite flags
 	LD A, SR_MS_STATE_VISIBLE					; Sprite is visible
@@ -298,9 +275,10 @@ JwFire
 	AND JO_MOVE_LEFT_MASK						
 	CP JO_MOVE_LEFT_MASK
 	JR Z, .afterMovingRight						; Jump if Jetman is not moving right
+	
 	; Jetman is moving right
 	LD A, B										; Restore A
-	RES JW_MS_STATE_DIRECTION_BIT, A
+	SET SR_MS_STATE_DIRECTION_BIT, A
 
 	; Set X coordinate for laser beam
 	LD HL, (jtX)
@@ -317,7 +295,7 @@ JwFire
 	LD (IX + SR_MS_X), HL
 
 	LD A, B										; Restore A
-	SET JW_MS_STATE_DIRECTION_BIT, A
+	RES SR_MS_STATE_DIRECTION_BIT, A
 
 .afterMoving
 	LD (IX + SR_MS_STATE), A					; Store state
@@ -336,4 +314,4 @@ JwFire
 	CALL SrUpdateSpritePosition					; Set X, Y position for laser beam
 	CALL SrUpdateSpritePattern					; Render laser beam
 
-	RET											; END #JoPressFire
+	RET

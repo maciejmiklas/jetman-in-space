@@ -286,7 +286,7 @@ JoMoveDown
 .afterDirectionChange
 .afterInc	
 
-	RET											; END #JoMoveDown
+	RET
 
 ;----------------------------------------------------------;
 ;                         #JoStart                         ;
@@ -295,7 +295,7 @@ JoStart
 	LD A, JO_MOVE_INACTIVE						; Update #jetState by resetting left/hover and setting right
 	LD (joJoyDirection), A
 
-	RET 										; END #JoStart
+	RET
 
 ;----------------------------------------------------------;
 ;                          #JoEnd                          ;
@@ -376,7 +376,7 @@ JoEnd											; After input processing, #JoEnd gets executed as the last proce
 
 .afterInactivity
 
-	RET											; END #JoEnd	
+	RET
 
 ;----------------------------------------------------------;
 ;                       #JoDisabled                        ;
@@ -396,4 +396,4 @@ JoDisabled
 	LD A, JT_AIR_FLY
 	LD (jtAir), A
 
-	RET											; END #JoDisabled	
+	RET

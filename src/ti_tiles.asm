@@ -50,7 +50,7 @@ TiPrintText
 
 	DJNZ .loop									; Loop untill B == 0
 
-	RET											; END TiPrintText
+	RET
 ;----------------------------------------------------------;
 ;                        #TiLoadTiles                      ;
 ;----------------------------------------------------------;
@@ -89,4 +89,4 @@ TiLoadTiles
 	LD DE, TI_START_OF_TILEMAP
 	LDIR
 
-	RET											; END TiLoadTiles
+	RET

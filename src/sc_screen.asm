@@ -23,11 +23,11 @@ ScSetupScreen
 	;  - 1 		= '1': over border
 	;  - 0 		= '1': sprites visible
 	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'010'1'1 	; Sprite 0 on top('1'), SLU('000'), over border('1'), sprites visible('1')
-	NEXTREG _DC_REG_CONTROL_1_H69, %00'01'0000	; Layer 2 screen resolution 320 x 256 x 8bpp
+	NEXTREG _DC_REG_CONTROL1_H69, %00'01'0000	; Layer 2 screen resolution 320 x 256 x 8bpp
 	nextreg _DC_REG_TILE_TRANSP_H4C, $00		; Black for tilemap transparency
 	CALL _ROM_CLS_H0DAF							; Clear screen
 	
-	RET											; END ScSetupScreen
+	RET
 
 ;----------------------------------------------------------;
 ;                    #ScWaitForScanline                       ;
@@ -62,4 +62,4 @@ ScWaitForScanline
 	CP D
 	JR NZ, .waitAgainForScanline
 
-	RET											; END ScWaitForScanline
+	RET

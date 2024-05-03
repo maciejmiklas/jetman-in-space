@@ -5,7 +5,7 @@
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
 ;----------------------------------------------------------;
-_GL_REG_TURBO_H07		= $07				; bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
+_GL_REG_TURBO_H07		= 11				; bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
 _GL_REG_SELECT_H243B	= $243B				; This Port is used to set the register number
 _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 
@@ -16,7 +16,7 @@ _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 ;  - 7: 1 to enable Layer 2 (alias for bit 1 in Layer 2 Access Port $123B)
 ;  - 6: 1 to enable ULA shadow display (alias for bit 3 in Memory Paging Control $7FFD)
 ;  - 5-0: Alias for bits 5-0 in Timex Sinclair Video Mode Control $xxFF
-_DC_REG_CONTROL_1_H69	= $69
+_DC_REG_CONTROL1_H69	= $69
 
 ; Bits:
 ;  - 7-6: Reserved, must be 0
@@ -25,7 +25,7 @@ _DC_REG_CONTROL_1_H69	= $69
 ;			- '01': 320x256, 8BPP
 ;			- '10': 640x256, 4BPP
 ;  - 3-0: Palette offset (0 after soft reset)
-_DC_REG_LAYER_2_H70		= $70
+_DC_REG_LAYER2_H70		= $70
 
 
 ; Transparency index for the tilemap
@@ -37,7 +37,7 @@ _DC_REG_TILE_TRANSP_H4C = $4C
 ; Bits:
 ;  -  7-1: 7-1 Reserved, must be 0
 ;  -  0: MSB for X pixel offset
-_DC_REG_LAYER_2_OFFS_H71 = $71
+_DC_REG_LAYER2_OFFS_H71 = $71
 ;----------------------------------------------------------;
 ;                     ROM routines                         ;
 ;----------------------------------------------------------;
@@ -67,41 +67,41 @@ _PR_ENTER_H0D			= $0D
 ;----------------------------------------------------------;
 ;                     RAM 8K Slots                         ;
 ;----------------------------------------------------------;
-_RAM_SLOT_0_START_H0000	= $0000
-_RAM_SLOT_0_END_H1FFF	= $1FFF
+_RAM_SLOT0_START_H0000	= $0000
+_RAM_SLOT0_END_H1FFF	= $1FFF
 
-_RAM_SLOT_1_START_H2000	= $2000
-_RAM_SLOT_1_END_H3FFF	= $3FFF
+_RAM_SLOT1_START_H2000	= $2000
+_RAM_SLOT1_END_H3FFF	= $3FFF
 
-_RAM_SLOT_2_START_H4000	= $4000
-_RAM_SLOT_2_END_H5FFF	= $5FFF
+_RAM_SLOT2_START_H4000	= $4000
+_RAM_SLOT2_END_H5FFF	= $5FFF
 
-_RAM_SLOT_3_START_H6000	= $6000
-_RAM_SLOT_3_END_H7FFF	= $7FFF
+_RAM_SLOT3_START_H6000	= $6000
+_RAM_SLOT3_END_H7FFF	= $7FFF
 
-_RAM_SLOT_4_START_H8000	= $8000
-_RAM_SLOT_4_END_H9FFF	= $9FFF
+_RAM_SLOT4_START_H8000	= $8000
+_RAM_SLOT4_END_H9FFF	= $9FFF
 
-_RAM_SLOT_5_START_HA000	= $A000
-_RAM_SLOT_5_END_HBFFF	= $BFFF
+_RAM_SLOT5_START_HA000	= $A000
+_RAM_SLOT5_END_HBFFF	= $BFFF
 
-_RAM_SLOT_6_START_HC000	= $C000
-_RAM_SLOT_6_END_HDFFF	= $DFFF
+_RAM_SLOT6_START_HC000	= $C000
+_RAM_SLOT6_END_HDFFF	= $DFFF
 
-_RAM_SLOT_7_START_HE000	= $E000
-_RAM_SLOT_7_END_HFFFF	= $FFFF
+_RAM_SLOT7_START_HE000	= $E000
+_RAM_SLOT7_END_HFFFF	= $FFFF
 
 ;----------------------------------------------------------;
 ;                          MMU                             ;
 ;----------------------------------------------------------;
-_MMU_REG_SLOT_0_H50 	= $50
-_MMU_REG_SLOT_1_H51 	= $51
-_MMU_REG_SLOT_2_H52		= $52
-_MMU_REG_SLOT_3_H53		= $53
-_MMU_REG_SLOT_4_H54		= $54
-_MMU_REG_SLOT_5_H55		= $55
-_MMU_REG_SLOT_6_H56		= $56
-_MMU_REG_SLOT_7_H57		= $57	
+_MMU_REG_SLOT0_H50		= $50
+_MMU_REG_SLOT1_H51		= $51
+_MMU_REG_SLOT2_H52		= $52
+_MMU_REG_SLOT3_H53		= $53
+_MMU_REG_SLOT4_H54		= $54
+_MMU_REG_SLOT5_H55		= $55
+_MMU_REG_SLOT6_H56		= $56
+_MMU_REG_SLOT7_H57		= $57	
 
 ;----------------------------------------------------------;
 ;          		         Sprites	   	                   ;
@@ -116,13 +116,18 @@ _SPR_REG_Y_H36			= $36					; Sprite Y coordinate
 ;  - 2: Y mirror
 ;  - 1: Rotate
 ;  - 0: MSB of X coordinate (palette offset indicator for relative sprites)
-_SPR_REG_ATTR_2_H37		= $37
+_SPR_REG_ATR2_H37		= $37
+_SPR_REG_ATR2_MIRX_BIT	= 3
+_SPR_REG_ATR2_MIRY_BIT	= 2
+_SPR_REG_ATR2_OVER_BIT	= 0
+_SPR_REG_ATR2_RES_PAL	= %00001111				; Mask to reset palette bits
+_SPR_REG_ATR2_OVEFLOW	= %00000001
 
 ; Bits:
 ;  - 7: Visible flag (1 = displayed)
 ;  - 6: Extended attribute (1 = Sprite Attribute 4 is active)
 ;  - 5-0: Pattern used by sprite (0-63)
-_SPR_REG_ATTR_3_H38		= $38
+_SPR_REG_ATR3_H38		= $38
 
 ; Bits:
 ;  - 7: H (1 = sprite uses 4-bit patterns)
@@ -131,7 +136,7 @@ _SPR_REG_ATTR_3_H38		= $38
 ;  - 4-3: X scaling (00 = 1x, 01 = 2x, 10 = 4x, 11 = 8x)
 ;  - 2-1: Y scaling (00 = 1x, 01 = 2x, 10 = 4x, 11 = 8x)
 ;  - 0: MSB of Y coordinate
-_SPR_REG_ATTR_4_H39		= $39
+_SPR_REG_ATR4_H39		= $39
 
 ; Sprite and Layers system
 ; Bits:

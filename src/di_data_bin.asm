@@ -10,7 +10,7 @@ DI_BANK42_PALETTE		= 42
 ;             Load tilemap into bank 42 mapping it to Slot: 6                         ;
 ;-------------------------------------------------------------------------------------;
 	MMU 6, DI_BANK42_PALETTE
-	ORG _RAM_SLOT_6_START_HC000
+	ORG _RAM_SLOT6_START_HC000
 
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 diTilemapBin INCBIN "assets/tiles.map"
@@ -34,7 +34,7 @@ diTilePaletteBinLength = $ - diTilePaletteBin
 ;           Load sprites (16KB) into bank 40,41 mapping it to Slot: 6,7               ;
 ;-------------------------------------------------------------------------------------;
 	MMU 6 7, DI_BANK40_SPR1
-	ORG _RAM_SLOT_6_START_HC000
+	ORG _RAM_SLOT6_START_HC000
 
 ; Sprites:
 ;   - 00-02: top, breathe 

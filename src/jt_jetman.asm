@@ -58,7 +58,7 @@ JtIncJetX
 .lessThanMaxX
 	LD (jtX), BC								; Update new X position
 
-	RET											; END #JtIncJetX 
+	RET
 
 ;----------------------------------------------------------;
 ;                       #JtDecJetX                         ;
@@ -78,7 +78,7 @@ JtDecJetX
 	LD BC, SC_X_MAX_POS							; X == 0 (both A and B are 0) -> set X to 315
 .afterResetX
 	LD (jtX), BC
-	RET											; END #JtDecJetX
+	RET
 
 ;----------------------------------------------------------;
 ;                      #JtStandToWalk                      ; 
@@ -99,7 +99,7 @@ JtStandToWalk
 
 	LD A, JS_SDB_WALK_ST
 	CALL JsChangeJetmanSpritePattern	
-	RET											; END #JtStandToWalk
+	RET
 
 ;----------------------------------------------------------;
 ;                      #JtJetmanMoves                      ;
@@ -124,4 +124,4 @@ JtJetmanMoves
 	CALL JsChangeJetmanSpritePattern
 .afterHovering	
 
-	RET 										; END #JtJetmanMoves
+	RET

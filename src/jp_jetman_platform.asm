@@ -2,6 +2,7 @@
 ;                    Platforms and Ground                  ;
 ;----------------------------------------------------------;
 
+
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
 jpPlatformWalk DB 3, 094,012,065, 142,075,136, 054,190,240
@@ -82,7 +83,7 @@ JpBumpOnJoystickDisabled
 
 .afterBumping
 
-	RET											; END #JpBumpOnJoystickDisabled	
+	RET	
 ;----------------------------------------------------------;
 ;                   #JpJetmanTakesoff                      ;
 ;----------------------------------------------------------;
@@ -137,7 +138,7 @@ JpJetmanLanding
 	LD A, JT_AIR_INACTIVE						
 	LD (jtAir), A
 
-	RET											; END JpJetmanLanding	
+	RET
 
 ;----------------------------------------------------------;
 ;                 #JpLandingOnPlatform                     ;
@@ -179,7 +180,7 @@ JpLandingOnPlatform
 
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET											; END JpLandingOnPlatform
+	RET
 
 ;----------------------------------------------------------;
 ;              #JpBumpIntoPlatFormBelow                   ;
@@ -232,7 +233,7 @@ JpBumpIntoPlatFormBelow
 	POP BC
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET											; END #JpBumpIntoPlatFormBelow
+	RET
 
 ;----------------------------------------------------------;
 ;                 #JpBumpIntoPlatformLR                    ;
@@ -300,7 +301,7 @@ JpBumpIntoPlatformLR
 	POP BC
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET											; END #JpBumpIntoPlatformLR
+	RET
 ;----------------------------------------------------------;
 ;                 #JpFallingFromPlatform                   ;
 ;----------------------------------------------------------;
@@ -362,4 +363,4 @@ JpFallingFromPlatform
 	LD (jtGnd), A	
 
 .afterFalling
-	RET											; END JpFallingFromPlatform
+	RET

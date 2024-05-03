@@ -13,7 +13,7 @@ sample
 ; WORD 	[#SR_MS_: X position]
 ; BYTE 	[#SR_MS_Y: Y position], 
 ;	   	[#SR_MS_STATE, bit: 0 = Visible flag (1 = displayed), bit: 1-7 used by particular sprite engine], 
-;		[#SR_MS_SPRITE_ID: Sprite ID for #_SPR_REG_ATTR_3_H38],
+;		[#SR_MS_SPRITE_ID: Sprite ID for #_SPR_REG_ATR3_H38],
 ;	   	[#SR_MS_NEXT: ID in #ssSpriteDB for next animation record/state]
 ;	   	[#SR_MS_REMAINING: Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record]
 ; WORD 	[#SR_MS_DB_POINTER: pointer to current #srSpriteDB record]
@@ -36,13 +36,22 @@ SR_MS_SIZE					= 10					; Size for single memory structure
 ; Possible values for #SR_MS_STATE.
 ; Bits:
 ;   - 0: 	Visible flag, 1 = displayed, 0 = hidden
-;   - 1-7: 	Used by particular sprite engine
+;   - 1:	not used, reserved
+;   - 2:	not used, reserved
+;   - 3: 	1 = enemy moving left, 0 = enemy = moving right. This position corresponds to _SPR_REG_ATR2_H37 and cannot be changed
+;   - 4-7: 	used by a concrete implementation, for example: "ea_enemy_fly_01.asm"
 SR_MS_STATE_VISIBLE			= %00000001
 SR_MS_STATE_VISIBLE_BIT		= 0
+SR_MS_STATE_DIRECTION_BIT	= 3
+SR_MS_STATE_LEFT_MASK		= %00000000				; See _SPR_REG_ATR2_H37 -> Bit 3
+SR_MS_STATE_RIGHT_MASK		= %00001000
+SR_MS_STATE_RES_FREE		= _SPR_REG_ATR2_RES_PAL	; Mask to reset free bits.
 
 ; DB IDs
 SR_SDB_EXPLODE				= 201					; Explosion
 SR_SDB_FIRE					= 202					; Fire
+SR_SDB_COMET1				= 203					; Comet 1
+SR_SDB_COMET2				= 204					; Comet 2
 SR_SDB_HIDE					= 255					; Hides Sprite
 
 SR_SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
@@ -60,6 +69,8 @@ srSpriteDB
 	; Explosion, and afterward, the sprite disappears
 	DB SR_SDB_EXPLODE,	SR_SDB_HIDE - SR_SDB_SUB,		04,		38, 39, 40, 41
 	DB SR_SDB_FIRE,		SR_SDB_FIRE - SR_SDB_SUB,		03,		42, 43, 44
+	DB SR_SDB_COMET1,	SR_SDB_FIRE - SR_SDB_SUB,		03,		45, 46, 47
+	DB SR_SDB_COMET2,	SR_SDB_FIRE - SR_SDB_SUB,		03,		48, 49, 50
 
 ;----------------------------------------------------------;
 ;                    #SrSetSpriteId                        ;
@@ -72,7 +83,7 @@ SrSetSpriteId
 	LD A, (IX + SR_MS_SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands
 
-	RET											; END #SrUpdateSpritePosition
+	RET
 ;----------------------------------------------------------;
 ;                #SrUpdateSpritePosition                   ;
 ;----------------------------------------------------------;
@@ -87,15 +98,23 @@ SrUpdateSpritePosition
 	LD A, C										; Set LSB from BC (X)
 	NEXTREG _SPR_REG_X_H35, A					
 
+	; Update the H37
 	LD A, B										; Set MSB from BC (X)
-	AND %00000001								; Keep only an overflow bit
-	NEXTREG _SPR_REG_ATTR_2_H37, A
+	AND _SPR_REG_ATR2_OVEFLOW					; Keep only an overflow bit
+	LD B, A										; Backup A to B, as we need A
+
+	LD A, (IX + SR_MS_STATE)
+	RES _SPR_REG_ATR2_OVER_BIT, A				; Reset overflow and set it in next command
+	OR B										; Apply B to set MSB from X
+	AND SR_MS_STATE_RES_FREE					; Reset bits reserved for pallete
+
+	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Move the sprite to the Y position
 	LD A, (IX + SR_MS_Y)
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
-	RET											; END #SrShowSprite 
+	RET
 
 ;----------------------------------------------------------;
 ;                     #SrHideSprite                        ;
@@ -108,13 +127,13 @@ SrHideSprite
 
 	; Hide sprite
 	LD A, _SPR_PATTERN_HIDE						; Hide sprite on display	
-	NEXTREG _SPR_REG_ATTR_3_H38, A
+	NEXTREG _SPR_REG_ATR3_H38, A
 
 	LD A, (IX + SR_MS_STATE)					; Mark sprite as hidden
 	RES SR_MS_STATE_VISIBLE_BIT, A
 	LD (IX + SR_MS_STATE), A
 	
-	RET											; END #SrHideSprite
+	RET
 ;----------------------------------------------------------;
 ;                #SrUpdateSpritePattern                    ;
 ;----------------------------------------------------------;
@@ -155,14 +174,14 @@ SrUpdateSpritePattern
 	LD HL, (IX + SR_MS_DB_POINTER)				; HL points to a memory location holding a pointer to the current DB position with the next sprite pattern
 	LD A, (HL)									; A holds the next sprite pattern
 	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
-	NEXTREG _SPR_REG_ATTR_3_H38, A
+	NEXTREG _SPR_REG_ATR3_H38, A
 
 	; Move #SR_MS_DB_POINTER to the next sprite pattern
 	LD HL, (IX + SR_MS_DB_POINTER)
 	INC HL
 	LD (IX + SR_MS_DB_POINTER), HL
 
-	RET											; END #SrUpdateSpritePattern 
+	RET
 
 ;----------------------------------------------------------;
 ;                  #SrSetSpritePattern                     ;
@@ -191,4 +210,4 @@ SrSetSpritePattern
 	INC HL										; HL points to [FRAME] in DB
 	LD (IX + SR_MS_DB_POINTER), HL				; Update #SR_MS_DB_POINTER
 
-	RET 										; END #SrSetSpritePattern
+	RET

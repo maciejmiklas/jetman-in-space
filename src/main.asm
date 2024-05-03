@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
-	ORG _RAM_SLOT_4_START_H8000
+	ORG _RAM_SLOT4_START_H8000
 
 start
 	DI											; Disable Interrupts, use wait_for_scanline instead.					
@@ -12,14 +12,14 @@ start
 			
 	INCLUDE "dl_data_load.asm"
 	CALL ScSetupScreen
-	CALL GameInit
+	CALL GmGameInit
 
 vv BYTE  0
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
 mainLoop	
-	CALL GameLoop
+	CALL GmGameLoop
 	JR mainLoop
 
 ;----------------------------------------------------------;
@@ -32,8 +32,8 @@ mainLoop
 	INCLUDE "jt_jetman.asm"
 	INCLUDE "js_jetman_sprite.asm"
 	INCLUDE "jp_jetman_platform.asm"
-	INCLUDE "ef_enemy_fly_01.asm"
-	INCLUDE "game.asm"
+	INCLUDE "ea_enemy_fly_01.asm"
+	INCLUDE "gm_game.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
 	INCLUDE "jw_jetman_weapon.asm"
