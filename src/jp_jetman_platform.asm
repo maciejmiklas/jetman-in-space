@@ -2,12 +2,11 @@
 ;                    Platforms and Ground                  ;
 ;----------------------------------------------------------;
 
-
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
 jpPlatformWalk DB 3, 094,012,065, 142,075,136, 054,190,240
 
-; [amount of plaftorms], [[X start],[X end], [Y start], [Y end]],...]
+; [amount of plaftorms], [[X start],[X end],[Y start],[Y end]], ...]
 jpPlatformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
 
 ;----------------------------------------------------------;
@@ -240,7 +239,7 @@ JpBumpIntoPlatFormBelow
 ;----------------------------------------------------------;
 ; Bump into a platform from left or right
 ; Input
-;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
+;  - H:		JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
 JpBumpIntoPlatformLR
 	LD A, (jtAir)
 	CP JT_AIR_INACTIVE							; Is Jemtan in the air?

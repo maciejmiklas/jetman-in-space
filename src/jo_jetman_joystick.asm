@@ -34,14 +34,14 @@ joJoyDirection			BYTE JO_MOVE_INACTIVE
 joJetmanDirection		BYTE JO_MOVE_INACTIVE	; Jetman initially hovers, no movement
 
 JO_JOY_DELAY			= 2					; Probe joystick every few loops. Loop speed is controled by: #ScWaitForScanline     
-joDelayCnt				BYTE 0					; The delay counter for joisting input and Jetman movement speed
+joDelayCnt				BYTE 0				; The delay counter for joistink input and Jetman movement speed
 
 ;----------------------------------------------------------;
 ;                         #JoInput                         ;
 ;----------------------------------------------------------;
 JoInput
 
-	; Slow down jousting input and, therefore, speed on jet man movement
+	; Slow down joystick input and, therefore, speed of Jetman movement
 	LD A, (joDelayCnt)
 	INC A
 	LD (joDelayCnt), A

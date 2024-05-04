@@ -2,9 +2,9 @@
 ;                        #TxPrintNumHL                     ;
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels
-; Method Parameters:
-;  - IN: HL = 16-bit number to print
-;        B - Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
+;Input:
+;  - HL:	16-bit number to print
+;  - B:		Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
 ;            For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.	 
 TxPrintNumHL
 
@@ -32,7 +32,7 @@ formatted16
 ;                     #TxNum16ToString                     ;
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros. 
-; Method Parameters:
+; Input:
 ;   - IN:  HL = 16-bit number to convert
 ;   - OUT: ASCII string at DE, 5-characters long, 0 padded.
 TxNum16ToString

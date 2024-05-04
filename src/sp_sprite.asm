@@ -9,15 +9,14 @@
 ; jw_jetman_weapon:		10-19
 ; ea_enemy_fly_01:		20-29
 
-
 ;----------------------------------------------------------;
 ;                    #SpLoadSpritesFPGA                    ;
 ;----------------------------------------------------------;
 ; Loads sprites from a file into hardware using DMA.
 ;
-; Method Parameters:
-;    - HL - RAM address containing sprite binary data.
-;    - BC - Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
+;Input:
+; - HL:		RAM address containing sprite binary data.
+; - BC:		Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
 SpLoadSpritesFPGA
 	; Store dynamic values into DMA program
 	LD (spSpriteDMAPortA), HL					; Copy sprite sheet address from HL
@@ -110,5 +109,6 @@ SpAnimateSprites
 	; Update sprite patterns
 	CALL JsUpdateJetmanSpritePattern
 	CALL JwAnimateShots
+	CALL EaAnimateEnemies
 	
 	RET

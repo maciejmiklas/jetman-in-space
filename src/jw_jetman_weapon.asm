@@ -39,9 +39,89 @@ jwSpriteDelayCnt
 JW_FIRE_DELAY					= 3
 JW_SHOT_SIZE					= 6				; Amount of shots that can be simultaneously fired
 
-; We are using platform coordinates for bumping, which are too thick for the thin shot
-JW_PLATFROM_MARGIN_UP			= 12
-JW_PLATFROM_MARGIN_DOWN			= 5
+JW_SHOT_HEIGHT					= 0
+
+;----------------------------------------------------------;
+;                     #JwHitEnemy                          ;
+;----------------------------------------------------------;
+; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
+; Input:
+;  - IX:	Pointer to "Memory Structure for Single Sprite", the enemy to check for hit
+;  - H:     Half of the width of the enemy
+;  - L:		Half of the height of the enemy
+; Modifies: ALL
+JwHitEnemy
+	; Loop ever all jwSprite# skipping hidden sprites
+	LD IY, jwSprite								; IY points to the enemy
+	LD B, JW_SHOT_SIZE 
+
+.loop
+	PUSH BC										; Preserve B for loop counter
+
+	; Skipp invisible laser shoots
+	LD A, (IY + SR_MS_STATE)
+	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
+	CP 0
+	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
+
+	; Shot is visible, check colision with given sprite
+
+	; Compare X coordinate of enemy and shot
+	LD BC, (IX + SR_MS_X)						; X of the enemy
+	LD DE, (IY + SR_MS_X)						; X of the shot
+
+	LD A, D
+	CP B
+	JR NZ, .continue							; Jump if MSB of the X for enemy and shot does not match (B != D)
+
+	; Check if the shot hits the enemy from the left side of its X coordinate
+	LD A, C										; A holds the X LSB of the enemy
+	SUB H										; Include the thickness of the enemy
+	CP E
+	JR NC, .continue							; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
+
+	; Check if the shot hits the enemy from the right side of its X coordinate
+	ADD H										; Revert "SUB L" from above
+	ADD H										; Include the thickness of the enemy
+	CP E
+	JR C, .continue								; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
+
+	; We are here because the shot is horizontal with the enemy, now check the vertical match
+	LD A, (IX + SR_MS_Y)						; A holds Y from the enemy
+	LD B, (IY + SR_MS_Y)						; B holds Y from the laser beam
+
+	; Check upper bounds
+	SUB L										; Include the thickness of the enemy
+	CP B
+	JR NC, .continue
+
+	; Check lower bounds
+	ADD L										; Revert "SUB L" from above
+	ADD L										; Include the thickness of the enemy
+	CP B
+	JR C, .continue
+
+	; We have hit!
+	CALL SrSetSpriteId
+	LD A, SR_SDB_EXPLODE
+	CALL SrSetSpritePattern						; Enemy expoldes
+
+	; Hide shot
+	LD IX, IY
+	CALL SrSetSpriteId
+	CALL SrHideSprite
+
+	POP BC
+	RET											; Given enemy has been hit, nothing more to do.
+
+.continue
+	; Move IY to the beginning of the next #jwSpriteXX
+	LD DE, SR_MS_SIZE
+	ADD IY, DE
+	POP BC
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #SR_MS_SIZE)
+
+	RET
 
 ;----------------------------------------------------------;
 ;                    #JwMoveShots                          ;
@@ -58,9 +138,9 @@ JwMoveShots
 	LD A, (IX + SR_MS_STATE)
 	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
 	CP 0
-	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
-	; Shot is visible
+	JR Z, .continue								;  Jump if visibility is not set (sprite is hidden)
 
+	; Shot is visible
 	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
 
 	LD A, (IX + SR_MS_STATE)
@@ -71,12 +151,14 @@ JwMoveShots
 	; Moving left - decrease X coordinate
 	LD BC, (IX + SR_MS_X)	
 	DEC BC
+	DEC BC
 
 	; Check the collision with the platform from the left side
 	PUSH BC
 	LD IY, jpPlatformBump						; Jetman faces left, the shot can hit platform from the right
 	LD H, JT_AIR_BUMP_RIGHT
-	CALL JwHitPlaftormLR
+	LD L, JW_SHOT_HEIGHT
+	CALL SrPlaftormColision
 	POP BC
 
 	; Check whether a shot is outside the screen 
@@ -95,12 +177,14 @@ JwMoveShots
 	; Moving right - increase X coordinate
 	LD BC, (IX + SR_MS_X)	
 	INC BC
-
+	INC BC
+	
 	; Check the collision with the platform from the right side
 	PUSH BC
 	LD IY, jpPlatformBump					; Jetman faces rgiht, the shot can hit platform from the left
 	LD H, JT_AIR_BUMP_LEFT
-	CALL JwHitPlaftormLR
+	LD L, JW_SHOT_HEIGHT
+	CALL SrPlaftormColision
 	POP BC
 
 	; If X >= 315 then hide shot 
@@ -129,72 +213,6 @@ JwMoveShots
 	RET
 
 ;----------------------------------------------------------;
-;                  #JwHitPlaftormLR                        ;
-;----------------------------------------------------------;
-; A shot can hit platform from left or right
-; Input
-;  - IX: 	#jwSpriteXX - shot data
-;  - IY:	jpPlatformBump
-;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
-; Modifies: ALL
-JwHitPlaftormLR
-
-	LD B, (IY)									; Load into B the number of platforms to check
-.platformsLoop	
-
-	; Check whether we should consider the left or right side of the platform.
-	LD A, H										; A holds JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
-	CP JT_AIR_BUMP_LEFT
-	JR Z, .bumpLeft
-
-	; We will check whether Jetman bumps into the platform from the right
-	INC IY										; HL points to [X start]
-	INC IY										; HL points to [X end]
-	LD C, (IY)									; C contains [X end]
-	JR .afterBumpSideCheck
-.bumpLeft	
-	; We will check whether Jetman bumps into the platform from the left
-	INC IY										; HL points to [X start]
-	LD C, (IY)									; C contains [X start]
-	INC IY										; Moving the pointer to the correct position for further reading
-.afterBumpSideCheck
-
-	INC IY										; HL points to [Y start]
-	LD A, (IY)	
-	ADD JW_PLATFROM_MARGIN_UP					; Increase start Y to make platform thinner
-	LD D, A										; D contains [Y start]								
-
-	INC IY										; HL points to [Y end]
-	LD A, (IY)
-	SUB JW_PLATFROM_MARGIN_DOWN					; Decrease end Y to make the platform thinner
-	LD E, A										; E contains [Y end]
-
-	LD A, (IX + SR_MS_X)						; A holds shot current X position (only LSB, platrofrm are limited to X <= 255)
-	CP C
-
-	JR NZ, .platformsLoopEnd					; Jump if shot is not close to the let/right edge of the platform
-
-	; Shot is close to the let/right edge of the platform. Now, check whether it's within vertical bounds
-	LD A, (IX + SR_MS_Y)						; A holds current shot Y position
-	
-	CP D										; Compare shot position to [Y start]
-	JR C, .platformsLoopEnd						; Jump if shot < [Y start]
-
-	CP E
-	JR NC, .platformsLoopEnd					; Jump if shot > [Y end]
-
-	; Shot hits the platform from the let/right!
-	PUSH BC
-	CALL SrSetSpriteId
-	LD A, SR_SDB_EXPLODE
-	CALL SrSetSpritePattern						; shot expoldes
-	POP BC
-
-.platformsLoopEnd
-	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	RET
-
-;----------------------------------------------------------;
 ;                  #JwAnimateShots                         ;
 ;----------------------------------------------------------;
 JwAnimateShots
@@ -206,28 +224,10 @@ JwAnimateShots
 	LD (jwSpriteDelayCnt), A
 .afterIncDelay
 	 
-	; Loop ever all jwSprite# skipping hidden sprites
+	; Animate shots
 	LD IX, jwSprite	
 	LD B, JW_SHOT_SIZE 
-
-.loop
-	PUSH BC										; Preserve B for loop counter
-
-	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
-	CP 0
-	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
-	; Shot is visible
-
-	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
-	CALL SrUpdateSpritePattern
-
-.continue
-	; Move HL to the beginning of the next #jwSpriteX
-	LD DE, SR_MS_SIZE
-	ADD IX, DE
-	POP BC
-	DJNZ .loop									; Jump if B > 0 (starts with B = #SR_MS_SIZE)
+	CALL SrAnimateSprites
 
 	RET
 

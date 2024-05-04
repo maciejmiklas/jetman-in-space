@@ -8,7 +8,7 @@ sample
 	WORD 0
 
 ;----------------------------------------------------------;
-;           Memory Structure for Single Sprite            ;
+;           Memory Structure for Single Sprite             ;
 ;----------------------------------------------------------;
 ; WORD 	[#SR_MS_: X position]
 ; BYTE 	[#SR_MS_Y: Y position], 
@@ -43,8 +43,8 @@ SR_MS_SIZE					= 10					; Size for single memory structure
 SR_MS_STATE_VISIBLE			= %00000001
 SR_MS_STATE_VISIBLE_BIT		= 0
 SR_MS_STATE_DIRECTION_BIT	= 3
-SR_MS_STATE_LEFT_MASK		= %00000000				; See _SPR_REG_ATR2_H37 -> Bit 3
-SR_MS_STATE_RIGHT_MASK		= %00001000
+SR_MS_STATE_RIGHT_MASK		= %00001000				; See _SPR_REG_ATR2_H37 -> Bit 3
+SR_MS_STATE_LEFT_MASK		= %00000000				
 SR_MS_STATE_RES_FREE		= _SPR_REG_ATR2_RES_PAL	; Mask to reset free bits.
 
 ; DB IDs
@@ -69,14 +69,78 @@ srSpriteDB
 	; Explosion, and afterward, the sprite disappears
 	DB SR_SDB_EXPLODE,	SR_SDB_HIDE - SR_SDB_SUB,		04,		38, 39, 40, 41
 	DB SR_SDB_FIRE,		SR_SDB_FIRE - SR_SDB_SUB,		03,		42, 43, 44
-	DB SR_SDB_COMET1,	SR_SDB_FIRE - SR_SDB_SUB,		03,		45, 46, 47
-	DB SR_SDB_COMET2,	SR_SDB_FIRE - SR_SDB_SUB,		03,		48, 49, 50
+	DB SR_SDB_COMET1,	SR_SDB_COMET1 - SR_SDB_SUB,		03,		45, 46, 47
+	DB SR_SDB_COMET2,	SR_SDB_COMET2 - SR_SDB_SUB,		03,		48, 49, 50
+
+; We are using platform coordinates for bumping, which are too thick for the thin sprite
+SR_PLATFROM_MARGIN_UP			= 12
+SR_PLATFROM_MARGIN_DOWN			= 5
+
+;----------------------------------------------------------;
+;                     #SrWeaponHit                         ;
+;----------------------------------------------------------;
+; Checks all active enemies given by IX for collision with leaser beam
+; Input
+;  - IX:	Pointer to "Memory Structure for Single Sprite", the enemies
+;  - B:		Number of enemies
+;  - H:     Half of the width of the enemy
+;  - L:		Half of the height of the enemy
+; Modifies: ALL
+SrWeaponHit
+.loop
+	PUSH BC										; Preserve B for loop counter
+
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
+	CP 0
+	JR Z, .continue								; Jump if enemy is hidden
+
+	; Sprite is visible
+	CALL JwHitEnemy
+
+.continue
+	; Move HL to the beginning of the next #jwSpriteX
+	LD DE, SR_MS_SIZE
+	ADD IX, DE
+	POP BC
+	DJNZ .loop									; Jump if B > 0
+
+	RET
+;----------------------------------------------------------;
+;                  #SrAnimateSprites                       ;
+;----------------------------------------------------------;
+; Input
+;  - IX:	pointer to "Memory Structure for Single Sprite"
+;  - B:		number of sprites
+; Modifies: A, BC, HL
+SrAnimateSprites
+
+.loop
+	PUSH BC										; Preserve B for loop counter
+
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
+	CP 0
+	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
+
+	; Sprite is visible
+	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
+	CALL SrUpdateSpritePattern
+
+.continue
+	; Move HL to the beginning of the next #jwSpriteX
+	LD DE, SR_MS_SIZE
+	ADD IX, DE
+	POP BC
+	DJNZ .loop									; Jump if B > 0
+
+	RET
 
 ;----------------------------------------------------------;
 ;                    #SrSetSpriteId                        ;
 ;----------------------------------------------------------;
-; Input
-;  - IX - pointer to "Memory Structure for Single Sprite"
+; Input:
+;  - IX:	pointer to "Memory Structure for Single Sprite"
 ; Modifies: A
 SrSetSpriteId
 
@@ -87,8 +151,8 @@ SrSetSpriteId
 ;----------------------------------------------------------;
 ;                #SrUpdateSpritePosition                   ;
 ;----------------------------------------------------------;
-; Input
-;  - IX - pointer to "Memory Structure for Single Sprite"
+; Input:
+;  - IX:	pointer to "Memory Structure for Single Sprite"
 ; Modifies: A, BC
 SrUpdateSpritePosition
 
@@ -138,8 +202,8 @@ SrHideSprite
 ;                #SrUpdateSpritePattern                    ;
 ;----------------------------------------------------------;
 ; Show the current sprite pattern and switch the pointer to the next one so the following method call will display it
-; Input
-;  - IX - pointer to "Memory Structure for Single Sprite"
+; Input:
+;  - IX:	pointer to "Memory Structure for Single Sprite"
 ; Modifies: A, BC, HL
 SrUpdateSpritePattern
 
@@ -187,9 +251,9 @@ SrUpdateSpritePattern
 ;                  #SrSetSpritePattern                     ;
 ;----------------------------------------------------------;
 ; Set given pointer IX to animation pattern from #srSpriteDB given by B
-; Input
-;  - IX - pointer to "Memory Structure for Single Sprite"
-;  - A - ID in #srSpriteDB
+; Input:
+;  - IX: 	Pointer to "Memory Structure for Single Sprite"
+;  - A:		ID in #srSpriteDB
 ; Modifies: A, BC, HL
 SrSetSpritePattern
 	
@@ -210,4 +274,75 @@ SrSetSpritePattern
 	INC HL										; HL points to [FRAME] in DB
 	LD (IX + SR_MS_DB_POINTER), HL				; Update #SR_MS_DB_POINTER
 
+	RET
+
+;----------------------------------------------------------;
+;               #SrPlaftormColision                      ;
+;----------------------------------------------------------;
+; A sprite can hit platform from left or right
+; Input:
+;  - IX: 	pointer to "Memory Structure for Single Sprite"
+;  - IY:	Structure like #jpPlatformBump
+;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT -> determines whether we should check the collision from the left or right side of the platform
+;  - L:		Half of the height of the sprite
+; Modifies: ALL
+SrPlaftormColision
+
+	LD B, (IY)									; Load into B the number of platforms to check
+.platformsLoop	
+
+	; Check whether we should consider the left or right side of the platform.
+	LD A, H										; A holds JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
+	CP JT_AIR_BUMP_LEFT
+	JR Z, .hitLeft
+
+	; We will check whether Sprite bumps into the platform from the right
+	INC IY										; HL points to [X start]
+	INC IY										; HL points to [X end]
+	LD C, (IY)									; C contains [X end]
+	JR .afterSideCheck
+.hitLeft	
+	; We will check whether Sprite bumps into the platform from the left
+	INC IY										; HL points to [X start]
+	LD C, (IY)									; C contains [X start]
+	INC IY										; Moving the pointer to the correct position for further reading
+.afterSideCheck
+	; Now C contains [X start] or [X end]
+
+	INC IY										; HL points to [Y start]
+	LD A, (IY)	
+	ADD SR_PLATFROM_MARGIN_UP					; Increase start Y to make platform thinner
+	SUB L										; Thickness to the sprite
+	LD D, A										; D contains [Y start]								
+
+	INC IY										; HL points to [Y end]
+	LD A, (IY)
+	SUB SR_PLATFROM_MARGIN_DOWN					; Decrease end Y to make the platform thinner
+	ADD L										; Thickness to the sprite
+	LD E, A										; E contains [Y end]
+
+	; Now C contains [X start] or [X end], D contains [Y start],  E contains [Y end]
+
+	LD A, (IX + SR_MS_X)						; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
+	CP C
+	JR NZ, .platformsLoopEnd					; Jump if sprite is not close to the let/right edge of the platform
+
+	; sprite is close to the let/right edge of the platform. Now, check whether it's within vertical bounds
+	LD A, (IX + SR_MS_Y)						; A holds current shot Y position
+	
+	CP D										; Compare shot position to [Y start]
+	JR C, .platformsLoopEnd						; Jump if shot < [Y start]
+
+	CP E
+	JR NC, .platformsLoopEnd					; Jump if shot > [Y end]
+
+	; Sprite hits the platform from the let/right!
+	PUSH BC
+	CALL SrSetSpriteId
+	LD A, SR_SDB_EXPLODE
+	CALL SrSetSpritePattern						; shot expoldes
+	POP BC
+
+.platformsLoopEnd
+	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET

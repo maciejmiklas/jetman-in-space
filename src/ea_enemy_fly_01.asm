@@ -8,7 +8,7 @@
 eaRespownTimer
 	DB 0
 
-EA_RESPOWN_DELAY			= 100				; Amount of game loops to respawn single enemy
+EA_RESPOWN_DELAY			= 20				; Amount of game loops to respawn single enemy
 
 ; Sprites for single enemy (#eaSprite), based on "Memory Structure for Single Sprite" from "sr_simple_sprite.asm"
 ; Each sprite has hardcoded respawn coordinates and the direction in which it moves
@@ -54,12 +54,18 @@ eaSprite10
 	WORD 0	
 
 EA_SPRITES_SIZE				= 10				; The maximum amount of visible enemies			
+EA_SPRITE_HEIGHT_PLATFORM	= 3
+
+EA_SPRITE_HEIGHT_WEAPON		= 8
+EA_SPRITE_WIDTH_WEAPON		= 8
+
+EA_MOVE_DELAY				= 2					; Number of game loops to delay movement  
+esMoveDelayCnt				BYTE 0				; The delay counter for enemy movement
 
 ;----------------------------------------------------------;
 ;                      #EaRespown                          ;
 ;----------------------------------------------------------;
 EaRespown
-
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy
 	LD A, (eaRespownTimer)
 	INC A
@@ -136,3 +142,128 @@ EaRespown
 	DJNZ .loop									; Jump if B > 0 (loop starts with B = #EA_SPRITES_SIZE)
 
 	RET
+
+;----------------------------------------------------------;
+;                 #EaAnimateEnemies                        ;
+;----------------------------------------------------------;
+EaAnimateEnemies
+	 
+	; Animate shots
+	LD IX, eaSprite	
+	LD B, EA_SPRITES_SIZE 
+	CALL SrAnimateSprites
+
+	RET	
+
+;----------------------------------------------------------;
+;                     #EaWeaponHit                         ;
+;----------------------------------------------------------;
+EaWeaponHit
+	LD IX, eaSprite
+	LD L, EA_SPRITE_HEIGHT_WEAPON
+	LD H, EA_SPRITE_WIDTH_WEAPON
+	LD B, EA_SPRITES_SIZE
+	CALL SrWeaponHit
+	RET	
+
+;----------------------------------------------------------;
+;                      #EaMoveEnemies                      ;
+;----------------------------------------------------------;
+; Modifies: ALL
+EaMoveEnemies
+
+	; Slow down movement
+	LD A, (esMoveDelayCnt)
+	INC A
+	LD (esMoveDelayCnt), A
+
+	CP EA_MOVE_DELAY
+	RET C										; Return if #joDelayCnt <  #JO_JOY_DELAY
+
+	LD A, 0										; Reset delay counter
+	LD (esMoveDelayCnt), A
+
+	; Loop ever al enemies skipping hidden 
+	LD IX, eaSprite	
+	LD B, EA_SPRITES_SIZE 
+
+.loop
+	PUSH BC										; Preserve B for loop counter
+
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
+	CP 0
+	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
+
+	; Sprite is visible
+	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
+
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_RIGHT_MASK					; Reset all bits but right
+	CP SR_MS_STATE_RIGHT_MASK
+	JR NZ, .afterMovingLeft						; Jump if moving right
+
+	; Moving left - decrease X coordinate
+	LD BC, (IX + SR_MS_X)	
+	DEC BC
+
+	; Check the collision with the platform from the left side
+	
+	PUSH BC
+	LD IY, jpPlatformBump						; Jetman faces left, the shot can hit platform from the right
+	LD H, JT_AIR_BUMP_RIGHT
+	LD L, EA_SPRITE_HEIGHT_PLATFORM
+	CALL SrPlaftormColision
+	POP BC
+
+	; Check whether a enemy is outside the screen 
+	LD A, B
+	CP SC_X_MIN_POS								; B holds MSB from X, if B > 0 than X > 256
+	JR NZ, .afterMoving
+	LD A, C
+	CP SC_X_MIN_POS + 5							; C holds LSB from X, ff C != 5 then X is> 5
+	JR NC, .afterMoving
+
+	; X == 0 (both A and B are 0) -> enemy out of screen - hide it
+	CALL SrHideSprite
+	JR .continue	
+
+.afterMovingLeft
+
+	; Moving right - increase X coordinate
+	LD BC, (IX + SR_MS_X)	
+	INC BC
+
+
+	; Check the collision with the platform from the right side
+	PUSH BC
+	LD IY, jpPlatformBump					; Jetman faces rgiht, the shot can hit platform from the left
+	LD H, JT_AIR_BUMP_LEFT
+	LD L, EA_SPRITE_HEIGHT_PLATFORM
+	CALL SrPlaftormColision
+	POP BC
+
+	; If X >= 315 then hide shot 
+	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
+	LD A, B										; Load MSB from X into A
+	CP 1										; 9-th bit set means X > 256
+	JR NZ, .afterMoving
+	LD A, C										; Load MSB from X into A
+	CP 59										; MSB > 59 
+	JR C, .afterMoving
+	
+	; Shot is after 315 -> hide it
+	CALL SrHideSprite
+	JR .continue
+.afterMoving
+	LD (IX + SR_MS_X), BC						; Update new X position
+	CALL SrUpdateSpritePosition
+
+.continue
+	; Move IX to the beginning of the next #jwSpriteXX
+	LD DE, SR_MS_SIZE
+	ADD IX, DE
+	POP BC
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #SR_MS_SIZE)
+
+	RET	

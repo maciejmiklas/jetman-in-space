@@ -30,7 +30,7 @@ ScSetupScreen
 	RET
 
 ;----------------------------------------------------------;
-;                    #ScWaitForScanline                       ;
+;                   #ScWaitForScanline                     ;
 ;----------------------------------------------------------;
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
 ;
@@ -48,15 +48,15 @@ ScWaitForScanline
 	LD A, SC_SYNC_SL							; Set Scanline to wait for
 	LD D, A
 
-; Wait for Scanline given by H, i.e. 192
+; Wait for Scanline given by H (#SC_SYNC_SL)
 .waitForScanline
 	IN A, (C)									; Read the raster line LSB into A
 	CP D
 	JR Z, .waitForScanline						; Keep looping until Scanline changes from given to next, 192->193
 
-; Now we are past 192 -> on 193
+; Now we are past #SC_SYNC_SL -> on #SC_SYNC_SL + 1
 
-; Wait the whole frame again for given Scanline (192)
+; Wait the whole frame again for given Scanline (#SC_SYNC_SL)
 .waitAgainForScanline
 	IN A, (C)									; Read the raster line LSB into A
 	CP D
