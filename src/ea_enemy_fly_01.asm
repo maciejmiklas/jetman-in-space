@@ -101,9 +101,8 @@ EaRespown
 	; Sprite is hidden - respawn it!
 
 	; Mark sprite as visible
-	LD A, (IX + SR_MS_STATE)					
-	SET SR_MS_STATE_VISIBLE_BIT, A
-	LD (IX + SR_MS_STATE), A
+	LD A, (IX + SR_MS_STATE)
+	CALL SrShowSprite
 
 	; Set Y (horizontal respown) to a random value
 	LD A, (gmLoopCnt)
@@ -207,15 +206,6 @@ EaMoveEnemies
 	LD BC, (IX + SR_MS_X)	
 	DEC BC
 
-	; Check the collision with the platform from the left side
-	
-	PUSH BC
-	LD IY, jpPlatformBump						; Jetman faces left, the shot can hit platform from the right
-	LD H, JT_AIR_BUMP_RIGHT
-	LD L, EA_SPRITE_HEIGHT_PLATFORM
-	CALL SrPlaftormColision
-	POP BC
-
 	; Check whether a enemy is outside the screen 
 	LD A, B
 	CP SC_X_MIN_POS								; B holds MSB from X, if B > 0 than X > 256
@@ -234,15 +224,6 @@ EaMoveEnemies
 	LD BC, (IX + SR_MS_X)	
 	INC BC
 
-
-	; Check the collision with the platform from the right side
-	PUSH BC
-	LD IY, jpPlatformBump					; Jetman faces rgiht, the shot can hit platform from the left
-	LD H, JT_AIR_BUMP_LEFT
-	LD L, EA_SPRITE_HEIGHT_PLATFORM
-	CALL SrPlaftormColision
-	POP BC
-
 	; If X >= 315 then hide shot 
 	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
 	LD A, B										; Load MSB from X into A
@@ -258,6 +239,13 @@ EaMoveEnemies
 .afterMoving
 	LD (IX + SR_MS_X), BC						; Update new X position
 	CALL SrUpdateSpritePosition
+
+	; Check the collision with the platform
+	PUSH BC
+	LD IY, jpPlatformBump
+	LD L, EA_SPRITE_HEIGHT_PLATFORM
+	CALL SrPlaftormColision
+	POP BC
 
 .continue
 	; Move IX to the beginning of the next #jwSpriteXX

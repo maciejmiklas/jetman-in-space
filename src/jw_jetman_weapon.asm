@@ -64,6 +64,13 @@ JwHitEnemy
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
 
+
+	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_ALIVE						; Reset all bits but alive
+	CP SR_MS_STATE_ALIVE
+	JR NZ, .continue							; Exit if sprite is not alive
+	
 	; Shot is visible, check colision with given sprite
 
 	; Compare X coordinate of enemy and shot
@@ -103,8 +110,7 @@ JwHitEnemy
 
 	; We have hit!
 	CALL SrSetSpriteId
-	LD A, SR_SDB_EXPLODE
-	CALL SrSetSpritePattern						; Enemy expoldes
+	CALL SrSpriteHit
 
 	; Hide shot
 	LD IX, IY
@@ -153,14 +159,6 @@ JwMoveShots
 	DEC BC
 	DEC BC
 
-	; Check the collision with the platform from the left side
-	PUSH BC
-	LD IY, jpPlatformBump						; Jetman faces left, the shot can hit platform from the right
-	LD H, JT_AIR_BUMP_RIGHT
-	LD L, JW_SHOT_HEIGHT
-	CALL SrPlaftormColision
-	POP BC
-
 	; Check whether a shot is outside the screen 
 	LD A, B
 	CP SC_X_MIN_POS								; B holds MSB from X, if B > 0 than X > 256
@@ -178,14 +176,6 @@ JwMoveShots
 	LD BC, (IX + SR_MS_X)	
 	INC BC
 	INC BC
-	
-	; Check the collision with the platform from the right side
-	PUSH BC
-	LD IY, jpPlatformBump					; Jetman faces rgiht, the shot can hit platform from the left
-	LD H, JT_AIR_BUMP_LEFT
-	LD L, JW_SHOT_HEIGHT
-	CALL SrPlaftormColision
-	POP BC
 
 	; If X >= 315 then hide shot 
 	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
@@ -202,6 +192,20 @@ JwMoveShots
 .afterMoving
 	LD (IX + SR_MS_X), BC						; Update new X position
 	CALL SrUpdateSpritePosition
+
+	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_ALIVE						; Reset all bits but alive
+	CP SR_MS_STATE_ALIVE
+	JR NZ, .afterColisionDetection				; Exit if sprite is not alive
+
+	; Check the collision with the platform
+	PUSH BC
+	LD IY, jpPlatformBump
+	LD L, JW_SHOT_HEIGHT
+	CALL SrPlaftormColision
+	POP BC
+.afterColisionDetection
 
 .continue
 	; Move IX to the beginning of the next #jwSpriteXX
@@ -264,10 +268,6 @@ JwFire
 .afterFound										
 	; We are here because free #jwSpriteX has been found, and IX points to it
 
-	; Set sprite flags
-	LD A, SR_MS_STATE_VISIBLE					; Sprite is visible
-	LD B, A										; Store A in B terporarly
-
 	; Take over direction from Jetman to laser beam 
 
 	; Is Jetman moving left?
@@ -277,7 +277,7 @@ JwFire
 	JR Z, .afterMovingRight						; Jump if Jetman is not moving right
 	
 	; Jetman is moving right
-	LD A, B										; Restore A
+	LD A, 0										; Start building sprite state
 	SET SR_MS_STATE_DIRECTION_BIT, A
 
 	; Set X coordinate for laser beam
@@ -294,10 +294,11 @@ JwFire
 	ADD HL, -JW_ADJUST_FIRE_X
 	LD (IX + SR_MS_X), HL
 
-	LD A, B										; Restore A
+	LD A, 0										; Start building sprite state
 	RES SR_MS_STATE_DIRECTION_BIT, A
 
 .afterMoving
+	CALL SrShowSprite
 	LD (IX + SR_MS_STATE), A					; Store state
 
 	; Set Y coordinate for laser beam

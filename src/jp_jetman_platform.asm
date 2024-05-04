@@ -6,7 +6,7 @@
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
 jpPlatformWalk DB 3, 094,012,065, 142,075,136, 054,190,240
 
-; [amount of plaftorms], [[X start],[X end],[Y start],[Y end]], ...]
+; [amount of plaftorms], [[X platform start],[X platform end],[Y platform start],[Y platform end]], ...]
 jpPlatformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
 
 ;----------------------------------------------------------;

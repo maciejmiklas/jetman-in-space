@@ -36,12 +36,16 @@ SR_MS_SIZE					= 10					; Size for single memory structure
 ; Possible values for #SR_MS_STATE.
 ; Bits:
 ;   - 0: 	Visible flag, 1 = displayed, 0 = hidden
-;   - 1:	not used, reserved
+;   - 1:	Alive flag, 1 - sprite is alive, 2 - sprite is dying, disabled for colistion detection
 ;   - 2:	not used, reserved
 ;   - 3: 	1 = enemy moving left, 0 = enemy = moving right. This position corresponds to _SPR_REG_ATR2_H37 and cannot be changed
 ;   - 4-7: 	used by a concrete implementation, for example: "ea_enemy_fly_01.asm"
 SR_MS_STATE_VISIBLE			= %00000001
 SR_MS_STATE_VISIBLE_BIT		= 0
+
+SR_MS_STATE_ALIVE			= %00000010
+SR_MS_STATE_ALIVE_BIT		= 1
+
 SR_MS_STATE_DIRECTION_BIT	= 3
 SR_MS_STATE_RIGHT_MASK		= %00001000				; See _SPR_REG_ATR2_H37 -> Bit 3
 SR_MS_STATE_LEFT_MASK		= %00000000				
@@ -105,6 +109,20 @@ SrWeaponHit
 	POP BC
 	DJNZ .loop									; Jump if B > 0
 
+	RET
+
+;----------------------------------------------------------;
+;                        #SrSpriteHit                      ;
+;----------------------------------------------------------;
+; Input
+;  - IX:	pointer to "Memory Structure for Single Sprite"
+SrSpriteHit	
+	LD A, (IX + SR_MS_STATE)					; Sprite is dying; turn off collision detection
+	RES SR_MS_STATE_ALIVE_BIT, A
+	LD (IX + SR_MS_STATE), A
+
+	LD A, SR_SDB_EXPLODE
+	CALL SrSetSpritePattern						; Enemy expoldes
 	RET
 ;----------------------------------------------------------;
 ;                  #SrAnimateSprites                       ;
@@ -172,6 +190,9 @@ SrUpdateSpritePosition
 	OR B										; Apply B to set MSB from X
 	AND SR_MS_STATE_RES_FREE					; Reset bits reserved for pallete
 
+	RES _SPR_REG_ATR2_MIRY_BIT, A				; Reset rotation bits, as we use those for different things and might be set
+	RES _SPR_REG_ATR2_ROT_BIT, A
+
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Move the sprite to the Y position
@@ -198,6 +219,20 @@ SrHideSprite
 	LD (IX + SR_MS_STATE), A
 	
 	RET
+
+;----------------------------------------------------------;
+;                      #SrShowSprite                       ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: 	Pointer to "Memory Structure for Single Sprite"
+;  - A:		Prepared state
+; Modifies: A
+SrShowSprite
+	SET SR_MS_STATE_VISIBLE_BIT, A
+	SET SR_MS_STATE_ALIVE_BIT, A
+	LD (IX + SR_MS_STATE), A
+
+	RET	
 ;----------------------------------------------------------;
 ;                #SrUpdateSpritePattern                    ;
 ;----------------------------------------------------------;
@@ -277,70 +312,75 @@ SrSetSpritePattern
 	RET
 
 ;----------------------------------------------------------;
-;               #SrPlaftormColision                      ;
+;                #SrPlaftormColision                       ;
 ;----------------------------------------------------------;
-; A sprite can hit platform from left or right
+; A sprite can hit platform from left or right. 
 ; Input:
-;  - IX: 	pointer to "Memory Structure for Single Sprite"
+;  - IX: 	pointer to "Memory Structure for Single Sprite", single sprite to check colsion for.
 ;  - IY:	Structure like #jpPlatformBump
-;  - H: 	JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT -> determines whether we should check the collision from the left or right side of the platform
 ;  - L:		Half of the height of the sprite
 ; Modifies: ALL
 SrPlaftormColision
 
+	; Exit if sprite is not alive
+	LD A, (IX + SR_MS_STATE)
+	AND SR_MS_STATE_ALIVE						; Reset all bits but alive
+	CP SR_MS_STATE_ALIVE
+	RET NZ										; Exit if sprite is not alive
+
 	LD B, (IY)									; Load into B the number of platforms to check
 .platformsLoop	
 
-	; Check whether we should consider the left or right side of the platform.
-	LD A, H										; A holds JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
-	CP JT_AIR_BUMP_LEFT
-	JR Z, .hitLeft
+	LD A, (IX + SR_MS_X)						; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
+	INC IY										; HL points to [X platform start]
+	LD C, (IY)									; C holds [X platform start]
+	CP C
+	JR NC, .afterXLeftCheck						; Jump if [X sprite] < [X platform start]
 
-	; We will check whether Sprite bumps into the platform from the right
-	INC IY										; HL points to [X start]
-	INC IY										; HL points to [X end]
-	LD C, (IY)									; C contains [X end]
-	JR .afterSideCheck
-.hitLeft	
-	; We will check whether Sprite bumps into the platform from the left
-	INC IY										; HL points to [X start]
-	LD C, (IY)									; C contains [X start]
-	INC IY										; Moving the pointer to the correct position for further reading
-.afterSideCheck
-	; Now C contains [X start] or [X end]
+	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
+	INC IY										; HL points to [X platform end]
+	INC IY										; HL points to [Y platform start]
+	INC IY										; HL points to [Y platform end]
+	JR .platformsLoopEnd
+.afterXLeftCheck
+	; A still holds [X sprite]
+	INC IY										; HL points to [X platform end]
+	LD C, (IY)									; C holds [X platform end]
+	CP C
+	JR C, .afterXRightCheck					; Jump if [X sprite] >= [X platform end]
 
-	INC IY										; HL points to [Y start]
+	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
+	INC IY										; HL points to [Y platform start]
+	INC IY										; HL points to [Y platform end]
+	JR .platformsLoopEnd
+.afterXRightCheck	
+
+	; Sprite is within the platform's horizontal position; now check whether it's within vertical bounds
+	INC IY										; HL points to [Y platform start]
 	LD A, (IY)	
 	ADD SR_PLATFROM_MARGIN_UP					; Increase start Y to make platform thinner
 	SUB L										; Thickness to the sprite
-	LD D, A										; D contains [Y start]								
+	LD D, A										; D contains [Y platform start]								
 
-	INC IY										; HL points to [Y end]
+	INC IY										; HL points to [Y platform end]
 	LD A, (IY)
 	SUB SR_PLATFROM_MARGIN_DOWN					; Decrease end Y to make the platform thinner
 	ADD L										; Thickness to the sprite
-	LD E, A										; E contains [Y end]
+	LD E, A										; E contains [Y platform end]
 
-	; Now C contains [X start] or [X end], D contains [Y start],  E contains [Y end]
-
-	LD A, (IX + SR_MS_X)						; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
-	CP C
-	JR NZ, .platformsLoopEnd					; Jump if sprite is not close to the let/right edge of the platform
-
-	; sprite is close to the let/right edge of the platform. Now, check whether it's within vertical bounds
+	; Now D contains [Y platform start + margin],  E contains [Y platform end + margin]
 	LD A, (IX + SR_MS_Y)						; A holds current shot Y position
 	
-	CP D										; Compare shot position to [Y start]
-	JR C, .platformsLoopEnd						; Jump if shot < [Y start]
+	CP D										; Compare [Y sprite] position to [Y start]
+	JR C, .platformsLoopEnd						; Jump if shot < [Y platform start]
 
 	CP E
 	JR NC, .platformsLoopEnd					; Jump if shot > [Y end]
 
-	; Sprite hits the platform from the let/right!
+	; Sprite hits the platform!
 	PUSH BC
 	CALL SrSetSpriteId
-	LD A, SR_SDB_EXPLODE
-	CALL SrSetSpritePattern						; shot expoldes
+	CALL SrSpriteHit
 	POP BC
 
 .platformsLoopEnd
