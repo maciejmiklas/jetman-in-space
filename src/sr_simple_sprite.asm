@@ -10,36 +10,34 @@ sample
 ;----------------------------------------------------------;
 ;           Memory Structure for Single Sprite             ;
 ;----------------------------------------------------------;
-; WORD 	[#SR_MS_: X position]
-; BYTE 	[#SR_MS_Y: Y position], 
-;	   	[#SR_MS_STATE, bit: 0 = Visible flag (1 = displayed), bit: 1-7 used by particular sprite engine], 
-;		[#SR_MS_SPRITE_ID: Sprite ID for #_SPR_REG_ATR3_H38],
-;	   	[#SR_MS_NEXT: ID in #ssSpriteDB for next animation record/state]
-;	   	[#SR_MS_REMAINING: Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record]
-; WORD 	[#SR_MS_DB_POINTER: pointer to current #srSpriteDB record]
-; Example:
-;	 WORD 300
-;	 DB 50, 1, 3, SR_SDB_EXPLODE, 0, 0
-;	 WORD 0
+; WORD 	[#SR_MS_DB_POINTER], [#SR_MS_X]
+; BYTE 	[#SR_MS_Y], [#SR_MS_STATE], [#SR_MS_SPRITE_ID], [#SR_MS_NEXT], #SR_MS_REMAINING]
+;
+SR_MS_DB_POINTER			= 0						; Pointer to current #srSpriteDB record
+SR_MS_X						= 2						; X position
+SR_MS_Y						= 4						; Y position
 
-; Offsets for Memory Structure
-SR_MS_X						= 0		
-SR_MS_Y						= 2
-SR_MS_STATE					= 3
-SR_MS_SPRITE_ID				= 4
-SR_MS_NEXT					= 5
-SR_MS_REMAINING				= 6
-SR_MS_DB_POINTER			= 7
+; State
+; Bits:
+;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
+;	- 1:	Alive flag, 1 - sprite is alive, 2 - sprite is dying, disabled for colistion detection
+;	- 2:	not used
+;	- 3: 	1 = enemy moving left, 0 = enemy = moving right. This position corresponds to _SPR_REG_ATR2_H37 and cannot be changed
+;	- 4-7: 	not used
+SR_MS_STATE					= 5
+SR_MS_SPRITE_ID				= 6						; Sprite ID for #_SPR_REG_ATR3_H38
+SR_MS_NEXT					= 7						; ID in #ssSpriteDB for next animation record/state
+SR_MS_REMAINING				= 8						; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
+SR_MS_MOVING				= 9						; Bits: 0-4: Enemys moving speed, Bits: 5-7: Enemy moving pattern
+SR_MS_MOVE_DELAY			= 10					; Number of game loops to skip before moving enemy
+SR_MS_MOVE_DELAY_CNT		= 11					; Move delay counter
+SR_MS_TMP1					= 12	
+SR_MS_TMP2					= 13
 
-SR_MS_SIZE					= 10					; Size for single memory structure
+SR_MS_SIZE					= SR_MS_TMP2 + 1		; Size for single memory structure
+SR_MS_BYTES_AFTER_REMAINING = SR_MS_SIZE - SR_MS_MOVING
 
 ; Possible values for #SR_MS_STATE.
-; Bits:
-;   - 0: 	Visible flag, 1 = displayed, 0 = hidden
-;   - 1:	Alive flag, 1 - sprite is alive, 2 - sprite is dying, disabled for colistion detection
-;   - 2:	not used, reserved
-;   - 3: 	1 = enemy moving left, 0 = enemy = moving right. This position corresponds to _SPR_REG_ATR2_H37 and cannot be changed
-;   - 4-7: 	used by a concrete implementation, for example: "ea_enemy_fly_01.asm"
 SR_MS_STATE_VISIBLE			= %00000001
 SR_MS_STATE_VISIBLE_BIT		= 0
 
@@ -347,7 +345,7 @@ SrPlaftormColision
 	INC IY										; HL points to [X platform end]
 	LD C, (IY)									; C holds [X platform end]
 	CP C
-	JR C, .afterXRightCheck					; Jump if [X sprite] >= [X platform end]
+	JR C, .afterXRightCheck						; Jump if [X sprite] >= [X platform end]
 
 	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
 	INC IY										; HL points to [Y platform start]

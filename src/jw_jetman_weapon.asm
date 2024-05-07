@@ -8,29 +8,23 @@ JW_ADJUST_FIRE_Y				= 4
 
 ; Sprites for single shots (#jwSprite), based on "Memory Structure for Single Sprite" from "sr_simple_sprite.asm"
 jwSprite
-	WORD 0
-	DB 0, 0, 10, 0, 0, 0
-	WORD 0
+	WORD 00, 00
+	DB 00, 00, 10, 00, 00, 00, 00, 00, 00, 00
 jwSprite2
-	WORD 0
-	DB 0, 0, 11, 0, 0, 0
-	WORD 0
+	WORD 00, 00
+	DB 00, 00, 11, 00, 00, 00, 00, 00, 00, 00
 jwSprite3
-	WORD 0
-	DB 0, 0, 12, 0, 0, 0
-	WORD 0
+	WORD 00, 00
+	DB 00, 00, 12, 00, 00, 00, 00, 00, 00, 00
 jwSprite4
-	WORD 0
-	DB 0, 0, 13, 0, 0, 0
-	WORD 0
+	WORD 00, 00
+	DB 00, 00, 13, 00, 00, 00, 00, 00, 00, 00
 jwSprite5
-	WORD 0
-	DB 0, 0, 14, 0, 0, 0
-	WORD 0
+	WORD 00, 00
+	DB 00, 00, 14, 00, 00, 00, 00, 00, 00, 00
 jwSprite6
-	WORD 0
-	DB 0, 0, 15, 0, 0, 0
-	WORD 0						
+	WORD 00, 00
+	DB 00, 00, 15, 00, 00, 00, 00, 00, 00, 00
 
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JW_FIRE_DELAY
 jwSpriteDelayCnt

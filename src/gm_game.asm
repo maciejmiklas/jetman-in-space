@@ -26,7 +26,7 @@ GmGameLoop
 	CALL JoDisabled
 	CALL SpAnimateSprites
 	CALL JwMoveShots
-	CALL EaMoveEnemies
-	CALL EaRespown
-	CALL EaWeaponHit
+	CALL EnMoveEnemies
+	CALL EnRespown
+	CALL EnWeaponHit
 	RET

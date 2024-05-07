@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
 ; js_jetman_sprite: 	00-09
 ; jw_jetman_weapon:		10-19
-; ea_enemy_fly_01:		20-29
+; en_enemy:				20-39
 
 ;----------------------------------------------------------;
 ;                    #SpLoadSpritesFPGA                    ;
@@ -109,6 +109,6 @@ SpAnimateSprites
 	; Update sprite patterns
 	CALL JsUpdateJetmanSpritePattern
 	CALL JwAnimateShots
-	CALL EaAnimateEnemies
+	CALL EnAnimateEnemies
 	
 	RET
