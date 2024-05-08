@@ -10,32 +10,33 @@ sample
 ;----------------------------------------------------------;
 ;           Memory Structure for Single Sprite             ;
 ;----------------------------------------------------------;
-; WORD 	[#SR_MS_DB_POINTER], [#SR_MS_X]
-; BYTE 	[#SR_MS_Y], [#SR_MS_STATE], [#SR_MS_SPRITE_ID], [#SR_MS_NEXT], #SR_MS_REMAINING]
-;
-SR_MS_DB_POINTER			= 0						; Pointer to current #srSpriteDB record
-SR_MS_X						= 2						; X position
-SR_MS_Y						= 4						; Y position
+; BYTE [SR_MS_SPRITE_ID]
+; WORD [SR_MS_DB_POINTER], [SR_MS_X]
+; BYTE [SR_MS_Y], [SR_MS_STATE], [SR_MS_NEXT], [SR_MS_REMAINING], [SR_MS_MOVE_DELAY], [SR_MS_MOVE_DELAY_CNT], [SR_MS_MOVE_PATTERN_CNT]
+; WORD [SR_MS_MOVE_PATTERN_POINTER]
+
+SR_MS_SPRITE_ID				= 0						; Sprite ID for #_SPR_REG_ATR3_H38
+SR_MS_DB_POINTER			= 1						; 16 bit pointer to current #srSpriteDB record
+SR_MS_X						= 3						; 16 bit X position
+SR_MS_Y						= 5						; Y position
 
 ; State
 ; Bits:
 ;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
-;	- 1:	Alive flag, 1 - sprite is alive, 2 - sprite is dying, disabled for colistion detection
-;	- 2:	not used
-;	- 3: 	1 = enemy moving left, 0 = enemy = moving right. This position corresponds to _SPR_REG_ATR2_H37 and cannot be changed
+;	- 1:	Alive flag, 1 - sprite is alive, 2 - sprite is dying, disabled for colistion detection, but visible.
+;	- 2:	1 = sprite moving down, 0 = sprite = moving up. This bit corresponds to _SPR_REG_ATR2_H37.
+;	- 3: 	1 = sprite moving left, 0 = sprite = moving right. This bit corresponds to _SPR_REG_ATR2_H37.
 ;	- 4-7: 	not used
-SR_MS_STATE					= 5
-SR_MS_SPRITE_ID				= 6						; Sprite ID for #_SPR_REG_ATR3_H38
+SR_MS_STATE					= 6
 SR_MS_NEXT					= 7						; ID in #ssSpriteDB for next animation record/state
 SR_MS_REMAINING				= 8						; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
-SR_MS_MOVING				= 9						; Bits: 0-4: Enemys moving speed, Bits: 5-7: Enemy moving pattern
-SR_MS_MOVE_DELAY			= 10					; Number of game loops to skip before moving enemy
-SR_MS_MOVE_DELAY_CNT		= 11					; Move delay counter
-SR_MS_TMP1					= 12	
-SR_MS_TMP2					= 13
+SR_MS_MOVE_DELAY			= 9						; Number of game loops to skip before moving enemy
+SR_MS_MOVE_DELAY_CNT		= 10					; Move delay counter
+SR_MS_MOVE_PATTERN_CNT		= 11					; Counter for current position from move pattern
+SR_MS_MOVE_PATTERN_POINTER	= 12					; 16 bit memory pointer to the movement pattern
+SR_MS_END					= 13
 
-SR_MS_SIZE					= SR_MS_TMP2 + 1		; Size for single memory structure
-SR_MS_BYTES_AFTER_REMAINING = SR_MS_SIZE - SR_MS_MOVING
+SR_MS_SIZE					= SR_MS_END + 1 		; Size for single memory structure
 
 ; Possible values for #SR_MS_STATE.
 SR_MS_STATE_VISIBLE			= %00000001
@@ -58,6 +59,20 @@ SR_SDB_HIDE					= 255					; Hides Sprite
 
 SR_SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
 
+;----------------------------------------------------------;
+;          Memory Structure for Sprite Move Patern         ;
+;----------------------------------------------------------;
+; Move pattern (given by #SR_MS_MOVE_PATTERN_CNT) consists of a byte array. The first byte determines the number of elements in this array, 
+; and the remaining move pattern, where each byte carries the same information:
+; bit 0-4: amount of iterations, each iteration will change X and Y based following bits
+; bit 5-6: number of pixels to change X in a single iteration, from 0 to 3. 
+;          The X will increase or decrease depending on the movement direction given by bit 3 in #SR_MS_STATE.
+; bit 7-8: number of pixels to change Y in a single iteration, from 0 to 3. 
+;          The Y will increase or decrease depending on the movement direction given by bit 2 in #SR_MS_STATE.
+
+;----------------------------------------------------------;
+;                         Sprite DB                        ;
+;----------------------------------------------------------;
 ; The animation system is based on a state machine. It's a DB where each record contains a start and end offset to the animation pattern and 
 ; finally offset to a new DB record containing animation that will be played next.
 ; DB Record:
