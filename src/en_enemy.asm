@@ -1,228 +1,229 @@
 ;----------------------------------------------------------;
 ;                     Flying Enemy                         ;
 ;----------------------------------------------------------;
+	MODULE en
 
 ; The timer ticks with every game loop. When it reaches #EN_RESPOWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
-enRespownTimer DB 0
-enRespownDelay DB 20						; Amount of game loops to respawn single enemy
+respownTimer 				DB 0
+respownDelay 				DB 20				; Amount of game loops to respawn single enemy
 
-; Sprites for single enemy (#enSprite), based on "Memory Structure for Single Sprite" from "sr_simple_sprite.asm"
+; Sprites for single enemy (#sprite), based on #MSS
 ; Each sprite has hardcoded respawn coordinates and the direction in which it moves
-enSprite
-	DB 20/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_LEFT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 00/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite2
-	DB 21/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_LEFT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 01/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite3
-	DB 22/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_RIGHT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 02/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite4
-	DB 23/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_LEFT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 03/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite5
-	DB 24/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_RIGHT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 04/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite6
-	DB 25/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_LEFT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 05/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite7
-	DB 26/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_RIGHT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 00/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite8
-	DB 27/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_LEFT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 02/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite9
-	DB 28/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_RIGHT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 02/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
-enSprite10
-	DB 29/*SR_MS_SPRITE_ID*/, 00,00/*SR_MS_DB_POINTER*/, 00,00/*SR_MS_X*/, 00/*SR_MS_Y*/, SR_MS_STATE_RIGHT_MASK/*SR_MS_STATE*/, 00/*SR_MS_NEXT*/
-	DB 00/*SR_MS_REMAINING*/, 02/*SR_MS_MOVE_DELAY*/, 00/*SR_MS_MOVE_DELAY_CNT*/, 00/*SR_MS_MOVE_PATTERN_CNT*/, 00,00/*SR_MS_MOVE_PATTERN_POINTER*/ 
+sprite
+	sr.MSS {20/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 1/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite2
+	sr.MSS {21/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 2/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite3
+	sr.MSS {22/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 3/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite4
+	sr.MSS {23/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 4/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite5
+	sr.MSS {24/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite6
+	sr.MSS {25/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite7
+	sr.MSS {26/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 1/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite8
+	sr.MSS {27/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 1/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite9
+	sr.MSS {28/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 2/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+sprite10
+	sr.MSS {29/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 2/*MOVE_DELAY_LOOPS*/, 
+		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
 
-enSpritesSize				DB 10				; The maximum amount of visible enemies			
-EN_SPRITE_HEIGHT_PLATFORM	= 3
+spritesSize					DB 10				; The maximum amount of visible enemies			
+SPRITE_HEIGHT_PLATFORM		= 3
 
-EN_SPRITE_HEIGHT_WEAPON		= 8
-EN_SPRITE_WIDTH_WEAPON		= 8
+SPRITE_HEIGHT_WEAPON		= 8
+SPRITE_WIDTH_WEAPON			= 8
 
 ;----------------------------------------------------------;
-;                      #EnRespown                          ;
+;                      #respown                          ;
 ;----------------------------------------------------------;
-EnRespown
+respown
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy
-	LD A, (enRespownDelay)
+	LD A, (respownDelay)
 	LD B, A
-	LD A, (enRespownTimer)
+	LD A, (respownTimer)
 	INC A
 	CP B
 	JR Z, .startRespown							; Jump if the timer reaches respawn delay
-	LD (enRespownTimer), A
+	LD (respownTimer), A
 	RET
 .startRespown	
 	LD A, 0
-	LD (enRespownTimer), A						; Reset timer
+	LD (respownTimer), A						; Reset timer
 
 	; It would be the time to respawn the enemy. However, to archive random respawn time, we will respawn only when the loop counter 
-	; is within the Y coordinate, where movement is allowed:  #SC_Y_MIN_POS < Y < #SC_Y_MAX_POS
-	LD A, (gmLoopCnt)
+	; is within the Y coordinate, where movement is allowed:  #SCR_Y_MIN_POS < Y < #SCR_Y_MAX_POS
+	LD A, (gm.loopCnt)
 
-	CP SC_Y_MIN_POS
+	CP sc.SCR_Y_MIN_POS
 	RET C										; Return if Y is below game screen
 
-	CP SC_Y_MAX_POS
+	CP sc.SCR_Y_MAX_POS
 	RET NC										; Return if Y is above game screen
 
 	; Iterate over all enemies
-	LD IX, enSprite	
-	LD A, (enSpritesSize)
+	LD IX, sprite	
+	LD A, (spritesSize)
 	LD B, A 
 .loop
 	PUSH BC										; Preserve B for loop counter
 	
-	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
-	CP SR_MS_STATE_VISIBLE
+	LD A, (IX + sr.MSS.STATE)
+	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
+	CP sr.MSS_STATE_VISIBLE
 	JR Z, .continue								; Skipp this sprite if it's already visible
 
 	; Sprite is hidden - respawn it!
 
 	; Mark sprite as visible
-	LD A, (IX + SR_MS_STATE)
-	CALL SrShowSprite
+	LD A, (IX + sr.MSS.STATE)
+	CALL sr.ShowSprite
 
-	; Reset delay counter
+	; Reset delay move counter
 	LD A, 0
-	LD A, (IX + SR_MS_MOVE_DELAY_CNT)
+	LD A, (IX + sr.MSS.MOVE_DELAY_CNT)
 
 	; Set Y (horizontal respown) to a random value
-	LD A, (gmLoopCnt)
-	LD (IX + SR_MS_Y), A
+	LD A, (gm.loopCnt)
+	LD (IX + sr.MSS.Y), A
 	
 	; Set X to left or right side of the screen
-	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_RIGHT_MASK
-	CP SR_MS_STATE_RIGHT_MASK
+	LD A, (IX + sr.MSS.STATE)
+	AND sr.MSS_STATE_RIGHT_MASK
+	CP sr.MSS_STATE_RIGHT_MASK
 	JR NZ, .left
-	LD BC, SC_X_MAX_POS
+	LD BC, sc.SCR_X_MAX_POS
 	JR .afterLR
 .left	
-	LD BC, SC_X_MIN_POS
+	LD BC, sc.SCR_X_MIN_POS
 .afterLR
-	LD (IX + SR_MS_X), BC
+	LD (IX + sr.MSS.X), BC
 
 	; Setup sprite
-	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
+	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
 
 	; Set sprite pattern
-	LD A, SR_SDB_COMET1
-	CALL SrSetSpritePattern
+	LD A, sr.SDB_COMET1
+	CALL sr.SetSpritePattern
 
-	CALL SrUpdateSpritePosition					; Set X, Y and rotation
-	CALL SrUpdateSpritePattern					; Render sprite
+	CALL sr.UpdateSpritePosition				; Set X, Y and rotation
+	CALL sr.UpdateSpritePattern					; Render sprite
 
 	; Exit after respawning first enemy
 	POP BC
 	RET											
 .continue
-	; Move IX to the beginning of the next #jwSpriteXX
-	LD DE, SR_MS_SIZE
+	; Move IX to the beginning of the next #laserMssXX
+	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #enSpritesSize)
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #spritesSize)
 
 	RET
 
 ;----------------------------------------------------------;
-;                 #EnAnimateEnemies                        ;
+;                  #AnimateEnemies                         ;
 ;----------------------------------------------------------;
-EnAnimateEnemies
+AnimateEnemies
 	 
 	; Animate shots
-	LD IX, enSprite	
-	LD A, (enSpritesSize)
+	LD IX, sprite	
+	LD A, (spritesSize)
 	LD B, A 
-	CALL SrAnimateSprites
+	CALL sr.AnimateSprites
 
 	RET	
 
 ;----------------------------------------------------------;
-;                     #EnWeaponHit                         ;
+;                      #WeaponHit                          ;
 ;----------------------------------------------------------;
-EnWeaponHit
-	LD IX, enSprite
-	LD L, EN_SPRITE_HEIGHT_WEAPON
-	LD H, EN_SPRITE_WIDTH_WEAPON
-	LD A, (enSpritesSize)
+WeaponHit
+	LD IX, sprite
+	LD L, SPRITE_HEIGHT_WEAPON
+	LD H, SPRITE_WIDTH_WEAPON
+	LD A, (spritesSize)
 	LD B, A
-	CALL SrWeaponHit
+	CALL jw.WeaponHit
 	RET	
 
 ;----------------------------------------------------------;
-;                      #EnMoveEnemies                      ;
+;                       #MoveEnemies                       ;
 ;----------------------------------------------------------;
 ; Modifies: ALL
-EnMoveEnemies
+MoveEnemies
 	; Loop ever al enemies skipping hidden 
-	LD IX, enSprite	
-	LD A, (enSpritesSize)
+	LD IX, sprite	
+	LD A, (spritesSize)
 	LD B, A 
 .loop
 	PUSH BC										; Preserve B for loop counter
 
 	; Ignore this sprite if it's hidden
-	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_VISIBLE						; Reset all bits but visibility
+	LD A, (IX + sr.MSS.STATE)
+	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
 
 	; Slow down movement by incrementing the counter until it reaches the configured value
-	LD A, (IX + SR_MS_MOVE_DELAY)
+	LD A, (IX + sr.MSS.MOVE_DELAY_LOOPS)
 	CP 0										; No delay? -> move at full speed
 	JR Z, .afterDelayMove
 
 	LD B, A										; Load goal for delay counter into B
 
 	; Delaying movement, increment delay counter
-	LD A, (IX + SR_MS_MOVE_DELAY_CNT)
+	LD A, (IX + sr.MSS.MOVE_DELAY_CNT)
 	INC A
-	LD (IX + SR_MS_MOVE_DELAY_CNT), A
+	LD (IX + sr.MSS.MOVE_DELAY_CNT), A
 
 	CP B
 	JR NZ, .continue							; Return if the delay counter does not reach the required value.
 
 	LD A, 0										; Reset the movement delay counter because it has reached the configured value
-	LD (IX + SR_MS_MOVE_DELAY_CNT), A
+	LD (IX + sr.MSS.MOVE_DELAY_CNT), A
 
 .afterDelayMove
 
 	; Sprite is visible, move it!
-	CALL SrSetSpriteId							; Set the ID of the sprite for the following commands
+	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
 
-	LD A, (IX + SR_MS_STATE)
-	AND SR_MS_STATE_RIGHT_MASK					; Reset all bits but right
-	CP SR_MS_STATE_RIGHT_MASK
+	LD A, (IX + sr.MSS.STATE)
+	AND sr.MSS_STATE_RIGHT_MASK					; Reset all bits but right
+	CP sr.MSS_STATE_RIGHT_MASK
 	JR NZ, .afterMovingLeft						; Jump if moving right
 
 	; Moving left - decrease X coordinate
-	LD BC, (IX + SR_MS_X)	
+	LD BC, (IX + sr.MSS.X)	
 	DEC BC
 
 	; Check whether a enemy is outside the screen 
 	LD A, B
-	CP SC_X_MIN_POS								; B holds MSB from X, if B > 0 than X > 256
+	CP sc.SCR_X_MIN_POS							; B holds MSB from X, if B > 0 than X > 256
 	JR NZ, .afterMoving
 	LD A, C
-	CP SC_X_MIN_POS + 5							; C holds LSB from X, ff C != 5 then X is> 5
+	CP sc.SCR_X_MIN_POS + 5						; C holds LSB from X, ff C != 5 then X is> 5
 	JR NC, .afterMoving
 
 	; X == 0 (both A and B are 0) -> enemy out of screen - hide it
-	CALL SrHideSprite
+	CALL sr.HideSprite
 	JR .continue	
 
 .afterMovingLeft
 
 	; Moving right - increase X coordinate
-	LD BC, (IX + SR_MS_X)	
+	LD BC, (IX + sr.MSS.X)	
 	INC BC
 
 	; If X >= 315 then hide shot 
@@ -235,24 +236,29 @@ EnMoveEnemies
 	JR C, .afterMoving
 	
 	; Shot is after 315 -> hide it
-	CALL SrHideSprite
+	CALL sr.HideSprite
 	JR .continue
 .afterMoving
-	LD (IX + SR_MS_X), BC						; Update new X position
-	CALL SrUpdateSpritePosition
+	LD (IX + sr.MSS.X), BC						; Update new X position
+	CALL sr.UpdateSpritePosition
 
 	; Check the collision with the platform
 	PUSH BC
-	LD IY, jpPlatformBump
-	LD L, EN_SPRITE_HEIGHT_PLATFORM
-	CALL SrPlaftormColision
+	LD IY, platformBump
+	LD L, SPRITE_HEIGHT_PLATFORM
+	CALL sr.PlaftormColision
 	POP BC
 
 .continue
-	; Move IX to the beginning of the next #jwSpriteXX
-	LD DE, SR_MS_SIZE
+	; Move IX to the beginning of the next #laserMssXX
+	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #SR_MS_SIZE)
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #MSS)
 
 	RET	
+
+;----------------------------------------------------------;
+;                            END                           ;
+;----------------------------------------------------------;
+	ENDMODULE			

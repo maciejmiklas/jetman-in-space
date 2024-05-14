@@ -1,18 +1,19 @@
 ;----------------------------------------------------------;
 ;          Screen Setup, Synchronization and Timing        ;
 ;----------------------------------------------------------;
+	MODULE sc
 
-SC_X_MIN_POS			= 0
-SC_X_MAX_POS			= 315
-SC_Y_MIN_POS			= 10
-SC_Y_MAX_POS			= 240
+SCR_X_MIN_POS			= 0
+SCR_X_MAX_POS			= 315
+SCR_Y_MIN_POS			= 10
+SCR_Y_MAX_POS			= 240
 
 SC_SYNC_SL				= 1						; Scanline to synch to
 
 ;----------------------------------------------------------;
-;                    #ScSetupScreen                        ;
+;                      #SetupScreen                        ;
 ;----------------------------------------------------------;
-ScSetupScreen
+SetupScreen
 
 	; Sprite and Layers system
 	; Bits:
@@ -30,16 +31,16 @@ ScSetupScreen
 	RET
 
 ;----------------------------------------------------------;
-;                   #ScWaitForScanline                     ;
+;                     #WaitForScanline                     ;
 ;----------------------------------------------------------;
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
 ;
 ; The code waits for the given scanline (#SC_SYNC_SL) in the first loop, and then in the second loop, it waits again for the same scanline. 
-; This method pauses for the whole frame or a bit more, depending on which scanline display is when calling "ScWaitForScanline".
+; This method pauses for the whole frame or a bit more, depending on which scanline display is when calling "WaitForScanline".
 ; 
 ; Based on: https://github.com/robgmoran/DougieDoSource
 
-ScWaitForScanline     
+WaitForScanline     
 ; Read NextReg $1F - LSB of current raster line
 	LD BC, _GL_REG_SELECT_H243B					; TBBlue Register Select
 	LD A, _GL_REG_VL_H1F						; Port to access - Active Video Line LSB Register
@@ -63,3 +64,8 @@ ScWaitForScanline
 	JR NZ, .waitAgainForScanline
 
 	RET
+
+;----------------------------------------------------------;
+;                            END                           ;
+;----------------------------------------------------------;
+	ENDMODULE		

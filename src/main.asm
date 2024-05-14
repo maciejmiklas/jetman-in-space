@@ -11,21 +11,22 @@ start
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz
 			
 	INCLUDE "dl_data_load.asm"
-	CALL ScSetupScreen
-	CALL GmGameInit
+	CALL sc.SetupScreen
+	CALL gm.GameInit
 
 vv BYTE  0
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
 mainLoop	
-	CALL GmGameLoop
+	CALL gm.GameLoop
 	JR mainLoop
 
 ;----------------------------------------------------------;
 ;                       Includes                           ;
 ;----------------------------------------------------------;
 	INCLUDE "_constants.asm"
+	INCLUDE "sr_simple_sprite.asm"	
 	INCLUDE "sp_sprite.asm"
 	INCLUDE "sc_screen.asm"
 	INCLUDE "jo_jetman_joystick.asm"
@@ -37,7 +38,6 @@ mainLoop
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
 	INCLUDE "jw_jetman_weapon.asm"
-	INCLUDE "sr_simple_sprite.asm"
 	INCLUDE "ut_util.asm"
 
 	; LAST import due to bank offset!

@@ -4,151 +4,151 @@
 
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
-jpPlatformWalk DB 3, 094,012,065, 142,075,136, 054,190,240
+platformWalk DB 3, 094,012,065, 142,075,136, 054,190,240
 
 ; [amount of plaftorms], [[X platform start],[X platform end],[Y platform start],[Y platform end]], ...]
-jpPlatformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
+platformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
 
 ;----------------------------------------------------------;
-;               #JpBumpOnJoystickDisabled                  ;
+;                #BumpOnJoystickDisabled                   ;
 ;----------------------------------------------------------;
-JpBumpOnJoystickDisabled
+BumpOnJoystickDisabled
 
 	; Is Jetman falling from the platform on the right side?
-	LD A, (jtAir)
-	CP JT_AIR_FALL_RIGHT
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_FALL_RIGHT
 	JR NZ, .afterFallingRight
 
 	; Yes, Jetman is falling from the platform
-	LD A, (jtX)
+	LD A, (jt.jetmanX)
 	INC A
-	LD (jtX), A
+	LD (jt.jetmanX), A
 
-	LD A, (jtY)
+	LD A, (jt.jetmanY)
 	INC A
 	INC A
-	LD (jtY), A
+	LD (jt.jetmanY), A
 
 	JR .afterBumping							; Do not check falling left or bumping because Jetman is already falling
 .afterFallingRight	
 
 	; Is Jetman falling from the platform on the left side?
-	LD A, (jtAir)
-	CP JT_AIR_FALL_LEFT
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_FALL_LEFT
 	JR NZ, .afterFallingLeft
 
 	; Yes, Jetman is falling from the platform
-	LD A, (jtX)
+	LD A, (jt.jetmanX)
 	DEC A
-	LD (jtX), A
+	LD (jt.jetmanX), A
 
-	LD A, (jtY)
+	LD A, (jt.jetmanY)
 	INC A
 	INC A
-	LD (jtY), A
+	LD (jt.jetmanY), A
 	JR .afterBumping							; Do not check for bumping, as Jetman is falling
 .afterFallingLeft	
 
 	; Is Jetman bumping into the platform from the right?
-	LD A, (jtAir)
-	CP JT_AIR_BUMP_RIGHT
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_BUMP_RIGHT
 	JR NZ, .afterBumpingRight
 
 	; Yes
-	CALL JtIncJetX
+	CALL jt.IncJetX
 	JR .afterBumping							; Do not check bumping left
 .afterBumpingRight
 
 	; Is Jetman bumping into the platform from the left?
-	LD A, (jtAir)
-	CP JT_AIR_BUMP_LEFT
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_BUMP_LEFT
 	JR NZ, .afterBumpingLeft
 
 	; Yes
-	CALL JtDecJetX	
+	CALL jt.DecJetX	
 	JR .afterBumping
 .afterBumpingLeft
 
 	; Or finally, maybe Jetmat hits the platform from the bottom?
-	LD A, (jtAir)
-	CP JT_AIR_BUMP_BOTTOM
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_BUMP_BOTTOM
 	JR NZ, .afterBumping
 
 	; Yes
-	LD A, (jtY)	
+	LD A, (jt.jetmanY)	
 	INC A
-	LD (jtY), A
+	LD (jt.jetmanY), A
 	JR .afterBumping
 
 .afterBumping
 
 	RET	
 ;----------------------------------------------------------;
-;                   #JpJetmanTakesoff                      ;
+;                    #JetmanTakesoff                       ;
 ;----------------------------------------------------------;
-JpJetmanTakesoff
+JetmanTakesoff
 
 	; Transition from walking to flaying
-	LD A, (jtGnd)
-	CP JT_GND_INACTIVE							; Check if Jetnan is on the ground/platform
+	LD A, (jt.jetmanGnd)
+	CP jt.GND_INACTIVE							; Check if Jetnan is on the ground/platform
 	RET Z
 
-	; Jetman is taking off - set #jtAir and reset #jtGnd
-	LD A, JT_AIR_FLY
-	LD (jtAir), A
+	; Jetman is taking off - set #jetmanAir and reset #jetmanGnd
+	LD A, jt.AIR_FLY
+	LD (jt.jetmanAir), A
 
-	LD A, JT_GND_INACTIVE
-	LD (jtGnd), A
+	LD A, jt.GND_INACTIVE
+	LD (jt.jetmanGnd), A
 
 	; Play takeoff animation					
-	LD A, JS_SDB_T_WF
-	CALL JsChangeJetmanSpritePattern
-	RET											; END #JpJetmanTakesoff
+	LD A, js.SDB_T_WF
+	CALL js.ChangeJetmanSpritePattern
+	RET											; END #JetmanTakesoff
 
 ;----------------------------------------------------------;
-;                    #JpJetmanLanding                      ;
+;                     #JetmanLanding                       ;
 ;----------------------------------------------------------;
-JpJetmanLanding
+JetmanLanding
 
 	; Jemans is landing, trigger transition: flying -> standing/walking
-	LD A, (joJoyDirection)
-	AND JO_MOVE_MSK_LR
+	LD A, (jo.joyDirection)
+	AND jo.MOVE_MSK_LR
 	CP 1	
 	JR C, .afterMoveLR							; Jump, if there is no movement right/left (A >= 1) -> Jemtan lands and stands still
 	
 	; Jetman moves left/right
-	LD A, JT_GND_WALK							; Update #jtGnd as we are walking		
-	LD (jtGnd), A	
+	LD A, jt.GND_WALK							; Update #jetmanGnd as we are walking		
+	LD (jt.jetmanGnd), A	
 
-	LD A, JS_SDB_T_FW							; Play transition from landing -> walking	
-	CALL JsChangeJetmanSpritePattern
+	LD A, js.SDB_T_FW							; Play transition from landing -> walking	
+	CALL js.ChangeJetmanSpritePattern
 
 	JR .afterStand								; The animation is already loaded, do not overweigh it with standing
 .afterMoveLR	
 
-	LD A, JT_GND_STAND							; Update #jtGnd as we are standing		
-	LD (jtGnd), A	
+	LD A, jt.GND_STAND							; Update #jetmanGnd as we are standing		
+	LD (jt.jetmanGnd), A	
 
-	LD A, JS_SDB_T_FS							; Play transition from landing -> standing
-	CALL JsChangeJetmanSpritePattern
+	LD A, js.SDB_T_FS							; Play transition from landing -> standing
+	CALL js.ChangeJetmanSpritePattern
 .afterStand
 
-	; Reset #jtAir as we are walking
-	LD A, JT_AIR_INACTIVE						
-	LD (jtAir), A
+	; Reset #jetmanAir as we are walking
+	LD A, jt.AIR_INACTIVE						
+	LD (jt.jetmanAir), A
 
 	RET
 
 ;----------------------------------------------------------;
-;                 #JpLandingOnPlatform                     ;
+;                  #LandingOnPlatform                      ;
 ;----------------------------------------------------------;
 ; Is Jetman landing on one of the platforms?
-JpLandingOnPlatform
-	LD A, (jtAir)
-	CP JT_AIR_INACTIVE							; Is Jemtan in the air?
+LandingOnPlatform
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no landing ;)
 
-	LD HL, jpPlatformWalk
+	LD HL, platformWalk
 	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
 	INC HL										; HL points to [Y]
@@ -160,21 +160,21 @@ JpLandingOnPlatform
 	INC HL										; HL points to [X end]
 	LD E, (HL)									; E contains [X end]		
 	
-	LD A, (jtY)									; A holds current Y position
+	LD A, (jt.jetmanY)							; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
-	LD A, (jtX)									; A holds current X position
-	CP D										; Compare #jtX position to [X start]
-	JR C, .platformsLoopEnd						; Jump if #jtX < [X start]
+	LD A, (jt.jetmanX)									; A holds current X position
+	CP D										; Compare #jetmanX position to [X start]
+	JR C, .platformsLoopEnd						; Jump if #jetmanX < [X start]
 
 	; Jetman is on the current platform level after it's begun, we have to check if he is not too far to the right
 	CP E
-	JR NC, .platformsLoopEnd					; Jump if #jtX > [X end]
+	JR NC, .platformsLoopEnd					; Jump if #jetmanX > [X end]
 
 	; Jetman is landing on the platform!
-	CALL JpJetmanLanding
+	CALL JetmanLanding
 	RET
 
 .platformsLoopEnd
@@ -182,15 +182,15 @@ JpLandingOnPlatform
 	RET
 
 ;----------------------------------------------------------;
-;              #JpBumpIntoPlatFormBelow                   ;
+;                #BumpIntoPlatFormBelow                    ;
 ;----------------------------------------------------------;
-JpBumpIntoPlatFormBelow
+BumpIntoPlatFormBelow
 
-	LD A, (jtAir)
-	CP JT_AIR_INACTIVE							; Is Jemtan in the air?
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
-	LD HL, jpPlatformBump
+	LD HL, platformBump
 	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
 	INC HL										; HL points to [X start]
@@ -203,31 +203,31 @@ JpBumpIntoPlatFormBelow
 	INC HL										; HL points to [Y end]
 	LD C, (HL)									; C contains [Y end]
 
-	LD A, (jtY)									; A holds current Y position
+	LD A, (jt.jetmanY)							; A holds current Y position
 	CP C
-	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jtY
+	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jetmanY
 
 	; Jetman is on the bottom of the platform, now check whether he is withing its horizonlat bounds
-	LD A, (jtX)									; A holds current X position
+	LD A, (jt.jetmanX)									; A holds current X position
 
-	CP D										; Compare #jtX position to [X start]
-	JR C, .platformsLoopEnd						; Jump if #jtX < [X start]
+	CP D										; Compare #jetmanX position to [X start]
+	JR C, .platformsLoopEnd						; Jump if #jetmanX < [X start]
 
 	CP E
-	JR NC, .platformsLoopEnd					; Jump if #jtX > [X end]
+	JR NC, .platformsLoopEnd					; Jump if #jetmanX > [X end]
 
 	; Jetman hits the platform!
-	LD A, JT_AIR_BUMP_BOTTOM					; Change air state
-	LD (jtAir), A
+	LD A, jt.AIR_BUMP_BOTTOM					; Change air state
+	LD (jt.jetmanAir), A
 
 	PUSH BC
 
-	LD A, JS_SDB_T_WL							; Play animation
-	CALL JsChangeJetmanSpritePattern
+	LD A, js.SDB_T_WL							; Play animation
+	CALL js.ChangeJetmanSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
-	LD A, JT_JOY_DISABLED_BUMP						
-	LD (joDisabledCnt), A
+	LD A, jt.JOY_DISABLED_BUMP						
+	LD (jo.joyDisabledCnt), A
 
 	POP BC
 .platformsLoopEnd
@@ -235,23 +235,23 @@ JpBumpIntoPlatFormBelow
 	RET
 
 ;----------------------------------------------------------;
-;                 #JpBumpIntoPlatformLR                    ;
+;                  #BumpIntoPlatformLR                     ;
 ;----------------------------------------------------------;
 ; Bump into a platform from left or right
 ; Input
-;  - H:		JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
-JpBumpIntoPlatformLR
-	LD A, (jtAir)
-	CP JT_AIR_INACTIVE							; Is Jemtan in the air?
+;  - H:		jt.AIR_BUMP_LEFT or jt.AIR_BUMP_RIGHT
+BumpIntoPlatformLR
+	LD A, (jt.jetmanAir)
+	CP jt.AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
-	LD IX, jpPlatformBump
+	LD IX, platformBump
 	LD B, (IX)									; Load into B the number of platforms to check
 .platformsLoop	
 
 	; Check whether we should consider the left or right side of the platform.
-	LD A, H										; A holds JT_AIR_BUMP_LEFT or JT_AIR_BUMP_RIGHT
-	CP JT_AIR_BUMP_LEFT
+	LD A, H										; A holds AIR_BUMP_LEFT or AIR_BUMP_RIGHT
+	CP jt.AIR_BUMP_LEFT
 	JR Z, .bumpLeft
 
 	; We will check whether Jetman bumps into the platform from the right
@@ -272,45 +272,45 @@ JpBumpIntoPlatformLR
 	INC IX										; HL points to [Y end]
 	LD E, (IX)									; E contains [Y end]
 
-	LD A, (jtX)									; A holds current X position
+	LD A, (jt.jetmanX)							; A holds current X position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not close to the left/right edge of the platform
 
 	; Jetman is close to the left/right edge of the platform
-	LD A, (jtY)									; A holds current Y position
-	CP D										; Compare #jtY position to [Y start]
-	JR C, .platformsLoopEnd						; Jump if #jtY < [Y start]
+	LD A, (jt.jetmanY)							; A holds current Y position
+	CP D										; Compare #jetmanY position to [Y start]
+	JR C, .platformsLoopEnd						; Jump if #jetmanY < [Y start]
 
 	CP E
-	JR NC, .platformsLoopEnd					; Jump if #jtY > [Y end]
+	JR NC, .platformsLoopEnd					; Jump if #jetmanY > [Y end]
 
 	; Jetman hits the platform from the left/right!
 	LD A, H										; Change air state, H is a method param
-	LD (jtAir), A
+	LD (jt.jetmanAir), A
 
 	PUSH BC
 
-	LD A, JS_SDB_T_WL							; Play animation
-	CALL JsChangeJetmanSpritePattern
+	LD A, js.SDB_T_WL							; Play animation
+	CALL js.ChangeJetmanSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
-	LD A, JT_JOY_DISABLED_BUMP						
-	LD (joDisabledCnt), A
+	LD A, jt.JOY_DISABLED_BUMP						
+	LD (jo.joyDisabledCnt), A
 
 	POP BC
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
 ;----------------------------------------------------------;
-;                 #JpFallingFromPlatform                   ;
+;                  #FallingFromPlatform                    ;
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls 
-JpFallingFromPlatform
-	LD A, (jtGnd)
-	CP JT_GND_WALK								; Is Jemtan in the air?
+FallingFromPlatform
+	LD A, (jt.jetmanGnd)
+	CP jt.GND_WALK								; Is Jemtan in the air?
 	RET NZ										; Return if not walking, no walking - no falling ;)
 
-	LD HL, jpPlatformWalk							
+	LD HL, platformWalk							
 	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
 	INC HL										; HL points to [Y]
@@ -322,17 +322,17 @@ JpFallingFromPlatform
 	INC HL										; HL points to [X end]
 	LD E, (HL)									; E contains [X end]		
 
-	LD A, (jtY)									; A holds current Y position
+	LD A, (jt.jetmanY)							; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
-	LD A, (jtX)									; A holds current X position
-	CP D										; Compare #jtX position to [X start]
-	JR C, .fallingLeft							; Jump if #jtX < [X start], meaning Jetman is falling from the left side of the platform
+	LD A, (jt.jetmanX)							; A holds current X position
+	CP D										; Compare #jetmanX position to [X start]
+	JR C, .fallingLeft							; Jump if #jetmanX < [X start], meaning Jetman is falling from the left side of the platform
 
 	CP E
-	JR NC, .fallingRight						; Jump if #jtX > [X end], meaning Jetman is falling from the right side of the platform
+	JR NC, .fallingRight						; Jump if #jetmanX > [X end], meaning Jetman is falling from the right side of the platform
 
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
@@ -340,26 +340,26 @@ JpFallingFromPlatform
 
 ; Jetman is falling from the platform, left or right
 .fallingLeft									
-	LD A, JT_AIR_FALL_LEFT						
-	LD (jtAir), A
+	LD A, jt.AIR_FALL_LEFT						
+	LD (jt.jetmanAir), A
 	JR .afterFallingRight
 
 .fallingRight
-	LD A, JT_AIR_FALL_RIGHT
-	LD (jtAir), A
+	LD A, jt.AIR_FALL_RIGHT
+	LD (jt.jetmanAir), A
 
 .afterFallingRight
 	; Trigger transition: walking -> falling
-	LD A, JS_SDB_T_WL
-	CALL JsChangeJetmanSpritePattern
+	LD A, js.SDB_T_WL
+	CALL js.ChangeJetmanSpritePattern
 
-	; Disable joystick, because Jetman loses control for #JT_JOY_DISABLED_FALL frames
-	LD A, JT_JOY_DISABLED_FALL						
-	LD (joDisabledCnt), A
+	; Disable joystick, because Jetman loses control for #JOY_DISABLED_FALL frames
+	LD A, jt.JOY_DISABLED_FALL						
+	LD (jo.joyDisabledCnt), A
 	
-	; Reset #jtGnd as we are not walking anymore
-	LD A, JT_GND_INACTIVE						
-	LD (jtGnd), A	
+	; Reset #jetmanGnd as we are not walking anymore
+	LD A, jt.GND_INACTIVE						
+	LD (jt.jetmanGnd), A	
 
 .afterFalling
 	RET

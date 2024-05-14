@@ -1,6 +1,7 @@
 ;----------------------------------------------------------;
 ;                     Common Sprite API                    ;
 ;----------------------------------------------------------;
+	MODULE sp
 
 ;----------------------------------------------------------;
 ;                   Reserved Sprite IDs                    ;
@@ -10,14 +11,14 @@
 ; en_enemy:				20-39
 
 ;----------------------------------------------------------;
-;                    #SpLoadSpritesFPGA                    ;
+;                     #LoadSpritesFPGA                     ;
 ;----------------------------------------------------------;
 ; Loads sprites from a file into hardware using DMA.
 ;
 ;Input:
 ; - HL:		RAM address containing sprite binary data.
 ; - BC:		Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
-SpLoadSpritesFPGA
+LoadSpritesFPGA
 	; Store dynamic values into DMA program
 	LD (spSpriteDMAPortA), HL					; Copy sprite sheet address from HL
 	LD (spSpriteDMADataLength), BC				; Copy sprite file length into WR0
@@ -90,25 +91,31 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 	RET
 
 ;----------------------------------------------------------;
-;                   #SpAnimateSprites                      ;
+;                    #AnimateSprites                       ;
 ;----------------------------------------------------------;
-SP_ANIMATE_DELAY		= 10					; Change sprite pattern every few lops. Loop speed is controled by: #ScWaitForScanline     
-spDelayCnt				BYTE 0					; The delay counter for sprite animation
+ANIMATE_DELAY			= 10					; Change sprite pattern every few lops. Loop speed is controled by: #WaitForScanline     
+animDelayCnt			BYTE 0					; The delay counter for sprite animation
 
-SpAnimateSprites
-	LD A, (spDelayCnt)
+AnimateSprites
+	LD A, (animDelayCnt)
 	INC A
-	LD (spDelayCnt), A
+	LD (animDelayCnt), A
 
-	CP SP_ANIMATE_DELAY
-	RET C										; Return if #spDelayCnt <  #SP_ANIMATE_DELAY
+	CP ANIMATE_DELAY
+	RET C										; Return if #animDelayCnt <  #ANIMATE_DELAY
 
 	LD A, 0										; Reset delay counter
-	LD (spDelayCnt), A
+	LD (animDelayCnt), A
 
 	; Update sprite patterns
-	CALL JsUpdateJetmanSpritePattern
-	CALL JwAnimateShots
-	CALL EnAnimateEnemies
+	CALL js.UpdateJetmanSpritePattern
+	CALL jw.AnimateShots
+	CALL en.AnimateEnemies
 	
 	RET
+
+
+;----------------------------------------------------------;
+;                            END                           ;
+;----------------------------------------------------------;
+	ENDMODULE	

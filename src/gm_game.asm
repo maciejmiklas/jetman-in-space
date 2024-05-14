@@ -1,32 +1,39 @@
 ;----------------------------------------------------------;
 ;                        Main Game                         ;
 ;----------------------------------------------------------;
-gmLoopCnt										; The game loop counter gets increased with each loop and restarts by overflow
+	MODULE gm 
+
+loopCnt										; The game loop counter gets increased with each loop and restarts by overflow
 	DB 0
 ;----------------------------------------------------------;
-;                     #GmGameInit                          ;
+;                      #GameInit                           ;
 ;----------------------------------------------------------;
-GmGameInit	
-	CALL JsIntiJetmanSprite
+GameInit	
+	CALL js.IntiJetmanSprite
 	RET
 
 ;----------------------------------------------------------;
-;                     #GmGameLoop                          ;
+;                      #GameLoop                           ;
 ;----------------------------------------------------------;
-GmGameLoop	
+GameLoop	
 
 	; Increase game counter
-	LD A, (gmLoopCnt)
+	LD A, (loopCnt)
 	INC A
-	LD (gmLoopCnt), A
+	LD (loopCnt), A
 
-	CALL ScWaitForScanline
-	CALL JoInput
-	CALL JsUpdateJetmanSpritePosition
-	CALL JoDisabled
-	CALL SpAnimateSprites
-	CALL JwMoveShots
-	CALL EnMoveEnemies
-	CALL EnRespown
-	CALL EnWeaponHit
+	CALL sc.WaitForScanline
+	CALL jo.JoyInput
+	CALL js.UpdateJetmanSpritePosition
+	CALL jo.JoyDisabled
+	CALL sp.AnimateSprites
+	CALL jw.MoveShots
+	CALL en.MoveEnemies
+	CALL en.respown
+	CALL en.WeaponHit
 	RET
+
+;----------------------------------------------------------;
+;                            END                           ;
+;----------------------------------------------------------;
+	ENDMODULE			
