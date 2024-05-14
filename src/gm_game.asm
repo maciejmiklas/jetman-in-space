@@ -23,17 +23,48 @@ GameLoop
 	LD (loopCnt), A
 
 	CALL sc.WaitForScanline
-	CALL jo.JoyInput
+	CALL in.JoyInput
 	CALL js.UpdateJetmanSpritePosition
-	CALL jo.JoyDisabled
+	CALL jt.JoyDisabled
 	CALL sp.AnimateSprites
 	CALL jw.MoveShots
 	CALL en.MoveEnemies
 	CALL en.respown
 	CALL en.WeaponHit
+	CALL PrintDebug
 	RET
 
 ;----------------------------------------------------------;
-;                            END                           ;
+;                      #GameLoop                           ;
+;----------------------------------------------------------;
+PrintDebug
+	; PRINT START
+	LD B, 0
+	LD H, 0
+	LD HL, (jd.jetmanX)
+	CALL tx.PrintNumHL
+
+	LD B, 10
+	LD H, 0
+	LD A,  (jd.jetmanY)
+	LD L, A
+	CALL tx.PrintNumHL		
+/*
+	LD B, 20
+	LD H, 0
+	LD A, (jd.jetmanGnd)
+	LD L, A
+	CALL tx.PrintNumHL	
+
+	LD B, 30
+	LD H, 0
+	LD A, (jd.joyDirection)
+	LD L, A
+	CALL tx.PrintNumHL		
+	*/
+	; PRINT END
+	RET
+;----------------------------------------------------------;
+;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE			

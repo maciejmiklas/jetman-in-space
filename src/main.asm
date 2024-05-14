@@ -26,19 +26,23 @@ mainLoop
 ;                       Includes                           ;
 ;----------------------------------------------------------;
 	INCLUDE "_constants.asm"
-	INCLUDE "sr_simple_sprite.asm"	
-	INCLUDE "sp_sprite.asm"
-	INCLUDE "sc_screen.asm"
-	INCLUDE "jo_jetman_joystick.asm"
-	INCLUDE "jt_jetman.asm"
-	INCLUDE "js_jetman_sprite.asm"
-	INCLUDE "jp_jetman_platform.asm"
-	INCLUDE "en_enemy.asm"
-	INCLUDE "gm_game.asm"
+
+	INCLUDE "in_input.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
-	INCLUDE "jw_jetman_weapon.asm"
 	INCLUDE "ut_util.asm"
+
+	INCLUDE "gm_game.asm"
+
+	INCLUDE "sr_simple_sprite.asm"
+	INCLUDE "sp_sprite.asm"	
+	INCLUDE "jd_jetman_data.asm"
+	INCLUDE "jp_jetman_platform.asm"
+	INCLUDE "jt_jetman.asm"
+	INCLUDE "js_jetman_sprite.asm"
+	INCLUDE "en_enemy.asm"
+	INCLUDE "sc_screen.asm"
+	INCLUDE "jw_jetman_weapon.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "di_data_bin.asm"

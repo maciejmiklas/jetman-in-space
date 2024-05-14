@@ -56,6 +56,6 @@ spritesBin INCBIN "assets/sprites_001.spr"
 spritesBinLength = $ - spritesBin
 
 ;----------------------------------------------------------;
-;                            END                           ;
+;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE	

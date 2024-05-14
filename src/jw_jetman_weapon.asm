@@ -8,28 +8,28 @@
 ADJUST_FIRE_X					= 10			
 ADJUST_FIRE_Y					= 4
 
-; Sprites for single shots (#laserMss), based on #MSS
-laserMss
+; Sprites for single shots (#shotMss), based on #MSS
+shotMss
 	sr.MSS {10/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
 		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
-laserMss2
+shotMss2
 	sr.MSS {11/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
 		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
-laserMss3
+shotMss3
 	sr.MSS {12/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
 		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
-laserMss4
+shotMss4
 	sr.MSS {13/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
 		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
-laserMss5
+shotMss5
 	sr.MSS {14/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
 		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
-laserMss6
+shotMss6
 	sr.MSS {15/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
 		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
 
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY
-laserMssDelayCnt
+shotMssDelayCnt
 	DB 0
 
 FIRE_DELAY						= 3
@@ -37,13 +37,14 @@ SHOT_SIZE						= 6				; Amount of shots that can be simultaneously fired
 
 SHOT_HEIGHT						= 0
 
+
 ;----------------------------------------------------------;
 ;                      #WeaponHit                          ;
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
 ;  - IX:	Pointer to #MSS, the enemies
-;  - B:		Number of enemies
+;  - B:		Number of enemies in IX
 ;  - H:     Half of the width of the enemy
 ;  - L:		Half of the height of the enemy
 ; Modifies: ALL
@@ -60,7 +61,7 @@ WeaponHit
 	CALL HitEnemy
 
 .continue
-	; Move HL to the beginning of the next #laserMssX
+	; Move HL to the beginning of the next #shotMssX
 	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
@@ -73,13 +74,13 @@ WeaponHit
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
-;  - IX:	Pointer to #MSS, the enemy to check for hit
+;  - IX:	Pointer to concreate single enemy, single #MSS
 ;  - H:     Half of the width of the enemy
 ;  - L:		Half of the height of the enemy
 ; Modifies: ALL
 HitEnemy
-	; Loop ever all laserMss# skipping hidden sprites
-	LD IY, laserMss								; IY points to the enemy
+	; Loop ever all shotMss# skipping hidden sprites
+	LD IY, shotMss								; IY points to the enemy
 	LD B, SHOT_SIZE 
 
 .loop
@@ -148,7 +149,7 @@ HitEnemy
 	RET											; Given enemy has been hit, nothing more to do.
 
 .continue
-	; Move IY to the beginning of the next #laserMssXX
+	; Move IY to the beginning of the next #shotMssXX
 	LD DE, sr.MSS
 	ADD IY, DE
 	POP BC
@@ -161,8 +162,8 @@ HitEnemy
 ;----------------------------------------------------------;
 ; Modifies: ALL
 MoveShots
-	; Loop ever all laserMss# skipping hidden sprites
-	LD IX, laserMss	
+	; Loop ever all shotMss# skipping hidden sprites
+	LD IX, shotMss	
 	LD B, SHOT_SIZE 
 
 .loop
@@ -235,7 +236,7 @@ MoveShots
 .afterColisionDetection
 
 .continue
-	; Move IX to the beginning of the next #laserMssXX
+	; Move IX to the beginning of the next #shotMssXX
 	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
@@ -248,15 +249,15 @@ MoveShots
 ;----------------------------------------------------------;
 AnimateShots
 	; Increase shot counter
-	LD A, (laserMssDelayCnt)
+	LD A, (shotMssDelayCnt)
 	CP A, FIRE_DELAY
 	JR NC, .afterIncDelay						; Do increase the delay counter when it has reached the required value
 	INC A
-	LD (laserMssDelayCnt), A
+	LD (shotMssDelayCnt), A
 .afterIncDelay
 	 
 	; Animate shots
-	LD IX, laserMss	
+	LD IX, shotMss	
 	LD B, SHOT_SIZE 
 	CALL sr.AnimateSprites
 
@@ -268,39 +269,39 @@ AnimateShots
 Fire
 
 	; Check delay to limit fire speed
-	LD A, (laserMssDelayCnt)
+	LD A, (shotMssDelayCnt)
 	CP FIRE_DELAY
 	RET C										; Return if the delay counter did not reach the defined value
 	; we can fire, reset counter
 	LD A, 0
-	LD (laserMssDelayCnt), A
+	LD (shotMssDelayCnt), A
 
 	; Find the first inactive (sprite hidden) shot
-	LD IX, laserMss
+	LD IX, shotMss
 	LD DE, sr.MSS
 	LD B, SHOT_SIZE 
 .findLoop
 
-	; Check whether the current #laserMssX is not visible and can be reused
+	; Check whether the current #shotMssX is not visible and can be reused
 	LD A, (IX + sr.MSS.STATE)
 	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
 	CP 0
 	JR Z, .afterFound							; Jump if visibility is not set -> hidden, can be reused
 
-	; Move HL to the beginning of the next #laserMssX (see "LD DE, MSS" above)
+	; Move HL to the beginning of the next #shotMssX (see "LD DE, MSS" above)
 	ADD IX, DE
 	DJNZ .findLoop								; Jump if B > 0 (starts with B = #MSS)
-	RET											; Loop has ended without finding free #laserMssX
+	RET											; Loop has ended without finding free #shotMssX
 
 .afterFound										
-	; We are here because free #laserMssX has been found, and IX points to it
+	; We are here because free #shotMssX has been found, and IX points to it
 
 	; Take over direction from Jetman to laser beam 
 
 	; Is Jetman moving left?
-	LD A, (jo.jetmanDirection)
-	AND jo.MOVE_LEFT_MASK						
-	CP jo.MOVE_LEFT_MASK
+	LD A, (jd.jetmanDirection)
+	AND jd.MOVE_LEFT_MASK						
+	CP jd.MOVE_LEFT_MASK
 	JR Z, .afterMovingRight						; Jump if Jetman is not moving right
 	
 	; Jetman is moving right
@@ -308,7 +309,7 @@ Fire
 	SET sr.MSS_STATE_DIRECTION_BIT, A
 
 	; Set X coordinate for laser beam
-	LD HL, (jt.jetmanX)
+	LD HL, (jd.jetmanX)
 	ADD HL, ADJUST_FIRE_X
 	LD (IX + sr.MSS.X), HL
 
@@ -317,7 +318,7 @@ Fire
 	; Jetman is moving left
 
 	; Set X coordinate for laser beam
-	LD HL, (jt.jetmanX)
+	LD HL, (jd.jetmanX)
 	ADD HL, -ADJUST_FIRE_X
 	LD (IX + sr.MSS.X), HL
 
@@ -329,7 +330,7 @@ Fire
 	LD (IX + sr.MSS.STATE), A					; Store state
 
 	; Set Y coordinate for laser beam
-	LD A, (jt.jetmanY)
+	LD A, (jd.jetmanY)
 	ADD A, ADJUST_FIRE_Y
 	LD (IX + sr.MSS.Y), A
 
@@ -345,6 +346,6 @@ Fire
 	RET
 
 ;----------------------------------------------------------;
-;                            END                           ;
+;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE		

@@ -94,7 +94,7 @@ IntiJetmanSprite
 UpdateJetmanSpritePosition	
 
 	; Move Jetman Sprite to the current X position, the 9-bit value r=ires a few tricks. 
-	LD BC, (jt.jetmanX)								
+	LD BC, (jd.jetmanX)								
 	LD A, C			
 
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands								
@@ -108,10 +108,10 @@ UpdateJetmanSpritePosition
 	
 	; Rotate sprite for Left/Right movement	
 	LD E, A										; Store A in E to use A for loading data from RAM.
-	LD A, (jo.jetmanDirection)			
+	LD A, (jd.jetmanDirection)			
 	LD D, A
 	LD A, E										; Now, A has its original value, and D contains a value from #jetState
-	BIT jo.MOVE_LEFT_BIT, D						; Moving left bit set?
+	BIT jd.MOVE_LEFT_BIT, D						; Moving left bit set?
 	JR Z, .rotateRight
 	SET _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite left	
 	JR .afterRotate	
@@ -126,7 +126,7 @@ UpdateJetmanSpritePosition
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Move Jetman sprite to current Y postion, 8-bit value is easy 
-	LD A, (jt.jetmanY)		
+	LD A, (jd.jetmanY)		
 	
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands							
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
@@ -134,32 +134,6 @@ UpdateJetmanSpritePosition
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands		
 	ADD 16										; Lower part is 16px below upper					
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
-
-	; PRINT START
-	LD B, 0
-	LD H, 0
-	LD HL, (jt.jetmanX)
-	CALL tx.PrintNumHL
-
-	LD B, 10
-	LD H, 0
-	LD A,  (jt.jetmanY)
-	LD L, A
-	CALL tx.PrintNumHL		
-/*
-	LD B, 20
-	LD H, 0
-	LD A, (jt.jetmanGnd)
-	LD L, A
-	CALL tx.PrintNumHL	
-
-	LD B, 30
-	LD H, 0
-	LD A, (jo.joyDirection)
-	LD L, A
-	CALL tx.PrintNumHL		
-	*/
-	; PRINT END
 
 	RET
 
@@ -236,6 +210,6 @@ UpdateJetmanSpritePattern
 	RET
 
 ;----------------------------------------------------------;
-;                            END                           ;
+;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE

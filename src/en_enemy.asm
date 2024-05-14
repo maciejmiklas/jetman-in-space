@@ -125,7 +125,7 @@ respown
 	POP BC
 	RET											
 .continue
-	; Move IX to the beginning of the next #laserMssXX
+	; Move IX to the beginning of the next #shotMssXX
 	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
@@ -250,7 +250,7 @@ MoveEnemies
 	POP BC
 
 .continue
-	; Move IX to the beginning of the next #laserMssXX
+	; Move IX to the beginning of the next #shotMssXX
 	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
@@ -259,6 +259,6 @@ MoveEnemies
 	RET	
 
 ;----------------------------------------------------------;
-;                            END                           ;
+;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE			

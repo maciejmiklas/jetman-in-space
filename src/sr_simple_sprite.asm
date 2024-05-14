@@ -21,6 +21,8 @@ Y						BYTE					; Y position of the sprite
 STATE					BYTE
 NEXT					BYTE					; ID in #ssSpriteDB for next animation record/state
 REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
+
+
 MOVE_DELAY_LOOPS		BYTE					; Number of game loops to skip before moving enemy (delays movement speed)
 MOVE_DELAY_CNT			BYTE					; Move delay counter
 MOVE_PATTERN_POINTER	WORD					; Pointer to the movement pattern
@@ -124,7 +126,7 @@ AnimateSprites
 	CALL UpdateSpritePattern
 
 .continue
-	; Move HL to the beginning of the next #laserMssX
+	; Move HL to the beginning of the next #shotMssX
 	LD DE, MSS
 	ADD IX, DE
 	POP BC
@@ -294,7 +296,7 @@ SetSpritePattern
 ;----------------------------------------------------------;
 ; A sprite can hit platform from left or right. 
 ; Input:
-;  - IX: 	pointer to #MSS, single sprite to check colsion for.
+;  - IX: 	pointer to #MSS, single sprite to check colsion for
 ;  - IY:	Structure like #platformBump
 ;  - L:		Half of the height of the sprite
 ; Modifies: ALL
@@ -365,8 +367,7 @@ PlaftormColision
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
 
-
 ;----------------------------------------------------------;
-;                            END                           ;
+;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE									
