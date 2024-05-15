@@ -29,7 +29,7 @@ GameLoop
 	CALL sp.AnimateSprites
 	CALL jw.MoveShots
 	CALL en.MoveEnemies
-	CALL en.respown
+	CALL en.Respown
 	CALL en.WeaponHit
 	CALL PrintDebug
 	RET

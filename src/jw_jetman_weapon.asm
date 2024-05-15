@@ -10,23 +10,17 @@ ADJUST_FIRE_Y					= 4
 
 ; Sprites for single shots (#shotMss), based on #MSS
 shotMss
-	sr.MSS {10/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
-		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+	sr.MSS {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shotMss2
-	sr.MSS {11/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
-		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+	sr.MSS {11/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shotMss3
-	sr.MSS {12/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
-		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+	sr.MSS {12/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shotMss4
-	sr.MSS {13/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
-		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+	sr.MSS {13/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shotMss5
-	sr.MSS {14/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
-		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+	sr.MSS {14/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shotMss6
-	sr.MSS {15/*ID*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*MOVE_DELAY_LOOPS*/, 
-		0/*MOVE_DELAY_CNT*/, 0/*MOVE_PATTERN_POINTER*/, 0/*MOVE_PATTERN_CNT*/, 0/*RESPOWN_DELAY_LOOPS*/ ,0/*RESPOWN_DELAY_CNT*/}
+	sr.MSS {15/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY
 shotMssDelayCnt
@@ -326,7 +320,7 @@ Fire
 	RES sr.MSS_STATE_DIRECTION_BIT, A
 
 .afterMoving
-	CALL sr.ShowSprite
+	CALL sr.SetVisible
 	LD (IX + sr.MSS.STATE), A					; Store state
 
 	; Set Y coordinate for laser beam
@@ -335,13 +329,7 @@ Fire
 	LD (IX + sr.MSS.Y), A
 
 	; Setup laser beam pattern, IX already points to the right memory address
-	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
-
-	LD A, sr.SDB_FIRE
-	CALL sr.SetSpritePattern					; Set sprite pattern to laser beam
-
-	CALL sr.UpdateSpritePosition				; Set X, Y position for laser beam
-	CALL sr.UpdateSpritePattern					; Render laser beam
+	CALL sr.ShowSprite
 
 	RET
 

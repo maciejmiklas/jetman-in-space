@@ -8,6 +8,7 @@
 ;----------------------------------------------------------;
 	STRUCT MSS
 ID						BYTE					; Sprite ID for #_SPR_REG_ATR3_H38
+SDB_INIT				BYTE					; Initial ID of Sprite from #srSpriteDB
 DB_POINTER				WORD					; Pointer to #srSpriteDB record
 X						WORD					; X position of the sprite
 Y						BYTE					; Y position of the sprite
@@ -21,14 +22,7 @@ Y						BYTE					; Y position of the sprite
 STATE					BYTE
 NEXT					BYTE					; ID in #ssSpriteDB for next animation record/state
 REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
-
-
-MOVE_DELAY_LOOPS		BYTE					; Number of game loops to skip before moving enemy (delays movement speed)
-MOVE_DELAY_CNT			BYTE					; Move delay counter
-MOVE_PATTERN_POINTER	WORD					; Pointer to the movement pattern
-MOVE_PATTERN_CNT 		BYTE					; Counter for current position in the movement pattern
-RESPOWN_DELAY_LOOPS		BYTE					; Number of game loops delaying respawn
-RESPOWN_DELAY_CNT		BYTE					; Respawn delay counter
+EXT_DATA_POINTER		WORD					; Pointer to additional data structure for this sprite
 	ENDS
 
 
@@ -44,14 +38,6 @@ MSS_STATE_RIGHT_MASK	= %00001000				; See _SPR_REG_ATR2_H37 -> Bit 3
 MSS_STATE_LEFT_MASK		= %00000000				
 MSS_STATE_RES_FREE		= _SPR_REG_ATR2_RES_PAL	; Mask to reset free bits.
 
-; DB IDs
-SDB_EXPLODE				= 201					; Explosion
-SDB_FIRE				= 202					; Fire
-SDB_COMET1				= 203					; Comet 1
-SDB_COMET2				= 204					; Comet 2
-SDB_HIDE				= 255					; Hides Sprite
-
-SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
 
 ;----------------------------------------------------------;
 ;          Memory Structure for Sprite Move Patern         ;
@@ -72,6 +58,15 @@ ID		BYTE									; Entry ID for lookup via CPIR
 OFF_NX	BYTE									; ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
 SIZE	BYTE									; Amount of frames/sprite patterns in this record
 	ENDS
+
+; DB IDs
+SDB_EXPLODE				= 201					; Explosion
+SDB_FIRE				= 202					; Fire
+SDB_COMET1				= 203					; Comet 1
+SDB_COMET2				= 204					; Comet 2
+SDB_HIDE				= 255					; Hides Sprite
+
+SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
 
 ; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
 ; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
@@ -201,18 +196,33 @@ HideSprite
 	RET
 
 ;----------------------------------------------------------;
-;                       #ShowSprite                        ;
+;                       #SetVisible                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: 	Pointer to #MSS
 ;  - A:		Prepared state
 ; Modifies: A
-ShowSprite
+SetVisible
 	SET MSS_STATE_VISIBLE_BIT, A
 	SET MSS_STATE_ALIVE_BIT, A
 	LD (IX + MSS.STATE), A
 
 	RET	
+
+;----------------------------------------------------------;
+;                       #ShowSprite                        ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: 	Pointer to #MSS
+ShowSprite	
+	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
+
+	LD A, (IX + MSS.SDB_INIT)
+	CALL sr.SetSpritePattern					; Set sprite pattern to laser beam
+
+	CALL sr.UpdateSpritePosition				; Set X, Y position for laser beam
+	CALL sr.UpdateSpritePattern					; Render laser beam
+	RET
 ;----------------------------------------------------------;
 ;                 #UpdateSpritePattern                     ;
 ;----------------------------------------------------------;
