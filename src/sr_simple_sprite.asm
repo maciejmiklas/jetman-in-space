@@ -17,7 +17,7 @@ Y						BYTE					; Y position of the sprite
 ;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
 ;	- 1:	Alive flag, 1 - sprite is alive, 2 - sprite is dying, disabled for colistion detection, but visible.
 ;	- 2:	1 = sprite moving down, 0 = sprite = moving up. This bit corresponds to _SPR_REG_ATR2_H37.
-;	- 3: 	1 = sprite moving left, 0 = sprite = moving right. This bit corresponds to _SPR_REG_ATR2_H37.
+;	- 3: 	1 = sprite moving left, 0 = sprite = moving right. This bit corresponds to _SPR_REG_ATR2_H37. TODO is it in use?
 ;	- 4-7: 	not used
 STATE					BYTE
 NEXT					BYTE					; ID in #ssSpriteDB for next animation record/state
@@ -38,17 +38,6 @@ MSS_STATE_RIGHT_MASK	= %00001000				; See _SPR_REG_ATR2_H37 -> Bit 3
 MSS_STATE_LEFT_MASK		= %00000000				
 MSS_STATE_RES_FREE		= _SPR_REG_ATR2_RES_PAL	; Mask to reset free bits.
 
-
-;----------------------------------------------------------;
-;          Memory Structure for Sprite Move Patern         ;
-;----------------------------------------------------------;
-; Move pattern (given by #MSS.MOVE_PATTERN_CNT) consists of a byte array. The first byte determines the number of elements in this array, 
-; and the remaining move pattern, where each byte carries the same information:
-; bit 0-4: amount of iterations, each iteration will change X and Y based following bits
-; bit 5-6: number of pixels to change X in a single iteration, from 0 to 3. 
-;          The X will increase or decrease depending on the movement direction given by bit 3 in #MSS.STATE.
-; bit 7-8: number of pixels to change Y in a single iteration, from 0 to 3. 
-;          The Y will increase or decrease depending on the movement direction given by bit 2 in #MSS.STATE.
 
 ;----------------------------------------------------------;
 ;                         Sprite DB                        ;
@@ -215,14 +204,15 @@ SetVisible
 ; Input:
 ;  - IX: 	Pointer to #MSS
 ShowSprite	
-	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
+	CALL SetSpriteId							; Set the ID of the sprite for the following commands
 
 	LD A, (IX + MSS.SDB_INIT)
-	CALL sr.SetSpritePattern					; Set sprite pattern to laser beam
+	CALL SetSpritePattern						; Reset pattern
 
-	CALL sr.UpdateSpritePosition				; Set X, Y position for laser beam
-	CALL sr.UpdateSpritePattern					; Render laser beam
+	CALL UpdateSpritePosition					; Set X, Y position for sprite
+	CALL UpdateSpritePattern					; Render sprite
 	RET
+
 ;----------------------------------------------------------;
 ;                 #UpdateSpritePattern                     ;
 ;----------------------------------------------------------;
@@ -377,6 +367,111 @@ PlaftormColision
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
 
+MOVE_RET_A_VISIBLE 			= 1					; Sprite is still visible
+MOVE_RET_A_HIDDEN 			= 0					; Sprite outside screen, or hits ground
+;----------------------------------------------------------;
+;                          #MoveX                          ;
+;----------------------------------------------------------;
+; Move the sprite one pixel to the right or left along the X-axis, depending on the #MSS.STATE
+; Input
+;  - IX:	pointer to #MSS
+; Output:
+;  - A: 	MOVE_RET_A_XXX
+MoveX	
+	LD A, (IX + MSS.STATE)
+	AND MSS_STATE_RIGHT_MASK					; Reset all bits but right
+	CP MSS_STATE_RIGHT_MASK
+	JR NZ, .afterMovingLeft						; Jump if moving right
+
+	; Moving left - decrease X coordinate
+	LD BC, (IX + MSS.X)	
+	DEC BC
+
+	; Check whether a enemy is outside the screen 
+	LD A, B
+	CP sc.SCR_X_MIN_POS							; B holds MSB from X, if B > 0 than X > 256
+	JR NZ, .afterMoving
+	LD A, C
+	CP sc.SCR_X_MIN_POS + 5						; C holds LSB from X, ff C != 5 then X is> 5
+	JR NC, .afterMoving
+
+	; X == 0 (both A and B are 0) -> enemy out of screen - hide it
+	CALL HideSprite
+	LD A, MOVE_RET_A_HIDDEN
+	RET
+
+.afterMovingLeft
+
+	; Moving right - increase X coordinate
+	LD BC, (IX + MSS.X)	
+	INC BC
+
+	; If X >= 315 then hide sprite 
+	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
+	LD A, B										; Load MSB from X into A
+	CP 1										; 9-th bit set means X > 256
+	JR NZ, .afterMoving
+	LD A, C										; Load MSB from X into A
+	CP 59										; MSB > 59 
+	JR C, .afterMoving
+	
+	; Sprite is after 315 -> hide it
+	CALL HideSprite
+	LD A, MOVE_RET_A_HIDDEN
+	RET
+.afterMoving
+
+	LD (IX + sr.MSS.X), BC						; Update new X position
+	LD A, MOVE_RET_A_VISIBLE
+	RET
+
+MOVE_Y_IN_A_UP 				= 1					; Move up
+MOVE_Y_IN_A_DOWN 			= 0					; Move down
+;----------------------------------------------------------;
+;                          #MoveY                          ;
+;----------------------------------------------------------;
+; Move the sprite one pixel to the right or left along the Y-axis, depending on the A
+; Input
+;  - IX:	pointer to #MSS
+;  - A:    	MOVE_Y_IN_A_XXX
+; Output:
+;  - A: 	MOVE_RET_A_XXX
+MoveY
+	CP MOVE_Y_IN_A_UP
+	JR Z, .afterMovingUp						; Jump if moving up
+
+	; Moving down - increment Y coordinate
+	LD A, (IX + MSS.Y)	
+	INC A
+
+	; Check whether a enemy hits ground
+	CP sc.SCR_Y_MAX_POS
+	JR C, .afterMoving							; Jump if the enemy is above ground (A < SCR_Y_MAX_POS)
+
+	; Enemy hits the ground
+	LD A, MOVE_RET_A_HIDDEN
+	CALL SpriteHit
+	RET
+.afterMovingUp
+
+	; Moving up - decrease X coordinate
+	LD A, (IX + MSS.Y)	
+	DEC A
+
+	; check if sprite is above screen
+	CP sc.SCR_Y_MIN_POS
+	JR NC, .afterMoving							; Jump if the enemy is below max screen postion (A >= SCR_Y_MIN_POS)
+
+	; Sprite is above screen -> hide it
+	CALL HideSprite
+	LD A, MOVE_RET_A_HIDDEN
+		
+	RET
+.afterMoving
+
+	LD (IX + MSS.Y), A							; Update new X position
+	LD A, MOVE_RET_A_VISIBLE
+	RET	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

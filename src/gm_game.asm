@@ -10,6 +10,9 @@ loopCnt										; The game loop counter gets increased with each loop and resta
 ;----------------------------------------------------------;
 GameInit	
 	CALL js.IntiJetmanSprite
+
+	LD IX, en.sprite01
+	CALL en.InitMoveEnemy
 	RET
 
 ;----------------------------------------------------------;
@@ -28,7 +31,12 @@ GameLoop
 	CALL jt.JoyDisabled
 	CALL sp.AnimateSprites
 	CALL jw.MoveShots
-	CALL en.MoveEnemies
+	
+	;CALL en.MoveEnemies
+	LD IX, en.sprite01
+	CALL en.MoveEnemy
+	
+
 	CALL en.Respown
 	CALL en.WeaponHit
 	CALL PrintDebug
