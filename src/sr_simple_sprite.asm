@@ -15,7 +15,7 @@ Y						BYTE					; Y position of the sprite
 
 ; Bits:
 ;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
-;	- 1:	Alive flag, 1 - sprite is alive, 2 - sprite is dying, disabled for colistion detection, but visible.
+;	- 1:	Alive flag, 1 - sprite is alive, 0 - sprite is dying, disabled for colistion detection, but visible.
 ;	- 2:	1 = sprite moving down, 0 = sprite = moving up. This bit corresponds to _SPR_REG_ATR2_H37.
 ;	- 3: 	1 = sprite moving left, 0 = sprite = moving right. This bit corresponds to _SPR_REG_ATR2_H37. TODO is it in use?
 ;	- 4-7: 	not used
@@ -310,8 +310,13 @@ PlaftormColision
 
 	LD B, (IY)									; Load into B the number of platforms to check
 .platformsLoop	
+	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1)
+	LD DE, (IX + MSS.X)
+	LD A, 0 
+	CP D
+	RET NZ
 
-	LD A, (IX + MSS.X)							; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
+	LD A, E										; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
 	INC IY										; HL points to [X platform start]
 	LD C, (IY)									; C holds [X platform start]
 	CP C

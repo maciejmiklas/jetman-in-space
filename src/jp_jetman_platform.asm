@@ -1,6 +1,7 @@
 ;----------------------------------------------------------;
 ;                    Platforms and Ground                  ;
 ;----------------------------------------------------------;
+	MODULE jp
 
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
@@ -363,3 +364,8 @@ FallingFromPlatform
 
 .afterFalling
 	RET
+
+;----------------------------------------------------------;
+;                       ENDMODULE                          ;
+;----------------------------------------------------------;
+	ENDMODULE	

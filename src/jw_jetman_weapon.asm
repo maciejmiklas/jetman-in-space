@@ -86,12 +86,11 @@ HitEnemy
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
 
-
 	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
 	LD A, (IX + sr.MSS.STATE)
 	AND sr.MSS_STATE_ALIVE						; Reset all bits but alive
 	CP sr.MSS_STATE_ALIVE
-	JR NZ, .continue							; Exit if sprite is not alive
+	JR NZ, .continue							; Jump if sprite is not alive
 	
 	; Shot is visible, check colision with given sprite
 
@@ -222,11 +221,9 @@ MoveShots
 	JR NZ, .afterColisionDetection				; Exit if sprite is not alive
 
 	; Check the collision with the platform
-	PUSH BC
-	LD IY, platformBump
+	LD IY, jp.platformBump
 	LD L, SHOT_HEIGHT
 	CALL sr.PlaftormColision
-	POP BC
 .afterColisionDetection
 
 .continue

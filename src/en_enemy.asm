@@ -131,16 +131,17 @@ movePattern01
 	DB 8, %111'1'01'11, %111'1'01'11,  %111'1'01'11, %111'1'01'11, %111'0'01'11, %111'0'01'11,  %111'0'01'11, %111'0'01'11 
 
 ;----------------------------------------------------------;
-;                     #InitMoveEnemy                       ;
+;                   #ResetMovePattern                      ;
 ;----------------------------------------------------------;
+; This method resets the move pattern so animation can start from the first move pattern. It does not reset #MSS
 ; Input
 ;  - IX:	pointer to #MSS holding data for single spreite that will be moved
 ; Modifies: A, IY, BC
-InitMoveEnemy
-
-	; Load #ESS for this sprite to IY
-	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
+ResetMovePattern
+	
+	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)		; Load #ESS for this sprite to IY
 	LD IY, BC
+
 	LD HL, (IY + ESS.MOVE_PATTERN)				; HL points to start of the #movePattern
 
 	; Setup MOVE_PATTERN_STEP that we will use to track progress of current move pattern.
@@ -154,23 +155,106 @@ InitMoveEnemy
 	; Reset move counter
 	LD A, 0
 	LD (IY + ESS.MOVE_PATTERN_CNT), A
+
 	RET	
+
 ;----------------------------------------------------------;
-;                      #MoveEnemy                          ;
+;                       #MoveEnemies                       ;
 ;----------------------------------------------------------;
-; Input
-;  - IX:	pointer to #MSS holding data for single spreite that will be moved
-; Modifies: all
-MoveEnemy
+; Modifies: ALL
+MoveEnemies
+
+	; Loop ever all enemies skipping hidden 
+	LD IX, sprite01	
+	LD A, (spritesSize)
+	LD B, A 
+
+.loop
+	PUSH BC										; Preserve B for loop counter
 
 	; Ignore this sprite if it's hidden
 	LD A, (IX + sr.MSS.STATE)
 	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
 	CP 0
-	RET Z										; Return if visibility is not set (sprite is hidden)
+	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
 
-	;LD A, $30
-	;nextreg 2,8
+	; Load extra data for this sprite to IY
+	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
+	LD IY, BC
+
+	; Slow down movement by incrementing the counter until it reaches the configured value
+	LD A, (IY + ESS.MOVE_DELAY)
+	CP 0										; No delay? -> move at full speed
+	JR Z, .afterDelayMove
+
+	LD B, A										; Load goal for delay counter into B
+
+	; Delaying movement, increment delay counter
+	LD A, (IY + ESS.MOVE_DELAY_CNT)
+	INC A
+	LD (IY + ESS.MOVE_DELAY_CNT), A
+
+	CP B										; B already contains #MOVE_DELAY
+	JR NZ, .continue							; Return if the delay counter does not reach the required value.
+
+	LD A, 0										; Reset the movement delay counter because it has reached the configured value
+	LD (IY + ESS.MOVE_DELAY_CNT), A
+
+.afterDelayMove
+
+	; Sprite is visible, move it!
+	CALL MoveEnemy
+	CP sr.MOVE_RET_A_HIDDEN
+	JR Z, .continue
+
+	; Check the collision with the platform
+	LD IY, jp.platformBump
+	LD L, SPRITE_HEIGHT_PLATFORM
+	CALL sr.PlaftormColision
+
+.continue	
+
+	; Jump if B > 0 (loop starts with B = #MSS)
+	POP BC
+	DEC B
+	LD A, B
+	CP 0
+	RET Z									; Exit if B has reached 0
+
+	; Move IX to the beginning of the next #MSS
+	LD DE, sr.MSS
+	ADD IX, DE
+	JP .loop
+
+	RET	
+
+;----------------------------------------------------------;
+;                      #MoveEnemy                          ;
+;----------------------------------------------------------;
+; Input
+;  - IX:	pointer to #MSS holding data for single spreite that will be moved
+; Output:
+;  - A: 	sr.MOVE_RET_A_XXX
+; Modifies: all
+MoveEnemy
+
+	; Move the Sprite horizontally if it has been hit and it's dying
+	LD A, (IX + sr.MSS.STATE)
+	CALL sr.SetSpriteId							; Set sprite ID in hardware
+
+	LD A, (IX + sr.MSS.STATE)
+	AND sr.MSS_STATE_ALIVE						; Reset all bits but alive
+	CP sr.MSS_STATE_ALIVE
+	JR Z, .afterAliveCheck						; Jump if sprite is alive
+
+	LD A, (IX + sr.MSS.STATE)
+
+	; Move the sprite horizontally while it's exploding
+	CALL sr.MoveX
+	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
+
+	RET
+.afterAliveCheck
 
 	; Load #ESS for this sprite to IY
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
@@ -182,19 +266,15 @@ MoveEnemy
 	; Check if we should restart the move pattern, as it might have reached the last element
 	LD A, (IY + ESS.MOVE_PATTERN_CNT) 
 	CP B
-	JR C, .afterResetMoveCounter				; Jump if move counter can be increased
+	JR C, .afterResetMovePattern				; Jump if move counter can be increased
+	CALL ResetMovePattern						; Reset move pattern, it has reached max value
 
-	; Reset move counter
-	CALL InitMoveEnemy
-
-.afterResetMoveCounter
+.afterResetMovePattern
 
 	; Move HL from the beginning of the move pattern to current position
 	LD A, (IY + ESS.MOVE_PATTERN_CNT)
 	INC A										; The first byte in the move pattern contains the size, skip it.
 	ADD HL, A
-
-	CALL sr.SetSpriteId							; Set sprite ID in hardware
 
 	; Current register values:
 	;  - IX: pointer to #MSS for current sprite
@@ -221,9 +301,8 @@ MoveEnemy
 	CP sr.MOVE_RET_A_HIDDEN	
 	JR NZ,.afterIncX							; Jump is sprite is not hidden
 
-	; Stop moving this spirte, it's hidden
-	CALL InitMoveEnemy
-	RET
+	LD A, sr.MOVE_RET_A_HIDDEN
+	RET											; Stop moving this spirte, it's hidden
 .afterIncX
 
 	; Increment/Decrement Y ?
@@ -252,9 +331,8 @@ MoveEnemy
 	CP sr.MOVE_RET_A_HIDDEN
 	JR NZ,.afterChangeY							; Jump is sprite is not hidden
 
-	; Stop moving this spirte, it's hidden
-	CALL InitMoveEnemy
-	RET
+	LD A, sr.MOVE_RET_A_HIDDEN
+	RET											; Stop moving this spirte, it's hidden
 
 .incY
 	; Increment Y
@@ -267,9 +345,8 @@ MoveEnemy
 	CP sr.MOVE_RET_A_HIDDEN
 	JR NZ,.afterChangeY							; Jump is sprite is not hidden
 
-	; Stop moving this spirte, it's hidden
-	CALL InitMoveEnemy
-	RET
+	LD A, sr.MOVE_RET_A_HIDDEN
+	RET											; Stop moving this spirte, it's hidden
 	
 .afterChangeY
 	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
@@ -285,10 +362,13 @@ MoveEnemy
 	; D contains the wanted X and Y values, and A contains the current ones. If both are the same, that means that the X and Y counters 
 	; have reached their maximum value, and we have to start over 
 	CP D
-	RET NZ										; Jump if A != D -> no need to reset XY counter, keep incrementing X/Y
+	JR Z, .afterXYMaxCheck						; Jump if A != D -> no need to reset XY counter, keep incrementing X/Y
+
+	LD A, sr.MOVE_RET_A_VISIBLE
+	RET
+.afterXYMaxCheck
 
 	; X and Y have reached the max value, so increment the repetition counter for this pattern and restart the X and Y incrementation
-	; Reset conter for XY
 	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains pattern counter
 	AND MOVE_PAT_XY_MASK_RES					; Reset XY bits
 	LD (IY + ESS.MOVE_PATTERN_STEP), A
@@ -304,6 +384,8 @@ MoveEnemy
 	JR Z, .nextMovePattern						; Jump if the countdown is done
 	
 	LD (IY + ESS.MOVE_PATTERN_STEP), A			; Store decreased counter, Y,X are 0
+
+	LD A, sr.MOVE_RET_A_VISIBLE
 	RET
 
 .nextMovePattern
@@ -311,8 +393,9 @@ MoveEnemy
 	INC A										; Increment move counter and store
 	LD (IY + ESS.MOVE_PATTERN_CNT), A
 
+	LD A, sr.MOVE_RET_A_VISIBLE
 	RET
-
+	
 ;----------------------------------------------------------;
 ;                        #Respown                          ;
 ;----------------------------------------------------------;
@@ -342,7 +425,6 @@ Respown
 	RET NC										; Return if Y is above game screen
 
 	LD IX, sprite01								; Iterate over all enemies to find the first hidden, respawn it, and exit function
-
 	LD A, (spritesSize)
 	LD B, A 
 .loop
@@ -385,7 +467,7 @@ Respown
 	LD A, 0
 	LD (IY + ESS.MOVE_DELAY_CNT), A
 	LD (IY + ESS.RESPOWN_DELAY_CNT), A
-	LD (IY + ESS.MOVE_PATTERN_CNT), A
+	CALL ResetMovePattern
 
 	; Set Y (horizontal respown) to a random value
 	LD A, (gm.loopCnt)
@@ -413,7 +495,6 @@ Respown
 	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
-	ret
 	DJNZ .loop									; Jump if B > 0 (loop starts with B = #spritesSize)
 
 	RET
@@ -422,8 +503,6 @@ Respown
 ;                  #AnimateEnemies                         ;
 ;----------------------------------------------------------;
 AnimateEnemies
-	 
-	; Animate shots
 	LD IX, sprite01	
 	LD A, (spritesSize)
 	LD B, A 
@@ -442,84 +521,6 @@ WeaponHit
 	LD B, A
 	CALL jw.WeaponHit
 	RET	
-
-;----------------------------------------------------------;
-;                       #MoveEnemies                       ;
-;----------------------------------------------------------;
-; Modifies: ALL
-MoveEnemies
-	; Loop ever al enemies skipping hidden 
-	LD IX, sprite01	
-	LD A, (spritesSize)
-	LD B, A 
-
-.loop
-	PUSH BC										; Preserve B for loop counter
-
-	; Ignore this sprite if it's hidden
-	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
-	CP 0
-	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
-
-	; Load extra data for this sprite to IY
-	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
-	LD IY, BC
-
-	; Slow down movement by incrementing the counter until it reaches the configured value
-	LD A, (IY + ESS.MOVE_DELAY)
-	CP 0										; No delay? -> move at full speed
-	JR Z, .afterDelayMove
-
-	LD B, A										; Load goal for delay counter into B
-
-	; Delaying movement, increment delay counter
-	LD A, (IY + ESS.MOVE_DELAY_CNT)
-	INC A
-	LD (IY + ESS.MOVE_DELAY_CNT), A
-
-	CP B										; B already contains #MOVE_DELAY
-	JR NZ, .continue							; Return if the delay counter does not reach the required value.
-
-	LD A, 0										; Reset the movement delay counter because it has reached the configured value
-	LD (IY + ESS.MOVE_DELAY_CNT), A
-
-.afterDelayMove
-
-	; Sprite is visible, move it!
-	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
-
-	CALL sr.MoveX
-	CP sr.MOVE_RET_A_HIDDEN
-	JR Z, .continue
-
-	CALL sr.UpdateSpritePosition
-
-	; Check the collision with the platform
-	PUSH BC
-	LD IY, platformBump
-	LD L, SPRITE_HEIGHT_PLATFORM
-	CALL sr.PlaftormColision
-	POP BC
-
-.continue	
-
-	; Jump if B > 0 (loop starts with B = #MSS)
-	POP BC
-	DEC B
-	LD A, B
-	CP 0
-	RET Z									; Exit if B has reached 0
-
-	; Move IX to the beginning of the next #shotMssXX
-	LD DE, sr.MSS
-	ADD IX, DE
-
-	JP .loop
-
-	RET	
-
-
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

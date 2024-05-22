@@ -159,10 +159,10 @@ JoyMoveUp
 .afterDirectionChange
 
 	; Transition from walking to flaying
-	CALL JetmanTakesoff
+	CALL jp.JetmanTakesoff
 
 	; Bumping from below into the platform?
-	CALL BumpIntoPlatFormBelow
+	CALL jp.BumpIntoPlatFormBelow
 	RET											; END #JoyMoveUp	
 
 ;----------------------------------------------------------;
@@ -194,9 +194,9 @@ JoyMoveRight
 
 	; Bupm from the left side of the platform?
 	LD H, jd.AIR_BUMP_LEFT
-	CALL BumpIntoPlatformLR
+	CALL jp.BumpIntoPlatformLR
 
-	CALL FallingFromPlatform
+	CALL jp.FallingFromPlatform
 	RET											; END #JoyMoveRight
 
 ;----------------------------------------------------------;
@@ -227,9 +227,8 @@ JoyMoveLeft
 
 	; Bupm from the right side of the platform?
 	LD H, jd.AIR_BUMP_RIGHT
-	CALL BumpIntoPlatformLR
-
-	CALL FallingFromPlatform
+	CALL jp.BumpIntoPlatformLR
+	CALL jp.FallingFromPlatform
 	RET											; END #JoyMoveLeft
 
 ;----------------------------------------------------------;
@@ -266,8 +265,8 @@ JoyMoveDown
 
 	; Landing on the ground
 	CP jd.GROUND_LEVEL
-	CALL Z, JetmanLanding						; Execute landing on the ground if Jetman has reached the ground.
-	CALL LandingOnPlatform						; Or should he land on one of the platforms?
+	CALL Z, jp.JetmanLanding					; Execute landing on the ground if Jetman has reached the ground.
+	CALL jp.LandingOnPlatform					; Or should he land on one of the platforms?
 
 	; Direction change? 
 	LD A, (jd.jetmanDirection)
@@ -384,7 +383,7 @@ JoyDisabled
 	CP 0
 	RET Z										; Jump if joystick is enabled -> #joyDisabledCnt == 0
 
-	CALL BumpOnJoystickDisabled
+	CALL jp.BumpOnJoystickDisabled
 
 	; Reset the #jetmanAir on the last frame of the disabled joystick
 	LD A, (jd.jetmanAir)
