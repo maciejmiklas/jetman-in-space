@@ -29,7 +29,7 @@ LoadSpritesFPGA
 	LD C, _DMA_PORT_H6B							; Setup DMA port
 	OTIR										; Upload DMA program and execute
 
-; DMA  is a program that executes in hardware. This program consists of a series of commands from WR0 to WR6. 
+; DMA  is a program that executes in hardware. This program consists of a series of commands from WR0 to WR6.
 ; Each command is a single byte with a unique signature given by setting a few bits:
 ; - WR0: $0'xxxxx'01
 ; - WR1: $0'xxxx'100
@@ -40,7 +40,7 @@ LoadSpritesFPGA
 ; - WR6: $1'xxxxx'11
 ;           "xxxx" bits carry data for the DMA command
 ;
-; Some commands can have additional parameters, as they do not fit into a single byte. In such cases, the command byte is 
+; Some commands can have additional parameters, as they do not fit into a single byte. In such cases, the command byte is
 ; followed by a few parameter bytes, like WR0: DB %0'11111'01 -> DW $C000 -> DW 2048. 
 ; It is the reason for a few labels within the DMA program so that we can inject dynamic data.
 ; Finally OTIR uploads the DMA program to memory through port $xx6B, and it executes.
@@ -93,7 +93,7 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 ;----------------------------------------------------------;
 ;                    #AnimateSprites                       ;
 ;----------------------------------------------------------;
-ANIMATE_DELAY			= 10					; Change sprite pattern every few lops. Loop speed is controled by: #WaitForScanline     
+ANIMATE_DELAY			= 10					; Change sprite pattern every few lops. Loop speed is controled by: #WaitForScanline
 animDelayCnt			BYTE 0					; The delay counter for sprite animation
 
 AnimateSprites
@@ -117,4 +117,4 @@ AnimateSprites
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE	
+	ENDMODULE

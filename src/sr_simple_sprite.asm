@@ -16,7 +16,7 @@ Y						BYTE					; Y position of the sprite
 ; Bits:
 ;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
 ;	- 1:	Alive flag, 1 - sprite is alive, 0 - sprite is dying, disabled for colistion detection, but visible.
-;	- 2:	1 = sprite moving down, 0 = sprite = moving up. This bit corresponds to _SPR_REG_ATR2_H37.
+;	- 2:	not used
 ;	- 3: 	1 = sprite moving left, 0 = sprite = moving right. This bit corresponds to _SPR_REG_ATR2_H37. TODO is it in use?
 ;	- 4-7: 	not used
 STATE					BYTE
@@ -273,11 +273,11 @@ UpdateSpritePattern
 SetSpritePattern
 	
 	; Find DB record
-	LD HL, srSpriteDB							; HL points to the beginning of the DB				
+	LD HL, srSpriteDB							; HL points to the beginning of the DB
 	LD BC, 0									; Do not limit CPIR search
 	CPIR										; CPIR will keep increasing HL until it finds a record ID from A
 
-	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern. 	
+	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
 	LD A, (HL)	
 	ADD SDB_SUB									; Add 100 because DB value had  -100, to avoid collision with ID
 	LD (IX + MSS.NEXT), A						; Update #MSS.NEXT	
@@ -345,7 +345,7 @@ PlaftormColision
 	LD A, (IY)	
 	ADD PLATFROM_MARGIN_UP						; Increase start Y to make platform thinner
 	SUB L										; Thickness to the sprite
-	LD D, A										; D contains [Y platform start]								
+	LD D, A										; D contains [Y platform start]
 
 	INC IY										; HL points to [Y platform end]
 	LD A, (IY)
@@ -382,7 +382,7 @@ MOVE_RET_A_HIDDEN 			= 0					; Sprite outside screen, or hits ground
 ;  - IX:	pointer to #MSS
 ; Output:
 ;  - A: 	MOVE_RET_A_XXX
-MoveX	
+MoveX
 	LD A, (IX + MSS.STATE)
 	AND MSS_STATE_RIGHT_MASK					; Reset all bits but right
 	CP MSS_STATE_RIGHT_MASK
@@ -480,4 +480,4 @@ MoveY
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE									
+	ENDMODULE

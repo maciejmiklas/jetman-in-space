@@ -13,45 +13,41 @@ MOVE_DELAY				BYTE					; Number of game loops to skip before moving enemy (delay
 MOVE_DELAY_CNT			BYTE					; Move delay counter
 RESPOWN_DELAY			BYTE					; Number of game loops delaying respawn
 RESPOWN_DELAY_CNT		BYTE					; Respawn delay counter
-MOVE_PATTERN			WORD					; Pointer to the movement pattern
-MOVE_PATTERN_CNT		WORD					; Position in #MOVE_PATTERN. Counts from 0 to size-1
-MOVE_PATTERN_STEP 		BYTE					; Counters for current byte in move pattern
+MOVE_PATTERN			WORD					; Pointer to the movement pattern (#movePatternXX)
+MOVE_PATTERN_CNT		BYTE					; Counter for repetition of single move pattern. Counts towards 0
+MOVE_PATTERN_POS		BYTE					; Position in #MOVE_PATTERN. Counts from 0 to #movePatternXX.size-1
+MOVE_PATTERN_STEP 		BYTE					; Counters X,Y from current move pattern
+
+; Confugures move Pattern. Bits:
+;  - 0 - avoid platforms by flying along them. When set, bits 1 and 2 will be ignored. The platform cannot destroy the enemy
+;  - 1 - bounce from the platform horizontally
+;  - 2 - bounce from the platform vertically
+;  - 3-7 - not used yet
+MOVE_CONFIG				BYTE
 	ENDS
-
-;----------------------------------------------------------;
-;          Memory Structure for Sprite Move Patern         ;
-;----------------------------------------------------------;
-; Move pattern (given by #ESS.MOVE_PATTERN) consists of a byte array. The first byte determines the number of elements in this array, 
-; and the remaining move pattern, where each byte carries the same information:
-; bit 0-4: amount of iterations, each iteration will change X and Y based following bits
-; bit 5-6: number of pixels to change X in a single iteration, from 0 to 3. 
-;          The X will increase or decrease depending on the movement direction given by bit 3 in #MSS.STATE.
-; bit 7-8: number of pixels to change Y in a single iteration, from 0 to 3. 
-;          The Y will increase or decrease depending on the movement direction given by bit 2 in #MSS.STATE.
-
 
 ; Sprites for single enemy (#sprite), based on #MSS
 ; Each sprite has hardcoded respawn coordinates and the direction in which it moves
 spriteEx01
-	ESS {1/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx02
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx03
-	ESS {3/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {3/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx04
-	ESS {4/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {4/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx05
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx06
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx07
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx08
-	ESS {1/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {1/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx09
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 spriteEx10
-	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
 
 sprite01
 	sr.MSS {20/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
@@ -74,86 +70,253 @@ sprite09
 sprite10
 	sr.MSS {29/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx10/*EXT_DATA_POINTER*/}
 
-spritesSize					DB 10				; The maximum amount of visible enemies			
+spritesSize					DB 10				; The maximum amount of visible enemies
 SPRITE_HEIGHT_PLATFORM		= 3
 
 SPRITE_HEIGHT_WEAPON		= 8
 SPRITE_WIDTH_WEAPON			= 8
 
 
-; The move pattern is stored as a byte array, with the first byte giving the number of elements in this array. 
-; Each element determines a single step in this movement pattern: the number of pixels to move horizontally, vertically and the number 
-; of times it should be repeated. 
+; The move pattern is stored as a byte array. The first byte in this array holds the byte, indicating the number of patterns it contains. 
+; Each pattern is then represented by 2 bytes: one for the pattern itself and the other for the number of times it should be repeated. 
+; To illustrate, if the first byte is set to 5,  the move pattern will span a total of 11 bytes: 11 = 1 + 5 * 2.
+;
+; Each pattern determines a single step in this movement pattern: the number of pixels to move along the X axis (left or right),  
+; the number of pixels to move along Y axis (up or down).
+;
+; The sprite travels only one pixel in each direction during each animation loop. If possible, it travels in both directions 
+; (increasing X and Y by one). If the number of pixels in a particular direction has been reached, it will continue vertically or horizontally. 
+;
 ; Bits:
-; 0-1: number of pixels to move on X axis
-; 2-3: number of pixels to move on Y axis
-; 4	 : 1 to increase Y, 0 to decrease. X will be increased/decreased depending on #sr.STATE -> bit 3
-; 5-7: repetition amount
-; In each animation loop, the sprite travels only one pixel in each direction. If possible, it travels in both directions 
-; (increasing X and Y by one). If the number of pixels in a particular direction has been reached, it will continue vertically or horizontally. 
+; 0-3: number of pixels to move along X axis
+; 4  : determines whether X should be decremented (0 - move left) or incremented (1 - move right) in each iteration. 
+;      This flag is reversed if an enemy moves from right to left (#MSS.STATE -> bit 3 == 1)
+; 4-6: number of pixels to move on Y axis
+; 7 : determines whether Y should be decremented (0 - move up) or incremented (Y - move down) in each iteration
 ; 
-; Example: for a move pattern %100'001'11 the sprite will move 3 pixels on the X axis, 1 pixel on the Y axis, 
-; and it will be repeated 4 times (A-D):
-; A 1) INC X, INC Y:	%001'1'01'01
-; A 2) INC X			%001'1'01'10
-; A 3) INC X			%001'1'01'11	
-;
-; B 1) INC X, INC Y:	%010'1'01'01
-; B 2) INC X			%010'1'01'10
-; B 3) INC X			%010'1'01'11	
-;
-; C 1) INC X, INC Y:	%011'1'01'01
-; C 2) INC X			%011'1'01'10
-; C 3) INC X			%011'1'01'11	
-;
-; D 1) INC X, INC Y:	%100'1'01'01
-; D 2) INC X			%100'1'01'10
-; D 3) INC X			%100'1'01'11	
+; Example: for a move pattern: "%0'011'1'101, 10" the sprite will move 5 pixels on the X axis, 3 pixel on the Y axis, 
+; and it will be repeated 10 times. In total sprite will travel: 5*10 pixels on X and 3*10 pixels on Y. 
+; Below we have single step that will be repeated 10x.
+; 1) INC X, DEC Y:	%0'000'1'000
+; 2) INC X, DEC Y:	%0'001'1'001
+; 3) INC X, DEC Y:	%0'010'1'010
+; 4) _    , DEC Y:	%0'011'1'011
+; 5) _,     DEC Y:	%0'011'1'100
+; 6) _,     DEC Y:	%0'011'1'101
+; In this example, both counters count up, and hoverer X position is increased (move right), and Y is decreased (move up).
 
-MOVE_PAT_X_MASK			= %000'0'00'11
-MOVE_PAT_X_MASK_RES		= %111'1'11'00
-MOVE_PAT_X_ADD			= %000'0'00'01
+MOVE_PAT_X_MASK			= %0'000'0'111
+MOVE_PAT_X_ADD			= %0'000'0'001
 
-MOVE_PAT_Y_MASK			= %000'0'11'00
-MOVE_PAT_Y_MASK_RES		= %111'1'00'11
-MOVE_PAT_Y_ADD			= %000'0'01'00
+MOVE_PAT_Y_MASK			= %0'111'0'000
+MOVE_PAT_Y_ADD			= %0'001'0'000
 
-MOVE_PAT_Y_INC_MASK		= %000'1'00'00
-MOVE_PAT_Y_INC_MASK_RES	= %111'0'00'00
+MOVE_PAT_Y_INC_MASK		= %1'000'0'000
 
-MOVE_PAT_XY_MASK		= %000'0'11'11
-MOVE_PAT_XY_MASK_RES	= %111'0'00'00
+MOVE_PAT_XY_MASK		= %0'111'0'111
+MOVE_PAT_XY_MASK_RES	= %1'000'1'000
 
-MOVE_PAT_CNT_MASK		= %111'0'00'00
-MOVE_PAT_CNT_ADD		= %001'0'00'00
+MOVE_STEP_SIZE			= 2						; Each move pattern takes two bytes: pattern and number of repeats
+MOVE_PAT_STEP_OFFSET	= 1						; Data for move pattern starts at byte 1, byte 0 provides size
 
+; Horizontal movemment
+movePattern01_
+	DB 2, %0'000'1'111,$FF
+
+; 20deg move down
 movePattern01
-	DB 8, %111'1'01'11, %111'1'01'11,  %111'1'01'11, %111'1'01'11, %111'0'01'11, %111'0'01'11,  %111'0'01'11, %111'0'01'11 
+	DB 2, %1'001'1'111,$FF
+
+; 20deg move up
+movePattern03
+	DB 2, %0'001'1'111,$FF
+
+; 45deg move down
+movePattern04
+	DB 2, %1'111'1'111,$FF
+
+; 5x horizontal, 2x 45deg down,...
+movePattern05
+	DB 4, %0'000'1'111,5, %1'111'1'111,2
 
 ;----------------------------------------------------------;
 ;                   #ResetMovePattern                      ;
 ;----------------------------------------------------------;
-; This method resets the move pattern so animation can start from the first move pattern. It does not reset #MSS
+; This method resets the move pattern (#ESS) so animation can start from the first move pattern. It does not modify #MSS.
 ; Input
 ;  - IX:	pointer to #MSS holding data for single spreite that will be moved
-; Modifies: A, IY, BC
-ResetMovePattern
-	
+; Modifies: A, IY, BC, HL
+RestartMovePattern
+
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)		; Load #ESS for this sprite to IY
+	LD IY, BC
+	LD HL, (IY + ESS.MOVE_PATTERN)				; HL points to start of the #movePattern, that is the amount of elements in this pattern.
+	INC HL										; HL points to the first move pattern element	
+	
+	; X, Y counters will be set to max value as we count down towards 0
+	LD A, (HL)
+	LD (IY + ESS.MOVE_PATTERN_STEP), A	
+
+	; Set position at the first pattern, this is one byte after the start of #movePatternXX
+	LD A, MOVE_PAT_STEP_OFFSET
+	LD (IY + ESS.MOVE_PATTERN_POS), A
+
+	; Set MOVE_PATTERN_CNT to the counter from first pattern
+	LD A, MOVE_PAT_STEP_OFFSET
+	ADD HL, A									; Move HL to the counter for the first pattern
+	LD A, (HL)
+	LD (IY + ESS.MOVE_PATTERN_CNT), A
+
+	RET	
+
+;----------------------------------------------------------;
+;                      #MoveEnemy                          ;
+;----------------------------------------------------------;
+; Input
+;  - IX:	pointer to #MSS holding data for single spreite that will be moved
+; Output:
+;  - A: 	sr.MOVE_RET_A_XXX
+; Modifies: all
+MoveEnemy
+
+	; Move the Sprite horizontally if it has been hit and it's dying
+	LD A, (IX + sr.MSS.STATE)
+	CALL sr.SetSpriteId							; Set sprite ID in hardware
+
+	LD A, (IX + sr.MSS.STATE)
+	AND sr.MSS_STATE_ALIVE						; Reset all bits but alive
+	CP sr.MSS_STATE_ALIVE
+	JR Z, .afterAliveCheck						; Jump if sprite is alive
+
+	LD A, (IX + sr.MSS.STATE)
+
+	; Move the sprite horizontally while it's exploding
+	CALL sr.MoveX
+	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
+
+	LD A, sr.MOVE_RET_A_VISIBLE
+	RET
+.afterAliveCheck
+
+	; Load #ESS for this sprite to IY
+	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
 	LD IY, BC
 
 	LD HL, (IY + ESS.MOVE_PATTERN)				; HL points to start of the #movePattern
+	LD B, (HL)									; B contains  the amount of bytes in the move pattern
 
-	; Setup MOVE_PATTERN_STEP that we will use to track progress of current move pattern.
-	; Set the repetition counter for the current pattern to the max value, as we will count it down to 0. Set X and Y to 0, 
-	; as those counters will be increased.
-	INC HL										; Move HL to the first move pattern (the first byte holds the amount)
-	LD A, (HL)
-	AND MOVE_PAT_CNT_MASK 
+	; Check if we should restart the move pattern, as it might have reached the last element
+	LD A, (IY + ESS.MOVE_PATTERN_POS)
+	SUB MOVE_PAT_STEP_OFFSET					; pattern starts after offset
+	CP B
+	JR C, .afterRestartMovePattern				; Jump if move counter can be increased
+	
+	CALL RestartMovePattern						; Restart move pattern, it has reached max value
+.afterRestartMovePattern
+
+	; Move HL from the beginning of the move pattern to current position
+	LD A, (IY + ESS.MOVE_PATTERN_POS)
+	ADD HL, A
+
+	; Current register values:
+	;  - IX: pointer to #MSS for current sprite
+	;  - IY: pointer to #ESS for current sprite
+	;  - HL: pointer to current position in #movePattern
+
+	; Check if counter for X has already reached 0
+	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
+	AND MOVE_PAT_X_MASK							; Reset all but X
+	CP 0
+	JR Z, .afterIncX							; Jump if the counter for X has reached 0
+	
+	; Decrement X counter
+	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
+	SUB MOVE_PAT_X_ADD							; Decrement X counter by 1		
+	LD (IY + ESS.MOVE_PATTERN_STEP), A
+
+	CALL sr.MoveX								; Move one pixel left/right and check if the sprite is still visible (it could be out of the screen)
+	CP sr.MOVE_RET_A_HIDDEN	
+	JR NZ,.afterIncX							; Jump is sprite is not hidden
+
+	LD A, sr.MOVE_RET_A_HIDDEN
+	RET											; Stop moving this spirte, it's hidden
+.afterIncX
+
+	; Check if counter for Y has already reached 0
+	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
+	AND MOVE_PAT_Y_MASK							; Reset all but Y
+	CP 0
+	JR Z, .afterChangeY							; Jump if the counter for Y has reached 0
+	
+	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
+	SUB MOVE_PAT_Y_ADD							; Decrement Y counter by 1
 	LD (IY + ESS.MOVE_PATTERN_STEP), A	
 
-	; Reset move counter
-	LD A, 0
+	; Move on Y-axis one pixel up or down?
+	LD A, (HL)									; A contains current pattern
+	AND MOVE_PAT_Y_INC_MASK						; Reset all except a bit, determining whether Y should be incremented or decremented
+	CP MOVE_PAT_Y_INC_MASK
+	JR NZ, .incY								; Jump if Y should be incremented
+
+	; Move on pixel down	
+	LD A, sr.MOVE_Y_IN_A_DOWN
+	CALL sr.MoveY
+	CP sr.MOVE_RET_A_HIDDEN
+	JR NZ,.afterChangeY							; Jump is sprite is not hidden
+
+	LD A, sr.MOVE_RET_A_HIDDEN
+	RET											; Stop moving this spirte, it's hidden
+
+.incY
+	; Move on pixel up
+	LD A, sr.MOVE_Y_IN_A_UP
+	CALL sr.MoveY
+	CP sr.MOVE_RET_A_HIDDEN
+	JR NZ,.afterChangeY							; Jump is sprite is not hidden
+
+	LD A, sr.MOVE_RET_A_HIDDEN	
+	RET											; Stop moving this spirte, it's hidden
+
+.afterChangeY
+	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
+
+	; Check if X and Y have reached 0
+	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains pattern counter	
+	AND MOVE_PAT_XY_MASK						; Reset all but max X,Y values
+	CP 0
+	JR Z, .resetXYCounters						; Jump if X and Y counters has reached 0
+
+	LD A, sr.MOVE_RET_A_VISIBLE
+	RET
+.resetXYCounters
+
+	; X and Y have reached the max value. First, reset the X and Y counters, and afterward, decrease the repetition counter
+	LD A, (HL)									; X, Y counters will be set to max value as we count down towards 0
+	LD (IY + ESS.MOVE_PATTERN_STEP), A	
+
+	LD A, (IY + ESS.MOVE_PATTERN_CNT)			; Decrease the repetition counter
+	DEC A
+	CP 0
+	JR Z, .nextMovePattern						; Jump if the countdown is done
+	
+	LD (IY + ESS.MOVE_PATTERN_CNT), A			; Store decreased counter, Y,X are 0
+
+	LD A, sr.MOVE_RET_A_VISIBLE
+	RET
+
+.nextMovePattern
+
+	; Move MOVE_PATTERN_POS to next pattern
+	LD A, (IY + ESS.MOVE_PATTERN_POS)			; A contains the current position in the move pattern
+	ADD MOVE_STEP_SIZE							; Increment the position to the next patern and store it
+	LD (IY + ESS.MOVE_PATTERN_POS), A
+
+	; Set MOVE_PATTERN_CNT to the value from next pattern 
+	LD BC, HL									; BC points to current position in #movePatternXX
+	INC BC										; Move BC to the counter for current pattern
+	INC BC										; Move BC to the next pattern
+	INC BC										; Move BC to the counter for the next pattern
+	LD A, (BC)
 	LD (IY + ESS.MOVE_PATTERN_CNT), A
 
 	RET	
@@ -165,7 +328,7 @@ ResetMovePattern
 MoveEnemies
 
 	; Loop ever all enemies skipping hidden 
-	LD IX, sprite01	
+	LD IX, sprite01
 	LD A, (spritesSize)
 	LD B, A 
 
@@ -195,7 +358,7 @@ MoveEnemies
 	LD (IY + ESS.MOVE_DELAY_CNT), A
 
 	CP B										; B already contains #MOVE_DELAY
-	JR NZ, .continue							; Return if the delay counter does not reach the required value.
+	JR NZ, .continue							; Return if the delay counter does not reach the required value
 
 	LD A, 0										; Reset the movement delay counter because it has reached the configured value
 	LD (IY + ESS.MOVE_DELAY_CNT), A
@@ -226,176 +389,7 @@ MoveEnemies
 	ADD IX, DE
 	JP .loop
 
-	RET	
-
-;----------------------------------------------------------;
-;                      #MoveEnemy                          ;
-;----------------------------------------------------------;
-; Input
-;  - IX:	pointer to #MSS holding data for single spreite that will be moved
-; Output:
-;  - A: 	sr.MOVE_RET_A_XXX
-; Modifies: all
-MoveEnemy
-
-	; Move the Sprite horizontally if it has been hit and it's dying
-	LD A, (IX + sr.MSS.STATE)
-	CALL sr.SetSpriteId							; Set sprite ID in hardware
-
-	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_ALIVE						; Reset all bits but alive
-	CP sr.MSS_STATE_ALIVE
-	JR Z, .afterAliveCheck						; Jump if sprite is alive
-
-	LD A, (IX + sr.MSS.STATE)
-
-	; Move the sprite horizontally while it's exploding
-	CALL sr.MoveX
-	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
-
-	RET
-.afterAliveCheck
-
-	; Load #ESS for this sprite to IY
-	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
-	LD IY, BC
-
-	LD HL, (IY + ESS.MOVE_PATTERN)				; HL points to start of the #movePattern
-	LD B, (HL)									; B contains  the amount of bytes in the move pattern
-
-	; Check if we should restart the move pattern, as it might have reached the last element
-	LD A, (IY + ESS.MOVE_PATTERN_CNT) 
-	CP B
-	JR C, .afterResetMovePattern				; Jump if move counter can be increased
-	CALL ResetMovePattern						; Reset move pattern, it has reached max value
-
-.afterResetMovePattern
-
-	; Move HL from the beginning of the move pattern to current position
-	LD A, (IY + ESS.MOVE_PATTERN_CNT)
-	INC A										; The first byte in the move pattern contains the size, skip it.
-	ADD HL, A
-
-	; Current register values:
-	;  - IX: pointer to #MSS for current sprite
-	;  - IY: pointer to #ESS for current sprite
-	;  - HL: pointer to current position in #movePattern
-
-	; Increment/Decrement X ?
-	LD A, (HL)									; A contains current pattern
-	AND MOVE_PAT_X_MASK							; Reset all but X
-	LD D, A										; Store A into D
-
-	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains pattern counter	
-	AND MOVE_PAT_X_MASK							; Reset all but max X value
-
-	CP D
-	JR Z, .afterIncX							; Jump if A == D -> X has already max value
-	
-	; Increment X
-	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
-	ADD MOVE_PAT_X_ADD							; Increment X by 1		
-	LD (IY + ESS.MOVE_PATTERN_STEP), A
-
-	CALL sr.MoveX								; Move one pixel left/right and check if the sprite is still visible (it could be out of the screen)
-	CP sr.MOVE_RET_A_HIDDEN	
-	JR NZ,.afterIncX							; Jump is sprite is not hidden
-
-	LD A, sr.MOVE_RET_A_HIDDEN
-	RET											; Stop moving this spirte, it's hidden
-.afterIncX
-
-	; Increment/Decrement Y ?
-	LD A, (HL)									; A contains current pattern
-	AND MOVE_PAT_Y_MASK							; Reset all but Y
-	LD D, A										; Store A into D
-
-	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains pattern counter	
-	AND MOVE_PAT_Y_MASK							; Reset all but max Y value
-
-	CP D
-	JR Z, .afterChangeY							; Jump if A == D -> Y has already reached max value
-	
-	LD A, (HL)									; A contains current pattern
-	AND MOVE_PAT_Y_INC_MASK						; Reset all except a bit, determining whether Y should be incremented or decremented
-	CP MOVE_PAT_Y_INC_MASK
-	JR Z, .incY									; Jump if Y should be incremented
-
-	; Decrement Y
-	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
-	SUB MOVE_PAT_Y_ADD							; Decrement Y by 1
-	LD (IY + ESS.MOVE_PATTERN_STEP), A	
-	
-	LD A, sr.MOVE_Y_IN_A_DOWN
-	CALL sr.MoveY
-	CP sr.MOVE_RET_A_HIDDEN
-	JR NZ,.afterChangeY							; Jump is sprite is not hidden
-
-	LD A, sr.MOVE_RET_A_HIDDEN
-	RET											; Stop moving this spirte, it's hidden
-
-.incY
-	; Increment Y
-	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
-	ADD MOVE_PAT_Y_ADD							; Increment Y by 1
-	LD (IY + ESS.MOVE_PATTERN_STEP), A	
-
-	LD A, sr.MOVE_Y_IN_A_UP
-	CALL sr.MoveY
-	CP sr.MOVE_RET_A_HIDDEN
-	JR NZ,.afterChangeY							; Jump is sprite is not hidden
-
-	LD A, sr.MOVE_RET_A_HIDDEN
-	RET											; Stop moving this spirte, it's hidden
-	
-.afterChangeY
-	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
-
-	; Check if X and Y have reached max values
-	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains pattern counter	
-	AND MOVE_PAT_XY_MASK						; Reset all but max X,Y values
-	LD D, A										; Store A into D
-
-	LD A, (HL)									; A contains current pattern
-	AND MOVE_PAT_XY_MASK						; Reset all but X,Y values
-
-	; D contains the wanted X and Y values, and A contains the current ones. If both are the same, that means that the X and Y counters 
-	; have reached their maximum value, and we have to start over 
-	CP D
-	JR Z, .afterXYMaxCheck						; Jump if A != D -> no need to reset XY counter, keep incrementing X/Y
-
-	LD A, sr.MOVE_RET_A_VISIBLE
-	RET
-.afterXYMaxCheck
-
-	; X and Y have reached the max value, so increment the repetition counter for this pattern and restart the X and Y incrementation
-	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains pattern counter
-	AND MOVE_PAT_XY_MASK_RES					; Reset XY bits
-	LD (IY + ESS.MOVE_PATTERN_STEP), A
-
-	; The above command has reset XY bits, leaving only counter bits
-
-	; Is counter disabled?
-	CP 0
-	JR Z, .nextMovePattern
-
-	SUB MOVE_PAT_CNT_ADD						; Decrement counter, it's stored on bits: 5-7	
-	CP 0
-	JR Z, .nextMovePattern						; Jump if the countdown is done
-	
-	LD (IY + ESS.MOVE_PATTERN_STEP), A			; Store decreased counter, Y,X are 0
-
-	LD A, sr.MOVE_RET_A_VISIBLE
-	RET
-
-.nextMovePattern
-	LD A, (IY + ESS.MOVE_PATTERN_CNT)			; A contains the current position in the move pattern
-	INC A										; Increment move counter and store
-	LD (IY + ESS.MOVE_PATTERN_CNT), A
-
-	LD A, sr.MOVE_RET_A_VISIBLE
-	RET
-	
+	RET		
 ;----------------------------------------------------------;
 ;                        #Respown                          ;
 ;----------------------------------------------------------;
@@ -441,7 +435,7 @@ Respown
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
 	LD IY, BC
 	
-	; There are two respawn delay timers. The first is global (#respownDelayCnt) and ensures that multiple enemies do not respawn at the same time. 
+	; There are two respawn delay timers. The first is global (#respownDelayCnt) and ensures that multiple enemies do not respawn at the same time.
 	; The second timer can be configured for a single enemy, which further delays its comeback. 
 	LD A, (IY + ESS.RESPOWN_DELAY)
 	CP 0
@@ -467,7 +461,7 @@ Respown
 	LD A, 0
 	LD (IY + ESS.MOVE_DELAY_CNT), A
 	LD (IY + ESS.RESPOWN_DELAY_CNT), A
-	CALL ResetMovePattern
+	CALL RestartMovePattern
 
 	; Set Y (horizontal respown) to a random value
 	LD A, (gm.loopCnt)
@@ -525,4 +519,4 @@ WeaponHit
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE			
+	ENDMODULE

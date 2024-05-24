@@ -44,7 +44,7 @@ _DC_REG_LAYER2_OFFS_H71 = $71
 _ROM_CLS_H0DAF			= $0DAF					; ROM address for "Clear Screen" routine
 _ROM_PRINT_H10			= $10					; ROM address for "Print Character from A" routine
 
-; ROM address for "Print Text" routine.
+; ROM address for "Print Text" routine
 ; IN:
 ;    - DE: RAM location containing the text
 ;    - BC: Size of the text
@@ -101,7 +101,7 @@ _MMU_REG_SLOT3_H53		= $53
 _MMU_REG_SLOT4_H54		= $54
 _MMU_REG_SLOT5_H55		= $55
 _MMU_REG_SLOT6_H56		= $56
-_MMU_REG_SLOT7_H57		= $57	
+_MMU_REG_SLOT7_H57		= $57
 
 ;----------------------------------------------------------;
 ;          		         Sprites	   	                   ;

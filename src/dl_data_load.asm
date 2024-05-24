@@ -10,7 +10,7 @@
 	NEXTREG _MMU_REG_SLOT6_H56, di.BANK40_SPR1	; Assign bank 40 to slot 6
 	NEXTREG _MMU_REG_SLOT7_H57, di.BANK41_SPR2	; Assign bank 41 to slot 7
 
-	LD HL, di.spritesBin						; Sprites binary data							
+	LD HL, di.spritesBin						; Sprites binary data
 	LD BC, di.spritesBinLength					; Copy 63 sprites, each 16x16 pixels
 	CALL sp.LoadSpritesFPGA
 
@@ -23,4 +23,4 @@
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE		
+	ENDMODULE

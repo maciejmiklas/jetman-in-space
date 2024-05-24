@@ -118,16 +118,16 @@ JetmanLanding
 	JR C, .afterMoveLR							; Jump, if there is no movement right/left (A >= 1) -> Jemtan lands and stands still
 	
 	; Jetman moves left/right
-	LD A, jd.GND_WALK							; Update #jetmanGnd as we are walking		
+	LD A, jd.GND_WALK							; Update #jetmanGnd as we are walking
 	LD (jd.jetmanGnd), A	
 
-	LD A, js.SDB_T_FW							; Play transition from landing -> walking	
+	LD A, js.SDB_T_FW							; Play transition from landing -> walking
 	CALL js.ChangeJetmanSpritePattern
 
 	JR .afterStand								; The animation is already loaded, do not overweigh it with standing
 .afterMoveLR	
 
-	LD A, jd.GND_STAND							; Update #jetmanGnd as we are standing		
+	LD A, jd.GND_STAND							; Update #jetmanGnd as we are standing
 	LD (jd.jetmanGnd), A	
 
 	LD A, js.SDB_T_FS							; Play transition from landing -> standing
@@ -318,10 +318,10 @@ FallingFromPlatform
 	LD C, (HL)									; C contains [Y]
 
 	INC HL										; HL points to [X start]
-	LD D, (HL)									; D contains [X start]	
+	LD D, (HL)									; D contains [X start]
 
 	INC HL										; HL points to [X end]
-	LD E, (HL)									; E contains [X end]		
+	LD E, (HL)									; E contains [X end]
 
 	LD A, (jd.jetmanY)							; A holds current Y position
 	CP C
@@ -340,8 +340,8 @@ FallingFromPlatform
 	JR .afterFalling							; Jetman is still on the platform
 
 ; Jetman is falling from the platform, left or right
-.fallingLeft									
-	LD A, jd.AIR_FALL_LEFT						
+.fallingLeft
+	LD A, jd.AIR_FALL_LEFT
 	LD (jd.jetmanAir), A
 	JR .afterFallingRight
 
@@ -355,12 +355,12 @@ FallingFromPlatform
 	CALL js.ChangeJetmanSpritePattern
 
 	; Disable joystick, because Jetman loses control for #JOY_DISABLED_FALL frames
-	LD A, jd.JOY_DISABLED_FALL						
+	LD A, jd.JOY_DISABLED_FALL
 	LD (jd.joyDisabledCnt), A
 	
 	; Reset #jetmanGnd as we are not walking anymore
-	LD A, jd.GND_INACTIVE						
-	LD (jd.jetmanGnd), A	
+	LD A, jd.GND_INACTIVE
+	LD (jd.jetmanGnd), A
 
 .afterFalling
 	RET
@@ -368,4 +368,4 @@ FallingFromPlatform
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE	
+	ENDMODULE

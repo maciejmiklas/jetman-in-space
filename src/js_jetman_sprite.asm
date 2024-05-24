@@ -97,10 +97,10 @@ UpdateJetmanSpritePosition
 	LD BC, (jd.jetmanX)								
 	LD A, C			
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands								
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands								
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
 
 	LD A, B										; Load MSB from X into A
@@ -119,20 +119,20 @@ UpdateJetmanSpritePosition
 	RES _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite right
 .afterRotate
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands	
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_ATR2_H37, A
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands	
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Move Jetman sprite to current Y postion, 8-bit value is easy 
 	LD A, (jd.jetmanY)		
 	
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands							
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands		
-	ADD 16										; Lower part is 16px below upper					
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
+	ADD 16										; Lower part is 16px below upper
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
 	RET
@@ -169,7 +169,7 @@ UpdateJetmanSpritePattern
 	LD BC, 0									; Do not limit CPIR search
 	CPIR
 
-	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern. 	
+	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
 	LD A, (HL)									; Update next pointer to next animation record
 	ADD SDB_SUB									; Add 100 because DB value had  -100, to avoid collision with ID
 	LD (sprDBNextID), A

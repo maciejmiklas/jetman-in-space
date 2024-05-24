@@ -78,7 +78,7 @@ JetmanMoves
 
 	; Transition from hovering to flying?
 	LD A, (jd.jetmanAir)
-	CP jd.AIR_HOOVER							; Is Jemtman hovering?			
+	CP jd.AIR_HOOVER							; Is Jemtman hovering?
 	JR NZ, .afterHovering						; Jump if not hovering
 
 	; Jetman is hovering, but we have movement, so switch state to fly
@@ -135,11 +135,11 @@ JoyMoveUp
 	SET jd.MOVE_UP_BIT, A	
 	LD (jd.joyDirection), A
 
-	CALL jt.JetmanMoves							
+	CALL jt.JetmanMoves
 
 	; Decrement Y position
 	LD A, (jd.jetmanY)	
-	CP sc.SCR_Y_MIN_POS 						; Do not decrement if Jetman has reached the top of the screen.
+	CP sc.SCR_Y_MIN_POS 						; Do not decrement if Jetman has reached the top of the screen
 	JR Z, .afterDec
 	DEC A
 	LD (jd.jetmanY), A
@@ -185,7 +185,7 @@ JoyMoveRight
 	JR Z, .afterDirectionChange
 
 	; We have direction change!		
-	LD A, (jd.jetmanDirection)					; Reset left and set right						
+	LD A, (jd.jetmanDirection)					; Reset left and set right
 	RES jd.MOVE_LEFT_BIT, A
 	SET jd.MOVE_RIGHT_BIT, A
 	LD (jd.jetmanDirection), A
@@ -216,10 +216,10 @@ JoyMoveLeft
 	LD A, (jd.jetmanDirection)
 	AND jd.MOVE_LEFT_MASK							; Are we moving left already?
 	CP jd.MOVE_LEFT_MASK
-	JR Z, .afterDirectionChange					; Jetman is moving left already -> end
+	JR Z, .afterDirectionChange						; Jetman is moving left already -> end
 
 	; We have direction change!		
-	LD A, (jd.jetmanDirection)						; Reset right and set left 					
+	LD A, (jd.jetmanDirection)						; Reset right and set left
 	RES jd.MOVE_RIGHT_BIT, A
 	SET jd.MOVE_LEFT_BIT, A
 	LD (jd.jetmanDirection), A
@@ -265,7 +265,7 @@ JoyMoveDown
 
 	; Landing on the ground
 	CP jd.GROUND_LEVEL
-	CALL Z, jp.JetmanLanding					; Execute landing on the ground if Jetman has reached the ground.
+	CALL Z, jp.JetmanLanding					; Execute landing on the ground if Jetman has reached the ground
 	CALL jp.LandingOnPlatform					; Or should he land on one of the platforms?
 
 	; Direction change? 
@@ -296,7 +296,7 @@ JoyStart
 ;----------------------------------------------------------;
 ;                         #JoyEnd                          ;
 ;----------------------------------------------------------;
-JoyEnd											; After input processing, #JoyEnd gets executed as the last procedure. 
+JoyEnd											; After input processing, #JoyEnd gets executed as the last procedure
 
 	; #Jetman inactivity#
 	LD A, (jd.joyDirection)

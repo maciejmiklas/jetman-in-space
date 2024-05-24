@@ -75,4 +75,4 @@ joyDelayCnt				BYTE 0				; The delay counter for joistink input and Jetman movem
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE		
+	ENDMODULE
