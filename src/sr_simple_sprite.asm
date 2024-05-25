@@ -294,12 +294,17 @@ SetSpritePattern
 ;----------------------------------------------------------;
 ;                 #PlaftormColision                        ;
 ;----------------------------------------------------------;
-; A sprite can hit platform from left or right. 
 ; Input:
 ;  - IX: 	pointer to #MSS, single sprite to check colsion for
-;  - IY:	Structure like #platformBump
+;  - IY:	Structure for #platformBump
 ;  - L:		Half of the height of the sprite
+; Output:
+;  - A: 	MOVE_RET_A_XXX
+PL_COL_RET_A_NO 			= 0					; No colision
+PL_COL_RET_A_UP 			= 2					; Sprite hits platform from above
+PL_COL_RET_A_DOWN			= 3					; Sprite hits platform from below
 ; Modifies: ALL
+
 PlaftormColision
 
 	; Exit if sprite is not alive
@@ -310,17 +315,18 @@ PlaftormColision
 
 	LD B, (IY)									; Load into B the number of platforms to check
 .platformsLoop	
-	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1)
+	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1). Platforms end at 256.
 	LD DE, (IX + MSS.X)
 	LD A, 0 
 	CP D
 	RET NZ
 
+	; Is Sprite after the beginning of the platform?
 	LD A, E										; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
 	INC IY										; HL points to [X platform start]
 	LD C, (IY)									; C holds [X platform start]
 	CP C
-	JR NC, .afterXLeftCheck						; Jump if [X sprite] < [X platform start]
+	JR NC, .afterXLeftCheck						; Jump if [X sprite] < [X platform start] -> 
 
 	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
 	INC IY										; HL points to [X platform end]
@@ -328,6 +334,9 @@ PlaftormColision
 	INC IY										; HL points to [Y platform end]
 	JR .platformsLoopEnd
 .afterXLeftCheck
+
+	; Is Sprite before the end of the platform?
+
 	; A still holds [X sprite]
 	INC IY										; HL points to [X platform end]
 	LD C, (IY)									; C holds [X platform end]
@@ -363,17 +372,16 @@ PlaftormColision
 	JR NC, .platformsLoopEnd					; Jump if shot > [Y end]
 
 	; Sprite hits the platform!
-	PUSH BC
-	CALL SetSpriteId
-	CALL SpriteHit
-	POP BC
+	LD A, PL_COL_RET_A_UP
+
+	RET
 
 .platformsLoopEnd
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
+
+	LD A, PL_COL_RET_A_NO
 	RET
 
-MOVE_RET_A_VISIBLE 			= 1					; Sprite is still visible
-MOVE_RET_A_HIDDEN 			= 0					; Sprite outside screen, or hits ground
 ;----------------------------------------------------------;
 ;                          #MoveX                          ;
 ;----------------------------------------------------------;
@@ -382,6 +390,10 @@ MOVE_RET_A_HIDDEN 			= 0					; Sprite outside screen, or hits ground
 ;  - IX:	pointer to #MSS
 ; Output:
 ;  - A: 	MOVE_RET_A_XXX
+MOVE_RET_A_VISIBLE 			= 1					; Sprite is still visible
+MOVE_RET_A_HIDDEN 			= 0					; Sprite outside screen, or hits ground
+; Modifies: ?
+
 MoveX
 	LD A, (IX + MSS.STATE)
 	AND MSS_STATE_RIGHT_MASK					; Reset all bits but right

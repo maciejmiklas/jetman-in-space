@@ -224,6 +224,9 @@ MoveShots
 	LD IY, jp.platformBump
 	LD L, SHOT_HEIGHT
 	CALL sr.PlaftormColision
+	CP A, sr.PL_COL_RET_A_NO
+	JR Z, .afterColisionDetection
+	CALL sr.SpriteHit
 .afterColisionDetection
 
 .continue

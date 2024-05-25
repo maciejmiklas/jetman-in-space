@@ -5,7 +5,7 @@
 
 ; The timer ticks with every game loop. When it reaches #EN_RESPOWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
 respownDelayCnt 			DB 0
-respownDelay 				DB 10				; Amount of game loops to respawn single enemy
+respownDelay 				DB 20				; Amount of game loops to respawn single enemy
 
 ; Extends #MSS by additional params.
 	STRUCT ESS
@@ -350,7 +350,6 @@ MoveEnemy
 
 .nextMovePattern
 
-
 	; Setup next move pattern
 	LD A, (IY + ESS.MOVE_PATTERN_POS)			; A contains the current position in the move pattern
 	ADD MOVE_STEP_SIZE							; Increment the position to the next patern and store it
@@ -423,6 +422,9 @@ MoveEnemies
 	LD IY, jp.platformBump
 	LD L, SPRITE_HEIGHT_PLATFORM
 	CALL sr.PlaftormColision
+	CP A, sr.PL_COL_RET_A_NO
+	JR Z, .continue
+	CALL sr.SpriteHit
 
 .continue	
 
