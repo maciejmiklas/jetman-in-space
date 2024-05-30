@@ -16,7 +16,7 @@ SPRITES				BYTE						; Number of sprites used in this formation, starting from #
 SPRITES_CNT			BYTE						; Current respown position
 	ENDS
 
-formation MF{ep.spriteEf01/*MSS_POINTER*/, 1000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
+formation MF{ep.spriteEf01/*MSS_POINTER*/, 50/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
 
 ;----------------------------------------------------------;
 ;                   #RespownFormation                      ;
@@ -59,17 +59,21 @@ RespownFormation
 	LD HL, (IY + MF.MSS_POINTER)
 	LD IX, HL									; IX points for ESS for the first sprite in the formation
 
-	; Move IX to the current sprite in the formation
-	LD B, (IY + MF.SPRITES_CNT)
-	ADD IX, MF
-.moveIXLoop
-	DJNZ .moveIXLoop							; Jump if B > 0
+	ld a, $30
+	nextreg 2,8
 
-	CALL ef.RespownEnemy
+	; Move IX to the current sprite in the formation
+	LD D, (IY + MF.SPRITES_CNT)					; IX = IX + MF.SPRITES_CNT * MF
+	LD E, sr.MSS
+	MUL D, E
+	ADD IX, DE
+
+	ld a, $31
+	nextreg 2,8
+
+	;CALL ep.RespownEnemy
 	
-	LD A,  (IY + MF.SPRITES_CNT)				; Next sprite in the formation
-	INC A
-	LD (IY + MF.SPRITES_CNT), A
+	INC (IY + MF.SPRITES_CNT)
 	RET
 
 ;----------------------------------------------------------;
@@ -79,8 +83,6 @@ RespownFormation
 ;  - IY:	pointer to #MF holding data for the formation
 ; Modifies: ALL
 RestartFormation
-
-
 	LD A, 0										; Reset counters
 	LD (IY + MF.SPRITES_CNT), A
 	LD (IY + MF.RESPOWN_DELAY_CNT), A
@@ -91,7 +93,7 @@ RestartFormation
 	LD B, (IY + MF.SPRITES)						; Counter for the .loop	
 .loop
 	PUSH BC
-	CALL RestartMovePattern
+	CALL ep.RestartMovePattern
 	POP BC
 
 	LD DE, sr.MSS								; Move IX to the next sprite
