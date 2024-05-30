@@ -29,14 +29,15 @@ GameLoop
 	CALL jt.JoyDisabled
 	CALL sp.AnimateSprites
 	CALL jw.MoveShots
-	CALL en.MoveEnemies
-	CALL en.Respown
-	CALL en.WeaponHit
+	CALL ep.MoveEnemies
+	CALL ep.RespownNextEnemy	
+	CALL ep.WeaponHit
+	CALL ef.RespownFormation	
 	CALL PrintDebug
 	RET
 
 ;----------------------------------------------------------;
-;                      #GameLoop                           ;
+;                     #PrintDebug                          ;
 ;----------------------------------------------------------;
 PrintDebug
 	; PRINT START

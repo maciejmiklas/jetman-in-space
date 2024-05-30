@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
-;                     Flying Enemy                         ;
+;             Single 16x16 Flying Enemy                    ;
 ;----------------------------------------------------------;
-	MODULE en
+	MODULE ep
 
 ; The timer ticks with every game loop. When it reaches #EN_RESPOWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
 respownDelayCnt 			DB 0
@@ -13,89 +13,93 @@ MOVE_DELAY				BYTE					; Number of game loops to skip before moving enemy (delay
 MOVE_DELAY_CNT			BYTE					; Move delay counter
 RESPOWN_DELAY			BYTE					; Number of game loops delaying respawn
 RESPOWN_DELAY_CNT		BYTE					; Respawn delay counter
+RESPOWN_Y				BYTE					; Repown Y position
 MOVE_PATTERN			WORD					; Pointer to the movement pattern (#movePatternXX)
 MOVE_PATTERN_CNT		BYTE					; Counter for repetition of single move pattern. Counts towards 0
 MOVE_PATTERN_POS		BYTE					; Position in #MOVE_PATTERN. Counts from 0 to #movePatternXX.size-1
 MOVE_PATTERN_STEP 		BYTE					; Counters X,Y from current move pattern
-
-; Confugures move Pattern. Bits:
-;  - 0 - avoid platforms by flying along them. When set, bits 1 and 2 will be ignored. The platform cannot destroy the enemy
-;  - 1 - bounce from the platform horizontally
-;  - 2 - bounce from the platform vertically
-;  - 3-7 - not used yet
-MOVE_CONFIG				BYTE
 	ENDS
+; Bits 4-7 on sr.STATE will be used here:
+
+; Avoid platforms by flying along them. When set, bits 1 and 2 will be ignored. The platform cannot destroy the enemy
+MSS_STATE_ALONG_BIT		= 4
 
 ; Sprites for single enemy (#sprite), based on #MSS
 ; Each sprite has hardcoded respawn coordinates and the direction in which it moves
 spriteEx01
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 20/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx02
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 40/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx03
-	ESS {3/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {3/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 60/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx04
-	ESS {4/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {4/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 80/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx05
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 100/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx06
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 120/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx07
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 140/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx08
-	ESS {1/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {1/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx09
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 180/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 spriteEx10
-	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
-spriteEx11
-	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
-spriteEx12
-	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
-spriteEx13
-	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
-spriteEx14
-	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}
-spriteEx15
-	ESS {2/*MOVE_fDELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/, /*MOVE_CONFIG*/%00000000}				
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 2/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 200/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+
+; Formation Sprites
+spriteExEf01
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 40/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+spriteExEf02
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+spriteExEf03
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+spriteExEf04
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+spriteExEf05
+	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
 
 sprite01
-	sr.MSS {20/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
+	sr.MSS {20/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
 sprite02
-	sr.MSS {21/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx02/*EXT_DATA_POINTER*/}
+	sr.MSS {21/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx02/*EXT_DATA_POINTER*/}
 sprite03
-	sr.MSS {22/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx03/*EXT_DATA_POINTER*/}
+	sr.MSS {22/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'1'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx03/*EXT_DATA_POINTER*/}
 sprite04
-	sr.MSS {23/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx04/*EXT_DATA_POINTER*/}
+	sr.MSS {23/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx04/*EXT_DATA_POINTER*/}
 sprite05
-	sr.MSS {24/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx05/*EXT_DATA_POINTER*/}
+	sr.MSS {24/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'1'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx05/*EXT_DATA_POINTER*/}
 sprite06
-	sr.MSS {25/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx06/*EXT_DATA_POINTER*/}
+	sr.MSS {25/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx06/*EXT_DATA_POINTER*/}
 sprite07
-	sr.MSS {26/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx07/*EXT_DATA_POINTER*/}
+	sr.MSS {26/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'1'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx07/*EXT_DATA_POINTER*/}
 sprite08
-	sr.MSS {27/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx08/*EXT_DATA_POINTER*/}
+	sr.MSS {27/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx08/*EXT_DATA_POINTER*/}
 sprite09
-	sr.MSS {28/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_RIGHT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx09/*EXT_DATA_POINTER*/}
+	sr.MSS {28/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'1'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx09/*EXT_DATA_POINTER*/}
 sprite10
-	sr.MSS {29/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx10/*EXT_DATA_POINTER*/}
-sprite11
-	sr.MSS {30/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx11/*EXT_DATA_POINTER*/}
-sprite12
-	sr.MSS {31/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx12/*EXT_DATA_POINTER*/}
-sprite13
-	sr.MSS {32/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx13/*EXT_DATA_POINTER*/}
-sprite14
-	sr.MSS {33/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx14/*EXT_DATA_POINTER*/}
-sprite15
-	sr.MSS {34/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, sr.MSS_STATE_LEFT_MASK/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx15/*EXT_DATA_POINTER*/}				
+	sr.MSS {29/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx10/*EXT_DATA_POINTER*/}
 
-spritesSize					DB 15				; The maximum amount of visible enemies
+; Formation Sprites
+spriteEf01
+	sr.MSS {30/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf01/*EXT_DATA_POINTER*/}
+spriteEf02
+	sr.MSS {31/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf02/*EXT_DATA_POINTER*/}
+spriteEf03
+	sr.MSS {32/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf03/*EXT_DATA_POINTER*/}
+spriteEf04
+	sr.MSS {33/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf04/*EXT_DATA_POINTER*/}
+spriteEf05
+	sr.MSS {34/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
+
+spritesSize					DB 15				; The total amount of visible sprites - including single enemies and formations
+singleSpritesSize			DB 10				; Amount of sprites that can respawn as a single enemy
+
 SPRITE_HEIGHT_PLATFORM		= 3
+SPRITE_HEIGHT_COLISION		= 10
 
 SPRITE_HEIGHT_WEAPON		= 8
 SPRITE_WIDTH_WEAPON			= 8
-
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the byte, indicating the number of patterns it contains. 
 ; Each pattern is then represented by 2 bytes: one for the pattern itself and the other for the number of times it should be repeated. 
@@ -132,6 +136,7 @@ MOVE_PAT_Y_MASK			= %0'111'0'000
 MOVE_PAT_Y_ADD			= %0'001'0'000
 
 MOVE_PAT_Y_INC_MASK		= %1'000'0'000
+MOVE_PAT_Y_INC_BIT		= 7
 
 MOVE_PAT_XY_MASK		= %0'111'0'111
 MOVE_PAT_XY_MASK_RES	= %1'000'1'000
@@ -165,7 +170,7 @@ movePattern06
 		DB %1'001'1'101,1, %1'001'1'100,2, %1'001'1'011,2, %1'010'1'011,3, %1'011'1'011,1, %1'100'1'011,1, %1'011'1'010,2, %1'010'1'001,2	; going down		
 
 ; sinus
-movePattern07
+movePattern01
 	DB 64, %0'010'1'001,2, %0'011'1'010,2, %0'100'1'011,1, %0'011'1'011,1, %0'010'1'011,3, %0'001'1'011,2, %0'001'1'100,2, %0'001'1'101,1 	; going up, above X
 		DB %1'001'1'101,1, %1'001'1'100,2, %1'001'1'011,2, %1'010'1'011,3, %1'011'1'011,1, %1'100'1'011,1, %1'011'1'010,2, %1'010'1'001,2	; going down, above X
 		DB %1'010'1'001,2, %1'011'1'010,2, %1'100'1'011,1, %1'011'1'011,1, %1'010'1'011,3, %1'001'1'011,2, %1'001'1'100,2, %1'001'1'101,1 	; going down, below X
@@ -180,11 +185,11 @@ movePattern09
 	DB 4, %0'111'1'111,5, %1'111'1'111,5
 
 ; Square,triangle wave
-movePattern01
+movePattern10
 	DB 24, %0'000'1'111,5, %1'111'1'000,3, %0'000'1'111,5, %0'111'1'000,3, %0'000'1'111,5, %1'111'1'000,3, %0'000'1'111,5, %0'111'1'000,3, %1'111'1'111,3, %0'111'1'111,3, %1'111'1'111,3, %0'111'1'111,3
 
 ;----------------------------------------------------------;
-;                   #ResetMovePattern                      ;
+;                  #RestartMovePattern                     ;
 ;----------------------------------------------------------;
 ; This method resets the move pattern (#ESS) so animation can start from the first move pattern. It does not modify #MSS.
 ; Input
@@ -219,7 +224,7 @@ RestartMovePattern
 ; Input
 ;  - IX:	pointer to #MSS holding data for single spreite that will be moved
 ; Output:
-;  - A: 	sr.MOVE_RET_A_XXX
+;  - A: 	sr.MOVE_RET_XXX
 ; Modifies: all
 MoveEnemy
 
@@ -228,9 +233,8 @@ MoveEnemy
 	CALL sr.SetSpriteId							; Set sprite ID in hardware
 
 	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_ALIVE						; Reset all bits but alive
-	CP sr.MSS_STATE_ALIVE
-	JR Z, .afterAliveCheck						; Jump if sprite is alive
+	BIT sr.MSS_STATE_ALIVE_BIT, A
+	JR NZ, .afterAliveCheck						; Jump if sprite is alive
 
 	LD A, (IX + sr.MSS.STATE)
 
@@ -238,7 +242,7 @@ MoveEnemy
 	CALL sr.MoveX
 	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
 
-	LD A, sr.MOVE_RET_A_VISIBLE
+	LD A, sr.MOVE_RET_VISIBLE
 	RET
 .afterAliveCheck
 
@@ -248,6 +252,28 @@ MoveEnemy
 
 	LD HL, (IY + ESS.MOVE_PATTERN)				; HL points to start of the #movePattern
 	LD B, (HL)									; B contains  the amount of bytes in the move pattern
+
+	; Should the enemy move along the platform to avoid collision?
+	LD A, (IX + sr.MSS.STATE)
+	BIT MSS_STATE_ALONG_BIT, A
+	JR Z, .afterMoveAlong						; Jump if move along is not set
+
+	; Check the collision with the platform
+	PUSH BC, HL, IY
+
+	LD IY, jp.platformBump
+	LD L, SPRITE_HEIGHT_COLISION
+	CALL sr.PlaftormColision
+
+	POP IY, HL, BC
+	CP A, sr.PL_COL_RET_A_NO
+	JR Z, .afterMoveAlong						; Jump if there is no collision
+
+	; Avoid collision with the platform by moving along it 
+	CALL sr.MoveX
+	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
+	RET
+.afterMoveAlong
 
 	; Check if we should restart the move pattern, as it might have reached the last element
 	LD A, (IY + ESS.MOVE_PATTERN_POS)
@@ -279,10 +305,10 @@ MoveEnemy
 	LD (IY + ESS.MOVE_PATTERN_STEP), A
 
 	CALL sr.MoveX								; Move one pixel left/right and check if the sprite is still visible (it could be out of the screen)
-	CP sr.MOVE_RET_A_HIDDEN	
+	CP sr.MOVE_RET_HIDDEN	
 	JR NZ,.afterIncX							; Jump is sprite is not hidden
 
-	LD A, sr.MOVE_RET_A_HIDDEN
+	LD A, sr.MOVE_RET_HIDDEN
 	RET											; Stop moving this spirte, it's hidden
 .afterIncX
 
@@ -298,27 +324,26 @@ MoveEnemy
 
 	; Move on Y-axis one pixel up or down?
 	LD A, (HL)									; A contains current pattern
-	AND MOVE_PAT_Y_INC_MASK						; Reset all except a bit, determining whether Y should be incremented or decremented
-	CP MOVE_PAT_Y_INC_MASK
+	BIT MOVE_PAT_Y_INC_BIT, A
 	JR NZ, .incY								; Jump if Y should be incremented
 
 	; Move on pixel down	
 	LD A, sr.MOVE_Y_IN_A_DOWN
 	CALL sr.MoveY
-	CP sr.MOVE_RET_A_HIDDEN
+	CP sr.MOVE_RET_HIDDEN
 	JR NZ,.afterChangeY							; Jump is sprite is not hidden
 
-	LD A, sr.MOVE_RET_A_HIDDEN
+	LD A, sr.MOVE_RET_HIDDEN
 	RET											; Stop moving this spirte, it's hidden
 
 .incY
 	; Move on pixel up
 	LD A, sr.MOVE_Y_IN_A_UP
 	CALL sr.MoveY
-	CP sr.MOVE_RET_A_HIDDEN
+	CP sr.MOVE_RET_HIDDEN
 	JR NZ,.afterChangeY							; Jump is sprite is not hidden
 
-	LD A, sr.MOVE_RET_A_HIDDEN	
+	LD A, sr.MOVE_RET_HIDDEN	
 	RET											; Stop moving this spirte, it's hidden
 
 .afterChangeY
@@ -330,7 +355,7 @@ MoveEnemy
 	CP 0
 	JR Z, .resetXYCounters						; Jump if X and Y counters has reached 0
 
-	LD A, sr.MOVE_RET_A_VISIBLE
+	LD A, sr.MOVE_RET_VISIBLE
 	RET
 .resetXYCounters
 
@@ -345,7 +370,7 @@ MoveEnemy
 	
 	LD (IY + ESS.MOVE_PATTERN_CNT), A			; Store decreased counter, Y,X are 0
 
-	LD A, sr.MOVE_RET_A_VISIBLE
+	LD A, sr.MOVE_RET_VISIBLE
 	RET
 
 .nextMovePattern
@@ -415,7 +440,7 @@ MoveEnemies
 
 	; Sprite is visible, move it!
 	CALL MoveEnemy
-	CP sr.MOVE_RET_A_HIDDEN
+	CP sr.MOVE_RET_HIDDEN
 	JR Z, .continue
 
 	; Check the collision with the platform
@@ -441,10 +466,11 @@ MoveEnemies
 	JP .loop
 
 	RET		
+
 ;----------------------------------------------------------;
-;                        #Respown                          ;
+;                  #RespownNextEnemy                       ;
 ;----------------------------------------------------------;
-Respown
+RespownNextEnemy
 
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy
 	LD A, (respownDelay)
@@ -459,27 +485,45 @@ Respown
 	LD A, 0
 	LD (respownDelayCnt), A						; Reset delay timer
 
-	; It would be the time to respawn the enemy. However, to archive random respawn time, we will respawn only when the loop counter 
-	; is within the Y coordinate, where movement is allowed:  #SCR_Y_MIN_POS < Y < #SCR_Y_MAX_POS
-	LD A, (gm.loopCnt)
-
-	CP sc.SCR_Y_MIN_POS
-	RET C										; Return if Y is below game screen
-
-	CP sc.SCR_Y_MAX_POS
-	RET NC										; Return if Y is above game screen
-
+	; Respawn the enemy
 	LD IX, sprite01								; Iterate over all enemies to find the first hidden, respawn it, and exit function
-	LD A, (spritesSize)
+	LD A, (singleSpritesSize)
 	LD B, A 
 .loop
 	PUSH BC										; Preserve B for loop counter
-		
-	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
-	CP sr.MSS_STATE_VISIBLE
-	JR Z, .continue								; Skipp this sprite if it's already visible
+	CALL RespownEnemy
+	POP BC
 
+	CP A, RES_SE_OUT_YES
+	RET Z										; Exit after respawning first enemy
+										
+.continue
+	; Move IX to the beginning of the next #shotMssXX
+	LD DE, sr.MSS
+	ADD IX, DE
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #singleSpritesSize)
+
+	RET
+
+;----------------------------------------------------------;
+;                    #RespownEnemy                         ;
+;----------------------------------------------------------;
+; Input
+;  - IX:	pointer to #MSS holding data for single enemy
+; Output:
+; - A: 		RES_SE_OUT_XXX
+RES_SE_OUT_YES					= 1				; Enemy did respawn
+RES_SE_OUT_NO					= 0				; Enemy did not respawn
+; Modifies: all
+RespownEnemy
+	
+	LD A, (IX + sr.MSS.STATE)
+	BIT sr.MSS_STATE_VISIBLE_BIT, A
+	JR Z, .afterVisibilityCheck					; Skipp this sprite if it's already visible
+	
+	LD A, RES_SE_OUT_NO
+	RET
+.afterVisibilityCheck
 	; Sprite is hidden; check the dedicated delay before respawning
 
 	; Load extra sprite data (#ESS) to IY
@@ -491,7 +535,7 @@ Respown
 	LD A, (IY + ESS.RESPOWN_DELAY)
 	CP 0
 	
-	JR Z, .afterEnemyRespownDelay			; Jump if there is no extra delay for this enemy
+	JR Z, .afterEnemyRespownDelay				; Jump if there is no extra delay for this enemy
 		
 	LD B, A	
 	LD A, (IY + ESS.RESPOWN_DELAY_CNT)
@@ -500,7 +544,8 @@ Respown
 	JR Z, .afterEnemyRespownDelay				; Jump if the timer reaches respawn delay
 
 	LD (IY + ESS.RESPOWN_DELAY_CNT), A			; The delay timer for the enemy is still ticking
-	POP BC
+
+	LD A, RES_SE_OUT_NO	
 	RET
 .afterEnemyRespownDelay
 
@@ -514,15 +559,14 @@ Respown
 	LD (IY + ESS.RESPOWN_DELAY_CNT), A
 	CALL RestartMovePattern
 
-	; Set Y (horizontal respown) to a random value
-	LD A, (gm.loopCnt)
+	; Set Y (horizontal respown)
+	LD A,  (IY + ESS.RESPOWN_Y)
 	LD (IX + sr.MSS.Y), A
 	
 	; Set X to left or right side of the screen
 	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_RIGHT_MASK
-	CP sr.MSS_STATE_RIGHT_MASK
-	JR NZ, .left
+	BIT sr.MSS_STATE_DIRECTION_BIT, A
+	JR Z, .left
 	LD BC, sc.SCR_X_MAX_POS
 	JR .afterLR
 .left	
@@ -532,16 +576,7 @@ Respown
 
 	CALL sr.ShowSprite
 
-	; Exit after respawning first enemy
-	POP BC
-	RET											
-.continue
-	; Move IX to the beginning of the next #shotMssXX
-	LD DE, sr.MSS
-	ADD IX, DE
-	POP BC
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #spritesSize)
-
+	LD A, RES_SE_OUT_YES
 	RET
 
 ;----------------------------------------------------------;

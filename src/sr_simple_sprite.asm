@@ -17,8 +17,8 @@ Y						BYTE					; Y position of the sprite
 ;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
 ;	- 1:	Alive flag, 1 - sprite is alive, 0 - sprite is dying, disabled for colistion detection, but visible.
 ;	- 2:	not used
-;	- 3: 	1 = sprite moving left, 0 = sprite = moving right. This bit corresponds to _SPR_REG_ATR2_H37. TODO is it in use?
-;	- 4-7: 	not used
+;	- 3: 	1 = sprite moving left, 0 = sprite = moving right. This bit corresponds to _SPR_REG_ATR2_H37
+;	- 4-7: 	not used here, but could be elswere (en.MSS_STATE_ALONG_BIT)
 STATE					BYTE
 NEXT					BYTE					; ID in #ssSpriteDB for next animation record/state
 REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
@@ -37,7 +37,6 @@ MSS_STATE_DIRECTION_BIT	= 3
 MSS_STATE_RIGHT_MASK	= %00001000				; See _SPR_REG_ATR2_H37 -> Bit 3
 MSS_STATE_LEFT_MASK		= %00000000				
 MSS_STATE_RES_FREE		= _SPR_REG_ATR2_RES_PAL	; Mask to reset free bits.
-
 
 ;----------------------------------------------------------;
 ;                         Sprite DB                        ;
@@ -101,8 +100,7 @@ AnimateSprites
 	PUSH BC										; Preserve B for loop counter
 
 	LD A, (IX + MSS.STATE)
-	AND MSS_STATE_VISIBLE						; Reset all bits but visibility
-	CP 0
+	BIT MSS_STATE_VISIBLE_BIT, A
 	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
 
 	; Sprite is visible
@@ -299,19 +297,18 @@ SetSpritePattern
 ;  - IY:	Structure for #platformBump
 ;  - L:		Half of the height of the sprite
 ; Output:
-;  - A: 	MOVE_RET_A_XXX
+;  - A: 	MOVE_RET_XXX
 PL_COL_RET_A_NO 			= 0					; No colision
-PL_COL_RET_A_UP 			= 2					; Sprite hits platform from above
-PL_COL_RET_A_DOWN			= 3					; Sprite hits platform from below
+PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
 ; Modifies: ALL
 
 PlaftormColision
 
 	; Exit if sprite is not alive
 	LD A, (IX + MSS.STATE)
-	AND MSS_STATE_ALIVE							; Reset all bits but alive
-	CP MSS_STATE_ALIVE
-	RET NZ										; Exit if sprite is not alive
+	BIT MSS_STATE_ALIVE_BIT, A
+	LD A, PL_COL_RET_A_NO
+	RET Z										; Exit if sprite is not alive
 
 	LD B, (IY)									; Load into B the number of platforms to check
 .platformsLoop	
@@ -372,7 +369,7 @@ PlaftormColision
 	JR NC, .platformsLoopEnd					; Jump if shot > [Y end]
 
 	; Sprite hits the platform!
-	LD A, PL_COL_RET_A_UP
+	LD A, PL_COL_RET_A_YES
 
 	RET
 
@@ -389,16 +386,15 @@ PlaftormColision
 ; Input
 ;  - IX:	pointer to #MSS
 ; Output:
-;  - A: 	MOVE_RET_A_XXX
-MOVE_RET_A_VISIBLE 			= 1					; Sprite is still visible
-MOVE_RET_A_HIDDEN 			= 0					; Sprite outside screen, or hits ground
+;  - A: 	MOVE_RET_XXX
+MOVE_RET_VISIBLE 			= 1					; Sprite is still visible
+MOVE_RET_HIDDEN 			= 0					; Sprite outside screen, or hits ground
 ; Modifies: ?
 
 MoveX
 	LD A, (IX + MSS.STATE)
-	AND MSS_STATE_RIGHT_MASK					; Reset all bits but right
-	CP MSS_STATE_RIGHT_MASK
-	JR NZ, .afterMovingLeft						; Jump if moving right
+	BIT sr.MSS_STATE_DIRECTION_BIT, A
+	JR Z, .afterMovingLeft						; Jump if moving right
 
 	; Moving left - decrease X coordinate
 	LD BC, (IX + MSS.X)	
@@ -414,7 +410,7 @@ MoveX
 
 	; X == 0 (both A and B are 0) -> enemy out of screen - hide it
 	CALL HideSprite
-	LD A, MOVE_RET_A_HIDDEN
+	LD A, MOVE_RET_HIDDEN
 	RET
 
 .afterMovingLeft
@@ -434,12 +430,12 @@ MoveX
 	
 	; Sprite is after 315 -> hide it
 	CALL HideSprite
-	LD A, MOVE_RET_A_HIDDEN
+	LD A, MOVE_RET_HIDDEN
 	RET
 .afterMoving
 
 	LD (IX + sr.MSS.X), BC						; Update new X position
-	LD A, MOVE_RET_A_VISIBLE
+	LD A, MOVE_RET_VISIBLE
 	RET
 
 MOVE_Y_IN_A_UP 				= 1					; Move up
@@ -452,7 +448,7 @@ MOVE_Y_IN_A_DOWN 			= 0					; Move down
 ;  - IX:	pointer to #MSS
 ;  - A:    	MOVE_Y_IN_A_XXX
 ; Output:
-;  - A: 	MOVE_RET_A_XXX
+;  - A: 	MOVE_RET_XXX
 MoveY
 	CP MOVE_Y_IN_A_UP
 	JR Z, .afterMovingUp						; Jump if moving up
@@ -466,7 +462,7 @@ MoveY
 	JR C, .afterMoving							; Jump if the enemy is above ground (A < SCR_Y_MAX_POS)
 
 	; Enemy hits the ground
-	LD A, MOVE_RET_A_HIDDEN
+	LD A, MOVE_RET_HIDDEN
 	CALL SpriteHit
 	RET
 .afterMovingUp
@@ -481,13 +477,13 @@ MoveY
 
 	; Sprite is above screen -> hide it
 	CALL HideSprite
-	LD A, MOVE_RET_A_HIDDEN
+	LD A, MOVE_RET_HIDDEN
 		
 	RET
 .afterMoving
 
 	LD (IX + MSS.Y), A							; Update new X position
-	LD A, MOVE_RET_A_VISIBLE
+	LD A, MOVE_RET_VISIBLE
 	RET	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -110,7 +110,7 @@ AnimateSprites
 	; Update sprite patterns
 	CALL js.UpdateJetmanSpritePattern
 	CALL jw.AnimateShots
-	CALL en.AnimateEnemies
+	CALL ep.AnimateEnemies
 	
 	RET
 
