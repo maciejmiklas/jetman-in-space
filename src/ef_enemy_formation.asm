@@ -16,12 +16,12 @@ SPRITES				BYTE						; Number of sprites used in this formation, starting from #
 SPRITES_CNT			BYTE						; Current respown position
 	ENDS
 
-formation MF{ep.spriteEf01/*MSS_POINTER*/, 50/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
+formation MF{ep.spriteEf01/*MSS_POINTER*/, 2000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
 
 ;----------------------------------------------------------;
 ;                   #RespownFormation                      ;
 ;----------------------------------------------------------;
-RespownFormation	
+RespownFormation
 	LD IY, formation
 
 	; Check whether it's time to start a new formation deployment.
@@ -51,7 +51,12 @@ RespownFormation
 	LD B, (IY + MF.SPRITES)	
 	CP B
 	JR C, .afterSpritesCounterCheck				; Jump if  MF.SPRITES_CNT < MF.SPRITES -> There are still enemies that need to be deployed
-	CALL RestartFormation						; Deployment is over
+	
+	; Deplyment is over
+	LD DE, 0									; Reset formation counters
+	LD (IY + MF.SPRITES_CNT), E
+	LD (IY + MF.RESPOWN_DELAY_CNT), DE
+
 	RET
 .afterSpritesCounterCheck	
 
@@ -59,47 +64,19 @@ RespownFormation
 	LD HL, (IY + MF.MSS_POINTER)
 	LD IX, HL									; IX points for ESS for the first sprite in the formation
 
-	ld a, $30
-	nextreg 2,8
-
 	; Move IX to the current sprite in the formation
 	LD D, (IY + MF.SPRITES_CNT)					; IX = IX + MF.SPRITES_CNT * MF
 	LD E, sr.MSS
 	MUL D, E
 	ADD IX, DE
 
-	ld a, $31
-	nextreg 2,8
+	PUSH IY
+	CALL ep.RespownEnemy
+	POP IY
 
-	;CALL ep.RespownEnemy
-	
-	INC (IY + MF.SPRITES_CNT)
-	RET
-
-;----------------------------------------------------------;
-;                  #RestartFormation                       ;
-;----------------------------------------------------------;
-; Input
-;  - IY:	pointer to #MF holding data for the formation
-; Modifies: ALL
-RestartFormation
-	LD A, 0										; Reset counters
-	LD (IY + MF.SPRITES_CNT), A
-	LD (IY + MF.RESPOWN_DELAY_CNT), A
-	
-	LD DE, (IY + MF.MSS_POINTER)				; Load pointer to the first sprite (#MSS) into IX
-	LD IX, DE
-
-	LD B, (IY + MF.SPRITES)						; Counter for the .loop	
-.loop
-	PUSH BC
-	CALL ep.RestartMovePattern
-	POP BC
-
-	LD DE, sr.MSS								; Move IX to the next sprite
-	ADD IX, DE
-
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #MF.MSS_CNT)
+	CP ep.RES_SE_OUT_YES						; Has the enemy respawned?		
+	RET NZ
+	INC (IY + MF.SPRITES_CNT)					; Move to the next enemy if this has respawned
 
 	RET
 

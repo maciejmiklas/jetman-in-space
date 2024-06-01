@@ -88,9 +88,8 @@ HitEnemy
 
 	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
 	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_ALIVE						; Reset all bits but alive
-	CP sr.MSS_STATE_ALIVE
-	JR NZ, .continue							; Jump if sprite is not alive
+	BIT sr.MSS_STATE_ALIVE_BIT, A
+	JR Z, .continue							; Jump if sprite is not alive
 	
 	; Shot is visible, check colision with given sprite
 

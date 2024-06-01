@@ -9,17 +9,18 @@ respownDelay 				DB 20				; Amount of game loops to respawn single enemy
 
 ; Extends #MSS by additional params.
 	STRUCT ESS
-MOVE_DELAY				BYTE					; Number of game loops to skip before moving enemy (delays movement speed)
-MOVE_DELAY_CNT			BYTE					; Move delay counter
+MOVE_DELAY_CNT			BYTE					; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
 RESPOWN_DELAY			BYTE					; Number of game loops delaying respawn
 RESPOWN_DELAY_CNT		BYTE					; Respawn delay counter
 RESPOWN_Y				BYTE					; Repown Y position
-MOVE_PATTERN			WORD					; Pointer to the movement pattern (#movePatternXX)
+MOVE_PATTERN_POINTER	WORD					; Pointer to the movement pattern (#movePatternXX)
 MOVE_PATTERN_CNT		BYTE					; Counter for repetition of single move pattern. Counts towards 0
-MOVE_PATTERN_POS		BYTE					; Position in #MOVE_PATTERN. Counts from 0 to #movePatternXX.size-1
+MOVE_PATTERN_POS		BYTE					; Position in #MOVE_PATTERN_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX.size
 MOVE_PATTERN_STEP 		BYTE					; Counters X,Y from current move pattern
 	ENDS
 ; Bits 4-7 on sr.STATE will be used here:
+
+MOVE_DELAY_CNT_INC		= %0001'0000
 
 ; Avoid platforms by flying along them. When set, bits 1 and 2 will be ignored. The platform cannot destroy the enemy
 MSS_STATE_ALONG_BIT		= 4
@@ -27,37 +28,37 @@ MSS_STATE_ALONG_BIT		= 4
 ; Sprites for single enemy (#sprite), based on #MSS
 ; Each sprite has hardcoded respawn coordinates and the direction in which it moves
 spriteEx01
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 20/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 40/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx02
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 40/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 50/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx03
-	ESS {3/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 60/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 60/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx04
-	ESS {4/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 80/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 80/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx05
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 100/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 100/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx06
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 120/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 120/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx07
-	ESS {0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 140/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 140/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx08
-	ESS {1/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx09
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 180/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 180/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteEx10
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 2/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 200/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 2/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 200/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 
 ; Formation Sprites
 spriteExEf01
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 40/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 0/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 170/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteExEf02
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 170/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteExEf03
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 170/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteExEf04
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 170/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 spriteExEf05
-	ESS {2/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 5/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 150/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/0, 0/*MOVE_PATTERN_STEP*/}
+	ESS {0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/ ,0/*RESPOWN_DELAY_CNT*/, 170/*RESPOWN_Y*/, movePattern01/*MOVE_PATTERN_POINTER*/, /*MOVE_PATTERN_CNT*/0, /*MOVE_PATTERN_POS*/MOVE_PAT_STEP_OFFSET, 0/*MOVE_PATTERN_STEP*/}
 
 sprite01
 	sr.MSS {20/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
@@ -93,7 +94,7 @@ spriteEf05
 	sr.MSS {34/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
 
 spritesSize					DB 15				; The total amount of visible sprites - including single enemies and formations
-singleSpritesSize			DB 10				; Amount of sprites that can respawn as a single enemy
+singleSpritesSize			DB 1				; Amount of sprites that can respawn as a single enemy
 
 SPRITE_HEIGHT_PLATFORM		= 3
 SPRITE_HEIGHT_COLISION		= 10
@@ -102,7 +103,8 @@ SPRITE_HEIGHT_WEAPON		= 8
 SPRITE_WIDTH_WEAPON			= 8
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the byte, indicating the number of patterns it contains. 
-; Each pattern is then represented by 2 bytes: one for the pattern itself and the other for the number of times it should be repeated. 
+; This single byte is followed by move patterns, where each pattern consists of two bytes: first for the pattern itself and the second 
+; holding the movement delay (bits 8-5) and the number of times it should be repeated (bits 4-0).
 ; To illustrate, if the first byte is set to 5,  the move pattern will span a total of 11 bytes: 11 = 1 + 5 * 2.
 ;
 ; Each pattern determines a single step in this movement pattern: the number of pixels to move along the X axis (left or right),  
@@ -113,10 +115,10 @@ SPRITE_WIDTH_WEAPON			= 8
 ;
 ; Bits:
 ; 0-3: number of pixels to move along X axis
-; 4  : determines whether X should be decremented (0 - move left) or incremented (1 - move right) in each iteration. 
+; 4:   determines whether X should be decremented (0 - move left) or incremented (1 - move right) in each iteration. 
 ;      This flag is reversed if an enemy moves from right to left (#MSS.STATE -> bit 3 == 1)
 ; 4-6: number of pixels to move on Y axis
-; 7 : determines whether Y should be decremented (0 - move up) or incremented (Y - move down) in each iteration
+; 7:   determines whether Y should be decremented (0 - move up) or incremented (1 - move down) in each iteration
 ; 
 ; Example: for a move pattern: "%0'011'1'101, 10" the sprite will move 5 pixels on the X axis, 3 pixel on the Y axis, 
 ; and it will be repeated 10 times. In total sprite will travel: 5*10 pixels on X and 3*10 pixels on Y. 
@@ -141,24 +143,26 @@ MOVE_PAT_Y_INC_BIT		= 7
 MOVE_PAT_XY_MASK		= %0'111'0'111
 MOVE_PAT_XY_MASK_RES	= %1'000'1'000
 
-MOVE_STEP_SIZE			= 2						; Each move pattern takes two bytes: pattern and number of repeats
+MOVE_STEP_SIZE			= 2						; Each move step in the pattern takes two bytes: pattern and delay/number of repeats
 MOVE_PAT_STEP_OFFSET	= 1						; Data for move pattern starts at byte 1, byte 0 provides size
+MOVE_PAT_REPEAT_MASK	= %0000'1111
+MOVE_PAT_DELAY_MASK		= %1111'0000
 
 ; Horizontal movemment
 movePattern01_
-	DB 2, %0'000'1'111,$FF
+	DB 2, %0'000'1'111,$0F
 
 ; 10deg move down
 movePattern02
-	DB 2, %1'001'1'111,$FF
+	DB 2, %1'001'1'111,$0F
 
 ; 10deg move up
 movePattern03
-	DB 2, %0'001'1'111,$FF
+	DB 2, %0'001'1'111,$0F
 
 ; 45deg move down
-movePattern04
-	DB 2, %1'111'1'111,$FF
+movePattern01
+	DB 2, %1'111'1'111,$A5
 
 ; 5x horizontal, 2x 45deg down,...
 movePattern05
@@ -166,15 +170,15 @@ movePattern05
 
 ; Half sinus
 movePattern06
-	DB 32, %0'010'1'001,2, %0'011'1'010,2, %0'100'1'011,1, %0'011'1'011,1, %0'010'1'011,3, %0'001'1'011,2, %0'001'1'100,2, %0'001'1'101,1 	; going up
-		DB %1'001'1'101,1, %1'001'1'100,2, %1'001'1'011,2, %1'010'1'011,3, %1'011'1'011,1, %1'100'1'011,1, %1'011'1'010,2, %1'010'1'001,2	; going down		
+	DB 32, %0'010'1'001,$02, %0'011'1'010,$02, %0'100'1'011,$01, %0'011'1'011,$01, %0'010'1'011,$03, %0'001'1'011,$02, %0'001'1'100,$02, %0'001'1'101,$01 	; going up
+		DB %1'001'1'101,$01, %1'001'1'100,$02, %1'001'1'011,$02, %1'010'1'011,$03, %1'011'1'011,$01, %1'100'1'011,$01, %1'011'1'010,$02, %1'010'1'001,$02	; going down		
 
 ; sinus
-movePattern01
-	DB 64, %0'010'1'001,2, %0'011'1'010,2, %0'100'1'011,1, %0'011'1'011,1, %0'010'1'011,3, %0'001'1'011,2, %0'001'1'100,2, %0'001'1'101,1 	; going up, above X
-		DB %1'001'1'101,1, %1'001'1'100,2, %1'001'1'011,2, %1'010'1'011,3, %1'011'1'011,1, %1'100'1'011,1, %1'011'1'010,2, %1'010'1'001,2	; going down, above X
-		DB %1'010'1'001,2, %1'011'1'010,2, %1'100'1'011,1, %1'011'1'011,1, %1'010'1'011,3, %1'001'1'011,2, %1'001'1'100,2, %1'001'1'101,1 	; going down, below X
-		DB %0'001'1'101,1, %0'001'1'100,2, %0'001'1'011,2, %0'010'1'011,3, %0'011'1'011,1, %0'100'1'011,1, %0'011'1'010,2, %0'010'1'001,2	; going up, below X	
+movePattern07
+	DB 64, %0'010'1'001,$52, %0'011'1'010,$52, %0'100'1'011,$51, %0'011'1'011,$51, %0'010'1'011,$53, %0'001'1'011,$52, %0'001'1'100,$52, %0'001'1'101,$51 	; going up, above X
+		DB %1'001'1'101,$51, %1'001'1'100,$52, %1'001'1'011,$52, %1'010'1'011,$53, %1'011'1'011,$51, %1'100'1'011,$51, %1'011'1'010,$52, %1'010'1'001,$52	; going down, above X
+		DB %1'010'1'001,$52, %1'011'1'010,$52, %1'100'1'011,$51, %1'011'1'011,$51, %1'010'1'011,$53, %1'001'1'011,$52, %1'001'1'100,$52, %1'001'1'101,$51 	; going down, below X
+		DB %0'001'1'101,$51, %0'001'1'100,$52, %0'001'1'011,$52, %0'010'1'011,$53, %0'011'1'011,$51, %0'100'1'011,$51, %0'011'1'010,$52, %0'010'1'001,$52	; going up, below X	
 		
 ; Square wave
 movePattern08
@@ -199,7 +203,7 @@ RestartMovePattern
 
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)		; Load #ESS for this sprite to IY
 	LD IY, BC
-	LD HL, (IY + ESS.MOVE_PATTERN)				; HL points to start of the #movePattern, that is the amount of elements in this pattern.
+	LD HL, (IY + ESS.MOVE_PATTERN_POINTER)		; HL points to start of the #movePattern, that is the amount of elements in this pattern.
 	INC HL										; HL points to the first move pattern element	
 	
 	; X, Y counters will be set to max value as we count down towards 0
@@ -210,11 +214,19 @@ RestartMovePattern
 	LD A, MOVE_PAT_STEP_OFFSET
 	LD (IY + ESS.MOVE_PATTERN_POS), A
 
-	; Set MOVE_PATTERN_CNT to the counter from first pattern
-	LD A, MOVE_PAT_STEP_OFFSET
-	ADD HL, A									; Move HL to the counter for the first pattern
+	; Set pattern counters to the first pattern
+	INC HL										; HL points to delay/repeat counter byte
 	LD A, (HL)
+	LD B, A
+
+	; Set repeat counter
+	AND MOVE_PAT_REPEAT_MASK					; Leave only repeat counter bits
 	LD (IY + ESS.MOVE_PATTERN_CNT), A
+
+	; Set delay counter 
+	LD A, B
+	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits	
+	LD (IY + ESS.MOVE_DELAY_CNT), A
 
 	RET	
 
@@ -250,7 +262,7 @@ MoveEnemy
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
 	LD IY, BC
 
-	LD HL, (IY + ESS.MOVE_PATTERN)				; HL points to start of the #movePattern
+	LD HL, (IY + ESS.MOVE_PATTERN_POINTER)		; HL points to start of the #movePattern
 	LD B, (HL)									; B contains  the amount of bytes in the move pattern
 
 	; Should the enemy move along the platform to avoid collision?
@@ -260,12 +272,11 @@ MoveEnemy
 
 	; Check the collision with the platform
 	PUSH BC, HL, IY
-
 	LD IY, jp.platformBump
 	LD L, SPRITE_HEIGHT_COLISION
 	CALL sr.PlaftormColision
-
 	POP IY, HL, BC
+
 	CP A, sr.PL_COL_RET_A_NO
 	JR Z, .afterMoveAlong						; Jump if there is no collision
 
@@ -277,10 +288,10 @@ MoveEnemy
 
 	; Check if we should restart the move pattern, as it might have reached the last element
 	LD A, (IY + ESS.MOVE_PATTERN_POS)
-	SUB MOVE_PAT_STEP_OFFSET					; pattern starts after offset
-	CP B
+	DEC A										; pattern starts after offset
+	CP B										; B contains  the amount of bytes in the move pattern
 	JR C, .afterRestartMovePattern				; Jump if move counter can be increased
-	
+
 	CALL RestartMovePattern						; Restart move pattern, it has reached max value
 .afterRestartMovePattern
 
@@ -325,10 +336,10 @@ MoveEnemy
 	; Move on Y-axis one pixel up or down?
 	LD A, (HL)									; A contains current pattern
 	BIT MOVE_PAT_Y_INC_BIT, A
-	JR NZ, .incY								; Jump if Y should be incremented
+	JR Z, .incY									; Jump if Y should be incremented
 
 	; Move on pixel down	
-	LD A, sr.MOVE_Y_IN_A_DOWN
+	LD A, sr.MOVE_Y_IN_DOWN
 	CALL sr.MoveY
 	CP sr.MOVE_RET_HIDDEN
 	JR NZ,.afterChangeY							; Jump is sprite is not hidden
@@ -338,7 +349,7 @@ MoveEnemy
 
 .incY
 	; Move on pixel up
-	LD A, sr.MOVE_Y_IN_A_UP
+	LD A, sr.MOVE_Y_IN_UP
 	CALL sr.MoveY
 	CP sr.MOVE_RET_HIDDEN
 	JR NZ,.afterChangeY							; Jump is sprite is not hidden
@@ -388,9 +399,17 @@ MoveEnemy
 	LD (IY + ESS.MOVE_PATTERN_STEP), A	
 
 	INC BC										; Move BC to the counter for the next pattern
+	LD A, (BC)									; Load delay/repeat counter into A
+	LD D, A
 
-	LD A, (BC)									; Set pattern counter for next pattern
+	; Set pattern counter for next pattern
+	AND MOVE_PAT_REPEAT_MASK					; Leave only repeat counter bits
 	LD (IY + ESS.MOVE_PATTERN_CNT), A
+
+	; Set delay counter for next pattern
+	LD A, D
+	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits	
+	LD (IY + ESS.MOVE_DELAY_CNT), A
 
 	RET	
 
@@ -418,23 +437,20 @@ MoveEnemies
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
 	LD IY, BC
 
-	; Slow down movement by incrementing the counter until it reaches the configured value
-	LD A, (IY + ESS.MOVE_DELAY)
+	; Slow down movement by decrementing the counter until it reaches 0
+	LD A, (IY + ESS.MOVE_DELAY_CNT)
 	CP 0										; No delay? -> move at full speed
 	JR Z, .afterDelayMove
 
-	LD B, A										; Load goal for delay counter into B
-
-	; Delaying movement, increment delay counter
-	LD A, (IY + ESS.MOVE_DELAY_CNT)
-	INC A
+	; Delaying movement, decrement delay counter
+	SUB MOVE_DELAY_CNT_INC
 	LD (IY + ESS.MOVE_DELAY_CNT), A
 
-	CP B										; B already contains #MOVE_DELAY
-	JR NZ, .continue							; Return if the delay counter does not reach the required value
+	CP 0										
+	JR NZ, .continue							; Skipp enemy if the delay counter > 0
 
-	LD A, 0										; Reset the movement delay counter because it has reached the configured value
-	LD (IY + ESS.MOVE_DELAY_CNT), A
+	CALL LoadMoveDelayCounter		
+	LD (IY + ESS.MOVE_DELAY_CNT), A				; Reset counter, A has the max value of delay counter
 
 .afterDelayMove
 
@@ -448,7 +464,7 @@ MoveEnemies
 	LD L, SPRITE_HEIGHT_PLATFORM
 	CALL sr.PlaftormColision
 	CP A, sr.PL_COL_RET_A_NO
-	JR Z, .continue
+	JR Z, .continue   
 	CALL sr.SpriteHit
 
 .continue	
@@ -467,6 +483,27 @@ MoveEnemies
 
 	RET		
 
+;----------------------------------------------------------;
+;                 #LoadMoveDelayCounter                    ;
+;----------------------------------------------------------;
+; Input
+;  - IY:	pointer to #ESS holding data for single spreite 
+; Output:
+;  - A;		value of move delay counter for this pattern (bits 8-5)
+; Modifies: A, HL
+LoadMoveDelayCounter
+
+	; Set ESS.MOVE_DELAY to value from current move pattern
+	LD HL, (IY + ESS.MOVE_PATTERN_POINTER)		; HL points to start of the #movePattern, that is the amount of elements in this pattern.
+
+	; Move HL to the current pattern, not first byte, but the second, because this one contains a delay and repetition counter
+	LD A, (IY + ESS.MOVE_PATTERN_POS)
+	INC A
+	ADD HL, A									; Now HL points to movement delay in current pattern	
+	LD A, (HL)									; Load the delay/repetition counter into A, reset all bits but delay, and shift to the proper number
+	AND MOVE_PAT_DELAY_MASK
+	RET
+	
 ;----------------------------------------------------------;
 ;                  #RespownNextEnemy                       ;
 ;----------------------------------------------------------;
@@ -553,10 +590,13 @@ RespownEnemy
 	LD A, (IX + sr.MSS.STATE)
 	CALL sr.SetVisible
 
-	; Reset counters
+	; Reset counters and move pattern
 	LD A, 0
-	LD (IY + ESS.MOVE_DELAY_CNT), A
 	LD (IY + ESS.RESPOWN_DELAY_CNT), A
+
+	CALL LoadMoveDelayCounter	
+	LD (IY + ESS.MOVE_DELAY_CNT), A
+
 	CALL RestartMovePattern
 
 	; Set Y (horizontal respown)

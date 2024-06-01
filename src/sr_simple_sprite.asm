@@ -42,9 +42,9 @@ MSS_STATE_RES_FREE		= _SPR_REG_ATR2_RES_PAL	; Mask to reset free bits.
 ;                         Sprite DB                        ;
 ;----------------------------------------------------------;
 	STRUCT SPR_REC
-ID		BYTE									; Entry ID for lookup via CPIR
-OFF_NX	BYTE									; ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
-SIZE	BYTE									; Amount of frames/sprite patterns in this record
+ID						BYTE					; Entry ID for lookup via CPIR
+OFF_NX					BYTE					; ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
+SIZE					BYTE					; Amount of frames/sprite patterns in this record
 	ENDS
 
 ; DB IDs
@@ -95,7 +95,7 @@ SpriteHit
 ;  - B:		number of sprites
 ; Modifies: A, BC, HL
 AnimateSprites
-
+	
 .loop
 	PUSH BC										; Preserve B for loop counter
 
@@ -135,7 +135,6 @@ SetSpriteId
 ;  - IX:	pointer to #MSS
 ; Modifies: A, BC
 UpdateSpritePosition
-
 	; Move the sprite to the X position, the 9-bit value requires a few tricks. 
 	LD BC, (IX + MSS.X)						
 
@@ -243,9 +242,7 @@ UpdateSpritePattern
 
 	; #MSS has been fully updated to a current frame from #srSpriteDB
 	; Update the remaining animation frames counter.
-	LD A, (IX + MSS.REMAINING)				
-	DEC A
-	LD (IX + MSS.REMAINING), A
+	DEC (IX + MSS.REMAINING)
 
 	; Show sprite pattern
 	LD HL, (IX + MSS.DB_POINTER)				; HL points to a memory location holding a pointer to the current DB position with the next sprite pattern
@@ -303,7 +300,6 @@ PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
 ; Modifies: ALL
 
 PlaftormColision
-
 	; Exit if sprite is not alive
 	LD A, (IX + MSS.STATE)
 	BIT MSS_STATE_ALIVE_BIT, A
@@ -438,19 +434,19 @@ MoveX
 	LD A, MOVE_RET_VISIBLE
 	RET
 
-MOVE_Y_IN_A_UP 				= 1					; Move up
-MOVE_Y_IN_A_DOWN 			= 0					; Move down
+MOVE_Y_IN_UP 			= 1					; Move up
+MOVE_Y_IN_DOWN 			= 0					; Move down
 ;----------------------------------------------------------;
 ;                          #MoveY                          ;
 ;----------------------------------------------------------;
 ; Move the sprite one pixel to the right or left along the Y-axis, depending on the A
 ; Input
 ;  - IX:	pointer to #MSS
-;  - A:    	MOVE_Y_IN_A_XXX
+;  - A:    	MOVE_Y_IN_XXX
 ; Output:
 ;  - A: 	MOVE_RET_XXX
 MoveY
-	CP MOVE_Y_IN_A_UP
+	CP MOVE_Y_IN_UP
 	JR Z, .afterMovingUp						; Jump if moving up
 
 	; Moving down - increment Y coordinate
