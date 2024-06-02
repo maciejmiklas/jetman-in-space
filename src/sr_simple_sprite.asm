@@ -300,6 +300,9 @@ PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
 ; Modifies: ALL
 
 PlaftormColision
+	ld a, PL_COL_RET_A_NO
+	ret
+
 	; Exit if sprite is not alive
 	LD A, (IX + MSS.STATE)
 	BIT MSS_STATE_ALIVE_BIT, A

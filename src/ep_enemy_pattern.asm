@@ -144,6 +144,7 @@ MOVE_PAT_XY_MASK		= %0'111'0'111
 MOVE_PAT_XY_MASK_RES	= %1'000'1'000
 
 MOVE_STEP_SIZE			= 2						; Each move step in the pattern takes two bytes: pattern and delay/number of repeats
+MOVE_STEP_CNT_OFF		= 1
 MOVE_PAT_STEP_OFFSET	= 1						; Data for move pattern starts at byte 1, byte 0 provides size
 MOVE_PAT_REPEAT_MASK	= %0000'1111
 MOVE_PAT_DELAY_MASK		= %1111'0000
@@ -162,7 +163,7 @@ movePattern03
 
 ; 45deg move down
 movePattern01
-	DB 2, %1'111'1'111,$A5
+	DB 2, %1'111'1'111,$A2
 
 ; 5x horizontal, 2x 45deg down,...
 movePattern05
@@ -262,20 +263,17 @@ MoveEnemy
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)
 	LD IY, BC
 
-	LD HL, (IY + ESS.MOVE_PATTERN_POINTER)		; HL points to start of the #movePattern
-	LD B, (HL)									; B contains  the amount of bytes in the move pattern
-
 	; Should the enemy move along the platform to avoid collision?
 	LD A, (IX + sr.MSS.STATE)
 	BIT MSS_STATE_ALONG_BIT, A
 	JR Z, .afterMoveAlong						; Jump if move along is not set
 
 	; Check the collision with the platform
-	PUSH BC, HL, IY
+	PUSH IY
 	LD IY, jp.platformBump
 	LD L, SPRITE_HEIGHT_COLISION
 	CALL sr.PlaftormColision
-	POP IY, HL, BC
+	POP IY
 
 	CP A, sr.PL_COL_RET_A_NO
 	JR Z, .afterMoveAlong						; Jump if there is no collision
@@ -285,17 +283,23 @@ MoveEnemy
 	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
 	RET
 .afterMoveAlong
+	LD HL, (IY + ESS.MOVE_PATTERN_POINTER)		; HL points to start of the #movePattern
 
 	; Check if we should restart the move pattern, as it might have reached the last element
-	LD A, (IY + ESS.MOVE_PATTERN_POS)
-	DEC A										; pattern starts after offset
-	CP B										; B contains  the amount of bytes in the move pattern
-	JR C, .afterRestartMovePattern				; Jump if move counter can be increased
+	LD A, (IY + ESS.MOVE_PATTERN_POS)			; A contains the current position in the move pattern array
+	DEC A										; Pattern starts after offset
 
+	LD B, (HL)									; B contains the amount of bytes in the move pattern array
+	CP B
+	JR NC, .restartMovePattern					; Jump A >= B -> (current postion >= size)
+	JR .afterRestartMovePattern
+.restartMovePattern
+	PUSH HL
 	CALL RestartMovePattern						; Restart move pattern, it has reached max value
+	POP HL
 .afterRestartMovePattern
-
-	; Move HL from the beginning of the move pattern to current position
+		
+	; Move HL from the beginning of the move pattern to current element		
 	LD A, (IY + ESS.MOVE_PATTERN_POS)
 	ADD HL, A
 
@@ -385,7 +389,6 @@ MoveEnemy
 	RET
 
 .nextMovePattern
-
 	; Setup next move pattern
 	LD A, (IY + ESS.MOVE_PATTERN_POS)			; A contains the current position in the move pattern
 	ADD MOVE_STEP_SIZE							; Increment the position to the next patern and store it
