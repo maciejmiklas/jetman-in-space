@@ -163,7 +163,7 @@ movePattern03
 
 ; 45deg move down
 movePattern01
-	DB 2, %1'111'1'111,$A2
+	DB 2, %1'001'1'001,$52
 
 ; 5x horizontal, 2x 45deg down,...
 movePattern05
@@ -294,12 +294,11 @@ MoveEnemy
 	JR NC, .restartMovePattern					; Jump A >= B -> (current postion >= size)
 	JR .afterRestartMovePattern
 .restartMovePattern
-	PUSH HL
 	CALL RestartMovePattern						; Restart move pattern, it has reached max value
-	POP HL
+	RET
 .afterRestartMovePattern
 		
-	; Move HL from the beginning of the move pattern to current element		
+	; Move HL from the beginning of the move pattern to current element
 	LD A, (IY + ESS.MOVE_PATTERN_POS)
 	ADD HL, A
 
@@ -316,7 +315,7 @@ MoveEnemy
 	
 	; Decrement X counter
 	LD A, (IY + ESS.MOVE_PATTERN_STEP)			; A contains orginal pattern counter
-	SUB MOVE_PAT_X_ADD							; Decrement X counter by 1		
+	SUB MOVE_PAT_X_ADD							; Decrement X counter by 1
 	LD (IY + ESS.MOVE_PATTERN_STEP), A
 
 	CALL sr.MoveX								; Move one pixel left/right and check if the sprite is still visible (it could be out of the screen)
@@ -372,8 +371,8 @@ MoveEnemy
 
 	LD A, sr.MOVE_RET_VISIBLE
 	RET
-.resetXYCounters
 
+.resetXYCounters
 	; X and Y have reached the max value. First, reset the X and Y counters, and afterward, decrease the repetition counter
 	LD A, (HL)									; X, Y counters will be set to max value as we count down towards 0
 	LD (IY + ESS.MOVE_PATTERN_STEP), A	
