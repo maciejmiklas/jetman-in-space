@@ -300,9 +300,6 @@ PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
 ; Modifies: ALL
 
 PlaftormColision
-	ld a, PL_COL_RET_A_NO
-	ret
-
 	; Exit if sprite is not alive
 	LD A, (IX + MSS.STATE)
 	BIT MSS_STATE_ALIVE_BIT, A
@@ -388,7 +385,7 @@ PlaftormColision
 ;  - A: 	MOVE_RET_XXX
 MOVE_RET_VISIBLE 			= 1					; Sprite is still visible
 MOVE_RET_HIDDEN 			= 0					; Sprite outside screen, or hits ground
-; Modifies: ?
+; Modifies: A, BC
 
 MoveX
 	LD A, (IX + MSS.STATE)
@@ -448,6 +445,7 @@ MOVE_Y_IN_DOWN 			= 0					; Move down
 ;  - A:    	MOVE_Y_IN_XXX
 ; Output:
 ;  - A: 	MOVE_RET_XXX
+; Modifies: A
 MoveY
 	CP MOVE_Y_IN_UP
 	JR Z, .afterMovingUp						; Jump if moving up

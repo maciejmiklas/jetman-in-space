@@ -8,7 +8,7 @@ loopCnt										; The game loop counter gets increased with each loop and resta
 ;----------------------------------------------------------;
 ;                      #GameInit                           ;
 ;----------------------------------------------------------;
-GameInit	
+GameInit
 	CALL js.IntiJetmanSprite
 
 	RET
@@ -16,7 +16,7 @@ GameInit
 ;----------------------------------------------------------;
 ;                      #GameLoop                           ;
 ;----------------------------------------------------------;
-GameLoop	
+GameLoop
 
 	; Increase game counter
 	LD A, (loopCnt)
