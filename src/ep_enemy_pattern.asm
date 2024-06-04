@@ -94,7 +94,7 @@ spriteEf05
 	sr.MSS {34/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, %00'0'1'0'000/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
 
 spritesSize					DB 15				; The total amount of visible sprites - including single enemies and formations
-singleSpritesSize			DB 1				; Amount of sprites that can respawn as a single enemy
+singleSpritesSize			DB 10				; Amount of sprites that can respawn as a single enemy
 
 SPRITE_HEIGHT_PLATFORM		= 3
 SPRITE_HEIGHT_COLISION		= 10
@@ -154,7 +154,7 @@ movePattern01_
 	DB 2, %0'000'1'111,$0F
 
 ; 10deg move down
-movePattern01
+movePattern02
 	DB 2, %1'001'1'111,$0F
 
 ; 10deg move up
@@ -175,7 +175,7 @@ movePattern06
 		DB %1'001'1'101,$01, %1'001'1'100,$02, %1'001'1'011,$02, %1'010'1'011,$03, %1'011'1'011,$01, %1'100'1'011,$01, %1'011'1'010,$02, %1'010'1'001,$02	; going down		
 
 ; sinus
-movePattern07x
+movePattern07
 	DB 64, %0'010'1'001,$52, %0'011'1'010,$52, %0'100'1'011,$51, %0'011'1'011,$51, %0'010'1'011,$53, %0'001'1'011,$52, %0'001'1'100,$52, %0'001'1'101,$51 	; going up, above X
 		DB %1'001'1'101,$51, %1'001'1'100,$42, %1'001'1'011,$42, %1'010'1'011,$33, %1'011'1'011,$31, %1'100'1'011,$21, %1'011'1'010,$22, %1'010'1'001,$12	; going down, above X
 		DB %1'010'1'001,$12, %1'011'1'010,$02, %1'100'1'011,$01, %1'011'1'011,$21, %1'010'1'011,$23, %1'001'1'011,$32, %1'001'1'100,$32, %1'001'1'101,$41 	; going down, below X
@@ -183,15 +183,15 @@ movePattern07x
 		
 ; Square wave
 movePattern08
-	DB 8, %0'000'1'111,5, %1'111'1'000,3, %0'000'1'111,5, %0'111'1'000,3
+	DB 8, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23
 
 ; Triangle wave
 movePattern09
 	DB 4, %0'111'1'111,5, %1'111'1'111,5
 
 ; Square,triangle wave
-movePattern10
-	DB 24, %0'000'1'111,5, %1'111'1'000,3, %0'000'1'111,5, %0'111'1'000,3, %0'000'1'111,5, %1'111'1'000,3, %0'000'1'111,5, %0'111'1'000,3, %1'111'1'111,3, %0'111'1'111,3, %1'111'1'111,3, %0'111'1'111,3
+movePattern01
+	DB 24, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %1'111'1'111,$03, %0'111'1'111,$03, %1'111'1'111,$03, %0'111'1'111,$03
 
 ;----------------------------------------------------------;
 ;                  #RestartMovePattern                     ;
@@ -199,12 +199,13 @@ movePattern10
 ; This method resets the move pattern (#ESS) so animation can start from the first move pattern. It does not modify #MSS.
 ; Input
 ;  - IX:	pointer to #MSS holding data for single spreite that will be moved
+;  - IY: pointer to #ESS for current sprite
 ; Modifies: A, IY, BC, HL
 RestartMovePattern
 
 	LD BC, (IX + sr.MSS.EXT_DATA_POINTER)		; Load #ESS for this sprite to IY
 	LD IY, BC
-	LD HL, (IY + ESS.MOVE_PAT_POINTER)		; HL points to start of the #movePattern, that is the amount of elements in this pattern.
+	LD HL, (IY + ESS.MOVE_PAT_POINTER)			; HL points to start of the #movePattern, that is the amount of elements in this pattern.
 	INC HL										; HL points to the first move pattern element	
 	
 	; X, Y counters will be set to max value as we count down towards 0
@@ -305,33 +306,28 @@ MoveEnemy
 	;  - IX: pointer to #MSS for current sprite
 	;  - IY: pointer to #ESS for current sprite
 	;  - HL: pointer to current position in #movePattern
-
+	
 	; Check if counter for X has already reached 0, or is set to 0
-	LD A, (IY + ESS.MOVE_PAT_STEP)			; A contains orginal pattern counter
+	LD A, (IY + ESS.MOVE_PAT_STEP)				; A contains current X,Y counters
 	AND MOVE_PAT_X_MASK							; Reset all but X
 	CP 0
 	JR Z, .afterIncX							; Jump if the counter for X has reached 0
 	
 	; Decrement X counter
-	LD A, (IY + ESS.MOVE_PAT_STEP)			; A contains orginal pattern counter
+	LD A, (IY + ESS.MOVE_PAT_STEP)				; A contains current X,Y counters
 	SUB MOVE_PAT_X_ADD							; Decrement X counter by 1
 	LD (IY + ESS.MOVE_PAT_STEP), A
 
 	CALL sr.MoveX								; Move one pixel left/right and check if the sprite is still visible (it could be out of the screen)
-	CP sr.MOVE_RET_HIDDEN	
-	JR NZ,.afterIncX							; Jump is sprite is not hidden
-
-	LD A, sr.MOVE_RET_HIDDEN
-	RET											; Stop moving this spirte, it's hidden
 .afterIncX
 
 	; Check if counter for Y has already reached 0, or is set to 0
-	LD A, (IY + ESS.MOVE_PAT_STEP)			; A contains orginal pattern counter
+	LD A, (IY + ESS.MOVE_PAT_STEP)				; A contains current X,Y counters
 	AND MOVE_PAT_Y_MASK							; Reset all but Y
 	CP 0
 	JR Z, .afterChangeY							; Jump if the counter for Y has reached 0
 	
-	LD A, (IY + ESS.MOVE_PAT_STEP)			; A contains orginal pattern counter
+	LD A, (IY + ESS.MOVE_PAT_STEP)				; A contains current X,Y counters
 	SUB MOVE_PAT_Y_ADD							; Decrement Y counter by 1
 	LD (IY + ESS.MOVE_PAT_STEP), A	
 

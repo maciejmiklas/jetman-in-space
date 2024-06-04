@@ -381,12 +381,8 @@ PlaftormColision
 ; Move the sprite one pixel to the right or left along the X-axis, depending on the #MSS.STATE
 ; Input
 ;  - IX:	pointer to #MSS
-; Output:
-;  - A: 	MOVE_RET_XXX
-MOVE_RET_VISIBLE 			= 1					; Sprite is still visible
-MOVE_RET_HIDDEN 			= 0					; Sprite outside screen, or hits ground
-; Modifies: A, BC
 
+; Modifies: A, BC
 MoveX
 	LD A, (IX + MSS.STATE)
 	BIT sr.MSS_STATE_DIRECTION_BIT, A
@@ -404,10 +400,9 @@ MoveX
 	CP sc.SCR_X_MIN_POS + 5						; C holds LSB from X, ff C != 5 then X is> 5
 	JR NC, .afterMoving
 
-	; X == 0 (both A and B are 0) -> enemy out of screen - hide it
-	CALL HideSprite
-	LD A, MOVE_RET_HIDDEN
-	RET
+	; X == 0 (both A and B are 0) -> enemy out of screen - roll over
+	LD BC, sc.SCR_X_MAX_POS
+	JR .afterMoving
 
 .afterMovingLeft
 
@@ -424,14 +419,12 @@ MoveX
 	CP 59										; MSB > 59 
 	JR C, .afterMoving
 	
-	; Sprite is after 315 -> hide it
-	CALL HideSprite
-	LD A, MOVE_RET_HIDDEN
-	RET
+	; Sprite is after 315 -> roll over
+	LD B, 0
+	LD C, sc.SCR_X_MIN_POS
 .afterMoving
 
 	LD (IX + sr.MSS.X), BC						; Update new X position
-	LD A, MOVE_RET_VISIBLE
 	RET
 
 MOVE_Y_IN_UP 			= 1					; Move up
@@ -445,6 +438,8 @@ MOVE_Y_IN_DOWN 			= 0					; Move down
 ;  - A:    	MOVE_Y_IN_XXX
 ; Output:
 ;  - A: 	MOVE_RET_XXX
+MOVE_RET_VISIBLE 			= 1					; Sprite is still visible
+MOVE_RET_HIDDEN 			= 0					; Sprite outside screen, or hits ground
 ; Modifies: A
 MoveY
 	CP MOVE_Y_IN_UP
