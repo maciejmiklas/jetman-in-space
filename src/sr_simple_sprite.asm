@@ -17,7 +17,9 @@ Y						BYTE					; Y position of the sprite
 ;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
 ;	- 1:	Alive flag, 1 - sprite is alive, 0 - sprite is dying, disabled for colistion detection, but visible.
 ;	- 2:	not used
-;	- 3: 	1 = sprite deplyes right, moves left, 0 = sprite deplyes left, moves right. This bit corresponds to _SPR_REG_ATR2_H37
+;	- 3: 	1 = sprite moves left, 0 = sprite moves right. This bit corresponds to _SPR_REG_ATR2_H37. This flag is sometimes used to 
+;			determine the deployment side of the screen. If the sprite should move left, it must deploy on the right side of the screen. 
+;			To move right, deployment must take place on the left side.
 ;	- 4-7: 	not used here, but could be elswere (en.MSS_ST_ALONG_BIT)
 STATE					BYTE
 NEXT					BYTE					; ID in #ssSpriteDB for next animation record/state
@@ -25,8 +27,7 @@ REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be
 EXT_DATA_POINTER		WORD					; Pointer to additional data structure for this sprite
 	ENDS
 
-
-; Possible values for #MSS.STATE
+; Possible values (#MSS_ST_XXX) for #MSS.STATE
 MSS_ST_VISIBLE			= %00000001
 MSS_ST_VISIBLE_BIT		= 0
 
@@ -34,10 +35,10 @@ MSS_ST_ALIVE			= %00000010
 MSS_ST_ALIVE_BIT		= 1
 
 ; Deploy state
-MSS_ST_DEP_BIT			= 3
-MSS_ST_DEP_RIGHT_MASK 	= %00001000			; Sprite deployes right, moves left. It will be mirrored on X, see _SPR_REG_ATR2_H37 -> Bit 3
-MSS_ST_DEP_LEFT_MASK 	= %00000000			; Sprite deployes left, moves right.
-MSS_ST_DEP_MASK			= %00001000			; Reset all bits but deployment
+MSS_ST_MOVE_BIT			= 3
+MSS_ST_MOVE_RIGHT_MASK 	= %00001000			; Sprite deployes right, moves left. It will be mirrored on X, see _SPR_REG_ATR2_H37 -> Bit 3
+MSS_ST_MOVE_LEFT_MASK 	= %00000000			; Sprite deployes left, moves right.
+MSS_ST_MOVE_MASK		= %00001000			; Reset all bits but deployment
 
 ;----------------------------------------------------------;
 ;                         Sprite DB                        ;
@@ -391,7 +392,7 @@ MVX_IN_D_HIDE_BIT 			= 4					; 1 - hide sprite when off-screen, 0 - roll over sp
 
 MoveX
 	LD A, (IX + MSS.STATE)
-	BIT sr.MSS_ST_DEP_BIT, A
+	BIT sr.MSS_ST_MOVE_BIT, A
 	JR Z, .moveRight						; Jump if moving right
 
 	; Moving left - decrease X coordinate
@@ -471,13 +472,13 @@ MoveX
 ; Input
 ;  - IX:	pointer to #MSS
 ;  - B:    	MOVE_X_IN_XXX
-MOVE_X_IN_RIGHT			= MSS_ST_DEP_LEFT_MASK 	; Move right, assuming the enemy respawns on the left side, otherwise, it's inversed
-MOVE_X_IN_LEFT 			= MSS_ST_DEP_RIGHT_MASK	; Move left, assuming the enemy respawns on the right side, otherwise, it's inversed
+MOVE_X_IN_RIGHT			= MSS_ST_MOVE_LEFT_MASK 	; Move right, assuming the enemy respawns on the left side, otherwise, it's inversed
+MOVE_X_IN_LEFT 			= MSS_ST_MOVE_RIGHT_MASK	; Move left, assuming the enemy respawns on the right side, otherwise, it's inversed
 ; Modifies: A, BC
 MoveX_
 	; Compare state and B to verify whether the direction should be inverted
 	LD A, (IX + MSS.STATE)
-	AND MSS_ST_DEP_MASK
+	AND MSS_ST_MOVE_MASK
 	CP B
 	JR Z, .doNotInvert							; Jump if there is no need to invert direction, state and B point in the same direction
 
@@ -487,11 +488,11 @@ MoveX_
 .doNotInvert	
 	; Inver direction
 	LD A, B
-	XOR MSS_ST_DEP_MASK
+	XOR MSS_ST_MOVE_MASK
 .afterInvert
 
 
-	BIT sr.MSS_ST_DEP_BIT, A
+	BIT sr.MSS_ST_MOVE_BIT, A
 	JR NZ, .moveRight						; Jump if moving right
 
 

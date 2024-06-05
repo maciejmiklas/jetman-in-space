@@ -257,7 +257,7 @@ Fire
 	
 	; Jetman is moving right, shot will move right also
 	LD A, 0										; Start building sprite state
-	RES sr.MSS_ST_DEP_BIT, A					; Set move bit to 1 -> moving right
+	RES sr.MSS_ST_MOVE_BIT, A					; Set move bit to 1 -> moving right
 
 	;nextreg 2,8
 	; Set X coordinate for laser beam
@@ -275,7 +275,7 @@ Fire
 	LD (IX + sr.MSS.X), HL
 
 	LD A, 0										; Start building sprite state
-	SET sr.MSS_ST_DEP_BIT, A
+	SET sr.MSS_ST_MOVE_BIT, A
 
 .afterMoving
 	CALL sr.SetVisible							; Store state and store state

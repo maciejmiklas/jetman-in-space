@@ -103,22 +103,30 @@ SPRITE_HEIGHT_WEAPON		= 8
 SPRITE_WIDTH_WEAPON			= 8
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the byte, indicating the number of patterns it contains. 
-; This single byte is followed by move patterns, where each pattern consists of two bytes: first for the pattern itself and the second 
-; holding the movement delay (bits 8-5) and the number of times it should be repeated (bits 4-0).
-; To illustrate, if the first byte is set to 5,  the move pattern will span a total of 11 bytes: 11 = 1 + 5 * 2.
+; This single byte is followed by move patterns, where each pattern consists of two bytes: first for the pattern itself (pattern step) and 
+; the second holding the movement delay (bits 8-5) and the number of times it should be repeated (bits 4-0).
+; To illustrate, if the first byte is set to 5,  the move pattern will span a total of 11 bytes: 11 = 1 + 5 * 2, or:
+; [numer of patterns],[[step],[delay/repetition],[[step],[delay/repetition],...,[[step],[delay/repetition]]
 ;
-; Each pattern determines a single step in this movement pattern: the number of pixels to move along the X axis (left or right),  
-; the number of pixels to move along Y axis (up or down).
+; Each pattern step contains the number of pixels to move along the X axis (left or right) and the number of pixels to move along Y axis (up or down).
 ;
 ; The sprite travels only one pixel in each direction during each animation loop. If possible, it travels in both directions 
 ; (increasing X and Y by one). If the number of pixels in a particular direction has been reached, it will continue vertically or horizontally. 
 ;
-; Bits:
-; 0-3: number of pixels to move along X axis
-; 4:   determines whether X should be decremented (0 - move left) or incremented (1 - move right) in each iteration. 
-;      This flag is reversed if an enemy moves from right to left (#MSS.STATE -> bit 3 == 1)
-; 4-6: number of pixels to move on Y axis
-; 7:   determines whether Y should be decremented (0 - move up) or incremented (1 - move down) in each iteration
+; Bits of the sigle step:
+; 0-3:	Number of pixels to move along X axis
+; 4:	1 = sprite moves left, 0 = sprite moves right, hovever it's not that simple:
+; 		Enemy pattern(ep) extends the basic movement possibilities of the simple sprite(sr). A simple sprite can deploy on the left side 
+;		of the screen and move right (#MSS.STATE -> bit 3 = 0) or deploy on the right and move left (#MSS.STATE -> bit 3 = 1). We assume 
+;		that default deployment takes place on the left, and the sprite moves to the right. The deployment on the right mirrors the sprite 
+;		and reverses the direction of the movement. 
+;		The enemy pattern has another flag that determines movement direction (bit 4 is currently being described). Here, the sprite can 
+;		also move to the left or right, independent of the deployment position, this is just a direction. Now, when the sprite gets deployed 
+;		on the left side (#MSS.STATE -> bit 3 = 0), the bit 4 in the movement step byte (currently being described) directly determines the 
+;		movement direction - left or right. However, when the sprite is deployed on the right side, bit 4 will be reversed - left becommes 
+;		right. Deployment on the right side simply mirrors the whole movement pattern.
+; 4-6:	Number of pixels to move on Y axis
+; 7:	Determines whether Y should be decremented (0 - move up) or incremented (1 - move down) in each iteration
 ; 
 ; Example: for a move pattern: "%0'011'1'101, 10" the sprite will move 5 pixels on the X axis, 3 pixel on the Y axis, 
 ; and it will be repeated 10 times. In total sprite will travel: 5*10 pixels on X and 3*10 pixels on Y. 
@@ -647,7 +655,7 @@ RespownEnemy
 	
 	; Set X to left or right side of the screen
 	LD A, (IX + sr.MSS.STATE)
-	BIT sr.MSS_ST_DEP_BIT, A
+	BIT sr.MSS_ST_MOVE_BIT, A
 	JR Z, .deployLeft								; Jump if bit is 0 -> deploy left
 
 	; Deply right
