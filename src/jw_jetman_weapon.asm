@@ -31,6 +31,7 @@ SHOT_SIZE						= 6				; Amount of shots that can be simultaneously fired
 
 SHOT_HEIGHT						= 0
 
+MOVE_X_IN_D				= %000'1'0001			; Input mask for MoveX. Move the sprite by 2 pixels and hide on the screen end
 
 ;----------------------------------------------------------;
 ;                      #WeaponHit                          ;
@@ -47,7 +48,7 @@ WeaponHit
 	PUSH BC										; Preserve B for loop counter
 
 	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
+	AND sr.MSS_ST_VISIBLE					; Reset all bits but visibility
 	CP 0
 	JR Z, .continue								; Jump if enemy is hidden
 
@@ -82,13 +83,13 @@ HitEnemy
 
 	; Skipp invisible laser shoots
 	LD A, (IY + sr.MSS.STATE)
-	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
+	AND sr.MSS_ST_VISIBLE					; Reset all bits but visibility
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
 
 	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
 	LD A, (IX + sr.MSS.STATE)
-	BIT sr.MSS_STATE_ALIVE_BIT, A
+	BIT sr.MSS_ST_ALIVE_BIT, A
 	JR Z, .continue							; Jump if sprite is not alive
 	
 	; Shot is visible, check colision with given sprite
@@ -162,61 +163,20 @@ MoveShots
 	PUSH BC										; Preserve B for loop counter
 
 	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
+	AND sr.MSS_ST_VISIBLE						; Reset all bits but visibility
 	CP 0
 	JR Z, .continue								;  Jump if visibility is not set (sprite is hidden)
 
-	; Shot is visible
+	; Shot is visible, move it and update postion
 	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
-
-	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_RIGHT_MASK					; Reset all bits but right
-	CP sr.MSS_STATE_RIGHT_MASK
-	JR Z, .afterMovingLeft						; Jump if moving right
-
-	; Moving left - decrease X coordinate
-	LD BC, (IX + sr.MSS.X)	
-	DEC BC
-	DEC BC
-
-	; Check whether a shot is outside the screen 
-	LD A, B
-	CP sc.SCR_X_MIN_POS							; B holds MSB from X, if B > 0 than X > 256
-	JR NZ, .afterMoving
-	LD A, C
-	CP sc.SCR_X_MIN_POS + 5						; C holds LSB from X, ff C != 5 then X is> 5
-	JR NC, .afterMoving
-	; X == 0 (both A and B are 0) -> shot out of screen - hide it
-	CALL sr.HideSprite
-	JR .continue	
-
-.afterMovingLeft
-
-	; Moving right - increase X coordinate
-	LD BC, (IX + sr.MSS.X)	
-	INC BC
-	INC BC
-
-	; If X >= 315 then hide shot 
-	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
-	LD A, B										; Load MSB from X into A
-	CP 1										; 9-th bit set means X > 256
-	JR NZ, .afterMoving
-	LD A, C										; Load MSB from X into A
-	CP 59										; MSB > 59 
-	JR C, .afterMoving
-	
-	; Shot is after 315 -> hide it
-	CALL sr.HideSprite
-	JR .continue
-.afterMoving
-	LD (IX + sr.MSS.X), BC						; Update new X position
+	LD D, MOVE_X_IN_D
+	CALL sr.MoveX
 	CALL sr.UpdateSpritePosition
 
 	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
 	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_ALIVE						; Reset all bits but alive
-	CP sr.MSS_STATE_ALIVE
+	AND sr.MSS_ST_ALIVE							; Reset all bits but alive
+	CP sr.MSS_ST_ALIVE
 	JR NZ, .afterColisionDetection				; Exit if sprite is not alive
 
 	; Check the collision with the platform
@@ -277,7 +237,7 @@ Fire
 
 	; Check whether the current #shotMssX is not visible and can be reused
 	LD A, (IX + sr.MSS.STATE)
-	AND sr.MSS_STATE_VISIBLE					; Reset all bits but visibility
+	AND sr.MSS_ST_VISIBLE					; Reset all bits but visibility
 	CP 0
 	JR Z, .afterFound							; Jump if visibility is not set -> hidden, can be reused
 
@@ -289,25 +249,24 @@ Fire
 .afterFound										
 	; We are here because free #shotMssX has been found, and IX points to it
 
-	; Take over direction from Jetman to laser beam 
-
 	; Is Jetman moving left?
 	LD A, (jd.jetmanDirection)
 	AND jd.MOVE_LEFT_MASK						
 	CP jd.MOVE_LEFT_MASK
-	JR Z, .afterMovingRight						; Jump if Jetman is not moving right
+	JR Z, .movingLeft							; Jump if Jetman is moving left
 	
-	; Jetman is moving right
+	; Jetman is moving right, shot will move right also
 	LD A, 0										; Start building sprite state
-	SET sr.MSS_STATE_DIRECTION_BIT, A
+	RES sr.MSS_ST_DEP_BIT, A					; Set move bit to 1 -> moving right
 
+	;nextreg 2,8
 	; Set X coordinate for laser beam
 	LD HL, (jd.jetmanX)
 	ADD HL, ADJUST_FIRE_X
 	LD (IX + sr.MSS.X), HL
 
 	JR .afterMoving
-.afterMovingRight
+.movingLeft
 	; Jetman is moving left
 
 	; Set X coordinate for laser beam
@@ -316,11 +275,10 @@ Fire
 	LD (IX + sr.MSS.X), HL
 
 	LD A, 0										; Start building sprite state
-	RES sr.MSS_STATE_DIRECTION_BIT, A
+	SET sr.MSS_ST_DEP_BIT, A
 
 .afterMoving
-	CALL sr.SetVisible
-	LD (IX + sr.MSS.STATE), A					; Store state
+	CALL sr.SetVisible							; Store state and store state
 
 	; Set Y coordinate for laser beam
 	LD A, (jd.jetmanY)
