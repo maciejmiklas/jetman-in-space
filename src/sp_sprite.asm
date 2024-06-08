@@ -100,7 +100,6 @@ AnimateSprites
 	LD A, (animDelayCnt)
 	INC A
 	LD (animDelayCnt), A
-
 	CP ANIMATE_DELAY
 	RET C										; Return if #animDelayCnt <  #ANIMATE_DELAY
 

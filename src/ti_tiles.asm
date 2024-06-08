@@ -7,7 +7,7 @@
 ; we start loading tiles from $6000. Hardware expects tiles in Bank 5; therefore, we only have to provide offsets starting from $4000.
 START_OF_BANK_5		= $4000 
 
-START_OF_TILEMAP		= $6000					; Just after ULA attributes
+START_OF_TILEMAP	= $6000						; Just after ULA attributes
 START_OF_TILES		= $6A00						; Just after tilemap -> 40x32x2 (2 bytes for tile)
 
 ; START_OF_TILEMAP - START_OF_BANK_5 = $2000  -> >> 8 =  $20 = 32

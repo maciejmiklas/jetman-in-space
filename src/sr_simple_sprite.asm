@@ -14,31 +14,28 @@ X						WORD					; X position of the sprite
 Y						BYTE					; Y position of the sprite
 
 ; Bits:
-;	- 0: 	Visible flag, 1 = displayed, 0 = hidden
-;	- 1:	Alive flag, 1 - sprite is alive, 0 - sprite is dying, disabled for colistion detection, but visible.
-;	- 2:	not used
-;	- 3: 	1 = sprite moves left, 0 = sprite moves right. This bit corresponds to _SPR_REG_ATR2_H37. This flag is sometimes used to 
-;			determine the deployment side of the screen. If the sprite should move left, it must deploy on the right side of the screen. 
-;			To move right, deployment must take place on the left side.
-;	- 4-7: 	not used here, but could be elswere (en.MSS_ST_ALONG_BIT)
+;	- 0: 	#MSS_ST_VISIBLE_BIT
+;	- 1:	#MSS_ST_ALIVE_BIT
+;   - 2: 	Not used, but reserverd for simple sprite (sr)
+;   - 3:	#MSS_ST_MIRROR_X_BIT
+;	- 4:	Not used, but reserverd for simple sprite (sr)
+;	- 5-8: 	Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_DIR_BIT
 STATE					BYTE
 NEXT					BYTE					; ID in #ssSpriteDB for next animation record/state
 REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
 EXT_DATA_POINTER		WORD					; Pointer to additional data structure for this sprite
 	ENDS
 
-; Possible values (#MSS_ST_XXX) for #MSS.STATE
-MSS_ST_VISIBLE			= %00000001
+; Visible flag, 1 = displayed, 0 = hidden
 MSS_ST_VISIBLE_BIT		= 0
+MSS_ST_VISIBLE			= %00000001
 
-MSS_ST_ALIVE			= %00000010
+; Alive flag, 1 - sprite is alive, 0 - sprite is dying, disabled for colistion detection, but visible.
 MSS_ST_ALIVE_BIT		= 1
+MSS_ST_ALIVE			= %00000010
 
-; Deploy state
-MSS_ST_MOVE_BIT			= 3
-MSS_ST_MOVE_RIGHT_MASK 	= %00001000			; Sprite deployes right, moves left. It will be mirrored on X, see _SPR_REG_ATR2_H37 -> Bit 3
-MSS_ST_MOVE_LEFT_MASK 	= %00000000			; Sprite deployes left, moves right.
-MSS_ST_MOVE_MASK		= %00001000			; Reset all bits but deployment
+; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37
+MSS_ST_MIRROR_X_BIT		= 3
 
 ;----------------------------------------------------------;
 ;                         Sprite DB                        ;
@@ -101,8 +98,7 @@ AnimateSprites
 .loop
 	PUSH BC										; Preserve B for loop counter
 
-	LD A, (IX + MSS.STATE)
-	BIT MSS_ST_VISIBLE_BIT, A
+	BIT MSS_ST_VISIBLE_BIT, (IX + MSS.STATE)
 	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused
 
 	; Sprite is visible
@@ -303,8 +299,7 @@ PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
 
 PlaftormColision
 	; Exit if sprite is not alive
-	LD A, (IX + MSS.STATE)
-	BIT MSS_ST_ALIVE_BIT, A
+	BIT MSS_ST_ALIVE_BIT, (IX + MSS.STATE)
 	LD A, PL_COL_RET_A_NO
 	RET Z										; Exit if sprite is not alive
 
@@ -386,22 +381,23 @@ PlaftormColision
 ;  - D: 	configuration, bits:
 ;			- 0: 0 - move sprite by 1 pixel, 1 - move sprite by 2 pixels
 ;			- 4: #MVX_IN_D_HIDE_BIT
-MVX_IN_D_MOVE 				= 0
+;			- 5: #MVX_IN_D_DIR_BIT
+MVX_IN_D_MOVE_STEP_BIT 		= 0
 MVX_IN_D_HIDE_BIT 			= 4					; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen
+MVX_IN_D_DIR_BIT			= 5					; 1 - to move right, 0 - to move left
 ; Modifies: A, BC
 
 MoveX
-	LD A, (IX + MSS.STATE)
-	BIT sr.MSS_ST_MOVE_BIT, A
-	JR Z, .moveRight						; Jump if moving right
-
+	BIT MVX_IN_D_DIR_BIT, D
+	JR NZ, .moveRight
+	
 	; Moving left - decrease X coordinate
 	LD BC, (IX + MSS.X)
 	DEC BC
 
 	; Move again?
 	LD A, D
-	BIT MVX_IN_D_MOVE, A
+	BIT MVX_IN_D_MOVE_STEP_BIT, A
 	JR Z, .afterExtraMoveL
 	DEC BC
 .afterExtraMoveL
@@ -422,7 +418,7 @@ MoveX
 	JR .afterMoving
 
 .hideSpriteL
- 	CALL sr.HideSprite							; Hide sprite
+ 	CALL HideSprite								; Hide sprite
 	JR .afterMoving
 
 .moveRight
@@ -432,7 +428,7 @@ MoveX
 
 	; Move again?
 	LD A, D
-	BIT MVX_IN_D_MOVE, A
+	BIT MVX_IN_D_MOVE_STEP_BIT, A
 	JR Z, .afterExtraMoveR
 	INC BC
 .afterExtraMoveR
@@ -461,76 +457,6 @@ MoveX
 
 .afterMoving
 
-	LD (IX + sr.MSS.X), BC						; Update new X position
-	RET
-
-;----------------------------------------------------------;
-;                          #MoveX_                          ;
-;----------------------------------------------------------;
-; Move the sprite one pixel to the right or left along the X-axis, depending on B and the #MSS.STATE.
-; If B and state point in the same direction, the sprite will move there. Otherwise, defection will be inverted.
-; Input
-;  - IX:	pointer to #MSS
-;  - B:    	MOVE_X_IN_XXX
-MOVE_X_IN_RIGHT			= MSS_ST_MOVE_LEFT_MASK 	; Move right, assuming the enemy respawns on the left side, otherwise, it's inversed
-MOVE_X_IN_LEFT 			= MSS_ST_MOVE_RIGHT_MASK	; Move left, assuming the enemy respawns on the right side, otherwise, it's inversed
-; Modifies: A, BC
-MoveX_
-	; Compare state and B to verify whether the direction should be inverted
-	LD A, (IX + MSS.STATE)
-	AND MSS_ST_MOVE_MASK
-	CP B
-	JR Z, .doNotInvert							; Jump if there is no need to invert direction, state and B point in the same direction
-
-	; Do not invert direction -> keep B without change
-	LD A, B
-	JR .afterInvert
-.doNotInvert	
-	; Inver direction
-	LD A, B
-	XOR MSS_ST_MOVE_MASK
-.afterInvert
-
-
-	BIT sr.MSS_ST_MOVE_BIT, A
-	JR NZ, .moveRight						; Jump if moving right
-
-
-	; Moving left - decrease X coordinate
-	LD BC, (IX + MSS.X)	
-	DEC BC
-
-	; Check whether a enemy is outside the screen 
-	LD A, B
-	CP sc.SCR_X_MIN_POS							; B holds MSB from X, if B > 0 than X > 256
-	JR NZ, .afterMoving
-	LD A, C
-	CP sc.SCR_X_MIN_POS + 5						; C holds LSB from X, ff C != 5 then X is> 5
-	JR NC, .afterMoving
-
-	; X == 0 (both A and B are 0) -> enemy out of screen - roll over
-	LD BC, sc.SCR_X_MAX_POS
-	JR .afterMoving
-
-.moveRight
-	; Moving right - increase X coordinate
-	LD BC, (IX + MSS.X)	
-	INC BC
-
-	; If X >= 315 then hide sprite 
-	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
-	LD A, B										; Load MSB from X into A
-	CP 1										; 9-th bit set means X > 256
-	JR NZ, .afterMoving
-	LD A, C										; Load MSB from X into A
-	CP 59										; MSB > 59 
-	JR C, .afterMoving
-	
-	; Sprite is after 315 -> roll over
-	LD B, 0
-	LD C, sc.SCR_X_MIN_POS
-
-.afterMoving
 	LD (IX + sr.MSS.X), BC						; Update new X position
 	RET
 
