@@ -10,7 +10,7 @@ BANK42_PALETTE			= 42
 ;-------------------------------------------------------------------------------------;
 ;             Load tilemap into bank 42 mapping it to Slot: 6                         ;
 ;-------------------------------------------------------------------------------------;
-	MMU 6, BANK42_PALETTE
+	MMU _RAM_SLOT6_START_HC000, BANK42_PALETTE
 	ORG _RAM_SLOT6_START_HC000
 
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is

@@ -7,14 +7,12 @@
 
 start
 	DI											; Disable Interrupts, use wait_for_scanline instead
-
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz
 			
 	INCLUDE "dl_data_load.asm"
 	CALL sc.SetupScreen
 	CALL gm.GameInit
 
-vv BYTE  0
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
@@ -54,16 +52,15 @@ mainLoop
 
 	CSPECTMAP "jetman.map"						; Generate a map file for use with Cspect
 
-	; This sets the name of the project, the start address, 
-	; and the initial stack pointer.
+	; This sets the name of the project, the start address, and the initial stack pointer.
 	SAVENEX OPEN "jetman.nex", start, $FF40
 
-	; This asserts the minimum core version.  Set it to the core version 
-	; you are developing on.
-	SAVENEX CORE 2,0,0
+	; This asserts the minimum core version. 
+	SAVENEX CORE 3,0,0
 
 	; SAVENEX CFG <border 0..7>[,<fileHandle 0/1/$4000+>[,<PreserveNextRegs 0/1>[,<2MbRamReq 0/1>]]]
 	SAVENEX CFG 0,0,0,0
 
 	; Generate the Nex file automatically based on which pages you use.
 	SAVENEX AUTO
+	SAVENEX CLOSE
