@@ -52,10 +52,9 @@ tilePaletteBinLength = $ - tilePaletteBin
 ;   - 45-47: Flying enemey 1
 ;   - 48-50: Flying enemey 2
 spritesBin INCBIN "assets/sprites_001.spr"
-
 spritesBinLength = $ - spritesBin
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE	
+	ENDMODULE

@@ -24,10 +24,13 @@ GameLoop
 	LD (loopCnt), A
 
 	CALL sc.WaitForScanline
-	CALL in.JoyInput
+
+	; First update graphics, logic follows afterwards!
 	CALL js.UpdateJetmanSpritePosition
-	CALL jt.JoyDisabled
 	CALL sp.AnimateSprites
+
+	CALL in.JoyInput
+	CALL jt.JoyDisabled
 	CALL jw.MoveShots
 	CALL ep.MoveEnemies
 	CALL ep.RespownNextEnemy	

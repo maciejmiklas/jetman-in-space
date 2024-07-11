@@ -46,21 +46,17 @@ WaitForScanline
 	LD A, _GL_REG_VL_H1F						; Port to access - Active Video Line LSB Register
 	OUT (C), A									; Select NextReg $1F
 	INC B										; TBBlue Register Access
-	LD A, SC_SYNC_SL							; Set Scanline to wait for
-	LD D, A
 
-; Wait for Scanline given by H (#SC_SYNC_SL)
+; Wait for scanline given by H (#SC_SYNC_SL)
 .waitForScanline
 	IN A, (C)									; Read the raster line LSB into A
-	CP D
+	CP SC_SYNC_SL
 	JR Z, .waitForScanline						; Keep looping until Scanline changes from given to next, 192->193
 
-; Now we are past #SC_SYNC_SL -> on #SC_SYNC_SL + 1
-
-; Wait the whole frame again for given Scanline (#SC_SYNC_SL)
+; Now we are at the scanline, wait the whole frame again for the same scanline
 .waitAgainForScanline
 	IN A, (C)									; Read the raster line LSB into A
-	CP D
+	CP SC_SYNC_SL
 	JR NZ, .waitAgainForScanline
 
 	RET
