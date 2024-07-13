@@ -135,7 +135,7 @@ JoyMoveUp
 	SET jd.MOVE_UP_BIT, A	
 	LD (jd.joyDirection), A
 
-	CALL jt.JetmanMoves
+	CALL JetmanMoves
 
 	; Decrement Y position
 	LD A, (jd.jetmanY)	
@@ -174,9 +174,9 @@ JoyMoveRight
 	SET jd.MOVE_RIGHT_BIT, A	
 	LD (jd.joyDirection), A
 
-	CALL jt.JetmanMoves						
-	CALL jt.StandToWalk
-	CALL jt.IncJetX
+	CALL JetmanMoves						
+	CALL StandToWalk
+	CALL IncJetX
 
 	; ##Direction change: left -> right##
 	LD A, (jd.jetmanDirection)
@@ -208,9 +208,9 @@ JoyMoveLeft
 	SET jd.MOVE_LEFT_BIT, A	
 	LD (jd.joyDirection), A
 
-	CALL jt.JetmanMoves	
-	CALL jt.StandToWalk					
-	CALL jt.DecJetX
+	CALL JetmanMoves	
+	CALL StandToWalk					
+	CALL DecJetX
 
 	; Direction change: right -> left
 	LD A, (jd.jetmanDirection)
@@ -252,7 +252,7 @@ JoyMoveDown
 	CP jd.GND_INACTIVE
 	RET NZ	
 
-	CALL jt.JetmanMoves						
+	CALL JetmanMoves						
 
 	; Increment Y position#
 	LD A, (jd.jetmanY)

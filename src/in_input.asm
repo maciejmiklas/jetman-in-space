@@ -12,7 +12,7 @@ JOY_SLOWDOWN_RET_BREAK	= 2						; Process joystick input
 JoyInput
 
 	CALL JoySlowdown
-	CP in.JOY_SLOWDOWN_RET_BREAK
+	CP JOY_SLOWDOWN_RET_BREAK
 	RET Z
 	
 	CALL JoyStart

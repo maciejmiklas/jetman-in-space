@@ -452,12 +452,12 @@ MoveX
 	JR .afterMoving
 
 .hideSpriteR
- 	CALL sr.HideSprite							; Hide sprite
+ 	CALL HideSprite								; Hide sprite
 	JR .afterMoving
 
 .afterMoving
 
-	LD (IX + sr.MSS.X), BC						; Update new X position
+	LD (IX + MSS.X), BC							; Update new X position
 	RET
 
 ;----------------------------------------------------------;
