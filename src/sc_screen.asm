@@ -8,7 +8,7 @@ SCR_X_MAX_POS			= 315
 SCR_Y_MIN_POS			= 10
 SCR_Y_MAX_POS			= 240
 
-SC_SYNC_SL				= 1						; Scanline to synch to
+SC_SYNC_SL				= 0						; Scanline to synch to
 
 ;----------------------------------------------------------;
 ;                      #SetupScreen                        ;

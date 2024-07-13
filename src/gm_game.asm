@@ -16,6 +16,8 @@ GameInit
 ;----------------------------------------------------------;
 ;                      #GameLoop                           ;
 ;----------------------------------------------------------;
+	;DEFINE  PERFORMANCE_BORDER 
+
 GameLoop
 
 	; Increase game counter
@@ -23,7 +25,17 @@ GameLoop
 	INC A
 	LD (loopCnt), A
 
+	IFDEF PERFORMANCE_BORDER
+		LD	A, _COL_GREEN
+		OUT (_BORDER_IO), A
+	ENDIF
+
 	CALL sc.WaitForScanline
+
+	IFDEF PERFORMANCE_BORDER
+		LD	A, _COL_RED
+		OUT (_BORDER_IO), A
+	ENDIF	
 
 	; First update graphics, logic follows afterwards!
 	CALL js.UpdateJetmanSpritePosition
@@ -37,6 +49,7 @@ GameLoop
 	CALL ep.WeaponHit
 	CALL ef.RespownFormation	
 	CALL PrintDebug
+
 	RET
 
 ;----------------------------------------------------------;

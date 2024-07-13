@@ -22,6 +22,7 @@ Pause
 	DEC D
 	LD A, D	
 	JP NZ,.start
+	
 	POP BC
 	RET
 
