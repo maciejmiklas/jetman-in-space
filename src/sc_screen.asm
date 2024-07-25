@@ -15,17 +15,21 @@ SC_SYNC_SL				= 0						; Scanline to synch to
 ;----------------------------------------------------------;
 SetupScreen
 
-	; Sprite and Layers system
-	; Bits:
-	;  - 7		= '0': LowRes off
-	;  - 6		= '1': Sprites on top
-	;  - 5		= '0': Sprites over border
-	;  - 4-2 	= '010': SUL -> Top - Sprites, enhanced ULA, Layer 2
-	;  - 1 		= '1': over border
-	;  - 0 		= '1': sprites visible
-	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'010'1'1 	; Sprite 0 on top('1'), SLU('000'), over border('1'), sprites visible('1')
-	NEXTREG _DC_REG_CONTROL1_H69, %00'01'0000	; Layer 2 screen resolution 320 x 256 x 8bpp
-	nextreg _DC_REG_TILE_TRANSP_H4C, $00		; Black for tilemap transparency
+	; Sprite and Layers system. Bits:
+	;  - 7: 0 - low res mode off
+	;  - 6: 1 - sprite on top
+	;  - 5: 0 - sprite clipping disabled
+	;  - 4-2: 110 - S(U+L) ULA and Layer 2 combined (tiles + background)
+	;  - 1: 1 - sprite over border
+	;  - 0: 1 - sprites visible
+	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'110'1'1
+	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
+	NEXTREG _DC_REG_TILE_TRANSP_H4C, $00		; Black for tilemap transparency
+	NEXTREG _DC_REG_LA2_BANK_H12, di.BGR_IMG_16B9	; Layer 2 image (background) starts at 16k-bank 9 (default)
+	
+	LD	A, _COL_BLACK							; Set border color
+	OUT (_BORDER_IO), A
+
 	CALL _ROM_CLS_H0DAF							; Clear screen
 	
 	RET

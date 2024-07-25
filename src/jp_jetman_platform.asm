@@ -149,6 +149,12 @@ LandingOnPlatform
 	CP jd.AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no landing ;)
 
+	; Is Jetman too far right (above 255 there are no platforms)?
+	LD BC, (jd.jetmanX)
+	LD A, B										; #jetmanX has 16bit, load MSB into A to see if its > 0 (jetmanX >= 257)
+	CP 0
+	RET NZ										; Return if Jetman is after 257 on X
+	
 	LD HL, platformWalk
 	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
@@ -191,6 +197,12 @@ BumpIntoPlatFormBelow
 	CP jd.AIR_INACTIVE							; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
+	; Is Jetman too far right (above 255 there are no platforms)?
+	LD BC, (jd.jetmanX)
+	LD A, B										; #jetmanX has 16bit, load MSB into A to see if its > 0 (jetmanX >= 257)
+	CP 0
+	RET NZ										; Return if Jetman is after 257 on X
+
 	LD HL, platformBump
 	LD B, (HL)									; Load into B the number of platforms to check
 .platformsLoop	
@@ -209,7 +221,7 @@ BumpIntoPlatFormBelow
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jetmanY
 
 	; Jetman is on the bottom of the platform, now check whether he is withing its horizonlat bounds
-	LD A, (jd.jetmanX)									; A holds current X position
+	LD A, (jd.jetmanX)							; A holds current X position
 
 	CP D										; Compare #jetmanX position to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jetmanX < [X start]
@@ -242,10 +254,18 @@ BumpIntoPlatFormBelow
 ; Input
 ;  - H:		jd.AIR_BUMP_LEFT or jd.AIR_BUMP_RIGHT
 BumpIntoPlatformLR
+
+	; Is Jemtan in the air?
 	LD A, (jd.jetmanAir)
-	CP jd.AIR_INACTIVE							; Is Jemtan in the air?
+	CP jd.AIR_INACTIVE
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
+	; Is Jetman too far right (above 255 there are no platforms)?
+	LD BC, (jd.jetmanX)
+	LD A, B										; #jetmanX has 16bit, load MSB into A to see if its > 0 (jetmanX >= 257)
+	CP 0
+	RET NZ										; Return if Jetman is after 257 on X
+	
 	LD IX, platformBump
 	LD B, (IX)									; Load into B the number of platforms to check
 .platformsLoop	

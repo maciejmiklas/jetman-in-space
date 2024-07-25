@@ -16,19 +16,18 @@ GameInit
 ;----------------------------------------------------------;
 ;                      #GameLoop                           ;
 ;----------------------------------------------------------;
-	;DEFINE  PERFORMANCE_BORDER 
+	//DEFINE  PERFORMANCE_BORDER 
 
 GameLoop
+	IFDEF PERFORMANCE_BORDER
+		LD	A, _COL_GREEN
+		OUT (_BORDER_IO), A
+	ENDIF
 
 	; Increase game counter
 	LD A, (loopCnt)
 	INC A
 	LD (loopCnt), A
-
-	IFDEF PERFORMANCE_BORDER
-		LD	A, _COL_GREEN
-		OUT (_BORDER_IO), A
-	ENDIF
 
 	CALL sc.WaitForScanline
 

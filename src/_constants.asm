@@ -25,8 +25,11 @@ _DC_REG_CONTROL1_H69	= $69
 ;			- '01': 320x256, 8BPP
 ;			- '10': 640x256, 4BPP
 ;  - 3-0: Palette offset (0 after soft reset)
-_DC_REG_LAYER2_H70		= $70
+_DC_REG_LA2_H70			= $70
 
+
+; Layer 2 RAM bank
+_DC_REG_LA2_BANK_H12	= $12
 
 ; Transparency index for the tilemap
 ; Bits:
@@ -37,7 +40,7 @@ _DC_REG_TILE_TRANSP_H4C = $4C
 ; Bits:
 ;  -  7-1: 7-1 Reserved, must be 0
 ;  -  0: MSB for X pixel offset
-_DC_REG_LAYER2_OFFS_H71 = $71
+_DC_REG_LA2_OFFS_H71 = $71
 ;----------------------------------------------------------;
 ;                     ROM routines                         ;
 ;----------------------------------------------------------;
@@ -90,6 +93,15 @@ _RAM_SLOT6_END_HDFFF	= $DFFF
 
 _RAM_SLOT7_START_HE000	= $E000
 _RAM_SLOT7_END_HFFFF	= $FFFF
+
+_RAM_SLOT0				= 0
+_RAM_SLOT1				= 1
+_RAM_SLOT2				= 2
+_RAM_SLOT3				= 3
+_RAM_SLOT4				= 4
+_RAM_SLOT5				= 5
+_RAM_SLOT6				= 6
+_RAM_SLOT7				= 7
 
 ;----------------------------------------------------------;
 ;                          MMU                             ;
