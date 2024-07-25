@@ -7,6 +7,8 @@
 ADJUST_FIRE_X			= 10			
 ADJUST_FIRE_Y			= 4
 
+SPRITE_WEAPON_SIZE		= 8
+
 ; Sprites for single shots (#shotMss), based on #MSS
 shotMss
 	sr.MSS {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
@@ -34,16 +36,14 @@ MOVE_X_IN_D				= %000'1'0001	; Input mask for MoveX. Move the sprite by 2 pixels
 
 STATE_SHOT_DIR_BIT		= 5				; Bit for #sr.MSS.STATE, 1 - shot moves right, 0 - shot moves left
 ;----------------------------------------------------------;
-;                      #WeaponHit                          ;
+;                 #WeaponHitSingleEnemy                    ;
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
 ;  - IX:	Pointer to #MSS, the enemies
 ;  - B:		Number of enemies in IX
-;  - H:     Half of the width of the enemy
-;  - L:		Half of the height of the enemy
 ; Modifies: ALL
-WeaponHit
+WeaponHitSingleEnemy
 .loop
 	PUSH BC										; Preserve B for loop counter
 
@@ -68,8 +68,6 @@ WeaponHit
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
 ;  - IX:	Pointer to concreate single enemy, single #MSS
-;  - H:     Half of the width of the enemy
-;  - L:		Half of the height of the enemy
 ; Modifies: ALL
 HitEnemy
 	; Loop ever all shotMss# skipping hidden sprites
@@ -83,7 +81,7 @@ HitEnemy
 	BIT sr.MSS_ST_VISIBLE_BIT, (IY + sr.MSS.STATE)
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
 
-	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
+	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding
 	BIT sr.MSS_ST_ALIVE_BIT, (IX + sr.MSS.STATE)
 	JR Z, .continue							; Jump if sprite is not alive
 	
@@ -99,13 +97,13 @@ HitEnemy
 
 	; Check if the shot hits the enemy from the left side of its X coordinate
 	LD A, C										; A holds the X LSB of the enemy
-	SUB H										; Include the thickness of the enemy
+	SUB SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
 	CP E
 	JR NC, .continue							; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
 
 	; Check if the shot hits the enemy from the right side of its X coordinate
-	ADD H										; Revert "SUB L" from above
-	ADD H										; Include the thickness of the enemy
+	ADD SPRITE_WEAPON_SIZE						; Revert "SUB L" from above
+	ADD SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
 	CP E
 	JR C, .continue								; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
 
@@ -114,13 +112,13 @@ HitEnemy
 	LD B, (IY + sr.MSS.Y)						; B holds Y from the laser beam
 
 	; Check upper bounds
-	SUB L										; Include the thickness of the enemy
+	SUB SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
 	CP B
 	JR NC, .continue
 
 	; Check lower bounds
-	ADD L										; Revert "SUB L" from above
-	ADD L										; Include the thickness of the enemy
+	ADD SPRITE_WEAPON_SIZE						; Revert "SUB L" from above
+	ADD SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
 	CP B
 	JR C, .continue
 

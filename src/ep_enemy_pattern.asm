@@ -31,7 +31,7 @@ MOVE_DELAY_CNT_INC		= %0001'0000
 
 ; Single enemies
 spriteEx01
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 005/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 030/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 005/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 170/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx02
 	ESS {%000000'0'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 050/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx03
@@ -98,13 +98,10 @@ spriteEf05
 	sr.MSS {34/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
 
 spritesSize					DB 15				; The total amount of visible sprites - including single enemies and formations
-singleSpritesSize			DB 10				; Amount of sprites that can respawn as a single enemy
+singleSpritesSize			DB 1				; Amount of sprites that can respawn as a single enemy
 
 SPRITE_HEIGHT_PLATFORM		= 3
 SPRITE_HEIGHT_COLISION		= 10
-
-SPRITE_HEIGHT_WEAPON		= 8
-SPRITE_WIDTH_WEAPON			= 8
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the byte, indicating the number of patterns it contains. 
 ; This single byte is followed by move patterns, where each pattern consists of two bytes: first for the pattern itself (pattern step) and 
@@ -163,8 +160,8 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 MOVE_X_IN_D				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
 ; Horizontal movemment
-movePattern01_
-	DB 2, %0'000'1'111,$0F
+movePattern01
+	DB 2, %0'000'1'111,$AF
 
 ; 10deg move down
 movePattern02
@@ -188,7 +185,7 @@ movePattern06
 		DB %1'001'1'101,$01, %1'001'1'100,$02, %1'001'1'011,$02, %1'010'1'011,$03, %1'011'1'011,$01, %1'100'1'011,$01, %1'011'1'010,$02, %1'010'1'001,$02	; going down		
 
 ; sinus
-movePattern01
+movePattern01_
 	DB 64, %0'010'1'001,$52, %0'011'1'010,$52, %0'100'1'011,$51, %0'011'1'011,$51, %0'010'1'011,$53, %0'001'1'011,$52, %0'001'1'100,$52, %0'001'1'101,$51 	; going up, above X
 		DB %1'001'1'101,$51, %1'001'1'100,$42, %1'001'1'011,$42, %1'010'1'011,$33, %1'011'1'011,$31, %1'100'1'011,$21, %1'011'1'010,$22, %1'010'1'001,$12	; going down, above X
 		DB %1'010'1'001,$12, %1'011'1'010,$02, %1'100'1'011,$01, %1'011'1'011,$21, %1'010'1'011,$23, %1'001'1'011,$32, %1'001'1'100,$32, %1'001'1'101,$41 	; going down, below X
@@ -688,11 +685,9 @@ AnimateEnemies
 ;----------------------------------------------------------;
 WeaponHit
 	LD IX, sprite01
-	LD L, SPRITE_HEIGHT_WEAPON
-	LD H, SPRITE_WIDTH_WEAPON
 	LD A, (spritesSize)
 	LD B, A
-	CALL jw.WeaponHit
+	CALL jw.WeaponHitSingleEnemy
 	RET	
 
 ;----------------------------------------------------------;
