@@ -27,7 +27,6 @@ _DC_REG_CONTROL1_H69	= $69
 ;  - 3-0: Palette offset (0 after soft reset)
 _DC_REG_LA2_H70			= $70
 
-
 ; Layer 2 RAM bank
 _DC_REG_LA2_BANK_H12	= $12
 

@@ -25,7 +25,7 @@ SetupScreen
 	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'110'1'1
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
 	NEXTREG _DC_REG_TILE_TRANSP_H4C, $00		; Black for tilemap transparency
-	NEXTREG _DC_REG_LA2_BANK_H12, di.BGR_IMG_16B9	; Layer 2 image (background) starts at 16k-bank 9 (default)
+	NEXTREG _DC_REG_LA2_BANK_H12, di.BGR_IMG_16B9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
 	
 	LD	A, _COL_BLACK							; Set border color
 	OUT (_BORDER_IO), A

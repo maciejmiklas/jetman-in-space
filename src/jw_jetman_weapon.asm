@@ -35,15 +35,27 @@ SHOT_HEIGHT				= 0
 MOVE_X_IN_D				= %000'1'0001	; Input mask for MoveX. Move the sprite by 2 pixels and hide on the screen end
 
 STATE_SHOT_DIR_BIT		= 5				; Bit for #sr.MSS.STATE, 1 - shot moves right, 0 - shot moves left
+
+
 ;----------------------------------------------------------;
-;                 #WeaponHitSingleEnemy                    ;
+;                #WeaponHitEnemies                         ;
+;----------------------------------------------------------;
+WeaponHitEnemies
+	LD IX, ep.sprite01
+	LD A, (ep.spritesSize)
+	LD B, A
+	CALL CheckHitEnemies
+	RET	
+
+;----------------------------------------------------------;
+;                    #CheckHitEnemies                      ;
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
 ;  - IX:	Pointer to #MSS, the enemies
 ;  - B:		Number of enemies in IX
 ; Modifies: ALL
-WeaponHitSingleEnemy
+CheckHitEnemies
 .loop
 	PUSH BC										; Preserve B for loop counter
 

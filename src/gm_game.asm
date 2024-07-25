@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE gm 
 
-loopCnt										; The game loop counter gets increased with each loop and restarts by overflow
+loopCnt											; The game loop counter gets increased with each loop and restarts by overflow
 	DB 0
 ;----------------------------------------------------------;
 ;                      #GameInit                           ;
@@ -38,18 +38,42 @@ GameLoop
 
 	; First update graphics, logic follows afterwards!
 	CALL js.UpdateJetmanSpritePosition
-	CALL sp.AnimateSprites
+	CALL AnimateSprites
 
 	CALL in.JoyInput
 	CALL jt.JoyDisabled
 	CALL jw.MoveShots
 	CALL ep.MoveEnemies
 	CALL ep.RespownNextEnemy	
-	CALL ep.WeaponHit
+	CALL jw.WeaponHitEnemies
+	CALL jt.JetmanEnemiesColision
 	CALL ef.RespownFormation	
 	CALL PrintDebug
 
 	RET
+
+;----------------------------------------------------------;
+;                    #AnimateSprites                       ;
+;----------------------------------------------------------;
+ANIMATE_DELAY			= 10					; Change sprite pattern every few lops. Loop speed is controled by: #WaitForScanline
+animDelayCnt			BYTE 0					; The delay counter for sprite animation
+
+AnimateSprites
+	LD A, (animDelayCnt)
+	INC A
+	LD (animDelayCnt), A
+	CP ANIMATE_DELAY
+	RET C										; Return if #animDelayCnt <  #ANIMATE_DELAY
+
+	LD A, 0										; Reset delay counter
+	LD (animDelayCnt), A
+
+	; Update sprite patterns
+	CALL js.UpdateJetmanSpritePattern
+	CALL jw.AnimateShots
+	CALL ep.AnimateEnemies
+	
+	RET	
 
 ;----------------------------------------------------------;
 ;                     #PrintDebug                          ;

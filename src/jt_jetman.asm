@@ -3,6 +3,8 @@
 ;----------------------------------------------------------;
 	MODULE jt
 
+ENEMY_COLISION_SIZE		= 8
+
 ;----------------------------------------------------------;
 ;                          #IncJetX                        ;
 ;----------------------------------------------------------;
@@ -395,6 +397,94 @@ JoyDisabled
 	RET
 
 ;----------------------------------------------------------;
+;                #JetmanEnemiesColision                    ;
+;----------------------------------------------------------;
+JetmanEnemiesColision
+	LD IX, ep.sprite01
+	LD A, (ep.spritesSize)
+	LD B, A
+	CALL EnemiesColision
+	RET	
+
+;----------------------------------------------------------;
+;                    #EnemiesColision                      ;
+;----------------------------------------------------------;
+; Checks all active enemies given by IX for collision with leaser beam
+; Input
+;  - IX:	Pointer to #MSS, the enemies
+;  - B:		Number of enemies in IX
+; Modifies: ALL
+EnemiesColision
+.loop
+	PUSH BC										; Preserve B for loop counter
+
+	BIT sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)
+	JR Z, .continue								; Jump if enemy is hidden
+
+	; Sprite is visible
+	CALL EnemyColision
+
+.continue
+	; Move HL to the beginning of the next #shotMssX
+	LD DE, sr.MSS
+	ADD IX, DE
+	POP BC
+	DJNZ .loop									; Jump if B > 0
+
+	RET
+
+;----------------------------------------------------------;
+;                    #EnemyColision                        ;
+;----------------------------------------------------------;
+; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
+; Input:
+;  - IX:	Pointer to concreate single enemy, single #MSS
+; Modifies: ALL
+EnemyColision
+
+	; Compare X coordinate of enemy and Jetman
+	LD BC, (IX + sr.MSS.X)						; X of the enemy
+	LD DE, (jd.jetmanX)							; X of the Jetman
+
+	LD A, D
+	CP B
+	RET NZ										; Jump if MSB of the X for enemy and Jetman does not match (B != D)
+
+	; Check if the Jetman hits the enemy from the left side of its X coordinate
+	LD A, C										; A holds the X LSB of the enemy
+	SUB ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	CP E
+	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
+
+	; Check if the Jetman hits the enemy from the right side of its X coordinate
+	ADD ENEMY_COLISION_SIZE						; Revert "SUB L" from above
+	ADD ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	CP E
+	RET C 										; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
+
+	; We are here because the shot is horizontal with the enemy, now check the vertical match
+	LD A, (jd.jetmanY)							; B holds Y from the Jetman
+	LD B, A
+	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
+	
+	; Check upper bounds
+	SUB ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	CP B
+	RET NC
+
+	; Check lower bounds
+	ADD ENEMY_COLISION_SIZE						; Revert "SUB L" from above
+	ADD ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	CP B
+	RET C
+
+	; We have hit!
+	nextreg 2,8
+
+
+	RET
+
+;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE	
+	ENDMODULE
