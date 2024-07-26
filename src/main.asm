@@ -39,8 +39,8 @@ mainLoop
 	INCLUDE "jt_jetman.asm"
 	INCLUDE "js_jetman_sprite.asm"
 	INCLUDE "ep_enemy_pattern.asm"
-	INCLUDE "de_data_enemy.asm"	
 	INCLUDE "ef_enemy_formation.asm"
+	INCLUDE "de_data_enemy.asm"	
 	INCLUDE "sc_screen.asm"
 	INCLUDE "jw_jetman_weapon.asm"
 

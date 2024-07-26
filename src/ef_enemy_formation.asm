@@ -16,13 +16,12 @@ SPRITES				BYTE						; Number of sprites used in this formation, starting from #
 SPRITES_CNT			BYTE						; Current respown position
 	ENDS
 
-formation MF{de.spriteEf01/*MSS_POINTER*/, 1000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
-
 ;----------------------------------------------------------;
 ;                   #RespownFormation                      ;
 ;----------------------------------------------------------;
-RespownFormation
-	LD IY, formation
+; Input:
+;  - IY:	Pointer to #MF
+RespownFormation	
 
 	; Check whether it's time to start a new formation deployment.
 	LD BC, (IY + MF.RESPOWN_DELAY)

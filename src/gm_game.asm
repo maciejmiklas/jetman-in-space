@@ -53,9 +53,11 @@ GameLoop
 	LD A, (de.singleSpritesSize)
 	LD B, A	
 	CALL ep.RespownNextEnemy	
-	
+
 	CALL jw.WeaponHitEnemies
 	CALL jt.JetmanEnemiesColision
+
+	LD IY, de.formation
 	CALL ef.RespownFormation	
 	CALL PrintDebug
 
@@ -80,7 +82,12 @@ AnimateSprites
 	; Update sprite patterns
 	CALL js.UpdateJetmanSpritePattern
 	CALL jw.AnimateShots
-	CALL ep.AnimateEnemies
+
+	; Animate enemies
+	LD IX, de.sprite01	
+	LD A, (de.spritesSize)
+	LD B, A	
+	CALL sr.AnimateSprites
 	
 	RET	
 
