@@ -77,7 +77,7 @@ PLATFROM_MARGIN_DOWN	= 5
 ;                         #SpriteHit                       ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:	pointer to #MSS
+;  - IX:	Pointer to #MSS
 SpriteHit	
 	LD A, (IX + MSS.STATE)						; Sprite is dying; turn off collision detection
 	RES MSS_ST_ALIVE_BIT, A
@@ -90,8 +90,8 @@ SpriteHit
 ;                     #AnimateSprites                      ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:	pointer to #MSS
-;  - B:		number of sprites
+;  - IX:	Pointer to #MSS
+;  - B:		Number of sprites
 ; Modifies: A, BC, HL
 AnimateSprites
 	
@@ -118,7 +118,7 @@ AnimateSprites
 ;                     #SetSpriteId                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:	pointer to #MSS
+;  - IX:	Pointer to #MSS
 ; Modifies: A
 SetSpriteId
 
@@ -165,7 +165,7 @@ UpdateSpritePosition
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX
 ; Input
-;  - IX - pointer to #MSS
+;  - IX:	Pointer to #MSS
 ; Modifies: A
 HideSprite
 
@@ -213,7 +213,7 @@ ShowSprite
 ;----------------------------------------------------------;
 ; Show the current sprite pattern and switch the pointer to the next one so the following method call will display it
 ; Input:
-;  - IX:	pointer to #MSS
+;  - IX:	Pointer to #MSS
 ; Modifies: A, BC, HL
 UpdateSpritePattern
 
@@ -288,7 +288,7 @@ SetSpritePattern
 ;                 #PlaftormColision                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: 	pointer to #MSS, single sprite to check colsion for
+;  - IX: 	Pointer to #MSS, single sprite to check colsion for
 ;  - IY:	Structure for #platformBump
 ;  - L:		Half of the height of the sprite
 ; Output:
@@ -377,8 +377,8 @@ PlaftormColision
 ;----------------------------------------------------------;
 ; Move the sprite one pixel to the right or left along the X-axis, depending on the #MSS.STATE
 ; Input
-;  - IX:	pointer to #MSS
-;  - D: 	configuration, bits:
+;  - IX:	Pointer to #MSS
+;  - D: 	Configuration, bits:
 ;			- 0: 0 - move sprite by 1 pixel, 1 - move sprite by 2 pixels
 ;			- 4: #MVX_IN_D_HIDE_BIT
 ;			- 5: #MVX_IN_D_DIR_BIT
@@ -465,7 +465,7 @@ MoveX
 ;----------------------------------------------------------;
 ; Move the sprite one pixel to the right or left along the Y-axis, depending on the A
 ; Input
-;  - IX:	pointer to #MSS
+;  - IX:	Pointer to #MSS
 ;  - A:    	MOVE_Y_IN_XXX
 MOVE_Y_IN_UP 				= 1					; Move up
 MOVE_Y_IN_DOWN 				= 0					; Move down

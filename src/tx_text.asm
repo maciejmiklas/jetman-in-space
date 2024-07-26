@@ -38,8 +38,8 @@ formatted16
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros. 
 ; Input:
-;   - IN:  HL = 16-bit number to convert
-;   - OUT: ASCII string at DE, 5-characters long, 0 padded.
+;   - HL:	16-bit number to convert
+; Output: ASCII string at DE, 5-characters long, 0 padded.
 Num16ToString
 
 	; Each line prints one digit into DE, starting with the most significant. 

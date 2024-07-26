@@ -23,10 +23,10 @@ CHAR_PALETTE_BYTE	= 0							; Palette byte for tile characters
 ;                        #PrintText                        ;
 ;----------------------------------------------------------;
 ; Print given text using tiles
-; Method Parameters:
-;  - IN: DE - pointer to the text
-;       B - amount of characters in DE  
-;       C - Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
+; Input:
+;  - DE:	Pointer to the text
+;  - B:		Amount of characters in DE  
+;  - C: 	Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
 ;           For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.         
 PrintText
 	LD HL, START_OF_TILEMAP						; HL points to screen memory containing tilemap 

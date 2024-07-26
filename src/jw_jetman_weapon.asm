@@ -41,8 +41,8 @@ STATE_SHOT_DIR_BIT		= 5				; Bit for #sr.MSS.STATE, 1 - shot moves right, 0 - sh
 ;                #WeaponHitEnemies                         ;
 ;----------------------------------------------------------;
 WeaponHitEnemies
-	LD IX, ep.sprite01
-	LD A, (ep.spritesSize)
+	LD IX, de.sprite01
+	LD A, (de.spritesSize)
 	LD B, A
 	CALL CheckHitEnemies
 	RET	

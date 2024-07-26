@@ -29,77 +29,6 @@ ESS_SETUP_DEPLOY_BIT	= 1						; 1 - deply enemy on the left, 0 - on the right
 
 MOVE_DELAY_CNT_INC		= %0001'0000
 
-; Single enemies
-spriteEx01
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 005/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 170/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx02
-	ESS {%000000'0'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 050/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx03
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 060/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx04
-	ESS {%000000'0'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 080/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx05
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 005/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 100/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx06
-	ESS {%000000'0'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 005/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 120/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx07
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 005/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 140/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx08
-	ESS {%000000'0'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx09
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 180/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteEx10
-	ESS {%000000'0'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 002/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 200/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-
-; Enemies reserved for formation
-spriteExEf01
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteExEf02
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteExEf03
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteExEf04
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-spriteExEf05
-	ESS {%000000'1'1/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 100/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 160/*RESPOWN_Y*/, movePattern01/*MOVE_PAT_POINTER*/, MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
-
-; Single sprites, used by single enemies (#spriteExXX)
-sprite01
-	sr.MSS {20/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
-sprite02
-	sr.MSS {21/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx02/*EXT_DATA_POINTER*/}
-sprite03
-	sr.MSS {22/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx03/*EXT_DATA_POINTER*/}
-sprite04
-	sr.MSS {23/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx04/*EXT_DATA_POINTER*/}
-sprite05
-	sr.MSS {24/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx05/*EXT_DATA_POINTER*/}
-sprite06
-	sr.MSS {25/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx06/*EXT_DATA_POINTER*/}
-sprite07
-	sr.MSS {26/*ID*/, sr.SDB_COMET2/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx07/*EXT_DATA_POINTER*/}
-sprite08
-	sr.MSS {27/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx08/*EXT_DATA_POINTER*/}
-sprite09
-	sr.MSS {28/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx09/*EXT_DATA_POINTER*/}
-sprite10
-	sr.MSS {29/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx10/*EXT_DATA_POINTER*/}
-
-; Formation sprites used by formation enemies (#spriteExEfXX)
-spriteEf01
-	sr.MSS {30/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf01/*EXT_DATA_POINTER*/}
-spriteEf02
-	sr.MSS {31/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf02/*EXT_DATA_POINTER*/}
-spriteEf03
-	sr.MSS {32/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf03/*EXT_DATA_POINTER*/}
-spriteEf04
-	sr.MSS {33/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf04/*EXT_DATA_POINTER*/}
-spriteEf05
-	sr.MSS {34/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
-
-spritesSize					DB 15				; The total amount of visible sprites - including single enemies and formations
-singleSpritesSize			DB 1				; Amount of sprites that can respawn as a single enemy
-
 SPRITE_HEIGHT_PLATFORM		= 3
 SPRITE_HEIGHT_COLISION		= 10
 
@@ -208,8 +137,8 @@ movePattern10
 ;----------------------------------------------------------;
 ; This method resets the move pattern (#ESS) so animation can start from the first move pattern. It does not modify #MSS.
 ; Input
-;  - IX:	pointer to #MSS holding data for single spreite that will be moved
-;  - IY: pointer to #ESS for current sprite
+;  - IX:	Pointer to #MSS holding data for single spreite that will be moved
+;  - IY: 	Pointer to #ESS for current sprite
 ; Modifies: A, IY, BC, HL
 RestartMovePattern
 
@@ -247,9 +176,9 @@ RestartMovePattern
 ;----------------------------------------------------------;
 ; Load HL that points to the current move pattern's step.
 ; Input
-;  - IY: pointer to #ESS for current sprite
+;  - IY: 	Pointer to #ESS for current sprite
 ; Output:
-;  - HL: 	points to the current move pattern's step.
+;  - HL: 	Points to the current move pattern's step.
 ; Modifies: A
 LoadCurrentMoveStep
 	LD HL, (IY + ESS.MOVE_PAT_POINTER)			; HL points to start of the #movePattern
@@ -262,7 +191,7 @@ LoadCurrentMoveStep
 ;                      #MoveEnemy                          ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:	pointer to #MSS holding data for single spreite that will be moved
+;  - IX:	Pointer to #MSS holding data for single spreite that will be moved
 ; Output:
 ;  - A: 	sr.MOVE_RET_XXX
 ; Modifies: all
@@ -436,9 +365,9 @@ MoveEnemy
 ;                     #MoveEnemyX                          ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:	pointer to #MSS
-;  - IY:	pointer to #ESS
-;  - HL: 	points to the current move pattern's step.
+;  - IX:	Pointer to #MSS
+;  - IY:	Pointer to #ESS
+;  - HL: 	Points to the current move pattern's step.
 ; Modifies: A, BC
 MoveEnemyX
 	LD D, MOVE_X_IN_D							; D contains configuration for MoveX
@@ -469,14 +398,11 @@ MoveEnemyX
 ;----------------------------------------------------------;
 ;                       #MoveEnemies                       ;
 ;----------------------------------------------------------;
+;  - IX:	Pointer to #MSS
+;  - B:		Sprites size
 ; Modifies: ALL
 MoveEnemies
-
 	; Loop ever all enemies skipping hidden 
-	LD IX, sprite01
-	LD A, (spritesSize)
-	LD B, A 
-
 .loop
 	PUSH BC										; Preserve B for loop counter
 
@@ -540,9 +466,9 @@ MoveEnemies
 ;                 #LoadMoveDelayCounter                    ;
 ;----------------------------------------------------------;
 ; Input
-;  - IY:	pointer to #ESS holding data for single spreite 
+;  - IY:	Pointer to #ESS holding data for single spreite 
 ; Output:
-;  - A;		value of move delay counter for this pattern (bits 8-5)
+;  - A;		Value of move delay counter for this pattern (bits 8-5)
 ; Modifies: A, HL
 LoadMoveDelayCounter
 
@@ -555,25 +481,26 @@ LoadMoveDelayCounter
 ;----------------------------------------------------------;
 ;                  #RespownNextEnemy                       ;
 ;----------------------------------------------------------;
+; Input:
+;  - IX:	Pointer to #MSS
+;  - B:		Sprites size
 RespownNextEnemy
 
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy
 	LD A, (respownDelay)
-	LD B, A
+	LD D, A
 	LD A, (respownDelayCnt)
 	INC A
-	CP B
+	CP D
 	JR Z, .startRespown							; Jump if the timer reaches respawn delay
 	LD (respownDelayCnt), A
+
 	RET
 .startRespown	
 	LD A, 0
 	LD (respownDelayCnt), A						; Reset delay timer
 
-	; Respawn the enemy
-	LD IX, sprite01								; Iterate over all enemies to find the first hidden, respawn it, and exit function
-	LD A, (singleSpritesSize)
-	LD B, A 
+	; Iterate over all enemies to find the first hidden, respawn it, and exit function
 .loop
 	PUSH BC										; Preserve B for loop counter
 	CALL RespownEnemy
@@ -594,7 +521,7 @@ RespownNextEnemy
 ;                    #RespownEnemy                         ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:	pointer to #MSS holding data for single enemy
+;  - IX:	Pointer to #MSS holding data for single enemy
 ; Output:
 ; - A: 		RES_SE_OUT_XXX
 RES_SE_OUT_YES					= 1				; Enemy did respawn
@@ -673,8 +600,8 @@ RespownEnemy
 ;                  #AnimateEnemies                         ;
 ;----------------------------------------------------------;
 AnimateEnemies
-	LD IX, sprite01	
-	LD A, (spritesSize)
+	LD IX, de.sprite01	
+	LD A, (de.spritesSize)
 	LD B, A 
 	CALL sr.AnimateSprites
 

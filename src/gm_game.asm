@@ -43,8 +43,17 @@ GameLoop
 	CALL in.JoyInput
 	CALL jt.JoyDisabled
 	CALL jw.MoveShots
+
+	LD IX, de.sprite01
+	LD A, (de.spritesSize)
+	LD B, A 	
 	CALL ep.MoveEnemies
+
+	LD IX, de.sprite01							
+	LD A, (de.singleSpritesSize)
+	LD B, A	
 	CALL ep.RespownNextEnemy	
+	
 	CALL jw.WeaponHitEnemies
 	CALL jt.JetmanEnemiesColision
 	CALL ef.RespownFormation	

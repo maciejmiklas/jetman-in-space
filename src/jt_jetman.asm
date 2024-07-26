@@ -400,8 +400,8 @@ JoyDisabled
 ;                #JetmanEnemiesColision                    ;
 ;----------------------------------------------------------;
 JetmanEnemiesColision
-	LD IX, ep.sprite01
-	LD A, (ep.spritesSize)
+	LD IX, de.sprite01
+	LD A, (de.spritesSize)
 	LD B, A
 	CALL EnemiesColision
 	RET	

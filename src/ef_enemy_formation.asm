@@ -16,7 +16,7 @@ SPRITES				BYTE						; Number of sprites used in this formation, starting from #
 SPRITES_CNT			BYTE						; Current respown position
 	ENDS
 
-formation MF{ep.spriteEf01/*MSS_POINTER*/, 65000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
+formation MF{de.spriteEf01/*MSS_POINTER*/, 1000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
 
 ;----------------------------------------------------------;
 ;                   #RespownFormation                      ;
