@@ -5,11 +5,13 @@
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
 ;----------------------------------------------------------;
-_GL_REG_TURBO_H07		= 11				; bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
+_GL_REG_TURBO_H07		= 11				; Bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
+
+_GL_REG_REANSPARENT_COL = $14				; Global transparency color
 _GL_REG_SELECT_H243B	= $243B				; This Port is used to set the register number
 _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 
-;----------------------------------------------------------;
+
 ;                   Display Control                        ;
 ;----------------------------------------------------------;
 ; Bits:
@@ -30,6 +32,51 @@ _DC_REG_LA2_H70			= $70
 ; Layer 2 RAM bank
 _DC_REG_LA2_BANK_H12	= $12
 
+; Palette index
+_DC_REG_LA2_PAL_IDX_H40	= $40
+
+; Palette Value (8 bit colour)
+; bits 7-0 = Colour for the palette index selected by the register 0x40.
+; (Format is RRRGGGBB - the lower blue bit of the 9-bit colour will be a logical OR of blue bits 1 and 0 of this 8-bit value.)
+; After the write, the palette index is auto-incremented to the next index if the auto-increment is enabled at reg 0x43
+_DC_REG_LA2_PAL_VAL_H41	= $41
+
+; Palette Control
+; Bits:
+;  - 7: '1' to disable palette write auto-increment
+;  - 6-4: Select palette for reading or writing:
+;     000 = ULA first palette
+;     100 = ULA second palette
+;     001 = Layer 2 first palette
+;     101 = Layer 2 second palette
+;     010 = Sprites first palette
+;     110 = Sprites second palette
+;     011 = Tilemap first palette
+;     111 = Tilemap second palette
+;  - 3: Select Sprites palette (0 = first palette, 1 = second palette)
+;  - 2 Select Layer 2 palette (0 = first palette, 1 = second palette)
+;  - 1: Select ULA palette (0 = first palette, 1 = second palette)
+;  - 0: Enabe ULANext mode if 1. (0 after a reset)
+_DC_REG_LA2_PAL_CTR_H43	= $43
+
+; Palette Value (9 bit colour)
+; Two consecutive writes are needed to write the 9 bit colour
+; 1st write: bits 7-0 = RRRGGGBB
+; 2nd write:
+;    If writing a L2 palette:
+;      Bits:
+;       - 7: 1 for L2 priority colour, 0 for normal
+;            Priority colour will always be on top even on an SLU priority arrangement. If you need the exact same colour on priority and non 
+;            priority locations you will need to program the same colour twice changing bit 7 to 0 for the second colour
+;       - 6-1: Reserved, must be 0
+;       - 0: LSB B
+;   If writing another palette:
+;     Bits:
+;      - 7-1: Reserved, must be 0
+;      - 0:  LSB B
+; After the two consecutives writes the palette index is auto-incremented if the auto-increment is enabled by reg 0x43.
+_DC_REG_LA2_PAL_VAL_H44	= $44
+
 ; Transparency index for the tilemap
 ; Bits:
 ;  - 7-4 = Reserved, must be 0
@@ -39,11 +86,11 @@ _DC_REG_TILE_TRANSP_H4C = $4C
 ; Bits:
 ;  -  7-1: 7-1 Reserved, must be 0
 ;  -  0: MSB for X pixel offset
-_DC_REG_LA2_OFFS_H71 = $71
+_DC_REG_LA2_OFFS_H71	= $71
+
 ;----------------------------------------------------------;
 ;                     ROM routines                         ;
 ;----------------------------------------------------------;
-_ROM_CLS_H0DAF			= $0DAF					; ROM address for "Clear Screen" routine
 _ROM_PRINT_H10			= $10					; ROM address for "Print Character from A" routine
 
 ; ROM address for "Print Text" routine

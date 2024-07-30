@@ -4,7 +4,8 @@
 	MODULE di
 
 BGR_IMG_SB18			= 18					; Background image occupies 8K bank 18 to 23 (starts on 16K bank 9)
-BGR_IMG_EB23			= 23
+BGR_IMG_EB23			= 23					; Last background bank
+BGR_IMG_EB24			= 24					; Pallete for the background
 BGR_IMG_16B9			= 9						; 16K bank 9 = 8k bank 18
 
 SPRITE_B40				= 40					; Sprites on bank 40, 41
@@ -54,7 +55,7 @@ tilePaletteBinLength = $ - tilePaletteBin
 ;   - 42-44: fire	
 ;   - 45-47: Flying enemey 1
 ;   - 48-50: Flying enemey 2
-spritesBin INCBIN "assets/l001_sprites.spr"
+spritesBin INCBIN "assets/l001_sprites.spr",  0, 16384
 spritesBinLength = $ - spritesBin
 
 ;-------------------------------------------------------------------------------------;
@@ -65,17 +66,14 @@ spritesBinLength = $ - spritesBin
 	; The "n" option will ensure each slot is within $E000..$FFFF range. Once one slot is full (at $FFFF) it will start writing to a new slot at $E000
 	MMU _RAM_SLOT7 n, BGR_IMG_SB18
 	ORG _RAM_SLOT7_START_HE000
-	INCBIN "assets/l001_background.nxi"
+	INCBIN "assets/l001_background.nxi", 0, 256*192
 
 	ASSERT $ == $E000 && $$ == BGR_IMG_EB23 + 1	; Ensure that we loaded the whole image. MMU should be on the beginning of the next slot ("n" option)
-/*	
-BackGroundPalette:
-        INCBIN "assets/l001_background.tga", 0x12, 3*256  ; 768 bytes of palette data
-
-    ; sprite pixel data from the raw binary file SBsprite.spr, aligned to next
-    ; page after palette data (8k page 25), it will occupy two pages: 25, 26
-        MMU 6 7, $$BackGroundPalette + 1    ; using 16ki memory region $C000..$FFFF
-*/
+	
+	; After pre-loading the image pixel data, bank 24 should now automatically start at $E000
+	; The background palette will be stored in bank 24
+backGroundPalette
+	INCBIN  "assets/l001_background.nxp", 0, 512
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

@@ -6,8 +6,9 @@
 jetmanX					WORD 100				; 0-320px
 jetmanY 				BYTE 100				; 0-256px
 
+STATE_INACTIVE			= 0
+
 ; States for Jetmain in the air, 0 for not in the air
-AIR_INACTIVE			= 0						; Jetman is not in the air
 AIR_FLY					= 1						; Jetman is flaying
 AIR_HOOVER				= 2						; Jetman is hovering
 AIR_FALL_RIGHT			= 3						; Jetmal falls from paltform on the right
@@ -16,18 +17,20 @@ AIR_BUMP_RIGHT			= 5						; Jetban bumps into a platform from the right, he face
 AIR_BUMP_LEFT			= 6						; Jetban bumps into a platform from the left, he faces/moves right
 AIR_BUMP_BOTTOM			= 7						; Jetban bumps into a platform from the bottom
 
-JOY_DISABLED_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
-JOY_DISABLED_BUMP		= 6						; Disable the joystick for a few frames because Jetman is bumping into the platform
-
-jetmanAir				BYTE AIR_FLY			; Jetman initially hovers, no movement
+jetAir					BYTE AIR_FLY
 
 ; States for Jetman on the platform/ground
-GND_INACTIVE			= 0						; Jetman is not on ground
 GND_WALK				= 1						; Jetman walks on the ground
-GND_JSTAND				= 3						; Jetman stands on the ground for a very short time, not enougt to switch to #GND_STAND
-GND_STAND				= 4						; Jetman stands on the ground
+GND_JSTAND				= 2						; Jetman stands on the ground for a very short time, not enougt to switch to #GND_STAND
+GND_STAND				= 3						; Jetman stands on the ground
 
-jetmanGnd				BYTE GND_INACTIVE		; Jetman initially hovers, no movement
+jetGnd				BYTE 0
+
+; Jetman states
+JET_STATE_AIR			= 1						; Jemtan is flying, possible states are in #jetAir
+JET_STATE_GND			= 2						; Jemtan is walking, possible states are in #jetGnd
+JET_STATE_RIP			= 3						; Jemtan is walking, possible states are in #jetGnd
+jetState				BYTE JET_STATE_AIR		; Game start
 
 ; Hovering/Standing
 jetmanInactivityCnt		BYTE 0					; The counter increases with each frame when no up/down is pressed. 
@@ -37,6 +40,9 @@ STAND_START				= 30
 JSTAND_START			= 5
 
 ; Misc
+JOY_DISABLED_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
+JOY_DISABLED_BUMP		= 6						; Disable the joystick for a few frames because Jetman is bumping into the platform
+
 GROUND_LEVEL			= 230					; The lowest walking platform.
 
 ; The counter turns off the joystick for a few iterations. Each call #JoyInput decreases it by one. 
@@ -72,6 +78,38 @@ jetmanDirection			BYTE MOVE_INACTIVE	; Jetman initially hovers, no movement
 
 JOY_DELAY				= 2					; Probe joystick every few loops. Loop speed is controled by: #WaitForScanline     
 joyDelayCnt				BYTE 0				; The delay counter for joistink input and Jetman movement speed
+
+;----------------------------------------------------------;
+;                 #ChangeJetStateAir                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A:										; Air State: #AIR_XXX
+ChangeJetStateAir
+	
+	LD (jd.jetAir), A
+
+	LD A, JET_STATE_AIR
+	LD (jd.jetState), A
+
+	LD A, STATE_INACTIVE
+	LD (jd.jetGnd), A
+
+	RET
+
+;----------------------------------------------------------;
+;                 #ChangeJetStateGnd                       ;
+;----------------------------------------------------------;
+ChangeJetStateGnd
+	LD A, JET_STATE_GND
+	LD (jd.jetState), A
+
+	LD A, STATE_INACTIVE
+	LD (jd.jetAir), A
+
+	LD A, GND_WALK
+	LD (jd.jetGnd), A
+
+	RET	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

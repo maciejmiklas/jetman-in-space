@@ -6,7 +6,7 @@
 ;----------------------------------------------------------;
 ;                 Load sprites into PFGA                   ;
 ;----------------------------------------------------------;
-; Sprites for Level 1 are stored in Bank 40, 41 (SPRITE_B40/2_41)
+; Sprites for Level 1 are stored in Bank 40, 41 (SPRITE_B40)
 	NEXTREG _MMU_REG_SLOT6_H56, $$di.spritesBin	; Assign bank 40 to slot 6
 	NEXTREG _MMU_REG_SLOT7_H57, $$di.spritesBin+1; Assign bank 41 to slot 7
 

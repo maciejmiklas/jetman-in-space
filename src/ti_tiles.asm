@@ -58,32 +58,24 @@ PrintText
 ;----------------------------------------------------------;
 LoadTiles
 	; Enable tilemap mode
-	NEXTREG $6B, %10000001						; 40x32, 16-bit entries = 320x256
-	NEXTREG $6C, %00000000						; palette offset, visuals
+	NEXTREG _TILE_MAP_CONTROL_H6B, %10000001	; 40x32, 16-bit entries = 320x256
+	NEXTREG _TILE_ATTRIBTE_H6C, %00000000		; palette offset, visuals
 
 	; Tell harware where to find tiles
 	; bits 5-0 = MSB of address of the tilemap in Bank 5
-	NEXTREG $6E, OFFSET_OF_MAP					; MSB of tilemap in bank 5
-	NEXTREG $6F, OFFSET_OF_TILES				; MSB of tilemap definitions
+	NEXTREG _TILE_MAP_ADDRESR_H6E, OFFSET_OF_MAP ; MSB of tilemap in bank 5
+	NEXTREG _TILE_DEF_ADDRESR_H6F, OFFSET_OF_TILES ; MSB of tilemap definitions
 
-	; Setup tilemap palette
-	NEXTREG $43, %00110000						; Auto increment, select first tilemap palette
-	NEXTREG $40, 0								; Start with first entry
-
-	; Copy palette
+	; Setup palette
 	LD HL, di.tilePaletteBin					; Address of palette data in memory
 	LD B, di.tilePaletteBinLength				; Number of colors to copy
-.copyPalette
-	LD A, (HL)									; Load RRRGGGBB into A
-	INC HL										; Increment to next entry
-	NEXTREG $41, A								; Send entry to Next HW
-	DJNZ .copyPalette							; Repeat until B=0
+	CALL sc.SetupTilemapPalette
 
 	; Copy tile definitions to expected memory
+	LD DE, START_OF_TILES
 	LD HL, di.tilesBin							; Address of tiles in memory
 	LD BC, di.tilesBinLength					; Number of bytes to copy
-	LD DE, START_OF_TILES
-	LDIR
+	LDIR	
 
 	; Copy tilemap to expected memory
 	LD HL, di.tilemapBin						; Addreess of tilemap in memory

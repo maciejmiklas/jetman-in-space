@@ -137,12 +137,14 @@ UpdateJetmanSpritePosition
 
 	RET
 
+cnt word 0
 ;----------------------------------------------------------;
 ;               #ChangeJetmanSpritePattern                 ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - A: ID for #jesSprites, to siwtch to the next animation record
 ChangeJetmanSpritePattern
+
 	LD (sprDBNextID), A							; Next animation record
 
 	LD A, 0
