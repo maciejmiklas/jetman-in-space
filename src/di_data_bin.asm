@@ -25,12 +25,12 @@ tilemapBinLength = $ - tilemapBin
 tilesBin INCBIN "assets/tiles.spr"
 tilesBinLength = $ - tilesBin
 
-tilePaletteBin									; RGB332
 
 /* Values for Remy's editor
   $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
   $1C7   $43   $42   $41   $40   $25   $2D   $2F   $1B   $1D   $35   $37   $38   $3B   $3D   $3F
 */
+tilePaletteBin									; RGB332
 	DB $E3, $E0, $2, $13, $17, $37, $5B, $1F, $8, $9, $A, $B, $C, $D, $E, $F
 	DB $E3, $21, $21, $20, $20, $12, $16, $17, $D, $E, $1A, $1B, $1C, $1D, $1E, $1F
 tilePaletteBinLength = $ - tilePaletteBin

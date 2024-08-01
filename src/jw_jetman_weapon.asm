@@ -263,7 +263,7 @@ Fire
 	; We are here because free #shotMssX has been found, and IX points to it
 
 	; Is Jetman moving left or right?
-	LD A, (jd.jetmanDirection)
+	LD A, (jd.jetDirection)
 	BIT jd.MOVE_LEFT_BIT, A
 	JR NZ, .movingLeft							; Jump if Jetman is moving left
 	

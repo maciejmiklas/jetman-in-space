@@ -13,26 +13,27 @@ SDB_WALK_ST				= 203					; Jetman starts walking with raised feet to avoid movin
 SDB_HOVER				= 204					; Jetman hovers
 SDB_STAND				= 205					; Jetman stands in place
 SDB_JSTAND				= 206					; Jetman quickly stops walking
+SDB_RIP					= 207					; Jetman got hit
 
 SDB_T_WF				= 220					; Transition: walking -> flaying
 SDB_T_FS				= 221					; Transition: flaying -> standing
 SDB_T_FW				= 222					; Transition: flaying -> walking
 SDB_T_WL				= 223					; Transition: walking -> falling
 
-SDB_SUB				= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
+SDB_SUB				= 100						; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
 SDB_FRAME_SIZE		= 2
 
-; The animation system is based on a state machine. It's a DB where each record contains a start and end offset to the animation pattern and 
-; finally offset to a new DB record containing animation that will be played next.
+; The animation system is based on a state machine. Its database is divided into records, each containing a list of frames to be played and 
+; a reference to the next record that will be played once all frames from the current record have been executed.
 ; DB Record:
+;    [ID], [OFF_NX], [SIZE], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]] 
+; where:
 ;	- ID: 			Entry ID for lookup via CPIR
 ;	- SIZE:			Amount of bytes in this record
-;	- FRAME_UP:		Start offset for the upper part of the Jetman
-;	- FRAME_LW: 	Start offset for the lower part of the Jetman
+;	- FRAME_UP:		Offset for the upper part of the Jetman
+;	- FRAME_LW: 	Offset for the lower part of the Jetman
 ;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
-; 	
-;	DB [ID], [OFF_NX], [SIZE], [[FRAME_UP],[FRAME_LW] ,...], 
-;
+
 spriteDB
 	; Jetman is flaying
 	DB SDB_FLY,		SDB_FLY - SDB_SUB,		48
@@ -64,17 +65,20 @@ spriteDB
 	; Jetman stands on the ground for a very short time
 	DB SDB_JSTAND,	SDB_STAND - SDB_SUB, 	02, 03,36
 
+	; Jetman got hit
+	DB SDB_RIP,		SDB_RIP - SDB_SUB,		16, 00,08, 01,09, 02,10, 03,11, 00,22, 01,23, 02,24, 03,25
+
 	; Transition: walking -> flaying
-	DB SDB_T_WF,		SDB_FLY - SDB_SUB, 	08, 03,22, 04,23, 05,24, 03,25
+	DB SDB_T_WF,	SDB_FLY - SDB_SUB, 		08, 03,22, 04,23, 05,24, 03,25
 
 	; Transition: flaying -> standing
 	DB SDB_T_FS, 	SDB_STAND - SDB_SUB,	4, 03,26, 04,27, 05,28, 03,29
 
 	; Transition: flaying -> walking
-	DB SDB_T_FW, 	SDB_WALK	- SDB_SUB,	4, 03,26, 04,27, 05,28, 03,29
+	DB SDB_T_FW, 	SDB_WALK - SDB_SUB,		4, 03,26, 04,27, 05,28, 03,29
 
 	; Transition: walking -> falling
-	DB SDB_T_WL,		SDB_FLY - SDB_SUB, 	08, 03,30, 04,31, 05,32, 03,33
+	DB SDB_T_WL,	SDB_FLY - SDB_SUB, 		08, 03,30, 04,31, 05,32, 03,33
 
 spriteDBIdx			WORD 0						; Current position in DB
 spriteDBRemain		BYTE 0						; Amount of bytes that have to be still processed from the current record
@@ -108,7 +112,7 @@ UpdateJetmanSpritePosition
 	
 	; Rotate sprite for Left/Right movement	
 	LD E, A										; Store A in E to use A for loading data from RAM.
-	LD A, (jd.jetmanDirection)			
+	LD A, (jd.jetDirection)			
 	LD D, A
 	LD A, E										; Now, A has its original value, and D contains a value from #jetState
 	BIT jd.MOVE_LEFT_BIT, D						; Moving left bit set?
@@ -136,8 +140,7 @@ UpdateJetmanSpritePosition
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
 	RET
-
-cnt word 0
+	
 ;----------------------------------------------------------;
 ;               #ChangeJetmanSpritePattern                 ;
 ;----------------------------------------------------------;

@@ -11,9 +11,9 @@ JOY_SLOWDOWN_RET_BREAK	= 2						; Process joystick input
 ;----------------------------------------------------------;
 JoyInput
 
-	;LD A, (jd.jetState)							; Do not process movement if Jetman is dying
-	;CP jd.JET_STATE_RIP
-	;RET Z
+	LD A, (jd.jetState)							; Do not process movement if Jetman is dying
+	CP jd.JET_STATE_RIP
+	RET Z
 
 	CALL JoySlowdown
 	CP JOY_SLOWDOWN_RET_BREAK

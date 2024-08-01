@@ -30,6 +30,7 @@ jetGnd				BYTE 0
 JET_STATE_AIR			= 1						; Jemtan is flying, possible states are in #jetAir
 JET_STATE_GND			= 2						; Jemtan is walking, possible states are in #jetGnd
 JET_STATE_RIP			= 3						; Jemtan is walking, possible states are in #jetGnd
+
 jetState				BYTE JET_STATE_AIR		; Game start
 
 ; Hovering/Standing
@@ -73,43 +74,12 @@ joyDirection			BYTE MOVE_INACTIVE
 ; the opsite direction changes. Pressing left will reset the right bit and set left; pressing up will reset the down bit and set up. 
 ; However, only opposite directions are reset, so for example, when Jetman is facing right, and the right button is released, 
 ; it still looks right; now, when up is pressed, it will look upright, and the right will be reset only when left is pressed. 
-; Prolonged inactivity resets #jetmanDirection to #MOVE_INACTIVE.
-jetmanDirection			BYTE MOVE_INACTIVE	; Jetman initially hovers, no movement
+; Prolonged inactivity resets #jetDirection to #MOVE_INACTIVE.
+jetDirection			BYTE MOVE_INACTIVE	; Jetman initially hovers, no movement
 
 JOY_DELAY				= 2					; Probe joystick every few loops. Loop speed is controled by: #WaitForScanline     
 joyDelayCnt				BYTE 0				; The delay counter for joistink input and Jetman movement speed
-
-;----------------------------------------------------------;
-;                 #ChangeJetStateAir                       ;
-;----------------------------------------------------------;
-; Input:
-;  - A:										; Air State: #AIR_XXX
-ChangeJetStateAir
 	
-	LD (jd.jetAir), A
-
-	LD A, JET_STATE_AIR
-	LD (jd.jetState), A
-
-	LD A, STATE_INACTIVE
-	LD (jd.jetGnd), A
-
-	RET
-
-;----------------------------------------------------------;
-;                 #ChangeJetStateGnd                       ;
-;----------------------------------------------------------;
-ChangeJetStateGnd
-	LD A, JET_STATE_GND
-	LD (jd.jetState), A
-
-	LD A, STATE_INACTIVE
-	LD (jd.jetAir), A
-
-	LD A, GND_WALK
-	LD (jd.jetGnd), A
-
-	RET	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

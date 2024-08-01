@@ -97,7 +97,7 @@ JetmanTakesoff
 
 	; Jetman is taking off
 	LD A, jd.AIR_FLY
-	CALL jd.ChangeJetStateAir
+	CALL jt.ChangeJetStateAir
 
 	; Play takeoff animation					
 	LD A, js.SDB_T_WF
@@ -110,7 +110,7 @@ JetmanTakesoff
 JetmanLanding
 
 	; Update state as we are walking
-	CALL jd.ChangeJetStateGnd
+	CALL jt.ChangeJetStateGnd
 	
 	; Jemans is landing, trigger transition: flying -> standing/walking
 	LD A, (jd.joyDirection)
@@ -365,7 +365,7 @@ FallingFromPlatform
 
 .afterFallingRight
 	; Jetman if falling, in the air - A contains poroper air state
-	CALL jd.ChangeJetStateAir
+	CALL jt.ChangeJetStateAir
 
 	; Trigger transition: walking -> falling
 	LD A, js.SDB_T_WL

@@ -39,6 +39,7 @@ GameLoop
 	; First update graphics, logic follows afterwards!
 	CALL js.UpdateJetmanSpritePosition
 	CALL AnimateSprites
+	
 	CALL in.JoyInput
 	CALL jt.JoyDisabled
 	CALL jw.MoveShots
@@ -48,13 +49,14 @@ GameLoop
 	LD B, A 	
 	CALL ep.MoveEnemies
 
-	LD IX, de.sprite01							
+	LD IX, de.sprite01
 	LD A, (de.singleSpritesSize)
 	LD B, A	
 	CALL ep.RespownNextEnemy	
 
 	CALL jw.WeaponHitEnemies
 	CALL jt.JetmanEnemiesColision
+	CALL jt.JetRip
 
 	LD IY, de.formation
 	CALL ef.RespownFormation	
@@ -102,7 +104,7 @@ PrintDebug
 
 	LD B, 10
 	LD H, 0
-	LD A,  (jd.jetState)
+	LD A,  (jd.jetmanY)
 	LD L, A
 	CALL tx.PrintNumHL		
 
@@ -114,7 +116,7 @@ PrintDebug
 
 	LD B, 30
 	LD H, 0
-	LD A, (jd.jetAir)
+	LD A, (jt.shakeScreenState)
 	LD L, A
 	CALL tx.PrintNumHL		
 

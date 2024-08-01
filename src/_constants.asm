@@ -11,9 +11,33 @@ _GL_REG_REANSPARENT_COL = $14				; Global transparency color
 _GL_REG_SELECT_H243B	= $243B				; This Port is used to set the register number
 _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 
-
+;----------------------------------------------------------;
 ;                   Display Control                        ;
 ;----------------------------------------------------------;
+
+; Layer 2 RAM bank
+_DC_REG_LA2_BANK_H12	= $12
+
+; Tilemap Offset X MSB
+; Bits:
+;  - 7-2 = Reserved, must be 0
+;  - 1-0 = MSB X Offset
+_DC_REG_TILE_X_MSB		= $2F
+
+; Tilemap Offset X LSB
+; Bits:
+;  - 7-0 = LSB X Offset
+_DC_REG_TILE_X_LSB		= $30
+
+; Tilemap Offset Y
+_DC_REG_TILE_Y			= $31
+
+; ULA / LoRes Offset X
+_DC_REG_ULA_X			= $32
+
+; ULA / LoRes Offset Y
+_DC_REG_ULA_Y			= $33
+
 ; Bits:
 ;  - 7: 1 to enable Layer 2 (alias for bit 1 in Layer 2 Access Port $123B)
 ;  - 6: 1 to enable ULA shadow display (alias for bit 3 in Memory Paging Control $7FFD)
@@ -28,9 +52,6 @@ _DC_REG_CONTROL1_H69	= $69
 ;			- '10': 640x256, 4BPP
 ;  - 3-0: Palette offset (0 after soft reset)
 _DC_REG_LA2_H70			= $70
-
-; Layer 2 RAM bank
-_DC_REG_LA2_BANK_H12	= $12
 
 ; Palette index
 _DC_REG_LA2_PAL_IDX_H40	= $40

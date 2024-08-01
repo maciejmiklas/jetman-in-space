@@ -6,6 +6,51 @@
 ENEMY_COLISION_SIZE		= 10
 
 ;----------------------------------------------------------;
+;                 #ChangeJetStateAir                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A:										; Air State: #AIR_XXX
+ChangeJetStateAir
+	
+	LD (jd.jetAir), A
+
+	LD A, jd.JET_STATE_AIR
+	LD (jd.jetState), A
+
+	LD A, jd.STATE_INACTIVE
+	LD (jd.jetGnd), A
+
+	RET
+
+;----------------------------------------------------------;
+;                 #ChangeJetStateGnd                       ;
+;----------------------------------------------------------;
+ChangeJetStateGnd
+	LD A, jd.JET_STATE_GND
+	LD (jd.jetState), A
+
+	LD A, jd.STATE_INACTIVE
+	LD (jd.jetAir), A
+
+	LD A, jd.GND_WALK
+	LD (jd.jetGnd), A
+
+	RET	
+
+;----------------------------------------------------------;
+;                 #ChangeJetStateRip                       ;
+;----------------------------------------------------------;
+ChangeJetStateRip
+	LD A, jd.STATE_INACTIVE
+	LD (jd.jetAir), A
+	LD (jd.jetGnd), A
+
+	LD A, jd.JET_STATE_RIP
+	LD (jd.jetState), A
+
+	RET	
+
+;----------------------------------------------------------;
 ;                          #IncJetX                        ;
 ;----------------------------------------------------------;
 ; Increment X position
@@ -149,16 +194,16 @@ JoyMoveUp
 .afterDec	
 
 	; Direction change: down -> up
-	LD A, (jd.jetmanDirection)
+	LD A, (jd.jetDirection)
 	AND jd.MOVE_UP_MASK							; Are we moving Up already?
 	CP jd.MOVE_UP_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (jd.jetmanDirection)					; Update #jetState by resetting down and setting up
+	LD A, (jd.jetDirection)					; Update #jetState by resetting down and setting up
 	RES jd.MOVE_DOWN_BIT, A
 	SET jd.MOVE_UP_BIT, A
-	LD (jd.jetmanDirection), A
+	LD (jd.jetDirection), A
 .afterDirectionChange
 
 	; Transition from walking to flaying
@@ -182,16 +227,16 @@ JoyMoveRight
 	CALL IncJetX
 
 	; ##Direction change: left -> right##
-	LD A, (jd.jetmanDirection)
+	LD A, (jd.jetDirection)
 	AND jd.MOVE_RIGHT_MASK						; Are we moving right already?
 	CP jd.MOVE_RIGHT_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!		
-	LD A, (jd.jetmanDirection)					; Reset left and set right
+	LD A, (jd.jetDirection)					; Reset left and set right
 	RES jd.MOVE_LEFT_BIT, A
 	SET jd.MOVE_RIGHT_BIT, A
-	LD (jd.jetmanDirection), A
+	LD (jd.jetDirection), A
 	
 .afterDirectionChange
 
@@ -216,16 +261,16 @@ JoyMoveLeft
 	CALL DecJetX
 
 	; Direction change: right -> left
-	LD A, (jd.jetmanDirection)
+	LD A, (jd.jetDirection)
 	AND jd.MOVE_LEFT_MASK							; Are we moving left already?
 	CP jd.MOVE_LEFT_MASK
 	JR Z, .afterDirectionChange						; Jetman is moving left already -> end
 
 	; We have direction change!		
-	LD A, (jd.jetmanDirection)						; Reset right and set left
+	LD A, (jd.jetDirection)						; Reset right and set left
 	RES jd.MOVE_RIGHT_BIT, A
 	SET jd.MOVE_LEFT_BIT, A
-	LD (jd.jetmanDirection), A
+	LD (jd.jetDirection), A
 .afterDirectionChange
 
 	; Bupm from the right side of the platform?
@@ -272,16 +317,16 @@ JoyMoveDown
 	CALL jp.LandingOnPlatform					; Or should he land on one of the platforms?
 
 	; Direction change? 
-	LD A, (jd.jetmanDirection)
+	LD A, (jd.jetDirection)
 	AND jd.MOVE_DOWN_MASK						; Are we moving down already?
 	CP jd.MOVE_DOWN_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-	LD A, (jd.jetmanDirection)					; Update #jetState by resetting Up/Hover and setting Down
+	LD A, (jd.jetDirection)					; Update #jetState by resetting Up/Hover and setting Down
 	RES jd.MOVE_UP_BIT, A
 	SET jd.MOVE_DOWN_BIT, A	
-	LD (jd.jetmanDirection), A
+	LD (jd.jetDirection), A
 .afterDirectionChange
 .afterInc	
 
@@ -474,11 +519,162 @@ EnemyColision
 	RET C
 
 	; We have colision!
-	CALL sr.SetSpriteId
+	CALL sr.SetSpriteId							; Destroy the enemy
 	CALL sr.SpriteHit
+
+	; Is Jetman already dying? If so, do not start the sequence again, just kill the enemy
+	LD A, (jd.jetState)							
+	CP jd.JET_STATE_RIP
+	RET Z										; Exit if RIP
+
+	; This is the first enemy hit
+	CALL jt.ChangeJetStateRip
 	
+	LD A, js.SDB_RIP							; Change animation
+	CALL js.ChangeJetmanSpritePattern
+
 	RET
 
+;----------------------------------------------------------;
+;                      #RespawnJet                         ;
+;----------------------------------------------------------;
+RespawnJet
+
+	; Set respawn coordinates
+	LD BC, 100
+	LD (jd.jetmanX), BC
+
+	LD A, 100
+	LD (jd.jetmanY), A
+
+	LD A, 0
+	NEXTREG _DC_REG_TILE_X_LSB, A
+	NEXTREG _DC_REG_TILE_Y, A
+
+	LD A, jd.AIR_FLY
+	CALL ChangeJetStateAir
+	RET
+
+;----------------------------------------------------------;
+;                        #JetRip                           ;
+;----------------------------------------------------------;
+JetRip
+
+	LD A, (jd.jetState)							; Exit if not RIP
+	CP jd.JET_STATE_RIP
+	RET NZ
+
+	CALL ShakeScreen
+	CALL RipMove
+
+	; Did Jetam reach the top of the screen (the RIP sequence is over)?	
+	LD A, (jd.jetmanY)
+	CP 0
+	RET NZ										; Nope, still going
+
+	; Sequece is over, respown new live
+	CALL RespawnJet 
+	CALL RestartRipMove
+	RET
+
+;----------------------------------------------------------;
+;                   #ShakeScreen                           ;
+;----------------------------------------------------------;
+shakeScreenCnt			BYTE 0
+shakeScreenState		BYTE 0
+SHAKE_SCREEN_DELAY		= 5
+
+ShakeScreen
+
+	LD A, (shakeScreenCnt)
+	INC A
+	LD (shakeScreenCnt), A
+	CP SHAKE_SCREEN_DELAY
+	RET C										; Return if #shakeScreenCnt <  #SHAKE_SCREEN_DELAY	
+
+	LD A, 0
+	LD (shakeScreenCnt), A
+
+	; #shakeScreenState will change from 1 to 0, to keep shaking state
+	LD A, (shakeScreenState)
+	XOR 2
+	LD (shakeScreenState), A
+
+	NEXTREG _DC_REG_TILE_X_LSB, A
+	NEXTREG _DC_REG_TILE_Y, A
+
+	RET	
+	
+;----------------------------------------------------------;
+;                   #RestartRipMove                        ;
+;----------------------------------------------------------;	
+RestartRipMove
+	LD A, RIP_MOVE_MUL_INC
+	LD (ripMoveMul), A
+	LD (ripMoveCnt), A
+	RET
+
+;----------------------------------------------------------;
+;                      #RipMove                            ;
+;----------------------------------------------------------;	
+; Jetman moves in zig-zac towards the upper side of the screen. 
+RIP_MOVE_LEFT			= 0
+RIP_MOVE_RIGHT			= 1
+ripMoveState			BYTE 0				; 1 - move right, 0 - move left
+
+; Amount of steps to move in the current direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
+; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
+ripMoveCnt				BYTE RIP_MOVE_MUL_INC
+
+RIP_MOVE_MUL_INC		= 5
+ripMoveMul				BYTE RIP_MOVE_MUL_INC
+
+RipMove
+
+	; Move left or right
+	LD A, (ripMoveState)
+	CP RIP_MOVE_LEFT
+	JR Z, .moveLeft
+
+	; Move right
+	CALL DecJetX
+	CALL DecJetX
+	CALL DecJetX
+	JR .afterMove
+.moveLeft
+	; Move left
+	CALL IncJetX
+	CALL IncJetX
+	CALL IncJetX
+.afterMove
+
+	; Y gets always decremented by 1 (going up)
+	LD A, (jd.jetmanY)
+	DEC A
+	LD (jd.jetmanY), A
+
+	; Decrement move counter
+	LD A, (ripMoveCnt)
+	DEC A
+	LD (ripMoveCnt), A
+	CP 0
+
+	RET NZ										; Counter still > 0 - keep going
+
+	; Counter has reached 0 - change direction
+	LD A, (ripMoveState)
+	XOR 1
+	LD (ripMoveState), A
+
+	; Increment zig-zag distance (gets bigger with every direction change)
+	LD A, (ripMoveMul)
+	ADD RIP_MOVE_MUL_INC
+	LD (ripMoveMul), A
+
+	; Counter (how far we go left/right in zig-zag) increments with every turn, and ripMoveMul holds the increasing value
+	LD (ripMoveCnt), A
+	
+	RET
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
