@@ -196,13 +196,13 @@ UpdateJetmanSpritePattern
 	LD HL, (spriteDBIdx)
 
 	; Update upper sprite
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
 	LD A, (HL)
 	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
 	NEXTREG _SPR_REG_ATR3_H38, A	
 
 	; Update lower sprite
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands
 	INC HL
 	LD A, (HL)
 	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute

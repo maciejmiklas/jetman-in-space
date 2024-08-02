@@ -2,9 +2,9 @@
 ;                        Main Game                         ;
 ;----------------------------------------------------------;
 	MODULE gm 
-
-loopCnt											; The game loop counter gets increased with each loop and restarts by overflow
-	DB 0
+	
+ANIMATE_DELAY			= 10					; Change sprite pattern every few game loops
+animDelayCnt			BYTE 0					; The delay counter for sprite animation	
 ;----------------------------------------------------------;
 ;                      #GameInit                           ;
 ;----------------------------------------------------------;
@@ -24,11 +24,6 @@ GameLoop
 		OUT (_BORDER_IO), A
 	ENDIF
 
-	; Increase game counter
-	LD A, (loopCnt)
-	INC A
-	LD (loopCnt), A
-
 	CALL sc.WaitForScanline
 
 	IFDEF PERFORMANCE_BORDER
@@ -42,6 +37,7 @@ GameLoop
 	
 	CALL in.JoyInput
 	CALL jt.JoyDisabled
+	CALL jt.JetInvincible
 	CALL jw.MoveShots
 
 	LD IX, de.sprite01
@@ -55,7 +51,7 @@ GameLoop
 	CALL ep.RespownNextEnemy	
 
 	CALL jw.WeaponHitEnemies
-	CALL jt.JetmanEnemiesColision
+	;CALL jt.JetmanEnemiesColision
 	CALL jt.JetRip
 
 	LD IY, de.formation
@@ -67,9 +63,6 @@ GameLoop
 ;----------------------------------------------------------;
 ;                    #AnimateSprites                       ;
 ;----------------------------------------------------------;
-ANIMATE_DELAY			= 10					; Change sprite pattern every few lops. Loop speed is controled by: #WaitForScanline
-animDelayCnt			BYTE 0					; The delay counter for sprite animation
-
 AnimateSprites
 	LD A, (animDelayCnt)
 	INC A
@@ -107,19 +100,15 @@ PrintDebug
 	LD A,  (jd.jetmanY)
 	LD L, A
 	CALL tx.PrintNumHL		
-
+/*
 	LD B, 20
-	LD H, 0
-	LD A, (jd.jetGnd)
-	LD L, A
+	LD HL, (ut.spriteUpdateCnt)
 	CALL tx.PrintNumHL	
 
 	LD B, 30
-	LD H, 0
-	LD A, (jt.shakeScreenState)
-	LD L, A
+	LD HL, (ut.gameLoopCnt)
 	CALL tx.PrintNumHL		
-
+*/
 	; PRINT END
 	RET
 ;----------------------------------------------------------;

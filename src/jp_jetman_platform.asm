@@ -86,9 +86,9 @@ AnimateOnJoystickDisabled
 	RET	
 	
 ;----------------------------------------------------------;
-;                    #JetmanTakesoff                       ;
+;                      #JetTakesoff                        ;
 ;----------------------------------------------------------;
-JetmanTakesoff
+JetTakesoff
 
 	; Transition from walking to flaying
 	LD A, (jd.jetState)
@@ -102,12 +102,12 @@ JetmanTakesoff
 	; Play takeoff animation					
 	LD A, js.SDB_T_WF
 	CALL js.ChangeJetmanSpritePattern
-	RET											; END #JetmanTakesoff
+	RET											; END #JetTakesoff
 
 ;----------------------------------------------------------;
-;                     #JetmanLanding                       ;
+;                       #JetLanding                        ;
 ;----------------------------------------------------------;
-JetmanLanding
+JetLanding
 
 	; Update state as we are walking
 	CALL jt.ChangeJetStateGnd
@@ -177,7 +177,7 @@ LandingOnPlatform
 	JR NC, .platformsLoopEnd					; Jump if #jetmanX > [X end]
 
 	; Jetman is landing on the platform!
-	CALL JetmanLanding
+	CALL JetLanding
 	RET
 
 .platformsLoopEnd

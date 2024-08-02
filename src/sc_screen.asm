@@ -45,7 +45,6 @@ SetupScreen
 ; - HL:		address of layer 2 palette data
 SetupLayer2Palette
 
-
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Assign bank 24 to slot 7	
 
 	; Bits
@@ -113,7 +112,6 @@ SetupTilemapPalette
 ; This method pauses for the whole frame or a bit more, depending on which scanline display is when calling "WaitForScanline".
 ; 
 ; Based on: https://github.com/robgmoran/DougieDoSource
-
 WaitForScanline     
 ; Read NextReg $1F - LSB of current raster line
 	LD BC, _GL_REG_SELECT_H243B					; TBBlue Register Select

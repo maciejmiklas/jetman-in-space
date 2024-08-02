@@ -7,7 +7,7 @@
 ADJUST_FIRE_X			= 10			
 ADJUST_FIRE_Y			= 4
 
-SPRITE_WEAPON_SIZE		= 8
+FIRE_THICKNESS			= 8
 
 ; Sprites for single shots (#shotMss), based on #MSS
 shotMss
@@ -22,13 +22,21 @@ shotMss5
 	sr.MSS {14/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shotMss6
 	sr.MSS {15/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+shotMss7
+	sr.MSS {16/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+shotMss8
+	sr.MSS {17/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+shotMss9
+	sr.MSS {18/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+shotMss10
+	sr.MSS {19/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY
 shotMssDelayCnt
 	DB 0
 
-FIRE_DELAY				= 3
-SHOT_SIZE				= 6				; Amount of shots that can be simultaneously fired
+FIRE_DELAY				= 2
+SHOT_SIZE				= 10			; Amount of shots that can be simultaneously fired
 
 SHOT_HEIGHT				= 0
 
@@ -109,13 +117,13 @@ HitEnemy
 
 	; Check if the shot hits the enemy from the left side of its X coordinate
 	LD A, C										; A holds the X LSB of the enemy
-	SUB SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
+	SUB FIRE_THICKNESS						; Include the thickness of the enemy
 	CP E
 	JR NC, .continue							; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
 
 	; Check if the shot hits the enemy from the right side of its X coordinate
-	ADD SPRITE_WEAPON_SIZE						; Revert "SUB L" from above
-	ADD SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
+	ADD FIRE_THICKNESS						; Revert "SUB L" from above
+	ADD FIRE_THICKNESS						; Include the thickness of the enemy
 	CP E
 	JR C, .continue								; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
 
@@ -124,13 +132,13 @@ HitEnemy
 	LD B, (IY + sr.MSS.Y)						; B holds Y from the laser beam
 
 	; Check upper bounds
-	SUB SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
+	SUB FIRE_THICKNESS						; Include the thickness of the enemy
 	CP B
 	JR NC, .continue
 
 	; Check lower bounds
-	ADD SPRITE_WEAPON_SIZE						; Revert "SUB L" from above
-	ADD SPRITE_WEAPON_SIZE						; Include the thickness of the enemy
+	ADD FIRE_THICKNESS						; Revert "SUB L" from above
+	ADD FIRE_THICKNESS						; Include the thickness of the enemy
 	CP B
 	JR C, .continue
 
@@ -235,7 +243,6 @@ AnimateShots
 ;                          #Fire                           ;
 ;----------------------------------------------------------;
 Fire
-
 	; Check delay to limit fire speed
 	LD A, (shotMssDelayCnt)
 	CP FIRE_DELAY

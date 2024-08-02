@@ -3,8 +3,24 @@
 ;----------------------------------------------------------;
 	MODULE jt
 
-ENEMY_COLISION_SIZE		= 10
+ENEMY_THICKNESS		= 10
 
+shakeScreenCnt			BYTE 0
+shakeScreenState		BYTE 0
+SHAKE_SCREEN_DELAY		= 5
+
+RIP_MOVE_LEFT			= 0
+RIP_MOVE_RIGHT			= 1
+ripMoveState			BYTE 0				; 1 - move right, 0 - move left
+
+; Amount of steps to move in the current direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
+; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
+ripMoveCnt				BYTE RIP_MOVE_MUL_INC
+
+RIP_MOVE_MUL_INC		= 5
+ripMoveMul				BYTE RIP_MOVE_MUL_INC
+
+invincibleCnt			BYTE 0				; Makes Jetman invincible when > 0
 ;----------------------------------------------------------;
 ;                 #ChangeJetStateAir                       ;
 ;----------------------------------------------------------;
@@ -207,7 +223,7 @@ JoyMoveUp
 .afterDirectionChange
 
 	; Transition from walking to flaying
-	CALL jp.JetmanTakesoff
+	CALL jp.JetTakesoff
 
 	; Bumping from below into the platform?
 	CALL jp.BumpIntoPlatFormBelow
@@ -313,7 +329,7 @@ JoyMoveDown
 
 	; Landing on the ground
 	CP jd.GROUND_LEVEL
-	CALL Z, jp.JetmanLanding					; Execute landing on the ground if Jetman has reached the ground
+	CALL Z, jp.JetLanding					; Execute landing on the ground if Jetman has reached the ground
 	CALL jp.LandingOnPlatform					; Or should he land on one of the platforms?
 
 	; Direction change? 
@@ -345,7 +361,6 @@ JoyStart
 ;                         #JoyEnd                          ;
 ;----------------------------------------------------------;
 JoyEnd											; After input processing, #JoyEnd gets executed as the last procedure
-
 	; #Jetman inactivity
 	LD A, (jd.joyDirection)
 	CP jd.MOVE_INACTIVE
@@ -492,13 +507,13 @@ EnemyColision
 
 	; Check if the Jetman hits the enemy from the left side of its X coordinate
 	LD A, C										; A holds the X LSB of the enemy
-	SUB ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	SUB ENEMY_THICKNESS						; Include the thickness of the enemy
 	CP E
 	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
 
 	; Check if the Jetman hits the enemy from the right side of its X coordinate
-	ADD ENEMY_COLISION_SIZE						; Revert "SUB L" from above
-	ADD ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	ADD ENEMY_THICKNESS						; Revert "SUB L" from above
+	ADD ENEMY_THICKNESS						; Include the thickness of the enemy
 	CP E
 	RET C 										; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
 
@@ -508,13 +523,13 @@ EnemyColision
 	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
 	
 	; Check upper bounds
-	SUB ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	SUB ENEMY_THICKNESS						; Include the thickness of the enemy
 	CP B
 	RET NC
 
 	; Check lower bounds
-	ADD ENEMY_COLISION_SIZE						; Revert "SUB L" from above
-	ADD ENEMY_COLISION_SIZE						; Include the thickness of the enemy
+	ADD ENEMY_THICKNESS						; Revert "SUB L" from above
+	ADD ENEMY_THICKNESS						; Include the thickness of the enemy
 	CP B
 	RET C
 
@@ -539,7 +554,6 @@ EnemyColision
 ;                      #RespawnJet                         ;
 ;----------------------------------------------------------;
 RespawnJet
-
 	; Set respawn coordinates
 	LD BC, 100
 	LD (jd.jetmanX), BC
@@ -559,7 +573,6 @@ RespawnJet
 ;                        #JetRip                           ;
 ;----------------------------------------------------------;
 JetRip
-
 	LD A, (jd.jetState)							; Exit if not RIP
 	CP jd.JET_STATE_RIP
 	RET NZ
@@ -578,14 +591,33 @@ JetRip
 	RET
 
 ;----------------------------------------------------------;
+;                   #JetInvincible                         ;
+;----------------------------------------------------------;
+; Input:
+;  - A: value for invincible count
+JetInvincible
+
+	LD (invincibleCnt), A						; Exit if #invincibleCnt == 0
+	CP 0
+	RET Z
+
+	DEC A
+	LD (invincibleCnt), A						; Decrement counter and store
+
+	CP 0										; Check whether this is the last iteration
+	JP NZ, .afterReset
+	
+	; It is the last iteration - reset the sprite to its original state
+
+	RET
+
+.afterReset	
+	RET
+	
+;----------------------------------------------------------;
 ;                   #ShakeScreen                           ;
 ;----------------------------------------------------------;
-shakeScreenCnt			BYTE 0
-shakeScreenState		BYTE 0
-SHAKE_SCREEN_DELAY		= 5
-
 ShakeScreen
-
 	LD A, (shakeScreenCnt)
 	INC A
 	LD (shakeScreenCnt), A
@@ -618,19 +650,7 @@ RestartRipMove
 ;                      #RipMove                            ;
 ;----------------------------------------------------------;	
 ; Jetman moves in zig-zac towards the upper side of the screen. 
-RIP_MOVE_LEFT			= 0
-RIP_MOVE_RIGHT			= 1
-ripMoveState			BYTE 0				; 1 - move right, 0 - move left
-
-; Amount of steps to move in the current direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
-; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
-ripMoveCnt				BYTE RIP_MOVE_MUL_INC
-
-RIP_MOVE_MUL_INC		= 5
-ripMoveMul				BYTE RIP_MOVE_MUL_INC
-
 RipMove
-
 	; Move left or right
 	LD A, (ripMoveState)
 	CP RIP_MOVE_LEFT

@@ -3,7 +3,6 @@
 ;----------------------------------------------------------;
 	MODULE ef
 
-
 ; The move formation consists of multiple sprites. #MF.MSS_POINTER gives the first sprite, and #MF.SPRITES determines the amount. 
 ; For example, for #MF.MSS_POINTER=sprite10 and #MF.SPRITES=3, the formation will contain three sprites: sprite10, sprite11, and sprite12. 
 ; The #MF.RESPOWN_DELAY determines the respawn delay of the first sprite in the formation. The #ESS.RESPOWN_DELAY for the remaining sprites 
