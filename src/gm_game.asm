@@ -32,12 +32,12 @@ GameLoop
 	ENDIF	
 
 	; First update graphics, logic follows afterwards!
-	CALL js.UpdateJetmanSpritePosition
+	CALL js.UpdateJetSpritePositionRotation
 	CALL AnimateSprites
 	
 	CALL in.JoyInput
 	CALL jt.JoyDisabled
-	CALL jt.JetInvincible
+	;CALL jt.JetInvincible
 	CALL jw.MoveShots
 
 	LD IX, de.sprite01
@@ -51,7 +51,7 @@ GameLoop
 	CALL ep.RespownNextEnemy	
 
 	CALL jw.WeaponHitEnemies
-	;CALL jt.JetmanEnemiesColision
+	CALL jt.JetmanEnemiesColision
 	CALL jt.JetRip
 
 	LD IY, de.formation
@@ -99,15 +99,18 @@ PrintDebug
 	LD H, 0
 	LD A,  (jd.jetmanY)
 	LD L, A
-	CALL tx.PrintNumHL		
+	CALL tx.PrintNumHL
 /*
 	LD B, 20
-	LD HL, (ut.spriteUpdateCnt)
-	CALL tx.PrintNumHL	
+	LD H, 0
+	LD HL, (jd.jetmanX)
+	CALL tx.PrintNumHL
 
 	LD B, 30
-	LD HL, (ut.gameLoopCnt)
-	CALL tx.PrintNumHL		
+	LD H, 0
+	LD A,  (jd.jetmanY)
+	LD L, A
+	CALL tx.PrintNumHL	
 */
 	; PRINT END
 	RET

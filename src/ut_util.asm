@@ -7,23 +7,47 @@
 ;                           #Pause                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - D:		Delay factor
+;  - DE:		Delay factor
 Pause
 	PUSH BC
+	PUSH HL
 .start
-    LD BC, 0
+
+	LD HL, 65000
 .loop:
-	BIT 0, A
-	AND A, 255
-	DEC BC
-	LD A,C
-	OR A,B
+	DEC HL										; DEC HL from 65000 to 0
+	LD A, H
+	CP 0
+
+	CALL CountdownBC
+	CALL CountdownBC
+	CALL CountdownBC
 	JP NZ,.loop
-	DEC D
-	LD A, D	
+
+	; Count down DE
+	DEC BC
+	LD A, B
+	CP 0
 	JP NZ,.start
 	
+	POP HL
 	POP BC
+	RET
+
+CountdownBC
+	LD BC, 65000
+.loop:
+	PUSH BC										; few ops just for delay
+	PUSH HL
+	
+	POP HL
+	POP BC
+
+	DEC BC										; DEC BC from 65000 to 0
+	LD A, B
+	CP 0
+	JP NZ,.loop
+
 	RET
 
 

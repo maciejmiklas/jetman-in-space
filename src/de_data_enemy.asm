@@ -71,8 +71,8 @@ spriteEf04
 spriteEf05
 	sr.MSS {34/*ID*/, sr.SDB_COMET1/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
 
-spritesSize					DB 15				; The total amount of visible sprites - including single enemies and formations
-singleSpritesSize			DB 10				; Amount of sprites that can respawn as a single enemy
+spritesSize					BYTE 15				; The total amount of visible sprites - including single enemies and formations
+singleSpritesSize			BYTE 10				; Amount of sprites that can respawn as a single enemy
 
 formation ef.MF{de.spriteEf01/*MSS_POINTER*/, 2000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
 

@@ -88,54 +88,66 @@ sprDBNextID			BYTE SDB_FLY				; ID in #spriteDB for next animation/DB record
 ;                  #IntiJetmanSprite                       ;
 ;----------------------------------------------------------;
 IntiJetmanSprite
-	CALL UpdateJetmanSpritePosition							
+	CALL UpdateJetSpritePositionRotation							
 	CALL UpdateJetmanSpritePattern
 	RET
 
 ;----------------------------------------------------------;
-;               #UpdateJetmanSpritePosition                ;
+;           #UpdateJetSpritePositionRotation               ;
 ;----------------------------------------------------------;
-UpdateJetmanSpritePosition	
-
-	; Move Jetman Sprite to the current X position, the 9-bit value r=ires a few tricks. 
-	LD BC, (jd.jetmanX)								
-	LD A, C			
-
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
-	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
-
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
-	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
-
-	LD A, B										; Load MSB from X into A
-	AND %00000001								; Keep only an overflow bit
-	
-	; Rotate sprite for Left/Right movement	
-	LD E, A										; Store A in E to use A for loading data from RAM.
-	LD A, (jd.jetDirection)			
+UpdateJetSpritePositionRotation
+	LD A, (jd.jetDirection)
 	LD D, A
-	LD A, E										; Now, A has its original value, and D contains a value from #jetState
+	LD A, 0										; Clear A to set only rotation/mirror bits
 	BIT jd.MOVE_LEFT_BIT, D						; Moving left bit set?
 	JR Z, .rotateRight
-	SET _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite left	
+	SET _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite left
 	JR .afterRotate	
 .rotateRight	
 	RES _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite right
 .afterRotate
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
+	CALL UpdateJetSpritePositionRotationPar
+
+	RET
+
+;----------------------------------------------------------;
+;         #UpdateJetSpritePositionRotationPar              ;
+;----------------------------------------------------------;
+; Input
+;  - A: Contains Rotation/Mirror bits for _SPR_REG_NR_H34
+UpdateJetSpritePositionRotationPar	
+	LD E, A										; Backup A
+
+	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
+	LD BC, (jd.jetmanX)
+
+	; Set _SPR_REG_NR_H34 with LDB from Jetmans X postion
+	LD A, C			
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
+
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
+
+	; Set _SPR_REG_ATR2_H37 containing overflow bit from x position, rotation and mirror
+	LD A, B										; Load MSB from X into A
+	AND %00000001								; Keep only an overflow bit
+	OR E										; Apply rotation from A (E now)
+
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_ATR2_H37, A
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Move Jetman sprite to current Y postion, 8-bit value is easy 
 	LD A, (jd.jetmanY)		
 	
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP	; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW	; Set the ID of the Jetman's sprite for the following commands
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands
 	ADD 16										; Lower part is 16px below upper
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
