@@ -575,10 +575,6 @@ RespawnJet
 ;                        #JetRip                           ;
 ;----------------------------------------------------------;
 JetRip
-	LD A, (jd.jetState)							; Exit if not RIP
-	CP jd.JET_STATE_RIP
-	RET NZ
-
 	CALL ShakeScreen
 	CALL RipMove
 	CALL js.UpdateJetSpritePositionRotation		; Move Jetman sprite to new position

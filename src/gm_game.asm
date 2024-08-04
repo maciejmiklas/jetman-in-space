@@ -35,7 +35,19 @@ GameLoop
 	CALL js.UpdateJetSpritePositionRotation
 	CALL AnimateSprites
 	
-	CALL in.JoyInput
+	; Handle state RIP
+	LD A, (jd.jetState)
+	CP jd.JET_STATE_RIP
+	JR NZ, .jetAlive
+
+	; Jetman is dying
+	CALL jt.JetRip
+	JR .afterJetRip
+.jetAlive										; Jetman is alive
+	
+	CALL in.JoyInput							; Do not process input if Jetman is dying
+.afterJetRip
+
 	CALL jt.JoyDisabled
 	;CALL jt.JetInvincible
 	CALL jw.MoveShots
@@ -52,7 +64,7 @@ GameLoop
 
 	CALL jw.WeaponHitEnemies
 	CALL jt.JetmanEnemiesColision
-	CALL jt.JetRip
+
 
 	LD IY, de.formation
 	CALL ef.RespownFormation	
