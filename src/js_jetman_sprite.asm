@@ -85,17 +85,16 @@ spriteDBRemain		BYTE 0						; Amount of bytes that have to be still processed fr
 sprDBNextID			BYTE SDB_FLY				; ID in #spriteDB for next animation/DB record						
 
 ;----------------------------------------------------------;
-;                  #IntiJetmanSprite                       ;
-;----------------------------------------------------------;
-IntiJetmanSprite
-	CALL UpdateJetSpritePositionRotation							
-	CALL UpdateJetmanSpritePattern
-	RET
-
-;----------------------------------------------------------;
 ;           #UpdateJetSpritePositionRotation               ;
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation
+
+	; Do not update rotation when Jetman is dying. This method sets rotation based on keyboard input (left/right), but when Jetman dies, 
+	; the sprite should rotate clockwise.
+	LD A, (jd.jetState)
+	CP jd.JET_STATE_RIP
+	RET Z
+
 	LD A, (jd.jetDirection)
 	LD D, A
 	LD A, 0										; Clear A to set only rotation/mirror bits

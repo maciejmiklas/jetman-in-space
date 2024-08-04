@@ -17,10 +17,20 @@ ripMoveState			BYTE 0				; 1 - move right, 0 - move left
 ; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
 ripMoveCnt				BYTE RIP_MOVE_MUL_INC
 
-RIP_MOVE_MUL_INC		= 5
+RIP_MOVE_MUL_INC		= 10
 ripMoveMul				BYTE RIP_MOVE_MUL_INC
 
 invincibleCnt			BYTE 0				; Makes Jetman invincible when > 0
+
+
+rotateIdx				BYTE 0				; Rotation counter from 0 to 3
+
+; Rotation (R) and mirror (XM,YM) bits: %0000'XM'YM'R'0
+rotateDB				DB %0000'0'0'0'0/*up*/,%0000'0'0'1'0/*right*/,%0000'0'1'0'0/*down*/,%0000'1'0'1'0/*left*/
+ROTATE_DB_SIZE			= 3					; Indicates reset for the #rotateIdx to 0
+
+RIP_ANIMATE_DELAY		= 15
+ripAnimateCnt			BYTE 0
 ;----------------------------------------------------------;
 ;                 #ChangeJetStateAir                       ;
 ;----------------------------------------------------------;
@@ -153,41 +163,6 @@ JetmanMoves
 	CALL js.ChangeJetmanSpritePattern
 .afterHovering	
 
-	RET
-
-;----------------------------------------------------------;
-;                       #JoySlowdown                       ;
-;----------------------------------------------------------;
-; Slow down/disable joystick input and, therefore, speed of Jetman movement
-; Input:
-; Output:
-;	A containing one of the values given by #JOY_SLOWDOWN_RET_XXX
-JoySlowdown
-	LD A, (jd.joyDelayCnt)
-	INC A
-	LD (jd.joyDelayCnt), A
-
-	CP jd.JOY_DELAY
-	JR NC, .afterDelay
-	LD A, in.JOY_SLOWDOWN_RET_BREAK				; Return because #joyDelayCnt <  #JOY_DELAY
-	RET
-.afterDelay	
-	LD A, 0										; Reset delay counter
-	LD (jd.joyDelayCnt), A
-
-	; Handle disabled joystick
-	LD A, (jd.joyDisabledCnt)
-	CP 0
-	JR Z, .afterjoystickDisabled				; Jump if joystick is enabled -> #joyDisabledCnt > 0
-
-	; Joystick is disabled
-	DEC A										; Decrement disabled counter
-	LD (jd.joyDisabledCnt), A
-	LD A, in.JOY_SLOWDOWN_RET_BREAK
-	RET											; Do not process input, as the joystick is disabled
-
-.afterjoystickDisabled							; Process input
-	LD A, in.JOY_SLOWDOWN_RET_CONT
 	RET
 
 ;----------------------------------------------------------;
@@ -567,7 +542,6 @@ RespawnJet
 
 	LD A, jd.AIR_FLY
 	CALL ChangeJetStateAir
-	CALL js.UpdateJetSpritePositionRotation
 
 	RET
 
@@ -575,10 +549,14 @@ RespawnJet
 ;                        #JetRip                           ;
 ;----------------------------------------------------------;
 JetRip
+
+	LD A, (jd.jetState)
+	CP jd.JET_STATE_RIP
+	RET NZ										; Exit if not RiP
+
 	CALL ShakeScreen
 	CALL RipMove
-	CALL js.UpdateJetSpritePositionRotation		; Move Jetman sprite to new position
-	;CALL RipRotate
+	CALL RipAnimate
 
 	; Did Jetam reach the top of the screen (the RIP sequence is over)?	
 	LD A, (jd.jetmanY)
@@ -659,11 +637,9 @@ RipMove
 
 	; Move right
 	CALL DecJetX
-	CALL DecJetX
 	JR .afterMove
 .moveLeft
 	; Move left
-	CALL IncJetX
 	CALL IncJetX
 .afterMove
 
@@ -695,47 +671,39 @@ RipMove
 	
 	RET
 
-rotateIdx			BYTE 0						; Rotation counter from 0 to 3
-
-; Rotation (R) and mirror (XM,YM) bits: %0000'XM'YM'R'0
-rotateDB			DB %0000'0'0'0'0/*up*/,%0000'0'0'1'0/*right*/,%0000'0'1'0'0/*down*/,%0000'1'0'1'0/*left*/
-ROTATE_DB_SIZE		= 3							; Indicates reset for the #rotateIdx to 0
-
 ;----------------------------------------------------------;
-;                      #RipRotate                          ;
+;                      #RipAnimate                         ;
 ;----------------------------------------------------------;
-; Rotates Jetman sprite in 4 steps, each one by 90 degrees. The counter keeps information about the current rotation from 0 to 3
-RipRotate
-	; Set rotation/mirror on _SPR_REG_ATR2_H37
+RipAnimate
+
+	; Set rotation/mirror on _SPR_REG_ATR2_H37 on each game loop
 	LD BC, rotateDB								; BC holds pointer value (not the entry value!) to #rotateDB 
 	LD A, (rotateIdx)
 	ADD BC, A									; Move pointer to #rotateDB to the righs postion
 	LD A, (BC)									; Prepare A to be set on _SPR_REG_NR_H34 by loading value from db pointer
 	CALL js.UpdateJetSpritePositionRotationPar
 
-	LD DE, 5000
-	CALL ut.Pause
-	LD B, 20
-	LD H, 0
-	LD A,  (rotateIdx)
-	LD L, A
-	CALL tx.PrintNumHL
+	; Change rotation every few game loops
+	LD A, (ripAnimateCnt)
+	INC A
+	LD (ripAnimateCnt), A
+	CP RIP_ANIMATE_DELAY
+	RET NZ										; Return if the delay has not been reached
 
+	LD A, 0										; #ripAnimateCnt has reached #RIP_ANIMATE_DELAY -> reset to 0
+	LD (ripAnimateCnt), A	
 
-	; Should we reset the counter?
+	; Next rotation
 	LD A, (rotateIdx)
 	INC A
 	LD (rotateIdx), A
 	CP ROTATE_DB_SIZE + 1
-	JR NZ, .afterResetRotate					; Jump if #rotateIdx != #ROTATE_MAX
-	LD A, 0										; #rotateIdx has reached #ROTATE_MAX -> reset to 0
-	LD (rotateIdx), A
-	
-	LD D, 1
-	CALL ut.Pause
-.afterResetRotate
+	RET NZ										; Return if #rotateIdx != #ROTATE_MAX
 
-	RET	
+	LD A, 0										; #rotateIdx has reached #ROTATE_MAX -> reset to 0
+	LD (rotateIdx), A	
+
+	RET
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

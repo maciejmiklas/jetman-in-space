@@ -3,17 +3,22 @@
 ;----------------------------------------------------------;
 	MODULE in
 
-JOY_SLOWDOWN_RET_CONT 	= 1						; Disable joystick input processing for this loop
-JOY_SLOWDOWN_RET_BREAK	= 2						; Process joystick input
-
 ;----------------------------------------------------------;
 ;                         #JoyInput                        ;
 ;----------------------------------------------------------;
 JoyInput
 	CALL JoySlowdown
-	CP JOY_SLOWDOWN_RET_BREAK
+	CP JOY_SL_RET_JOY_OFF
 	RET Z
 	
+	CALL JoyDisabled
+	CP JOY_DIS_RET_JOY_OFF
+	RET Z
+
+	LD A, (jd.jetState)
+	CP jd.JET_STATE_RIP
+	RET Z										; Do not process input if Jetman is dying
+
 	CALL JoyStart
 	
 	; Key Rright pressed ?
@@ -81,11 +86,56 @@ JoyInput
 	RET											; END JoyInput
 
 ;----------------------------------------------------------;
-;                     JoySlowdown                          ;
+;                       #JoySlowdown                       ;
 ;----------------------------------------------------------;
-JoySlowdown
-	CALL jt.JoySlowdown
+; Slow down joystick input and, therefore, speed of Jetman movement
+; Input:
+; Output:
+;	A containing one of the values given by #JOY_SL_RET_JOY_XXX
+JOY_SL_RET_JOY_ON 		= 1							; Process joystick input
+JOY_SL_RET_JOY_OFF		= 2							; Disable joystick input processing for this loop
 
+JoySlowdown
+	LD A, (jd.joyDelayCnt)
+	INC A
+	LD (jd.joyDelayCnt), A
+
+	CP jd.JOY_DELAY
+	JR Z, .delayReached
+
+	LD A, JOY_SL_RET_JOY_OFF						; Return because #joyDelayCnt !=  #JOY_DELAY
+	RET
+.delayReached										; Delay counter has been reached	
+						
+	LD A, 0											; Reset delay counter
+	LD (jd.joyDelayCnt), A
+
+	LD A, JOY_SL_RET_JOY_ON							; Process input, because counter has been reached
+	RET
+
+;----------------------------------------------------------;
+;                       #JoyDisabled                       ;
+;----------------------------------------------------------;
+; Disable joystick and, therefore, controle over the Jetman 
+; Output:
+;	A containing one of the values given by #JOY_DIS_RET_JOY_XXX
+JOY_DIS_RET_JOY_ON 		= 1						; Process joystick input
+JOY_DIS_RET_JOY_OFF		= 2						; Disable joystick input processing for this loop
+
+JoyDisabled
+	LD A, (jd.joyDisabledCnt)
+	CP 0
+	JR Z, .afterjoystickDisabled				; Jump if joystick is enabled -> #joyDisabledCnt > 0
+
+	; Joystick is disabled
+	DEC A										; Decrement disabled counter
+	LD (jd.joyDisabledCnt), A
+
+	LD A, JOY_DIS_RET_JOY_OFF
+	RET											; Do not process input, as the joystick is disabled
+
+.afterjoystickDisabled							; Process input
+	LD A, JOY_DIS_RET_JOY_ON
 	RET
 
 ;----------------------------------------------------------;

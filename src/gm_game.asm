@@ -9,7 +9,6 @@ animDelayCnt			BYTE 0					; The delay counter for sprite animation
 ;                      #GameInit                           ;
 ;----------------------------------------------------------;
 GameInit
-	CALL js.IntiJetmanSprite
 
 	RET
 
@@ -35,18 +34,8 @@ GameLoop
 	CALL js.UpdateJetSpritePositionRotation
 	CALL AnimateSprites
 	
-	; Handle state RIP
-	LD A, (jd.jetState)
-	CP jd.JET_STATE_RIP
-	JR NZ, .jetAlive
-
-	; Jetman is dying
 	CALL jt.JetRip
-	JR .afterJetRip
-.jetAlive										; Jetman is alive
-	
-	CALL in.JoyInput							; Do not process input if Jetman is dying
-.afterJetRip
+	CALL in.JoyInput
 
 	CALL jt.JoyDisabled
 	;CALL jt.JetInvincible
@@ -65,7 +54,6 @@ GameLoop
 	CALL jw.WeaponHitEnemies
 	CALL jt.JetmanEnemiesColision
 
-
 	LD IY, de.formation
 	CALL ef.RespownFormation	
 	CALL PrintDebug
@@ -80,7 +68,7 @@ AnimateSprites
 	INC A
 	LD (animDelayCnt), A
 	CP ANIMATE_DELAY
-	RET C										; Return if #animDelayCnt <  #ANIMATE_DELAY
+	RET NZ										; Jump if #animDelayCnt !=  #ANIMATE_DELAY -> Sprites should animate
 
 	LD A, 0										; Reset delay counter
 	LD (animDelayCnt), A
@@ -94,7 +82,7 @@ AnimateSprites
 	LD A, (de.spritesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
-	
+
 	RET	
 
 ;----------------------------------------------------------;
