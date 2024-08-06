@@ -3,12 +3,15 @@
 ;----------------------------------------------------------;
 	MODULE jp
 
+jetmanX					WORD 100				; 0-320px
+jetmanY 				BYTE 100				; 0-256px
+
 ;----------------------------------------------------------;
 ;                          #IncJetX                        ;
 ;----------------------------------------------------------;
 ; Increment X position
 IncJetX
-	LD BC, (jd.jetmanX)	
+	LD BC, (jp.jetmanX)	
 	INC BC
 
 	; If X >= 315 then set it to 0. X is 9-bit value. 
@@ -21,7 +24,7 @@ IncJetX
 	JR C, .lessThanMaxX
 	LD BC, 1									; Jetman is above 315 -> set to 1
 .lessThanMaxX
-	LD (jd.jetmanX), BC							; Update new X position
+	LD (jp.jetmanX), BC							; Update new X position
 
 	RET
 
@@ -30,7 +33,7 @@ IncJetX
 ;----------------------------------------------------------;
 ; Decrement X position
 DecJetX
-	LD BC, (jd.jetmanX)	
+	LD BC, (jp.jetmanX)	
 	DEC BC
 
 	; If X == 0 (SCR_X_MIN_POS) then set it to 315. X == 0 when B and C are 0
@@ -42,7 +45,7 @@ DecJetX
 	JR NZ, .afterResetX
 	LD BC, sc.SCR_X_MAX_POS						; X == 0 (both A and B are 0) -> set X to 315
 .afterResetX
-	LD (jd.jetmanX), BC
+	LD (jp.jetmanX), BC
 	RET
 
 ;----------------------------------------------------------;

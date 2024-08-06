@@ -270,8 +270,8 @@ Fire
 	; We are here because free #shotMssX has been found, and IX points to it
 
 	; Is Jetman moving left or right?
-	LD A, (jd.jetDirection)
-	BIT jd.MOVE_LEFT_BIT, A
+	LD A, (id.jetDirection)
+	BIT id.MOVE_LEFT_BIT, A
 	JR NZ, .movingLeft							; Jump if Jetman is moving left
 	
 	LD A, 0										; A will hold sr.MSS.STATE
@@ -279,7 +279,7 @@ Fire
 	SET STATE_SHOT_DIR_BIT, A					; Store shot direction in state
 
 	; Set X coordinate for laser beam
-	LD HL, (jd.jetmanX)
+	LD HL, (jp.jetmanX)
 	ADD HL, ADJUST_FIRE_X
 	LD (IX + sr.MSS.X), HL
 
@@ -289,7 +289,7 @@ Fire
 	RES STATE_SHOT_DIR_BIT, A					; Store shot direction in state
 
 	; Set X coordinate for laser beam
-	LD HL, (jd.jetmanX)
+	LD HL, (jp.jetmanX)
 	ADD HL, -ADJUST_FIRE_X
 	LD (IX + sr.MSS.X), HL
 .afterMoving
@@ -297,7 +297,7 @@ Fire
 	CALL sr.SetVisible							; It will show sprite and store state from A
 
 	; Set Y coordinate for laser beam
-	LD A, (jd.jetmanY)
+	LD A, (jp.jetmanY)
 	ADD A, ADJUST_FIRE_Y
 	LD (IX + sr.MSS.Y), A
 

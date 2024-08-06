@@ -3,6 +3,35 @@
 ;----------------------------------------------------------;
 	MODULE js
 
+STATE_INACTIVE			= 0
+
+; States for Jetmain in the air, 0 for not in the air
+AIR_FLY					= 1						; Jetman is flaying
+AIR_HOOVER				= 2						; Jetman is hovering
+AIR_FALL_RIGHT			= 3						; Jetmal falls from paltform on the right
+AIR_FALL_LEFT			= 4						; Jetmal falls from paltform on the left
+AIR_BUMP_RIGHT			= 5						; Jetban bumps into a platform from the right, he faces/moves left
+AIR_BUMP_LEFT			= 6						; Jetban bumps into a platform from the left, he faces/moves right
+AIR_BUMP_BOTTOM			= 7						; Jetban bumps into a platform from the bottom
+
+jetAir					BYTE AIR_FLY
+
+; States for Jetman on the platform/ground
+GND_WALK				= 1						; Jetman walks on the ground
+GND_JSTAND				= 2						; Jetman stands on the ground for a very short time, not enougt to switch to #GND_STAND
+GND_STAND				= 3						; Jetman stands on the ground
+
+jetGnd				BYTE 0
+
+; Jetman states
+JET_STATE_INIT			= %00000000
+JET_STATE_AIR_BIT		= 0						; Jemtan is flying, possible states are in #jetAir
+JET_STATE_GND_BIT		= 1						; Jemtan is walking, possible states are in #jetGnd
+JET_STATE_RIP_BIT		= 2						; Jemtan got hit by enemy
+JET_STATE_INV_BIT		= 3						; Jetman is invincible
+
+jetState				BYTE %00000001			; Game start, Jetman in the air
+
 ;----------------------------------------------------------;
 ;                 #ChangeJetStateAir                       ;
 ;----------------------------------------------------------;
@@ -10,15 +39,15 @@
 ;  - A:										; Air State: #AIR_XXX
 ChangeJetStateAir
 	
-	LD (jd.jetAir), A
+	LD (js.jetAir), A
 
-	LD A, (jd.jetState)
-	SET jd.JET_STATE_AIR_BIT, A
-	RES jd.JET_STATE_GND_BIT, A
-	LD (jd.jetState), A
+	LD A, (js.jetState)
+	SET js.JET_STATE_AIR_BIT, A
+	RES js.JET_STATE_GND_BIT, A
+	LD (js.jetState), A
 
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetGnd), A
+	LD A, js.STATE_INACTIVE
+	LD (js.jetGnd), A
 
 	RET
 
@@ -27,16 +56,16 @@ ChangeJetStateAir
 ;----------------------------------------------------------;
 ChangeJetStateGnd
 
-	LD A, (jd.jetState)
-	SET jd.JET_STATE_GND_BIT, A
-	RES jd.JET_STATE_AIR_BIT, A
-	LD (jd.jetState), A
+	LD A, (js.jetState)
+	SET js.JET_STATE_GND_BIT, A
+	RES js.JET_STATE_AIR_BIT, A
+	LD (js.jetState), A
 
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetAir), A
+	LD A, js.STATE_INACTIVE
+	LD (js.jetAir), A
 
-	LD A, jd.GND_WALK
-	LD (jd.jetGnd), A
+	LD A, js.GND_WALK
+	LD (js.jetGnd), A
 
 	RET	
 
@@ -44,14 +73,14 @@ ChangeJetStateGnd
 ;                 #ChangeJetStateRip                       ;
 ;----------------------------------------------------------;
 ChangeJetStateRip
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetAir), A
-	LD (jd.jetGnd), A
+	LD A, js.STATE_INACTIVE
+	LD (js.jetAir), A
+	LD (js.jetGnd), A
 
-	LD A, jd.JET_STATE_INIT
-	SET jd.JET_STATE_AIR_BIT, A
-	SET jd.JET_STATE_RIP_BIT, A
-	LD (jd.jetState), A
+	LD A, js.JET_STATE_INIT
+	SET js.JET_STATE_AIR_BIT, A
+	SET js.JET_STATE_RIP_BIT, A
+	LD (js.jetState), A
 
 	RET
 
@@ -59,16 +88,16 @@ ChangeJetStateRip
 ;                #ChangeJetStateRespown                    ;
 ;----------------------------------------------------------;
 ChangeJetStateRespown
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetGnd), A
+	LD A, js.STATE_INACTIVE
+	LD (js.jetGnd), A
 
-	LD A, jd.AIR_HOOVER
-	LD (jd.jetAir), A
+	LD A, js.AIR_HOOVER
+	LD (js.jetAir), A
 
-	LD A, jd.JET_STATE_INIT
-	SET jd.JET_STATE_AIR_BIT, A
-	SET jd.JET_STATE_INV_BIT, A
-	LD (jd.jetState), A
+	LD A, js.JET_STATE_INIT
+	SET js.JET_STATE_AIR_BIT, A
+	SET js.JET_STATE_INV_BIT, A
+	LD (js.jetState), A
 	
 	RET	
 

@@ -26,6 +26,7 @@ mainLoop
 ;----------------------------------------------------------;
 	INCLUDE "_constants.asm"
 
+	INCLUDE "id_input_data.asm"
 	INCLUDE "in_input.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
@@ -36,7 +37,6 @@ mainLoop
 
 	INCLUDE "sr_simple_sprite.asm"
 	INCLUDE "sp_sprite.asm"	
-	INCLUDE "jd_jet_data.asm"
 	INCLUDE "js_jet_state.asm"	
 	INCLUDE "jp_jet_position.asm"	
 	INCLUDE "jp_jet_platform.asm"	

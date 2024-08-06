@@ -151,24 +151,24 @@ PrintDebug
 	; PRINT START
 	LD B, 0
 	LD H, 0
-	LD HL, (jd.jetmanX)
+	LD HL, (jp.jetmanX)
 	CALL tx.PrintNumHL
 
 	LD B, 10
 	LD H, 0
-	LD A,  (jd.jetmanY)
+	LD A,  (jp.jetmanY)
 	LD L, A
 	CALL tx.PrintNumHL
 
 	LD B, 20
 	LD H, 0
-	LD A,  (jd.invincibleCnt)
+	LD A,  (jt.invincibleCnt)
 	LD L, A
 	CALL tx.PrintNumHL
 
 	LD B, 30
 	LD H, 0
-	LD A, (jd.jetState)
+	LD A, (js.jetState)
 	LD L, A
 	CALL tx.PrintNumHL	
 
