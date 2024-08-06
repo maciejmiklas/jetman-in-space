@@ -32,6 +32,7 @@ GameLoop
 	CALL js.UpdateJetSpritePositionRotation
 	CALL Counter10
 	CALL Counter5
+	CALL Counter3
 	
 	CALL jt.JetRip
 	CALL in.JoyInput
@@ -100,8 +101,32 @@ Counter5
 	LD (dc.counter5), A
 
 	; Call functions that need to be updated every 10th loop
+	; nothing yet
+	;CALL jt.JetInvincible
+	RET		
+
+;----------------------------------------------------------;
+;                       #Counter3                          ;
+;----------------------------------------------------------;
+Counter3
+	LD A, (dc.counter3FliFLop)					; 1 -> 0 and 0 -> 1
+	XOR 1
+	LD (dc.counter3FliFLop), A
+
+	; Decrement the counter
+	LD A, (dc.counter3)
+	INC A
+	LD (dc.counter3), A
+	CP dc.COUNTER3_MAX
+	RET NZ										; Jump if #counter3 !=  #COUNTER3_MAX 
+
+	LD A, 0										; Reset the counter
+	LD (dc.counter3), A
+
+	; Call functions that need to be updated every 10th loop
 	CALL jt.JetInvincible
 	RET		
+
 
 ;----------------------------------------------------------;
 ;                    #AnimateSprites                       ;

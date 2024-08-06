@@ -80,16 +80,18 @@ spriteDB
 	; Transition: walking -> falling
 	DB SDB_T_WL,	SDB_FLY - SDB_SUB, 		08, 03,30, 04,31, 05,32, 03,33
 
-spriteDBIdx			WORD 0						; Current position in DB
-spriteDBRemain		BYTE 0						; Amount of bytes that have to be still processed from the current record
-sprDBNextID			BYTE SDB_FLY				; ID in #spriteDB for next animation/DB record						
+sprDBIdx			WORD 0						; Current position in DB
+sprDBRemain			BYTE 0						; Amount of bytes that have to be still processed from the current record
+sprDBNextID			BYTE SDB_FLY				; ID in #spriteDB for next animation/DB record
+
+SPR_STATE_HIDE		= 0
+SPR_STATE_SHOW		= 1
+sprState			BYTE SPR_STATE_SHOW
 
 ;----------------------------------------------------------;
 ;          #UpdateJetSpritePositionRotation                ;
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation	
-
-
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
 	LD BC, (jd.jetmanX)
 
@@ -146,7 +148,7 @@ ChangeJetSpritePattern
 	LD (sprDBNextID), A							; Next animation record
 
 	LD A, 0
-	LD (spriteDBRemain), A						; No more bytes to process within the current DB record will cause the fast switch to the next.
+	LD (sprDBRemain), A						; No more bytes to process within the current DB record will cause the fast switch to the next.
 
 	CALL UpdateJetSpritePattern				    ; Update the next animation frame immediately
 	
@@ -157,9 +159,9 @@ ChangeJetSpritePattern
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
 UpdateJetSpritePattern	
-
+	
 	; Switch to the next DB record if all bytes from the current one have been used
-	LD A, (spriteDBRemain)
+	LD A, (sprDBRemain)
 	CP 0
 	JR NZ, .afterRecordChange					; Jump if there are still bytes to be processed
 	
@@ -169,54 +171,105 @@ UpdateJetSpritePattern
 	LD BC, 0									; Do not limit CPIR search
 	CPIR
 
-	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
+	; Now we are at the correct DB position containing the following sprite pattern and will load it into the registry
 	LD A, (HL)									; Update next pointer to next animation record
 	ADD SDB_SUB									; Add 100 because DB value had  -100, to avoid collision with ID
 	LD (sprDBNextID), A
 
 	INC HL										; HL points to [SIZE]
 	LD A, (HL)									; Update SIZE
-	LD (spriteDBRemain), A
+	LD (sprDBRemain), A
 
 	INC HL										; HL points to first sprite data (upper/lower parts)
-	LD (spriteDBIdx), HL						; Database offset points to be bytes containing sprite offsets from sprite file
+	LD (sprDBIdx), HL						; Database offset points to be bytes containing sprite offsets from sprite file
 
 .afterRecordChange
 
 	; 2 bytes will be consumed from current DB record -> upper and lower sprite for Jetman
-	LD A, (spriteDBRemain)
+	LD A, (sprDBRemain)
 	ADD -SDB_FRAME_SIZE
-	LD (spriteDBRemain), A
+	LD (sprDBRemain), A
 
-	LD HL, (spriteDBIdx)
+	; Now we are at correct DB position containing next sprite pattern and will load it into registry
+	LD HL, (sprDBIdx)
+
+	; Store in B _SPR_PATTERN_SHOW/_HIDE depending on the #sprState 
+	LD A, (sprState)
+	CP SPR_STATE_HIDE
+	JR Z, .hide
+	LD B, _SPR_PATTERN_SHOW						; Sprite is visible
+	JR .afterShow
+.hide
+	LD B, _SPR_PATTERN_HIDE						; Sprite is hidden
+.afterShow	
 
 	; Update upper sprite
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
-	LD A, (HL)
-	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
+	LD A, (HL)									; Store pattern number into sprite attribute	
+	OR B										; Store visibility sprite attribute
 	NEXTREG _SPR_REG_ATR3_H38, A	
 
 	; Update lower sprite
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands
 	INC HL
-	LD A, (HL)
-	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute
+	LD A, (HL)									; Store pattern number into sprite attribute	
+	OR B										; Store visibility sprite attribute
 	NEXTREG _SPR_REG_ATR3_H38, A	
 
 	; Update pointer to DB
 	INC HL
-	LD (spriteDBIdx), HL
+	LD (sprDBIdx), HL
 
+	RET
+
+;----------------------------------------------------------;
+;                    #BlinkJetSprite                       ;
+;----------------------------------------------------------;
+BlinkJetSprite
+	LD A, (dc.counter5FliFLop)
+	CP dc.FLIP_ON
+	JR NZ, .flipOff
+	
+	; Show sprite
+	CALL HideJetSprite
+	RET
+.flipOff
+	; Hide sprite
+	CALL ShowJetSprite
 	RET
 
 ;----------------------------------------------------------;
 ;                     #ShowJetSprite                       ;
 ;----------------------------------------------------------;
+ShowJetSprite
+	LD A, SPR_STATE_SHOW
+	LD (sprState), A
+
+	LD B, _SPR_PATTERN_SHOW
+	CALL ShowOrHideJetSprite
+
+	RET
+
+;----------------------------------------------------------;
+;                     #HideJetSprite                       ;
+;----------------------------------------------------------;
+HideJetSprite
+	LD A, SPR_STATE_HIDE
+	LD (sprState), A
+
+	LD B, _SPR_PATTERN_HIDE
+	CALL ShowOrHideJetSprite
+
+	RET	
+
+;----------------------------------------------------------;
+;                 #ShowOrHideJetSprite                     ;
+;----------------------------------------------------------;
 ; Input:
 ;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE
-ShowJetSprite
-
-	LD HL, (spriteDBIdx)						; Load current sprite pattern
+ShowOrHideJetSprite
+	LD HL, (sprDBIdx)						; Load current sprite pattern
+	ADD HL, -SDB_FRAME_SIZE					; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record
 
 	; Update upper sprite
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands

@@ -432,7 +432,7 @@ RespawnJet
 
 	CALL js.ChangeJetStateRespown
 
-	LD A, (jd.RESPOWN_INVINCIBLE_LOOPS)
+	LD A, jd.RESPOWN_INVINCIBLE_CNT
 	CALL MakeJetInvincible
 
 	RET
@@ -441,7 +441,6 @@ RespawnJet
 ;                        #JetRip                           ;
 ;----------------------------------------------------------;
 JetRip
-
 	LD A, (jd.jetState)
 	BIT jd.JET_STATE_RIP_BIT, A
 	RET Z										; Exit if not RiP
@@ -463,10 +462,11 @@ JetRip
 ;                   #MakeJetInvincible                     ;
 ;----------------------------------------------------------;
 ; Input
-;  - A:		Number of loops (#counter10) to keep Jemtan invincible
+;  - A:		Number of loops (#counter2) to keep Jemtan invincible
 MakeJetInvincible
-	LD (jd.invincibleCnt), A
+	LD (jd.invincibleCnt), A					; Store invincibility duration
 	
+	; Update state
 	LD A, (jd.jetState)
 	SET jd.JET_STATE_INV_BIT, A
 	LD (jd.jetState), A
@@ -487,31 +487,15 @@ JetInvincible
 	JR Z, .lastIteration
 
 	; Still invincible - blink Jetman sprite
-	CALL BlinkJetSprite
+	CALL js.BlinkJetSprite
 	RET
 .lastIteration	
 	; It is the last iteration, remove invincibility
+
 	LD A, (jd.jetState)
 	RES jd.JET_STATE_INV_BIT, A
 	LD (jd.jetState), A
 
-	RET
-
-;----------------------------------------------------------;
-;                    #BlinkJetSprite                       ;
-;----------------------------------------------------------;
-BlinkJetSprite
-	LD A, (dc.counter5FliFLop)
-	CP dc.FLIP_ON
-	JR NZ, .flipOff
-	
-	; Show sprite
-	LD B, _SPR_PATTERN_SHOW
-	CALL js.ShowJetSprite
-	RET
-.flipOff
-	; Hide sprite
-	LD B, _SPR_PATTERN_HIDE
 	CALL js.ShowJetSprite
 	RET
 

@@ -98,7 +98,7 @@ ripMoveMul				BYTE jd.RIP_MOVE_MUL_INC
 
 invincibleCnt			BYTE 0				; Makes Jetman invincible when > 0
 
-RESPOWN_INVINCIBLE_LOOPS = 250				; Number of loops to keep Jetman invincible	
+RESPOWN_INVINCIBLE_CNT = 250				; Number of loops to keep Jetman invincible	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

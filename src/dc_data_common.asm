@@ -14,6 +14,10 @@ COUNTER5_MAX		= 5
 counter5			BYTE 0
 counter5FliFLop		BYTE 0						; Changes with evety counter run from 1 to 0 and so on
 
+COUNTER3_MAX		= 3
+counter3			BYTE 0
+counter3FliFLop		BYTE 0						; Changes with evety counter run from 1 to 0 and so on
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
