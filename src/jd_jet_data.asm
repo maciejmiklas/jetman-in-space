@@ -82,6 +82,23 @@ joyDirection			BYTE MOVE_INACTIVE
 JOY_DELAY				= 2					; Probe joystick every few loops. Loop speed is controled by: #WaitForScanline     
 joyDelayCnt				BYTE 0				; The delay counter for joistink input and Jetman movement speed
 	
+ENEMY_THICKNESS			= 10
+SHAKE_SCREEN_BY			= 5					; Number of pixels to move the screen by shaking
+
+RIP_MOVE_LEFT			= 0
+RIP_MOVE_RIGHT			= 1
+ripMoveState			BYTE 0				; 1 - move right, 0 - move left
+
+; Amount of steps to move in a direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
+; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
+ripMoveCnt				BYTE jd.RIP_MOVE_MUL_INC
+
+RIP_MOVE_MUL_INC		= 10
+ripMoveMul				BYTE jd.RIP_MOVE_MUL_INC
+
+invincibleCnt			BYTE 0				; Makes Jetman invincible when > 0
+
+RESPOWN_INVINCIBLE_LOOPS = 250				; Number of loops to keep Jetman invincible	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

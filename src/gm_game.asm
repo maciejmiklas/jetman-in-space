@@ -2,10 +2,6 @@
 ;                        Main Game                         ;
 ;----------------------------------------------------------;
 	MODULE gm 
-	
-COUNTER10_MAX		= 10
-counter10			BYTE 0
-counter10FliFLop	BYTE 0						; Changes with evety counter run from 1 to 0 and so on
 
 ;----------------------------------------------------------;
 ;                      #GameInit                           ;
@@ -35,6 +31,7 @@ GameLoop
 	; First update graphics, logic follows afterwards!
 	CALL js.UpdateJetSpritePositionRotation
 	CALL Counter10
+	CALL Counter5
 	
 	CALL jt.JetRip
 	CALL in.JoyInput
@@ -66,33 +63,52 @@ GameLoop
 ;                       #Counter10                         ;
 ;----------------------------------------------------------;
 Counter10
-
-	; Flip to flop
-	LD A, (counter10FliFLop)
+	LD A, (dc.counter10FliFLop)					; 1 -> 0 and 0 -> 1
 	XOR 1
-	LD (counter10FliFLop), A
+	LD (dc.counter10FliFLop), A
 
 	; Decrement the counter
-	LD A, (counter10)
+	LD A, (dc.counter10)
 	INC A
-	LD (counter10), A
-	CP COUNTER10_MAX
+	LD (dc.counter10), A
+	CP dc.COUNTER10_MAX
 	RET NZ										; Jump if #counter10 !=  #COUNTER10_MAX 
 
 	LD A, 0										; Reset the counter
-	LD (counter10), A
+	LD (dc.counter10), A
 		
 	; Call functions that need to be updated every 10th loop
 	CALL AnimateSprites		
-	CALL jt.JetInvincibleCounter
 	RET	
+
+;----------------------------------------------------------;
+;                       #Counter5                          ;
+;----------------------------------------------------------;
+Counter5
+	LD A, (dc.counter5FliFLop)					; 1 -> 0 and 0 -> 1
+	XOR 1
+	LD (dc.counter5FliFLop), A
+
+	; Decrement the counter
+	LD A, (dc.counter5)
+	INC A
+	LD (dc.counter5), A
+	CP dc.COUNTER5_MAX
+	RET NZ										; Jump if #counter5 !=  #COUNTER5_MAX 
+
+	LD A, 0										; Reset the counter
+	LD (dc.counter5), A
+
+	; Call functions that need to be updated every 10th loop
+	CALL jt.JetInvincible
+	RET		
 
 ;----------------------------------------------------------;
 ;                    #AnimateSprites                       ;
 ;----------------------------------------------------------;
 AnimateSprites
 	; Update sprite patterns
-	CALL js.UpdateJetmanSpritePattern
+	CALL js.UpdateJetSpritePattern
 	CALL jw.AnimateShots
 
 	; Animate enemies
@@ -121,7 +137,7 @@ PrintDebug
 
 	LD B, 20
 	LD H, 0
-	LD A,  (jt.invincibleCnt)
+	LD A,  (jd.invincibleCnt)
 	LD L, A
 	CALL tx.PrintNumHL
 

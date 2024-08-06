@@ -137,26 +137,26 @@ UpdateJetSpritePositionRotation
 	RET
 	
 ;----------------------------------------------------------;
-;               #ChangeJetmanSpritePattern                 ;
+;                 #ChangeJetSpritePattern                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - A: ID for #jesSprites, to siwtch to the next animation record
-ChangeJetmanSpritePattern
+ChangeJetSpritePattern
 
 	LD (sprDBNextID), A							; Next animation record
 
 	LD A, 0
 	LD (spriteDBRemain), A						; No more bytes to process within the current DB record will cause the fast switch to the next.
 
-	CALL UpdateJetmanSpritePattern				; Update the next animation frame immediately
+	CALL UpdateJetSpritePattern				    ; Update the next animation frame immediately
 	
 	RET
 
 ;----------------------------------------------------------;
-;             #UpdateJetmanSpritePattern                   ;
+;               #UpdateJetSpritePattern                    ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
-UpdateJetmanSpritePattern	
+UpdateJetSpritePattern	
 
 	; Switch to the next DB record if all bytes from the current one have been used
 	LD A, (spriteDBRemain)
@@ -206,6 +206,30 @@ UpdateJetmanSpritePattern
 	; Update pointer to DB
 	INC HL
 	LD (spriteDBIdx), HL
+
+	RET
+
+;----------------------------------------------------------;
+;                     #ShowJetSprite                       ;
+;----------------------------------------------------------;
+; Input:
+;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE
+ShowJetSprite
+
+	LD HL, (spriteDBIdx)						; Load current sprite pattern
+
+	; Update upper sprite
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
+	LD A, (HL)
+	OR B										; Store pattern number into Sprite Attribute	
+	NEXTREG _SPR_REG_ATR3_H38, A	
+
+	; Update lower sprite
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands
+	INC HL
+	LD A, (HL)
+	OR B										; Store pattern number into Sprite Attribute
+	NEXTREG _SPR_REG_ATR3_H38, A	
 
 	RET
 

@@ -1,138 +1,8 @@
 ;----------------------------------------------------------;
-;              Jetman Movement, States and Logic           ;
+;                       Jetman Logic                       ;
 ;----------------------------------------------------------;
 	MODULE jt
 
-ENEMY_THICKNESS		= 10
-
-shakeScreenCnt			BYTE 0
-shakeScreenState		BYTE 0
-SHAKE_SCREEN_DELAY		= 3
-SHAKE_SCREEN_BY			= 5					; Number of pixels to move the screen by shaking
-
-RIP_MOVE_LEFT			= 0
-RIP_MOVE_RIGHT			= 1
-ripMoveState			BYTE 0				; 1 - move right, 0 - move left
-
-; Amount of steps to move in the current direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
-; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
-ripMoveCnt				BYTE RIP_MOVE_MUL_INC
-
-RIP_MOVE_MUL_INC		= 10
-ripMoveMul				BYTE RIP_MOVE_MUL_INC
-
-invincibleCnt			BYTE 0				; Makes Jetman invincible when > 0
-
-RESPOWN_INVINCIBLE_LOOPS = 250				; Number of loops to keep Jetman invincible
-
-;----------------------------------------------------------;
-;                 #ChangeJetStateAir                       ;
-;----------------------------------------------------------;
-; Input:
-;  - A:										; Air State: #AIR_XXX
-ChangeJetStateAir
-	
-	LD (jd.jetAir), A
-
-	LD A, 0
-	SET jd.JET_STATE_AIR_BIT, A
-	LD (jd.jetState), A
-
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetGnd), A
-
-	RET
-
-;----------------------------------------------------------;
-;                 #ChangeJetStateGnd                       ;
-;----------------------------------------------------------;
-ChangeJetStateGnd
-
-	LD A, jd.JET_STATE_INIT
-	SET jd.JET_STATE_GND_BIT, A
-	LD (jd.jetState), A
-
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetAir), A
-
-	LD A, jd.GND_WALK
-	LD (jd.jetGnd), A
-
-	RET	
-
-;----------------------------------------------------------;
-;                 #ChangeJetStateRip                       ;
-;----------------------------------------------------------;
-ChangeJetStateRip
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetAir), A
-	LD (jd.jetGnd), A
-
-	LD A, jd.JET_STATE_INIT
-	SET jd.JET_STATE_AIR_BIT, A
-	SET jd.JET_STATE_RIP_BIT, A
-	LD (jd.jetState), A
-
-	RET
-
-;----------------------------------------------------------;
-;                #ChangeJetStateRespown                    ;
-;----------------------------------------------------------;
-ChangeJetStateRespown
-	LD A, jd.STATE_INACTIVE
-	LD (jd.jetGnd), A
-
-	LD A, jd.AIR_HOOVER
-	LD (jd.jetAir), A
-
-	LD A, jd.JET_STATE_INIT
-	SET jd.JET_STATE_AIR_BIT, A
-	SET jd.JET_STATE_INV_BIT, A
-	LD (jd.jetState), A
-	
-	RET	
-
-;----------------------------------------------------------;
-;                          #IncJetX                        ;
-;----------------------------------------------------------;
-; Increment X position
-IncJetX
-	LD BC, (jd.jetmanX)	
-	INC BC
-
-	; If X >= 315 then set it to 0. X is 9-bit value. 
-	; 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
-	LD A, B										; Load MSB from X into A
-	CP 1										; 9-th bit set means X > 256
-	JR NZ, .lessThanMaxX
-	LD A, C										; Load MSB from X into A
-	CP 59										; MSB > 59 
-	JR C, .lessThanMaxX
-	LD BC, 1									; Jetman is above 315 -> set to 1
-.lessThanMaxX
-	LD (jd.jetmanX), BC							; Update new X position
-
-	RET
-
-;----------------------------------------------------------;
-;                        #DecJetX                          ;
-;----------------------------------------------------------;
-; Decrement X position
-DecJetX
-	LD BC, (jd.jetmanX)	
-	DEC BC
-
-	; If X == 0 (SCR_X_MIN_POS) then set it to 315. X == 0 when B and C are 0
-	LD A, B
-	CP sc.SCR_X_MIN_POS							; If B > 0 then X is also > 0
-	JR NZ, .afterResetX
-	LD A, C
-	CP sc.SCR_X_MIN_POS							; If C > 0 then X is also > 0
-	JR NZ, .afterResetX
-	LD BC, sc.SCR_X_MAX_POS						; X == 0 (both A and B are 0) -> set X to 315
-.afterResetX
-	LD (jd.jetmanX), BC
-	RET
 
 ;----------------------------------------------------------;
 ;                       #StandToWalk                       ; 
@@ -153,7 +23,7 @@ StandToWalk
 	LD (jd.jetGnd), A
 	
 	LD A, js.SDB_WALK_ST
-	CALL js.ChangeJetmanSpritePattern	
+	CALL js.ChangeJetSpritePattern	
 	RET
 
 ;----------------------------------------------------------;
@@ -176,7 +46,7 @@ JetmanMoves
 	LD (jd.jetAir), A
 	
 	LD A, js.SDB_FLY							; Switch to flaying animation
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 .afterHovering	
 
 	RET
@@ -231,7 +101,7 @@ JoyMoveRight
 
 	CALL JetmanMoves						
 	CALL StandToWalk
-	CALL IncJetX
+	CALL jp.IncJetX
 
 	; ##Direction change: left -> right##
 	LD A, (jd.jetDirection)
@@ -265,7 +135,7 @@ JoyMoveLeft
 
 	CALL JetmanMoves	
 	CALL StandToWalk					
-	CALL DecJetX
+	CALL jp.DecJetX
 
 	; Direction change: right -> left
 	LD A, (jd.jetDirection)
@@ -380,7 +250,7 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	LD (jd.jetAir), A
 
 	LD A, js.SDB_HOVER
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 	JR .afterInactivity							; Alerady hovering, do not check standing	
 .afterHoover
 
@@ -403,7 +273,7 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	LD (jd.jetGnd), A
 
 	LD A, js.SDB_STAND							; Change animation
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 	JR .afterInactivity
 .afterStand
 
@@ -424,7 +294,7 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	LD (jd.jetGnd), A
 
 	LD A, js.SDB_JSTAND							; Change animation
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 
 .afterInactivity
 
@@ -498,13 +368,13 @@ EnemyColision
 
 	; Check if the Jetman hits the enemy from the left side of its X coordinate
 	LD A, C										; A holds the X LSB of the enemy
-	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
+	SUB jd.ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP E
 	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
 
 	; Check if the Jetman hits the enemy from the right side of its X coordinate
-	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
+	ADD jd.ENEMY_THICKNESS							; Revert "SUB L" from above
+	ADD jd.ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP E
 	RET C 										; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
 
@@ -514,13 +384,13 @@ EnemyColision
 	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
 	
 	; Check upper bounds
-	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
+	SUB jd.ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP B
 	RET NC
 
 	; Check lower bounds
-	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
+	ADD jd.ENEMY_THICKNESS							; Revert "SUB L" from above
+	ADD jd.ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP B
 	RET C
 
@@ -538,10 +408,10 @@ EnemyColision
 	RET NZ										; Exit if invincible
 
 	; This is the first enemy hit
-	CALL jt.ChangeJetStateRip
+	CALL js.ChangeJetStateRip
 	
 	LD A, js.SDB_RIP							; Change animation
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 
 	RET
 
@@ -560,9 +430,9 @@ RespawnJet
 	NEXTREG _DC_REG_TILE_X_LSB, A
 	NEXTREG _DC_REG_TILE_Y, A
 
-	CALL ChangeJetStateRespown
+	CALL js.ChangeJetStateRespown
 
-	LD A, (RESPOWN_INVINCIBLE_LOOPS)
+	LD A, (jd.RESPOWN_INVINCIBLE_LOOPS)
 	CALL MakeJetInvincible
 
 	RET
@@ -595,7 +465,7 @@ JetRip
 ; Input
 ;  - A:		Number of loops (#counter10) to keep Jemtan invincible
 MakeJetInvincible
-	LD (invincibleCnt), A
+	LD (jd.invincibleCnt), A
 	
 	LD A, (jd.jetState)
 	SET jd.JET_STATE_INV_BIT, A
@@ -604,43 +474,60 @@ MakeJetInvincible
 	RET
 
 ;----------------------------------------------------------;
-;                #JetInvincibleCounter                     ;
+;                   #JetInvincible                         ;
 ;----------------------------------------------------------;
-JetInvincibleCounter
-	LD A, (invincibleCnt)						; Exit if #invincibleCnt == 0
+JetInvincible
+	LD A, (jd.invincibleCnt)						; Exit if #jd.invincibleCnt == 0
 	CP 0
 	RET Z
 
 	DEC A
-	LD (invincibleCnt), A						; Decrement counter and store it
+	LD (jd.invincibleCnt), A						; Decrement counter and store it
+	CP 0											; Check whether this is the last iteration (#jd.invincibleCnt changes from 1 to 0)
+	JR Z, .lastIteration
 
-	CP 0										; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
-	RET NZ
-	
+	; Still invincible - blink Jetman sprite
+	CALL BlinkJetSprite
+	RET
+.lastIteration	
 	; It is the last iteration, remove invincibility
 	LD A, (jd.jetState)
 	RES jd.JET_STATE_INV_BIT, A
 	LD (jd.jetState), A
+
 	RET
+
+;----------------------------------------------------------;
+;                    #BlinkJetSprite                       ;
+;----------------------------------------------------------;
+BlinkJetSprite
+	LD A, (dc.counter5FliFLop)
+	CP dc.FLIP_ON
+	JR NZ, .flipOff
 	
+	; Show sprite
+	LD B, _SPR_PATTERN_SHOW
+	CALL js.ShowJetSprite
+	RET
+.flipOff
+	; Hide sprite
+	LD B, _SPR_PATTERN_HIDE
+	CALL js.ShowJetSprite
+	RET
+
 ;----------------------------------------------------------;
 ;                   #ShakeScreen                           ;
 ;----------------------------------------------------------;
 ShakeScreen
-	LD A, (shakeScreenCnt)
-	INC A
-	LD (shakeScreenCnt), A
-	CP SHAKE_SCREEN_DELAY
-	RET C										; Return if #shakeScreenCnt <  #SHAKE_SCREEN_DELAY	
+	LD A, (dc.counter5)
+	CP 0
+	RET NZ										; Return if counter to 5 did not reset	
 
-	LD A, 0
-	LD (shakeScreenCnt), A
-
-	; #shakeScreenState will change from #SHAKE_SCREEN_BY to 0, to keep shaking state
-	LD A, (shakeScreenState)
-	XOR SHAKE_SCREEN_BY
-	LD (shakeScreenState), A
-
+	LD A, (dc.counter5FliFLop)					; Oscilates beetwen 1 and 0
+	LD D, A
+	LD E, jd.SHAKE_SCREEN_BY
+	MUL D, E
+	LD A, E
 	NEXTREG _DC_REG_TILE_X_LSB, A
 
 	RET	
@@ -649,9 +536,9 @@ ShakeScreen
 ;                    #ResetRipMove                         ;
 ;----------------------------------------------------------;	
 ResetRipMove
-	LD A, RIP_MOVE_MUL_INC
-	LD (ripMoveMul), A
-	LD (ripMoveCnt), A
+	LD A, jd.RIP_MOVE_MUL_INC
+	LD (jd.ripMoveMul), A
+	LD (jd.ripMoveCnt), A
 	RET
 
 ;----------------------------------------------------------;
@@ -660,18 +547,18 @@ ResetRipMove
 ; Jetman moves in zig-zac towards the upper side of the screen. 
 RipMove
 	; Move left or right
-	LD A, (ripMoveState)
-	CP RIP_MOVE_LEFT
+	LD A, (jd.ripMoveState)
+	CP jd.RIP_MOVE_LEFT
 	JR Z, .moveLeft
 
 	; Move right
-	CALL DecJetX
-	CALL DecJetX
+	CALL jp.DecJetX
+	CALL jp.DecJetX
 	JR .afterMove
 .moveLeft
 	; Move left
-	CALL IncJetX
-	CALL IncJetX
+	CALL jp.IncJetX
+	CALL jp.IncJetX
 .afterMove
 
 	; going up
@@ -680,25 +567,25 @@ RipMove
 	LD (jd.jetmanY), A
 
 	; Decrement move counter
-	LD A, (ripMoveCnt)
+	LD A, (jd.ripMoveCnt)
 	DEC A
-	LD (ripMoveCnt), A
+	LD (jd.ripMoveCnt), A
 	CP 0
 
 	RET NZ										; Counter is still > 0 - keep going
 
 	; Counter has reached 0 - change direction
-	LD A, (ripMoveState)
+	LD A, (jd.ripMoveState)
 	XOR 1
-	LD (ripMoveState), A
+	LD (jd.ripMoveState), A
 
 	; Increment zig-zag distance (gets bigger with every direction change)
-	LD A, (ripMoveMul)
-	ADD RIP_MOVE_MUL_INC
-	LD (ripMoveMul), A
+	LD A, (jd.ripMoveMul)
+	ADD jd.RIP_MOVE_MUL_INC
+	LD (jd.ripMoveMul), A
 
-	; Counter (how far we go left/right in zig-zag) increments with every turn, and ripMoveMul holds the increasing value
-	LD (ripMoveCnt), A
+	; Counter (how far we go left/right in zig-zag) increments with every turn, and jd.ripMoveMul holds the increasing value
+	LD (jd.ripMoveCnt), A
 	
 	RET
 

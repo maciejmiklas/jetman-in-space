@@ -56,7 +56,7 @@ AnimateOnJoystickDisabled
 	JR NZ, .afterBumpingRight
 
 	; Yes
-	CALL jt.IncJetX
+	CALL jp.IncJetX
 	JR .afterAnimate							; Do not check bumping left
 .afterBumpingRight
 
@@ -66,7 +66,7 @@ AnimateOnJoystickDisabled
 	JR NZ, .afterBumpingLeft
 
 	; Yes
-	CALL jt.DecJetX	
+	CALL jp.DecJetX	
 	JR .afterAnimate
 .afterBumpingLeft
 
@@ -97,11 +97,11 @@ JetTakesoff
 
 	; Jetman is taking off
 	LD A, jd.AIR_FLY
-	CALL jt.ChangeJetStateAir
+	CALL js.ChangeJetStateAir
 
 	; Play takeoff animation					
 	LD A, js.SDB_T_WF
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 	RET											; END #JetTakesoff
 
 ;----------------------------------------------------------;
@@ -110,7 +110,7 @@ JetTakesoff
 JetLanding
 
 	; Update state as we are walking
-	CALL jt.ChangeJetStateGnd
+	CALL js.ChangeJetStateGnd
 	
 	; Jemans is landing, trigger transition: flying -> standing/walking
 	LD A, (jd.joyDirection)
@@ -123,7 +123,7 @@ JetLanding
 	LD (jd.jetGnd), A	
 
 	LD A, js.SDB_T_FW							; Play transition from landing -> walking
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 
 	JR .afterStand								; The animation is already loaded, do not overweigh it with standing
 .afterMoveLR	
@@ -132,7 +132,7 @@ JetLanding
 	LD (jd.jetGnd), A	
 
 	LD A, js.SDB_T_FS							; Play transition from landing -> standing
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 .afterStand
 	RET
 
@@ -232,7 +232,7 @@ BumpIntoPlatFormBelow
 	PUSH BC
 
 	LD A, js.SDB_T_WL							; Play animation
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
 	LD A, jd.JOY_DISABLED_BUMP						
@@ -308,7 +308,7 @@ BumpIntoPlatformLR
 	PUSH BC
 
 	LD A, js.SDB_T_WL							; Play animation
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
 	LD A, jd.JOY_DISABLED_BUMP						
@@ -365,11 +365,11 @@ FallingFromPlatform
 
 .afterFallingRight
 	; Jetman if falling, in the air - A contains poroper air state
-	CALL jt.ChangeJetStateAir
+	CALL js.ChangeJetStateAir
 
 	; Trigger transition: walking -> falling
 	LD A, js.SDB_T_WL
-	CALL js.ChangeJetmanSpritePattern
+	CALL js.ChangeJetSpritePattern
 
 	; Disable joystick, because Jetman loses control for #JOY_DISABLED_FALL frames
 	LD A, jd.JOY_DISABLED_FALL

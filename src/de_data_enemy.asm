@@ -74,7 +74,7 @@ spriteEf05
 spritesSize					BYTE 15				; The total amount of visible sprites - including single enemies and formations
 singleSpritesSize			BYTE 10				; Amount of sprites that can respawn as a single enemy
 
-formation ef.MF{de.spriteEf01/*MSS_POINTER*/, 2000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
+formation ef.MF{spriteEf01/*MSS_POINTER*/, 2000/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 5/*SPRITES*/, 0/*SPRITES_CNT*/}
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

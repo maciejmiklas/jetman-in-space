@@ -30,23 +30,27 @@ mainLoop
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
 	INCLUDE "ut_util.asm"
+	INCLUDE "dc_data_common.asm"
 
 	INCLUDE "gm_game.asm"
 
 	INCLUDE "sr_simple_sprite.asm"
 	INCLUDE "sp_sprite.asm"	
-	INCLUDE "jd_jetman_data.asm"
-	INCLUDE "jp_jetman_platform.asm"	
-	INCLUDE "jt_jetman.asm"
-	INCLUDE "js_jetman_sprite.asm"
+	INCLUDE "jd_jet_data.asm"
+	INCLUDE "js_jet_state.asm"	
+	INCLUDE "jp_jet_position.asm"	
+	INCLUDE "jp_jet_platform.asm"	
+	INCLUDE "jt_jet.asm"
+	INCLUDE "js_jet_sprite.asm"
 	INCLUDE "ep_enemy_pattern.asm"
 	INCLUDE "ef_enemy_formation.asm"
 	INCLUDE "de_data_enemy.asm"	
 	INCLUDE "sc_screen.asm"
-	INCLUDE "jw_jetman_weapon.asm"
+	INCLUDE "jw_jet_weapon.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "di_data_bin.asm"
+
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;
