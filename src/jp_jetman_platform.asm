@@ -92,8 +92,8 @@ JetTakesoff
 
 	; Transition from walking to flaying
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_GND							; Check if Jetnan is on the ground/platform
-	RET NZ
+	BIT jd.JET_STATE_GND_BIT, A					; Check if Jetnan is on the ground/platform
+	RET Z
 
 	; Jetman is taking off
 	LD A, jd.AIR_FLY
@@ -142,8 +142,8 @@ JetLanding
 ; Is Jetman landing on one of the platforms?
 LandingOnPlatform
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_AIR							; Is Jemtan in the air?
-	RET NZ										; Return if not flaying, no flying - no landing ;)
+	BIT jd.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
+	RET Z										; Return if not flaying, no flying - no landing ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
 	LD BC, (jd.jetmanX)
@@ -190,8 +190,8 @@ LandingOnPlatform
 BumpIntoPlatFormBelow
 
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_AIR							; Is Jemtan in the air?
-	RET NZ										; Return if not flaying, no flying - no collision ;)
+	BIT jd.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
+	RET Z										; Return if not flaying, no flying - no collision ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
 	LD BC, (jd.jetmanX)
@@ -253,8 +253,8 @@ BumpIntoPlatformLR
 
 	; Is Jemtan in the air?
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_AIR
-	RET NZ										; Return if not flaying, no flying - no collision ;)
+	BIT jd.JET_STATE_AIR_BIT, A
+	RET Z										; Return if not flaying, no flying - no collision ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
 	LD BC, (jd.jetmanX)

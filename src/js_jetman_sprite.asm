@@ -85,38 +85,10 @@ spriteDBRemain		BYTE 0						; Amount of bytes that have to be still processed fr
 sprDBNextID			BYTE SDB_FLY				; ID in #spriteDB for next animation/DB record						
 
 ;----------------------------------------------------------;
-;           #UpdateJetSpritePositionRotation               ;
+;          #UpdateJetSpritePositionRotation                ;
 ;----------------------------------------------------------;
-UpdateJetSpritePositionRotation
+UpdateJetSpritePositionRotation	
 
-	; Do not update rotation when Jetman is dying. This method sets rotation based on keyboard input (left/right), but when Jetman dies, 
-	; the sprite should rotate clockwise.
-	LD A, (jd.jetState)
-	CP jd.JET_STATE_RIP
-	RET Z
-
-	LD A, (jd.jetDirection)
-	LD D, A
-	LD A, 0										; Clear A to set only rotation/mirror bits
-	BIT jd.MOVE_LEFT_BIT, D						; Moving left bit set?
-	JR Z, .rotateRight
-	SET _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite left
-	JR .afterRotate	
-.rotateRight	
-	RES _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite right
-.afterRotate
-
-	CALL UpdateJetSpritePositionRotationPar
-
-	RET
-
-;----------------------------------------------------------;
-;         #UpdateJetSpritePositionRotationPar              ;
-;----------------------------------------------------------;
-; Input
-;  - A: Contains Rotation/Mirror bits for _SPR_REG_NR_H34
-UpdateJetSpritePositionRotationPar	
-	LD E, A										; Backup A
 
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
 	LD BC, (jd.jetmanX)
@@ -130,6 +102,18 @@ UpdateJetSpritePositionRotationPar
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
 
 	; Set _SPR_REG_ATR2_H37 containing overflow bit from x position, rotation and mirror
+	LD A, (jd.jetDirection)
+	LD D, A
+	LD A, 0										; Clear A to set only rotation/mirror bits
+	BIT jd.MOVE_LEFT_BIT, D						; Moving left bit set?
+	JR Z, .rotateRight
+	SET _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite left
+	JR .afterRotate	
+.rotateRight	
+	RES _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite right
+.afterRotate
+	LD E, A										; Backup A
+
 	LD A, B										; Load MSB from X into A
 	AND %00000001								; Keep only an overflow bit
 	OR E										; Apply rotation from A (E now)

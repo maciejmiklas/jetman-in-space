@@ -27,11 +27,13 @@ GND_STAND				= 3						; Jetman stands on the ground
 jetGnd				BYTE 0
 
 ; Jetman states
-JET_STATE_AIR			= 1						; Jemtan is flying, possible states are in #jetAir
-JET_STATE_GND			= 2						; Jemtan is walking, possible states are in #jetGnd
-JET_STATE_RIP			= 3						; Jemtan is walking, possible states are in #jetGnd
+JET_STATE_INIT			= %00000000
+JET_STATE_AIR_BIT		= 0						; Jemtan is flying, possible states are in #jetAir
+JET_STATE_GND_BIT		= 1						; Jemtan is walking, possible states are in #jetGnd
+JET_STATE_RIP_BIT		= 2						; Jemtan got hit by enemy
+JET_STATE_INV_BIT		= 3						; Jetman is invincible
 
-jetState				BYTE JET_STATE_AIR		; Game start
+jetState				BYTE %00000001			; Game start, Jetman in the air
 
 ; Hovering/Standing
 jetmanInactivityCnt		BYTE 0					; The counter increases with each frame when no up/down is pressed. 

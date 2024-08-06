@@ -7,7 +7,8 @@ ENEMY_THICKNESS		= 10
 
 shakeScreenCnt			BYTE 0
 shakeScreenState		BYTE 0
-SHAKE_SCREEN_DELAY		= 5
+SHAKE_SCREEN_DELAY		= 3
+SHAKE_SCREEN_BY			= 5					; Number of pixels to move the screen by shaking
 
 RIP_MOVE_LEFT			= 0
 RIP_MOVE_RIGHT			= 1
@@ -22,15 +23,8 @@ ripMoveMul				BYTE RIP_MOVE_MUL_INC
 
 invincibleCnt			BYTE 0				; Makes Jetman invincible when > 0
 
+RESPOWN_INVINCIBLE_LOOPS = 250				; Number of loops to keep Jetman invincible
 
-rotateIdx				BYTE 0				; Rotation counter from 0 to 3
-
-; Rotation (R) and mirror (XM,YM) bits: %0000'XM'YM'R'0
-rotateDB				DB %0000'0'0'0'0/*up*/,%0000'0'0'1'0/*right*/,%0000'0'1'0'0/*down*/,%0000'1'0'1'0/*left*/
-ROTATE_DB_SIZE			= 3					; Indicates reset for the #rotateIdx to 0
-
-RIP_ANIMATE_DELAY		= 15
-ripAnimateCnt			BYTE 0
 ;----------------------------------------------------------;
 ;                 #ChangeJetStateAir                       ;
 ;----------------------------------------------------------;
@@ -40,7 +34,8 @@ ChangeJetStateAir
 	
 	LD (jd.jetAir), A
 
-	LD A, jd.JET_STATE_AIR
+	LD A, 0
+	SET jd.JET_STATE_AIR_BIT, A
 	LD (jd.jetState), A
 
 	LD A, jd.STATE_INACTIVE
@@ -52,7 +47,9 @@ ChangeJetStateAir
 ;                 #ChangeJetStateGnd                       ;
 ;----------------------------------------------------------;
 ChangeJetStateGnd
-	LD A, jd.JET_STATE_GND
+
+	LD A, jd.JET_STATE_INIT
+	SET jd.JET_STATE_GND_BIT, A
 	LD (jd.jetState), A
 
 	LD A, jd.STATE_INACTIVE
@@ -71,9 +68,28 @@ ChangeJetStateRip
 	LD (jd.jetAir), A
 	LD (jd.jetGnd), A
 
-	LD A, jd.JET_STATE_RIP
+	LD A, jd.JET_STATE_INIT
+	SET jd.JET_STATE_AIR_BIT, A
+	SET jd.JET_STATE_RIP_BIT, A
 	LD (jd.jetState), A
 
+	RET
+
+;----------------------------------------------------------;
+;                #ChangeJetStateRespown                    ;
+;----------------------------------------------------------;
+ChangeJetStateRespown
+	LD A, jd.STATE_INACTIVE
+	LD (jd.jetGnd), A
+
+	LD A, jd.AIR_HOOVER
+	LD (jd.jetAir), A
+
+	LD A, jd.JET_STATE_INIT
+	SET jd.JET_STATE_AIR_BIT, A
+	SET jd.JET_STATE_INV_BIT, A
+	LD (jd.jetState), A
+	
 	RET	
 
 ;----------------------------------------------------------;
@@ -124,8 +140,8 @@ DecJetX
 ; Transition from standing/landing on ground to walking
 StandToWalk
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_GND
-	RET NZ										; Exit if Jetman is not on the ground
+	BIT jd.JET_STATE_GND_BIT, A
+	RET Z										; Exit if Jetman is not on the ground
 	 
 	; Jetman is on the ground, is he already walking?
 	LD A, (jd.jetGnd)	
@@ -191,7 +207,7 @@ JoyMoveUp
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (jd.jetDirection)					; Update #jetState by resetting down and setting up
+	LD A, (jd.jetDirection)						; Update #jetState by resetting down and setting up
 	RES jd.MOVE_DOWN_BIT, A
 	SET jd.MOVE_UP_BIT, A
 	LD (jd.jetDirection), A
@@ -224,7 +240,7 @@ JoyMoveRight
 	JR Z, .afterDirectionChange
 
 	; We have direction change!		
-	LD A, (jd.jetDirection)					; Reset left and set right
+	LD A, (jd.jetDirection)						; Reset left and set right
 	RES jd.MOVE_LEFT_BIT, A
 	SET jd.MOVE_RIGHT_BIT, A
 	LD (jd.jetDirection), A
@@ -258,7 +274,7 @@ JoyMoveLeft
 	JR Z, .afterDirectionChange						; Jetman is moving left already -> end
 
 	; We have direction change!		
-	LD A, (jd.jetDirection)						; Reset right and set left
+	LD A, (jd.jetDirection)							; Reset right and set left
 	RES jd.MOVE_RIGHT_BIT, A
 	SET jd.MOVE_LEFT_BIT, A
 	LD (jd.jetDirection), A
@@ -288,8 +304,8 @@ JoyMoveDown
 
 	; Cannot move down when walking
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_GND
-	RET Z	
+	BIT jd.JET_STATE_GND_BIT, A
+	RET NZ	
 
 	CALL JetmanMoves						
 
@@ -304,7 +320,7 @@ JoyMoveDown
 
 	; Landing on the ground
 	CP jd.GROUND_LEVEL
-	CALL Z, jp.JetLanding					; Execute landing on the ground if Jetman has reached the ground
+	CALL Z, jp.JetLanding						; Execute landing on the ground if Jetman has reached the ground
 	CALL jp.LandingOnPlatform					; Or should he land on one of the platforms?
 
 	; Direction change? 
@@ -314,7 +330,7 @@ JoyMoveDown
 	JR Z, .afterDirectionChange
 
 	; We have direction change!	
-	LD A, (jd.jetDirection)					; Update #jetState by resetting Up/Hover and setting Down
+	LD A, (jd.jetDirection)						; Update #jetState by resetting Up/Hover and setting Down
 	RES jd.MOVE_UP_BIT, A
 	SET jd.MOVE_DOWN_BIT, A	
 	LD (jd.jetDirection), A
@@ -347,8 +363,8 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 
 	; Should Jetman hover?
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_AIR							; Is Jemtan in the air already?
-	JR NZ, .afterHoover							; Jump if not flaying
+	BIT jd.JET_STATE_AIR_BIT, A					; Is Jemtan in the air already?
+	JR Z, .afterHoover							; Jump if not flaying
 
 	LD A, (jd.jetAir)
 	CP jd.AIR_HOOVER							; Jetman is in the air, but is he hovering already?
@@ -370,8 +386,8 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 
 	; Jetman is not hovering, but should he stand?
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_GND							; Is Jemtan on the ground already?
-	JR NZ, .afterInactivity						; Jump if not on the ground
+	BIT jd.JET_STATE_GND_BIT, A					; Is Jemtan on the ground already?
+	JR Z, .afterInactivity						; Jump if not on the ground
 
 	LD A, (jd.jetGnd)
 	CP jd.GND_STAND								; Jetman is on the ground, but is he stainding already?
@@ -482,13 +498,13 @@ EnemyColision
 
 	; Check if the Jetman hits the enemy from the left side of its X coordinate
 	LD A, C										; A holds the X LSB of the enemy
-	SUB ENEMY_THICKNESS						; Include the thickness of the enemy
+	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP E
 	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
 
 	; Check if the Jetman hits the enemy from the right side of its X coordinate
-	ADD ENEMY_THICKNESS						; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS						; Include the thickness of the enemy
+	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
+	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP E
 	RET C 										; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
 
@@ -498,13 +514,13 @@ EnemyColision
 	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
 	
 	; Check upper bounds
-	SUB ENEMY_THICKNESS						; Include the thickness of the enemy
+	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP B
 	RET NC
 
 	; Check lower bounds
-	ADD ENEMY_THICKNESS						; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS						; Include the thickness of the enemy
+	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
+	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP B
 	RET C
 
@@ -512,10 +528,14 @@ EnemyColision
 	CALL sr.SetSpriteId							; Destroy the enemy
 	CALL sr.SpriteHit
 
-	; Is Jetman already dying? If so, do not start the sequence again, just kill the enemy
+	; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy
 	LD A, (jd.jetState)							
-	CP jd.JET_STATE_RIP
-	RET Z										; Exit if RIP
+	BIT jd.JET_STATE_RIP_BIT, A
+	RET NZ										; Exit if RIP
+
+	; Is Jetman invincible? If so, just kill the enemy
+	BIT jd.JET_STATE_INV_BIT, A
+	RET NZ										; Exit if invincible
 
 	; This is the first enemy hit
 	CALL jt.ChangeJetStateRip
@@ -540,8 +560,10 @@ RespawnJet
 	NEXTREG _DC_REG_TILE_X_LSB, A
 	NEXTREG _DC_REG_TILE_Y, A
 
-	LD A, jd.AIR_FLY
-	CALL ChangeJetStateAir
+	CALL ChangeJetStateRespown
+
+	LD A, (RESPOWN_INVINCIBLE_LOOPS)
+	CALL MakeJetInvincible
 
 	RET
 
@@ -551,46 +573,54 @@ RespawnJet
 JetRip
 
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_RIP
-	RET NZ										; Exit if not RiP
+	BIT jd.JET_STATE_RIP_BIT, A
+	RET Z										; Exit if not RiP
 
 	CALL ShakeScreen
 	CALL RipMove
-	CALL RipAnimate
 
 	; Did Jetam reach the top of the screen (the RIP sequence is over)?	
 	LD A, (jd.jetmanY)
-	CP 0
-	RET NZ										; Nope, still going
+	CP 4										; Going up is incremented by 2
+	RET NC										; Nope, still going up (#jetmanY >= 4)
 
 	; Sequece is over, respown new live
 	CALL RespawnJet 
 	CALL ResetRipMove
-	
 	RET
 
 ;----------------------------------------------------------;
-;                   #JetInvincible                         ;
+;                   #MakeJetInvincible                     ;
 ;----------------------------------------------------------;
-; Input:
-;  - A: value for invincible count
-JetInvincible
+; Input
+;  - A:		Number of loops (#counter10) to keep Jemtan invincible
+MakeJetInvincible
+	LD (invincibleCnt), A
+	
+	LD A, (jd.jetState)
+	SET jd.JET_STATE_INV_BIT, A
+	LD (jd.jetState), A
 
-	LD (invincibleCnt), A						; Exit if #invincibleCnt == 0
+	RET
+
+;----------------------------------------------------------;
+;                #JetInvincibleCounter                     ;
+;----------------------------------------------------------;
+JetInvincibleCounter
+	LD A, (invincibleCnt)						; Exit if #invincibleCnt == 0
 	CP 0
 	RET Z
 
 	DEC A
-	LD (invincibleCnt), A						; Decrement counter and store
+	LD (invincibleCnt), A						; Decrement counter and store it
 
-	CP 0										; Check whether this is the last iteration
-	JP NZ, .afterReset
+	CP 0										; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
+	RET NZ
 	
-	; It is the last iteration - reset the sprite to its original state
-
-	RET
-
-.afterReset	
+	; It is the last iteration, remove invincibility
+	LD A, (jd.jetState)
+	RES jd.JET_STATE_INV_BIT, A
+	LD (jd.jetState), A
 	RET
 	
 ;----------------------------------------------------------;
@@ -606,13 +636,12 @@ ShakeScreen
 	LD A, 0
 	LD (shakeScreenCnt), A
 
-	; #shakeScreenState will change from 1 to 0, to keep shaking state
+	; #shakeScreenState will change from #SHAKE_SCREEN_BY to 0, to keep shaking state
 	LD A, (shakeScreenState)
-	XOR 2
+	XOR SHAKE_SCREEN_BY
 	LD (shakeScreenState), A
 
 	NEXTREG _DC_REG_TILE_X_LSB, A
-	NEXTREG _DC_REG_TILE_Y, A
 
 	RET	
 	
@@ -637,15 +666,17 @@ RipMove
 
 	; Move right
 	CALL DecJetX
+	CALL DecJetX
 	JR .afterMove
 .moveLeft
 	; Move left
 	CALL IncJetX
+	CALL IncJetX
 .afterMove
 
-	; Y gets always decremented by 1 (going up)
+	; going up
 	LD A, (jd.jetmanY)
-	DEC A
+	ADD A, -2
 	LD (jd.jetmanY), A
 
 	; Decrement move counter
@@ -671,39 +702,6 @@ RipMove
 	
 	RET
 
-;----------------------------------------------------------;
-;                      #RipAnimate                         ;
-;----------------------------------------------------------;
-RipAnimate
-
-	; Set rotation/mirror on _SPR_REG_ATR2_H37 on each game loop
-	LD BC, rotateDB								; BC holds pointer value (not the entry value!) to #rotateDB 
-	LD A, (rotateIdx)
-	ADD BC, A									; Move pointer to #rotateDB to the righs postion
-	LD A, (BC)									; Prepare A to be set on _SPR_REG_NR_H34 by loading value from db pointer
-	CALL js.UpdateJetSpritePositionRotationPar
-
-	; Change rotation every few game loops
-	LD A, (ripAnimateCnt)
-	INC A
-	LD (ripAnimateCnt), A
-	CP RIP_ANIMATE_DELAY
-	RET NZ										; Return if the delay has not been reached
-
-	LD A, 0										; #ripAnimateCnt has reached #RIP_ANIMATE_DELAY -> reset to 0
-	LD (ripAnimateCnt), A	
-
-	; Next rotation
-	LD A, (rotateIdx)
-	INC A
-	LD (rotateIdx), A
-	CP ROTATE_DB_SIZE + 1
-	RET NZ										; Return if #rotateIdx != #ROTATE_MAX
-
-	LD A, 0										; #rotateIdx has reached #ROTATE_MAX -> reset to 0
-	LD (rotateIdx), A	
-
-	RET
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

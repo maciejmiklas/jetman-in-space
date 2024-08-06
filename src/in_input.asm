@@ -16,8 +16,8 @@ JoyInput
 	RET Z
 
 	LD A, (jd.jetState)
-	CP jd.JET_STATE_RIP
-	RET Z										; Do not process input if Jetman is dying
+	BIT jd.JET_STATE_RIP_BIT, A
+	RET NZ										; Do not process input if Jetman is dying
 
 	CALL JoyStart
 	
