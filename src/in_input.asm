@@ -142,7 +142,7 @@ JoyDisabled
 ;                        JoyStart                          ;
 ;----------------------------------------------------------;
 JoyStart
-	CALL jt.JoyStart
+	CALL jm.JoyStart
 
 	RET
 
@@ -150,7 +150,7 @@ JoyStart
 ;                         JoyEnd                           ;
 ;----------------------------------------------------------;
 JoyEnd
-	CALL jt.JoyEnd
+	CALL jm.JoyEnd
 
 	RET
 
@@ -158,7 +158,7 @@ JoyEnd
 ;                      JoyMoveRight                        ;
 ;----------------------------------------------------------;
 JoyMoveRight
-	CALL jt.JoyMoveRight
+	CALL jm.JoyMoveRight
 
 	RET
 
@@ -166,7 +166,7 @@ JoyMoveRight
 ;                      JoyMoveLeft                         ;
 ;----------------------------------------------------------;
 JoyMoveLeft
-	CALL jt.JoyMoveLeft
+	CALL jm.JoyMoveLeft
 
 	RET
 
@@ -174,7 +174,7 @@ JoyMoveLeft
 ;                        JoyMoveUp                         ;
 ;----------------------------------------------------------;
 JoyMoveUp
-	CALL jt.JoyMoveUp
+	CALL jm.JoyMoveUp
 
 	RET
 
@@ -182,7 +182,7 @@ JoyMoveUp
 ;                       JoyMoveDown                        ;
 ;----------------------------------------------------------;
 JoyMoveDown
-	CALL jt.JoyMoveDown
+	CALL jm.JoyMoveDown
 
 	RET
 
@@ -190,7 +190,7 @@ JoyMoveDown
 ;                      JoyPressFire                        ;
 ;----------------------------------------------------------;
 JoyPressFire
-	CALL jt.JoyPressFire
+	CALL jm.JoyPressFire
 
 	RET
 

@@ -34,10 +34,10 @@ GameLoop
 	CALL Counter5
 	CALL Counter3
 	
-	CALL jt.JetRip
+	CALL jc.JetRip
 	CALL in.JoyInput
 
-	CALL jt.JoyDisabled
+	CALL jm.JoyDisabled
 	CALL jw.MoveShots
 
 	LD IX, de.sprite01
@@ -51,7 +51,7 @@ GameLoop
 	CALL ep.RespownNextEnemy	
 
 	CALL jw.WeaponHitEnemies
-	CALL jt.JetmanEnemiesColision
+	CALL jc.JetmanEnemiesColision
 
 	LD IY, de.formation
 	CALL ef.RespownFormation
@@ -102,7 +102,7 @@ Counter5
 
 	; Call functions that need to be updated every 10th loop
 	; nothing yet
-	;CALL jt.JetInvincible
+	;CALL jc.JetInvincible
 	RET		
 
 ;----------------------------------------------------------;
@@ -124,7 +124,7 @@ Counter3
 	LD (dc.counter3), A
 
 	; Call functions that need to be updated every 10th loop
-	CALL jt.JetInvincible
+	CALL jc.JetInvincible
 	RET		
 
 
@@ -162,7 +162,7 @@ PrintDebug
 
 	LD B, 20
 	LD H, 0
-	LD A,  (jt.invincibleCnt)
+	LD A,  (jc.invincibleCnt)
 	LD L, A
 	CALL tx.PrintNumHL
 

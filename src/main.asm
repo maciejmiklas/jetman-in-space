@@ -40,7 +40,8 @@ mainLoop
 	INCLUDE "js_jet_state.asm"	
 	INCLUDE "jp_jet_position.asm"	
 	INCLUDE "jp_jet_platform.asm"	
-	INCLUDE "jt_jet.asm"
+	INCLUDE "jc_jet_colision.asm"
+	INCLUDE "jm_jet_move.asm"	
 	INCLUDE "js_jet_sprite.asm"
 	INCLUDE "ep_enemy_pattern.asm"
 	INCLUDE "ef_enemy_formation.asm"
@@ -53,7 +54,7 @@ mainLoop
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
-;----------------------------------------------------------;
+;--------------------------------------¿"[]-===================--------------------;
 	; https://z00m128.github.io/sjasmplus/documentation.html
 
 	CSPECTMAP "jetman.map"						; Generate a map file for use with Cspect
