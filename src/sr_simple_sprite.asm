@@ -146,8 +146,8 @@ UpdateSpritePosition
 
 	LD A, (IX + MSS.STATE)
 	RES _SPR_REG_ATR2_OVER_BIT, A				; Reset overflow and set it in next command
-	OR B										; Apply B to set MSB from X
-	AND _SPR_REG_ATR2_RES_PAL					; Reset bits reserved for pallete
+	or B										; Apply B to set MSB from X
+	and _SPR_REG_ATR2_RES_PAL					; Reset bits reserved for pallete
 
 	RES _SPR_REG_ATR2_MIRY_BIT, A				; Reset rotation bits, as we use those for different things and might be set
 	RES _SPR_REG_ATR2_ROT_BIT, A
@@ -211,7 +211,7 @@ ShowSprite
 ;----------------------------------------------------------;
 ;                 #UpdateSpritePattern                     ;
 ;----------------------------------------------------------;
-; Show the current sprite pattern and switch the pointer to the next one so the following method call will display it
+; Show the current sprite pattern and switch the pointer to the next one so the following method CALL will display it
 ; Input:
 ;  - IX:	Pointer to #MSS
 ; Modifies: A, BC, HL

@@ -17,8 +17,10 @@ start
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
-mainLoop	
+mainLoop
+	CALL co.CounterLoop
 	CALL gm.GameLoop
+
 	JR mainLoop
 
 ;----------------------------------------------------------;
@@ -30,8 +32,9 @@ mainLoop
 	INCLUDE "in_input.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
-	INCLUDE "ut_util.asm"
-	INCLUDE "dc_data_common.asm"
+	INCLUDE "ut_util.asm"	
+	INCLUDE "cd_counters_data.asm"
+	INCLUDE "co_counters.asm"
 
 	INCLUDE "gm_game.asm"
 

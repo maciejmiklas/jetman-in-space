@@ -16,7 +16,7 @@ SC_SYNC_SL				= 0						; Scanline to synch to
 SetupScreen
 
 	; Sprite and Layers system. Bits:
-	;  - 7: 0 - low res mode off
+	;  - 7: 0 - low RES mode off
 	;  - 6: 1 - sprite on top
 	;  - 5: 0 - sprite clipping disabled
 	;  - 4-2: 110 - S(U+L) ULA and Layer 2 combined (tiles + background)
@@ -91,7 +91,7 @@ SetupTilemapPalette
 	;  - 1-3: 0 = First palette 
 	;  - 6-4: 011 = Tilemap first palette
 	;  - 7: 0 = enable autoincrement on write
-	nextreg _DC_REG_LA2_PAL_CTR_H43, %0'011'0'0'0'1 
+	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'0'0'0'1 
 	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start with color index 0
 
 	; Copy 8 bit palette

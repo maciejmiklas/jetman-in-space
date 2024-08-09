@@ -181,7 +181,7 @@ UpdateJetSpritePattern
 	LD (sprDBRemain), A
 
 	INC HL										; HL points to first sprite data (upper/lower parts)
-	LD (sprDBIdx), HL						; Database offset points to be bytes containing sprite offsets from sprite file
+	LD (sprDBIdx), HL							; Database offset points to be bytes containing sprite offsets from sprite file
 
 .afterRecordChange
 
@@ -225,9 +225,10 @@ UpdateJetSpritePattern
 ;----------------------------------------------------------;
 ;                    #BlinkJetSprite                       ;
 ;----------------------------------------------------------;
-BlinkJetSprite
-	LD A, (dc.counter5FliFLop)
-	CP dc.FLIP_ON
+; Input:
+; - A:	Flip Flop counter, ie: #counter2FliFLop
+BlinkJetSprite	
+	CP cd.FLIP_ON
 	JR NZ, .flipOff
 	
 	; Show sprite
@@ -268,8 +269,8 @@ HideJetSprite
 ; Input:
 ;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE
 ShowOrHideJetSprite
-	LD HL, (sprDBIdx)						; Load current sprite pattern
-	ADD HL, -SDB_FRAME_SIZE					; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record
+	LD HL, (sprDBIdx)							; Load current sprite pattern
+	ADD HL, -SDB_FRAME_SIZE						; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record
 
 	; Update upper sprite
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands

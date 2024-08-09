@@ -35,8 +35,8 @@ PrintText
 	; Move HL by 2*C so that HL points to the position of the first character
 	PUSH DE
 	LD D, 0
-	LD E, C
-	SLA E										; E*2 because each tile has 2 bytes
+	LD e, c
+	sla E										; E*2 because each tile has 2 bytes
 	ADD HL, DE
 	POP DE  
 
@@ -75,13 +75,13 @@ LoadTiles
 	LD DE, START_OF_TILES
 	LD HL, di.tilesBin							; Address of tiles in memory
 	LD BC, di.tilesBinLength					; Number of bytes to copy
-	LDIR	
+	ldir	
 
 	; Copy tilemap to expected memory
 	LD HL, di.tilemapBin						; Addreess of tilemap in memory
 	LD BC, di.tilemapBinLength
 	LD DE, START_OF_TILEMAP
-	LDIR
+	ldir
 
 	RET
 

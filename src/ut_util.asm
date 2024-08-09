@@ -4,6 +4,48 @@
 	MODULE ut
 
 ;----------------------------------------------------------;
+;                          AbsHL                           ;
+;----------------------------------------------------------;
+; http://z80-heaven.wikidot.com/math#toc12
+AbsHL
+	BIT 7, H
+	RET Z
+	XOR A
+	SUB L 
+	LD L, A
+	SBC A, A 
+	SUB H 
+	LD H, A
+	
+	RET
+;----------------------------------------------------------;
+;                       #HLEqualB                          ;
+;----------------------------------------------------------;
+HL_IS_B					= 0
+HL_NOT_B				= 1
+; Input:
+;  - HL:		Value to compare to B
+;  - B:			Value to compare to HL
+; Return:
+;  - A:		HL_IS_0 or HL_NOT_0
+HLEqualB
+	LD A, H										; Check H if == 0
+	CP B
+	JR NZ, .notEqual							; H == 0
+	LD A, L										; Check L if == 0
+	CP B
+	JR NZ, .notEqual							; L == 0
+	
+	; H == 0 and L == 0
+	LD A, HL_IS_B
+	RET												
+	
+.notEqual
+	LD A, HL_NOT_B
+
+	RET
+
+;----------------------------------------------------------;
 ;                           #Pause                         ;
 ;----------------------------------------------------------;
 ; Input:
@@ -32,6 +74,7 @@ Pause
 	
 	POP HL
 	POP BC
+
 	RET
 
 ;----------------------------------------------------------;

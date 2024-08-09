@@ -58,7 +58,7 @@ _DC_REG_LA2_PAL_IDX_H40	= $40
 
 ; Palette Value (8 bit colour)
 ; bits 7-0 = Colour for the palette index selected by the register 0x40.
-; (Format is RRRGGGBB - the lower blue bit of the 9-bit colour will be a logical OR of blue bits 1 and 0 of this 8-bit value.)
+; (Format is RRRGGGBB - the lower blue bit of the 9-bit colour will be a logical or of blue bits 1 and 0 of this 8-bit value.)
 ; After the write, the palette index is auto-incremented to the next index if the auto-increment is enabled at reg 0x43
 _DC_REG_LA2_PAL_VAL_H41	= $41
 
@@ -115,7 +115,7 @@ _DC_REG_LA2_OFFS_H71	= $71
 _ROM_PRINT_H10			= $10					; ROM address for "Print Character from A" routine
 
 ; ROM address for "Print Text" routine
-; IN:
+; Input:
 ;    - DE: RAM location containing the text
 ;    - BC: Size of the text
 _ROM_PRINT_TEXT_H203C	= $203C
@@ -265,7 +265,7 @@ _TILE_MAP_CONTROL_H6B	= $6B
 ;  - bit 3: X mirror
 ;  - bit 2: Y mirror
 ;  - bit 1: Rotate
-;  - bit 0: ULA over tilemap. (bit 8 of the tile number if 512 tile mode is enabled). Active tile attribute if bit 5 of nextreg 0x6B is set.
+;  - bit 0: ULA over tilemap. (bit 8 of the tile number if 512 tile mode is enabled). Active tile attribute if bit 5 of NEXTREG 0x6B is set.
 _TILE_ATTRIBTE_H6C		= $6C
 
 ; Tilemap Base Address

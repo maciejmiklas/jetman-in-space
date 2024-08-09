@@ -24,8 +24,8 @@ LoadSpritesFPGA
 	LD (spSpriteDMADataLength), BC				; Copy sprite file length into WR0
 
 	; Execute DMA program
-	LD HL, spSpriteDMAProgram					; Setup source for OTIR
-	LD B, spSpriteDMAProgramLength 				; Setup length for OTIR
+	LD HL, spSpriteDMAProgram					; Setup source for otir
+	LD B, spSpriteDMAProgramLength 				; Setup length for otir
 	LD C, _DMA_PORT_H6B							; Setup DMA port
 	OTIR										; Upload DMA program and execute
 

@@ -276,7 +276,7 @@ MoveEnemy
 	LD A, sr.MOVE_Y_IN_DOWN
 	CALL sr.MoveY
 	CP sr.MOVE_RET_HIDDEN
-	JR NZ,.afterChangeY							; Jump is sprite is not hidden
+	JR NZ, .afterChangeY							; Jump is sprite is not hidden
 
 	LD A, sr.MOVE_RET_HIDDEN
 	RET											; Stop moving this spirte, it's hidden

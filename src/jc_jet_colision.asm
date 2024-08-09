@@ -3,12 +3,15 @@
 ;----------------------------------------------------------;
 	MODULE jc
 
-ENEMY_THICKNESS			= 10
-SHAKE_SCREEN_BY			= 5					; Number of pixels to move the screen by shaking
+ENEMY_THICKNESS		= 10
+ENEMY_THICKNESS_X		= 10
+ENEMY_THICKNESS_Y		= 10
+
+SHAKE_SCREEN_BY			= 5						; Number of pixels to move the screen by shaking
 
 RIP_MOVE_LEFT			= 0
 RIP_MOVE_RIGHT			= 1
-ripMoveState			BYTE 0				; 1 - move right, 0 - move left
+ripMoveState			BYTE 0					; 1 - move right, 0 - move left
 
 ; Amount of steps to move in a direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
 ; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
@@ -17,16 +20,16 @@ ripMoveCnt				BYTE RIP_MOVE_MUL_INC
 RIP_MOVE_MUL_INC		= 10
 ripMoveMul				BYTE RIP_MOVE_MUL_INC
 
-invincibleCnt			BYTE 0				; Makes Jetman invincible when > 0
+invincibleCnt			WORD 0					; Makes Jetman invincible when > 0
 
-RESPOWN_INVINCIBLE_CNT = 250				; Number of loops to keep Jetman invincible	
-
+INVINCIBLE_DURATION 	= 1000					; Number of loops to keep Jetman invincible	
+INVINCIBLE_FAST_BLINK	= 150
 ;----------------------------------------------------------;
 ;                #JetmanEnemiesColision                    ;
 ;----------------------------------------------------------;
 JetmanEnemiesColision
-	LD IX, de.sprite01
-	LD A, (de.spritesSize)
+	LD IX, DE.sprite01
+	LD A, (DE.spritesSize)
 	LD B, A
 	CALL EnemiesColision
 	RET	
@@ -59,35 +62,55 @@ EnemiesColision
 	RET
 
 ;----------------------------------------------------------;
-;                    #EnemyColision                        ;
+;                    #CheckCollision                       ;
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
 ;  - IX:	Pointer to concreate single enemy, single #MSS
-; Modifies: ALL
-EnemyColision
+;  - D:		Horizontal thickness of the enemy
+;  - E:		Vertical thickness of the enemy
+; Return:
+;  - A:		COLLISION_NO or COLLISION_YES
+COLLISION_NO			= 0
+COLLISION_YES			= 1
 
+CheckCollision
 	; Compare X coordinate of enemy and Jetman
 	LD BC, (IX + sr.MSS.X)						; X of the enemy
-	LD DE, (jp.jetmanX)							; X of the Jetman
+	LD HL, (jp.jetmanX)							; X of the Jetman
+	; DE -> HL
+
+	LD HL, 2000
+	LD BC, 1100
+	SBC HL, BC
+	CALL ut.AbsHL
+/*
+	LD A, H
+	CPL
+	LD H,A
+	LD A, L
+	CPL
+	LD L,A	
+	*/
+	NEXTREG 2,8
 
 	LD A, D
 	CP B
 	RET NZ										; Jump if MSB of the X for enemy and Jetman does not match (B != D)
 
 	; Check if the Jetman hits the enemy from the left side of its X coordinate
-	LD A, C										; A holds the X LSB of the enemy
+	LD A, c										; A holds the X LSB of the enemy
 	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP E
-	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
+	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= #jetmanX"  -> Jetman is before the enemy, left of it
 
 	; Check if the Jetman hits the enemy from the right side of its X coordinate
 	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
 	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP E
-	RET C 										; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
+	RET c 										; Jump if "(C + L) < E" -> "(Xenemy + L) < #jetmanX"  -> Jetman is after the enemy, right of it
 
-	; We are here because the shot is horizontal with the enemy, now check the vertical match
+	; We are here because the Jetman is horizontal with the enemy, now check the vertical match
 	LD A, (jp.jetmanY)							; B holds Y from the Jetman
 	LD B, A
 	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
@@ -101,7 +124,54 @@ EnemyColision
 	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
 	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
 	CP B
-	RET C
+	RET c
+
+	RET	
+
+;----------------------------------------------------------;
+;                    #EnemyColision                        ;
+;----------------------------------------------------------;
+; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
+; Input:
+;  - IX:	Pointer to concreate single enemy, single #MSS
+EnemyColision
+	CALL CheckCollision
+
+	; Compare X coordinate of enemy and Jetman
+	LD BC, (IX + sr.MSS.X)						; X of the enemy
+	LD DE, (jp.jetmanX)							; X of the Jetman
+
+	LD A, D
+	CP B
+	RET NZ										; Jump if MSB of the X for enemy and Jetman does not match (B != D)
+
+	; Check if the Jetman hits the enemy from the left side of its X coordinate
+	LD A, c										; A holds the X LSB of the enemy
+	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
+	CP E
+	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= #jetmanX"  -> Jetman is before the enemy, left of it
+
+	; Check if the Jetman hits the enemy from the right side of its X coordinate
+	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
+	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
+	CP E
+	RET c 										; Jump if "(C + L) < E" -> "(Xenemy + L) < #jetmanX"  -> Jetman is after the enemy, right of it
+
+	; We are here because the Jetman is horizontal with the enemy, now check the vertical match
+	LD A, (jp.jetmanY)							; B holds Y from the Jetman
+	LD B, A
+	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
+	
+	; Check upper bounds
+	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
+	CP B
+	RET NC
+
+	; Check lower bounds
+	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
+	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
+	CP B
+	RET c
 
 	; We have colision!
 	CALL sr.SetSpriteId							; Destroy the enemy
@@ -109,11 +179,11 @@ EnemyColision
 
 	; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy
 	LD A, (js.jetState)							
-	BIT js.JET_STATE_RIP_BIT, A
+	bit js.JET_STATE_RIP_BIT, A
 	RET NZ										; Exit if RIP
 
 	; Is Jetman invincible? If so, just kill the enemy
-	BIT js.JET_STATE_INV_BIT, A
+	bit js.JET_STATE_INV_BIT, A
 	RET NZ										; Exit if invincible
 
 	; This is the first enemy hit
@@ -141,7 +211,7 @@ RespawnJet
 
 	CALL js.ChangeJetStateRespown
 
-	LD A, RESPOWN_INVINCIBLE_CNT
+	LD HL, INVINCIBLE_DURATION
 	CALL MakeJetInvincible
 
 	RET
@@ -151,7 +221,7 @@ RespawnJet
 ;----------------------------------------------------------;
 JetRip
 	LD A, (js.jetState)
-	BIT js.JET_STATE_RIP_BIT, A
+	bit js.JET_STATE_RIP_BIT, A
 	RET Z										; Exit if not RiP
 
 	CALL ShakeScreen
@@ -171,9 +241,9 @@ JetRip
 ;                   #MakeJetInvincible                     ;
 ;----------------------------------------------------------;
 ; Input
-;  - A:		Number of loops (#counter2) to keep Jemtan invincible
+;  - HL:	Number of loops (#counter2) to keep Jemtan invincible
 MakeJetInvincible
-	LD (invincibleCnt), A					; Store invincibility duration
+	LD (invincibleCnt), HL						; Store invincibility duration
 	
 	; Update state
 	LD A, (js.jetState)
@@ -186,16 +256,40 @@ MakeJetInvincible
 ;                   #JetInvincible                         ;
 ;----------------------------------------------------------;
 JetInvincible
-	LD A, (invincibleCnt)						; Exit if #invincibleCnt == 0
-	CP 0
+	; Exit if #invincibleCnt == 0 (HL == B)
+	LD HL, (invincibleCnt)
+	LD B, 0
+	CALL ut.HLEqualB
+	CP ut.HL_IS_B
 	RET Z
+.after0Check
 
-	DEC A
-	LD (invincibleCnt), A						; Decrement counter and store it
-	CP 0											; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
-	JR Z, .lastIteration
+	DEC HL
+	LD (invincibleCnt), HL						; Decrement counter and store it
 
-	; Still invincible - blink Jetman sprite
+	; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
+	LD B, 0
+	CALL ut.HLEqualB
+	CP ut.HL_IS_B
+	JR Z, .lastIteration						; HL == 0
+
+	; Still invincible - blink Jetman sprite (at first blink fast, last few seconds blink slow)
+	; Shold blink slow or fast?
+	LD A, H										; H should be 0 because the last blink phase (slow blink) is 8 bits
+	CP 0
+	JR NZ, .blinkFast							; #invincibleCnt > 255 (H != 0) -> blink fast
+
+	LD A, L
+	CP INVINCIBLE_FAST_BLINK
+	JR NC, .blinkFast							; #invincibleCnt > #INVINCIBLE_FAST_BLINK -> blink fast
+
+	;  #invincibleCnt < #INVINCIBLE_FAST_BLINK -> blink slow (invincibility is almost over)
+	LD A, (cd.counter4FliFLop)
+	JR .afterBlinkSet
+.blinkFast	
+	LD A, (cd.counter2FliFLop)
+.afterBlinkSet	
+
 	CALL js.BlinkJetSprite
 	RET
 .lastIteration	
@@ -212,13 +306,13 @@ JetInvincible
 ;                   #ShakeScreen                           ;
 ;----------------------------------------------------------;
 ShakeScreen
-	LD A, (dc.counter5)
+	LD A, (cd.counter4)
 	CP 0
 	RET NZ										; Return if counter to 5 did not reset	
 
-	LD A, (dc.counter5FliFLop)					; Oscilates beetwen 1 and 0
+	LD A, (cd.counter4FliFLop)					; Oscilates beetwen 1 and 0
 	LD D, A
-	LD E, SHAKE_SCREEN_BY
+	LD e, SHAKE_SCREEN_BY
 	MUL D, E
 	LD A, E
 	NEXTREG _DC_REG_TILE_X_LSB, A

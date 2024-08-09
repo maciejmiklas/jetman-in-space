@@ -23,8 +23,8 @@ PrintNumHL
 
 	; Print text from formatted16 on screen using tiles
 	LD DE, formatted16							; Contains 16-bit number as ASCII
-	LD C, B										; C - Character offset from the top left corner.
-	LD B, 5										; Print 5 characters
+	LD c, B										; C - Character offset from the top left corner.
+	LD b, 5										; Print 5 characters
 	CALL ti.PrintText
 
 	POP DE
@@ -43,7 +43,7 @@ formatted16
 Num16ToString
 
 	; Each line prints one digit into DE, starting with the most significant. 
-	ld	BC, -10000						
+	LD	BC, -10000						
 	CALL .format
 
 	LD	BC, -1000
@@ -67,7 +67,7 @@ Num16ToString
 	; It happens when subtracting resets the most significant number, i.e., 1234 -> 0123.
 	JR	C, .loop
 	
-	SUB	HL, BC									; ADD above caused an overflow. Subsctract will turn the value one step back, ie: 59857 -> 4321 for input: 54321
+	SUB	HL, BC									; Add above caused an overflow. Subsctract will turn the value one step back, ie: 59857 -> 4321 for input: 54321
 	LD (DE), A									; A contains the ASCII value of the most significant number, stored in DE
 	INC DE										; Move DE offset to the next position to store the next number
 	RET

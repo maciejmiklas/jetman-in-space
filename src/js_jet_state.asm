@@ -24,7 +24,7 @@ GND_STAND				= 3						; Jetman stands on the ground
 jetGnd				BYTE 0
 
 ; Jetman states
-JET_STATE_INIT			= %00000000
+JET_STATE_RESET			= %00000000
 JET_STATE_AIR_BIT		= 0						; Jemtan is flying, possible states are in #jetAir
 JET_STATE_GND_BIT		= 1						; Jemtan is walking, possible states are in #jetGnd
 JET_STATE_RIP_BIT		= 2						; Jemtan got hit by enemy
@@ -38,8 +38,7 @@ jetState				BYTE %00000001			; Game start, Jetman in the air
 ; Input:
 ;  - A:										; Air State: #AIR_XXX
 ChangeJetStateAir
-	
-	LD (js.jetAir), A
+	LD (js.jetAir), A						; Update Air from param
 
 	LD A, (js.jetState)
 	SET js.JET_STATE_AIR_BIT, A
@@ -55,7 +54,6 @@ ChangeJetStateAir
 ;                 #ChangeJetStateGnd                       ;
 ;----------------------------------------------------------;
 ChangeJetStateGnd
-
 	LD A, (js.jetState)
 	SET js.JET_STATE_GND_BIT, A
 	RES js.JET_STATE_AIR_BIT, A
@@ -77,7 +75,7 @@ ChangeJetStateRip
 	LD (js.jetAir), A
 	LD (js.jetGnd), A
 
-	LD A, js.JET_STATE_INIT
+	LD A, js.JET_STATE_RESET
 	SET js.JET_STATE_AIR_BIT, A
 	SET js.JET_STATE_RIP_BIT, A
 	LD (js.jetState), A
@@ -87,14 +85,14 @@ ChangeJetStateRip
 ;----------------------------------------------------------;
 ;                #ChangeJetStateRespown                    ;
 ;----------------------------------------------------------;
-ChangeJetStateRespown
+ChangeJetStateRespown	
 	LD A, js.STATE_INACTIVE
 	LD (js.jetGnd), A
 
 	LD A, js.AIR_HOOVER
 	LD (js.jetAir), A
 
-	LD A, js.JET_STATE_INIT
+	LD A, js.JET_STATE_RESET
 	SET js.JET_STATE_AIR_BIT, A
 	SET js.JET_STATE_INV_BIT, A
 	LD (js.jetState), A

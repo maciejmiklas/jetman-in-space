@@ -148,12 +148,12 @@ JoyMoveLeft
 
 	; Direction change: right -> left
 	LD A, (id.jetDirection)
-	AND id.MOVE_LEFT_MASK							; Are we moving left already?
+	AND id.MOVE_LEFT_MASK						; Are we moving left already?
 	CP id.MOVE_LEFT_MASK
-	JR Z, .afterDirectionChange						; Jetman is moving left already -> end
+	JR Z, .afterDirectionChange					; Jetman is moving left already -> end
 
 	; We have direction change!		
-	LD A, (id.jetDirection)							; Reset right and set left
+	LD A, (id.jetDirection)						; Reset right and set left
 	RES id.MOVE_RIGHT_BIT, A
 	SET id.MOVE_LEFT_BIT, A
 	LD (id.jetDirection), A
@@ -190,7 +190,7 @@ JoyMoveDown
 
 	; Increment Y position#
 	LD A, (jp.jetmanY)
-	CP GROUND_LEVEL							; Do not increment if Jetman has reached the ground
+	CP GROUND_LEVEL								; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
 
 	; Move Jetman 1px down
@@ -236,13 +236,13 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	CP id.MOVE_INACTIVE
 	JR NZ, .afterInactivity						; Jump to the end if there is a movement
 
-	LD A, (jetmanInactivityCnt)				; Increment inactivity counter
+	LD A, (jetmanInactivityCnt)					; Increment inactivity counter
 	INC A
 	LD (jetmanInactivityCnt), A
 
 	; Should Jetman hover?
 	LD A, (js.jetState)
-	BIT js.JET_STATE_AIR_BIT, A					; Is Jemtan in the air already?
+	bit js.JET_STATE_AIR_BIT, A					; Is Jemtan in the air already?
 	JR Z, .afterHoover							; Jump if not flaying
 
 	LD A, (js.jetAir)
@@ -286,7 +286,7 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	JR .afterInactivity
 .afterStand
 
-	; We are here because: jetmanInactivityCnt > 0 AND jetmanInactivityCnt < STAND_START 
+	; We are here because: jetmanInactivityCnt > 0 and jetmanInactivityCnt < STAND_START 
 	; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.	
 	LD A, (js.jetGnd)
 	CP js.GND_WALK

@@ -19,7 +19,7 @@ $SJASMPLUS src/main.asm --lst=bin/jetmal.lst --zxnext=cspectpwd --outprefix=bin/
 #then
 #    echo Skipping
 #else
-    #cp -v $CP_FROM $CP_TO
+    #CP -v $CP_FROM $CP_TO
     #diskutil unmountDisk $SD_CARD
     #diskutil eject $SD_CARD
 #fi

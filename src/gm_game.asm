@@ -30,9 +30,6 @@ GameLoop
 
 	; First update graphics, logic follows afterwards!
 	CALL js.UpdateJetSpritePositionRotation
-	CALL Counter10
-	CALL Counter5
-	CALL Counter3
 	
 	CALL jc.JetRip
 	CALL in.JoyInput
@@ -40,20 +37,20 @@ GameLoop
 	CALL jm.JoyDisabled
 	CALL jw.MoveShots
 
-	LD IX, de.sprite01
-	LD A, (de.spritesSize)
-	LD B, A 	
+	LD IX, DE.sprite01
+	LD A, (DE.spritesSize)
+	LD b, A 	
 	CALL ep.MoveEnemies
 
-	LD IX, de.sprite01
-	LD A, (de.singleSpritesSize)
+	LD IX, DE.sprite01
+	LD A, (DE.singleSpritesSize)
 	LD B, A	
 	CALL ep.RespownNextEnemy	
 
 	CALL jw.WeaponHitEnemies
 	CALL jc.JetmanEnemiesColision
 
-	LD IY, de.formation
+	LD IY, DE.formation
 	CALL ef.RespownFormation
 
 	CALL PrintDebug
@@ -64,69 +61,15 @@ GameLoop
 ;                       #Counter10                         ;
 ;----------------------------------------------------------;
 Counter10
-	LD A, (dc.counter10FliFLop)					; 1 -> 0 and 0 -> 1
-	XOR 1
-	LD (dc.counter10FliFLop), A
-
-	; Decrement the counter
-	LD A, (dc.counter10)
-	INC A
-	LD (dc.counter10), A
-	CP dc.COUNTER10_MAX
-	RET NZ										; Jump if #counter10 !=  #COUNTER10_MAX 
-
-	LD A, 0										; Reset the counter
-	LD (dc.counter10), A
-		
-	; Call functions that need to be updated every 10th loop
 	CALL AnimateSprites		
 	RET	
 
 ;----------------------------------------------------------;
-;                       #Counter5                          ;
+;                       #Counter2                          ;
 ;----------------------------------------------------------;
-Counter5
-	LD A, (dc.counter5FliFLop)					; 1 -> 0 and 0 -> 1
-	XOR 1
-	LD (dc.counter5FliFLop), A
-
-	; Decrement the counter
-	LD A, (dc.counter5)
-	INC A
-	LD (dc.counter5), A
-	CP dc.COUNTER5_MAX
-	RET NZ										; Jump if #counter5 !=  #COUNTER5_MAX 
-
-	LD A, 0										; Reset the counter
-	LD (dc.counter5), A
-
-	; Call functions that need to be updated every 10th loop
-	; nothing yet
-	;CALL jc.JetInvincible
-	RET		
-
-;----------------------------------------------------------;
-;                       #Counter3                          ;
-;----------------------------------------------------------;
-Counter3
-	LD A, (dc.counter3FliFLop)					; 1 -> 0 and 0 -> 1
-	XOR 1
-	LD (dc.counter3FliFLop), A
-
-	; Decrement the counter
-	LD A, (dc.counter3)
-	INC A
-	LD (dc.counter3), A
-	CP dc.COUNTER3_MAX
-	RET NZ										; Jump if #counter3 !=  #COUNTER3_MAX 
-
-	LD A, 0										; Reset the counter
-	LD (dc.counter3), A
-
-	; Call functions that need to be updated every 10th loop
+Counter2
 	CALL jc.JetInvincible
 	RET		
-
 
 ;----------------------------------------------------------;
 ;                    #AnimateSprites                       ;
@@ -137,8 +80,8 @@ AnimateSprites
 	CALL jw.AnimateShots
 
 	; Animate enemies
-	LD IX, de.sprite01	
-	LD A, (de.spritesSize)
+	LD IX, DE.sprite01	
+	LD A, (DE.spritesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
 		
@@ -161,9 +104,7 @@ PrintDebug
 	CALL tx.PrintNumHL
 
 	LD B, 20
-	LD H, 0
-	LD A,  (jc.invincibleCnt)
-	LD L, A
+	LD HL, (jc.invincibleCnt)
 	CALL tx.PrintNumHL
 
 	LD B, 30

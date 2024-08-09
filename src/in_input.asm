@@ -92,8 +92,8 @@ JoyInput
 ; Input:
 ; Output:
 ;	A containing one of the values given by #JOY_SL_RET_JOY_XXX
-JOY_SL_RET_JOY_ON 		= 1							; Process joystick input
-JOY_SL_RET_JOY_OFF		= 2							; Disable joystick input processing for this loop
+JOY_SL_RET_JOY_ON 		= 1						; Process joystick input
+JOY_SL_RET_JOY_OFF		= 2						; Disable joystick input processing for this loop
 
 JoySlowdown
 	LD A, (id.joyDelayCnt)
@@ -103,14 +103,14 @@ JoySlowdown
 	CP id.JOY_DELAY
 	JR Z, .delayReached
 
-	LD A, JOY_SL_RET_JOY_OFF						; Return because #joyDelayCnt !=  #JOY_DELAY
+	LD A, JOY_SL_RET_JOY_OFF					; Return because #joyDelayCnt !=  #JOY_DELAY
 	RET
-.delayReached										; Delay counter has been reached	
+.delayReached									; Delay counter has been reached	
 						
-	LD A, 0											; Reset delay counter
+	LD A, 0										; Reset delay counter
 	LD (id.joyDelayCnt), A
 
-	LD A, JOY_SL_RET_JOY_ON							; Process input, because counter has been reached
+	LD A, JOY_SL_RET_JOY_ON						; Process input, because counter has been reached
 	RET
 
 ;----------------------------------------------------------;

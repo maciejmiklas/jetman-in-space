@@ -49,8 +49,8 @@ STATE_SHOT_DIR_BIT		= 5				; Bit for #sr.MSS.STATE, 1 - shot moves right, 0 - sh
 ;                #WeaponHitEnemies                         ;
 ;----------------------------------------------------------;
 WeaponHitEnemies
-	LD IX, de.sprite01
-	LD A, (de.spritesSize)
+	LD IX, DE.sprite01
+	LD A, (DE.spritesSize)
 	LD B, A
 	CALL CheckHitEnemies
 	RET	
@@ -117,13 +117,13 @@ HitEnemy
 
 	; Check if the shot hits the enemy from the left side of its X coordinate
 	LD A, C										; A holds the X LSB of the enemy
-	SUB FIRE_THICKNESS						; Include the thickness of the enemy
+	SUB FIRE_THICKNESS							; Include the thickness of the enemy
 	CP E
 	JR NC, .continue							; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
 
 	; Check if the shot hits the enemy from the right side of its X coordinate
-	ADD FIRE_THICKNESS						; Revert "SUB L" from above
-	ADD FIRE_THICKNESS						; Include the thickness of the enemy
+	ADD FIRE_THICKNESS							; Revert "SUB L" from above
+	ADD FIRE_THICKNESS							; Include the thickness of the enemy
 	CP E
 	JR C, .continue								; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
 
@@ -132,13 +132,13 @@ HitEnemy
 	LD B, (IY + sr.MSS.Y)						; B holds Y from the laser beam
 
 	; Check upper bounds
-	SUB FIRE_THICKNESS						; Include the thickness of the enemy
+	SUB FIRE_THICKNESS							; Include the thickness of the enemy
 	CP B
 	JR NC, .continue
 
 	; Check lower bounds
-	ADD FIRE_THICKNESS						; Revert "SUB L" from above
-	ADD FIRE_THICKNESS						; Include the thickness of the enemy
+	ADD FIRE_THICKNESS							; Revert "SUB L" from above
+	ADD FIRE_THICKNESS							; Include the thickness of the enemy
 	CP B
 	JR C, .continue
 
@@ -258,7 +258,7 @@ Fire
 .findLoop
 
 	; Check whether the current #shotMssX is not visible and can be reused
-	BIT sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)
+	bit sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)
 	JR Z, .afterFound							; Jump if visibility is not set -> hidden, can be reused
 
 	; Move HL to the beginning of the next #shotMssX (see "LD DE, MSS" above)
@@ -271,12 +271,12 @@ Fire
 
 	; Is Jetman moving left or right?
 	LD A, (id.jetDirection)
-	BIT id.MOVE_LEFT_BIT, A
+	bit id.MOVE_LEFT_BIT, A
 	JR NZ, .movingLeft							; Jump if Jetman is moving left
 	
 	LD A, 0										; A will hold sr.MSS.STATE
 	; Jetman is moving right, shot will move right also
-	SET STATE_SHOT_DIR_BIT, A					; Store shot direction in state
+	set STATE_SHOT_DIR_BIT, A					; Store shot direction in state
 
 	; Set X coordinate for laser beam
 	LD HL, (jp.jetmanX)
@@ -298,7 +298,7 @@ Fire
 
 	; Set Y coordinate for laser beam
 	LD A, (jp.jetmanY)
-	ADD A, ADJUST_FIRE_Y
+	ADD a, ADJUST_FIRE_Y
 	LD (IX + sr.MSS.Y), A
 
 	; Setup laser beam pattern, IX already points to the right memory address
