@@ -37,20 +37,20 @@ GameLoop
 	CALL jm.JoyDisabled
 	CALL jw.MoveShots
 
-	LD IX, DE.sprite01
-	LD A, (DE.spritesSize)
+	LD IX, de.sprite01
+	LD A, (de.spritesSize)
 	LD b, A 	
 	CALL ep.MoveEnemies
 
-	LD IX, DE.sprite01
-	LD A, (DE.singleSpritesSize)
+	LD IX, de.sprite01
+	LD A, (de.singleSpritesSize)
 	LD B, A	
 	CALL ep.RespownNextEnemy	
 
 	CALL jw.WeaponHitEnemies
 	CALL jc.JetmanEnemiesColision
 
-	LD IY, DE.formation
+	LD IY, de.formation
 	CALL ef.RespownFormation
 
 	CALL PrintDebug
@@ -80,8 +80,8 @@ AnimateSprites
 	CALL jw.AnimateShots
 
 	; Animate enemies
-	LD IX, DE.sprite01	
-	LD A, (DE.spritesSize)
+	LD IX, de.sprite01	
+	LD A, (de.spritesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
 		

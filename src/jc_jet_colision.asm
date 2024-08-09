@@ -28,8 +28,8 @@ INVINCIBLE_FAST_BLINK	= 150
 ;                #JetmanEnemiesColision                    ;
 ;----------------------------------------------------------;
 JetmanEnemiesColision
-	LD IX, DE.sprite01
-	LD A, (DE.spritesSize)
+	LD IX, de.sprite01
+	LD A, (de.spritesSize)
 	LD B, A
 	CALL EnemiesColision
 	RET	
