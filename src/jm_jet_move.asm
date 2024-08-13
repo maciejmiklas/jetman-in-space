@@ -64,6 +64,8 @@ JetmanMoves
 ;                      #JoyMoveUp                          ;
 ;----------------------------------------------------------;
 JoyMoveUp
+	CALL bg.UpdateOnYChange
+
 	; Update #joyDirection state
 	LD A, (id.joyDirection)
 	SET id.MOVE_UP_BIT, A	
@@ -72,11 +74,11 @@ JoyMoveUp
 	CALL JetmanMoves
 
 	; Decrement Y position
-	LD A, (jp.jetmanY)	
+	LD A, (jp.jetY)	
 	CP sc.SCR_Y_MIN_POS 						; Do not decrement if Jetman has reached the top of the screen
 	JR Z, .afterDec
 	DEC A
-	LD (jp.jetmanY), A
+	LD (jp.jetY), A
 .afterDec	
 
 	; Direction change: down -> up
@@ -176,6 +178,8 @@ JoyPressFire
 ;                      #JoyMoveDown                        ;
 ;----------------------------------------------------------;
 JoyMoveDown
+	CALL bg.UpdateOnYChange
+
 	; Update #joyDirection state
 	LD A, (id.joyDirection)
 	SET id.MOVE_DOWN_BIT, A	
@@ -189,13 +193,13 @@ JoyMoveDown
 	CALL JetmanMoves						
 
 	; Increment Y position#
-	LD A, (jp.jetmanY)
+	LD A, (jp.jetY)
 	CP GROUND_LEVEL								; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
 
 	; Move Jetman 1px down
 	INC A
-	LD (jp.jetmanY), A
+	LD (jp.jetY), A
 
 	; Landing on the ground
 	CP GROUND_LEVEL

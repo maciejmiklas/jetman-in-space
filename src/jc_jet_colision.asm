@@ -78,7 +78,7 @@ COLLISION_YES			= 1
 CheckCollision
 	; Compare X coordinate of enemy and Jetman
 	LD BC, (IX + sr.MSS.X)						; X of the enemy
-	LD HL, (jp.jetmanX)							; X of the Jetman
+	LD HL, (jp.jetX)							; X of the Jetman
 
 	; Check whether Jetman is horizontal with the enemy
 	SBC HL, BC	
@@ -99,7 +99,7 @@ CheckCollision
 
 	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical
 	LD B, (IX + sr.MSS.Y)						; Y of the enemy
-	LD A, (jp.jetmanY)							; Y of the Jetman
+	LD A, (jp.jetY)							; Y of the Jetman
 
 	; Is Jemtan above or below the enemy?
 	CP B
@@ -115,7 +115,7 @@ CheckCollision
 	; Jetman is above enemy
 
 	; Swap A and B (compared to above) to avoid negative value
-	LD A, (jp.jetmanY)
+	LD A, (jp.jetY)
 	LD B, A										; B: Y of the Jetman
 	LD A, (IX + sr.MSS.Y)						; A: Y of the enemy
 	SUB B
@@ -190,20 +190,21 @@ EnemyColision
 RespawnJet
 	; Set respawn coordinates
 	LD BC, 100
-	LD (jp.jetmanX), BC
+	LD (jp.jetX), BC
 
 	LD A, 100
-	LD (jp.jetmanY), A
+	LD (jp.jetY), A
 
 	LD A, 0
-	NEXTREG _DC_REG_TILE_X_LSB, A
-	NEXTREG _DC_REG_TILE_Y, A
+	NEXTREG _DC_REG_TILE_X_LSB_H30, A
+	NEXTREG _DC_REG_TILE_Y_H31, A
 
 	CALL jt.ChangeJetStateRespown
 
 	LD HL, INVINCIBLE_DURATION
 	CALL MakeJetInvincible
 
+	CALL bg.UpdateOnYChange
 	RET
 
 ;----------------------------------------------------------;
@@ -217,9 +218,9 @@ JetRip
 	CALL RipMove
 
 	; Did Jetam reach the top of the screen (the RIP sequence is over)?	
-	LD A, (jp.jetmanY)
+	LD A, (jp.jetY)
 	CP 4										; Going up is incremented by 2
-	RET NC										; Nope, still going up (#jetmanY >= 4)
+	RET NC										; Nope, still going up (#jetY >= 4)
 
 	; Sequece is over, respown new live
 	CALL RespawnJet 
@@ -306,6 +307,8 @@ ResetRipMove
 ;----------------------------------------------------------;	
 ; Jetman moves in zig-zac towards the upper side of the screen. 
 RipMove
+	CALL bg.UpdateOnYChange
+
 	; Move left or right
 	LD A, (ripMoveState)
 	CP RIP_MOVE_LEFT
@@ -322,9 +325,9 @@ RipMove
 .afterMove
 
 	; going up
-	LD A, (jp.jetmanY)
+	LD A, (jp.jetY)
 	ADD A, RIP_MOVE_UP_BY
-	LD (jp.jetmanY), A
+	LD (jp.jetY), A
 
 	; Decrement move counter
 	LD A, (ripMoveCnt)

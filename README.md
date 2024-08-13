@@ -1,13 +1,14 @@
 ZX Spectrum Next game inspired by Jetpack
 
-gfx2next -bitmap -pal-std -preview l001_background.bmp
+BMP must have 320256 with 8bit palette (Image ->Mode -> Indexed)
+gfx2next -bitmap -pal-std -preview l002_background.bmp
 
 
 AI text for title:
 Headline text "Jetman in Space". Jetman flying from one planet to another. Carries backpack shooting down flames. Carries laser gun that shuts blue beam. Background contains space and planets, highly detailed retro graphics, dynamic movement across space
 
 AI text for planetes:
-retro planet, alone, without anything in background, black background 
+retro planet, black background
 
 Based on:
 * [[Dougie Do][https://github.com/robgmoran/DougieDoSource]]

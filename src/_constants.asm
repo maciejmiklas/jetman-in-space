@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
 _GL_REG_TURBO_H07		= 11				; Bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
 
-_GL_REG_REANSPARENT_COL = $14				; Global transparency color
+_GL_REG_TRANP_COL_H14	 = $14				; Global transparency color
 _GL_REG_SELECT_H243B	= $243B				; This Port is used to set the register number
 _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 
@@ -16,27 +16,33 @@ _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 ;----------------------------------------------------------;
 
 ; Layer 2 RAM bank
-_DC_REG_LA2_BANK_H12	= $12
+_DC_REG_L2_BANK_H12		= $12
+
+; Layer2 Offset X
+_DC_REG_L2_OFFSET_X_H16	= $16
+
+; Layer2 Offset Y
+_DC_REG_L2_OFFSET_Y_H17	= $17
 
 ; Tilemap Offset X MSB
 ; Bits:
 ;  - 7-2 = Reserved, must be 0
 ;  - 1-0 = MSB X Offset
-_DC_REG_TILE_X_MSB		= $2F
+_DC_REG_TILE_X_MSB_H2f	= $2F
 
 ; Tilemap Offset X LSB
 ; Bits:
 ;  - 7-0 = LSB X Offset
-_DC_REG_TILE_X_LSB		= $30
+_DC_REG_TILE_X_LSB_H30	= $30
 
 ; Tilemap Offset Y
-_DC_REG_TILE_Y			= $31
+_DC_REG_TILE_Y_H31		= $31
 
 ; ULA / LoRes Offset X
-_DC_REG_ULA_X			= $32
+_DC_REG_ULA_X_H32		= $32
 
 ; ULA / LoRes Offset Y
-_DC_REG_ULA_Y			= $33
+_DC_REG_ULA_Y_H33		= $33
 
 ; Bits:
 ;  - 7: 1 to enable Layer 2 (alias for bit 1 in Layer 2 Access Port $123B)
@@ -294,7 +300,7 @@ _DMA_PORT_H6B			= $6B					; Datagear DMA Port in zxnDMA mode, https://wiki.specn
 ;----------------------------------------------------------;
 ;                        Colors                            ;
 ;----------------------------------------------------------;
-_BORDER_IO				= $FE
+_BORDER_IO_HFE			= $FE
 _COL_BLACK				= 0
 _COL_BLUE				= 1
 _COL_RED				= 2

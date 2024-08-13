@@ -7,7 +7,7 @@
 ;                      #GameInit                           ;
 ;----------------------------------------------------------;
 GameInit
-
+	CALL jc.RespawnJet
 	RET
 
 ;----------------------------------------------------------;
@@ -18,14 +18,14 @@ GameInit
 GameLoop
 	IFDEF PERFORMANCE_BORDER
 		LD	A, _COL_GREEN
-		OUT (_BORDER_IO), A
+		OUT (_BORDER_IO_HFE), A
 	ENDIF
 
 	CALL sc.WaitForScanline
 
 	IFDEF PERFORMANCE_BORDER
 		LD	A, _COL_RED
-		OUT (_BORDER_IO), A
+		OUT (_BORDER_IO_HFE), A
 	ENDIF	
 
 	; First update graphics, logic follows afterwards!
@@ -94,15 +94,15 @@ PrintDebug
 	; PRINT START
 	LD B, 0
 	LD H, 0
-	LD HL, (jp.jetmanX)
+	LD HL, (jp.jetX)
 	CALL tx.PrintNumHL
 
 	LD B, 10
 	LD H, 0
-	LD A,  (jp.jetmanY)
+	LD A,  (jp.jetY)
 	LD L, A
 	CALL tx.PrintNumHL
-
+/*
 	LD B, 20
 	LD HL, (jc.invincibleCnt)
 	CALL tx.PrintNumHL
@@ -112,7 +112,7 @@ PrintDebug
 	LD A, (jt.jetState)
 	LD L, A
 	CALL tx.PrintNumHL	
-
+*/
 	; PRINT END
 	RET
 ;----------------------------------------------------------;

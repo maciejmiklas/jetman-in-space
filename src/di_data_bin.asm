@@ -65,6 +65,9 @@ spritesBinLength = $ - spritesBin
 	; The "n" option will ensure each slot is within $E000..$FFFF range. Once one slot is full (at $FFFF) it will start writing to a new slot at $E000
 	MMU _RAM_SLOT7 n, BGR_IMG_SB18
 	ORG _RAM_SLOT7_START_HE000
+
+	; Following command was used to convert bmp (8bit indexed): "gfx2next -bitmap -pal-std -preview xxxx.bmp"
+	; I've used gimp to resize image to 256x192 and "Image -> Mode -> Indexed" to change palette to 8bit	
 	INCBIN "assets/l001_background.nxi", 0, 256*192
 
 	ASSERT $ == $E000 && $$ == BGR_IMG_EB23 + 1	; Ensure that we loaded the whole image. MMU should be on the beginning of the next slot ("n" option)

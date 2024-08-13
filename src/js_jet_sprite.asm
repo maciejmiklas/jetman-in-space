@@ -93,7 +93,7 @@ sprState			BYTE SPR_STATE_SHOW
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation	
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
-	LD BC, (jp.jetmanX)
+	LD BC, (jp.jetX)
 
 	; Set _SPR_REG_NR_H34 with LDB from Jetmans X postion
 	LD A, C			
@@ -127,7 +127,7 @@ UpdateJetSpritePositionRotation
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Move Jetman sprite to current Y postion, 8-bit value is easy 
-	LD A, (jp.jetmanY)		
+	LD A, (jp.jetY)		
 	
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position

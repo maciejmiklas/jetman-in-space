@@ -16,7 +16,6 @@ SHAKE_SCREEN_BY			= 5						; Number of pixels to move the screen by shaking
 ;                      #SetupScreen                        ;
 ;----------------------------------------------------------;
 SetupScreen
-
 	; Sprite and Layers system. Bits:
 	;  - 7: 0 - low RES mode off
 	;  - 6: 1 - sprite on top
@@ -24,13 +23,17 @@ SetupScreen
 	;  - 4-2: 110 - S(U+L) ULA and Layer 2 combined (tiles + background)
 	;  - 1: 1 - sprite over border
 	;  - 0: 1 - sprites visible
-	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'110'1'1
+	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'100'1'1
+
+	; Setup Layer 2
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
-	NEXTREG _DC_REG_LA2_BANK_H12, di.BGR_IMG_16B9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
-	NEXTREG _GL_REG_REANSPARENT_COL, 00			; Global transparency
+	NEXTREG _DC_REG_LA2_H70, %000'00'000		; Layer 2 has 256x192x8bpp
+	NEXTREG _DC_REG_L2_BANK_H12, di.BGR_IMG_16B9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
+
+	NEXTREG _GL_REG_TRANP_COL_H14, 00			; Global transparency
 
 	LD	A, _COL_BLACK							; Set border color
-	OUT (_BORDER_IO), A
+	OUT (_BORDER_IO_HFE), A
 
 	; Layer 2 Palette
 	LD A, $$di.backGroundPalette				; Memory bank (8kb) containing layer 2 palette data
@@ -46,7 +49,6 @@ SetupScreen
 ; - A:		8k memory bank containing layer 2 palette data
 ; - HL:		address of layer 2 palette data
 SetupLayer2Palette
-
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Assign bank 24 to slot 7	
 
 	; Bits
@@ -85,7 +87,6 @@ SetupLayer2Palette
 ; - B:		Number of colors to copy
 ; - HL:		Address of layer 2 palette data 
 SetupTilemapPalette
-
 	NEXTREG _DC_REG_TILE_TRANSP_H4C, $00		; Black for tilemap transparency
 
 	; Bits
@@ -148,7 +149,7 @@ ShakeScreen
 	LD e, SHAKE_SCREEN_BY
 	MUL D, E
 	LD A, E
-	NEXTREG _DC_REG_TILE_X_LSB, A
+	NEXTREG _DC_REG_TILE_X_LSB_H30, A
 
 	RET		
 

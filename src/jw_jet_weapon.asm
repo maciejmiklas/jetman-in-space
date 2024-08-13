@@ -279,7 +279,7 @@ Fire
 	set STATE_SHOT_DIR_BIT, A					; Store shot direction in state
 
 	; Set X coordinate for laser beam
-	LD HL, (jp.jetmanX)
+	LD HL, (jp.jetX)
 	ADD HL, ADJUST_FIRE_X
 	LD (IX + sr.MSS.X), HL
 
@@ -289,7 +289,7 @@ Fire
 	RES STATE_SHOT_DIR_BIT, A					; Store shot direction in state
 
 	; Set X coordinate for laser beam
-	LD HL, (jp.jetmanX)
+	LD HL, (jp.jetX)
 	ADD HL, -ADJUST_FIRE_X
 	LD (IX + sr.MSS.X), HL
 .afterMoving
@@ -297,7 +297,7 @@ Fire
 	CALL sr.SetVisible							; It will show sprite and store state from A
 
 	; Set Y coordinate for laser beam
-	LD A, (jp.jetmanY)
+	LD A, (jp.jetY)
 	ADD a, ADJUST_FIRE_Y
 	LD (IX + sr.MSS.Y), A
 

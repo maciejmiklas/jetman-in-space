@@ -20,7 +20,6 @@ start
 mainLoop
 	CALL co.CounterLoop
 	CALL gm.GameLoop
-
 	JR mainLoop
 
 ;----------------------------------------------------------;
@@ -38,18 +37,19 @@ mainLoop
 
 	INCLUDE "gm_game.asm"
 
+	INCLUDE "sc_screen.asm"
 	INCLUDE "sr_simple_sprite.asm"
 	INCLUDE "sp_sprite.asm"	
 	INCLUDE "jt_jet_state.asm"
 	INCLUDE "jp_jet_position.asm"	
 	INCLUDE "jp_jet_platform.asm"	
-	INCLUDE "jc_jet_colision.asm"
+	INCLUDE "jc_jet_colision.asm"	
+	INCLUDE "bg_background.asm"	
 	INCLUDE "jm_jet_move.asm"	
 	INCLUDE "js_jet_sprite.asm"
 	INCLUDE "ep_enemy_pattern.asm"
 	INCLUDE "ef_enemy_formation.asm"
 	INCLUDE "de_data_enemy.asm"	
-	INCLUDE "sc_screen.asm"
 	INCLUDE "jw_jet_weapon.asm"
 
 	; LAST import due to bank offset!
