@@ -19,8 +19,8 @@ platformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
 AnimateOnJoystickDisabled
 
 	; Is Jetman falling from the platform on the right side?
-	LD A, (js.jetAir)
-	CP js.AIR_FALL_RIGHT
+	LD A, (jt.jetAir)
+	CP jt.AIR_FALL_RIGHT
 	JR NZ, .afterFallingRight
 
 	; Yes, Jetman is falling from the platform
@@ -37,8 +37,8 @@ AnimateOnJoystickDisabled
 .afterFallingRight	
 
 	; Is Jetman falling from the platform on the left side?
-	LD A, (js.jetAir)
-	CP js.AIR_FALL_LEFT
+	LD A, (jt.jetAir)
+	CP jt.AIR_FALL_LEFT
 	JR NZ, .afterFallingLeft
 
 	; Yes, Jetman is falling from the platform
@@ -54,8 +54,8 @@ AnimateOnJoystickDisabled
 .afterFallingLeft	
 
 	; Is Jetman bumping into the platform from the right?
-	LD A, (js.jetAir)
-	CP js.AIR_BUMP_RIGHT
+	LD A, (jt.jetAir)
+	CP jt.AIR_BUMP_RIGHT
 	JR NZ, .afterBumpingRight
 
 	; Yes
@@ -64,8 +64,8 @@ AnimateOnJoystickDisabled
 .afterBumpingRight
 
 	; Is Jetman bumping into the platform from the left?
-	LD A, (js.jetAir)
-	CP js.AIR_BUMP_LEFT
+	LD A, (jt.jetAir)
+	CP jt.AIR_BUMP_LEFT
 	JR NZ, .afterBumpingLeft
 
 	; Yes
@@ -74,8 +74,8 @@ AnimateOnJoystickDisabled
 .afterBumpingLeft
 
 	; Or finally, maybe Jetmat hits the platform from the bottom?
-	LD A, (js.jetAir)
-	CP js.AIR_BUMP_BOTTOM
+	LD A, (jt.jetAir)
+	CP jt.AIR_BUMP_BOTTOM
 	JR NZ, .afterAnimate
 
 	; Yes
@@ -94,13 +94,13 @@ AnimateOnJoystickDisabled
 JetTakesoff
 
 	; Transition from walking to flaying
-	LD A, (js.jetState)
-	BIT js.JET_STATE_GND_BIT, A					; Check if Jetnan is on the ground/platform
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_GND_BIT, A					; Check if Jetnan is on the ground/platform
 	RET Z
 
 	; Jetman is taking off
-	LD A, js.AIR_FLY
-	CALL js.ChangeJetStateAir
+	LD A, jt.AIR_FLY
+	CALL jt.ChangeJetStateAir
 
 	; Play takeoff animation					
 	LD A, js.SDB_T_WF
@@ -113,7 +113,7 @@ JetTakesoff
 JetLanding
 
 	; Update state as we are walking
-	CALL js.ChangeJetStateGnd
+	CALL jt.ChangeJetStateGnd
 	
 	; Jemans is landing, trigger transition: flying -> standing/walking
 	LD A, (id.joyDirection)
@@ -122,8 +122,8 @@ JetLanding
 	JR C, .afterMoveLR							; Jump, if there is no movement right/left (A >= 1) -> Jemtan lands and stands still
 	
 	; Jetman moves left/right
-	LD A, js.GND_WALK							; Update #jetGnd as we are walking
-	LD (js.jetGnd), A	
+	LD A, jt.GND_WALK							; Update #jetGnd as we are walking
+	LD (jt.jetGnd), A	
 
 	LD A, js.SDB_T_FW							; Play transition from landing -> walking
 	CALL js.ChangeJetSpritePattern
@@ -131,8 +131,8 @@ JetLanding
 	JR .afterStand								; The animation is already loaded, do not overweigh it with standing
 .afterMoveLR	
 
-	LD A, js.GND_STAND							; Update #jetGnd as we are standing
-	LD (js.jetGnd), A	
+	LD A, jt.GND_STAND							; Update #jetGnd as we are standing
+	LD (jt.jetGnd), A	
 
 	LD A, js.SDB_T_FS							; Play transition from landing -> standing
 	CALL js.ChangeJetSpritePattern
@@ -144,8 +144,8 @@ JetLanding
 ;----------------------------------------------------------;
 ; Is Jetman landing on one of the platforms?
 LandingOnPlatform
-	LD A, (js.jetState)
-	BIT js.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no landing ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
@@ -192,8 +192,8 @@ LandingOnPlatform
 ;----------------------------------------------------------;
 BumpIntoPlatFormBelow
 
-	LD A, (js.jetState)
-	BIT js.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
@@ -229,8 +229,8 @@ BumpIntoPlatFormBelow
 	JR NC, .platformsLoopEnd					; Jump if #jetmanX > [X end]
 
 	; Jetman hits the platform!
-	LD A, js.AIR_BUMP_BOTTOM					; Change air state
-	LD (js.jetAir), A
+	LD A, jt.AIR_BUMP_BOTTOM					; Change air state
+	LD (jt.jetAir), A
 	
 	PUSH BC
 
@@ -251,12 +251,12 @@ BumpIntoPlatFormBelow
 ;----------------------------------------------------------;
 ; Bump into a platform from left or right
 ; Input
-;  - H:		js.AIR_BUMP_LEFT or js.AIR_BUMP_RIGHT
+;  - H:		jt.AIR_BUMP_LEFT or jt.AIR_BUMP_RIGHT
 BumpIntoPlatformLR
 
 	; Is Jemtan in the air?
-	LD A, (js.jetState)
-	BIT js.JET_STATE_AIR_BIT, A
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_AIR_BIT, A
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
@@ -271,7 +271,7 @@ BumpIntoPlatformLR
 
 	; Check whether we should consider the left or right side of the platform.
 	LD A, H										; A holds AIR_BUMP_LEFT or AIR_BUMP_RIGHT
-	CP js.AIR_BUMP_LEFT
+	CP jt.AIR_BUMP_LEFT
 	JR Z, .bumpLeft
 
 	; We will check whether Jetman bumps into the platform from the right
@@ -306,7 +306,7 @@ BumpIntoPlatformLR
 
 	; Jetman hits the platform from the left/right!
 	LD A, H										; Change air state, H is a method param
-	LD (js.jetAir), A
+	LD (jt.jetAir), A
 
 	PUSH BC
 
@@ -326,8 +326,8 @@ BumpIntoPlatformLR
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls 
 FallingFromPlatform
-	LD A, (js.jetGnd)
-	CP js.GND_WALK								; Is Jemtan in the air?
+	LD A, (jt.jetGnd)
+	CP jt.GND_WALK								; Is Jemtan in the air?
 	RET NZ										; Return if not walking, no walking - no falling ;)
 
 	LD HL, platformWalk							
@@ -360,15 +360,15 @@ FallingFromPlatform
 
 ; Jetman is falling from the platform, left or right
 .fallingLeft
-	LD A, js.AIR_FALL_LEFT
+	LD A, jt.AIR_FALL_LEFT
 	JR .afterFallingRight
 
 .fallingRight
-	LD A, js.AIR_FALL_RIGHT
+	LD A, jt.AIR_FALL_RIGHT
 
 .afterFallingRight
 	; Jetman if falling, in the air - A contains poroper air state
-	CALL js.ChangeJetStateAir
+	CALL jt.ChangeJetStateAir
 
 	; Trigger transition: walking -> falling
 	LD A, js.SDB_T_WL

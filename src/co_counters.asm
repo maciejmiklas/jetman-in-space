@@ -7,9 +7,34 @@
 ;                     #CounterLoop                         ;
 ;----------------------------------------------------------;
 CounterLoop
-	CALL Counter10
-	CALL Counter4
+	CALL Counter10							; Fist is 10 because we use it to time animation
 	CALL Counter2
+	CALL Counter4	
+	CALL Counter40
+	RET	
+
+;----------------------------------------------------------;
+;                       #Counter40                         ;
+;----------------------------------------------------------;
+Counter40
+	; Decrement the counter
+	LD A, (cd.counter40)
+	INC A
+	LD (cd.counter40), A
+	CP cd.COUNTER40_MAX
+	RET NZ										; Jump if #counter10 !=  #COUNTER40_MAX 
+
+	; Reset the counter
+	LD A, 0
+	LD (cd.counter40), A
+
+	; 1 -> 0 and 0 -> 1
+	LD A, (cd.counter40FliFLop)
+	XOR 1
+	LD (cd.counter40FliFLop), A
+
+	; CALL functions that need to be updated every 40th loop
+	CALL jt.ResetKickState
 	RET	
 
 ;----------------------------------------------------------;

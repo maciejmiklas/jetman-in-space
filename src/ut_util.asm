@@ -18,8 +18,17 @@ AbsHL
 	LD H, A
 	
 	RET
+
 ;----------------------------------------------------------;
-;                       #HLEqualB                          ;
+;                          AbsA                            ;
+;----------------------------------------------------------;
+AbsA
+	OR A
+	RET P
+	NEG
+	RET	
+;----------------------------------------------------------;
+;                       #HlEqualB                          ;
 ;----------------------------------------------------------;
 HL_IS_B					= 0
 HL_NOT_B				= 1
@@ -28,7 +37,7 @@ HL_NOT_B				= 1
 ;  - B:			Value to compare to HL
 ; Return:
 ;  - A:		HL_IS_0 or HL_NOT_0
-HLEqualB
+HlEqualB
 	LD A, H										; Check H if == 0
 	CP B
 	JR NZ, .notEqual							; H == 0

@@ -3,11 +3,10 @@
 ;----------------------------------------------------------;
 	MODULE jc
 
-ENEMY_THICKNESS		= 10
-ENEMY_THICKNESS_X		= 10
-ENEMY_THICKNESS_Y		= 10
-
-SHAKE_SCREEN_BY			= 5						; Number of pixels to move the screen by shaking
+ENEMY_MARGIN_HORIZONTAL	= 12
+ENEMY_MARGIN_VER_UP		= 18
+ENEMY_MARGIN_VER_LOW	= 15
+ENEMY_MARGIN_VER_KICK	= 25
 
 RIP_MOVE_LEFT			= 0
 RIP_MOVE_RIGHT			= 1
@@ -17,12 +16,13 @@ ripMoveState			BYTE 0					; 1 - move right, 0 - move left
 ; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
 ripMoveCnt				BYTE RIP_MOVE_MUL_INC
 
-RIP_MOVE_MUL_INC		= 10
+RIP_MOVE_UP_BY 			= -1
+RIP_MOVE_MUL_INC		= 5
 ripMoveMul				BYTE RIP_MOVE_MUL_INC
 
 invincibleCnt			WORD 0					; Makes Jetman invincible when > 0
 
-INVINCIBLE_DURATION 	= 1000					; Number of loops to keep Jetman invincible	
+INVINCIBLE_DURATION 	= 200					; Number of loops to keep Jetman invincible	
 INVINCIBLE_FAST_BLINK	= 150
 ;----------------------------------------------------------;
 ;                #JetmanEnemiesColision                    ;
@@ -61,14 +61,15 @@ EnemiesColision
 
 	RET
 
+
 ;----------------------------------------------------------;
 ;                    #CheckCollision                       ;
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
 ;  - IX:	Pointer to concreate single enemy, single #MSS
-;  - D:		Horizontal thickness of the enemy
-;  - E:		Vertical thickness of the enemy
+;  - D:		Upper thickness of the enemy (enemy above Jetman)
+;  - E:		Lower thickness of the enemy (enemy below Jetman)
 ; Return:
 ;  - A:		COLLISION_NO or COLLISION_YES
 COLLISION_NO			= 0
@@ -78,56 +79,56 @@ CheckCollision
 	; Compare X coordinate of enemy and Jetman
 	LD BC, (IX + sr.MSS.X)						; X of the enemy
 	LD HL, (jp.jetmanX)							; X of the Jetman
-	; DE -> HL
 
-	LD HL, 2000
-	LD BC, 1100
-	SBC HL, BC
-	CALL ut.AbsHL
-/*
+	; Check whether Jetman is horizontal with the enemy
+	SBC HL, BC	
+	CALL ut.AbsHL								; HL contains a positive distance between the enemy and Jetman
 	LD A, H
-	CPL
-	LD H,A
+	CP 0
+	JR Z, .keepCheckingHorizontal				; HL > 256 -> no collision
+	LD A, COLLISION_NO
+	RET		
+.keepCheckingHorizontal	
 	LD A, L
-	CPL
-	LD L,A	
-	*/
-	NEXTREG 2,8
-
-	LD A, D
+	LD B, ENEMY_MARGIN_HORIZONTAL
 	CP B
-	RET NZ										; Jump if MSB of the X for enemy and Jetman does not match (B != D)
+	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical
+	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision	
+	RET
+.checkVertical
 
-	; Check if the Jetman hits the enemy from the left side of its X coordinate
-	LD A, c										; A holds the X LSB of the enemy
-	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
+	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical
+	LD B, (IX + sr.MSS.Y)						; Y of the enemy
+	LD A, (jp.jetmanY)							; Y of the Jetman
+
+	; Is Jemtan above or below the enemy?
+	CP B
+	JR C, .jetmanAboveEnemy						; Jump if "Jet Y" < "eneymy Y". Jet is above enemy (0 is at the top, 256 bottom)
+
+	; Jetman is below enemy
+	SUB B
 	CP E
-	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= #jetmanX"  -> Jetman is before the enemy, left of it
+	JR C, .collision							; Jump if A - B < D
+	JR .noCollision
 
-	; Check if the Jetman hits the enemy from the right side of its X coordinate
-	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
-	CP E
-	RET c 										; Jump if "(C + L) < E" -> "(Xenemy + L) < #jetmanX"  -> Jetman is after the enemy, right of it
+.jetmanAboveEnemy
+	; Jetman is above enemy
 
-	; We are here because the Jetman is horizontal with the enemy, now check the vertical match
-	LD A, (jp.jetmanY)							; B holds Y from the Jetman
-	LD B, A
-	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
-	
-	; Check upper bounds
-	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
-	CP B
-	RET NC
+	; Swap A and B (compared to above) to avoid negative value
+	LD A, (jp.jetmanY)
+	LD B, A										; B: Y of the Jetman
+	LD A, (IX + sr.MSS.Y)						; A: Y of the enemy
+	SUB B
+	CP D
+	JR C, .collision
+	JR .noCollision
 
-	; Check lower bounds
-	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
-	CP B
-	RET c
-
+.noCollision
+	LD A, COLLISION_NO
+	RET
+.collision
+	LD A, COLLISION_YES
 	RET	
-
 ;----------------------------------------------------------;
 ;                    #EnemyColision                        ;
 ;----------------------------------------------------------;
@@ -135,59 +136,48 @@ CheckCollision
 ; Input:
 ;  - IX:	Pointer to concreate single enemy, single #MSS
 EnemyColision
+	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman
+	LD E, 0
+	LD D, ENEMY_MARGIN_VER_KICK
 	CALL CheckCollision
-
-	; Compare X coordinate of enemy and Jetman
-	LD BC, (IX + sr.MSS.X)						; X of the enemy
-	LD DE, (jp.jetmanX)							; X of the Jetman
-
-	LD A, D
-	CP B
-	RET NZ										; Jump if MSB of the X for enemy and Jetman does not match (B != D)
-
-	; Check if the Jetman hits the enemy from the left side of its X coordinate
-	LD A, c										; A holds the X LSB of the enemy
-	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
-	CP E
-	RET NC										; Jump if "(C - L) >= E" -> "(Xenemy - L) >= #jetmanX"  -> Jetman is before the enemy, left of it
-
-	; Check if the Jetman hits the enemy from the right side of its X coordinate
-	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
-	CP E
-	RET c 										; Jump if "(C + L) < E" -> "(Xenemy + L) < #jetmanX"  -> Jetman is after the enemy, right of it
-
-	; We are here because the Jetman is horizontal with the enemy, now check the vertical match
-	LD A, (jp.jetmanY)							; B holds Y from the Jetman
-	LD B, A
-	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
+	CP COLLISION_YES
+	JR NZ, .noKicking
 	
-	; Check upper bounds
-	SUB ENEMY_THICKNESS							; Include the thickness of the enemy
-	CP B
-	RET NC
+	; Jetman is close enough to start kicking, but first check if the animation does not play already
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_KICK_BIT, A
+	RET NZ										; Animation playes already
+	
+	; Play animation and set state
+	LD A, (jt.jetState)
+	SET jt.JET_STATE_KICK_BIT, A
+	LD (jt.jetState), A
 
-	; Check lower bounds
-	ADD ENEMY_THICKNESS							; Revert "SUB L" from above
-	ADD ENEMY_THICKNESS							; Include the thickness of the enemy
-	CP B
-	RET c
+	LD A, js.SDB_T_WL
+	CALL js.ChangeJetSpritePattern				; Play the animation and keep checking for RiP collision because there is overlapping
+
+.noKicking
+	LD D, ENEMY_MARGIN_VER_UP
+	LD E, ENEMY_MARGIN_VER_LOW
+	CALL CheckCollision
+	CP COLLISION_YES
+	RET NZ
 
 	; We have colision!
 	CALL sr.SetSpriteId							; Destroy the enemy
 	CALL sr.SpriteHit
 
 	; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy
-	LD A, (js.jetState)							
-	bit js.JET_STATE_RIP_BIT, A
+	LD A, (jt.jetState)							
+	BIT jt.JET_STATE_RIP_BIT, A
 	RET NZ										; Exit if RIP
 
 	; Is Jetman invincible? If so, just kill the enemy
-	bit js.JET_STATE_INV_BIT, A
+	BIT jt.JET_STATE_INV_BIT, A
 	RET NZ										; Exit if invincible
 
 	; This is the first enemy hit
-	CALL js.ChangeJetStateRip
+	CALL jt.ChangeJetStateRip
 	
 	LD A, js.SDB_RIP							; Change animation
 	CALL js.ChangeJetSpritePattern
@@ -209,7 +199,7 @@ RespawnJet
 	NEXTREG _DC_REG_TILE_X_LSB, A
 	NEXTREG _DC_REG_TILE_Y, A
 
-	CALL js.ChangeJetStateRespown
+	CALL jt.ChangeJetStateRespown
 
 	LD HL, INVINCIBLE_DURATION
 	CALL MakeJetInvincible
@@ -220,11 +210,10 @@ RespawnJet
 ;                        #JetRip                           ;
 ;----------------------------------------------------------;
 JetRip
-	LD A, (js.jetState)
-	bit js.JET_STATE_RIP_BIT, A
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_RIP_BIT, A
 	RET Z										; Exit if not RiP
 
-	CALL ShakeScreen
 	CALL RipMove
 
 	; Did Jetam reach the top of the screen (the RIP sequence is over)?	
@@ -246,9 +235,9 @@ MakeJetInvincible
 	LD (invincibleCnt), HL						; Store invincibility duration
 	
 	; Update state
-	LD A, (js.jetState)
-	SET js.JET_STATE_INV_BIT, A
-	LD (js.jetState), A
+	LD A, (jt.jetState)
+	SET jt.JET_STATE_INV_BIT, A
+	LD (jt.jetState), A
 
 	RET
 
@@ -259,7 +248,7 @@ JetInvincible
 	; Exit if #invincibleCnt == 0 (HL == B)
 	LD HL, (invincibleCnt)
 	LD B, 0
-	CALL ut.HLEqualB
+	CALL ut.HlEqualB
 	CP ut.HL_IS_B
 	RET Z
 .after0Check
@@ -269,7 +258,7 @@ JetInvincible
 
 	; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
 	LD B, 0
-	CALL ut.HLEqualB
+	CALL ut.HlEqualB
 	CP ut.HL_IS_B
 	JR Z, .lastIteration						; HL == 0
 
@@ -295,29 +284,12 @@ JetInvincible
 .lastIteration	
 	; It is the last iteration, remove invincibility
 
-	LD A, (js.jetState)
-	RES js.JET_STATE_INV_BIT, A
-	LD (js.jetState), A
+	LD A, (jt.jetState)
+	RES jt.JET_STATE_INV_BIT, A
+	LD (jt.jetState), A
 
 	CALL js.ShowJetSprite
 	RET
-
-;----------------------------------------------------------;
-;                   #ShakeScreen                           ;
-;----------------------------------------------------------;
-ShakeScreen
-	LD A, (cd.counter4)
-	CP 0
-	RET NZ										; Return if counter to 5 did not reset	
-
-	LD A, (cd.counter4FliFLop)					; Oscilates beetwen 1 and 0
-	LD D, A
-	LD e, SHAKE_SCREEN_BY
-	MUL D, E
-	LD A, E
-	NEXTREG _DC_REG_TILE_X_LSB, A
-
-	RET	
 	
 ;----------------------------------------------------------;
 ;                    #ResetRipMove                         ;
@@ -327,6 +299,7 @@ ResetRipMove
 	LD (ripMoveMul), A
 	LD (ripMoveCnt), A
 	RET
+
 
 ;----------------------------------------------------------;
 ;                      #RipMove                            ;
@@ -350,7 +323,7 @@ RipMove
 
 	; going up
 	LD A, (jp.jetmanY)
-	ADD A, -2
+	ADD A, RIP_MOVE_UP_BY
 	LD (jp.jetmanY), A
 
 	; Decrement move counter

@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                     Jetman State Logic                   ;
 ;----------------------------------------------------------;
-	MODULE js
+	MODULE jt
 
 STATE_INACTIVE			= 0
 
@@ -29,6 +29,7 @@ JET_STATE_AIR_BIT		= 0						; Jemtan is flying, possible states are in #jetAir
 JET_STATE_GND_BIT		= 1						; Jemtan is walking, possible states are in #jetGnd
 JET_STATE_RIP_BIT		= 2						; Jemtan got hit by enemy
 JET_STATE_INV_BIT		= 3						; Jetman is invincible
+JET_STATE_KICK_BIT		= 4						; Jetman flies above the enemy and kicks
 
 jetState				BYTE %00000001			; Game start, Jetman in the air
 
@@ -38,15 +39,15 @@ jetState				BYTE %00000001			; Game start, Jetman in the air
 ; Input:
 ;  - A:										; Air State: #AIR_XXX
 ChangeJetStateAir
-	LD (js.jetAir), A						; Update Air from param
+	LD (jetAir), A							; Update Air from param
 
-	LD A, (js.jetState)
-	SET js.JET_STATE_AIR_BIT, A
-	RES js.JET_STATE_GND_BIT, A
-	LD (js.jetState), A
+	LD A, (jetState)
+	SET JET_STATE_AIR_BIT, A
+	RES JET_STATE_GND_BIT, A
+	LD (jetState), A
 
-	LD A, js.STATE_INACTIVE
-	LD (js.jetGnd), A
+	LD A, STATE_INACTIVE
+	LD (jetGnd), A
 
 	RET
 
@@ -54,16 +55,16 @@ ChangeJetStateAir
 ;                 #ChangeJetStateGnd                       ;
 ;----------------------------------------------------------;
 ChangeJetStateGnd
-	LD A, (js.jetState)
-	SET js.JET_STATE_GND_BIT, A
-	RES js.JET_STATE_AIR_BIT, A
-	LD (js.jetState), A
+	LD A, (jetState)
+	SET JET_STATE_GND_BIT, A
+	RES JET_STATE_AIR_BIT, A
+	LD (jetState), A
 
-	LD A, js.STATE_INACTIVE
-	LD (js.jetAir), A
+	LD A, STATE_INACTIVE
+	LD (jetAir), A
 
-	LD A, js.GND_WALK
-	LD (js.jetGnd), A
+	LD A, GND_WALK
+	LD (jetGnd), A
 
 	RET	
 
@@ -71,14 +72,14 @@ ChangeJetStateGnd
 ;                 #ChangeJetStateRip                       ;
 ;----------------------------------------------------------;
 ChangeJetStateRip
-	LD A, js.STATE_INACTIVE
-	LD (js.jetAir), A
-	LD (js.jetGnd), A
+	LD A, STATE_INACTIVE
+	LD (jetAir), A
+	LD (jetGnd), A
 
-	LD A, js.JET_STATE_RESET
-	SET js.JET_STATE_AIR_BIT, A
-	SET js.JET_STATE_RIP_BIT, A
-	LD (js.jetState), A
+	LD A, JET_STATE_RESET
+	SET JET_STATE_AIR_BIT, A
+	SET JET_STATE_RIP_BIT, A
+	LD (jetState), A
 
 	RET
 
@@ -86,18 +87,31 @@ ChangeJetStateRip
 ;                #ChangeJetStateRespown                    ;
 ;----------------------------------------------------------;
 ChangeJetStateRespown	
-	LD A, js.STATE_INACTIVE
-	LD (js.jetGnd), A
+	LD A, STATE_INACTIVE
+	LD (jetGnd), A
 
-	LD A, js.AIR_HOOVER
-	LD (js.jetAir), A
+	LD A, AIR_HOOVER
+	LD (jetAir), A
 
-	LD A, js.JET_STATE_RESET
-	SET js.JET_STATE_AIR_BIT, A
-	SET js.JET_STATE_INV_BIT, A
-	LD (js.jetState), A
+	LD A, JET_STATE_RESET
+	SET JET_STATE_AIR_BIT, A
+	SET JET_STATE_INV_BIT, A
+	LD (jetState), A
 	
 	RET	
+
+;----------------------------------------------------------;
+;                   #ResetKickState                        ;
+;----------------------------------------------------------;
+ResetKickState
+	LD A, (jetState)
+	BIT JET_STATE_KICK_BIT, A
+	RET Z										; State not set
+
+	RES JET_STATE_KICK_BIT, A
+	LD  (jetState), A
+
+	RET
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

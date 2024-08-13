@@ -61,7 +61,6 @@ spritesBinLength = $ - spritesBin
 ;-------------------------------------------------------------------------------------;
 ;        Load background into bank 18...23 mapping it to slot 7                       ;
 ;-------------------------------------------------------------------------------------;
-
 	; Slot 7 = $E000..$FFFF, "n" option to auto-wrap into next page. The image file has 48KB (6 * 8KB), occupying 6 slots: 18 to 23. 
 	; The "n" option will ensure each slot is within $E000..$FFFF range. Once one slot is full (at $FFFF) it will start writing to a new slot at $E000
 	MMU _RAM_SLOT7 n, BGR_IMG_SB18

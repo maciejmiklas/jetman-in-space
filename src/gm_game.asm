@@ -109,7 +109,7 @@ PrintDebug
 
 	LD B, 30
 	LD H, 0
-	LD A, (js.jetState)
+	LD A, (jt.jetState)
 	LD L, A
 	CALL tx.PrintNumHL	
 

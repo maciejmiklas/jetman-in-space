@@ -40,7 +40,7 @@ mainLoop
 
 	INCLUDE "sr_simple_sprite.asm"
 	INCLUDE "sp_sprite.asm"	
-	INCLUDE "js_jet_state.asm"	
+	INCLUDE "jt_jet_state.asm"
 	INCLUDE "jp_jet_position.asm"	
 	INCLUDE "jp_jet_platform.asm"	
 	INCLUDE "jc_jet_colision.asm"

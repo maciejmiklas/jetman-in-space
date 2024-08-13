@@ -10,6 +10,8 @@ SCR_Y_MAX_POS			= 240
 
 SC_SYNC_SL				= 0						; Scanline to synch to
 
+SHAKE_SCREEN_BY			= 5						; Number of pixels to move the screen by shaking
+
 ;----------------------------------------------------------;
 ;                      #SetupScreen                        ;
 ;----------------------------------------------------------;
@@ -132,6 +134,23 @@ WaitForScanline
 	JR NZ, .waitAgainForScanline
 
 	RET
+
+;----------------------------------------------------------;
+;                   #ShakeScreen                           ;
+;----------------------------------------------------------;
+ShakeScreen
+	LD A, (cd.counter4)
+	CP 0
+	RET NZ										; Return if counter to 5 did not reset	
+
+	LD A, (cd.counter4FliFLop)					; Oscilates beetwen 1 and 0
+	LD D, A
+	LD e, SHAKE_SCREEN_BY
+	MUL D, E
+	LD A, E
+	NEXTREG _DC_REG_TILE_X_LSB, A
+
+	RET		
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

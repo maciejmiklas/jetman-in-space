@@ -18,18 +18,18 @@ GROUND_LEVEL			= 230					; The lowest walking platform
 ;----------------------------------------------------------;
 ; Transition from standing/landing on ground to walking
 StandToWalk
-	LD A, (js.jetState)
-	BIT js.JET_STATE_GND_BIT, A
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_GND_BIT, A
 	RET Z										; Exit if Jetman is not on the ground
 	 
 	; Jetman is on the ground, is he already walking?
-	LD A, (js.jetGnd)	
-	CP js.GND_WALK
+	LD A, (jt.jetGnd)	
+	CP jt.GND_WALK
 	RET Z										; Exit if Jetman is already walking
 
 	; Jetman is standing and starts walking now
-	LD A, js.GND_WALK
-	LD (js.jetGnd), A
+	LD A, jt.GND_WALK
+	LD (jt.jetGnd), A
 	
 	LD A, js.SDB_WALK_ST
 	CALL js.ChangeJetSpritePattern	
@@ -46,13 +46,13 @@ JetmanMoves
 	LD (jetmanInactivityCnt), A
 
 	; Transition from hovering to flying?
-	LD A, (js.jetAir)
-	CP js.AIR_HOOVER							; Is Jemtman hovering?
+	LD A, (jt.jetAir)
+	CP jt.AIR_HOOVER							; Is Jemtman hovering?
 	JR NZ, .afterHovering						; Jump if not hovering
 
 	; Jetman is hovering, but we have movement, so switch state to fly
-	LD A, js.AIR_FLY
-	LD (js.jetAir), A
+	LD A, jt.AIR_FLY
+	LD (jt.jetAir), A
 	
 	LD A, js.SDB_FLY							; Switch to flaying animation
 	CALL js.ChangeJetSpritePattern
@@ -127,7 +127,7 @@ JoyMoveRight
 .afterDirectionChange
 
 	; Bupm from the left side of the platform?
-	LD H, js.AIR_BUMP_LEFT
+	LD H, jt.AIR_BUMP_LEFT
 	CALL jp.BumpIntoPlatformLR
 
 	CALL jp.FallingFromPlatform
@@ -160,7 +160,7 @@ JoyMoveLeft
 .afterDirectionChange
 
 	; Bupm from the right side of the platform?
-	LD H, js.AIR_BUMP_RIGHT
+	LD H, jt.AIR_BUMP_RIGHT
 	CALL jp.BumpIntoPlatformLR
 	CALL jp.FallingFromPlatform
 	RET											; END #JoyMoveLeft
@@ -182,8 +182,8 @@ JoyMoveDown
 	LD (id.joyDirection), A
 
 	; Cannot move down when walking
-	LD A, (js.jetState)
-	BIT js.JET_STATE_GND_BIT, A
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_GND_BIT, A
 	RET NZ	
 
 	CALL JetmanMoves						
@@ -241,12 +241,12 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	LD (jetmanInactivityCnt), A
 
 	; Should Jetman hover?
-	LD A, (js.jetState)
-	bit js.JET_STATE_AIR_BIT, A					; Is Jemtan in the air already?
+	LD A, (jt.jetState)
+	bit jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air already?
 	JR Z, .afterHoover							; Jump if not flaying
 
-	LD A, (js.jetAir)
-	CP js.AIR_HOOVER							; Jetman is in the air, but is he hovering already?
+	LD A, (jt.jetAir)
+	CP jt.AIR_HOOVER							; Jetman is in the air, but is he hovering already?
 	JR Z, .afterHoover							; Jump if already hovering
 
 	; Jetman is in the air, not hovering, but is he not moving long enough?
@@ -255,8 +255,8 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	JR NZ, .afterHoover							; Jetman is not moving, by sill not long enough to start hovering
 
 	; Jetamn starts to hover!
-	LD A, js.AIR_HOOVER
-	LD (js.jetAir), A
+	LD A, jt.AIR_HOOVER
+	LD (jt.jetAir), A
 
 	LD A, js.SDB_HOVER
 	CALL js.ChangeJetSpritePattern
@@ -264,12 +264,12 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 .afterHoover
 
 	; Jetman is not hovering, but should he stand?
-	LD A, (js.jetState)
-	BIT js.JET_STATE_GND_BIT, A					; Is Jemtan on the ground already?
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_GND_BIT, A					; Is Jemtan on the ground already?
 	JR Z, .afterInactivity						; Jump if not on the ground
 
-	LD A, (js.jetGnd)
-	CP js.GND_STAND								; Jetman is on the ground, but is he stainding already?
+	LD A, (jt.jetGnd)
+	CP jt.GND_STAND								; Jetman is on the ground, but is he stainding already?
 	JR Z, .afterInactivity						; Jump if already standing
 
 	; Jetman is on the ground and does not move, but is he not moving long enough?
@@ -278,8 +278,8 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 	JR NZ, .afterStand							; Jump if Jetman stands for too short to trigger standing
 	
 	; Transtion from walking to standing
-	LD A, js.GND_STAND
-	LD (js.jetGnd), A
+	LD A, jt.GND_STAND
+	LD (jt.jetGnd), A
 
 	LD A, js.SDB_STAND							; Change animation
 	CALL js.ChangeJetSpritePattern
@@ -288,19 +288,19 @@ JoyEnd											; After input processing, #JoyEnd gets executed as the last pro
 
 	; We are here because: jetmanInactivityCnt > 0 and jetmanInactivityCnt < STAND_START 
 	; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.	
-	LD A, (js.jetGnd)
-	CP js.GND_WALK
+	LD A, (jt.jetGnd)
+	CP jt.GND_WALK
 	JR NZ, .afterInactivity						; Jump is if not walking
 	
-	CP js.GND_JSTAND
+	CP jt.GND_JSTAND
 	JR Z, .afterInactivity						; Jump already j-standing (just standing - for a short time)
 
 	LD A, (jetmanInactivityCnt)
 	CP JSTAND_START
 	JR NZ, .afterInactivity						; Jump if Jetman stands for too short to trigger j-standing
 
-	LD A, js.GND_JSTAND
-	LD (js.jetGnd), A
+	LD A, jt.GND_JSTAND
+	LD (jt.jetGnd), A
 
 	LD A, js.SDB_JSTAND							; Change animation
 	CALL js.ChangeJetSpritePattern

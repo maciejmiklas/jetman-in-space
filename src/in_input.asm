@@ -15,8 +15,8 @@ JoyInput
 	CP JOY_DIS_RET_JOY_OFF
 	RET Z
 
-	LD A, (js.jetState)
-	BIT js.JET_STATE_RIP_BIT, A
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_RIP_BIT, A
 	RET NZ										; Do not process input if Jetman is dying
 
 	CALL JoyStart
