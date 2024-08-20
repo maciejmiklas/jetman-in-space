@@ -8,7 +8,7 @@ JOY_DISABLED_BUMP		= 6						; Disable the joystick for a few frames because Jetm
 
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
-platformWalk DB 3, 094,012,065, 142,075,136, 054,190,240
+platformWalk DB 3, 090,012,065, 138,075,136, 050,190,240
 
 ; [amount of plaftorms], [[X platform start],[X platform end],[Y platform start],[Y platform end]], ...]
 platformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079

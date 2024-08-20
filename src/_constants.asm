@@ -290,7 +290,20 @@ _TILE_MAP_ADDRESR_H6E	= $6E
 ; Bits:
 ;  - 7-6: Read back as zero, write values ignored
 ;  - 5-0: MSB of the address of tile definitions in Bank 5
-_TILE_DEF_ADDRESR_H6F	= $6F
+_TILE_ADDRESR_H6F		= $6F
+
+; Tilemap Offset X MSB
+; bits 7-2 = Reserved, must be 0
+; bits 1-0 = MSB X Offset
+; Meaningful Range is 0-319 in 40 char mode, 0-639 in 80 char mode
+_TILE_OFFSET_X_MSB_H2F 	= $2F
+
+; Tilemap Offset X LSB
+; Meaningful range is 0-319 in 40 char mode, 0-639 in 80 char mode
+_TILE_OFFSET_X_LSB_H30	= $30
+
+; Tilemap Offset Y
+_TILE_OFFSET_Y_H31		= $31
 
 ;----------------------------------------------------------;
 ;                         DMA                              ;

@@ -29,10 +29,14 @@ tilesBinLength = $ - tilesBin
 /* Values for Remy's editor
   $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
   $1C7   $43   $42   $41   $40   $25   $2D   $2F   $1B   $1D   $35   $37   $38   $3B   $3D   $3F
+  $1C7   $43   $45   $47   $48   $4B  $1C0  $180  $140  $143  $1F5  $1F7  $1F8  $1FF  $1FB  $1FD
+  $1C7   $63   $65   $67   $68   $6B   $6D   $6F   $70   $73   $75   $77   $78   $7B   $7D   $7F
 */
 tilePaletteBin									; RGB332
-	DB $E3, $E0, $2, $13, $17, $37, $5B, $1F, $8, $9, $A, $B, $C, $D, $E, $F
-	DB $E3, $21, $21, $20, $20, $12, $16, $17, $D, $E, $1A, $1B, $1C, $1D, $1E, $1F
+	DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
+	DB $E3, $21, $21, $20, $20, $12, $16, $17, $0D, $0E, $1A, $1B, $1C, $1D, $1E, $1F
+	DB $E3, $21, $22, $23, $24, $25, $E0, $C0, $A0, $A1, $FA, $FB, $FC, $FF, $FD, $FE
+	DB $E3, $31, $32, $33, $34, $35, $36, $37, $38, $39, $3A, $3B, $3C, $3D, $3E, $3F
 tilePaletteBinLength = $ - tilePaletteBin
 
 ;-------------------------------------------------------------------------------------;
@@ -66,16 +70,16 @@ spritesBinLength = $ - spritesBin
 	MMU _RAM_SLOT7 n, BGR_IMG_SB18
 	ORG _RAM_SLOT7_START_HE000
 
-	; Following command was used to convert bmp (8bit indexed): "gfx2next -bitmap -pal-std -preview xxxx.bmp"
-	; I've used gimp to resize image to 256x192 and "Image -> Mode -> Indexed" to change palette to 8bit	
-	INCBIN "assets/l001_background.nxi", 0, 256*192
+	; Following command was used to convert bmp (8bit indexed): "gfx2next -bitmap -pal-std -preview xxxx.bmp" (https://github.com/benbaker76/Gfx2Next)
+	; I've used gimp to resize image to 256x192 and "Image -> Mode -> Indexed" to change palette to 8bit
+	INCBIN "assets/l002_background.nxi", 0, 256*192
 
 	ASSERT $ == $E000 && $$ == BGR_IMG_EB23 + 1	; Ensure that we loaded the whole image. MMU should be on the beginning of the next slot ("n" option)
 	
 	; After pre-loading the image pixel data, bank 24 should now automatically start at $E000
 	; The background palette will be stored in bank 24
 backGroundPalette
-	INCBIN  "assets/l001_background.nxp", 0, 512
+	INCBIN  "assets/l002_background.nxp", 0, 512
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

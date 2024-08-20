@@ -99,7 +99,7 @@ CheckCollision
 
 	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical
 	LD B, (IX + sr.MSS.Y)						; Y of the enemy
-	LD A, (jp.jetY)							; Y of the Jetman
+	LD A, (jp.jetY)								; Y of the Jetman
 
 	; Is Jemtan above or below the enemy?
 	CP B
@@ -204,7 +204,7 @@ RespawnJet
 	LD HL, INVINCIBLE_DURATION
 	CALL MakeJetInvincible
 
-	CALL bg.UpdateOnYChange
+	CALL bg.UpdateOnMove
 	RET
 
 ;----------------------------------------------------------;
@@ -307,7 +307,7 @@ ResetRipMove
 ;----------------------------------------------------------;	
 ; Jetman moves in zig-zac towards the upper side of the screen. 
 RipMove
-	CALL bg.UpdateOnYChange
+	CALL bg.UpdateOnMove
 
 	; Move left or right
 	LD A, (ripMoveState)

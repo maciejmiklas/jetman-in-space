@@ -23,7 +23,7 @@ SetupScreen
 	;  - 4-2: 110 - S(U+L) ULA and Layer 2 combined (tiles + background)
 	;  - 1: 1 - sprite over border
 	;  - 0: 1 - sprites visible
-	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'100'1'1
+	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'110'1'1
 
 	; Setup Layer 2
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2

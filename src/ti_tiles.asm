@@ -26,8 +26,8 @@ CHAR_PALETTE_BYTE	= 0							; Palette byte for tile characters
 ; Input:
 ;  - DE:	Pointer to the text
 ;  - B:		Amount of characters in DE  
-;  - C: 	Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters. 
-;           For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.         
+;  - C: 	Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;           For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.
 PrintText
 	LD HL, START_OF_TILEMAP						; HL points to screen memory containing tilemap 
 	DEC HL
@@ -35,8 +35,8 @@ PrintText
 	; Move HL by 2*C so that HL points to the position of the first character
 	PUSH DE
 	LD D, 0
-	LD e, c
-	sla E										; E*2 because each tile has 2 bytes
+	LD E, c
+	SLA E										; E*2 because each tile has 2 bytes
 	ADD HL, DE
 	POP DE  
 
@@ -64,7 +64,7 @@ LoadTiles
 	; Tell harware where to find tiles
 	; bits 5-0 = MSB of address of the tilemap in Bank 5
 	NEXTREG _TILE_MAP_ADDRESR_H6E, OFFSET_OF_MAP ; MSB of tilemap in bank 5
-	NEXTREG _TILE_DEF_ADDRESR_H6F, OFFSET_OF_TILES ; MSB of tilemap definitions
+	NEXTREG _TILE_ADDRESR_H6F, OFFSET_OF_TILES ; MSB of tilemap definitions
 
 	; Setup palette
 	LD HL, di.tilePaletteBin					; Address of palette data in memory

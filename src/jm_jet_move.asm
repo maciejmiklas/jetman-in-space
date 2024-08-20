@@ -10,7 +10,7 @@ HOVER_START				= 40
 STAND_START				= 30
 JSTAND_START			= 5
 
-GROUND_LEVEL			= 230					; The lowest walking platform
+GROUND_LEVEL			= 226					; The lowest walking platform
 
 
 ;----------------------------------------------------------;
@@ -41,6 +41,8 @@ StandToWalk
 ; Method gets called on any movement, but not fire pressed
 JetmanMoves
 
+	CALL bg.UpdateOnMove
+
 	; Reset inactivity counter as we have movement
 	LD A, 0
 	LD (jetmanInactivityCnt), A
@@ -64,7 +66,6 @@ JetmanMoves
 ;                      #JoyMoveUp                          ;
 ;----------------------------------------------------------;
 JoyMoveUp
-	CALL bg.UpdateOnYChange
 
 	; Update #joyDirection state
 	LD A, (id.joyDirection)
@@ -178,7 +179,6 @@ JoyPressFire
 ;                      #JoyMoveDown                        ;
 ;----------------------------------------------------------;
 JoyMoveDown
-	CALL bg.UpdateOnYChange
 
 	; Update #joyDirection state
 	LD A, (id.joyDirection)

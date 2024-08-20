@@ -7,6 +7,29 @@
 ;                          AbsHL                           ;
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
+CdivD
+; Input:
+;  - C: numerator
+;  - D: denominator
+; Output:
+;  - A: remainder
+;  - C: result C/D
+	LD B,8
+	XOR A
+	SLA C
+	RLA
+	CP D
+	JR C,$+4
+	INC C
+	SUB D
+	DJNZ $-8
+
+	RET
+
+;----------------------------------------------------------;
+;                          AbsHL                           ;
+;----------------------------------------------------------;
+; http://z80-heaven.wikidot.com/math#toc12
 AbsHL
 	BIT 7, H
 	RET Z
