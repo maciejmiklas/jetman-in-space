@@ -28,7 +28,7 @@ SetupScreen
 	; Setup Layer 2
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
 	NEXTREG _DC_REG_LA2_H70, %000'00'000		; Layer 2 has 256x192x8bpp
-	NEXTREG _DC_REG_L2_BANK_H12, di.BGR_IMG_16B9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
+	NEXTREG _DC_REG_L2_BANK_H12, di.BGR_IMG_PAL_16B9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
 
 	NEXTREG _GL_REG_TRANP_COL_H14, 00			; Global transparency
 

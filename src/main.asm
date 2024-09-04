@@ -49,7 +49,7 @@ mainLoop
 	INCLUDE "js_jet_sprite.asm"
 	INCLUDE "ep_enemy_pattern.asm"
 	INCLUDE "ef_enemy_formation.asm"
-	INCLUDE "de_data_enemy.asm"	
+	INCLUDE "ed_data_enemy.asm"	
 	INCLUDE "jw_jet_weapon.asm"
 
 	; LAST import due to bank offset!

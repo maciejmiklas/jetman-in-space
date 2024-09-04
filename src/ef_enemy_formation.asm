@@ -21,7 +21,6 @@ SPRITES_CNT			BYTE						; Current respown position
 ; Input:
 ;  - IY:	Pointer to #MF
 RespownFormation	
-
 	; Check whether it's time to start a new formation deployment.
 	LD BC, (IY + MF.RESPOWN_DELAY)
 	LD DE, (IY + MF.RESPOWN_DELAY_CNT)

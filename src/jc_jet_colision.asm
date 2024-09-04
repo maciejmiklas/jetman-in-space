@@ -28,8 +28,8 @@ INVINCIBLE_FAST_BLINK	= 150
 ;                #JetmanEnemiesColision                    ;
 ;----------------------------------------------------------;
 JetmanEnemiesColision
-	LD IX, de.sprite01
-	LD A, (de.spritesSize)
+	LD IX, ed.sprite01
+	LD A, (ed.spritesSize)
 	LD B, A
 	CALL EnemiesColision
 	RET	
@@ -45,13 +45,7 @@ JetmanEnemiesColision
 EnemiesColision
 .loop
 	PUSH BC										; Preserve B for loop counter
-
-	BIT sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)
-	JR Z, .continue								; Jump if enemy is hidden
-
-	; Sprite is visible
 	CALL EnemyColision
-
 .continue
 	; Move HL to the beginning of the next #shotMssX
 	LD DE, sr.MSS
@@ -136,6 +130,11 @@ CheckCollision
 ; Input:
 ;  - IX:	Pointer to concreate single enemy, single #MSS
 EnemyColision
+
+	; Exit if enemy is not alive
+	BIT sr.MSS_ST_ALIVE_BIT, (IX + sr.MSS.STATE)
+	RET Z
+
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman
 	LD E, 0
 	LD D, ENEMY_MARGIN_VER_KICK

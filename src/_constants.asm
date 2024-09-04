@@ -276,7 +276,7 @@ _TILE_ATTRIBTE_H6C		= $6C
 
 ; Tilemap Base Address
 ; The value written is an offset into Bank 5 allowing the tilemap to be placed at any multiple of 256 bytes.
-; Writing a physical MSB address in 0x40-0x7f or 0xc0-0xff range is permitted.
+; Writing a physical MSB address in 0x40-0x7F or 0xC0-0xFF range is permitted.
 ; The value read back should be treated as having a fully significant 8-bit value.
 ;
 ; bits 7-6: Read back as zero, write values ignored
@@ -285,7 +285,7 @@ _TILE_MAP_ADDRESR_H6E	= $6E
 
 ; Tile Definitions Base Address
 ; The value written is an offset into Bank 5 allowing tile definitions to be placed at any multiple of 256 bytes.
-; Writing a physical MSB address in 0x40-0x7f or 0xc0-0xff range is permitted. 
+; Writing a physical MSB address in 0x40-0x7F or 0xC0-0xFF range is permitted. 
 ; The value read back should be treated as having a fully significant 8-bit value.
 ; Bits:
 ;  - 7-6: Read back as zero, write values ignored

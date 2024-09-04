@@ -90,19 +90,19 @@ MOVE_X_IN_D				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pi
 
 ; Horizontal movemment
 movePattern01
-	DB 2, %0'000'1'111,$AF
+	DB 2, %0'000'1'111,$20
 
 ; 10deg move down
 movePattern02
-	DB 2, %1'001'1'111,$0F
+	DB 2, %1'001'1'111,$20
 
 ; 10deg move up
 movePattern03
-	DB 2, %0'001'1'111,$0F
+	DB 2, %0'001'1'111,$20
 
 ; 45deg move down
 movePattern04
-	DB 2, %1'001'1'001,$52
+	DB 2, %1'001'1'001,$20
 
 ; 5x horizontal, 2x 45deg down,...
 movePattern05
@@ -114,7 +114,7 @@ movePattern06
 		DB %1'001'1'101,$01, %1'001'1'100,$02, %1'001'1'011,$02, %1'010'1'011,$03, %1'011'1'011,$01, %1'100'1'011,$01, %1'011'1'010,$02, %1'010'1'001,$02	; going down		
 
 ; sinus
-movePattern01_
+movePattern07
 	DB 64, %0'010'1'001,$52, %0'011'1'010,$52, %0'100'1'011,$51, %0'011'1'011,$51, %0'010'1'011,$53, %0'001'1'011,$52, %0'001'1'100,$52, %0'001'1'101,$51 	; going up, above X
 		DB %1'001'1'101,$51, %1'001'1'100,$42, %1'001'1'011,$42, %1'010'1'011,$33, %1'011'1'011,$31, %1'100'1'011,$21, %1'011'1'010,$22, %1'010'1'001,$12	; going down, above X
 		DB %1'010'1'001,$12, %1'011'1'010,$02, %1'100'1'011,$01, %1'011'1'011,$21, %1'010'1'011,$23, %1'001'1'011,$32, %1'001'1'100,$32, %1'001'1'101,$41 	; going down, below X
@@ -196,7 +196,6 @@ LoadCurrentMoveStep
 ;  - A: 	sr.MOVE_RET_XXX
 ; Modifies: all
 MoveEnemy
-
 	; Move the Sprite horizontally if it has been hit and it's dying
 	LD A, (IX + sr.MSS.STATE)
 	CALL sr.SetSpriteId							; Set sprite ID in hardware

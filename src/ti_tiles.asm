@@ -6,16 +6,24 @@
 ; Tiles should be stored between $4000 and $7FFF. This area is called Bank 5 (16K Banks), or slot 2-3 (8K slots). However, 
 ; ULA uses $4000-$6000. For this reason, we start loading tiles from $6000. Hardware expects tiles in Bank 5; therefore, we only have to 
 ; provide offsets starting from $4000.
-START_OF_BANK_5		= $4000 
 
-START_OF_TILEMAP	= $6000						; Just after ULA attributes
-START_OF_TILES		= $6A00						; Just after tilemap -> 40x32x2 (2 bytes for tile)
+; ULA screen and Tilemaps share 16KB Bank 5
+; - $4000 - $5800 - ULA Bitmap Data
+; - $5800 - $5B00 - ULA Colour Attribute Data
+; - $5B00 - $6500 - Tilemap (42*32*2 = 2560 -> each tile takes 2 bytes: tile offset and palette offset)
+; - $6500 - $7FFF - Tile Descriptions (32*215 = 6911, 215 tiles, each 32bytes, 8x8pixels, 4 bit palette)
 
-; START_OF_TILEMAP - START_OF_BANK_5 = $2000  -> >> 8 =  $20 = 32
-OFFSET_OF_MAP		= (START_OF_TILEMAP - START_OF_BANK_5) >> 8
+START_OF_BANK_5		= $4000
+START_OF_TILEMAP	= $5B00						; Tilemap just after ULA attributes (2560 bytes)
+START_OF_TILES		= $6500						; Tiledefinitions (sprite file, max 6911 bytes)
 
-; START_OF_TILES - START_OF_BANK_5 = $2600  -> >> 8 =  $26 = 38
+; $5B00 - $4000 = $1B00 -> $1B00 >> 8 = $1B
+OFFSET_OF_TILEMAP	= (START_OF_TILEMAP - START_OF_BANK_5) >> 8
+	ASSERT OFFSET_OF_TILEMAP == $1B
+
+; $6500 - $4000 = $2000 -> $2000 >> 8 = $20
 OFFSET_OF_TILES		= (START_OF_TILES - START_OF_BANK_5) >> 8
+	ASSERT OFFSET_OF_TILES == $25
 
 CHAR_ASCII_OFFSET	= 34						; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
 CHAR_PALETTE_BYTE	= 0							; Palette byte for tile characters
@@ -35,12 +43,12 @@ PrintText
 	; Move HL by 2*C so that HL points to the position of the first character
 	PUSH DE
 	LD D, 0
-	LD E, c
+	LD E, C
 	SLA E										; E*2 because each tile has 2 bytes
 	ADD HL, DE
 	POP DE  
 
-.loop       
+.loop
 	LD A, (DE)									; Load current char
 	INC DE										; Move to the next char 
 	ADD A, -CHAR_ASCII_OFFSET					; Remove ASCII offset as tiles begin with 0
@@ -57,14 +65,15 @@ PrintText
 ;                         #LoadTiles                       ;
 ;----------------------------------------------------------;
 LoadTiles
+
 	; Enable tilemap mode
-	NEXTREG _TILE_MAP_CONTROL_H6B, %10000001	; 40x32, 16-bit entries = 320x256
+	NEXTREG _TILE_MAP_CONTROL_H6B, %10000001	; 40x32, 8-pixel tiles = 320x256
 	NEXTREG _TILE_ATTRIBTE_H6C, %00000000		; palette offset, visuals
 
 	; Tell harware where to find tiles
 	; bits 5-0 = MSB of address of the tilemap in Bank 5
-	NEXTREG _TILE_MAP_ADDRESR_H6E, OFFSET_OF_MAP ; MSB of tilemap in bank 5
-	NEXTREG _TILE_ADDRESR_H6F, OFFSET_OF_TILES ; MSB of tilemap definitions
+	NEXTREG _TILE_MAP_ADDRESR_H6E, OFFSET_OF_TILEMAP ; MSB of tilemap in bank 5
+	NEXTREG _TILE_ADDRESR_H6F, OFFSET_OF_TILES	; MSB of tilemap definitions
 
 	; Setup palette
 	LD HL, di.tilePaletteBin					; Address of palette data in memory
@@ -75,13 +84,13 @@ LoadTiles
 	LD DE, START_OF_TILES
 	LD HL, di.tilesBin							; Address of tiles in memory
 	LD BC, di.tilesBinLength					; Number of bytes to copy
-	ldir	
+	LDIR	
 
 	; Copy tilemap to expected memory
-	LD HL, di.tilemapBin						; Addreess of tilemap in memory
-	LD BC, di.tilemapBinLength
 	LD DE, START_OF_TILEMAP
-	ldir
+	LD HL, di.tilemapBin						; Addreess of tilemap in memory
+	LD BC, di.tilemapBinLength	
+	LDIR
 
 	RET
 

@@ -49,8 +49,8 @@ SIZE					BYTE					; Amount of frames/sprite patterns in this record
 ; DB IDs
 SDB_EXPLODE				= 201					; Explosion
 SDB_FIRE				= 202					; Fire
-SDB_COMET1				= 203					; Comet 1
-SDB_COMET2				= 204					; Comet 2
+SDB_ENEMY1				= 203					; Enemy 1
+SDB_ENEMY2				= 204					; Enemy 2
 SDB_HIDE				= 255					; Hides Sprite
 
 SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
@@ -64,9 +64,9 @@ srSpriteDB
 			DB 38, 39, 40, 41
 	SPR_REC {SDB_FIRE, SDB_FIRE - SDB_SUB, 03}
 			DB 42, 43, 44
-	SPR_REC {SDB_COMET1, SDB_COMET1 - SDB_SUB, 03}
+	SPR_REC {SDB_ENEMY1, SDB_ENEMY1 - SDB_SUB, 03}
 			DB 45, 46, 47
-	SPR_REC {SDB_COMET2, SDB_COMET2 - SDB_SUB, 03}
+	SPR_REC {SDB_ENEMY2, SDB_ENEMY2 - SDB_SUB, 03}
 			DB 48, 49, 50
 
 ; We are using platform coordinates for bumping, which are too thick for the thin sprite
@@ -216,7 +216,6 @@ ShowSprite
 ;  - IX:	Pointer to #MSS
 ; Modifies: A, BC, HL
 UpdateSpritePattern
-
 	; Switch to the next DB record if all bytes from the current one have been used
 	LD A, (IX + MSS.REMAINING)
 	CP 0
@@ -264,7 +263,6 @@ UpdateSpritePattern
 ;  - A:		ID in #srSpriteDB
 ; Modifies: A, BC, HL
 SetSpritePattern
-	
 	; Find DB record
 	LD HL, srSpriteDB							; HL points to the beginning of the DB
 	LD BC, 0									; Do not limit CPIR search

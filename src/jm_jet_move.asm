@@ -10,7 +10,7 @@ HOVER_START				= 40
 STAND_START				= 30
 JSTAND_START			= 5
 
-GROUND_LEVEL			= 226					; The lowest walking platform
+GROUND_LEVEL			= 225					; The lowest walking platform
 
 
 ;----------------------------------------------------------;
