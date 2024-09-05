@@ -51,6 +51,7 @@ mainLoop
 	INCLUDE "ef_enemy_formation.asm"
 	INCLUDE "ed_data_enemy.asm"	
 	INCLUDE "jw_jet_weapon.asm"
+	INCLUDE "ro_rocket.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "di_data_bin.asm"

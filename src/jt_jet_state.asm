@@ -21,7 +21,7 @@ GND_WALK				= 1						; Jetman walks on the ground
 GND_JSTAND				= 2						; Jetman stands on the ground for a very short time, not enougt to switch to #GND_STAND
 GND_STAND				= 3						; Jetman stands on the ground
 
-jetGnd				BYTE 0
+jetGnd					BYTE 0
 
 ; Jetman states
 JET_STATE_RESET			= %00000000
