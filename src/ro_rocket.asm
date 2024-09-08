@@ -11,24 +11,25 @@ dropNextDelay			BYTE 0
 ; It's basically the same process, but Jetman is carrying either rocket elements or fuel tanks. Bit 7 determines whether Jetman is building 
 ; the rocket or already carries fuel. 
 ; Bits:
-;  - 1-0: Current rocket element (or fuel tank), values 1-3
-;  - 2  : Rocket element (or fuel tank) is falling down
-;  - 3  : Rocket element (or fuel tank) is waiting for pickup
-;  - 4  : Jetman carries rocket element (or fuel tank)
-;  - 5  : The rocket is fully assembled and waiting for fuel, or it is already fully tanked and waiting to start
-;  - 6  : 1 - building rocket, 0 - bringing fuel
-;  - 7  : Not used
-state					BYTE %01000000		; Start with building first rocket element
+;  - 1-0: Current element 1-3 (rocket element), 4-6 (fuel tank)
+;  - 2  : #STATE_FALL_BIT
+;  - 3  : #STATE_WAIT_BIT
+;  - 4  : #STATE_CARRY_BIT
+;  - 5  : #STATE_READY_BIT
+;  - 6  : #STATE_ASSEMBLY_BIT
+;  - 7  : #STATE_ROCKET_BIT
+state					BYTE %10000000		; Start with building first rocket element
 
-STATE_FALL_BIT			= 2
-STATE_WAIT_BIT			= 3
-STATE_CARRY_BIT			= 4
-STATE_READY_BIT			= 5
-STATE_ROCKET_BIT		= 6
+STATE_FALL_BIT			= 2						; Rocket element (or fuel tank) is falling down for pickup
+STATE_WAIT_BIT			= 3						; Rocket element (or fuel tank) is waiting for pickup
+STATE_CARRY_BIT			= 4						; Jetman carries rocket element (or fuel tank)
+STATE_READY_BIT			= 5						; The rocket is fully assembled and waiting for fuel, or it is already fully tanked and waiting to start
+STATE_ASSEMBLY_BIT		= 6						; Rocket element (or fuel tank) is falling down for assembly
+STATE_ROCKET_BIT		= 7						; 1 - building rocket, 0 - bringing fuel
 
-STATE_DROP_NEXT_MASK	= %0'0'1'111'00			; Dorp next element if the rocket is not fully assembled and no element is deployed at the moment
+STATE_DROP_NEXT_MASK	= %0'11111'00			; Dorp next element if the rocket is not fully assembled and no element is deployed at the moment
 STATE_ELEMET_CNT_MASK	= %000000'11			; Reset all bits except the counter
-STATE_ELEMET_DEPL_MASK	= %0000'11'00			; Jetman can pick up element/tank.
+STATE_ELEMET_DEPL_MASK	= %0000'11'00			; Jetman can pick up element/tank
 
 STATE_ELEMET_CNT_MAX	= 3
 
@@ -38,7 +39,8 @@ MAX_ELEMENTS			= 3
 	STRUCT RDA
 ; Configuration values	
 DROP_X					BYTE					; X coordinate to drop the given element/tank
-LAND_Y					BYTE 					; Y coordinates where the dropped element/tank should land. Usually, it's the height of the platform/ground
+DROP_LAND_Y				BYTE 					; Y coordinates where the dropped element/tank should land. Usually, it's the height of the platform/ground
+ASSEMBLY_Y				BYTE					; Height where given rocket element should land for assembly
 SPRITE_ID				BYTE					; Next ID of the sprite
 SPRITE_REF				BYTE					; ID of the Sprite from spr-file.
 
@@ -47,13 +49,15 @@ Y						BYTE					; Current Y position
 	ENDS
 
 rocket
-	RDA {050/*DROP_X*/, 100/*LAND_Y*/, 40/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
-	RDA {070/*DROP_X*/, 225/*LAND_Y*/, 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
-	RDA {120/*DROP_X*/, 137/*LAND_Y*/, 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}
+	RDA {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 40/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
+	RDA {070/*DROP_X*/, 225/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
+	RDA {120/*DROP_X*/, 137/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}
 
-rocketAssemblyX			BYTE 220
+rocketAssemblyX			BYTE 170
+
 COLISION_MARGIN			= 12
 CARRY_ADJUST_Y			= 10
+
 ;----------------------------------------------------------;
 ;                #UpdateOnJetmanMove                       ;
 ;----------------------------------------------------------;
@@ -109,6 +113,30 @@ CarryRocketElement
 
 	CALL MoveIXtoCurrentRDA
 	CALL MoveWithJetman
+	CALL JetmanDropsRocketElement
+	RET
+
+;----------------------------------------------------------;
+;                #JetmanDropsRocketElement                 ;
+;----------------------------------------------------------;
+JetmanDropsRocketElement
+	
+	; Is Jetman over the drop location?
+	LD BC, (jo.jetX)
+	LD A, (rocketAssemblyX)
+	CP C
+	RET NZ
+
+	; Jetman drops rocket element
+	LD A, (state)
+	RES STATE_CARRY_BIT, A
+	SET STATE_ASSEMBLY_BIT, A
+	LD (state), A
+
+	; Store the height of the drop so that the element can keep falling from this location into the assembly place.
+	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion
+	LD A, (jo.jetY)
+	LD (IX + RDA.Y), A
 
 	RET
 
@@ -230,13 +258,13 @@ CheckCollision
 	RET	
 
 ;----------------------------------------------------------;
-;                 #RocketElementFalls                      ;
+;              #RocketElementFallsForPickup                ;
 ;----------------------------------------------------------;
-RocketElementFalls	
-	; Return if there is no movement
+RocketElementFallsForPickup	
+	; Return if there is no fall
 	LD A, (state)
 	BIT STATE_FALL_BIT, A
-	RET Z										; Return if movement bit is not set
+	RET Z										; Return if falling bit is not set
 
 	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion	
 
@@ -261,7 +289,7 @@ RocketElementFalls
 
 	; Has the horizontal destination been reached?
 	LD B, A
-	LD A, (IX + RDA.LAND_Y)
+	LD A, (IX + RDA.DROP_LAND_Y)
 	CP B
 	RET NZ										; No, keep falling down
 	
@@ -269,6 +297,49 @@ RocketElementFalls
 	LD A, (state)
 	RES STATE_FALL_BIT, A
 	SET STATE_WAIT_BIT, A
+	LD (state), A
+
+	RET
+
+;----------------------------------------------------------;
+;             #RocketElementFallsForAssembly               ;
+;----------------------------------------------------------;
+RocketElementFallsForAssembly	
+	; Return if there is no assebly
+	LD A, (state)
+	BIT STATE_ASSEMBLY_BIT, A
+	RET Z										; Return if assembky bit is not set
+
+	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion	
+
+	; Set the ID of the sprite for the following commands
+	LD A, (IX + RDA.SPRITE_ID)
+	NEXTREG _SPR_REG_NR_H34, A
+
+	; Sprite X coordinate to assembly location
+	LD A, (rocketAssemblyX)
+	NEXTREG _SPR_REG_X_H35, A
+
+	; Set sprite pattern	
+	LD A, (IX + RDA.SPRITE_REF)
+	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+	; Sprite Y coordinate, increment until the destination has been reached
+	LD A, (IX + RDA.Y)
+	INC A
+	LD (IX + RDA.Y), A
+	NEXTREG _SPR_REG_Y_H36, A
+
+	; Has the horizontal destination been reached?
+	LD B, A
+	LD A, (IX + RDA.ASSEMBLY_Y)
+	CP B
+	RET NZ										; No, keep falling down
+	
+	; Yes, element has reached landing postion, set state for next drop
+	LD A, (state)
+	RES STATE_ASSEMBLY_BIT, A
 	LD (state), A
 
 	RET
@@ -292,6 +363,11 @@ DropNextRocketElement
 	; The counter has reached the required value, reset it first
 	LD A, 0
 	LD (dropNextDelay), A
+
+	LD A, $EE
+	nextreg 2,8
+	LD A, (state)
+	nextreg 2,8
 
 	; Check whether element counter has already reached max value
 	LD A, (state)

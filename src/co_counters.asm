@@ -83,7 +83,8 @@ Counter10
 
 	; CALL functions that need to be updated every 10th loop
 	CALL gm.Counter10
-	CALL ro.RocketElementFalls
+	CALL ro.RocketElementFallsForPickup
+	CALL ro.RocketElementFallsForAssembly
 	RET		
 
 ;----------------------------------------------------------;

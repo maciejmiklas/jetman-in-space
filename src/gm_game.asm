@@ -106,13 +106,13 @@ PrintDebug
 	LD B, 20
 	LD HL, (jc.invincibleCnt)
 	CALL tx.PrintNumHL
-
+*/
 	LD B, 30
 	LD H, 0
-	LD A, (jt.jetState)
+	LD A, (ro.state)
 	LD L, A
 	CALL tx.PrintNumHL	
-*/
+
 	; PRINT END
 	RET
 ;----------------------------------------------------------;
