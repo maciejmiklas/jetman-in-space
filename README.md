@@ -1,5 +1,19 @@
-# ZX Spectrum Next game inspired by Jetpack
 <img src="/img/cover.jpg" width="800px"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 BMP must have 320256 with 8bit palette (Image -> Mode -> Indexed)
