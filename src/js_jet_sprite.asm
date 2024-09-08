@@ -93,7 +93,7 @@ sprState			BYTE SPR_STATE_SHOW
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation	
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
-	LD BC, (jp.jetX)
+	LD BC, (jo.jetX)
 
 	; Set _SPR_REG_NR_H34 with LDB from Jetmans X postion
 	LD A, C			
@@ -103,7 +103,7 @@ UpdateJetSpritePositionRotation
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X)
 
-	; Set _SPR_REG_ATR2_H37 containing overflow bit from x position, rotation and mirror
+	; Set _SPR_REG_ATR2_H37 containing overflow bit from X position, rotation and mirror
 	LD A, (id.jetDirection)
 	LD D, A
 	LD A, 0										; Clear A to set only rotation/mirror bits
@@ -127,7 +127,7 @@ UpdateJetSpritePositionRotation
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Move Jetman sprite to current Y postion, 8-bit value is easy 
-	LD A, (jp.jetY)		
+	LD A, (jo.jetY)		
 	
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position

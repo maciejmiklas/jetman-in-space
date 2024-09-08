@@ -58,7 +58,7 @@ Counter4
 	LD (cd.counter4FliFLop), A
 
 	; CALL functions that need to be updated every 10th loop
-	; nothing yet
+
 	RET	
 
 ;----------------------------------------------------------;
@@ -82,7 +82,8 @@ Counter10
 	LD (cd.counter10FliFLop), A
 
 	; CALL functions that need to be updated every 10th loop
-	CALL gm.Counter10		
+	CALL gm.Counter10
+	CALL ro.RocketElementFalls
 	RET		
 
 ;----------------------------------------------------------;

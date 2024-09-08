@@ -84,7 +84,7 @@ SpriteHit
 	LD (IX + MSS.STATE), A
 
 	LD A, SDB_EXPLODE
-	CALL SetSpritePattern						; Enemy expoldes
+	CALL LoadSpritePattern						; Enemy expoldes
 	RET
 ;----------------------------------------------------------;
 ;                     #AnimateSprites                      ;
@@ -121,7 +121,6 @@ AnimateSprites
 ;  - IX:	Pointer to #MSS
 ; Modifies: A
 SetSpriteId
-
 	LD A, (IX + MSS.ID)
 	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands
 
@@ -147,7 +146,7 @@ UpdateSpritePosition
 	LD A, (IX + MSS.STATE)
 	RES _SPR_REG_ATR2_OVER_BIT, A				; Reset overflow and set it in next command
 	or B										; Apply B to set MSB from X
-	and _SPR_REG_ATR2_RES_PAL					; Reset bits reserved for pallete
+	AND _SPR_REG_ATR2_RES_PAL					; Reset bits reserved for pallete
 
 	RES _SPR_REG_ATR2_MIRY_BIT, A				; Reset rotation bits, as we use those for different things and might be set
 	RES _SPR_REG_ATR2_ROT_BIT, A
@@ -202,7 +201,7 @@ ShowSprite
 	CALL SetSpriteId							; Set the ID of the sprite for the following commands
 
 	LD A, (IX + MSS.SDB_INIT)
-	CALL SetSpritePattern						; Reset pattern
+	CALL LoadSpritePattern						; Reset pattern
 
 	CALL UpdateSpritePosition					; Set X, Y position for sprite
 	CALL UpdateSpritePattern					; Render sprite
@@ -232,8 +231,8 @@ UpdateSpritePattern
 .afterHide
 
 	; Load new DB record
-	LD A, (IX + MSS.NEXT)	
-	CALL SetSpritePattern			
+	LD A, (IX + MSS.NEXT)
+	CALL LoadSpritePattern
 
 .afterRecordChange
 
@@ -241,7 +240,7 @@ UpdateSpritePattern
 	; Update the remaining animation frames counter.
 	DEC (IX + MSS.REMAINING)
 
-	; Show sprite pattern
+	; Set sprite pattern
 	LD HL, (IX + MSS.DB_POINTER)				; HL points to a memory location holding a pointer to the current DB position with the next sprite pattern
 	LD A, (HL)									; A holds the next sprite pattern
 	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
@@ -255,14 +254,14 @@ UpdateSpritePattern
 	RET
 
 ;----------------------------------------------------------;
-;                   #SetSpritePattern                      ;
+;                  #LoadSpritePattern                      ;
 ;----------------------------------------------------------;
 ; Set given pointer IX to animation pattern from #srSpriteDB given by B
 ; Input:
 ;  - IX: 	Pointer to #MSS
 ;  - A:		ID in #srSpriteDB
 ; Modifies: A, BC, HL
-SetSpritePattern
+LoadSpritePattern
 	; Find DB record
 	LD HL, srSpriteDB							; HL points to the beginning of the DB
 	LD BC, 0									; Do not limit CPIR search

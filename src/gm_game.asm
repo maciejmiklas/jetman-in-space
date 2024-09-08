@@ -39,7 +39,7 @@ GameLoop
 
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
-	LD b, A 	
+	LD B, A 	
 	CALL ep.MoveEnemies
 
 	LD IX, ed.sprite01
@@ -94,12 +94,12 @@ PrintDebug
 	; PRINT START
 	LD B, 0
 	LD H, 0
-	LD HL, (jp.jetX)
+	LD HL, (jo.jetX)
 	CALL tx.PrintNumHL
 
 	LD B, 10
 	LD H, 0
-	LD A,  (jp.jetY)
+	LD A,  (jo.jetY)
 	LD L, A
 	CALL tx.PrintNumHL
 /*

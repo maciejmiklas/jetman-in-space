@@ -17,21 +17,14 @@ platformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
 ;              #AnimateOnJoystickDisabled                  ;
 ;----------------------------------------------------------;
 AnimateOnJoystickDisabled
-
 	; Is Jetman falling from the platform on the right side?
 	LD A, (jt.jetAir)
 	CP jt.AIR_FALL_RIGHT
 	JR NZ, .afterFallingRight
 
 	; Yes, Jetman is falling from the platform
-	LD A, (jp.jetX)
-	INC A
-	LD (jp.jetX), A
-
-	LD A, (jp.jetY)
-	INC A
-	INC A
-	LD (jp.jetY), A
+	CALL jo.IncJetX
+	CALL jo.IncJet2Y
 
 	JR .afterAnimate							; Do not check falling left or bumping because Jetman is already falling
 .afterFallingRight	
@@ -42,14 +35,8 @@ AnimateOnJoystickDisabled
 	JR NZ, .afterFallingLeft
 
 	; Yes, Jetman is falling from the platform
-	LD A, (jp.jetX)
-	DEC A
-	LD (jp.jetX), A
-
-	LD A, (jp.jetY)
-	INC A
-	INC A
-	LD (jp.jetY), A
+	CALL jo.DecJetX
+	CALL jo.IncJet2Y
 	JR .afterAnimate							; Do not check for bumping, as Jetman is falling
 .afterFallingLeft	
 
@@ -59,7 +46,7 @@ AnimateOnJoystickDisabled
 	JR NZ, .afterBumpingRight
 
 	; Yes
-	CALL jp.IncJetX
+	CALL jo.IncJetX
 	JR .afterAnimate							; Do not check bumping left
 .afterBumpingRight
 
@@ -69,7 +56,7 @@ AnimateOnJoystickDisabled
 	JR NZ, .afterBumpingLeft
 
 	; Yes
-	CALL jp.DecJetX	
+	CALL jo.DecJetX	
 	JR .afterAnimate
 .afterBumpingLeft
 
@@ -79,9 +66,7 @@ AnimateOnJoystickDisabled
 	JR NZ, .afterAnimate
 
 	; Yes
-	LD A, (jp.jetY)	
-	INC A
-	LD (jp.jetY), A
+	CALL jo.IncJetY
 	JR .afterAnimate
 
 .afterAnimate
@@ -149,7 +134,7 @@ LandingOnPlatform
 	RET Z										; Return if not flaying, no flying - no landing ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
-	LD BC, (jp.jetX)
+	LD BC, (jo.jetX)
 	LD A, B										; #jetX has 16bit, load MSB into A to see if its > 0 (jetX >= 257)
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
@@ -166,12 +151,12 @@ LandingOnPlatform
 	INC HL										; HL points to [X end]
 	LD E, (HL)									; E contains [X end]		
 	
-	LD A, (jp.jetY)							; A holds current Y position
+	LD A, (jo.jetY)							; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
-	LD A, (jp.jetX)									; A holds current X position
+	LD A, (jo.jetX)									; A holds current X position
 	CP D										; Compare #jetX position to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jetX < [X start]
 
@@ -191,13 +176,12 @@ LandingOnPlatform
 ;                #BumpIntoPlatFormBelow                    ;
 ;----------------------------------------------------------;
 BumpIntoPlatFormBelow
-
 	LD A, (jt.jetState)
 	BIT jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
-	LD BC, (jp.jetX)
+	LD BC, (jo.jetX)
 	LD A, B										; #jetX has 16bit, load MSB into A to see if its > 0 (jetX >= 257)
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
@@ -215,12 +199,12 @@ BumpIntoPlatFormBelow
 	INC HL										; HL points to [Y end]
 	LD C, (HL)									; C contains [Y end]
 
-	LD A, (jp.jetY)							; A holds current Y position
+	LD A, (jo.jetY)								; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jetY
 
 	; Jetman is on the bottom of the platform, now check whether he is withing its horizonlat bounds
-	LD A, (jp.jetX)							; A holds current X position
+	LD A, (jo.jetX)								; A holds current X position
 
 	CP D										; Compare #jetX position to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jetX < [X start]
@@ -260,7 +244,7 @@ BumpIntoPlatformLR
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
 	; Is Jetman too far right (above 255 there are no platforms)?
-	LD BC, (jp.jetX)
+	LD BC, (jo.jetX)
 	LD A, B										; #jetX has 16bit, load MSB into A to see if its > 0 (jetX >= 257)
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
@@ -292,12 +276,12 @@ BumpIntoPlatformLR
 	INC IX										; HL points to [Y end]
 	LD E, (IX)									; E contains [Y end]
 
-	LD A, (jp.jetX)							; A holds current X position
+	LD A, (jo.jetX)								; A holds current X position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not close to the left/right edge of the platform
 
 	; Jetman is close to the left/right edge of the platform
-	LD A, (jp.jetY)							; A holds current Y position
+	LD A, (jo.jetY)								; A holds current Y position
 	CP D										; Compare #jetY position to [Y start]
 	JR C, .platformsLoopEnd						; Jump if #jetY < [Y start]
 
@@ -342,12 +326,12 @@ FallingFromPlatform
 	INC HL										; HL points to [X end]
 	LD E, (HL)									; E contains [X end]
 
-	LD A, (jp.jetY)							; A holds current Y position
+	LD A, (jo.jetY)								; A holds current Y position
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
-	LD A, (jp.jetX)							; A holds current X position
+	LD A, (jo.jetX)								; A holds current X position
 	CP D										; Compare #jetX position to [X start]
 	JR C, .fallingLeft							; Jump if #jetX < [X start], meaning Jetman is falling from the left side of the platform
 

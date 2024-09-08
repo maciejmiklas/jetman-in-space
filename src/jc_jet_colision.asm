@@ -16,7 +16,6 @@ ripMoveState			BYTE 0					; 1 - move right, 0 - move left
 ; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState)
 ripMoveCnt				BYTE RIP_MOVE_MUL_INC
 
-RIP_MOVE_UP_BY 			= -1
 RIP_MOVE_MUL_INC		= 5
 ripMoveMul				BYTE RIP_MOVE_MUL_INC
 
@@ -55,7 +54,6 @@ EnemiesColision
 
 	RET
 
-
 ;----------------------------------------------------------;
 ;                    #CheckCollision                       ;
 ;----------------------------------------------------------;
@@ -72,7 +70,7 @@ COLLISION_YES			= 1
 CheckCollision
 	; Compare X coordinate of enemy and Jetman
 	LD BC, (IX + sr.MSS.X)						; X of the enemy
-	LD HL, (jp.jetX)							; X of the Jetman
+	LD HL, (jo.jetX)							; X of the Jetman
 
 	; Check whether Jetman is horizontal with the enemy
 	SBC HL, BC	
@@ -93,7 +91,7 @@ CheckCollision
 
 	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical
 	LD B, (IX + sr.MSS.Y)						; Y of the enemy
-	LD A, (jp.jetY)								; Y of the Jetman
+	LD A, (jo.jetY)								; Y of the Jetman
 
 	; Is Jemtan above or below the enemy?
 	CP B
@@ -109,7 +107,7 @@ CheckCollision
 	; Jetman is above enemy
 
 	; Swap A and B (compared to above) to avoid negative value
-	LD A, (jp.jetY)
+	LD A, (jo.jetY)
 	LD B, A										; B: Y of the Jetman
 	LD A, (IX + sr.MSS.Y)						; A: Y of the enemy
 	SUB B
@@ -122,7 +120,9 @@ CheckCollision
 	RET
 .collision
 	LD A, COLLISION_YES
+	
 	RET	
+
 ;----------------------------------------------------------;
 ;                    #EnemyColision                        ;
 ;----------------------------------------------------------;
@@ -189,10 +189,10 @@ EnemyColision
 RespawnJet
 	; Set respawn coordinates
 	LD BC, 100
-	LD (jp.jetX), BC
+	LD (jo.jetX), BC
 
 	LD A, 100
-	LD (jp.jetY), A
+	LD (jo.jetY), A
 
 	LD A, 0
 	NEXTREG _DC_REG_TILE_X_LSB_H30, A
@@ -203,7 +203,9 @@ RespawnJet
 	LD HL, INVINCIBLE_DURATION
 	CALL MakeJetInvincible
 
-	CALL bg.UpdateOnMove
+	CALL bg.UpdateOnJetmanMove
+
+	CALL ro.ResetCarryingRocketElement
 	RET
 
 ;----------------------------------------------------------;
@@ -217,7 +219,7 @@ JetRip
 	CALL RipMove
 
 	; Did Jetam reach the top of the screen (the RIP sequence is over)?	
-	LD A, (jp.jetY)
+	LD A, (jo.jetY)
 	CP 4										; Going up is incremented by 2
 	RET NC										; Nope, still going up (#jetY >= 4)
 
@@ -306,7 +308,7 @@ ResetRipMove
 ;----------------------------------------------------------;	
 ; Jetman moves in zig-zac towards the upper side of the screen. 
 RipMove
-	CALL bg.UpdateOnMove
+	CALL bg.UpdateOnJetmanMove
 
 	; Move left or right
 	LD A, (ripMoveState)
@@ -314,19 +316,16 @@ RipMove
 	JR Z, .moveLeft
 
 	; Move right
-	CALL jp.DecJetX
-	CALL jp.DecJetX
+	CALL jo.DecJetX
+	CALL jo.DecJetX
 	JR .afterMove
 .moveLeft
 	; Move left
-	CALL jp.IncJetX
-	CALL jp.IncJetX
+	CALL jo.IncJetX
+	CALL jo.IncJetX
 .afterMove
 
-	; going up
-	LD A, (jp.jetY)
-	ADD A, RIP_MOVE_UP_BY
-	LD (jp.jetY), A
+	CALL jo.DecJetY								; Going up
 
 	; Decrement move counter
 	LD A, (ripMoveCnt)

@@ -5,12 +5,12 @@
 
 
 ;----------------------------------------------------------;
-;                     UpdateOnMove                         ;
+;                   UpdateOnJetmanMove                     ;
 ;----------------------------------------------------------;
-UpdateOnMove
+UpdateOnJetmanMove
 
 	; Horizontal movement
-	LD A, (jp.jetY)
+	LD A, (jo.jetY)
 
 	; Divide position to limit movement
 	LD C, A

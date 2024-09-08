@@ -1,17 +1,16 @@
 ;----------------------------------------------------------;
 ;                      Jetman Position                     ;
 ;----------------------------------------------------------;
-	MODULE jp
+	MODULE jo
 
 jetX					WORD 100				; 0-320px
-jetY 				BYTE 100				; 0-256px
+jetY 					BYTE 100				; 0-256px
 
 ;----------------------------------------------------------;
 ;                          #IncJetX                        ;
 ;----------------------------------------------------------;
-; Increment X position
 IncJetX
-	LD BC, (jp.jetX)	
+	LD BC, (jo.jetX)	
 	INC BC
 
 	; If X >= 315 then set it to 0. X is 9-bit value. 
@@ -24,16 +23,16 @@ IncJetX
 	JR C, .lessThanMaxX
 	LD BC, 1									; Jetman is above 315 -> set to 1
 .lessThanMaxX
-	LD (jp.jetX), BC							; Update new X position
+	LD (jo.jetX), BC							; Update new X position
 
+	CALL JetmanMoves
 	RET
 
 ;----------------------------------------------------------;
 ;                        #DecJetX                          ;
 ;----------------------------------------------------------;
-; Decrement X position
 DecJetX
-	LD BC, (jp.jetX)	
+	LD BC, (jo.jetX)	
 	DEC BC
 
 	; If X == 0 (SCR_X_MIN_POS) then set it to 315. X == 0 when B and C are 0
@@ -45,7 +44,65 @@ DecJetX
 	JR NZ, .afterResetX
 	LD BC, sc.SCR_X_MAX_POS						; X == 0 (both A and B are 0) -> set X to 315
 .afterResetX
-	LD (jp.jetX), BC
+	LD (jo.jetX), BC
+
+	CALL JetmanMoves
+	RET
+
+;----------------------------------------------------------;
+;                          #IncJetY                        ;
+;----------------------------------------------------------;
+IncJetY
+	LD A, (jo.jetY)	
+	INC A
+	LD (jo.jetY), A
+
+	CALL JetmanMoves
+	RET
+
+;----------------------------------------------------------;
+;                         #IncJet2Y                        ;
+;----------------------------------------------------------;
+IncJet2Y
+	LD A, (jo.jetY)	
+	INC A
+	INC A
+	LD (jo.jetY), A
+
+	CALL JetmanMoves
+	RET
+
+;----------------------------------------------------------;
+;                          #DecJetY                        ;
+;----------------------------------------------------------;
+DecJetY
+	LD A, (jo.jetY)	
+	DEC A
+	LD (jo.jetY), A
+
+	CALL JetmanMoves
+	RET	
+
+
+;----------------------------------------------------------;
+;                          #DecJet2Y                       ;
+;----------------------------------------------------------;
+DecJet2Y
+	LD A, (jo.jetY)	
+	DEC A
+	DEC A
+	LD (jo.jetY), A
+
+	CALL JetmanMoves
+	RET		
+
+;----------------------------------------------------------;
+;                      #JetmanMoves                        ;
+;----------------------------------------------------------;
+JetmanMoves
+	CALL bg.UpdateOnJetmanMove
+	CALL ro.UpdateOnJetmanMove
+
 	RET
 
 ;----------------------------------------------------------;

@@ -36,13 +36,13 @@ StandToWalk
 	RET
 
 ;----------------------------------------------------------;
-;                       #JetmanMoves                       ;
+;                     #JoystickMoves                       ;
 ;----------------------------------------------------------;
-; Method gets called on any movement, but not fire pressed
-JetmanMoves
-
-	CALL bg.UpdateOnMove
-
+; Method gets called on any joystick movement, but not fire pressed
+JoystickMoves
+	CALL bg.UpdateOnJetmanMove
+	CALL ro.UpdateOnJetmanMove
+	
 	; Reset inactivity counter as we have movement
 	LD A, 0
 	LD (jetmanInactivityCnt), A
@@ -72,14 +72,13 @@ JoyMoveUp
 	SET id.MOVE_UP_BIT, A	
 	LD (id.joyDirection), A
 
-	CALL JetmanMoves
+	CALL JoystickMoves
 
 	; Decrement Y position
-	LD A, (jp.jetY)	
+	LD A, (jo.jetY)	
 	CP sc.SCR_Y_MIN_POS 						; Do not decrement if Jetman has reached the top of the screen
 	JR Z, .afterDec
-	DEC A
-	LD (jp.jetY), A
+	CALL jo.DecJetY
 .afterDec	
 
 	; Direction change: down -> up
@@ -111,9 +110,9 @@ JoyMoveRight
 	SET id.MOVE_RIGHT_BIT, A	
 	LD (id.joyDirection), A
 
-	CALL JetmanMoves						
+	CALL JoystickMoves						
 	CALL StandToWalk
-	CALL jp.IncJetX
+	CALL jo.IncJetX
 
 	; ##Direction change: left -> right##
 	LD A, (id.jetDirection)
@@ -145,9 +144,9 @@ JoyMoveLeft
 	SET id.MOVE_LEFT_BIT, A	
 	LD (id.joyDirection), A
 
-	CALL JetmanMoves	
+	CALL JoystickMoves	
 	CALL StandToWalk					
-	CALL jp.DecJetX
+	CALL jo.DecJetX
 
 	; Direction change: right -> left
 	LD A, (id.jetDirection)
@@ -166,14 +165,16 @@ JoyMoveLeft
 	LD H, jt.AIR_BUMP_RIGHT
 	CALL jp.BumpIntoPlatformLR
 	CALL jp.FallingFromPlatform
-	RET											; END #JoyMoveLeft
+
+	RET
 
 ;----------------------------------------------------------;
-;                    #JoyPressFire                         ;
+;                      #JoyPressFire                       ;
 ;----------------------------------------------------------;
 JoyPressFire
 	CALL jw.Fire
-	RET											; END #JoyPressFire
+	
+	RET
 
 ;----------------------------------------------------------;
 ;                      #JoyMoveDown                        ;
@@ -190,16 +191,14 @@ JoyMoveDown
 	BIT jt.JET_STATE_GND_BIT, A
 	RET NZ	
 
-	CALL JetmanMoves						
+	CALL JoystickMoves						
 
 	; Increment Y position#
-	LD A, (jp.jetY)
+	LD A, (jo.jetY)
 	CP GROUND_LEVEL								; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
 
-	; Move Jetman 1px down
-	INC A
-	LD (jp.jetY), A
+	CALL jo.IncJetY								; Move Jetman 1px down
 
 	; Landing on the ground
 	CP GROUND_LEVEL

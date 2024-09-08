@@ -1,4 +1,6 @@
-ZX Spectrum Next game inspired by Jetpack
+# ZX Spectrum Next game inspired by Jetpack
+<img src="/img/cover.jpg" width="600px"/>
+
 
 BMP must have 320256 with 8bit palette (Image -> Mode -> Indexed)
 gfx2next -bitmap -pal-std -preview l002_background.bmp
