@@ -192,12 +192,13 @@ JoyMoveDown
 
 	CALL JoystickMoves						
 
-	; Increment Y position#
+	; Increment Y position
 	LD A, (jo.jetY)
 	CP GROUND_LEVEL								; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
 
 	CALL jo.IncJetY								; Move Jetman 1px down
+.afterInc	
 
 	; Landing on the ground
 	CP GROUND_LEVEL
@@ -216,7 +217,6 @@ JoyMoveDown
 	SET id.MOVE_DOWN_BIT, A	
 	LD (id.jetDirection), A
 .afterDirectionChange
-.afterInc	
 
 	RET
 

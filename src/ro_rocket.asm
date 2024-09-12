@@ -11,27 +11,27 @@ dropNextDelay			BYTE 0
 ; It's basically the same process, but Jetman is carrying either rocket elements or fuel tanks. Bit 7 determines whether Jetman is building 
 ; the rocket or already carries fuel. 
 ; Bits:
-;  - 1-0: Current element 1-3 (rocket element), 4-6 (fuel tank)
-;  - 2  : #STATE_FALL_BIT
-;  - 3  : #STATE_WAIT_BIT
-;  - 4  : #STATE_CARRY_BIT
-;  - 5  : #STATE_READY_BIT
-;  - 6  : #STATE_ASSEMBLY_BIT
-;  - 7  : #STATE_ROCKET_BIT
-state					BYTE %10000000		; Start with building first rocket element
+;  - 0-2: Current element 1-3 (rocket element), 4-6 (fuel tank), 7 - fully assembed (also #STATE_READY_BIT is set)
+;  - 3  : #STATE_FALL_BIT
+;  - 4  : #STATE_WAIT_BIT
+;  - 5  : #STATE_CARRY_BIT
+;  - 6  : #STATE_READY_BIT
+;  - 7  : #STATE_ASSEMBLY_BIT
+state					BYTE 0					; Start with building first rocket element
 
-STATE_FALL_BIT			= 2						; Rocket element (or fuel tank) is falling down for pickup
-STATE_WAIT_BIT			= 3						; Rocket element (or fuel tank) is waiting for pickup
-STATE_CARRY_BIT			= 4						; Jetman carries rocket element (or fuel tank)
-STATE_READY_BIT			= 5						; The rocket is fully assembled and waiting for fuel, or it is already fully tanked and waiting to start
-STATE_ASSEMBLY_BIT		= 6						; Rocket element (or fuel tank) is falling down for assembly
-STATE_ROCKET_BIT		= 7						; 1 - building rocket, 0 - bringing fuel
+STATE_FALL_BIT			= 3						; Rocket element (or fuel tank) is falling down for pickup
+STATE_WAIT_BIT			= 4						; Rocket element (or fuel tank) is waiting for pickup
+STATE_CARRY_BIT			= 5						; Jetman carries rocket element (or fuel tank)
+STATE_READY_BIT			= 6						; The rocket is fully assembled
+STATE_ASSEMBLY_BIT		= 7						; Rocket element (or fuel tank) is falling down for assembly
 
-STATE_DROP_NEXT_MASK	= %0'11111'00			; Dorp next element if the rocket is not fully assembled and no element is deployed at the moment
-STATE_ELEMET_CNT_MASK	= %000000'11			; Reset all bits except the counter
-STATE_ELEMET_DEPL_MASK	= %0000'11'00			; Jetman can pick up element/tank
+STATE_DROP_NEXT_MASK	= %11111'000			; Dorp next element if the rocket is not fully assembled and no element is deployed at the moment
+STATE_ELEMET_CNT_MASK	= %00000'111			; Reset all bits except the counter
+STATE_ELEMET_DEPL_MASK	= %000'11'000			; Jetman can pick up element/tank
 
-STATE_ELEMET_CNT_MAX	= 3
+STATE_CNT_ELEMET_MAX	= 6
+STATE_CNT_FUEL_MIN		= 4
+STATE_CNT_ASSEMBLED		= 7						; Counter will be set to 7 when the rocket is ready for takeoff.
 
 MAX_ELEMENTS			= 3
 
@@ -42,16 +42,36 @@ DROP_X					BYTE					; X coordinate to drop the given element/tank
 DROP_LAND_Y				BYTE 					; Y coordinates where the dropped element/tank should land. Usually, it's the height of the platform/ground
 ASSEMBLY_Y				BYTE					; Height where given rocket element should land for assembly
 SPRITE_ID				BYTE					; Next ID of the sprite
-SPRITE_REF				BYTE					; ID of the Sprite from spr-file.
+SPRITE_REF				BYTE					; ID of the Sprite from spr-file
 
 ; Values set in program
 Y						BYTE					; Current Y position
 	ENDS
 
+; The rocket fuel level when the fuel tank reaches the rocket
+	STRUCT FUEL
+ELEMENT_ID				BYTE					; ID of rocket element, 4-6
+SPRITE_REF				BYTE					; ID of the Sprite from spr-file
+	ENDS
+
+ROCKET_DOWN_SPR_ID		= 40
+ROCKET_DOWN_SPR_WAIT	= 63
+ROCKET_DOWN_SPR_FLY		= 59
+
 rocket
-	RDA {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 40/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
-	RDA {070/*DROP_X*/, 225/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
-	RDA {120/*DROP_X*/, 137/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}
+; rocket element
+	RDA {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, ROCKET_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
+	RDA {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
+	RDA {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}
+; fuel tank
+	RDA {005/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
+	RDA {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
+	RDA {230/*DROP_X*/, 049/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
+
+fuel
+	FUEL {4/*ELEMENT_ID*/, 61/*SPRITE_REF*/}
+	FUEL {5/*ELEMENT_ID*/, 62/*SPRITE_REF*/}
+	FUEL {6/*ELEMENT_ID*/, 63/*SPRITE_REF*/}
 
 rocketAssemblyX			BYTE 170
 
@@ -79,25 +99,24 @@ ResetCarryingRocketElement
 
 	; Reset from carry to wait for drop, hide spirte
 
-	; First reset state
-	RES STATE_CARRY_BIT, A
-	DEC A										; Go back to previous element
-	LD (state), A
-
 	CALL MoveIXtoCurrentRDA
 
-	; Reset drop delay
-	LD A, 0
-	LD (dropNextDelay), A
-
-	; Hide Sprite
-
-	; Set the ID of the sprite for the following commands
+	; Hide rocket element sprite
 	LD A, (IX + RDA.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
 
 	LD A, _SPR_PATTERN_HIDE						; Hide sprite on display	
 	NEXTREG _SPR_REG_ATR3_H38, A
+
+	; Reset the state and decrement element counter -> we will drop this element again
+	LD A, (state)
+	RES STATE_CARRY_BIT, A
+	DEC A										; Go back to previous element
+	LD (state), A
+
+	; Reset drop delay
+	LD A, 0
+	LD (dropNextDelay), A
 
 	RET
 
@@ -183,7 +202,7 @@ AttachRocketElement
 	CP COLLISION_NO
 	RET Z
 
-	; Jetman can pick up rocket element/tank. Update state to reflect it and return.  
+	; Jetman can pick up rocket element/tank. Update state to reflect it and return
 	LD A, (state)
 	RES STATE_FALL_BIT, A
 	RES STATE_WAIT_BIT, A
@@ -278,7 +297,7 @@ RocketElementFallsForPickup
 
 	; Set sprite pattern	
 	LD A, (IX + RDA.SPRITE_REF)
-	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
+	OR _SPR_PATTERN_SHOW						; Set show bit
 	NEXTREG _SPR_REG_ATR3_H38, A
 
 	; Sprite Y coordinate, increment until the destination has been reached
@@ -302,6 +321,33 @@ RocketElementFallsForPickup
 	RET
 
 ;----------------------------------------------------------;
+;                  #AnimateRocketReady                     ;
+;----------------------------------------------------------;
+AnimateRocketReady	
+	; Return if rocket is not ready
+	LD A, (state)
+	AND STATE_ELEMET_CNT_MASK
+	CP STATE_CNT_ASSEMBLED
+	RET NZ	
+
+	; Set the ID of the sprite for the following commands
+	LD A, ROCKET_DOWN_SPR_ID
+	NEXTREG _SPR_REG_NR_H34, A
+
+	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman	
+	LD A, (cd.counter6FliFLop)
+	CP cd.FLIP_ON
+	JR Z, .flip
+	LD A, ROCKET_DOWN_SPR_WAIT
+	JR .afterSet
+.flip	
+	LD A, ROCKET_DOWN_SPR_FLY
+.afterSet
+	OR _SPR_PATTERN_SHOW						; Set visibility bit
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+	RET
+;----------------------------------------------------------;
 ;             #RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly	
@@ -322,7 +368,7 @@ RocketElementFallsForAssembly
 
 	; Set sprite pattern	
 	LD A, (IX + RDA.SPRITE_REF)
-	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute	
+	OR _SPR_PATTERN_SHOW						; Set show bit
 	NEXTREG _SPR_REG_ATR3_H38, A
 
 	; Sprite Y coordinate, increment until the destination has been reached
@@ -342,16 +388,48 @@ RocketElementFallsForAssembly
 	RES STATE_ASSEMBLY_BIT, A
 	LD (state), A
 
+	; Hide the fuel tank sprite if we drop fuel, and change rocket sprite showing fuel level.
+	LD A, (state)
+	AND STATE_ELEMET_CNT_MASK
+	CP STATE_CNT_FUEL_MIN
+	JR C, .notFuel								; Jump if counter is < 3 (still assembling rocket)
+
+	; We are dropping fuel already
+
+	; Hide the fuel sprite as it has reached the rocket
+	LD A, _SPR_PATTERN_HIDE
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+	; Switch the lower rocket sprite to reflect the fueling level
+	CALL MoveIXtoCurrentFUEL
+
+	; Set the ID of the sprite for the following commands
+	LD A, ROCKET_DOWN_SPR_ID
+	NEXTREG _SPR_REG_NR_H34, A
+
+	; Set sprite pattern	
+	LD A, (IX + FUEL.SPRITE_REF)
+	OR _SPR_PATTERN_SHOW						; Set visibility bit
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+.notFuel	
 	RET
 
 ;----------------------------------------------------------;
 ;               #DropNextRocketElement                     ;
 ;----------------------------------------------------------;
 DropNextRocketElement
+	; Do not drop the next element if there is one that is ongoing.
 	LD A, (state)
 	AND STATE_DROP_NEXT_MASK					; Apply a mask to reset bits indicating the rocket is ready or the element is deployed
 	CP 0
 	RET NZ
+
+	; Do not drop next element, if rocket is ready (element counter is 7)
+	LD A, (state)
+	AND STATE_ELEMET_CNT_MASK
+	CP STATE_CNT_ASSEMBLED
+	RET Z	
 
 	; Increment delay counter and check whether it's already time to process with the next rocket element/tank
 	LD A, (dropNextDelay)
@@ -364,20 +442,16 @@ DropNextRocketElement
 	LD A, 0
 	LD (dropNextDelay), A
 
-	LD A, $EE
-	nextreg 2,8
-	LD A, (state)
-	nextreg 2,8
-
-	; Check whether element counter has already reached max value
+	; Check whether rocket element counter has already reached max value
 	LD A, (state)
 	AND STATE_ELEMET_CNT_MASK
-	CP STATE_ELEMET_CNT_MAX
-	JR NZ, .dropNext							; Jump if the counter did not reach max value
-	
-	; The Counter has reached its maximum value; if the rocket is ready, it's time to start dropping fuel. Otherwise, it is fueled and ready to go
-	LD A, $AA
-	nextreg 2,8
+	CP STATE_CNT_ELEMET_MAX
+	JR NZ, .dropNext							; Jump if the counter did not reach max value	
+
+	; The rocket is assembled and fueled
+	LD A, STATE_CNT_ASSEMBLED
+	LD (state), A
+	RET
 
 .dropNext
 	; Increment element counter
@@ -389,24 +463,12 @@ DropNextRocketElement
 	RES STATE_WAIT_BIT, A
 	LD (state), A
 
-	; Determine whether we should drop the next rocket element or the next fuel tank
-	BIT STATE_READY_BIT, A
-	JR NZ, .dropFuel
-
-	; Drop next rocket element, first set IX to current #rocket postion
+	; Drop next rocket element/tank, first set IX to current #rocket postion
 	CALL MoveIXtoCurrentRDA
 
 	; Reset Y for element/tank to top of the screen
 	LD A, 0
 	LD (IX + RDA.Y), A
-
-	JR .afterDrop
-.dropFuel
-	; Drop next fuel element
-	LD A, $CC
-	nextreg 2,8
-
-.afterDrop
 	
 	RET	
 
@@ -434,6 +496,28 @@ MoveIXtoCurrentRDA
 	ADD IX, DE										; IX points to active #rocket (#RDA)
 
 	RET	
+
+;----------------------------------------------------------;
+;                 #MoveIXtoCurrentFUEL                     ;
+;----------------------------------------------------------;
+; Set IX to current #fuel postion
+MoveIXtoCurrentFUEL
+	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
+	LD IX, fuel									; IX contains pointer
+
+    ; Now, move IX so that it points to the #FUEL given by the deploy counter. First, load the counter into A (value 3-6), sub 4
+	; Afterward, load A indo D and the size of the #FUEL into E, and multiply D by E. 
+	LD A, (state)
+	AND	STATE_ELEMET_CNT_MASK						; A contains 4-6
+	SUB MAX_ELEMENTS + 1							; A contains 0-2
+
+	LD D, A
+	LD E, FUEL										; D contains A, E contains size of #FUEL
+	MUL D, E										; DE contains D * E
+	ADD IX, DE										; IX points to active #rocket (#FUEL)
+
+	RET	
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

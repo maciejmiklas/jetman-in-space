@@ -10,6 +10,7 @@ CounterLoop
 	CALL Counter10							; Fist is 10 because we use it to time animation
 	CALL Counter2
 	CALL Counter4	
+	CALL Counter6
 	CALL Counter40
 	RET	
 
@@ -60,6 +61,30 @@ Counter4
 	; CALL functions that need to be updated every 10th loop
 
 	RET	
+
+;----------------------------------------------------------;
+;                       #Counter6                          ;
+;----------------------------------------------------------;
+Counter6
+	; Increment the counter
+	LD A, (cd.counter6)
+	INC A
+	LD (cd.counter6), A
+	CP cd.COUNTER6_MAX
+	RET NZ										; Jump if #counter4 !=  #COUNTER4_MAX 
+
+	; Reset the counter
+	LD A, 0
+	LD (cd.counter6), A
+
+	; 1 -> 0 and 0 -> 1
+	LD A, (cd.counter6FliFLop)
+	XOR 1
+	LD (cd.counter6FliFLop), A
+
+	; CALL functions that need to be updated every 10th loop
+	CALL ro.AnimateRocketReady
+	RET		
 
 ;----------------------------------------------------------;
 ;                       #Counter10                         ;

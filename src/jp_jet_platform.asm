@@ -96,7 +96,6 @@ JetTakesoff
 ;                       #JetLanding                        ;
 ;----------------------------------------------------------;
 JetLanding
-
 	; Update state as we are walking
 	CALL jt.ChangeJetStateGnd
 	

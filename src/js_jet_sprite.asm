@@ -66,7 +66,7 @@ spriteDB
 	DB SDB_JSTAND,	SDB_STAND - SDB_SUB, 	02, 03,36
 
 	; Jetman got hit
-	DB SDB_RIP,		SDB_RIP - SDB_SUB,		16, 00,08, 01,09, 02,10, 03,11, 00,22, 01,23, 02,24, 03,25
+	DB SDB_RIP,		SDB_RIP - SDB_SUB,		16, 00,30, 01,31, 02,32, 03,33, 00,18, 01,19, 02,20, 03,21
 
 	; Transition: walking -> flaying
 	DB SDB_T_WF,	SDB_FLY - SDB_SUB, 		08, 03,22, 04,23, 05,24, 03,25
@@ -227,7 +227,7 @@ UpdateJetSpritePattern
 ;----------------------------------------------------------;
 ; Input:
 ; - A:	Flip Flop counter, ie: #counter2FliFLop
-BlinkJetSprite	
+BlinkJetSprite
 	CP cd.FLIP_ON
 	JR NZ, .flipOff
 	

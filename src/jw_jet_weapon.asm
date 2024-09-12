@@ -108,39 +108,34 @@ HitEnemy
 	; Shot is visible, check colision with given sprite
 
 	; Compare X coordinate of enemy and shot
-	LD BC, (IX + sr.MSS.X)						; X of the enemy
+	LD HL, (IX + sr.MSS.X)						; X of the enemy
 	LD DE, (IY + sr.MSS.X)						; X of the shot
 
-	LD A, D
-	CP B
-	JR NZ, .continue							; Jump if MSB of the X for enemy and shot does not match (B != D)
+	; Subtracts DE from HL and check whether the result is less than or equal to A
+	SBC HL, DE
+	CALL ut.AbsHL
 
-	; Check if the shot hits the enemy from the left side of its X coordinate
-	LD A, C										; A holds the X LSB of the enemy
-	SUB FIRE_THICKNESS							; Include the thickness of the enemy
-	CP E
-	JR NC, .continue							; Jump if "(C - L) >= E" -> "(Xenemy - L) >= Xshot"  -> shot is before the enemy, left of it
+	; We will compare L with FIRE_THICKNESS but first ensure that H is 0. Otherwise, the following can happen: HL = 300, DE = 30. 
+	; The distance is 270. However, 270 occupies two bytes: H = 1, L=14. If we compare only L and ignore that H is 1, we will have a hit!
+	LD A, 0
+	CP H
+	JR NZ, .continue
 
-	; Check if the shot hits the enemy from the right side of its X coordinate
-	ADD FIRE_THICKNESS							; Revert "SUB L" from above
-	ADD FIRE_THICKNESS							; Include the thickness of the enemy
-	CP E
-	JR C, .continue								; Jump if "(C + L) < E" -> "(Xenemy + L) < Xshot"  -> shot is after the enemy, right of it
+	LD A, FIRE_THICKNESS
+	CP L										; SUB result is < 256, we can ignore H
+	JR C, .continue								; Jump if A(#FIRE_THICKNESS) < L
 
 	; We are here because the shot is horizontal with the enemy, now check the vertical match
 	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
 	LD B, (IY + sr.MSS.Y)						; B holds Y from the laser beam
 
-	; Check upper bounds
-	SUB FIRE_THICKNESS							; Include the thickness of the enemy
+	; Subtracts B from A and check whether the result is less than or equal to #FIRE_THICKNESS
+	SUB B
+	CALL ut.AbsA
+	LD B, A
+	LD A, FIRE_THICKNESS
 	CP B
-	JR NC, .continue
-
-	; Check lower bounds
-	ADD FIRE_THICKNESS							; Revert "SUB L" from above
-	ADD FIRE_THICKNESS							; Include the thickness of the enemy
-	CP B
-	JR C, .continue
+	JR C, .continue								; Jump if A(#FIRE_THICKNESS) < B
 
 	; We have hit!
 	CALL sr.SetSpriteId

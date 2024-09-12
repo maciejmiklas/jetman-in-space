@@ -27,6 +27,38 @@ CdivD
 	RET
 
 ;----------------------------------------------------------;
+;                          AbsDE                           ;
+;----------------------------------------------------------;
+; http://z80-heaven.wikidot.com/math#toc12
+AbsDE
+	BIT 7, D
+	RET Z
+	XOR A
+	SUB E 
+	LD E, A
+	SBC A, A 
+	SUB D 
+	LD D,A
+
+	RET
+
+;----------------------------------------------------------;
+;                          AbsBC                           ;
+;----------------------------------------------------------;
+; http://z80-heaven.wikidot.com/math#toc12
+AbsBC
+	BIT 7, B
+	RET Z
+	XOR A 
+	SUB C 
+	LD C, A
+	SBC A, A
+	SUB B
+	LD B, A
+
+	RET
+	
+;----------------------------------------------------------;
 ;                          AbsHL                           ;
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
@@ -49,26 +81,27 @@ AbsA
 	OR A
 	RET P
 	NEG
-	RET	
+	RET
 ;----------------------------------------------------------;
 ;                       #HlEqualB                          ;
 ;----------------------------------------------------------;
+; Check if both H and L are equal to B
 HL_IS_B					= 0
 HL_NOT_B				= 1
 ; Input:
-;  - HL:		Value to compare to B
-;  - B:			Value to compare to HL
+;  - HL:	Value to compare to B
+;  - B:		Value to compare to HL
 ; Return:
-;  - A:		HL_IS_0 or HL_NOT_0
+;  - A:		#HL_IS_0 or #HL_NOT_0
 HlEqualB
-	LD A, H										; Check H if == 0
+	LD A, H										; Check if H == B
 	CP B
-	JR NZ, .notEqual							; H == 0
-	LD A, L										; Check L if == 0
+	JR NZ, .notEqual							; Jump if H != B
+	LD A, L										; Check if L == B
 	CP B
-	JR NZ, .notEqual							; L == 0
+	JR NZ, .notEqual							; Jump if L == B
 	
-	; H == 0 and L == 0
+	; H == B and L == B
 	LD A, HL_IS_B
 	RET												
 	
