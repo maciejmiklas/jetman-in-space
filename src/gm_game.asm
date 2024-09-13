@@ -91,29 +91,27 @@ AnimateSprites
 ;                     #PrintDebug                          ;
 ;----------------------------------------------------------;
 PrintDebug
-	; PRINT START
-	LD B, 0
+	LD B, 120
 	LD H, 0
 	LD HL, (jo.jetX)
 	CALL tx.PrintNumHL
 
-	LD B, 10
+	LD B, 130
 	LD H, 0
 	LD A,  (jo.jetY)
 	LD L, A
 	CALL tx.PrintNumHL
-/*
-	LD B, 20
+
+	LD B, 140
 	LD HL, (jc.invincibleCnt)
 	CALL tx.PrintNumHL
-*/
-	LD B, 30
+
+	LD B, 150
 	LD H, 0
 	LD A, (ro.state)
 	LD L, A
 	CALL tx.PrintNumHL	
 
-	; PRINT END
 	RET
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

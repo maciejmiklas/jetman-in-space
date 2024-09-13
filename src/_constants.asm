@@ -208,6 +208,7 @@ _SPR_REG_ATR2_ROT_BIT	= 1
 _SPR_REG_ATR2_OVER_BIT	= 0
 _SPR_REG_ATR2_RES_PAL	= %00001111				; Mask to reset palette bits
 _SPR_REG_ATR2_OVEFLOW	= %00000001
+_SPR_REG_ATR2_EMPTY		= %00000000				; No rotation, no mirrot, no overflow
 
 ; Bits:
 ;  - 7: Visible flag (1 = displayed)

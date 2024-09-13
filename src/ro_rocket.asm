@@ -36,7 +36,7 @@ STATE_CNT_ASSEMBLED		= 7						; Counter will be set to 7 when the rocket is read
 MAX_ELEMENTS			= 3
 
 ; The single rocket element or fule tank
-	STRUCT RDA
+	STRUCT ROCKET
 ; Configuration values	
 DROP_X					BYTE					; X coordinate to drop the given element/tank
 DROP_LAND_Y				BYTE 					; Y coordinates where the dropped element/tank should land. Usually, it's the height of the platform/ground
@@ -49,33 +49,36 @@ Y						BYTE					; Current Y position
 	ENDS
 
 ; The rocket fuel level when the fuel tank reaches the rocket
-	STRUCT FUEL
+	STRUCT FUEL_LEVEL
 ELEMENT_ID				BYTE					; ID of rocket element, 4-6
 SPRITE_REF				BYTE					; ID of the Sprite from spr-file
 	ENDS
 
-ROCKET_DOWN_SPR_ID		= 40
-ROCKET_DOWN_SPR_WAIT	= 63
-ROCKET_DOWN_SPR_FLY		= 59
+ROCKET_DOWN_SPR_ID		= 40					; Sprite ID is used to lower the rocket part, which has the engine and fuel
+MIN_DROP_HEIGHT			= 180					; Jetman has to be above the rocket to drop the element, 170 > Y >10
+
+ROCKET_SPR_ID_READY1	= 63					; Once the rocket is ready, it will start blinking using #ROCKET_SPR_ID_READY1 and #ROCKET_SPR_ID_READY2
+ROCKET_SPR_ID_READY2	= 59
 
 rocket
 ; rocket element
-	RDA {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, ROCKET_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
-	RDA {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
-	RDA {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, ROCKET_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}
 ; fuel tank
-	RDA {005/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
-	RDA {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
-	RDA {230/*DROP_X*/, 049/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {015/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {230/*DROP_X*/, 059/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
 
-fuel
-	FUEL {4/*ELEMENT_ID*/, 61/*SPRITE_REF*/}
-	FUEL {5/*ELEMENT_ID*/, 62/*SPRITE_REF*/}
-	FUEL {6/*ELEMENT_ID*/, 63/*SPRITE_REF*/}
+fuelLevel
+	FUEL_LEVEL {4/*ELEMENT_ID*/, 61/*SPRITE_REF*/}
+	FUEL_LEVEL {5/*ELEMENT_ID*/, 62/*SPRITE_REF*/}
+	FUEL_LEVEL {6/*ELEMENT_ID*/, 63/*SPRITE_REF*/}
 
 rocketAssemblyX			BYTE 170
 
-COLISION_MARGIN			= 12
+COLISION_MARGIN_X		= 8
+COLISION_MARGIN_Y		= 16
 CARRY_ADJUST_Y			= 10
 
 ;----------------------------------------------------------;
@@ -102,7 +105,7 @@ ResetCarryingRocketElement
 	CALL MoveIXtoCurrentRDA
 
 	; Hide rocket element sprite
-	LD A, (IX + RDA.SPRITE_ID)
+	LD A, (IX + ROCKET.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
 
 	LD A, _SPR_PATTERN_HIDE						; Hide sprite on display	
@@ -140,11 +143,17 @@ CarryRocketElement
 ;----------------------------------------------------------;
 JetmanDropsRocketElement
 	
-	; Is Jetman over the drop location?
+	; Is Jetman over the drop location (+/- #COLISION_MARGIN_X) ?
 	LD BC, (jo.jetX)
 	LD A, (rocketAssemblyX)
-	CP C
-	RET NZ
+	SUB C
+	CP COLISION_MARGIN_X
+	RET NC
+
+	; Js Jetman above rocket?
+	LD A, (jo.jetY)
+	CP MIN_DROP_HEIGHT
+	RET NC
 
 	; Jetman drops rocket element
 	LD A, (state)
@@ -155,7 +164,7 @@ JetmanDropsRocketElement
 	; Store the height of the drop so that the element can keep falling from this location into the assembly place.
 	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion
 	LD A, (jo.jetY)
-	LD (IX + RDA.Y), A
+	LD (IX + ROCKET.Y), A
 
 	RET
 
@@ -166,7 +175,7 @@ JetmanDropsRocketElement
 MoveWithJetman
 
 	; Set the ID of the sprite for the following commands
-	LD A, (IX + RDA.SPRITE_ID)
+	LD A, (IX + ROCKET.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite X coordinate
@@ -221,7 +230,7 @@ COLLISION_YES			= 1
 
 CheckCollision
 	; Compare X coordinate of element and Jetman
-	LD BC, (IX + RDA.DROP_X)					; X of the element
+	LD BC, (IX + ROCKET.DROP_X)					; X of the element
 	LD B, 0										; X is 8bit -> reset MSB
 	LD HL, (jo.jetX)							; X of the Jetman
 
@@ -235,7 +244,7 @@ CheckCollision
 	RET		
 .keepCheckingHorizontal	
 	LD A, L
-	LD B, COLISION_MARGIN
+	LD B, COLISION_MARGIN_X
 	CP B
 	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical
 	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision	
@@ -243,30 +252,16 @@ CheckCollision
 .checkVertical
 	
 	; We are here because Jemtman's horizontal position matches that of the element, now check vertical
-	LD B, (IX + RDA.Y)							; Y of the element
+	LD B, (IX + ROCKET.Y)							; Y of the element
 	LD A, (jo.jetY)								; Y of the Jetman
 
-	; Is Jemtan above or below the element?
+	; Subtracts B from A and check whether the result is less than or equal to #COLISION_MARGIN_Y
+	SUB B
+	CALL ut.AbsA
+	LD B, A
+	LD A, COLISION_MARGIN_Y
 	CP B
-	JR C, .jetmanAboveElement					; Jump if "Jet Y" < "element Y". Jet is above element (0 is at the top, 256 bottom)
-
-	; Jetman is below element
-	SUB B
-	CP COLISION_MARGIN
-	JR C, .collision							; Jump if A - B < D
-	JR .noCollision
-
-.jetmanAboveElement
-	; Jetman is above element
-
-	; Swap A and B (compared to above) to avoid negative value
-	LD A, (jo.jetY)
-	LD B, A										; B: Y of the Jetman
-	LD A, (IX + RDA.Y)							; A: Y of the element
-	SUB B
-	CP COLISION_MARGIN
-	JR C, .collision
-	JR .noCollision
+	JR NC, .collision							; Jump if A(#COLISION_MARGIN_Y) >= B
 
 .noCollision
 	LD A, COLLISION_NO
@@ -288,27 +283,30 @@ RocketElementFallsForPickup
 	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion	
 
 	; Set the ID of the sprite for the following commands
-	LD A, (IX + RDA.SPRITE_ID)
+	LD A, (IX + ROCKET.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Sprite X coordinate, do not change value - element is falling down
-	LD A, (IX + RDA.DROP_X)
+	LD A, (IX + ROCKET.DROP_X)
 	NEXTREG _SPR_REG_X_H35, A
 
+	LD A, _SPR_REG_ATR2_EMPTY
+	NEXTREG _SPR_REG_ATR2_H37, A
+
 	; Set sprite pattern	
-	LD A, (IX + RDA.SPRITE_REF)
+	LD A, (IX + ROCKET.SPRITE_REF)
 	OR _SPR_PATTERN_SHOW						; Set show bit
 	NEXTREG _SPR_REG_ATR3_H38, A
 
 	; Sprite Y coordinate, increment until the destination has been reached
-	LD A, (IX + RDA.Y)
+	LD A, (IX + ROCKET.Y)
 	INC A
-	LD (IX + RDA.Y), A
+	LD (IX + ROCKET.Y), A
 	NEXTREG _SPR_REG_Y_H36, A
 
 	; Has the horizontal destination been reached?
 	LD B, A
-	LD A, (IX + RDA.DROP_LAND_Y)
+	LD A, (IX + ROCKET.DROP_LAND_Y)
 	CP B
 	RET NZ										; No, keep falling down
 	
@@ -335,13 +333,13 @@ AnimateRocketReady
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman	
-	LD A, (cd.counter6FliFLop)
+	LD A, (cd.counter10FliFLop)
 	CP cd.FLIP_ON
 	JR Z, .flip
-	LD A, ROCKET_DOWN_SPR_WAIT
+	LD A, ROCKET_SPR_ID_READY1
 	JR .afterSet
 .flip	
-	LD A, ROCKET_DOWN_SPR_FLY
+	LD A, ROCKET_SPR_ID_READY2
 .afterSet
 	OR _SPR_PATTERN_SHOW						; Set visibility bit
 	NEXTREG _SPR_REG_ATR3_H38, A
@@ -359,7 +357,7 @@ RocketElementFallsForAssembly
 	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion	
 
 	; Set the ID of the sprite for the following commands
-	LD A, (IX + RDA.SPRITE_ID)
+	LD A, (IX + ROCKET.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Sprite X coordinate to assembly location
@@ -367,19 +365,19 @@ RocketElementFallsForAssembly
 	NEXTREG _SPR_REG_X_H35, A
 
 	; Set sprite pattern	
-	LD A, (IX + RDA.SPRITE_REF)
+	LD A, (IX + ROCKET.SPRITE_REF)
 	OR _SPR_PATTERN_SHOW						; Set show bit
 	NEXTREG _SPR_REG_ATR3_H38, A
 
 	; Sprite Y coordinate, increment until the destination has been reached
-	LD A, (IX + RDA.Y)
+	LD A, (IX + ROCKET.Y)
 	INC A
-	LD (IX + RDA.Y), A
+	LD (IX + ROCKET.Y), A
 	NEXTREG _SPR_REG_Y_H36, A
 
 	; Has the horizontal destination been reached?
 	LD B, A
-	LD A, (IX + RDA.ASSEMBLY_Y)
+	LD A, (IX + ROCKET.ASSEMBLY_Y)
 	CP B
 	RET NZ										; No, keep falling down
 	
@@ -401,14 +399,14 @@ RocketElementFallsForAssembly
 	NEXTREG _SPR_REG_ATR3_H38, A
 
 	; Switch the lower rocket sprite to reflect the fueling level
-	CALL MoveIXtoCurrentFUEL
+	CALL MoveIXtoCurrentFuelLevel
 
 	; Set the ID of the sprite for the following commands
 	LD A, ROCKET_DOWN_SPR_ID
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite pattern	
-	LD A, (IX + FUEL.SPRITE_REF)
+	LD A, (IX + FUEL_LEVEL.SPRITE_REF)
 	OR _SPR_PATTERN_SHOW						; Set visibility bit
 	NEXTREG _SPR_REG_ATR3_H38, A
 
@@ -468,7 +466,7 @@ DropNextRocketElement
 
 	; Reset Y for element/tank to top of the screen
 	LD A, 0
-	LD (IX + RDA.Y), A
+	LD (IX + ROCKET.Y), A
 	
 	RET	
 
@@ -480,8 +478,8 @@ MoveIXtoCurrentRDA
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
 	LD IX, rocket									; IX contains pointer
 
-    ; Now, move IX so that it points to the #RDA given by the deploy counter. First, load the counter into A (value 1-3).
-	; Afterward, load A indo D and the size of the #RDA into E, and multiply D by E. 
+    ; Now, move IX so that it points to the #ROCKET given by the deploy counter. First, load the counter into A (value 1-3).
+	; Afterward, load A indo D and the size of the #ROCKET into E, and multiply D by E. 
 	LD A, (state)
 	AND	STATE_ELEMET_CNT_MASK						; A contains 1-3
 
@@ -491,30 +489,30 @@ MoveIXtoCurrentRDA
 
 	SUB 1											; A contains 0-2
 	LD D, A
-	LD E, RDA										; D contains A, E contains size of #RDA
+	LD E, ROCKET										; D contains A, E contains size of #ROCKET
 	MUL D, E										; DE contains D * E
-	ADD IX, DE										; IX points to active #rocket (#RDA)
+	ADD IX, DE										; IX points to active #rocket (#ROCKET)
 
 	RET	
 
 ;----------------------------------------------------------;
-;                 #MoveIXtoCurrentFUEL                     ;
+;             #MoveIXtoCurrentFuelLevel                    ;
 ;----------------------------------------------------------;
 ; Set IX to current #fuel postion
-MoveIXtoCurrentFUEL
+MoveIXtoCurrentFuelLevel
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
-	LD IX, fuel									; IX contains pointer
+	LD IX, fuelLevel								; IX contains pointer
 
-    ; Now, move IX so that it points to the #FUEL given by the deploy counter. First, load the counter into A (value 3-6), sub 4
-	; Afterward, load A indo D and the size of the #FUEL into E, and multiply D by E. 
+    ; Now, move IX so that it points to the #FUEL_LEVEL given by the deploy counter. First, load the counter into A (value 3-6), sub 4
+	; Afterward, load A indo D and the size of the #FUEL_LEVEL into E, and multiply D by E. 
 	LD A, (state)
 	AND	STATE_ELEMET_CNT_MASK						; A contains 4-6
 	SUB MAX_ELEMENTS + 1							; A contains 0-2
 
 	LD D, A
-	LD E, FUEL										; D contains A, E contains size of #FUEL
+	LD E, FUEL_LEVEL										; D contains A, E contains size of #FUEL_LEVEL
 	MUL D, E										; DE contains D * E
-	ADD IX, DE										; IX points to active #rocket (#FUEL)
+	ADD IX, DE										; IX points to active #rocket (#FUEL_LEVEL)
 
 	RET	
 

@@ -35,16 +35,17 @@ CHAR_PALETTE_BYTE	= 0							; Palette byte for tile characters
 ;  - DE:	Pointer to the text
 ;  - B:		Amount of characters in DE  
 ;  - C: 	Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
-;           For B=5 -> First characters starts at 5x8 in first line, for B=41 first charactes starts in second line.
+;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
 PrintText
+
 	LD HL, START_OF_TILEMAP						; HL points to screen memory containing tilemap 
 	DEC HL
 	
-	; Move HL by 2*C so that HL points to the position of the first character
+	; HL will point to the memory location containing the data of the first character (tile)
 	PUSH DE
 	LD D, 0
 	LD E, C
-	SLA E										; E*2 because each tile has 2 bytes
+	ADD HL, DE									; *2 because each tile has 2 bytes
 	ADD HL, DE
 	POP DE  
 

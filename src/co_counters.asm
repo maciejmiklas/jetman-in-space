@@ -83,7 +83,7 @@ Counter6
 	LD (cd.counter6FliFLop), A
 
 	; CALL functions that need to be updated every 10th loop
-	CALL ro.AnimateRocketReady
+
 	RET		
 
 ;----------------------------------------------------------;
@@ -110,6 +110,7 @@ Counter10
 	CALL gm.Counter10
 	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
+	CALL ro.AnimateRocketReady
 	RET		
 
 ;----------------------------------------------------------;

@@ -204,7 +204,6 @@ RespawnJet
 	CALL MakeJetInvincible
 
 	CALL bg.UpdateOnJetmanMove
-
 	CALL ro.ResetCarryingRocketElement
 	RET
 
