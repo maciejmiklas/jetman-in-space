@@ -123,6 +123,17 @@ JOY_DIS_RET_JOY_ON 		= 1						; Process joystick input
 JOY_DIS_RET_JOY_OFF		= 2						; Disable joystick input processing for this loop
 
 JoyDisabled
+
+	; Joystic disabled if flying rocket
+	LD A, (jt.jetAir)
+	CP jt.AIR_FLY_ROCKET
+	JR NZ, .notFlying
+
+	; Do not process input, flying rocket
+	LD A, JOY_DIS_RET_JOY_OFF
+	RET
+.notFlying	
+
 	LD A, (id.joyDisabledCnt)
 	CP 0
 	JR Z, .afterjoystickDisabled				; Jump if joystick is enabled -> #joyDisabledCnt > 0

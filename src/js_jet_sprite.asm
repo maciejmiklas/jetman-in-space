@@ -92,6 +92,11 @@ sprState			BYTE SPR_STATE_SHOW
 ;          #UpdateJetSpritePositionRotation                ;
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation	
+	; Return if flying rocket
+	LD A, (jt.jetAir)
+	CP jt.AIR_FLY_ROCKET
+	RET Z
+
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
 	LD BC, (jo.jetX)
 
@@ -158,7 +163,11 @@ ChangeJetSpritePattern
 ;               #UpdateJetSpritePattern                    ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
-UpdateJetSpritePattern	
+UpdateJetSpritePattern
+	; Return if flying rocket
+	LD A, (jt.jetAir)
+	CP jt.AIR_FLY_ROCKET
+	RET Z
 	
 	; Switch to the next DB record if all bytes from the current one have been used
 	LD A, (sprDBRemain)
@@ -243,6 +252,11 @@ BlinkJetSprite
 ;                     #ShowJetSprite                       ;
 ;----------------------------------------------------------;
 ShowJetSprite
+	; Return if flying rocket
+	LD A, (jt.jetAir)
+	CP jt.AIR_FLY_ROCKET
+	RET Z
+
 	LD A, SPR_STATE_SHOW
 	LD (sprState), A
 

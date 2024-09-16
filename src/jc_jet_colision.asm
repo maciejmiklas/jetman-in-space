@@ -27,6 +27,11 @@ INVINCIBLE_FAST_BLINK	= 150
 ;                #JetmanEnemiesColision                    ;
 ;----------------------------------------------------------;
 JetmanEnemiesColision
+	; Collision disabled if flying rocket
+	LD A, (jt.jetAir)
+	CP jt.AIR_FLY_ROCKET
+	RET Z
+
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
 	LD B, A

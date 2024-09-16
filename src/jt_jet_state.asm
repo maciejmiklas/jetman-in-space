@@ -8,11 +8,12 @@ STATE_INACTIVE			= 0
 ; States for Jetmain in the air, 0 for not in the air
 AIR_FLY					= 1						; Jetman is flaying
 AIR_HOOVER				= 2						; Jetman is hovering
-AIR_FALL_RIGHT			= 3						; Jetmal falls from paltform on the right
-AIR_FALL_LEFT			= 4						; Jetmal falls from paltform on the left
-AIR_BUMP_RIGHT			= 5						; Jetban bumps into a platform from the right, he faces/moves left
-AIR_BUMP_LEFT			= 6						; Jetban bumps into a platform from the left, he faces/moves right
-AIR_BUMP_BOTTOM			= 7						; Jetban bumps into a platform from the bottom
+AIR_FALL_RIGHT			= 3						; Jetman falls from paltform on the right
+AIR_FALL_LEFT			= 4						; Jetman falls from paltform on the left
+AIR_BUMP_RIGHT			= 5						; Jetman bumps into a platform from the right, he faces/moves left
+AIR_BUMP_LEFT			= 6						; Jetman bumps into a platform from the left, he faces/moves right
+AIR_BUMP_BOTTOM			= 7						; Jetman bumps into a platform from the bottom
+AIR_FLY_ROCKET			= 8						; Jetman flyies in the rocket
 
 jetAir					BYTE AIR_FLY
 

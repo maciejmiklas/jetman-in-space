@@ -59,7 +59,7 @@ Counter4
 	LD (cd.counter4FliFLop), A
 
 	; CALL functions that need to be updated every 10th loop
-
+	CALL ro.FlyRocket
 	RET	
 
 ;----------------------------------------------------------;
@@ -83,7 +83,6 @@ Counter6
 	LD (cd.counter6FliFLop), A
 
 	; CALL functions that need to be updated every 10th loop
-
 	RET		
 
 ;----------------------------------------------------------;

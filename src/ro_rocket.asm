@@ -5,33 +5,34 @@
 
 ; Number of Counter40 cycles to drop next rocket module
 DROP_NEXT_DELAY_MAX		= 10
-dropNextDelay			BYTE 0
+dropNextDelay			BYTE 3
 
 ; The state is used to build the rocket and then bring fuel to it. Building the rocket requires three elements, as does fueling it. 
 ; It's basically the same process, but Jetman is carrying either rocket elements or fuel tanks. Bit 7 determines whether Jetman is building 
 ; the rocket or already carries fuel. 
 ; Bits:
-;  - 0-2: Current element 1-3 (rocket element), 4-6 (fuel tank), 7 - fully assembed (also #STATE_READY_BIT is set)
+;  - 0-2: Current element 1-3 (rocket element), 4-6 (fuel tank), 7 - fully assembed
 ;  - 3  : #STATE_FALL_BIT
 ;  - 4  : #STATE_WAIT_BIT
 ;  - 5  : #STATE_CARRY_BIT
-;  - 6  : #STATE_READY_BIT
-;  - 7  : #STATE_ASSEMBLY_BIT
+;  - 6  : #STATE_ASSEMBLY_BIT
+;  - 7  : #STATE_FLYING_BIT
 state					BYTE 0					; Start with building first rocket element
 
 STATE_FALL_BIT			= 3						; Rocket element (or fuel tank) is falling down for pickup
 STATE_WAIT_BIT			= 4						; Rocket element (or fuel tank) is waiting for pickup
 STATE_CARRY_BIT			= 5						; Jetman carries rocket element (or fuel tank)
-STATE_READY_BIT			= 6						; The rocket is fully assembled
-STATE_ASSEMBLY_BIT		= 7						; Rocket element (or fuel tank) is falling down for assembly
+STATE_ASSEMBLY_BIT		= 6						; Rocket element (or fuel tank) is falling down for assembly
+STATE_FLYING_BIT		= 7						; The rocket is flying towards an unknown planet
 
 STATE_DROP_NEXT_MASK	= %11111'000			; Dorp next element if the rocket is not fully assembled and no element is deployed at the moment
 STATE_ELEMET_CNT_MASK	= %00000'111			; Reset all bits except the counter
+STATE_ELEMET_READY_MASK	= %1'0000'111			; Reset all bits except the counter and ready flag
 STATE_ELEMET_DEPL_MASK	= %000'11'000			; Jetman can pick up element/tank
 
 STATE_CNT_ELEMET_MAX	= 6
 STATE_CNT_FUEL_MIN		= 4
-STATE_CNT_ASSEMBLED		= 7						; Counter will be set to 7 when the rocket is ready for takeoff.
+STATE_CNT_ASSEMBLED		= 7						; Counter will be set to 7 when the rocket is ready for takeoff
 
 MAX_ELEMENTS			= 3
 
@@ -87,14 +88,125 @@ CARRY_ADJUST_Y			= 10
 UpdateOnJetmanMove
 	CALL AttachRocketElement
 	CALL CarryRocketElement
-
+	CALL BoardRocket
 	RET	
 
+;----------------------------------------------------------;
+;                     #BoardRocket                         ;
+;----------------------------------------------------------;
+BoardRocket
+	; Return if rocket is not ready for boarding
+	LD A, (state)
+	AND STATE_ELEMET_READY_MASK
+	CP STATE_CNT_ASSEMBLED
+	RET NZ	
+	
+	; Jetman collision with first (lowest) rocket element triggers take off
+	LD IX, rocket
+
+	LD BC, (rocketAssemblyX)					; X of the element
+	LD B, 0
+	LD D, (IX + ROCKET.Y)						; Y of the element
+	CALL CheckCollision
+	CP COLLISION_NO
+	RET Z
+
+	; We have collision!
+	LD A, (state)
+	SET STATE_FLYING_BIT, A
+	LD (state), A
+
+	; Hide sprite (before changing state!)
+	CALL js.HideJetSprite
+
+	; change state
+	LD A, jt.AIR_FLY_ROCKET
+	CALL jt.ChangeJetStateAir
+	
+	RET
+;----------------------------------------------------------;
+;                       #FlyRocket                         ;
+;----------------------------------------------------------;
+FlyRocket
+	; Return if rocket is not flying
+	LD A, (state)
+	BIT STATE_FLYING_BIT, A
+	RET Z
+
+	; The current position of rocket elements is stored in #rocketAssemblyX and #ROCKET.Y 
+	; It was set when elements were falling towards the platform. Now, we need to decrease X to animate the rocket.
+	
+	LD IX, rocket								; Load the pointer to #rocket into IX
+
+	; Move 1 rocket eleent
+	LD A, (IX + ROCKET.Y)
+	DEC A
+	LD (IX + ROCKET.Y), A
+
+	LD A, (rocketAssemblyX)
+	CALL UpdateElementPosition
+
+	; Move 2 rocket eleent
+	LD A, 2
+	CALL MoveIXtoGivemRocketElement
+
+	LD A, (IX + ROCKET.Y)
+	DEC A
+	LD (IX + ROCKET.Y), A
+
+	LD A, (rocketAssemblyX)
+	CALL UpdateElementPosition
+
+	; Move 3 rocket eleent
+	LD A, 3
+	CALL MoveIXtoGivemRocketElement
+	
+	LD A, (IX + ROCKET.Y)
+	DEC A
+	LD (IX + ROCKET.Y), A
+
+	LD A, (rocketAssemblyX)
+	CALL UpdateElementPosition	
+
+	CALL js.HideJetSprite						; Keep hiding Jemtan sprite, just in case oter procedure would show it
+	RET
+
+;----------------------------------------------------------;
+;                 #UpdateElementPosition                   ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:	Current #ROCKET pointer
+;  - A:		X postion
+UpdateElementPosition
+
+	; The current position of rocket elements is stored in #rocketAssemblyX and #ROCKET.Y
+	LD B, A
+
+	; Set the ID of the sprite for the following commands
+	LD A, (IX + ROCKET.SPRITE_ID)
+	NEXTREG _SPR_REG_NR_H34, A
+
+	; Sprite X coordinate from A param
+	LD A, B
+	NEXTREG _SPR_REG_X_H35, A
+
+	LD A, _SPR_REG_ATR2_EMPTY
+	NEXTREG _SPR_REG_ATR2_H37, A
+
+	; Set sprite pattern	
+	LD A, (IX + ROCKET.SPRITE_REF)
+	OR _SPR_PATTERN_SHOW						; Set show bit
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+	; Sprite Y coordinate, increment until the destination has been reached
+	LD A, (IX + ROCKET.Y)
+	NEXTREG _SPR_REG_Y_H36, A
+
+	RET
 ;----------------------------------------------------------;
 ;              #ResetCarryingRocketElement                 ;
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
-	
 	; Return if the state does not match carry
 	LD A, (state)
 	BIT STATE_CARRY_BIT, A
@@ -102,7 +214,7 @@ ResetCarryingRocketElement
 
 	; Reset from carry to wait for drop, hide spirte
 
-	CALL MoveIXtoCurrentRDA
+	CALL MoveIXtoCurrentRocketElement
 
 	; Hide rocket element sprite
 	LD A, (IX + ROCKET.SPRITE_ID)
@@ -133,7 +245,7 @@ CarryRocketElement
 	BIT STATE_CARRY_BIT, A
 	RET Z
 
-	CALL MoveIXtoCurrentRDA
+	CALL MoveIXtoCurrentRocketElement
 	CALL MoveWithJetman
 	CALL JetmanDropsRocketElement
 	RET
@@ -162,7 +274,7 @@ JetmanDropsRocketElement
 	LD (state), A
 
 	; Store the height of the drop so that the element can keep falling from this location into the assembly place.
-	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion
+	CALL MoveIXtoCurrentRocketElement						; Set IX to current #rocket postion
 	LD A, (jo.jetY)
 	LD (IX + ROCKET.Y), A
 
@@ -204,9 +316,12 @@ AttachRocketElement
 	CP 0
 	RET Z										; Return if A == 0 -> none of the bits is set
 
-	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion
+	CALL MoveIXtoCurrentRocketElement						; Set IX to current #rocket postion
 
-	; Check the collision (pickup possibility) between Jetman and the element, return if there is none
+	; Check the collision (pickup possibility) between Jetman and the element, return if there is none	
+	LD BC, (IX + ROCKET.DROP_X)					; X of the element
+	LD B, 0
+	LD D, (IX + ROCKET.Y)						; Y of the element	
 	CALL CheckCollision
 	CP COLLISION_NO
 	RET Z
@@ -223,6 +338,9 @@ AttachRocketElement
 ;                    #CheckCollision                       ;
 ;----------------------------------------------------------;
 ; Checks whether Jetman overlaps with rocket element/tank
+; Input:
+;  - BC: X postion of rocket element
+;  - D: Y postion of rocket element
 ; Output:
 ;  - A:		COLLISION_NO or COLLISION_YES
 COLLISION_NO			= 0
@@ -230,7 +348,6 @@ COLLISION_YES			= 1
 
 CheckCollision
 	; Compare X coordinate of element and Jetman
-	LD BC, (IX + ROCKET.DROP_X)					; X of the element
 	LD B, 0										; X is 8bit -> reset MSB
 	LD HL, (jo.jetX)							; X of the Jetman
 
@@ -252,11 +369,10 @@ CheckCollision
 .checkVertical
 	
 	; We are here because Jemtman's horizontal position matches that of the element, now check vertical
-	LD B, (IX + ROCKET.Y)							; Y of the element
 	LD A, (jo.jetY)								; Y of the Jetman
 
 	; Subtracts B from A and check whether the result is less than or equal to #COLISION_MARGIN_Y
-	SUB B
+	SUB D										; D is method param (Y postion of rocket element)
 	CALL ut.AbsA
 	LD B, A
 	LD A, COLISION_MARGIN_Y
@@ -280,29 +396,16 @@ RocketElementFallsForPickup
 	BIT STATE_FALL_BIT, A
 	RET Z										; Return if falling bit is not set
 
-	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion	
+	CALL MoveIXtoCurrentRocketElement			; Set IX to current #rocket postion	
 
-	; Set the ID of the sprite for the following commands
-	LD A, (IX + ROCKET.SPRITE_ID)
-	NEXTREG _SPR_REG_NR_H34, A
-
-	; Sprite X coordinate, do not change value - element is falling down
-	LD A, (IX + ROCKET.DROP_X)
-	NEXTREG _SPR_REG_X_H35, A
-
-	LD A, _SPR_REG_ATR2_EMPTY
-	NEXTREG _SPR_REG_ATR2_H37, A
-
-	; Set sprite pattern	
-	LD A, (IX + ROCKET.SPRITE_REF)
-	OR _SPR_PATTERN_SHOW						; Set show bit
-	NEXTREG _SPR_REG_ATR3_H38, A
-
-	; Sprite Y coordinate, increment until the destination has been reached
+	; Move element one pixel down
 	LD A, (IX + ROCKET.Y)
 	INC A
 	LD (IX + ROCKET.Y), A
-	NEXTREG _SPR_REG_Y_H36, A
+
+	; Update rocket spirte
+	LD A, (IX + ROCKET.DROP_X)					; Sprite X coordinate, do not change value - element is falling down
+	CALL UpdateElementPosition
 
 	; Has the horizontal destination been reached?
 	LD B, A
@@ -324,7 +427,7 @@ RocketElementFallsForPickup
 AnimateRocketReady	
 	; Return if rocket is not ready
 	LD A, (state)
-	AND STATE_ELEMET_CNT_MASK
+	AND STATE_ELEMET_READY_MASK
 	CP STATE_CNT_ASSEMBLED
 	RET NZ	
 
@@ -354,7 +457,7 @@ RocketElementFallsForAssembly
 	BIT STATE_ASSEMBLY_BIT, A
 	RET Z										; Return if assembky bit is not set
 
-	CALL MoveIXtoCurrentRDA						; Set IX to current #rocket postion	
+	CALL MoveIXtoCurrentRocketElement						; Set IX to current #rocket postion	
 
 	; Set the ID of the sprite for the following commands
 	LD A, (IX + ROCKET.SPRITE_ID)
@@ -462,7 +565,7 @@ DropNextRocketElement
 	LD (state), A
 
 	; Drop next rocket element/tank, first set IX to current #rocket postion
-	CALL MoveIXtoCurrentRDA
+	CALL MoveIXtoCurrentRocketElement
 
 	; Reset Y for element/tank to top of the screen
 	LD A, 0
@@ -471,12 +574,12 @@ DropNextRocketElement
 	RET	
 
 ;----------------------------------------------------------;
-;                 #MoveIXtoCurrentRDA                      ;
+;             #MoveIXtoCurrentRocketElement                ;
 ;----------------------------------------------------------;
 ; Set IX to current #rocket postion
-MoveIXtoCurrentRDA
+MoveIXtoCurrentRocketElement
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
-	LD IX, rocket									; IX contains pointer
+	LD IX, rocket
 
     ; Now, move IX so that it points to the #ROCKET given by the deploy counter. First, load the counter into A (value 1-3).
 	; Afterward, load A indo D and the size of the #ROCKET into E, and multiply D by E. 
@@ -487,9 +590,22 @@ MoveIXtoCurrentRDA
 	CP 0
 	RET Z
 
+	CALL MoveIXtoGivemRocketElement
+
+	RET	
+
+;----------------------------------------------------------;
+;                MoveIXtoGivemRocketElement                ;
+;----------------------------------------------------------;
+; Input:
+;  -A:	rocket element from 1 to 3
+MoveIXtoGivemRocketElement
+	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
+	LD IX, rocket
+
 	SUB 1											; A contains 0-2
 	LD D, A
-	LD E, ROCKET										; D contains A, E contains size of #ROCKET
+	LD E, ROCKET									; D contains A, E contains size of #ROCKET
 	MUL D, E										; DE contains D * E
 	ADD IX, DE										; IX points to active #rocket (#ROCKET)
 
