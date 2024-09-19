@@ -7,7 +7,7 @@
 ADJUST_FIRE_X			= 10			
 ADJUST_FIRE_Y			= 4
 
-FIRE_THICKNESS			= 8
+FIRE_THICKNESS			= 10
 
 ; Sprites for single shots (#shotMss), based on #MSS
 shotMss
@@ -40,13 +40,12 @@ SHOT_SIZE				= 10			; Amount of shots that can be simultaneously fired
 
 SHOT_HEIGHT				= 0
 
-MOVE_X_IN_D				= %000'1'0001	; Input mask for MoveX. Move the sprite by 2 pixels and hide on the screen end
+MOVE_X_IN_D_SHOT		= %000'1'000'1	; Input mask for MoveX. Move the shot by 2 pixels and hide on the screen end
 
 STATE_SHOT_DIR_BIT		= 5				; Bit for #sr.MSS.STATE, 1 - shot moves right, 0 - shot moves left
 
-
 ;----------------------------------------------------------;
-;                #WeaponHitEnemies                         ;
+;                   #WeaponHitEnemies                      ;
 ;----------------------------------------------------------;
 WeaponHitEnemies
 	LD IX, ed.sprite01
@@ -64,17 +63,37 @@ WeaponHitEnemies
 ;  - B:		Number of enemies in IX
 ; Modifies: ALL
 CheckHitEnemies
-.loop
+
+.loop											; Loop over every enemy
 	PUSH BC										; Preserve B for loop counter
 
-	BIT sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)
+	LD A, (IX + sr.MSS.STATE)
+
+	BIT sr.MSS_ST_VISIBLE_BIT, A
 	JR Z, .continue								; Jump if enemy is hidden
 
-	; Sprite is visible
-	CALL HitEnemy
+	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding
+	BIT sr.MSS_ST_ACTIVE_BIT, A
+	JR Z, .continue	
+	
+	; Enemy is visible, check colision with leaser beam
+	LD HL, (IX + sr.MSS.X)						; X of the enemy
+	LD C, (IX + sr.MSS.Y)						; Y of the enemy
+	CALL ShotsColision
+	CP SHOT_HIT
+	JR NZ, .continue
+
+	; We have hit!
+	CALL sr.SetSpriteId
+	CALL sr.SpriteHit
+
+	; Hide shot
+	LD IX, IY
+	CALL sr.SetSpriteId
+	CALL sr.HideSprite
 
 .continue
-	; Move HL to the beginning of the next #shotMssX
+	; Move HL to the beginning of the next enemy
 	LD DE, sr.MSS
 	ADD IX, DE
 	POP BC
@@ -83,32 +102,34 @@ CheckHitEnemies
 	RET
 
 ;----------------------------------------------------------;
-;                       #HitEnemy                          ;
+;                    #ShotsColision                        ;
 ;----------------------------------------------------------;
-; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
+; The method checks whether a laser beam has hit the sprite given by X/Y.
 ; Input:
-;  - IX:	Pointer to concreate single enemy, single #MSS
-; Modifies: ALL
-HitEnemy
-	; Loop ever all shotMss# skipping hidden sprites
+; - HL:  X of the sprite 
+; - C:   Y of the sprite
+; Output:
+; - A:   values:
+SHOT_HIT					= 1
+SHOT_MISS					= 0
+
+ShotsColision
+	; Loop ever all shotMss# skipping hidden shots
 	LD IY, shotMss								; IY points to the enemy
 	LD B, SHOT_SIZE 
 
 .loop
-	PUSH BC										; Preserve B for loop counter
 
-	; Skipp invisible laser shoots
-	BIT sr.MSS_ST_VISIBLE_BIT, (IY + sr.MSS.STATE)
-	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
+	; Skipp hidden and not active laser shoots
+	LD A, (IX + sr.MSS.STATE)
 
-	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding
-	BIT sr.MSS_ST_ALIVE_BIT, (IX + sr.MSS.STATE)
-	JR Z, .continue							; Jump if sprite is not alive
+	BIT sr.MSS_ST_VISIBLE_BIT, A
+	JR Z, .continue
+
+	BIT sr.MSS_ST_ACTIVE_BIT, A
+	JR Z, .continue	
 	
-	; Shot is visible, check colision with given sprite
-
-	; Compare X coordinate of enemy and shot
-	LD HL, (IX + sr.MSS.X)						; X of the enemy
+	; Compare X coordinate of the sprite and the shot, HL holds X of the sprite
 	LD DE, (IY + sr.MSS.X)						; X of the shot
 
 	; Subtracts DE from HL and check whether the result is less than or equal to A
@@ -126,35 +147,28 @@ HitEnemy
 	JR C, .continue								; Jump if A(#FIRE_THICKNESS) < L
 
 	; We are here because the shot is horizontal with the enemy, now check the vertical match
-	LD A, (IX + sr.MSS.Y)						; A holds Y from the enemy
-	LD B, (IY + sr.MSS.Y)						; B holds Y from the laser beam
+	LD A, (IY + sr.MSS.Y)						; A holds Y from the shot
 
-	; Subtracts B from A and check whether the result is less than or equal to #FIRE_THICKNESS
-	SUB B
+	; Subtracts C from A and check whether the result is less than or equal to #FIRE_THICKNESS
+	SUB C
 	CALL ut.AbsA
-	LD B, A
+	LD C, A
 	LD A, FIRE_THICKNESS
-	CP B
+	CP C
 	JR C, .continue								; Jump if A(#FIRE_THICKNESS) < B
 
 	; We have hit!
-	CALL sr.SetSpriteId
-	CALL sr.SpriteHit
-
-	; Hide shot
-	LD IX, IY
-	CALL sr.SetSpriteId
-	CALL sr.HideSprite
-
-	POP BC
-	RET											; Given enemy has been hit, nothing more to do.
+	LD A, SHOT_HIT
+	RET
 
 .continue
 	; Move IY to the beginning of the next #shotMssXX
 	LD DE, sr.MSS
 	ADD IY, DE
-	POP BC
 	DJNZ .loop									; Jump if B > 0 (loop starts with B = #MSS)
+
+	; There was no hit
+	LD A, SHOT_MISS
 
 	RET
 
@@ -176,7 +190,7 @@ MoveShots
 	; Shot is visible, move it and update postion
 	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
 	
-	LD D, MOVE_X_IN_D
+	LD D, MOVE_X_IN_D_SHOT
 
 	; Setup move direction for shot
 	BIT STATE_SHOT_DIR_BIT, (IX + sr.MSS.STATE)	
@@ -194,7 +208,7 @@ MoveShots
 	CALL sr.UpdateSpritePosition
 
 	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
-	BIT sr.MSS_ST_ALIVE_BIT, (IX + sr.MSS.STATE)
+	BIT sr.MSS_ST_ACTIVE_BIT, (IX + sr.MSS.STATE)
 	JR Z, .afterColisionDetection				; Exit if sprite is not alive
 
 	; Check the collision with the platform

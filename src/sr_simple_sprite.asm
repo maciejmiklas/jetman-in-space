@@ -15,7 +15,7 @@ Y						BYTE					; Y position of the sprite
 
 ; Bits:
 ;	- 0: 	#MSS_ST_VISIBLE_BIT
-;	- 1:	#MSS_ST_ALIVE_BIT
+;	- 1:	#MSS_ST_ACTIVE_BIT
 ;   - 2: 	Not used, but reserverd for simple sprite (sr)
 ;   - 3:	#MSS_ST_MIRROR_X_BIT
 ;	- 4:	Not used, but reserverd for simple sprite (sr)
@@ -26,13 +26,15 @@ REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be
 EXT_DATA_POINTER		WORD					; Pointer to additional data structure for this sprite
 	ENDS
 
-; Visible flag, 1 = displayed, 0 = hidden
+; When a weapon hits something, the sprite first gets status #MSS_ST_ACTIVE_BIT. After it stops exploding, it becomes status #MSS_ST_VISIBLE_BIT
+
+; Active flag, 1 - sprite is alive/active, 0 - sprite is dying (not active), disabled for colistion detection, but visible
+MSS_ST_ACTIVE_BIT		= 1
+MSS_ST_ACTIVE			= %00000010
+
+; Visible flag, 1 = displayed, 0 = hidden, disabled for colistion detection
 MSS_ST_VISIBLE_BIT		= 0
 MSS_ST_VISIBLE			= %00000001
-
-; Alive flag, 1 - sprite is alive, 0 - sprite is dying, disabled for colistion detection, but visible.
-MSS_ST_ALIVE_BIT		= 1
-MSS_ST_ALIVE			= %00000010
 
 ; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37
 MSS_ST_MIRROR_X_BIT		= 3
@@ -80,7 +82,7 @@ PLATFROM_MARGIN_DOWN	= 5
 ;  - IX:	Pointer to #MSS
 SpriteHit	
 	LD A, (IX + MSS.STATE)						; Sprite is dying; turn off collision detection
-	RES MSS_ST_ALIVE_BIT, A
+	RES MSS_ST_ACTIVE_BIT, A
 	LD (IX + MSS.STATE), A
 
 	LD A, SDB_EXPLODE
@@ -187,7 +189,7 @@ HideSprite
 ; Modifies: A
 SetVisible
 	SET MSS_ST_VISIBLE_BIT, A
-	SET MSS_ST_ALIVE_BIT, A
+	SET MSS_ST_ACTIVE_BIT, A
 	LD (IX + MSS.STATE), A
 
 	RET	
@@ -295,10 +297,14 @@ PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
 ; Modifies: ALL
 
 PlaftormColision
+
 	; Exit if sprite is not alive
-	BIT MSS_ST_ALIVE_BIT, (IX + MSS.STATE)
+	BIT MSS_ST_ACTIVE_BIT, (IX + MSS.STATE)	
+	JR NZ, .alive								; Jump if sprite is alive
+
 	LD A, PL_COL_RET_A_NO
-	RET Z										; Exit if sprite is not alive
+	RET
+.alive
 
 	LD B, (IY)									; Load into B the number of platforms to check
 .platformsLoop	
@@ -399,15 +405,15 @@ MoveX
 	DEC BC
 .afterExtraMoveL
 
-	; Check whether a enemy is outside the screen 
+	; Check whether a sprite is outside the screen 
 	LD A, B
-	CP sc.SCR_X_MIN_POS							; B holds MSB from X, if B > 0 than X > 256
+	CP 0										; B holds MSB from X, if B > 0 than X > 256
 	JR NZ, .afterMoving
 	LD A, C
-	CP sc.SCR_X_MIN_POS + 5						; C holds LSB from X, ff C != 5 then X is> 5
+	CP sc.SCR_X_MIN_POS + 3						; C holds LSB from X, if C >=3 then X is >=3
 	JR NC, .afterMoving
 
-	; X == 0 (both A and B are 0) -> enemy out of screen
+	; X <= 3 -> sprite out of screen
 	BIT MVX_IN_D_HIDE_BIT, D					; Hide sprite or roll over?
 	JR NZ, .hideSpriteL
 	
@@ -455,6 +461,7 @@ MoveX
 .afterMoving
 
 	LD (IX + MSS.X), BC							; Update new X position
+	
 	RET
 
 ;----------------------------------------------------------;

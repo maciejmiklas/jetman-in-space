@@ -137,7 +137,7 @@ CheckCollision
 EnemyColision
 
 	; Exit if enemy is not alive
-	BIT sr.MSS_ST_ALIVE_BIT, (IX + sr.MSS.STATE)
+	BIT sr.MSS_ST_ACTIVE_BIT, (IX + sr.MSS.STATE)
 	RET Z
 
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman

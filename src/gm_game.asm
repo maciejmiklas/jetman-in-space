@@ -49,7 +49,8 @@ GameLoop
 
 	CALL jw.WeaponHitEnemies
 	CALL jc.JetmanEnemiesColision
-
+	CALL ro.CheckHitTank
+	
 	LD IY, ed.formation
 	CALL ef.RespownFormation
 

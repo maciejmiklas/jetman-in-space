@@ -34,8 +34,6 @@ STATE_CNT_ELEMET_MAX	= 6
 STATE_CNT_FUEL_MIN		= 4
 STATE_CNT_ASSEMBLED		= 7						; Counter will be set to 7 when the rocket is ready for takeoff
 
-MAX_ELEMENTS			= 3
-
 ; The single rocket element or fule tank
 	STRUCT ROCKET
 ; Configuration values	
@@ -124,6 +122,30 @@ BoardRocket
 	CALL jt.ChangeJetStateAir
 	
 	RET
+
+;----------------------------------------------------------;
+;                     #CheckHitTank                        ;
+;----------------------------------------------------------;
+; Checks falling tank for collision with leaser beam
+CheckHitTank
+
+	; Is something (could be rocket element or tank) falling down?
+	LD A, (state)
+	BIT STATE_FALL_BIT, A
+	RET Z										; Return if fall bit is not set
+
+	; Something is falling, is that a tank?
+	AND STATE_ELEMET_CNT_MASK
+	CP STATE_CNT_FUEL_MIN
+	RET C										; Return if counter is < 4 (still assembling rocket)
+
+	; Fuel tank is falling down, check hit by leaser beam
+	CALL SetIXtoCurrentRocketElement
+
+
+	;CALL jw.ShotsColision
+	RET
+
 ;----------------------------------------------------------;
 ;                       #FlyRocket                         ;
 ;----------------------------------------------------------;
@@ -214,7 +236,7 @@ ResetCarryingRocketElement
 
 	; Reset from carry to wait for drop, hide spirte
 
-	CALL MoveIXtoCurrentRocketElement
+	CALL SetIXtoCurrentRocketElement
 
 	; Hide rocket element sprite
 	LD A, (IX + ROCKET.SPRITE_ID)
@@ -245,7 +267,7 @@ CarryRocketElement
 	BIT STATE_CARRY_BIT, A
 	RET Z
 
-	CALL MoveIXtoCurrentRocketElement
+	CALL SetIXtoCurrentRocketElement
 	CALL MoveWithJetman
 	CALL JetmanDropsRocketElement
 	RET
@@ -274,7 +296,7 @@ JetmanDropsRocketElement
 	LD (state), A
 
 	; Store the height of the drop so that the element can keep falling from this location into the assembly place.
-	CALL MoveIXtoCurrentRocketElement						; Set IX to current #rocket postion
+	CALL SetIXtoCurrentRocketElement						; Set IX to current #rocket postion
 	LD A, (jo.jetY)
 	LD (IX + ROCKET.Y), A
 
@@ -316,7 +338,7 @@ AttachRocketElement
 	CP 0
 	RET Z										; Return if A == 0 -> none of the bits is set
 
-	CALL MoveIXtoCurrentRocketElement						; Set IX to current #rocket postion
+	CALL SetIXtoCurrentRocketElement						; Set IX to current #rocket postion
 
 	; Check the collision (pickup possibility) between Jetman and the element, return if there is none	
 	LD BC, (IX + ROCKET.DROP_X)					; X of the element
@@ -396,7 +418,7 @@ RocketElementFallsForPickup
 	BIT STATE_FALL_BIT, A
 	RET Z										; Return if falling bit is not set
 
-	CALL MoveIXtoCurrentRocketElement			; Set IX to current #rocket postion	
+	CALL SetIXtoCurrentRocketElement			; Set IX to current #rocket postion	
 
 	; Move element one pixel down
 	LD A, (IX + ROCKET.Y)
@@ -457,7 +479,7 @@ RocketElementFallsForAssembly
 	BIT STATE_ASSEMBLY_BIT, A
 	RET Z										; Return if assembky bit is not set
 
-	CALL MoveIXtoCurrentRocketElement						; Set IX to current #rocket postion	
+	CALL SetIXtoCurrentRocketElement						; Set IX to current #rocket postion	
 
 	; Set the ID of the sprite for the following commands
 	LD A, (IX + ROCKET.SPRITE_ID)
@@ -565,7 +587,7 @@ DropNextRocketElement
 	LD (state), A
 
 	; Drop next rocket element/tank, first set IX to current #rocket postion
-	CALL MoveIXtoCurrentRocketElement
+	CALL SetIXtoCurrentRocketElement
 
 	; Reset Y for element/tank to top of the screen
 	LD A, 0
@@ -574,10 +596,10 @@ DropNextRocketElement
 	RET	
 
 ;----------------------------------------------------------;
-;             #MoveIXtoCurrentRocketElement                ;
+;              #SetIXtoCurrentRocketElement                ;
 ;----------------------------------------------------------;
 ; Set IX to current #rocket postion
-MoveIXtoCurrentRocketElement
+SetIXtoCurrentRocketElement
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
 	LD IX, rocket
 
@@ -623,7 +645,7 @@ MoveIXtoCurrentFuelLevel
 	; Afterward, load A indo D and the size of the #FUEL_LEVEL into E, and multiply D by E. 
 	LD A, (state)
 	AND	STATE_ELEMET_CNT_MASK						; A contains 4-6
-	SUB MAX_ELEMENTS + 1							; A contains 0-2
+	SUB STATE_CNT_FUEL_MIN							; A contains 0-2
 
 	LD D, A
 	LD E, FUEL_LEVEL										; D contains A, E contains size of #FUEL_LEVEL

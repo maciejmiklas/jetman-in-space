@@ -86,7 +86,7 @@ MOVE_PAT_STEP_OFFSET	= 1						; Data for move pattern starts at byte 1, byte 0 p
 MOVE_PAT_REPEAT_MASK	= %0000'1111
 MOVE_PAT_DELAY_MASK		= %1111'0000
 
-MOVE_X_IN_D				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
+MOVE_X_IN_D_SHOT				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
 ; Horizontal movemment
 movePattern01
@@ -210,7 +210,7 @@ MoveEnemy
 	;  - IY: pointer to #ESS for current sprite
 	;  - HL: pointer to current position in #movePattern
 
-	BIT sr.MSS_ST_ALIVE_BIT, (IX + sr.MSS.STATE)
+	BIT sr.MSS_ST_ACTIVE_BIT, (IX + sr.MSS.STATE)
 	JR NZ, .afterAliveCheck						; Jump if sprite is alive
 
 	; Move the sprite horizontally while it's exploding
@@ -369,7 +369,7 @@ MoveEnemy
 ;  - HL: 	Points to the current move pattern's step.
 ; Modifies: A, BC
 MoveEnemyX
-	LD D, MOVE_X_IN_D							; D contains configuration for MoveX
+	LD D, MOVE_X_IN_D_SHOT							; D contains configuration for MoveX
 	BIT ESS_SETUP_DEPLOY_BIT, (IY + ESS.SETUP)
 	JR NZ, .deployedLeft						; Jump if bit is 0 -> deploy left
 
@@ -528,8 +528,7 @@ RES_SE_OUT_NO					= 0				; Enemy did not respawn
 ; Modifies: all
 RespownEnemy
 	
-	LD A, (IX + sr.MSS.STATE)
-	BIT sr.MSS_ST_VISIBLE_BIT, A
+	BIT sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)
 	JR Z, .afterVisibilityCheck					; Skipp this sprite if it's already visible
 	
 	LD A, RES_SE_OUT_NO
