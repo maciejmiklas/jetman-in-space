@@ -106,9 +106,9 @@ JoySlowdown
 	LD A, JOY_SL_RET_JOY_OFF					; Return because #joyDelayCnt !=  #JOY_DELAY
 	RET
 .delayReached									; Delay counter has been reached	
-						
-	LD A, 0										; Reset delay counter
-	LD (id.joyDelayCnt), A
+
+	XOR A										; Set A to 0						
+	LD (id.joyDelayCnt), A						; Reset delay counter
 
 	LD A, JOY_SL_RET_JOY_ON						; Process input, because counter has been reached
 	RET

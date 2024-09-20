@@ -64,8 +64,8 @@ SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see re
 srSpriteDB
 	SPR_REC {SDB_EXPLODE, SDB_HIDE - SDB_SUB, 04} 
 			DB 38, 39, 40, 41
-	SPR_REC {SDB_FIRE, SDB_FIRE - SDB_SUB, 03}
-			DB 42, 43, 44
+	SPR_REC {SDB_FIRE, SDB_FIRE - SDB_SUB, 02}
+			DB 42, 43
 	SPR_REC {SDB_ENEMY1, SDB_ENEMY1 - SDB_SUB, 03}
 			DB 45, 46, 47
 	SPR_REC {SDB_ENEMY2, SDB_ENEMY2 - SDB_SUB, 03}
@@ -80,7 +80,7 @@ PLATFROM_MARGIN_DOWN	= 5
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:	Pointer to #MSS
-SpriteHit	
+SpriteHit
 	LD A, (IX + MSS.STATE)						; Sprite is dying; turn off collision detection
 	RES MSS_ST_ACTIVE_BIT, A
 	LD (IX + MSS.STATE), A
@@ -162,7 +162,7 @@ UpdateSpritePosition
 	RET
 
 ;----------------------------------------------------------;
-;                      #HideSprite                         ;
+;                     #HideSprite                          ;
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX
 ; Input
@@ -170,15 +170,16 @@ UpdateSpritePosition
 ; Modifies: A
 HideSprite
 
+	LD A, (IX + MSS.STATE)
+	RES MSS_ST_ACTIVE, A
+	RES MSS_ST_VISIBLE_BIT, A
+	LD (IX + MSS.STATE), A
+
 	; Hide sprite
 	LD A, _SPR_PATTERN_HIDE						; Hide sprite on display	
 	NEXTREG _SPR_REG_ATR3_H38, A
 
-	LD A, (IX + MSS.STATE)						; Mark sprite as hidden
-	RES MSS_ST_VISIBLE_BIT, A
-	LD (IX + MSS.STATE), A
-	
-	RET
+	RET	
 
 ;----------------------------------------------------------;
 ;                       #SetVisible                        ;
@@ -284,7 +285,7 @@ LoadSpritePattern
 	RET
 
 ;----------------------------------------------------------;
-;                 #PlaftormColision                        ;
+;                    #PlaftormColision                     ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: 	Pointer to #MSS, single sprite to check colsion for
@@ -310,7 +311,7 @@ PlaftormColision
 .platformsLoop	
 	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1). Platforms end at 256.
 	LD DE, (IX + MSS.X)
-	LD A, 0 
+	XOR A										; Set A to 0
 	CP D
 	RET NZ
 
@@ -421,7 +422,7 @@ MoveX
 	JR .afterMoving
 
 .hideSpriteL
- 	CALL HideSprite								; Hide sprite
+ 	CALL HideSprite				; Hide sprite
 	JR .afterMoving
 
 .moveRight
@@ -455,7 +456,7 @@ MoveX
 	JR .afterMoving
 
 .hideSpriteR
- 	CALL HideSprite								; Hide sprite
+ 	CALL HideSprite				; Hide sprite
 	JR .afterMoving
 
 .afterMoving

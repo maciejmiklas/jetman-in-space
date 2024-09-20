@@ -199,7 +199,7 @@ RespawnJet
 	LD A, 100
 	LD (jo.jetY), A
 
-	LD A, 0
+	XOR A										; Set A to 0
 	NEXTREG _DC_REG_TILE_X_LSB_H30, A
 	NEXTREG _DC_REG_TILE_Y_H31, A
 

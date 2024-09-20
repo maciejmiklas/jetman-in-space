@@ -252,7 +252,7 @@ ResetCarryingRocketElement
 	LD (state), A
 
 	; Reset drop delay
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (dropNextDelay), A
 
 	RET
@@ -562,7 +562,7 @@ DropNextRocketElement
 	RET NZ										; Jump if #nextCnt !=  #DROP_NEXT_MAX 
 
 	; The counter has reached the required value, reset it first
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (dropNextDelay), A
 
 	; Check whether rocket element counter has already reached max value
@@ -590,7 +590,7 @@ DropNextRocketElement
 	CALL SetIXtoCurrentRocketElement
 
 	; Reset Y for element/tank to top of the screen
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (IX + ROCKET.Y), A
 	
 	RET	

@@ -35,7 +35,6 @@ GameLoop
 	CALL in.JoyInput
 
 	CALL jm.JoyDisabled
-	CALL jw.MoveShots
 
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
@@ -47,13 +46,15 @@ GameLoop
 	LD B, A	
 	CALL ep.RespownNextEnemy	
 
-	CALL jw.WeaponHitEnemies
-	CALL jc.JetmanEnemiesColision
+	;CALL jc.JetmanEnemiesColision
 	CALL ro.CheckHitTank
 	
 	LD IY, ed.formation
 	CALL ef.RespownFormation
 
+	CALL jw.MoveShots
+	CALL jw.WeaponHitEnemies
+	
 	CALL PrintDebug
 
 	RET
@@ -109,7 +110,7 @@ PrintDebug
 
 	LD B, 150
 	LD H, 0
-	LD A, (ro.state)
+	LD A, (jw.tmp)
 	LD L, A
 	CALL tx.PrintNumHL	
 

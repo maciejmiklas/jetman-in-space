@@ -26,7 +26,7 @@ Counter2
 	RET NZ										; Jump if #counter2 !=  #COUNTER2_MAX 
 
 	; Reset the counter
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (cd.counter2), A
 
 	; ; 1 -> 0 and 0 -> 1
@@ -50,7 +50,7 @@ Counter4
 	RET NZ										; Jump if #counter4 !=  #COUNTER4_MAX 
 
 	; Reset the counter
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (cd.counter4), A
 
 	; 1 -> 0 and 0 -> 1
@@ -74,7 +74,7 @@ Counter6
 	RET NZ										; Jump if #counter4 !=  #COUNTER4_MAX 
 
 	; Reset the counter
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (cd.counter6), A
 
 	; 1 -> 0 and 0 -> 1
@@ -97,7 +97,7 @@ Counter10
 	RET NZ										; Jump if #counter10 !=  #COUNTER10_MAX 
 
 	; Reset the counter
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (cd.counter10), A
 
 	; 1 -> 0 and 0 -> 1
@@ -124,7 +124,7 @@ Counter40
 	RET NZ										; Jump if #counter10 !=  #COUNTER40_MAX 
 
 	; Reset the counter
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (cd.counter40), A
 
 	; 1 -> 0 and 0 -> 1

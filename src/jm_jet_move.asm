@@ -43,7 +43,7 @@ JoystickMoves
 	CALL ro.UpdateOnJetmanMove
 	
 	; Reset inactivity counter as we have movement
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (jetmanInactivityCnt), A
 
 	; Transition from hovering to flying?

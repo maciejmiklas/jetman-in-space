@@ -111,7 +111,7 @@ UpdateJetSpritePositionRotation
 	; Set _SPR_REG_ATR2_H37 containing overflow bit from X position, rotation and mirror
 	LD A, (id.jetDirection)
 	LD D, A
-	LD A, 0										; Clear A to set only rotation/mirror bits
+	XOR A										; Clear A to set only rotation/mirror bits
 	BIT id.MOVE_LEFT_BIT, D						; Moving left bit set?
 	JR Z, .rotateRight
 	SET _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite left
@@ -152,8 +152,8 @@ ChangeJetSpritePattern
 
 	LD (sprDBNextID), A							; Next animation record
 
-	LD A, 0
-	LD (sprDBRemain), A						; No more bytes to process within the current DB record will cause the fast switch to the next.
+	XOR A										; Set A to 0
+	LD (sprDBRemain), A							; No more bytes to process within the current DB record will cause the fast switch to the next.
 
 	CALL UpdateJetSpritePattern				    ; Update the next animation frame immediately
 	

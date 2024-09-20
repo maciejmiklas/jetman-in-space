@@ -31,18 +31,18 @@ shotMss9
 shotMss10
 	sr.MSS {19/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*DB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
+FIRE_DELAY				= 2
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY
 shotMssDelayCnt
 	DB 0
 
-FIRE_DELAY				= 2
-SHOT_SIZE				= 10			; Amount of shots that can be simultaneously fired
+SHOT_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotMssXX
 
 SHOT_HEIGHT				= 0
 
-MOVE_X_IN_D_SHOT		= %000'1'000'1	; Input mask for MoveX. Move the shot by 2 pixels and hide on the screen end
+MOVE_X_IN_D_SHOT		= %000'1'000'1			; Input mask for MoveX. Move the shot by 2 pixels and hide on the screen end
 
-STATE_SHOT_DIR_BIT		= 5				; Bit for #sr.MSS.STATE, 1 - shot moves right, 0 - shot moves left
+STATE_SHOT_DIR_BIT		= 5						; Bit for #sr.MSS.STATE, 1 - shot moves right, 0 - shot moves left
 
 ;----------------------------------------------------------;
 ;                   #WeaponHitEnemies                      ;
@@ -77,20 +77,17 @@ CheckHitEnemies
 	JR Z, .continue	
 	
 	; Enemy is visible, check colision with leaser beam
-	LD HL, (IX + sr.MSS.X)						; X of the enemy
+	LD DE, (IX + sr.MSS.X)						; X of the enemy
 	LD C, (IX + sr.MSS.Y)						; Y of the enemy
+	PUSH IX
 	CALL ShotsColision
+	POP IX
 	CP SHOT_HIT
 	JR NZ, .continue
 
 	; We have hit!
 	CALL sr.SetSpriteId
 	CALL sr.SpriteHit
-
-	; Hide shot
-	LD IX, IY
-	CALL sr.SetSpriteId
-	CALL sr.HideSprite
 
 .continue
 	; Move HL to the beginning of the next enemy
@@ -101,12 +98,14 @@ CheckHitEnemies
 
 	RET
 
+tmp byte 0	
+
 ;----------------------------------------------------------;
 ;                    #ShotsColision                        ;
 ;----------------------------------------------------------;
 ; The method checks whether a laser beam has hit the sprite given by X/Y.
 ; Input:
-; - HL:  X of the sprite 
+; - DE:  X of the sprite 
 ; - C:   Y of the sprite
 ; Output:
 ; - A:   values:
@@ -115,56 +114,74 @@ SHOT_MISS					= 0
 
 ShotsColision
 	; Loop ever all shotMss# skipping hidden shots
-	LD IY, shotMss								; IY points to the enemy
+	LD IX, shotMss								; IX points to the shot
 	LD B, SHOT_SIZE 
 
+	XOR A
+	LD (tmp), A
 .loop
+	PUSH BC
 
-	; Skipp hidden and not active laser shoots
 	LD A, (IX + sr.MSS.STATE)
 
+	; Skipp hidden laser shoots for collision detection
 	BIT sr.MSS_ST_VISIBLE_BIT, A
 	JR Z, .continue
 
+	; Skipp inactive laser shoots for collision detection
 	BIT sr.MSS_ST_ACTIVE_BIT, A
-	JR Z, .continue	
-	
+	JR Z, .continue
+
+	LD A, (tmp)
+	INC A
+	LD (tmp), A
+
 	; Compare X coordinate of the sprite and the shot, HL holds X of the sprite
-	LD DE, (IY + sr.MSS.X)						; X of the shot
+	LD HL, (IX + sr.MSS.X)						; X of the shot
 
 	; Subtracts DE from HL and check whether the result is less than or equal to A
-	SBC HL, DE
-	CALL ut.AbsHL
+	SBC DE, HL
+	CALL ut.AbsDE
 
-	; We will compare L with FIRE_THICKNESS but first ensure that H is 0. Otherwise, the following can happen: HL = 300, DE = 30. 
-	; The distance is 270. However, 270 occupies two bytes: H = 1, L=14. If we compare only L and ignore that H is 1, we will have a hit!
-	LD A, 0
-	CP H
+	; We will compare E with FIRE_THICKNESS but first ensure that D is 0. Otherwise, the following can happen: DE = 300, HL = 30. 
+	; The distance is 270. However, 270 occupies two bytes: D=1, E=14. If we compare only E and ignore that D is 1, we will have a hit!
+	XOR A										; Set A to 0
+	CP D
 	JR NZ, .continue
 
 	LD A, FIRE_THICKNESS
-	CP L										; SUB result is < 256, we can ignore H
+	CP E										; SUB result is < 256, we can ignore H
 	JR C, .continue								; Jump if A(#FIRE_THICKNESS) < L
-
+	
 	; We are here because the shot is horizontal with the enemy, now check the vertical match
-	LD A, (IY + sr.MSS.Y)						; A holds Y from the shot
+	LD A, (IX + sr.MSS.Y)						; A holds Y from the shot
 
 	; Subtracts C from A and check whether the result is less than or equal to #FIRE_THICKNESS
 	SUB C
 	CALL ut.AbsA
-	LD C, A
+	LD D, A
 	LD A, FIRE_THICKNESS
-	CP C
-	JR C, .continue								; Jump if A(#FIRE_THICKNESS) < B
+	CP D
+	JR C, .continue								; Jump if A(#FIRE_THICKNESS) < D
 
-	; We have hit!
+	; We have hit! Hide shot and return
+	CALL sr.SetSpriteId
+	CALL sr.HideSprite
+
 	LD A, SHOT_HIT
+
+	POP BC
 	RET
 
 .continue
-	; Move IY to the beginning of the next #shotMssXX
+	; Move IX to the beginning of the next #shotMssXX
+
+	PUSH DE
 	LD DE, sr.MSS
-	ADD IY, DE
+	ADD IX, DE
+	POP DE
+
+	POP BC
 	DJNZ .loop									; Jump if B > 0 (loop starts with B = #MSS)
 
 	; There was no hit
@@ -184,8 +201,9 @@ MoveShots
 .loop
 	PUSH BC										; Preserve B for loop counter
 
-	BIT sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)  
-	JR Z, .continue								;  Jump if visibility is not set (sprite is hidden)
+	; Skipp hidden laser shoots
+	BIT sr.MSS_ST_VISIBLE_BIT, (IX + sr.MSS.STATE)
+	JR Z, .continue
 
 	; Shot is visible, move it and update postion
 	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
@@ -209,16 +227,16 @@ MoveShots
 
 	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
 	BIT sr.MSS_ST_ACTIVE_BIT, (IX + sr.MSS.STATE)
-	JR Z, .afterColisionDetection				; Exit if sprite is not alive
+	JR Z, .afterPlatformColision				; Exit if sprite is not alive
 
 	; Check the collision with the platform
 	LD IY, jp.platformBump
 	LD L, SHOT_HEIGHT
 	CALL sr.PlaftormColision
 	CP A, sr.PL_COL_RET_A_NO
-	JR Z, .afterColisionDetection
+	JR Z, .afterPlatformColision
 	CALL sr.SpriteHit
-.afterColisionDetection
+.afterPlatformColision
 
 .continue
 	; Move IX to the beginning of the next #shotMssXX
@@ -257,7 +275,7 @@ Fire
 	CP FIRE_DELAY
 	RET C										; Return if the delay counter did not reach the defined value
 	; we can fire, reset counter
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (shotMssDelayCnt), A
 
 	; Find the first inactive (sprite hidden) shot
@@ -283,9 +301,9 @@ Fire
 	bit id.MOVE_LEFT_BIT, A
 	JR NZ, .movingLeft							; Jump if Jetman is moving left
 	
-	LD A, 0										; A will hold sr.MSS.STATE
+	XOR A										; A will hold sr.MSS.STATE
 	; Jetman is moving right, shot will move right also
-	set STATE_SHOT_DIR_BIT, A					; Store shot direction in state
+	SET STATE_SHOT_DIR_BIT, A					; Store shot direction in state
 
 	; Set X coordinate for laser beam
 	LD HL, (jo.jetX)

@@ -496,7 +496,7 @@ RespownNextEnemy
 
 	RET
 .startRespown	
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (respownDelayCnt), A						; Reset delay timer
 
 	; Iterate over all enemies to find the first hidden, respawn it, and exit function
@@ -563,7 +563,7 @@ RespownEnemy
 	CALL sr.SetVisible
 
 	; Reset counters and move pattern
-	LD A, 0
+	XOR A										; Set A to 0
 	LD (IY + ESS.RESPOWN_DELAY_CNT), A
 
 	CALL LoadMoveDelayCounter	

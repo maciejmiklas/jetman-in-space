@@ -6,6 +6,8 @@
 JOY_DISABLED_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
 JOY_DISABLED_BUMP		= 6						; Disable the joystick for a few frames because Jetman is bumping into the platform
 
+
+
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], [[Y], [X start], [X end]],...]
 platformWalk DB 3, 089,012,065, 137,075,136, 049,190,240
