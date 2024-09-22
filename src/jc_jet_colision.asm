@@ -23,6 +23,7 @@ invincibleCnt			WORD 0					; Makes Jetman invincible when > 0
 
 INVINCIBLE_DURATION 	= 200					; Number of loops to keep Jetman invincible	
 INVINCIBLE_FAST_BLINK	= 150
+
 ;----------------------------------------------------------;
 ;                #JetmanEnemiesColision                    ;
 ;----------------------------------------------------------;

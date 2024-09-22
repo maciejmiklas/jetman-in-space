@@ -6,14 +6,142 @@
 JOY_DISABLED_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
 JOY_DISABLED_BUMP		= 6						; Disable the joystick for a few frames because Jetman is bumping into the platform
 
-
+; Coordinates for walking on a platform
+	STRUCT P_WALK
+Y						BYTE					; Height of the platform
+X_START					BYTE					; X start of the platform
+X_END					BYTE					; X end of the platform
+	ENDS
 
 ; Coordinates for walking on a platform
-; [amount of plaftorms], [[Y], [X start], [X end]],...]
-platformWalk DB 3, 089,012,065, 137,075,136, 049,190,240
+; [amount of plaftorms], #P_WALK,..., #P_WALK]
+platformWalk BYTE 3
+	P_WALK {089/*X*/, 012/*X_START*/, 065/*X_END*/}
+platformWalk2
+	P_WALK {137/*X*/, 075/*X_START*/, 136/*X_END*/}
+platformWalk3	
+	P_WALK {049/*X*/, 190/*X_START*/, 240/*X_END*/}
 
-; [amount of plaftorms], [[X platform start],[X platform end],[Y platform start],[Y platform end]], ...]
-platformBump DB 3, 009,070,093,120, 073,142,141,169, 187,245,054,079
+; Coordinates for bumping into a platform
+	STRUCT P_HIT
+X_START					BYTE					; X start of the platform
+X_END					BYTE					; X end of the platform
+Y_START					BYTE					; Y start of the platform
+Y_END					BYTE					; Y end of the platform
+	ENDS
+
+; [amount of plaftorms], #P_HIT,..., #P_HIT]
+platformHit
+	P_HIT {009/*X_START*/, 070/*X_END*/, 093/*Y_START*/, 120/*Y_END*/}
+platformHit2	
+	P_HIT {073/*X_START*/, 142/*X_END*/, 141/*Y_START*/, 169/*Y_END*/}
+platformHit3
+	P_HIT {187/*X_START*/, 245/*X_END*/, 054/*Y_START*/, 079/*Y_END*/}
+platformHitSize		BYTE 3
+
+; We are using platform coordinates for bumping, which are too thick for the thin sprite
+PLATFROM_MARGIN_UP		= 12
+PLATFROM_MARGIN_DOWN	= 5
+
+
+;----------------------------------------------------------;
+;                 #LevelPlaftormColision                   ;
+;----------------------------------------------------------;
+;  - IX: 	Pointer to #MSS, single sprite to check colsion for
+;  - L:		Half of the height of the sprite
+LevelPlaftormColision
+
+	LD IY, platformHit
+
+	LD A, (jp.platformHitSize)
+	LD B, A
+
+	CALL jp.PlaftormColision
+	RET
+
+;----------------------------------------------------------;
+;                    #PlaftormColision                     ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: 	Pointer to #MSS, single sprite to check colsion for
+;  - IY:	Pointert to #P_HIT list
+;  - B:		Size of the list in IY
+;  - L:		Half of the height of the sprite
+; Output:
+;  - A: 	MOVE_RET_XXX
+PL_COL_RET_A_NO 			= 0					; No colision
+PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
+; Modifies: ALL
+
+PlaftormColision
+
+	; Exit if sprite is not alive
+	BIT sr.MSS_ST_ACTIVE_BIT, (IX + sr.MSS.STATE)	
+	JR NZ, .alive								; Jump if sprite is alive
+
+	LD A, PL_COL_RET_A_NO
+	RET
+.alive
+
+.loop
+	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1). Platforms end at 256.
+	LD DE, (IX + sr.MSS.X)
+	XOR A										; Set A to 0
+	CP D
+	RET NZ
+
+	; Is Sprite after the beginning of the platform?
+	LD A, E										; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
+	LD C, (IY + P_HIT.X_START)
+	CP C
+	JR NC, .afterXLeftCheck						; Jump if [X sprite] < [X platform start] -> 
+
+	JR .continue
+.afterXLeftCheck
+
+	; Is Sprite before the end of the platform?
+
+	; A still holds [X sprite]
+	LD C, (IY + P_HIT.X_END)
+	CP C
+	JR C, .afterXRightCheck						; Jump if [X sprite] >= [X platform end]
+
+	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
+	JR .continue
+.afterXRightCheck	
+	
+	; Sprite is within the platform's horizontal position; now check whether it's within vertical bounds
+	LD A, (IY + P_HIT.Y_START)
+	ADD PLATFROM_MARGIN_UP						; Increase start Y to make platform thinner
+	SUB L										; Thickness to the sprite
+	LD D, A										; D contains [Y platform start]
+
+	LD A, (IY + P_HIT.Y_END)
+	SUB PLATFROM_MARGIN_DOWN					; Decrease end Y to make the platform thinner
+	ADD L										; Thickness to the sprite
+	LD E, A										; E contains [Y platform end]
+
+	; Now D contains [Y platform start + margin],  E contains [Y platform end + margin]
+	LD A, (IX + sr.MSS.Y)						; A holds current shot Y position
+	
+	CP D										; Compare [Y sprite] position to [Y start]
+	JR C, .continue								; Jump if shot < [Y platform start]
+
+	CP E
+	JR NC, .continue							; Jump if shot > [Y end]
+
+	; Sprite hits the platform!
+	LD A, PL_COL_RET_A_YES
+
+	RET
+
+.continue
+	LD DE, P_HIT
+	ADD IY, DE
+	DJNZ .loop							; Decrease B until all platforms have been evaluated
+
+	LD A, PL_COL_RET_A_NO
+	RET
 
 ;----------------------------------------------------------;
 ;              #AnimateOnJoystickDisabled                  ;
@@ -187,8 +315,9 @@ BumpIntoPlatFormBelow
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
 
-	LD HL, platformBump
-	LD B, (HL)									; Load into B the number of platforms to check
+	LD HL, platformHit
+	LD A, (platformHitSize)						; Load into B the number of platforms to check
+	LD B, A
 .platformsLoop	
 	INC HL										; HL points to [X start]
 	LD D, (HL)									; D contains [X start]	
@@ -250,8 +379,9 @@ BumpIntoPlatformLR
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
 	
-	LD IX, platformBump
-	LD B, (IX)									; Load into B the number of platforms to check
+	LD IX, platformHit
+	LD A, (platformHitSize)						; Load into B the number of platforms to check
+	LD B, A
 .platformsLoop	
 
 	; Check whether we should consider the left or right side of the platform.
@@ -259,23 +389,16 @@ BumpIntoPlatformLR
 	CP jt.AIR_BUMP_LEFT
 	JR Z, .bumpLeft
 
-	; We will check whether Jetman bumps into the platform from the right
-	INC IX										; HL points to [X start]
-	INC IX										; HL points to [X end]
-	LD C, (IX)									; C contains [X end]
+	; Jetman bumps into the platform from the right
+	LD C, (IX + P_HIT.X_END)					; C contains [X end]
 	JR .afterBumpSideCheck
 .bumpLeft	
-	; We will check whether Jetman bumps into the platform from the left
-	INC IX										; HL points to [X start]
-	LD C, (IX)									; C contains [X start]
-	INC IX										; Moving the pointer to the correct position for further reading
+	; Jetman bumps into the platform from the left
+	LD C, (IX + P_HIT.X_START)
 .afterBumpSideCheck
 
-	INC IX										; HL points to [Y start]
-	LD D, (IX)									; D contains [Y start]	
-
-	INC IX										; HL points to [Y end]
-	LD E, (IX)									; E contains [Y end]
+	LD D, (IX + P_HIT.Y_START)
+	LD E, (IX + P_HIT.Y_END)
 
 	LD A, (jo.jetX)								; A holds current X position
 	CP C
@@ -304,6 +427,8 @@ BumpIntoPlatformLR
 
 	POP BC
 .platformsLoopEnd
+	LD DE, P_HIT
+	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
 ;----------------------------------------------------------;

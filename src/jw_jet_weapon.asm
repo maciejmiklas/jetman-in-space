@@ -230,10 +230,9 @@ MoveShots
 	JR Z, .afterPlatformColision				; Exit if sprite is not alive
 
 	; Check the collision with the platform
-	LD IY, jp.platformBump
 	LD L, SHOT_HEIGHT
-	CALL sr.PlaftormColision
-	CP A, sr.PL_COL_RET_A_NO
+	CALL jp.LevelPlaftormColision
+	CP A, jp.PL_COL_RET_A_NO
 	JR Z, .afterPlatformColision
 	CALL sr.SpriteHit
 .afterPlatformColision

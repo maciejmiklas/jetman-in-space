@@ -227,12 +227,11 @@ MoveEnemy
 
 	; Check the collision with the platform
 	PUSH IY, HL
-	LD IY, jp.platformBump
 	LD L, SPRITE_HEIGHT_COLISION
-	CALL sr.PlaftormColision
+	CALL jp.LevelPlaftormColision
 	POP HL, IY
 
-	CP A, sr.PL_COL_RET_A_NO
+	CP A, jp.PL_COL_RET_A_NO
 	JR Z, .afterMoveAlong						; Jump if there is no collision
 
 	; Avoid collision with the platform by moving along it 
@@ -438,10 +437,9 @@ MoveEnemies
 	JR Z, .continue
 
 	; Check the collision with the platform
-	LD IY, jp.platformBump
 	LD L, SPRITE_HEIGHT_PLATFORM
-	CALL sr.PlaftormColision
-	CP A, sr.PL_COL_RET_A_NO
+	CALL jp.LevelPlaftormColision
+	CP A, jp.PL_COL_RET_A_NO
 	JR Z, .continue   
 	CALL sr.SpriteHit
 

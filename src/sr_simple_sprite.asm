@@ -71,10 +71,6 @@ srSpriteDB
 	SPR_REC {SDB_ENEMY2, SDB_ENEMY2 - SDB_SUB, 03}
 			DB 48, 49, 50
 
-; We are using platform coordinates for bumping, which are too thick for the thin sprite
-PLATFROM_MARGIN_UP		= 12
-PLATFROM_MARGIN_DOWN	= 5
-
 ;----------------------------------------------------------;
 ;                         #SpriteHit                       ;
 ;----------------------------------------------------------;
@@ -282,98 +278,6 @@ LoadSpritePattern
 	INC HL										; HL points to [FRAME] in DB
 	LD (IX + MSS.DB_POINTER), HL				; Update #MSS.DB_POINTER
 
-	RET
-
-;----------------------------------------------------------;
-;                    #PlaftormColision                     ;
-;----------------------------------------------------------;
-; Input:
-;  - IX: 	Pointer to #MSS, single sprite to check colsion for
-;  - IY:	Structure for #platformBump
-;  - L:		Half of the height of the sprite
-; Output:
-;  - A: 	MOVE_RET_XXX
-PL_COL_RET_A_NO 			= 0					; No colision
-PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
-; Modifies: ALL
-
-PlaftormColision
-
-	; Exit if sprite is not alive
-	BIT MSS_ST_ACTIVE_BIT, (IX + MSS.STATE)	
-	JR NZ, .alive								; Jump if sprite is alive
-
-	LD A, PL_COL_RET_A_NO
-	RET
-.alive
-
-	LD B, (IY)									; Load into B the number of platforms to check
-.platformsLoop	
-	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1). Platforms end at 256.
-	LD DE, (IX + MSS.X)
-	XOR A										; Set A to 0
-	CP D
-	RET NZ
-
-	; Is Sprite after the beginning of the platform?
-	LD A, E										; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
-	INC IY										; HL points to [X platform start]
-	LD C, (IY)									; C holds [X platform start]
-	CP C
-	JR NC, .afterXLeftCheck						; Jump if [X sprite] < [X platform start] -> 
-
-	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
-	INC IY										; HL points to [X platform end]
-	INC IY										; HL points to [Y platform start]
-	INC IY										; HL points to [Y platform end]
-	JR .platformsLoopEnd
-.afterXLeftCheck
-
-	; Is Sprite before the end of the platform?
-
-	; A still holds [X sprite]
-	INC IY										; HL points to [X platform end]
-	LD C, (IY)									; C holds [X platform end]
-	CP C
-	JR C, .afterXRightCheck						; Jump if [X sprite] >= [X platform end]
-
-	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
-	INC IY										; HL points to [Y platform start]
-	INC IY										; HL points to [Y platform end]
-	JR .platformsLoopEnd
-.afterXRightCheck	
-
-	; Sprite is within the platform's horizontal position; now check whether it's within vertical bounds
-	INC IY										; HL points to [Y platform start]
-	LD A, (IY)	
-	ADD PLATFROM_MARGIN_UP						; Increase start Y to make platform thinner
-	SUB L										; Thickness to the sprite
-	LD D, A										; D contains [Y platform start]
-
-	INC IY										; HL points to [Y platform end]
-	LD A, (IY)
-	SUB PLATFROM_MARGIN_DOWN					; Decrease end Y to make the platform thinner
-	ADD L										; Thickness to the sprite
-	LD E, A										; E contains [Y platform end]
-
-	; Now D contains [Y platform start + margin],  E contains [Y platform end + margin]
-	LD A, (IX + MSS.Y)							; A holds current shot Y position
-	
-	CP D										; Compare [Y sprite] position to [Y start]
-	JR C, .platformsLoopEnd						; Jump if shot < [Y platform start]
-
-	CP E
-	JR NC, .platformsLoopEnd					; Jump if shot > [Y end]
-
-	; Sprite hits the platform!
-	LD A, PL_COL_RET_A_YES
-
-	RET
-
-.platformsLoopEnd
-	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-
-	LD A, PL_COL_RET_A_NO
 	RET
 
 ;----------------------------------------------------------;
