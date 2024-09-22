@@ -15,12 +15,13 @@ X_END					BYTE					; X end of the platform
 
 ; Coordinates for walking on a platform
 ; [amount of plaftorms], #P_WALK,..., #P_WALK]
-platformWalk BYTE 3
-	P_WALK {089/*X*/, 012/*X_START*/, 065/*X_END*/}
+platformWalk
+	P_WALK {089/*Y*/, 012/*X_START*/, 065/*X_END*/}
 platformWalk2
-	P_WALK {137/*X*/, 075/*X_START*/, 136/*X_END*/}
+	P_WALK {137/*Y*/, 075/*X_START*/, 136/*X_END*/}
 platformWalk3	
-	P_WALK {049/*X*/, 190/*X_START*/, 240/*X_END*/}
+	P_WALK {049/*Y*/, 190/*X_START*/, 240/*X_END*/}
+platformWalkSize 		BYTE 3
 
 ; Coordinates for bumping into a platform
 	STRUCT P_HIT
@@ -268,28 +269,23 @@ LandingOnPlatform
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
 	
-	LD HL, platformWalk
-	LD B, (HL)									; Load into B the number of platforms to check
+	LD IX, platformWalk
+	LD A, (platformWalkSize)					; Load into B the number of platforms to check
+	LD B, A
 .platformsLoop	
-	INC HL										; HL points to [Y]
-	LD C, (HL)									; C contains [Y]
-
-	INC HL										; HL points to [X start]
-	LD D, (HL)									; D contains [X start]	
-
-	INC HL										; HL points to [X end]
-	LD E, (HL)									; E contains [X end]		
-	
-	LD A, (jo.jetY)							; A holds current Y position
+	LD A, (jo.jetY)								; A holds current Y position
+	LD C, (IX + P_WALK.Y)						; C contains [Y]
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
-	LD A, (jo.jetX)									; A holds current X position
+	LD A, (jo.jetX)								; A holds current X position
+	LD D, (IX + P_WALK.X_START)					; D contains [X start]		
 	CP D										; Compare #jetX position to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jetX < [X start]
 
 	; Jetman is on the current platform level after it's begun, we have to check if he is not too far to the right
+	LD E, (IX + P_WALK.X_END)					; E contains [X end]		
 	CP E
 	JR NC, .platformsLoopEnd					; Jump if #jetX > [X end]
 
@@ -298,6 +294,8 @@ LandingOnPlatform
 	RET
 
 .platformsLoopEnd
+	LD DE, P_WALK
+	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
 
@@ -435,31 +433,28 @@ FallingFromPlatform
 	CP jt.GND_WALK								; Is Jemtan in the air?
 	RET NZ										; Return if not walking, no walking - no falling ;)
 
-	LD HL, platformWalk							
-	LD B, (HL)									; Load into B the number of platforms to check
+	LD IX, platformWalk
+	LD A, (platformHitSize)
+	LD B, A										; Load into B the number of platforms to check
 .platformsLoop	
-	INC HL										; HL points to [Y]
-	LD C, (HL)									; C contains [Y]
-
-	INC HL										; HL points to [X start]
-	LD D, (HL)									; D contains [X start]
-
-	INC HL										; HL points to [X end]
-	LD E, (HL)									; E contains [X end]
-
 	LD A, (jo.jetY)								; A holds current Y position
+	LD C, (IX + P_WALK.Y)						; C contains [Y]
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
 	; Jetman is on Y of the current platform, now check X
 	LD A, (jo.jetX)								; A holds current X position
+	LD D, (IX + P_WALK.X_START)					; D contains [X start]	
 	CP D										; Compare #jetX position to [X start]
 	JR C, .fallingLeft							; Jump if #jetX < [X start], meaning Jetman is falling from the left side of the platform
 
+	LD E, (IX + P_WALK.X_END)					; E contains [X end]
 	CP E
 	JR NC, .fallingRight						; Jump if #jetX > [X end], meaning Jetman is falling from the right side of the platform
 
 .platformsLoopEnd
+	LD DE, P_WALK
+	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	JR .afterFalling							; Jetman is still on the platform
 
