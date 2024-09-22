@@ -315,30 +315,23 @@ BumpIntoPlatFormBelow
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
 
-	LD HL, platformHit
+	LD IX, platformHit
 	LD A, (platformHitSize)						; Load into B the number of platforms to check
 	LD B, A
 .platformsLoop	
-	INC HL										; HL points to [X start]
-	LD D, (HL)									; D contains [X start]	
-
-	INC HL										; HL points to [Y end]
-	LD E, (HL)									; E contains [Y end]
-
-	INC HL										; HL points to [Y start]
-	INC HL										; HL points to [Y end]
-	LD C, (HL)									; C contains [Y end]
-
 	LD A, (jo.jetY)								; A holds current Y position
+	LD C, (IX + P_HIT.Y_END)					; C contains [Y end]
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jetY
 
 	; Jetman is on the bottom of the platform, now check whether he is withing its horizonlat bounds
 	LD A, (jo.jetX)								; A holds current X position
 
+	LD D, (IX + P_HIT.X_START)					; D contains [X start]	
 	CP D										; Compare #jetX position to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jetX < [X start]
 
+	LD E, (IX + P_HIT.X_END)					; E contains [Y end]
 	CP E
 	JR NC, .platformsLoopEnd					; Jump if #jetX > [X end]
 
@@ -357,6 +350,8 @@ BumpIntoPlatFormBelow
 
 	POP BC
 .platformsLoopEnd
+	LD DE, P_HIT
+	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
 
