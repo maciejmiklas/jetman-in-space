@@ -48,7 +48,7 @@ PLATFROM_MARGIN_DOWN	= 5
 ;----------------------------------------------------------;
 ;                 #LevelPlaftormColision                   ;
 ;----------------------------------------------------------;
-;  - IX: 	Pointer to #MSS, single sprite to check colsion for
+;  - IX: 	Pointer to #SPRITE, single sprite to check colsion for
 ;  - L:		Half of the height of the sprite
 LevelPlaftormColision
 
@@ -64,7 +64,7 @@ LevelPlaftormColision
 ;                    #PlaftormColision                     ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: 	Pointer to #MSS, single sprite to check colsion for
+;  - IX: 	Pointer to #SPRITE, single sprite to check colsion for
 ;  - IY:	Pointert to #P_HIT list
 ;  - B:		Size of the list in IY
 ;  - L:		Half of the height of the sprite
@@ -77,7 +77,7 @@ PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
 PlaftormColision
 
 	; Exit if sprite is not alive
-	BIT sr.MSS_ST_ACTIVE_BIT, (IX + sr.MSS.STATE)	
+	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPRITE.STATE)	
 	JR NZ, .alive								; Jump if sprite is alive
 
 	LD A, PL_COL_RET_A_NO
@@ -86,7 +86,7 @@ PlaftormColision
 
 .loop
 	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1). Platforms end at 256.
-	LD DE, (IX + sr.MSS.X)
+	LD DE, (IX + sr.SPRITE.X)
 	XOR A										; Set A to 0
 	CP D
 	RET NZ
@@ -123,7 +123,7 @@ PlaftormColision
 	LD E, A										; E contains [Y platform end]
 
 	; Now D contains [Y platform start + margin],  E contains [Y platform end + margin]
-	LD A, (IX + sr.MSS.Y)						; A holds current shot Y position
+	LD A, (IX + sr.SPRITE.Y)						; A holds current shot Y position
 	
 	CP D										; Compare [Y sprite] position to [Y start]
 	JR C, .continue								; Jump if shot < [Y platform start]

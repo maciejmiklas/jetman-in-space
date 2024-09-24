@@ -96,24 +96,27 @@ PrintDebug
 	LD B, 120
 	LD H, 0
 	LD HL, (jo.jetX)
-	CALL tx.PrintNumHL
+	CALL ut.PrintNumHLDebug
 
 	LD B, 130
 	LD H, 0
 	LD A,  (jo.jetY)
 	LD L, A
-	CALL tx.PrintNumHL
+	CALL ut.PrintNumHLDebug
 
+/*
 	LD B, 140
-	LD HL, (jc.invincibleCnt)
-	CALL tx.PrintNumHL
+	LD H, 0
+	LD A, (jo.jetX)
+	LD L, A
+	CALL ut.PrintNumHLDebug	
 
 	LD B, 150
 	LD H, 0
-	LD A, (jw.tmp)
+	LD A, (jo.jetX)
 	LD L, A
-	CALL tx.PrintNumHL	
-
+	CALL ut.PrintNumHLDebug	
+*/
 	RET
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

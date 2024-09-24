@@ -19,7 +19,7 @@ CdivD
 	SLA C
 	RLA
 	CP D
-	JR C,$+4
+	JR C, $+4
 	INC C
 	SUB D
 	DJNZ $-8
@@ -38,7 +38,7 @@ AbsDE
 	LD E, A
 	SBC A, A 
 	SUB D 
-	LD D,A
+	LD D, A
 
 	RET
 
@@ -81,7 +81,26 @@ AbsA
 	OR A
 	RET P
 	NEG
+	
 	RET
+
+;----------------------------------------------------------;
+;                    PrintNumHLDebug                       ;
+;----------------------------------------------------------;
+; Print 16 bit number from HL. Each character takes 8x8 pixels
+;Input:
+;  - HL:	16-bit number to print
+;  - B:		Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
+PrintNumHLDebug
+	PUSH BC, DE, IX, IY
+	
+	CALL tx.PrintNumHL
+	
+	POP IY, IX, DE, BC
+	
+	RET
+
 ;----------------------------------------------------------;
 ;                       #HlEqualB                          ;
 ;----------------------------------------------------------;
@@ -111,34 +130,29 @@ HlEqualB
 	RET
 
 ;----------------------------------------------------------;
-;                           #Pause                         ;
+;                       #PauseShort                        ;
 ;----------------------------------------------------------;
-; Input:
-;  - DE:		Delay factor
-Pause
-	PUSH BC
-	PUSH HL
-.start
-
-	LD HL, 65000
-.loop:
-	DEC HL										; DEC HL from 65000 to 0
-	LD A, H
-	CP 0
-
+PauseShort
 	CALL CountdownBC
-	CALL CountdownBC
-	CALL CountdownBC
-	JP NZ,.loop
-
-	; Count down DE
-	DEC BC
-	LD A, B
-	CP 0
-	JP NZ,.start
 	
-	POP HL
-	POP BC
+	RET
+
+;----------------------------------------------------------;
+;                         #Pause                           ;
+;----------------------------------------------------------;
+PAUSE_TIME					= 10
+Pause
+	PUSH AF, BC, DE, HL, IX, IY
+
+	LD A, PAUSE_TIME
+.loop:
+	CALL CountdownBC
+
+	DEC A
+	CP 0
+	JP NZ, .loop
+
+	POP IY, IX, HL, DE, BC, AF
 
 	RET
 
@@ -146,18 +160,16 @@ Pause
 ;                       #CountdownBC                       ;
 ;----------------------------------------------------------;
 CountdownBC
+	PUSH AF, BC, DE, HL, IX, IY
+
 	LD BC, 65000
 .loop:
-	PUSH BC										; few ops just for delay
-	PUSH HL
-	
-	POP HL
-	POP BC
-
 	DEC BC										; DEC BC from 65000 to 0
 	LD A, B
 	CP 0
 	JP NZ,.loop
+
+	POP IY, IX, HL, DE, BC, AF
 
 	RET
 

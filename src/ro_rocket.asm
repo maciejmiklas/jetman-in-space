@@ -22,7 +22,7 @@ state					BYTE 0					; Start with building first rocket element
 STATE_FALL_BIT			= 3						; Rocket element (or fuel tank) is falling down for pickup
 STATE_WAIT_BIT			= 4						; Rocket element (or fuel tank) is waiting for pickup
 STATE_CARRY_BIT			= 5						; Jetman carries rocket element (or fuel tank)
-STATE_ASSEMBLY_BIT		= 6						; Rocket element (or fuel tank) is falling down for assembly
+STATE_ASSEMBLY_BIT		= 6						; The rocket element (or fuel tank) falls towards the rocket for assembly
 STATE_FLYING_BIT		= 7						; The rocket is flying towards an unknown planet
 
 STATE_DROP_NEXT_MASK	= %11111'000			; Dorp next element if the rocket is not fully assembled and no element is deployed at the moment
@@ -59,7 +59,7 @@ MIN_DROP_HEIGHT			= 180					; Jetman has to be above the rocket to drop the elem
 ROCKET_SPR_ID_READY1	= 63					; Once the rocket is ready, it will start blinking using #ROCKET_SPR_ID_READY1 and #ROCKET_SPR_ID_READY2
 ROCKET_SPR_ID_READY2	= 59
 
-rocket
+rocketEl
 ; rocket element
 	ROCKET {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, ROCKET_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
 	ROCKET {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
@@ -79,6 +79,11 @@ rocketAssemblyX			BYTE 170
 COLISION_MARGIN_X		= 8
 COLISION_MARGIN_Y		= 16
 CARRY_ADJUST_Y			= 10
+
+expolodeFuel DB 38, 39, 40, 41					; Sprite IDs for explosion
+expolodeFuelId			BYTE EXPLODE_FUEL_OFF	; Current position in #expolodeFuel
+EXPLODE_FUEL_MAX		= 4						; The amount of explosion sprites
+EXPLODE_FUEL_OFF		= $FF					; Indicates that fuel is not exploding
 
 ;----------------------------------------------------------;
 ;                #UpdateOnJetmanMove                       ;
@@ -100,16 +105,16 @@ BoardRocket
 	RET NZ	
 	
 	; Jetman collision with first (lowest) rocket element triggers take off
-	LD IX, rocket
+	LD IX, rocketEl
 
 	LD BC, (rocketAssemblyX)					; X of the element
 	LD B, 0
 	LD D, (IX + ROCKET.Y)						; Y of the element
-	CALL CheckCollision
+	CALL JetmanElementCollision
 	CP COLLISION_NO
 	RET Z
 
-	; We have collision!
+	; Jetman boards the rocket!
 	LD A, (state)
 	SET STATE_FLYING_BIT, A
 	LD (state), A
@@ -123,6 +128,13 @@ BoardRocket
 	
 	RET
 
+/*
+
+expolodeFuel DB 38, 39, 40, 41					; Sprite IDs for explosion
+expolodeFuelId			BYTE EXPLODE_SPRITE_OFF	; Current position in #expolodeFuel
+EXPLODE_FUEL_MAX		= 4						; The amount of explosion sprites
+EXPLODE_FUEL_OFF		= $FF					; Indicates that fule is not exploding
+*/
 ;----------------------------------------------------------;
 ;                     #CheckHitTank                        ;
 ;----------------------------------------------------------;
@@ -139,11 +151,23 @@ CheckHitTank
 	CP STATE_CNT_FUEL_MIN
 	RET C										; Return if counter is < 4 (still assembling rocket)
 
+	; Is tank already exploding?
+	LD A, (expolodeFuelId)
+	CP EXPLODE_FUEL_OFF
+	RET NZ										; Return if tank is already exploding (A != #EXPLODE_FUEL_OFF)
+
 	; Fuel tank is falling down, check hit by leaser beam
 	CALL SetIXtoCurrentRocketElement
 
+	LD DE, (IX + ROCKET.DROP_X)					; X param for #ShotsColision
+	LD D, 0										; Reset D, DROP_X is 8 bit
+	LD C,  (IX + ROCKET.Y)						; Y param for #ShotsColision
+	CALL jw.ShotsColision
 
-	;CALL jw.ShotsColision
+	CP jw.SHOT_HIT
+	RET NZ
+
+	; The laser beam hits the falling rocket tank!
 	RET
 
 ;----------------------------------------------------------;
@@ -158,7 +182,7 @@ FlyRocket
 	; The current position of rocket elements is stored in #rocketAssemblyX and #ROCKET.Y 
 	; It was set when elements were falling towards the platform. Now, we need to decrease X to animate the rocket.
 	
-	LD IX, rocket								; Load the pointer to #rocket into IX
+	LD IX, rocketEl								; Load the pointer to #rocket into IX
 
 	; Move 1 rocket eleent
 	LD A, (IX + ROCKET.Y)
@@ -344,7 +368,7 @@ AttachRocketElement
 	LD BC, (IX + ROCKET.DROP_X)					; X of the element
 	LD B, 0
 	LD D, (IX + ROCKET.Y)						; Y of the element	
-	CALL CheckCollision
+	CALL JetmanElementCollision
 	CP COLLISION_NO
 	RET Z
 
@@ -357,7 +381,7 @@ AttachRocketElement
 
 	RET
 ;----------------------------------------------------------;
-;                    #CheckCollision                       ;
+;                #JetmanElementCollision                   ;
 ;----------------------------------------------------------;
 ; Checks whether Jetman overlaps with rocket element/tank
 ; Input:
@@ -368,7 +392,7 @@ AttachRocketElement
 COLLISION_NO			= 0
 COLLISION_YES			= 1
 
-CheckCollision
+JetmanElementCollision
 	; Compare X coordinate of element and Jetman
 	LD B, 0										; X is 8bit -> reset MSB
 	LD HL, (jo.jetX)							; X of the Jetman
@@ -601,7 +625,7 @@ DropNextRocketElement
 ; Set IX to current #rocket postion
 SetIXtoCurrentRocketElement
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
-	LD IX, rocket
+	LD IX, rocketEl
 
     ; Now, move IX so that it points to the #ROCKET given by the deploy counter. First, load the counter into A (value 1-3).
 	; Afterward, load A indo D and the size of the #ROCKET into E, and multiply D by E. 
@@ -623,7 +647,7 @@ SetIXtoCurrentRocketElement
 ;  -A:	rocket element from 1 to 3
 MoveIXtoGivemRocketElement
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
-	LD IX, rocket
+	LD IX, rocketEl
 
 	SUB 1											; A contains 0-2
 	LD D, A

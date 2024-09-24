@@ -44,7 +44,7 @@ JetmanEnemiesColision
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
-;  - IX:	Pointer to #MSS, the enemies
+;  - IX:	Pointer to #SPRITE, the enemies
 ;  - B:		Number of enemies in IX
 ; Modifies: ALL
 EnemiesColision
@@ -52,8 +52,8 @@ EnemiesColision
 	PUSH BC										; Preserve B for loop counter
 	CALL EnemyColision
 .continue
-	; Move HL to the beginning of the next #shotMssX
-	LD DE, sr.MSS
+	; Move HL to the beginning of the next #shotsX
+	LD DE, sr.SPRITE
 	ADD IX, DE
 	POP BC
 	DJNZ .loop									; Jump if B > 0
@@ -65,7 +65,7 @@ EnemiesColision
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
-;  - IX:	Pointer to concreate single enemy, single #MSS
+;  - IX:	Pointer to concreate single enemy, single #SPRITE
 ;  - D:		Upper thickness of the enemy (enemy above Jetman)
 ;  - E:		Lower thickness of the enemy (enemy below Jetman)
 ; Return:
@@ -75,7 +75,7 @@ COLLISION_YES			= 1
 
 CheckCollision
 	; Compare X coordinate of enemy and Jetman
-	LD BC, (IX + sr.MSS.X)						; X of the enemy
+	LD BC, (IX + sr.SPRITE.X)						; X of the enemy
 	LD HL, (jo.jetX)							; X of the Jetman
 
 	; Check whether Jetman is horizontal with the enemy
@@ -96,7 +96,7 @@ CheckCollision
 .checkVertical
 
 	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical
-	LD B, (IX + sr.MSS.Y)						; Y of the enemy
+	LD B, (IX + sr.SPRITE.Y)						; Y of the enemy
 	LD A, (jo.jetY)								; Y of the Jetman
 
 	; Is Jemtan above or below the enemy?
@@ -115,7 +115,7 @@ CheckCollision
 	; Swap A and B (compared to above) to avoid negative value
 	LD A, (jo.jetY)
 	LD B, A										; B: Y of the Jetman
-	LD A, (IX + sr.MSS.Y)						; A: Y of the enemy
+	LD A, (IX + sr.SPRITE.Y)						; A: Y of the enemy
 	SUB B
 	CP D
 	JR C, .collision
@@ -134,11 +134,11 @@ CheckCollision
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
-;  - IX:	Pointer to concreate single enemy, single #MSS
+;  - IX:	Pointer to concreate single enemy, single #SPRITE
 EnemyColision
 
 	; Exit if enemy is not alive
-	BIT sr.MSS_ST_ACTIVE_BIT, (IX + sr.MSS.STATE)
+	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPRITE.STATE)
 	RET Z
 
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman

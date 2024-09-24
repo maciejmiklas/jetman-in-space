@@ -12,7 +12,6 @@
 ;  - B:		Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
 PrintNumHL
-	PUSH DE
 
 	; Print number from HL into formatted16
 	PUSH BC
@@ -26,7 +25,6 @@ PrintNumHL
 	LD B, 5										; Print 5 characters
 	CALL ti.PrintText
 
-	POP DE
 	RET
 
 formatted16
