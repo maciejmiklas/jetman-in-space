@@ -13,9 +13,9 @@ FIRE_THICKNESS			= 10
 shots
 	sr.SPRITE {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shots2
-	sr.SPRITE {11/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+	sr.SPRITE {11/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shots3
-	sr.SPRITE {12/*ID*/, sr.SDB_ENEMY2/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+	sr.SPRITE {12/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shots4
 	sr.SPRITE {13/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shots5
@@ -31,7 +31,7 @@ shots9
 shots10
 	sr.SPRITE {19/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
-SHOTS_SIZE				= 3					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
+SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 FIRE_DELAY				= 2
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY
@@ -48,8 +48,6 @@ STATE_SHOT_DIR_BIT		= 5						; Bit for #sr.SPRITE.STATE, 1 - shot moves right, 0
 ;                   #WeaponHitEnemies                      ;
 ;----------------------------------------------------------;
 WeaponHitEnemies
-;	LD DE, 0
-	;CALL ut.Pause
 
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
@@ -65,31 +63,12 @@ WeaponHitEnemies
 ;  - IX:	Pointer to #SPRITE, the enemies
 ;  - B:		Number of enemies in IX
 ; Modifies: ALL
-
-tt0			byte $F0
-sp_ix		word 0		
-
-tt1			byte $F1
-sp_state	byte 0
-
-tt2			byte $F2
-sp_x		word 0			; 3c
-
-tt3			byte $F3
-sp_y		byte 0			;
-
-tt4			byte $F4
-sp_bc		word 0
-
 CheckHitEnemies
 
-	ld (sp_ix), ix
 
 .loop											; Loop over every enemy
 	PUSH BC										; Preserve B for loop counter
-	LD (sp_bc), BC
 	LD A, (IX + sr.SPRITE.STATE)
-	LD (sp_state), A
 	BIT sr.SPRITE_ST_VISIBLE_BIT, A
 	JR Z, .continue								; Jump if enemy is hidden
 
@@ -99,12 +78,7 @@ CheckHitEnemies
 	
 	; Enemy is visible, check colision with leaser beam
 	LD DE, (IX + sr.SPRITE.X)					; X of the enemy
-	ld (sp_x), DE
 	LD C, (IX + sr.SPRITE.Y)					; Y of the enemy
-
-	ld a,c 
-	ld (sp_y), a
-
 
 	PUSH IX
 	CALL ShotsColision
@@ -113,8 +87,8 @@ CheckHitEnemies
 	JR NZ, .continue							; Jump if there is no hit
 
 	; We have hit!
-	;CALL sr.SetSpriteId
-	;CALL sr.SpriteHit
+	CALL sr.SetSpriteId
+	CALL sr.SpriteHit
 
 .continue
 	; Move HL to the beginning of the next enemy
@@ -139,33 +113,7 @@ CheckHitEnemies
 SHOT_HIT					= 1
 SHOT_MISS					= 0
 
-t1	byte $F0 
-s_x	word 0		;
-t2	byte $F1
-s_y	byte 0		; 
-
-t3	byte $F2
-e_x	word 0		; f7
-t4	byte $F3
-e_y	byte 0		; 
-t5	byte $F4
-tde word 0		; 3c
-
 ShotsColision
-
-	LD (tde), DE
-/*
-	LD B, 140
-	LD H, 0
-	LD HL, DE
-	CALL ut.PrintNumHLDebug
-
-	LD B, 150
-	LD H, 0
-	LD A, C
-	LD L, A
-	CALL ut.PrintNumHLDebug
-*/
 
 	; Loop ever all shots# skipping hidden shots
 	LD IX, shots								; IX points to the shot
@@ -185,9 +133,6 @@ ShotsColision
 	; Compare X coordinate of the sprite and the shot, HL holds X of the sprite
 	LD HL, (IX + sr.SPRITE.X)					; X of the shot
 	
-	LD (s_x), HL
-	LD (e_x), DE
-
 	; Subtracts DE from HL and check whether the result is less than or equal to A
 	SBC DE, HL
 	CALL ut.AbsDE
@@ -205,13 +150,6 @@ ShotsColision
 	; We are here because the shot is horizontal with the enemy, now check the vertical match
 	LD A, (IX + sr.SPRITE.Y)					; A holds Y from the shot
 
-	LD (s_y), A
-
-	PUSH AF
-	LD A, C
-	LD (e_y), A
-	POP AF
-
 	; Subtracts C from A and check whether the result is less than or equal to #FIRE_THICKNESS
 	SUB C
 	CALL ut.AbsA
@@ -221,14 +159,11 @@ ShotsColision
 	JR C, .continueShotsLoop					; Jump if A(#FIRE_THICKNESS) < D
 
 	; We have hit! Hide shot and return
-
-	CALL ut.Pause
-
 	CALL sr.SetSpriteId
 	CALL sr.HideSprite
 
 	LD A, SHOT_HIT
-	POP BC
+	POP DE, BC
 	RET
 
 .continueShotsLoop

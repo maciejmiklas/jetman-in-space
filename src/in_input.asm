@@ -75,8 +75,6 @@ JoyInput
 	BIT 1, A									; Bit 1 reset -> Z pressed
 	CALL Z, JoyPressFire
 	
-	CALL JoyPressFire
-
 	; Key Left pressed ?
 	LD A, _KB_5_TO_1_HF7						; $FD -> A (5...1)
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A
