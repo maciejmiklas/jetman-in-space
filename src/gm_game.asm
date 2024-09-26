@@ -46,7 +46,7 @@ GameLoop
 	LD B, A	
 	CALL ep.RespownNextEnemy	
 
-	;CALL jc.JetmanEnemiesColision
+	CALL jc.JetmanEnemiesColision
 	CALL ro.CheckHitTank
 	
 	LD IY, ed.formation
@@ -104,13 +104,13 @@ PrintDebug
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
-/*
+
 	LD B, 140
 	LD H, 0
-	LD A, (jo.jetX)
+	LD A, (ro.expolodeTankCnt)
 	LD L, A
 	CALL ut.PrintNumHLDebug	
-
+/*
 	LD B, 150
 	LD H, 0
 	LD A, (jo.jetX)

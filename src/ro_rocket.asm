@@ -5,7 +5,7 @@
 
 ; Number of Counter40 cycles to drop next rocket module
 DROP_NEXT_DELAY_MAX		= 10
-dropNextDelay			BYTE 3
+dropNextDelay			BYTE 0
 
 ; The state is used to build the rocket and then bring fuel to it. Building the rocket requires three elements, as does fueling it. 
 ; It's basically the same process, but Jetman is carrying either rocket elements or fuel tanks. Bit 7 determines whether Jetman is building 
@@ -54,7 +54,7 @@ SPRITE_REF				BYTE					; ID of the Sprite from spr-file
 	ENDS
 
 ROCKET_DOWN_SPR_ID		= 40					; Sprite ID is used to lower the rocket part, which has the engine and fuel
-MIN_DROP_HEIGHT			= 180					; Jetman has to be above the rocket to drop the element, 170 > Y >10
+MIN_DROP_HEIGHT			= 220					; Jetman has to be above the rocket to drop the element, 170 > Y >10
 
 ROCKET_SPR_ID_READY1	= 63					; Once the rocket is ready, it will start blinking using #ROCKET_SPR_ID_READY1 and #ROCKET_SPR_ID_READY2
 ROCKET_SPR_ID_READY2	= 59
@@ -80,10 +80,11 @@ COLISION_MARGIN_X		= 8
 COLISION_MARGIN_Y		= 16
 CARRY_ADJUST_Y			= 10
 
-expolodeFuel DB 38, 39, 40, 41					; Sprite IDs for explosion
-expolodeFuelId			BYTE EXPLODE_FUEL_OFF	; Current position in #expolodeFuel
-EXPLODE_FUEL_MAX		= 4						; The amount of explosion sprites
-EXPLODE_FUEL_OFF		= $FF					; Indicates that fuel is not exploding
+expolodeTankDB 			DB 38, 39, 40, 41		; Sprite IDs for explosion
+expolodeTankCnt			BYTE EXPLODE_TANK_OFF	; Current position in #expolodeFuel
+EXPLODE_TANK_MIN		= 0
+EXPLODE_TANK_MAX		= 3						; The amount of explosion sprites - 1
+EXPLODE_TANK_OFF		= $FF					; Indicates that fuel is not exploding
 
 ;----------------------------------------------------------;
 ;                #UpdateOnJetmanMove                       ;
@@ -128,13 +129,6 @@ BoardRocket
 	
 	RET
 
-/*
-
-expolodeFuel DB 38, 39, 40, 41					; Sprite IDs for explosion
-expolodeFuelId			BYTE EXPLODE_SPRITE_OFF	; Current position in #expolodeFuel
-EXPLODE_FUEL_MAX		= 4						; The amount of explosion sprites
-EXPLODE_FUEL_OFF		= $FF					; Indicates that fule is not exploding
-*/
 ;----------------------------------------------------------;
 ;                     #CheckHitTank                        ;
 ;----------------------------------------------------------;
@@ -152,8 +146,8 @@ CheckHitTank
 	RET C										; Return if counter is < 4 (still assembling rocket)
 
 	; Is tank already exploding?
-	LD A, (expolodeFuelId)
-	CP EXPLODE_FUEL_OFF
+	LD A, (expolodeTankCnt)
+	CP EXPLODE_TANK_OFF
 	RET NZ										; Return if tank is already exploding (A != #EXPLODE_FUEL_OFF)
 
 	; Fuel tank is falling down, check hit by leaser beam
@@ -168,6 +162,55 @@ CheckHitTank
 	RET NZ
 
 	; The laser beam hits the falling rocket tank!
+	LD A, EXPLODE_TANK_MIN
+	LD (expolodeTankCnt), A
+
+	RET
+;----------------------------------------------------------;
+;                  #AnimateTankExplode                     ;
+;----------------------------------------------------------;
+AnimateTankExplode	
+	
+	; Return if #expolodeTankCnt == #EXPLODE_TANK_OFF
+	LD A, (expolodeTankCnt)
+	CP EXPLODE_TANK_OFF
+	RET Z
+
+	; Is explosion over?
+	LD A, (expolodeTankCnt)
+	CP EXPLODE_TANK_MAX
+	JR NZ, .keepExploding
+
+	; Exloding is over
+	LD A, EXPLODE_TANK_OFF
+	LD (expolodeTankCnt), A
+
+	CALL ResetRocketElement
+	RET
+
+.keepExploding
+
+	CALL SetIXtoCurrentRocketElement
+
+	; Set the ID of the sprite for the following commands
+	LD A, (IX + ROCKET.SPRITE_ID)
+	NEXTREG _SPR_REG_NR_H34, A
+	
+	; Move #expolodeTankDB by #expolodeTankCnt, so that A points to current explosion frame
+	LD A, (expolodeTankCnt)
+	LD B, A
+	LD A, (expolodeTankDB)
+	ADD B
+
+	; Set sprite pattern
+	OR _SPR_PATTERN_SHOW						; Set show bit
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+	; Increment #expolodeTankCnt
+	LD A, (expolodeTankCnt)
+	INC A
+	LD (expolodeTankCnt), A
+
 	RET
 
 ;----------------------------------------------------------;
@@ -249,6 +292,7 @@ UpdateElementPosition
 	NEXTREG _SPR_REG_Y_H36, A
 
 	RET
+
 ;----------------------------------------------------------;
 ;              #ResetCarryingRocketElement                 ;
 ;----------------------------------------------------------;
@@ -258,7 +302,14 @@ ResetCarryingRocketElement
 	BIT STATE_CARRY_BIT, A
 	RET Z
 
-	; Reset from carry to wait for drop, hide spirte
+	CALL ResetRocketElement
+	RET
+
+;----------------------------------------------------------;
+;                  #ResetRocketElement                     ;
+;----------------------------------------------------------;
+ResetRocketElement
+	; Reset  to wait for drop, hide spirte
 
 	CALL SetIXtoCurrentRocketElement
 
@@ -272,6 +323,8 @@ ResetCarryingRocketElement
 	; Reset the state and decrement element counter -> we will drop this element again
 	LD A, (state)
 	RES STATE_CARRY_BIT, A
+	RES STATE_FALL_BIT, A
+	RES STATE_WAIT_BIT, A
 	DEC A										; Go back to previous element
 	LD (state), A
 
@@ -279,7 +332,7 @@ ResetCarryingRocketElement
 	XOR A										; Set A to 0
 	LD (dropNextDelay), A
 
-	RET
+	RET	
 
 ;----------------------------------------------------------;
 ;                  #CarryRocketElement                     ;
@@ -356,6 +409,12 @@ MoveWithJetman
 ;                 #AttachRocketElement                     ;
 ;----------------------------------------------------------;
 AttachRocketElement
+
+	; Do not pick up tank when it's exploding
+	LD A, (expolodeTankCnt)
+	CP EXPLODE_TANK_OFF
+	RET NZ
+
 	; Return if there is no element/tank to pick up
 	LD A, (state)
 	AND STATE_ELEMET_DEPL_MASK
