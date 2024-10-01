@@ -111,6 +111,7 @@ Counter10
 	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AnimateRocketReady
 	CALL ro.AnimateTankExplode
+	CALL ro.AnimateRocketExhaust
 	RET		
 
 ;----------------------------------------------------------;

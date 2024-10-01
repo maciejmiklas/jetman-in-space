@@ -4,12 +4,11 @@
 	MODULE ro
 
 ; Number of Counter40 cycles to drop next rocket module
-DROP_NEXT_DELAY_MAX		= 10
+DROP_NEXT_DELAY_MAX		= 5
 dropNextDelay			BYTE 0
 
 ; The state is used to build the rocket and then bring fuel to it. Building the rocket requires three elements, as does fueling it. 
-; It's basically the same process, but Jetman is carrying either rocket elements or fuel tanks. Bit 7 determines whether Jetman is building 
-; the rocket or already carries fuel. 
+; It's basically the same process, but Jetman is carrying either rocket elements or fuel tanks.
 ; Bits:
 ;  - 0-2: Current element 1-3 (rocket element), 4-6 (fuel tank), 7 - fully assembed
 ;  - 3  : #STATE_FALL_BIT
@@ -17,7 +16,7 @@ dropNextDelay			BYTE 0
 ;  - 5  : #STATE_CARRY_BIT
 ;  - 6  : #STATE_ASSEMBLY_BIT
 ;  - 7  : #STATE_FLYING_BIT
-state					BYTE 0					; Start with building first rocket element
+rocketState				BYTE 0					; Start with building first rocket element
 
 STATE_FALL_BIT			= 3						; Rocket element (or fuel tank) is falling down for pickup
 STATE_WAIT_BIT			= 4						; Rocket element (or fuel tank) is waiting for pickup
@@ -61,9 +60,9 @@ ROCKET_SPR_ID_READY2	= 59
 
 rocketEl
 ; rocket element
-	ROCKET {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, ROCKET_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}
-	ROCKET {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}
-	ROCKET {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, ROCKET_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}	; bottom element
+	ROCKET {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}	; middle element
+	ROCKET {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
 ; fuel tank
 	ROCKET {015/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
 	ROCKET {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
@@ -86,6 +85,12 @@ EXPLODE_TANK_MIN		= 0
 EXPLODE_TANK_MAX		= 3						; The amount of explosion sprites - 1
 EXPLODE_TANK_OFF		= $FF					; Indicates that fuel is not exploding
 
+rocketExhaustDB			DB 53, 58, 57			; Sprite IDs for exhaust
+rocketExhaustCnt		BYTE ROCKET_EXHAUST_MIN	; Counts from #ROCKET_EXHAUST_MIN (inclusive) to #ROCKET_EXHAUST_MAX (exclusive)
+ROCKET_EXHAUST_MIN		= 0
+ROCKET_EXHAUST_MAX		= 3
+ROCKET_EXHAUST_SPR		= 43					; Sprite ID for exhaust
+
 ;----------------------------------------------------------;
 ;                #UpdateOnJetmanMove                       ;
 ;----------------------------------------------------------;
@@ -100,7 +105,7 @@ UpdateOnJetmanMove
 ;----------------------------------------------------------;
 BoardRocket
 	; Return if rocket is not ready for boarding
-	LD A, (state)
+	LD A, (rocketState)
 	AND STATE_ELEMET_READY_MASK
 	CP STATE_CNT_ASSEMBLED
 	RET NZ	
@@ -116,9 +121,9 @@ BoardRocket
 	RET Z
 
 	; Jetman boards the rocket!
-	LD A, (state)
+	LD A, (rocketState)
 	SET STATE_FLYING_BIT, A
-	LD (state), A
+	LD (rocketState), A
 
 	; Hide sprite (before changing state!)
 	CALL js.HideJetSprite
@@ -135,12 +140,8 @@ BoardRocket
 ; Checks falling tank for collision with leaser beam
 CheckHitTank
 
-	; Is something (could be rocket element or tank) falling down?
-	LD A, (state)
-	BIT STATE_FALL_BIT, A
-	RET Z										; Return if fall bit is not set
-
-	; Something is falling, is that a tank?
+	; Is the thank out there?
+	LD A, (rocketState)
 	AND STATE_ELEMET_CNT_MASK
 	CP STATE_CNT_FUEL_MIN
 	RET C										; Return if counter is < 4 (still assembling rocket)
@@ -150,7 +151,7 @@ CheckHitTank
 	CP EXPLODE_TANK_OFF
 	RET NZ										; Return if tank is already exploding (A != #EXPLODE_FUEL_OFF)
 
-	; Fuel tank is falling down, check hit by leaser beam
+	; Check hit by leaser beam
 	CALL SetIXtoCurrentRocketElement
 
 	LD DE, (IX + ROCKET.DROP_X)					; X param for #ShotsColision
@@ -164,8 +165,8 @@ CheckHitTank
 	; The laser beam hits the falling rocket tank!
 	LD A, EXPLODE_TANK_MIN
 	LD (expolodeTankCnt), A
-
 	RET
+
 ;----------------------------------------------------------;
 ;                  #AnimateTankExplode                     ;
 ;----------------------------------------------------------;
@@ -214,11 +215,42 @@ AnimateTankExplode
 	RET
 
 ;----------------------------------------------------------;
+;                 #AnimateRocketExhaust                    ;
+;----------------------------------------------------------;
+AnimateRocketExhaust	
+	; Return if rocket is not flying
+	LD A, (rocketState)
+	BIT STATE_FLYING_BIT, A
+	RET Z
+
+	; Increment sprite pattern counter
+	LD A, (rocketExhaustCnt)
+	INC A
+	CP ROCKET_EXHAUST_MAX
+	JP NZ, .afterIncrement
+
+	; Reset counter
+	LD A, ROCKET_EXHAUST_MIN
+
+.afterIncrement	
+
+	LD (rocketExhaustCnt), A					; Store current counter (increased or reset)
+
+	; Set the ID of the sprite for the following commands
+	LD A, ROCKET_EXHAUST_SPR
+	NEXTREG _SPR_REG_NR_H34, A
+
+	; Set sprite pattern	
+	OR _SPR_PATTERN_SHOW						; Set show bit
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+	RET	
+;----------------------------------------------------------;
 ;                       #FlyRocket                         ;
 ;----------------------------------------------------------;
 FlyRocket
 	; Return if rocket is not flying
-	LD A, (state)
+	LD A, (rocketState)
 	BIT STATE_FLYING_BIT, A
 	RET Z
 
@@ -255,9 +287,38 @@ FlyRocket
 	LD (IX + ROCKET.Y), A
 
 	LD A, (rocketAssemblyX)
-	CALL UpdateElementPosition	
+	CALL UpdateElementPosition
+
+	; Update exhaust
+	LD A, ROCKET_EXHAUST_SPR
+	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands
+
+	; Load spirte pattern to A
+	LD HL, rocketExhaustDB
+	LD A, (rocketExhaustCnt)
+	ADD HL, A
+	LD A, (HL)
+
+	; Set sprite pattern	
+	OR _SPR_PATTERN_SHOW						; Set show bit
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+
+	; Sprite X coordinate from accembly location
+	LD A, (rocketAssemblyX)
+	NEXTREG _SPR_REG_X_H35, A
+
+	LD A, _SPR_REG_ATR2_EMPTY
+	NEXTREG _SPR_REG_ATR2_H37, A
+
+	; Sprite Y coordinate, increment until the destination has been reached
+	LD IX, rocketEl
+	LD A, (IX + ROCKET.Y)						; Lowest rocket element + 16px
+	ADD A, 16
+	NEXTREG _SPR_REG_Y_H36, A
 
 	CALL js.HideJetSprite						; Keep hiding Jemtan sprite, just in case oter procedure would show it
+
 	RET
 
 ;----------------------------------------------------------;
@@ -298,7 +359,7 @@ UpdateElementPosition
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
 	; Return if the state does not match carry
-	LD A, (state)
+	LD A, (rocketState)
 	BIT STATE_CARRY_BIT, A
 	RET Z
 
@@ -321,12 +382,10 @@ ResetRocketElement
 	NEXTREG _SPR_REG_ATR3_H38, A
 
 	; Reset the state and decrement element counter -> we will drop this element again
-	LD A, (state)
-	RES STATE_CARRY_BIT, A
-	RES STATE_FALL_BIT, A
-	RES STATE_WAIT_BIT, A
+	LD A, (rocketState)
+	AND STATE_ELEMET_CNT_MASK					; Reset all state bits
 	DEC A										; Go back to previous element
-	LD (state), A
+	LD (rocketState), A
 
 	; Reset drop delay
 	XOR A										; Set A to 0
@@ -340,7 +399,7 @@ ResetRocketElement
 CarryRocketElement
 	
 	; Return if the state does not match
-	LD A, (state)
+	LD A, (rocketState)
 	BIT STATE_CARRY_BIT, A
 	RET Z
 
@@ -367,10 +426,10 @@ JetmanDropsRocketElement
 	RET NC
 
 	; Jetman drops rocket element
-	LD A, (state)
+	LD A, (rocketState)
 	RES STATE_CARRY_BIT, A
 	SET STATE_ASSEMBLY_BIT, A
-	LD (state), A
+	LD (rocketState), A
 
 	; Store the height of the drop so that the element can keep falling from this location into the assembly place.
 	CALL SetIXtoCurrentRocketElement						; Set IX to current #rocket postion
@@ -416,7 +475,7 @@ AttachRocketElement
 	RET NZ
 
 	; Return if there is no element/tank to pick up
-	LD A, (state)
+	LD A, (rocketState)
 	AND STATE_ELEMET_DEPL_MASK
 	CP 0
 	RET Z										; Return if A == 0 -> none of the bits is set
@@ -432,11 +491,11 @@ AttachRocketElement
 	RET Z
 
 	; Jetman can pick up rocket element/tank. Update state to reflect it and return
-	LD A, (state)
+	LD A, (rocketState)
 	RES STATE_FALL_BIT, A
 	RES STATE_WAIT_BIT, A
 	SET STATE_CARRY_BIT, A	
-	LD (state), A
+	LD (rocketState), A
 
 	RET
 ;----------------------------------------------------------;
@@ -497,7 +556,7 @@ JetmanElementCollision
 ;----------------------------------------------------------;
 RocketElementFallsForPickup	
 	; Return if there is no fall
-	LD A, (state)
+	LD A, (rocketState)
 	BIT STATE_FALL_BIT, A
 	RET Z										; Return if falling bit is not set
 
@@ -519,10 +578,10 @@ RocketElementFallsForPickup
 	RET NZ										; No, keep falling down
 	
 	; Yes, element has reached landing postion
-	LD A, (state)
+	LD A, (rocketState)
 	RES STATE_FALL_BIT, A
 	SET STATE_WAIT_BIT, A
-	LD (state), A
+	LD (rocketState), A
 
 	RET
 
@@ -531,7 +590,7 @@ RocketElementFallsForPickup
 ;----------------------------------------------------------;
 AnimateRocketReady	
 	; Return if rocket is not ready
-	LD A, (state)
+	LD A, (rocketState)
 	AND STATE_ELEMET_READY_MASK
 	CP STATE_CNT_ASSEMBLED
 	RET NZ	
@@ -553,12 +612,14 @@ AnimateRocketReady
 	NEXTREG _SPR_REG_ATR3_H38, A
 
 	RET
+
+
 ;----------------------------------------------------------;
 ;             #RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly	
 	; Return if there is no assebly
-	LD A, (state)
+	LD A, (rocketState)
 	BIT STATE_ASSEMBLY_BIT, A
 	RET Z										; Return if assembky bit is not set
 
@@ -590,12 +651,12 @@ RocketElementFallsForAssembly
 	RET NZ										; No, keep falling down
 	
 	; Yes, element has reached landing postion, set state for next drop
-	LD A, (state)
+	LD A, (rocketState)
 	RES STATE_ASSEMBLY_BIT, A
-	LD (state), A
+	LD (rocketState), A
 
 	; Hide the fuel tank sprite if we drop fuel, and change rocket sprite showing fuel level.
-	LD A, (state)
+	LD A, (rocketState)
 	AND STATE_ELEMET_CNT_MASK
 	CP STATE_CNT_FUEL_MIN
 	JR C, .notFuel								; Jump if counter is < 3 (still assembling rocket)
@@ -626,13 +687,13 @@ RocketElementFallsForAssembly
 ;----------------------------------------------------------;
 DropNextRocketElement
 	; Do not drop the next element if there is one that is ongoing.
-	LD A, (state)
+	LD A, (rocketState)
 	AND STATE_DROP_NEXT_MASK					; Apply a mask to reset bits indicating the rocket is ready or the element is deployed
 	CP 0
 	RET NZ
 
 	; Do not drop next element, if rocket is ready (element counter is 7)
-	LD A, (state)
+	LD A, (rocketState)
 	AND STATE_ELEMET_CNT_MASK
 	CP STATE_CNT_ASSEMBLED
 	RET Z	
@@ -649,25 +710,25 @@ DropNextRocketElement
 	LD (dropNextDelay), A
 
 	; Check whether rocket element counter has already reached max value
-	LD A, (state)
+	LD A, (rocketState)
 	AND STATE_ELEMET_CNT_MASK
 	CP STATE_CNT_ELEMET_MAX
 	JR NZ, .dropNext							; Jump if the counter did not reach max value	
 
 	; The rocket is assembled and fueled
 	LD A, STATE_CNT_ASSEMBLED
-	LD (state), A
+	LD (rocketState), A
 	RET
 
 .dropNext
 	; Increment element counter
-	LD A, (state)
+	LD A, (rocketState)
 	INC A
 
 	; We are going to drop the next element -> set falling and reset waiting for pickup
 	SET STATE_FALL_BIT, A
 	RES STATE_WAIT_BIT, A
-	LD (state), A
+	LD (rocketState), A
 
 	; Drop next rocket element/tank, first set IX to current #rocket postion
 	CALL SetIXtoCurrentRocketElement
@@ -688,7 +749,7 @@ SetIXtoCurrentRocketElement
 
     ; Now, move IX so that it points to the #ROCKET given by the deploy counter. First, load the counter into A (value 1-3).
 	; Afterward, load A indo D and the size of the #ROCKET into E, and multiply D by E. 
-	LD A, (state)
+	LD A, (rocketState)
 	AND	STATE_ELEMET_CNT_MASK						; A contains 1-3
 
 	; Return if the counter is 0 -> it has not been initialized yet
@@ -726,7 +787,7 @@ MoveIXtoCurrentFuelLevel
 
     ; Now, move IX so that it points to the #FUEL_LEVEL given by the deploy counter. First, load the counter into A (value 3-6), sub 4
 	; Afterward, load A indo D and the size of the #FUEL_LEVEL into E, and multiply D by E. 
-	LD A, (state)
+	LD A, (rocketState)
 	AND	STATE_ELEMET_CNT_MASK						; A contains 4-6
 	SUB STATE_CNT_FUEL_MIN							; A contains 0-2
 
