@@ -339,7 +339,7 @@ BumpIntoPlatFormBelow
 	
 	PUSH BC
 
-	LD A, js.SDB_T_WL							; Play animation
+	LD A, js.SDB_T_KF							; Play animation
 	CALL js.ChangeJetSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
@@ -411,7 +411,7 @@ BumpIntoPlatformLR
 
 	PUSH BC
 
-	LD A, js.SDB_T_WL							; Play animation
+	LD A, js.SDB_T_KF							; Play animation
 	CALL js.ChangeJetSpritePattern
 	
 	; Disable joystick, because Jetman looses control for a few frames
@@ -471,7 +471,7 @@ FallingFromPlatform
 	CALL jt.ChangeJetStateAir
 
 	; Trigger transition: walking -> falling
-	LD A, js.SDB_T_WL
+	LD A, js.SDB_T_KF
 	CALL js.ChangeJetSpritePattern
 
 	; Disable joystick, because Jetman loses control for #JOY_DISABLED_FALL frames

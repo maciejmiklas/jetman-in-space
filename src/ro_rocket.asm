@@ -34,6 +34,9 @@ STATE_CNT_FUEL_MIN		= 4
 STATE_CNT_ASSEMBLED		= 7						; Counter will be set to 7 when the rocket is ready for takeoff
 
 ; The single rocket element or fule tank
+; The X coordinate of the rocket element is stored in two locations: 
+;  1) #ROCKET.DROP_X: when elements drop for pickup by Jetman,
+;  2) #rocketAssemblyX when building the rocket
 	STRUCT ROCKET
 ; Configuration values	
 DROP_X					BYTE					; X coordinate to drop the given element/tank
@@ -64,9 +67,9 @@ rocketEl
 	ROCKET {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}	; middle element
 	ROCKET {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
 ; fuel tank
-	ROCKET {015/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
-	ROCKET {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
-	ROCKET {230/*DROP_X*/, 059/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 10/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {015/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {230/*DROP_X*/, 059/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
 
 fuelLevel
 	FUEL_LEVEL {4/*ELEMENT_ID*/, 61/*SPRITE_REF*/}
@@ -85,10 +88,11 @@ EXPLODE_TANK_MIN		= 0
 EXPLODE_TANK_MAX		= 3						; The amount of explosion sprites - 1
 EXPLODE_TANK_OFF		= $FF					; Indicates that fuel is not exploding
 
-rocketExhaustDB			DB 53, 58, 57			; Sprite IDs for exhaust
+rocketExhaustDB									; Sprite IDs for exhaust
+	DB 53,58,53,58,  57,58,57,58,  53,58,53,58, 53,58,57
 rocketExhaustCnt		BYTE ROCKET_EXHAUST_MIN	; Counts from #ROCKET_EXHAUST_MIN (inclusive) to #ROCKET_EXHAUST_MAX (exclusive)
 ROCKET_EXHAUST_MIN		= 0
-ROCKET_EXHAUST_MAX		= 3
+ROCKET_EXHAUST_MAX		= 15
 ROCKET_EXHAUST_SPR		= 43					; Sprite ID for exhaust
 
 ;----------------------------------------------------------;
@@ -134,11 +138,17 @@ BoardRocket
 	
 	RET
 
+tmp word 0
+tmp1 word 0
 ;----------------------------------------------------------;
 ;                     #CheckHitTank                        ;
 ;----------------------------------------------------------;
 ; Checks falling tank for collision with leaser beam
 CheckHitTank
+
+	LD A, $FF
+	LD (tmp), A
+	LD (tmp1), A
 
 	; Is the thank out there?
 	LD A, (rocketState)
@@ -151,14 +161,33 @@ CheckHitTank
 	CP EXPLODE_TANK_OFF
 	RET NZ										; Return if tank is already exploding (A != #EXPLODE_FUEL_OFF)
 
+	LD A, 1
+	LD (tmp), A
+
 	; Check hit by leaser beam
 	CALL SetIXtoCurrentRocketElement
 
+	; The X coordinate of the rocket element is stored in two locations: 
+	;  1) #ROCKET.DROP_X: when elements drop for pickup by Jetman,
+	;  2) #rocketAssemblyX when building the rocket
+	LD A, (rocketState)
+	BIT STATE_ASSEMBLY_BIT, A
+	JR NZ, .assembly
+	
+	; Dropping rocket element for pickup
 	LD DE, (IX + ROCKET.DROP_X)					; X param for #ShotsColision
-	LD D, 0										; Reset D, DROP_X is 8 bit
+	JR .afterAssembly
+.assembly
+	; The rocket is already assembled and waiting for fuel
+	LD DE, (rocketAssemblyX)					; X param for #ShotsColision
+.afterAssembly
+
+	LD D, 0										; Reset D, X coordinate for drop is 8 bit
+
+	LD (tmp), DE
+
 	LD C,  (IX + ROCKET.Y)						; Y param for #ShotsColision
 	CALL jw.ShotsColision
-
 	CP jw.SHOT_HIT
 	RET NZ
 
@@ -240,6 +269,12 @@ AnimateRocketExhaust
 	LD A, ROCKET_EXHAUST_SPR
 	NEXTREG _SPR_REG_NR_H34, A
 
+	; Load spirte pattern to A
+	LD HL, rocketExhaustDB
+	LD A, (rocketExhaustCnt)
+	ADD HL, A
+	LD A, (HL)
+
 	; Set sprite pattern	
 	OR _SPR_PATTERN_SHOW						; Set show bit
 	NEXTREG _SPR_REG_ATR3_H38, A
@@ -293,6 +328,7 @@ FlyRocket
 	LD A, ROCKET_EXHAUST_SPR
 	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands
 
+/*
 	; Load spirte pattern to A
 	LD HL, rocketExhaustDB
 	LD A, (rocketExhaustCnt)
@@ -302,8 +338,7 @@ FlyRocket
 	; Set sprite pattern	
 	OR _SPR_PATTERN_SHOW						; Set show bit
 	NEXTREG _SPR_REG_ATR3_H38, A
-
-
+*/
 	; Sprite X coordinate from accembly location
 	LD A, (rocketAssemblyX)
 	NEXTREG _SPR_REG_X_H35, A
@@ -600,7 +635,7 @@ AnimateRocketReady
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman	
-	LD A, (cd.counter10FliFLop)
+	LD A, (cd.counter12FliFLop)
 	CP cd.FLIP_ON
 	JR Z, .flip
 	LD A, ROCKET_SPR_ID_READY1

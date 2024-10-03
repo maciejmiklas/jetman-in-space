@@ -63,11 +63,11 @@ SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see re
 ; containing another animation or a command like #SDB_HIDE that will hide the sprite.
 srSpriteDB
 	SPR_REC {SDB_EXPLODE, SDB_HIDE - SDB_SUB, 04} 
-			DB 38, 39, 40, 41
+			DB 30, 31, 32, 33
 	SPR_REC {SDB_FIRE, SDB_FIRE - SDB_SUB, 02}
-			DB 42, 43
-	SPR_REC {SDB_ENEMY1, SDB_ENEMY1 - SDB_SUB, 03}
-			DB 45, 46, 47
+			DB 54, 55
+	SPR_REC {SDB_ENEMY1, SDB_ENEMY1 - SDB_SUB, 24}
+			DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
 	SPR_REC {SDB_ENEMY2, SDB_ENEMY2 - SDB_SUB, 03}
 			DB 48, 49, 50
 

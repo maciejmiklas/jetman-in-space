@@ -7,7 +7,7 @@
 ;                     #CounterLoop                         ;
 ;----------------------------------------------------------;
 CounterLoop
-	CALL Counter10							; Fist is 10 because we use it to time animation
+	CALL Counter12							; Fist is 10 because we use it to time animation
 	CALL Counter2
 	CALL Counter4	
 	CALL Counter6
@@ -86,27 +86,27 @@ Counter6
 	RET		
 
 ;----------------------------------------------------------;
-;                       #Counter10                         ;
+;                       #Counter12                         ;
 ;----------------------------------------------------------;
-Counter10
+Counter12
 	; Increment the counter
-	LD A, (cd.counter10)
+	LD A, (cd.counter12)
 	INC A
-	LD (cd.counter10), A
-	CP cd.COUNTER10_MAX
-	RET NZ										; Jump if #counter10 !=  #COUNTER10_MAX 
+	LD (cd.counter12), A
+	CP cd.COUNTER12_MAX
+	RET NZ										; Jump if #counter12 !=  #COUNTER12_MAX 
 
 	; Reset the counter
 	XOR A										; Set A to 0
-	LD (cd.counter10), A
+	LD (cd.counter12), A
 
 	; 1 -> 0 and 0 -> 1
-	LD A, (cd.counter10FliFLop)
+	LD A, (cd.counter12FliFLop)
 	XOR 1
-	LD (cd.counter10FliFLop), A
+	LD (cd.counter12FliFLop), A
 
 	; CALL functions that need to be updated every 10th loop
-	CALL gm.Counter10
+	CALL gm.Counter12
 	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AnimateRocketReady
@@ -123,7 +123,7 @@ Counter40
 	INC A
 	LD (cd.counter40), A
 	CP cd.COUNTER40_MAX
-	RET NZ										; Jump if #counter10 !=  #COUNTER40_MAX 
+	RET NZ										; Jump if #counter12 !=  #COUNTER40_MAX 
 
 	; Reset the counter
 	XOR A										; Set A to 0
@@ -135,7 +135,6 @@ Counter40
 	LD (cd.counter40FliFLop), A
 
 	; CALL functions that need to be updated every 40th loop
-	CALL jt.ResetKickState
 	CALL ro.DropNextRocketElement
 	RET	
 

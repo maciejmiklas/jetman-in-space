@@ -18,9 +18,9 @@ COUNTER6_MAX		= 6
 counter6			BYTE 0
 counter6FliFLop		BYTE 0						; Changes with evety counter run from 1 to 0 and so on
 
-COUNTER10_MAX		= 10
-counter10			BYTE 0
-counter10FliFLop	BYTE 0						; Changes with evety counter run from 1 to 0 and so on
+COUNTER12_MAX		= 12
+counter12			BYTE 0
+counter12FliFLop	BYTE 0						; Changes with evety counter run from 1 to 0 and so on
 
 COUNTER40_MAX		= 40
 counter40			BYTE 0

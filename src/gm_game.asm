@@ -60,9 +60,9 @@ GameLoop
 	RET
 
 ;----------------------------------------------------------;
-;                       #Counter10                         ;
+;                       #Counter12                         ;
 ;----------------------------------------------------------;
-Counter10
+Counter12
 	CALL AnimateSprites		
 	RET	
 
@@ -107,16 +107,13 @@ PrintDebug
 
 	LD B, 140
 	LD H, 0
-	LD A, (ro.expolodeTankCnt)
-	LD L, A
+	LD HL, (ro.tmp)
 	CALL ut.PrintNumHLDebug	
-/*
+
 	LD B, 150
-	LD H, 0
-	LD A, (jo.jetX)
-	LD L, A
+	LD HL, (ro.tmp1)
 	CALL ut.PrintNumHLDebug	
-*/
+
 	RET
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

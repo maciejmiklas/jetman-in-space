@@ -55,7 +55,8 @@ JoystickMoves
 	LD A, jt.AIR_FLY
 	LD (jt.jetAir), A
 	
-	LD A, js.SDB_FLY							; Switch to flaying animation
+	; Switch to flaying animation
+	LD A, js.SDB_FLY
 	CALL js.ChangeJetSpritePattern
 .afterHovering	
 

@@ -4,9 +4,9 @@
 	MODULE jc
 
 ENEMY_MARGIN_HORIZONTAL	= 12
-ENEMY_MARGIN_VER_UP		= 18
-ENEMY_MARGIN_VER_LOW	= 15
-ENEMY_MARGIN_VER_KICK	= 25
+ENEMY_MARGIN_VERT_UP	= 18
+ENEMY_MARGIN_VERT_LOW	= 15
+ENEMY_MARGIN_VERT_KICK	= 25
 
 RIP_MOVE_LEFT			= 0
 RIP_MOVE_RIGHT			= 1
@@ -143,12 +143,12 @@ EnemyColision
 
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman
 	LD E, 0
-	LD D, ENEMY_MARGIN_VER_KICK
+	LD D, ENEMY_MARGIN_VERT_KICK
 	CALL CheckCollision
 	CP COLLISION_YES
 	JR NZ, .noKicking
 	
-	; Jetman is close enough to start kicking, but first check if the animation does not play already
+	; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already
 	LD A, (jt.jetState)
 	BIT jt.JET_STATE_KICK_BIT, A
 	RET NZ										; Animation playes already
@@ -158,12 +158,13 @@ EnemyColision
 	SET jt.JET_STATE_KICK_BIT, A
 	LD (jt.jetState), A
 
-	LD A, js.SDB_T_WL
-	CALL js.ChangeJetSpritePattern				; Play the animation and keep checking for RiP collision because there is overlapping
+	LD A, js.SDB_T_KF
+	CALL js.ChangeJetSpritePattern				; Play the animation and keep checking for RiP collision
 
 .noKicking
-	LD D, ENEMY_MARGIN_VER_UP
-	LD E, ENEMY_MARGIN_VER_LOW
+	; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die
+	LD D, ENEMY_MARGIN_VERT_UP
+	LD E, ENEMY_MARGIN_VERT_LOW
 	CALL CheckCollision
 	CP COLLISION_YES
 	RET NZ
@@ -200,9 +201,6 @@ RespawnJet
 	LD A, 100
 	LD (jo.jetY), A
 
-	XOR A										; Set A to 0
-	NEXTREG _DC_REG_TILE_X_LSB_H30, A
-	NEXTREG _DC_REG_TILE_Y_H31, A
 
 	CALL jt.ChangeJetStateRespown
 
@@ -211,6 +209,9 @@ RespawnJet
 
 	CALL bg.UpdateOnJetmanMove
 	CALL ro.ResetCarryingRocketElement
+
+	LD A, js.SDB_FLY							; Switch to flaying animation
+	CALL js.ChangeJetSpritePattern
 	RET
 
 ;----------------------------------------------------------;

@@ -18,10 +18,10 @@ SDB_RIP					= 207					; Jetman got hit
 SDB_T_WF				= 220					; Transition: walking -> flaying
 SDB_T_FS				= 221					; Transition: flaying -> standing
 SDB_T_FW				= 222					; Transition: flaying -> walking
-SDB_T_WL				= 223					; Transition: walking -> falling
+SDB_T_KF				= 223					; Transition: walking -> falling
 
-SDB_SUB				= 100						; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
-SDB_FRAME_SIZE		= 2
+SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
+SDB_FRAME_SIZE			= 2
 
 ; The animation system is based on a state machine. Its database is divided into records, each containing a list of frames to be played and 
 ; a reference to the next record that will be played once all frames from the current record have been executed.
@@ -29,26 +29,25 @@ SDB_FRAME_SIZE		= 2
 ;    [ID], [OFF_NX], [SIZE], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]] 
 ; where:
 ;	- ID: 			Entry ID for lookup via CPIR
+;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
 ;	- SIZE:			Amount of bytes in this record
 ;	- FRAME_UP:		Offset for the upper part of the Jetman
 ;	- FRAME_LW: 	Offset for the lower part of the Jetman
-;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
-
 spriteDB
 	; Jetman is flaying
 	DB SDB_FLY,		SDB_FLY - SDB_SUB,		48
-											DB 00,12, 00,13, 01,14, 01,15, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15
-											DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
-											DB 04,14, 04,15, 05,16, 05,17
+											DB 00,10, 00,11, 01,12, 01,13, 02,11, 02,12, 03,10, 03,11, 04,12, 04,13
+											DB 05,12, 05,11, 03,10, 03,11, 04,12, 04,13, 05,10, 05,12, 03,10, 03,11
+											DB 04,12, 04,13, 05,12, 05,10
 
 	; Jetman hovers
 	DB SDB_HOVER,	SDB_HOVER - SDB_SUB,	48 
-											DB 00,18, 00,19, 01,20, 01,21, 02,16, 02,17, 03,12, 03,13, 04,14, 04,15 
-											DB 05,16, 05,17, 03,12, 03,13, 04,14, 04,15, 05,16, 05,17, 03,12, 03,13
-											DB 04,14, 04,15, 05,16, 05,17
+											DB 00,14, 00,15, 01,16, 01,10, 02,11, 02,12, 03,13, 03,10, 04,11, 04,12 
+											DB 05,13, 05,14, 03,15, 03,16, 04,10, 04,11, 05,12, 05,13, 03,10, 03,11
+											DB 04,12, 04,13, 05,10, 05,11
 
 	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
-	DB SDB_WALK_ST,	SDB_WALK	- SDB_SUB,	02, 03,07
+	DB SDB_WALK_ST,	SDB_WALK	- SDB_SUB,	02, 03, 07
 
 	; Jetman is walking
 	DB SDB_WALK, 	SDB_WALK - SDB_SUB,		48
@@ -58,27 +57,27 @@ spriteDB
 
 	; Jetman stands in place
 	DB SDB_STAND,	SDB_STAND - SDB_SUB,	46 
-											DB 03,34, 03,35, 04,36, 04,37, 05,34, 05,35, 03,36, 03,37, 04,34, 04,35
-											DB 05,36, 05,37, 00,34, 00,35, 01,36, 01,37, 02,34, 02,35, 03,36, 03,37
-											DB 04,34, 05,35, 05,36
+											DB 03,17, 03,18, 04,19, 04,18, 05,17, 05,19, 03,17, 03,18, 04,19, 04,17
+											DB 05,19, 05,18, 00,19, 00,18, 01,17, 01,18, 02,17, 02,19, 03,18, 03,18
+											DB 04,19, 05,17, 05,18
 
 	; Jetman stands on the ground for a very short time
 	DB SDB_JSTAND,	SDB_STAND - SDB_SUB, 	02, 03,36
 
 	; Jetman got hit
-	DB SDB_RIP,		SDB_RIP - SDB_SUB,		16, 00,30, 01,31, 02,32, 03,33, 00,18, 01,19, 02,20, 03,21
+	DB SDB_RIP,		SDB_RIP - SDB_SUB,		08, 00,27, 01,28, 02,15, 03,29
 
 	; Transition: walking -> flaying
-	DB SDB_T_WF,	SDB_FLY - SDB_SUB, 		08, 03,22, 04,23, 05,24, 03,25
+	DB SDB_T_WF,	SDB_FLY - SDB_SUB, 		08, 03,26, 04,25, 05,24, 03,23
 
 	; Transition: flaying -> standing
-	DB SDB_T_FS, 	SDB_STAND - SDB_SUB,	4, 03,26, 04,27, 05,28, 03,29
+	DB SDB_T_FS, 	SDB_STAND - SDB_SUB,	4, 03,23, 04,24, 05,25, 03,26
 
 	; Transition: flaying -> walking
-	DB SDB_T_FW, 	SDB_WALK - SDB_SUB,		4, 03,26, 04,27, 05,28, 03,29
+	DB SDB_T_FW, 	SDB_WALK - SDB_SUB,		4, 03,23, 04,24, 05,25, 03,26
 
-	; Transition: walking -> falling
-	DB SDB_T_WL,	SDB_FLY - SDB_SUB, 		08, 03,30, 04,31, 05,32, 03,33
+	; Transition: kinking -> flying
+	DB SDB_T_KF,	SDB_FLY - SDB_SUB, 		08, 03,27, 04,28, 05,15, 03,29
 
 sprDBIdx			WORD 0						; Current position in DB
 sprDBRemain			BYTE 0						; Amount of bytes that have to be still processed from the current record
