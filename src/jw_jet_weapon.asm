@@ -40,8 +40,6 @@ shotsDelayCnt
 
 SHOT_HEIGHT_PLATFORM	= 1
 
-MOVE_X_IN_D_SHOT		= %000'1'000'1			; Input mask for MoveX. Move the shot by 2 pixels and hide on the screen end
-
 STATE_SHOT_DIR_BIT		= 5						; Bit for #sr.SPRITE.STATE, 1 - shot moves right, 0 - shot moves left
 
 ;----------------------------------------------------------;
@@ -198,7 +196,7 @@ MoveShots
 	; Shot is visible, move it and update postion
 	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
 	
-	LD D, MOVE_X_IN_D_SHOT
+	LD D, sr.MVX_IN_D_4PX_HIDE
 
 	; Setup move direction for shot
 	BIT STATE_SHOT_DIR_BIT, (IX + sr.SPRITE.STATE)	
@@ -211,8 +209,8 @@ MoveShots
 	; Shot moves left
 	RES sr.MVX_IN_D_DIR_BIT, D
 .afterShotDir	
-
-	CALL sr.MoveX
+	
+	CALL sr.MoveX	
 	CALL sr.UpdateSpritePosition
 
 	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.

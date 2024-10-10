@@ -6,113 +6,149 @@
 ;----------------------------------------------------------;
 ;                     #CounterLoop                         ;
 ;----------------------------------------------------------;
-CounterLoop
-	CALL Counter12							; Fist is 10 because we use it to time animation
-	CALL Counter2
-	CALL Counter4	
-	CALL Counter6
+CounterLoop	
+	CALL Counter02
+	CALL Counter04	
+	CALL Counter06
+	CALL Counter08
+	CALL Counter10
 	CALL Counter40
 	RET	
 
 ;----------------------------------------------------------;
-;                       #Counter2                          ;
+;                       #Counter02                         ;
 ;----------------------------------------------------------;
-Counter2
+Counter02
 	; Increment the counter
-	LD A, (cd.counter2)
+	LD A, (cd.counter02)
 	INC A
-	LD (cd.counter2), A
-	CP cd.COUNTER2_MAX
-	RET NZ										; Jump if #counter2 !=  #COUNTER2_MAX 
+	LD (cd.counter02), A
+	CP cd.COUNTER02_MAX
+	RET NZ
 
 	; Reset the counter
 	XOR A										; Set A to 0
-	LD (cd.counter2), A
+	LD (cd.counter02), A
 
 	; ; 1 -> 0 and 0 -> 1
-	LD A, (cd.counter2FliFLop)
+	LD A, (cd.counter02FliFLop)
 	XOR 1
-	LD (cd.counter2FliFLop), A
-	
-	; CALL functions that need to be updated every 10th loop
-	CALL gm.Counter2
+	LD (cd.counter02FliFLop), A
+
+	; CALL functions that need to be updated every xx-th loop
+	CALL jc.JetInvincible
+	CALL ro.FlyRocket
 	RET
 
 ;----------------------------------------------------------;
-;                       #Counter4                          ;
+;                       #Counter04                         ;
 ;----------------------------------------------------------;
-Counter4
+Counter04
 	; Increment the counter
-	LD A, (cd.counter4)
+	LD A, (cd.counter04)
 	INC A
-	LD (cd.counter4), A
-	CP cd.COUNTER4_MAX
-	RET NZ										; Jump if #counter4 !=  #COUNTER4_MAX 
-
+	LD (cd.counter04), A
+	CP cd.COUNTER04_MAX
+	RET NZ
 	; Reset the counter
 	XOR A										; Set A to 0
-	LD (cd.counter4), A
+	LD (cd.counter04), A
 
 	; 1 -> 0 and 0 -> 1
-	LD A, (cd.counter4FliFLop)
+	LD A, (cd.counter04FliFLop)
 	XOR 1
-	LD (cd.counter4FliFLop), A
+	LD (cd.counter04FliFLop), A
 
-	; CALL functions that need to be updated every 10th loop
-	CALL ro.FlyRocket
+	; CALL functions that need to be updated every xx-th loop
+	CALL ro.RocketElementFallsForPickup
+	CALL ro.RocketElementFallsForAssembly
 	RET	
 
 ;----------------------------------------------------------;
-;                       #Counter6                          ;
+;                       #Counter06                         ;
 ;----------------------------------------------------------;
-Counter6
+Counter06
 	; Increment the counter
-	LD A, (cd.counter6)
+	LD A, (cd.counter06)
 	INC A
-	LD (cd.counter6), A
-	CP cd.COUNTER6_MAX
-	RET NZ										; Jump if #counter4 !=  #COUNTER4_MAX 
+	LD (cd.counter06), A
+	CP cd.COUNTER06_MAX
+	RET NZ
 
 	; Reset the counter
 	XOR A										; Set A to 0
-	LD (cd.counter6), A
+	LD (cd.counter06), A
 
 	; 1 -> 0 and 0 -> 1
-	LD A, (cd.counter6FliFLop)
+	LD A, (cd.counter06FliFLop)
 	XOR 1
-	LD (cd.counter6FliFLop), A
+	LD (cd.counter06FliFLop), A
 
-	; CALL functions that need to be updated every 10th loop
+	; CALL functions that need to be updated every xx-th loop
+
 	RET		
 
 ;----------------------------------------------------------;
-;                       #Counter12                         ;
+;                       #Counter08                         ;
 ;----------------------------------------------------------;
-Counter12
+Counter08
 	; Increment the counter
-	LD A, (cd.counter12)
+	LD A, (cd.counter08)
 	INC A
-	LD (cd.counter12), A
-	CP cd.COUNTER12_MAX
-	RET NZ										; Jump if #counter12 !=  #COUNTER12_MAX 
+	LD (cd.counter08), A
+	CP cd.COUNTER08_MAX
+	RET NZ
 
 	; Reset the counter
 	XOR A										; Set A to 0
-	LD (cd.counter12), A
+	LD (cd.counter08), A
 
 	; 1 -> 0 and 0 -> 1
-	LD A, (cd.counter12FliFLop)
+	LD A, (cd.counter08FliFLop)
 	XOR 1
-	LD (cd.counter12FliFLop), A
+	LD (cd.counter08FliFLop), A
 
-	; CALL functions that need to be updated every 10th loop
-	CALL gm.Counter12
-	CALL ro.RocketElementFallsForPickup
-	CALL ro.RocketElementFallsForAssembly
+	; CALL functions that need to be updated every xx-th loop
+	
+	CALL js.UpdateJetSpritePattern
+	CALL jw.AnimateShots
+
+	; Animate enemies
+	LD IX, ed.sprite01	
+	LD A, (ed.spritesSize)
+	LD B, A	
+	CALL sr.AnimateSprites
+
+
 	CALL ro.AnimateRocketReady
 	CALL ro.AnimateTankExplode
 	CALL ro.AnimateRocketExhaust
-	RET		
+
+	RET
+
+;----------------------------------------------------------;
+;                       #Counter10                         ;
+;----------------------------------------------------------;
+Counter10
+	; Increment the counter
+	LD A, (cd.counter10)
+	INC A
+	LD (cd.counter10), A
+	CP cd.COUNTER10_MAX
+	RET NZ
+
+	; Reset the counter
+	XOR A										; Set A to 0
+	LD (cd.counter10), A
+
+	; ; 1 -> 0 and 0 -> 1
+	LD A, (cd.counter10FliFLop)
+	XOR 1
+	LD (cd.counter10FliFLop), A
+
+	; CALL functions that need to be updated every xx-th loop
+
+	RET	
 
 ;----------------------------------------------------------;
 ;                       #Counter40                         ;
@@ -123,7 +159,7 @@ Counter40
 	INC A
 	LD (cd.counter40), A
 	CP cd.COUNTER40_MAX
-	RET NZ										; Jump if #counter12 !=  #COUNTER40_MAX 
+	RET NZ
 
 	; Reset the counter
 	XOR A										; Set A to 0
@@ -134,7 +170,7 @@ Counter40
 	XOR 1
 	LD (cd.counter40FliFLop), A
 
-	; CALL functions that need to be updated every 40th loop
+	; CALL functions that need to be updated every xx-th loop
 	CALL ro.DropNextRocketElement
 	RET	
 

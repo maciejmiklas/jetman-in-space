@@ -57,36 +57,6 @@ GameLoop
 	
 	CALL PrintDebug
 
-	RET
-
-;----------------------------------------------------------;
-;                       #Counter12                         ;
-;----------------------------------------------------------;
-Counter12
-	CALL AnimateSprites		
-	RET	
-
-;----------------------------------------------------------;
-;                       #Counter2                          ;
-;----------------------------------------------------------;
-Counter2
-	CALL jc.JetInvincible
-	RET		
-
-;----------------------------------------------------------;
-;                    #AnimateSprites                       ;
-;----------------------------------------------------------;
-AnimateSprites
-	; Update sprite patterns
-	CALL js.UpdateJetSpritePattern
-	CALL jw.AnimateShots
-
-	; Animate enemies
-	LD IX, ed.sprite01	
-	LD A, (ed.spritesSize)
-	LD B, A	
-	CALL sr.AnimateSprites
-		
 	RET	
 
 ;----------------------------------------------------------;

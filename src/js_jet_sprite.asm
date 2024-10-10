@@ -234,7 +234,7 @@ UpdateJetSpritePattern
 ;                    #BlinkJetSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
-; - A:	Flip Flop counter, ie: #counter2FliFLop
+; - A:	Flip Flop counter, ie: #counter02FliFLop
 BlinkJetSprite
 	CP cd.FLIP_ON
 	JR NZ, .flipOff

@@ -145,7 +145,7 @@ UpdateSpritePosition
 
 	LD A, (IX + SPRITE.STATE)
 	RES _SPR_REG_ATR2_OVER_BIT, A				; Reset overflow and set it in next command
-	or B										; Apply B to set MSB from X
+	OR B										; Apply B to set MSB from X
 	AND _SPR_REG_ATR2_RES_PAL					; Reset bits reserved for pallete
 
 	RES _SPR_REG_ATR2_MIRY_BIT, A				; Reset rotation bits, as we use those for different things and might be set
@@ -284,89 +284,93 @@ LoadSpritePattern
 ;----------------------------------------------------------;
 ;                          #MoveX                          ;
 ;----------------------------------------------------------;
-; Move the sprite one pixel to the right or left along the X-axis, depending on the #SPRITE.STATE
+; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on the #SPRITE.STATE
 ; Input
 ;  - IX:	Pointer to #SPRITE
 ;  - D: 	Configuration, bits:
-;			- 0: 0 - move sprite by 1 pixel, 1 - move sprite by 2 pixels
-;			- 4: #MVX_IN_D_HIDE_BIT
-;			- 5: #MVX_IN_D_DIR_BIT
-MVX_IN_D_MOVE_STEP_BIT 		= 0
-MVX_IN_D_HIDE_BIT 			= 4					; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen
-MVX_IN_D_DIR_BIT			= 5					; 1 - to move right, 0 - to move left
-; Modifies: A, BC
-
+;			- 0-2: Number of pixels to move spirte
+;			- 3:  #MVX_IN_D_HIDE_BIT
+;			- 4:  #MVX_IN_D_DIR_BIT
+MVX_IN_D_HIDE_BIT 			= 3					; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen
+MVX_IN_D_DIR_BIT			= 4					; 1 - to move right, 0 - to move left
+MVX_IN_D_4PX_HIDE			= %0000'1'100		; Move the sprite by 4 pixels and hide on the screen end
+MVX_IN_D_1PX_ROL			= %0000'0'001		; Move the sprite by 1 pixel and roll over sprite when off-screen
+MVX_IN_D_MASK_CNT			= %00000'111
+; Modifies; A, B, HL
 MoveX
+	; Load counter for .moveLeftLoop into B
+	LD A, D
+	AND MVX_IN_D_MASK_CNT
+	LD B, A
+
+	; Moving left - decrease X coordinate
+	LD HL, (IX + SPRITE.X)
+
 	BIT MVX_IN_D_DIR_BIT, D
 	JR NZ, .moveRight
-	
-	; Moving left - decrease X coordinate
-	LD BC, (IX + SPRITE.X)
-	DEC BC
 
-	; Move again?
-	LD A, D
-	BIT MVX_IN_D_MOVE_STEP_BIT, A
-	JR Z, .afterExtraMoveL
-	DEC BC
-.afterExtraMoveL
+.moveLeftLoop
+	DEC HL
 
 	; Check whether a sprite is outside the screen 
-	LD A, B
-	CP 0										; B holds MSB from X, if B > 0 than X > 256
-	JR NZ, .afterMoving
-	LD A, C
-	CP sc.SCR_X_MIN_POS + 3						; C holds LSB from X, if C >=3 then X is >=3
-	JR NC, .afterMoving
+	LD A, H
+	CP 0										; H holds MSB from X, if H > 0 than X > 256
+	JR NZ, .continueLeftLoop
 
-	; X <= 3 -> sprite out of screen
+	; H is 0, check whether L has reached #SCR_X_MIN_POS
+	LD A, L
+	CP sc.SCR_X_MIN_POS
+	JR NZ, .continueLeftLoop
+
+	; HL == #SCR_X_MIN_POS
 	BIT MVX_IN_D_HIDE_BIT, D					; Hide sprite or roll over?
 	JR NZ, .hideSpriteL
 	
-	LD BC, sc.SCR_X_MAX_POS						; Roll over 
+	LD HL, sc.SCR_X_MAX_POS						; Roll over 
+	JR .afterMoving
+
+.continueLeftLoop
+	DJNZ .moveLeftLoop							; Jump if B > 0
 	JR .afterMoving
 
 .hideSpriteL
- 	CALL HideSprite				; Hide sprite
+ 	CALL HideSprite								; Hide sprite
 	JR .afterMoving
 
 .moveRight
 	; Moving right - increase X coordinate
-	LD BC, (IX + SPRITE.X)	
-	INC BC
+	LD HL, (IX + SPRITE.X)	
 
-	; Move again?
-	LD A, D
-	BIT MVX_IN_D_MOVE_STEP_BIT, A
-	JR Z, .afterExtraMoveR
-	INC BC
-.afterExtraMoveR
+.moveRightLoop	
+	INC HL
 
 	; If X >= 315 then hide sprite 
 	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
-	LD A, B										; Load MSB from X into A
+	LD A, H										; Load MSB from X into A
 	CP 1										; 9-th bit set means X > 256
-	JR NZ, .afterMoving
-	LD A, C										; Load MSB from X into A
+	JR NZ, .continueRightLoop
+	LD A, L										; Load MSB from X into A
 	CP 59										; MSB > 59 
-	JR C, .afterMoving
+	JR C, .continueRightLoop
 	
 	; Sprite is after 315
 	BIT MVX_IN_D_HIDE_BIT, D					; Hide sprite or roll over?
 	JR NZ, .hideSpriteR
 	
 	; Roll over 
-	LD B, 0
-	LD C, sc.SCR_X_MIN_POS
+	LD H, 0
+	LD L, sc.SCR_X_MIN_POS
+	JR .afterMoving
+
+.continueRightLoop
+	DJNZ .moveRightLoop							; Jump if B > 0
 	JR .afterMoving
 
 .hideSpriteR
- 	CALL HideSprite				; Hide sprite
-	JR .afterMoving
+ 	CALL HideSprite								; Hide sprite
 
 .afterMoving
-
-	LD (IX + SPRITE.X), BC							; Update new X position
+	LD (IX + SPRITE.X), HL						; Update new X position
 	
 	RET
 

@@ -3,10 +3,10 @@
 ;----------------------------------------------------------;
 	MODULE jc
 
-ENEMY_MARGIN_HORIZONTAL	= 12
-ENEMY_MARGIN_VERT_UP	= 18
-ENEMY_MARGIN_VERT_LOW	= 15
-ENEMY_MARGIN_VERT_KICK	= 25
+EN_MARGIN_HORIZONTAL	= 12
+EN_MARGIN_VERT_UP	= 18
+EN_MARGIN_VERT_LOW	= 15
+EN_MARGIN_VERT_KICK	= 25
 
 RIP_MOVE_LEFT			= 0
 RIP_MOVE_RIGHT			= 1
@@ -88,7 +88,7 @@ CheckCollision
 	RET		
 .keepCheckingHorizontal	
 	LD A, L
-	LD B, ENEMY_MARGIN_HORIZONTAL
+	LD B, EN_MARGIN_HORIZONTAL
 	CP B
 	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical
 	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision	
@@ -143,7 +143,7 @@ EnemyColision
 
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman
 	LD E, 0
-	LD D, ENEMY_MARGIN_VERT_KICK
+	LD D, EN_MARGIN_VERT_KICK
 	CALL CheckCollision
 	CP COLLISION_YES
 	JR NZ, .noKicking
@@ -163,8 +163,8 @@ EnemyColision
 
 .noKicking
 	; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die
-	LD D, ENEMY_MARGIN_VERT_UP
-	LD E, ENEMY_MARGIN_VERT_LOW
+	LD D, EN_MARGIN_VERT_UP
+	LD E, EN_MARGIN_VERT_LOW
 	CALL CheckCollision
 	CP COLLISION_YES
 	RET NZ
@@ -238,7 +238,7 @@ JetRip
 ;                   #MakeJetInvincible                     ;
 ;----------------------------------------------------------;
 ; Input
-;  - HL:	Number of loops (#counter2) to keep Jemtan invincible
+;  - HL:	Number of loops (#counter02) to keep Jemtan invincible
 MakeJetInvincible
 	LD (invincibleCnt), HL						; Store invincibility duration
 	
@@ -281,10 +281,10 @@ JetInvincible
 	JR NC, .blinkFast							; #invincibleCnt > #INVINCIBLE_FAST_BLINK -> blink fast
 
 	;  #invincibleCnt < #INVINCIBLE_FAST_BLINK -> blink slow (invincibility is almost over)
-	LD A, (cd.counter4FliFLop)
+	LD A, (cd.counter04FliFLop)
 	JR .afterBlinkSet
 .blinkFast	
-	LD A, (cd.counter2FliFLop)
+	LD A, (cd.counter02FliFLop)
 .afterBlinkSet	
 
 	CALL js.BlinkJetSprite

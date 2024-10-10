@@ -34,7 +34,7 @@ jetDirection			BYTE MOVE_INACTIVE	; Jetman initially hovers, no movement
 ; Holds currently pressed direction button. State will be updated right at the beginning of each joystick loop
 joyDirection			BYTE MOVE_INACTIVE
 
-JOY_DELAY				= 2					; Probe joystick every few loops. Loop speed is controled by: #WaitForScanline     
+JOY_DELAY				= 1					; Probe joystick every few loops, 1 for each loop, 0 is not supported
 joyDelayCnt				BYTE 0				; The delay counter for joistink input and Jetman movement speed
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

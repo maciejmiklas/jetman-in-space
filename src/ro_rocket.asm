@@ -635,7 +635,7 @@ AnimateRocketReady
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman	
-	LD A, (cd.counter12FliFLop)
+	LD A, (cd.counter08FliFLop)
 	CP cd.FLIP_ON
 	JR Z, .flip
 	LD A, ROCKET_SPR_ID_READY1

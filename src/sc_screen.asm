@@ -8,7 +8,7 @@ SCR_X_MAX_POS			= 315
 SCR_Y_MIN_POS			= 10
 SCR_Y_MAX_POS			= 240
 
-SC_SYNC_SL				= 0						; Scanline to synch to
+SC_SYNC_SL				= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
 
 SHAKE_SCREEN_BY			= 5						; Number of pixels to move the screen by shaking
 
@@ -110,10 +110,6 @@ SetupTilemapPalette
 ;                     #WaitForScanline                     ;
 ;----------------------------------------------------------;
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
-;
-; The code waits for the given scanline (#SC_SYNC_SL) in the first loop, and then in the second loop, it waits again for the same scanline. 
-; This method pauses for the whole frame or a bit more, depending on which scanline display is when calling "WaitForScanline".
-; 
 ; Based on: https://github.com/robgmoran/DougieDoSource
 WaitForScanline     
 ; Read NextReg $1F - LSB of current raster line
@@ -122,17 +118,11 @@ WaitForScanline
 	OUT (C), A									; Select NextReg $1F
 	INC B										; TBBlue Register Access
 
-; Wait for scanline given by H (#SC_SYNC_SL)
+; Wait for scanline (#SC_SYNC_SL)
 .waitForScanline
 	IN A, (C)									; Read the raster line LSB into A
 	CP SC_SYNC_SL
-	JR Z, .waitForScanline						; Keep looping until Scanline changes from given to next, 192->193
-
-; Now we are at the scanline, wait the whole frame again for the same scanline
-.waitAgainForScanline
-	IN A, (C)									; Read the raster line LSB into A
-	CP SC_SYNC_SL
-	JR NZ, .waitAgainForScanline
+	JR NZ, .waitForScanline
 
 	RET
 
@@ -140,11 +130,11 @@ WaitForScanline
 ;                   #ShakeScreen                           ;
 ;----------------------------------------------------------;
 ShakeScreen
-	LD A, (cd.counter4)
+	LD A, (cd.counter04)
 	CP 0
 	RET NZ										; Return if counter to 5 did not reset	
 
-	LD A, (cd.counter4FliFLop)					; Oscilates beetwen 1 and 0
+	LD A, (cd.counter04FliFLop)					; Oscilates beetwen 1 and 0
 	LD D, A
 	LD e, SHAKE_SCREEN_BY
 	MUL D, E
