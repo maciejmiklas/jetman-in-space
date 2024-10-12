@@ -99,7 +99,7 @@ ROCKET_EXHAUST_SPR		= 43					; Sprite ID for exhaust
 ;                #UpdateOnJetmanMove                       ;
 ;----------------------------------------------------------;
 UpdateOnJetmanMove
-	CALL AttachRocketElement
+	CALL PuckupRocketElement
 	CALL CarryRocketElement
 	CALL BoardRocket
 	RET	
@@ -500,9 +500,13 @@ MoveWithJetman
 
 	RET
 ;----------------------------------------------------------;
-;                 #AttachRocketElement                     ;
+;                 #PuckupRocketElement                     ;
 ;----------------------------------------------------------;
-AttachRocketElement
+PuckupRocketElement
+
+	LD A, (jt.jetState)
+	BIT jt.JET_STATE_RIP_BIT, A
+	RET NZ										; Exit if RiP
 
 	; Do not pick up tank when it's exploding
 	LD A, (expolodeTankCnt)

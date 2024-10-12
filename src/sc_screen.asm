@@ -8,7 +8,7 @@ SCR_X_MAX_POS			= 315
 SCR_Y_MIN_POS			= 10
 SCR_Y_MAX_POS			= 240
 
-SC_SYNC_SL				= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
+SC_SYNC_SL				= 255					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
 
 SHAKE_SCREEN_BY			= 5						; Number of pixels to move the screen by shaking
 

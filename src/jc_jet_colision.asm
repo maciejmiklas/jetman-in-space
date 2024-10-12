@@ -21,8 +21,8 @@ ripMoveMul				BYTE RIP_MOVE_MUL_INC
 
 invincibleCnt			WORD 0					; Makes Jetman invincible when > 0
 
-INVINCIBLE_DURATION 	= 200					; Number of loops to keep Jetman invincible	
-INVINCIBLE_FAST_BLINK	= 150
+INVINCIBLE_DURATION 	= 150					; Number of loops to keep Jetman invincible	
+INVINCIBLE_FAST_BLINK	= 130
 
 ;----------------------------------------------------------;
 ;                #JetmanEnemiesColision                    ;
@@ -324,14 +324,17 @@ RipMove
 	; Move right
 	CALL jo.DecJetX
 	CALL jo.DecJetX
+	CALL jo.DecJetX
 	JR .afterMove
 .moveLeft
 	; Move left
 	CALL jo.IncJetX
 	CALL jo.IncJetX
+	CALL jo.IncJetX
 .afterMove
 
-	CALL jo.DecJetY								; Going up
+	LD B, 4									; Going up
+	CALL jo.DecJetYbyB
 
 	; Decrement move counter
 	LD A, (ripMoveCnt)

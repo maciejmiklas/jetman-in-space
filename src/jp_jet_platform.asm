@@ -155,7 +155,9 @@ AnimateOnJoystickDisabled
 
 	; Yes, Jetman is falling from the platform
 	CALL jo.IncJetX
-	CALL jo.IncJet2Y
+
+	LD B, 2
+	CALL jo.IncJetYbyB
 
 	JR .afterAnimate							; Do not check falling left or bumping because Jetman is already falling
 .afterFallingRight	
@@ -167,7 +169,9 @@ AnimateOnJoystickDisabled
 
 	; Yes, Jetman is falling from the platform
 	CALL jo.DecJetX
-	CALL jo.IncJet2Y
+	
+	LD B, 2
+	CALL jo.IncJetYbyB
 	JR .afterAnimate							; Do not check for bumping, as Jetman is falling
 .afterFallingLeft	
 

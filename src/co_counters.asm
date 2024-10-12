@@ -38,6 +38,7 @@ Counter02
 	; CALL functions that need to be updated every xx-th loop
 	CALL jc.JetInvincible
 	CALL ro.FlyRocket
+
 	RET
 
 ;----------------------------------------------------------;
@@ -112,7 +113,7 @@ Counter08
 	
 	CALL js.UpdateJetSpritePattern
 	CALL jw.AnimateShots
-
+	
 	; Animate enemies
 	LD IX, ed.sprite01	
 	LD A, (ed.spritesSize)

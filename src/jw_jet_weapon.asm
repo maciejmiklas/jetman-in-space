@@ -33,7 +33,7 @@ shots10
 
 SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
-FIRE_DELAY				= 2
+FIRE_DELAY				= 15
 ; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY
 shotsDelayCnt
 	DB 0
@@ -196,7 +196,7 @@ MoveShots
 	; Shot is visible, move it and update postion
 	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands
 	
-	LD D, sr.MVX_IN_D_4PX_HIDE
+	LD D, sr.MVX_IN_D_6PX_HIDE
 
 	; Setup move direction for shot
 	BIT STATE_SHOT_DIR_BIT, (IX + sr.SPRITE.STATE)	
@@ -235,18 +235,23 @@ MoveShots
 	RET
 
 ;----------------------------------------------------------;
-;                    #AnimateShots                         ;
+;                  #FireDelayCounter                       ;
 ;----------------------------------------------------------;
-AnimateShots
+FireDelayCounter
 	; Increase shot counter
 	LD A, (shotsDelayCnt)
 	CP FIRE_DELAY
-	JR NC, .afterIncDelay						; Do increase the delay counter when it has reached the required value
+	RET Z										; Do increase the delay counter when it has reached the required value
 	INC A
 	LD (shotsDelayCnt), A
-.afterIncDelay
 	 
-	; Animate shots
+	RET
+
+
+;----------------------------------------------------------;
+;                    #AnimateShots                         ;
+;----------------------------------------------------------;
+AnimateShots
 	LD IX, shots	
 	LD B, SHOTS_SIZE 
 	CALL sr.AnimateSprites
@@ -260,7 +265,7 @@ Fire
 	; Check delay to limit fire speed
 	LD A, (shotsDelayCnt)
 	CP FIRE_DELAY
-	RET C										; Return if the delay counter did not reach the defined value
+	RET NZ										; Return if the delay counter did not reach the defined value
 
 	; We can fire, reset counter
 	XOR A										; Set A to 0

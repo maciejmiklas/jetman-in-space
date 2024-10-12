@@ -46,7 +46,7 @@ RespownFormation
 	; Check if deployment is over -> the last sprite has been deployed.
 	LD A, (IY + EF.SPRITES_CNT)
 	CP (IY + EF.SPRITES)
-	JR C, .afterSpritesCounterCheck				; Jump if  EF.SPRITES_CNT < EF.SPRITES -> There are still enemies that need to be deployed
+	JR C, .deplyNextEnemy						; Jump if  EF.SPRITES_CNT < EF.SPRITES -> There are still enemies that need to be deployed
 	
 	; Deplyment is over
 	LD DE, 0									; Reset formation counters
@@ -54,7 +54,7 @@ RespownFormation
 	LD (IY + EF.RESPOWN_DELAY_CNT), DE
 
 	RET
-.afterSpritesCounterCheck	
+.deplyNextEnemy	
 
 	; Deploy next enemy!
 	LD HL, (IY + EF.SPRITE_POINTER)

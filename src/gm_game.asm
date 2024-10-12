@@ -31,6 +31,7 @@ GameLoop
 	; First update graphics, logic follows afterwards!
 	CALL js.UpdateJetSpritePositionRotation
 	
+	CALL jw.FireDelayCounter
 	CALL jc.JetRip
 	CALL in.JoyInput
 

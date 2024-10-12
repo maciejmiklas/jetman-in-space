@@ -61,18 +61,6 @@ IncJetY
 	RET
 
 ;----------------------------------------------------------;
-;                         #IncJet2Y                        ;
-;----------------------------------------------------------;
-IncJet2Y
-	LD A, (jo.jetY)	
-	INC A
-	INC A
-	LD (jo.jetY), A
-
-	CALL JetmanMoves
-	RET
-
-;----------------------------------------------------------;
 ;                          #DecJetY                        ;
 ;----------------------------------------------------------;
 DecJetY
@@ -83,14 +71,28 @@ DecJetY
 	CALL JetmanMoves
 	RET	
 
+;----------------------------------------------------------;
+;                         #IncJetYbyB                      ;
+;----------------------------------------------------------;
+; Input 
+; - B: number of pixels to move Jetman Up
+IncJetYbyB
+	LD A, (jo.jetY)	
+.loop	
+	ADD B
+	LD (jo.jetY), A
+
+	CALL JetmanMoves
+	RET	
 
 ;----------------------------------------------------------;
-;                          #DecJet2Y                       ;
+;                         #DecJetYbyB                      ;
 ;----------------------------------------------------------;
-DecJet2Y
+; Input 
+; - B: number of pixels to move Jetman Up
+DecJetYbyB
 	LD A, (jo.jetY)	
-	DEC A
-	DEC A
+	SUB B
 	LD (jo.jetY), A
 
 	CALL JetmanMoves

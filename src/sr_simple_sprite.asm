@@ -53,6 +53,7 @@ SDB_EXPLODE				= 201					; Explosion
 SDB_FIRE				= 202					; Fire
 SDB_ENEMY1				= 203					; Enemy 1
 SDB_ENEMY2				= 204					; Enemy 2
+SDB_ENEMY3				= 205					; Enemy 3
 SDB_HIDE				= 255					; Hides Sprite
 
 SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX)
@@ -70,6 +71,8 @@ srSpriteDB
 			DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
 	SPR_REC {SDB_ENEMY2, SDB_ENEMY2 - SDB_SUB, 03}
 			DB 48, 49, 50
+	SPR_REC {SDB_ENEMY3, SDB_ENEMY3 - SDB_SUB, 03}
+			DB 34, 35, 36			
 
 ;----------------------------------------------------------;
 ;                         #SpriteHit                       ;
@@ -293,8 +296,9 @@ LoadSpritePattern
 ;			- 4:  #MVX_IN_D_DIR_BIT
 MVX_IN_D_HIDE_BIT 			= 3					; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen
 MVX_IN_D_DIR_BIT			= 4					; 1 - to move right, 0 - to move left
-MVX_IN_D_4PX_HIDE			= %0000'1'100		; Move the sprite by 4 pixels and hide on the screen end
+MVX_IN_D_6PX_HIDE			= %0000'1'110		; Move the sprite by 6 pixels and hide on the screen end
 MVX_IN_D_1PX_ROL			= %0000'0'001		; Move the sprite by 1 pixel and roll over sprite when off-screen
+MVX_IN_D_2PX_ROL			= %0000'0'010		; Move the sprite by 2 pixels and roll over sprite when off-screen
 MVX_IN_D_MASK_CNT			= %00000'111
 ; Modifies; A, B, HL
 MoveX
