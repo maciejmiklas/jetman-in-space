@@ -5,10 +5,10 @@
 
 ; The move formation consists of multiple sprites. #EF.SPRITE_POINTER gives the first sprite, and #EF.SPRITES determines the amount. 
 ; For example, for #EF.SPRITE_POINTER=sprite10 and #EF.SPRITES=3, the formation will contain three sprites: sprite10, sprite11, and sprite12. 
-; The #EF.RESPOWN_DELAY determines the respawn delay of the first sprite in the formation. The #EN.RESPOWN_DELAY for the remaining sprites 
+; The #EF.RESPOWN_DELAY determines the respawn delay of the first sprite in the formation. The #ENP.RESPOWN_DELAY for the remaining sprites 
 ; determines the deploy delay for the following sprite in the formation. 
 	STRUCT EF
-SPRITE_POINTER		WORD						; Pointer to the first sprite (#SPRITE)
+SPRITE_POINTER		WORD						; Pointer to the first sprite (#SPR)
 RESPOWN_DELAY		WORD						; Number of game loops delaying respawn
 RESPOWN_DELAY_CNT	WORD						; Respawn delay counter
 SPRITES				BYTE						; Number of sprites used in this formation, starting from #SPRITE_POINTER inclusive
@@ -58,11 +58,11 @@ RespownFormation
 
 	; Deploy next enemy!
 	LD HL, (IY + EF.SPRITE_POINTER)
-	LD IX, HL									; IX points for EN for the first sprite in the formation
+	LD IX, HL									; IX points for ENP for the first sprite in the formation
 
 	; Move IX to the current sprite in the formation
 	LD D, (IY + EF.SPRITES_CNT)					; IX = IX + EF.SPRITES_CNT * EF
-	LD E, sr.SPRITE
+	LD E, sr.SPR
 	MUL D, E
 	ADD IX, DE
 

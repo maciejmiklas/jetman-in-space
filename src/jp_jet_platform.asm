@@ -24,37 +24,37 @@ platformWalk3
 platformWalkSize 		BYTE 3
 
 ; Coordinates for bumping into a platform
-	STRUCT P_HIT
-X_START					BYTE					; X start of the platform
-X_END					BYTE					; X end of the platform
+	STRUCT PCL									; Platform Collision
+X_START					WORD					; X start of the platform
+X_END					WORD					; X end of the platform
 Y_START					BYTE					; Y start of the platform
 Y_END					BYTE					; Y end of the platform
 	ENDS
 
-; [amount of plaftorms], #P_HIT,..., #P_HIT]
-platformHit
-	P_HIT {009/*X_START*/, 070/*X_END*/, 093/*Y_START*/, 120/*Y_END*/}
-platformHit2	
-	P_HIT {073/*X_START*/, 142/*X_END*/, 141/*Y_START*/, 169/*Y_END*/}
-platformHit3
-	P_HIT {187/*X_START*/, 245/*X_END*/, 054/*Y_START*/, 079/*Y_END*/}
-platformHitSize		BYTE 3
+; [amount of plaftorms], #PCL,..., #PCL]
+platformCollision
+	PCL {009/*X_START*/, 070/*X_END*/, 093/*Y_START*/, 120/*Y_END*/}
+platformCollision2	
+	PCL {073/*X_START*/, 142/*X_END*/, 141/*Y_START*/, 169/*Y_END*/}
+platformCollision3
+	PCL {187/*X_START*/, 245/*X_END*/, 054/*Y_START*/, 079/*Y_END*/}
+platformCollisionSize	BYTE 3
 
 ; We are using platform coordinates for bumping, which are too thick for the thin sprite
-PLATFROM_MARGIN_UP		= 12
+PLATFROM_MARGIN_UP		= 10
 PLATFROM_MARGIN_DOWN	= 5
-
 
 ;----------------------------------------------------------;
 ;                 #LevelPlaftormColision                   ;
 ;----------------------------------------------------------;
-;  - IX: 	Pointer to #SPRITE, single sprite to check colsion for
+; Check whether the sprite given by IX hits one of the platforms
+;  - IX: 	Pointer to #SPR, single sprite to check colsion for
 ;  - L:		Half of the height of the sprite
 LevelPlaftormColision
 
-	LD IY, platformHit
+	LD IY, platformCollision
 
-	LD A, (jp.platformHitSize)
+	LD A, (jp.platformCollisionSize)
 	LD B, A
 
 	CALL jp.PlaftormColision
@@ -63,83 +63,66 @@ LevelPlaftormColision
 ;----------------------------------------------------------;
 ;                    #PlaftormColision                     ;
 ;----------------------------------------------------------;
+; Check whether the sprite given by IX hits one of the platforms
 ; Input:
-;  - IX: 	Pointer to #SPRITE, single sprite to check colsion for
-;  - IY:	Pointert to #P_HIT list
-;  - B:		Size of the list in IY
-;  - L:		Half of the height of the sprite
+;  - IX: 	Pointer to #SPR, single sprite to check colsion for
+;  - IY:	Pointert to #PCL list
+;  - B:		Number of elements in #PCL list
+;  - C:		Half of the height of the sprite
 ; Output:
 ;  - A: 	MOVE_RET_XXX
 PL_COL_RET_A_NO 			= 0					; No colision
 PL_COL_RET_A_YES 			= 1					; Sprite hits the platform
-; Modifies: ALL
 
 PlaftormColision
 
 	; Exit if sprite is not alive
-	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPRITE.STATE)	
+	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)	
 	JR NZ, .alive								; Jump if sprite is alive
 
 	LD A, PL_COL_RET_A_NO
 	RET
 .alive
 
-.loop
-	; Return if X > 256 -> such position takes two bytes and MSB is > 0 (D is 1). Platforms end at 256.
-	LD DE, (IX + sr.SPRITE.X)
-	XOR A										; Set A to 0
-	CP D
-	RET NZ
+.loopOverPlatforms
+	; Check the collision from the left side of the platform
+	LD DE, (IY + PCL.X_START)					; DE = start of the platform (left side)
+	LD HL, (IX + sr.SPR.X)						; HL = X postion of the sprite		
+	SBC HL, DE									; HL - DE
+	JP M, .continueLoopOverPlatfroms			; continue (no collision) if HL - DE < 0
 
-	; Is Sprite after the beginning of the platform?
-	LD A, E										; A holds current X position of the sprite for colision check (only LSB, platrofrm are limited to X <= 255)
-	LD C, (IY + P_HIT.X_START)
-	CP C
-	JR NC, .afterXLeftCheck						; Jump if [X sprite] < [X platform start] -> 
-
-	JR .continue
-.afterXLeftCheck
-
-	; Is Sprite before the end of the platform?
-
-	; A still holds [X sprite]
-	LD C, (IY + P_HIT.X_END)
-	CP C
-	JR C, .afterXRightCheck						; Jump if [X sprite] >= [X platform end]
-
-	; There is no collision with the current platform. Move the IY pointer to the next one and continue looping
-	JR .continue
-.afterXRightCheck	
+	; Sprite is on the left from the platform's left corner. Now check whether it's not over the end 
+	LD DE, (IX + sr.SPR.X)						; DE = X postion of the sprite
+	LD HL, (IY + PCL.X_END)						; HL = start of the platform (left side)
+	SBC HL, DE									; HL - DE
+	JP M, .continueLoopOverPlatfroms			; continue (no collision) if HL - DE < 0
 	
-	; Sprite is within the platform's horizontal position; now check whether it's within vertical bounds
-	LD A, (IY + P_HIT.Y_START)
+	; Sprite is within the platform's horizontal position. Now check whether it's within vertical bounds
+	LD A, (IY + PCL.Y_START)
 	ADD PLATFROM_MARGIN_UP						; Increase start Y to make platform thinner
-	SUB L										; Thickness to the sprite
-	LD D, A										; D contains [Y platform start]
+	LD D, A
 
-	LD A, (IY + P_HIT.Y_END)
+	LD A, (IY + PCL.Y_END)
 	SUB PLATFROM_MARGIN_DOWN					; Decrease end Y to make the platform thinner
-	ADD L										; Thickness to the sprite
-	LD E, A										; E contains [Y platform end]
+	LD E, A
 
-	; Now D contains [Y platform start + margin],  E contains [Y platform end + margin]
-	LD A, (IX + sr.SPRITE.Y)						; A holds current shot Y position
+	LD A, (IX + sr.SPR.Y)						; A holds current sprite Y position
 	
 	CP D										; Compare [Y sprite] position to [Y start]
-	JR C, .continue								; Jump if shot < [Y platform start]
+	JR C, .continueLoopOverPlatfroms			; Jump if shot < [Y platform start]
 
 	CP E
-	JR NC, .continue							; Jump if shot > [Y end]
+	JR NC, .continueLoopOverPlatfroms			; Jump if shot > [Y end]
 
 	; Sprite hits the platform!
 	LD A, PL_COL_RET_A_YES
 
 	RET
 
-.continue
-	LD DE, P_HIT
+.continueLoopOverPlatfroms
+	LD DE, PCL
 	ADD IY, DE
-	DJNZ .loop							; Decrease B until all platforms have been evaluated
+	DJNZ .loopOverPlatforms							; Decrease B until all platforms have been evaluated
 
 	LD A, PL_COL_RET_A_NO
 	RET
@@ -317,23 +300,23 @@ BumpIntoPlatFormBelow
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
 
-	LD IX, platformHit
-	LD A, (platformHitSize)						; Load into B the number of platforms to check
+	LD IX, platformCollision
+	LD A, (platformCollisionSize)						; Load into B the number of platforms to check
 	LD B, A
 .platformsLoop	
 	LD A, (jo.jetY)								; A holds current Y position
-	LD C, (IX + P_HIT.Y_END)					; C contains [Y end]
+	LD C, (IX + PCL.Y_END)					; C contains [Y end]
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jetY
 
 	; Jetman is on the bottom of the platform, now check whether he is withing its horizonlat bounds
 	LD A, (jo.jetX)								; A holds current X position
 
-	LD D, (IX + P_HIT.X_START)					; D contains [X start]	
+	LD D, (IX + PCL.X_START)					; D contains [X start]	
 	CP D										; Compare #jetX position to [X start]
 	JR C, .platformsLoopEnd						; Jump if #jetX < [X start]
 
-	LD E, (IX + P_HIT.X_END)					; E contains [Y end]
+	LD E, (IX + PCL.X_END)					; E contains [Y end]
 	CP E
 	JR NC, .platformsLoopEnd					; Jump if #jetX > [X end]
 
@@ -352,7 +335,7 @@ BumpIntoPlatFormBelow
 
 	POP BC
 .platformsLoopEnd
-	LD DE, P_HIT
+	LD DE, PCL
 	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
@@ -376,8 +359,8 @@ BumpIntoPlatformLR
 	CP 0
 	RET NZ										; Return if Jetman is after 257 on X
 	
-	LD IX, platformHit
-	LD A, (platformHitSize)						; Load into B the number of platforms to check
+	LD IX, platformCollision
+	LD A, (platformCollisionSize)						; Load into B the number of platforms to check
 	LD B, A
 .platformsLoop	
 
@@ -387,15 +370,15 @@ BumpIntoPlatformLR
 	JR Z, .bumpLeft
 
 	; Jetman bumps into the platform from the right
-	LD C, (IX + P_HIT.X_END)					; C contains [X end]
+	LD C, (IX + PCL.X_END)					; C contains [X end]
 	JR .afterBumpSideCheck
 .bumpLeft	
 	; Jetman bumps into the platform from the left
-	LD C, (IX + P_HIT.X_START)
+	LD C, (IX + PCL.X_START)
 .afterBumpSideCheck
 
-	LD D, (IX + P_HIT.Y_START)
-	LD E, (IX + P_HIT.Y_END)
+	LD D, (IX + PCL.Y_START)
+	LD E, (IX + PCL.Y_END)
 
 	LD A, (jo.jetX)								; A holds current X position
 	CP C
@@ -424,7 +407,7 @@ BumpIntoPlatformLR
 
 	POP BC
 .platformsLoopEnd
-	LD DE, P_HIT
+	LD DE, PCL
 	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 	RET
@@ -438,7 +421,7 @@ FallingFromPlatform
 	RET NZ										; Return if not walking, no walking - no falling ;)
 
 	LD IX, platformWalk
-	LD A, (platformHitSize)
+	LD A, (platformCollisionSize)
 	LD B, A										; Load into B the number of platforms to check
 .platformsLoop	
 	LD A, (jo.jetY)								; A holds current Y position

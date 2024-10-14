@@ -10,7 +10,7 @@ SCR_Y_MAX_POS			= 240
 
 SC_SYNC_SL				= 255					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
 
-SHAKE_SCREEN_BY			= 5						; Number of pixels to move the screen by shaking
+SHAKE_SCREENP_BY			= 5						; Number of pixels to move the screen by shaking
 
 ;----------------------------------------------------------;
 ;                      #SetupScreen                        ;
@@ -136,7 +136,7 @@ ShakeScreen
 
 	LD A, (cd.counter04FliFLop)					; Oscilates beetwen 1 and 0
 	LD D, A
-	LD e, SHAKE_SCREEN_BY
+	LD e, SHAKE_SCREENP_BY
 	MUL D, E
 	LD A, E
 	NEXTREG _DC_REG_TILE_X_LSB_H30, A

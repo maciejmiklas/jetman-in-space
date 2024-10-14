@@ -3,10 +3,10 @@
 ;----------------------------------------------------------;
 	MODULE jc
 
-EN_MARGIN_HORIZONTAL	= 12
-EN_MARGIN_VERT_UP	= 18
-EN_MARGIN_VERT_LOW	= 15
-EN_MARGIN_VERT_KICK	= 25
+ENP_MARGIN_HORIZONTAL	= 12
+ENP_MARGIN_VERT_UP	= 18
+ENP_MARGIN_VERT_LOW	= 15
+ENP_MARGIN_VERT_KICK	= 25
 
 RIP_MOVE_LEFT			= 0
 RIP_MOVE_RIGHT			= 1
@@ -44,7 +44,7 @@ JetmanEnemiesColision
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
-;  - IX:	Pointer to #SPRITE, the enemies
+;  - IX:	Pointer to #SPR, the enemies
 ;  - B:		Number of enemies in IX
 ; Modifies: ALL
 EnemiesColision
@@ -53,7 +53,7 @@ EnemiesColision
 	CALL EnemyColision
 .continue
 	; Move HL to the beginning of the next #shotsX
-	LD DE, sr.SPRITE
+	LD DE, sr.SPR
 	ADD IX, DE
 	POP BC
 	DJNZ .loop									; Jump if B > 0
@@ -65,7 +65,7 @@ EnemiesColision
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
-;  - IX:	Pointer to concreate single enemy, single #SPRITE
+;  - IX:	Pointer to concreate single enemy, single #SPR
 ;  - D:		Upper thickness of the enemy (enemy above Jetman)
 ;  - E:		Lower thickness of the enemy (enemy below Jetman)
 ; Return:
@@ -75,7 +75,7 @@ COLLISION_YES			= 1
 
 CheckCollision
 	; Compare X coordinate of enemy and Jetman
-	LD BC, (IX + sr.SPRITE.X)						; X of the enemy
+	LD BC, (IX + sr.SPR.X)						; X of the enemy
 	LD HL, (jo.jetX)							; X of the Jetman
 
 	; Check whether Jetman is horizontal with the enemy
@@ -88,7 +88,7 @@ CheckCollision
 	RET		
 .keepCheckingHorizontal	
 	LD A, L
-	LD B, EN_MARGIN_HORIZONTAL
+	LD B, ENP_MARGIN_HORIZONTAL
 	CP B
 	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical
 	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision	
@@ -96,7 +96,7 @@ CheckCollision
 .checkVertical
 
 	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical
-	LD B, (IX + sr.SPRITE.Y)						; Y of the enemy
+	LD B, (IX + sr.SPR.Y)						; Y of the enemy
 	LD A, (jo.jetY)								; Y of the Jetman
 
 	; Is Jemtan above or below the enemy?
@@ -115,7 +115,7 @@ CheckCollision
 	; Swap A and B (compared to above) to avoid negative value
 	LD A, (jo.jetY)
 	LD B, A										; B: Y of the Jetman
-	LD A, (IX + sr.SPRITE.Y)						; A: Y of the enemy
+	LD A, (IX + sr.SPR.Y)						; A: Y of the enemy
 	SUB B
 	CP D
 	JR C, .collision
@@ -134,16 +134,16 @@ CheckCollision
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it
 ; Input:
-;  - IX:	Pointer to concreate single enemy, single #SPRITE
+;  - IX:	Pointer to concreate single enemy, single #SPR
 EnemyColision
 
 	; Exit if enemy is not alive
-	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPRITE.STATE)
+	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
 	RET Z
 
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman
 	LD E, 0
-	LD D, EN_MARGIN_VERT_KICK
+	LD D, ENP_MARGIN_VERT_KICK
 	CALL CheckCollision
 	CP COLLISION_YES
 	JR NZ, .noKicking
@@ -163,8 +163,8 @@ EnemyColision
 
 .noKicking
 	; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die
-	LD D, EN_MARGIN_VERT_UP
-	LD E, EN_MARGIN_VERT_LOW
+	LD D, ENP_MARGIN_VERT_UP
+	LD E, ENP_MARGIN_VERT_LOW
 	CALL CheckCollision
 	CP COLLISION_YES
 	RET NZ
