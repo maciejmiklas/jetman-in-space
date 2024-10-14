@@ -38,7 +38,8 @@ FIRE_DELAY				= 15
 shotsDelayCnt
 	DB 0
 
-SHOT_HEIGHT_PLATFORM	= 1
+PLATFORM_MARGIN_UP			= -8
+PLATFORM_MARGIN_DOWN		= -7
 
 STATE_SHOT_DIR_BIT		= 5						; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left
 
@@ -218,9 +219,10 @@ MoveShots
 	JR Z, .afterPlatformColision				; Exit if sprite is not alive
 
 	; Check the collision with the platform
-	LD L, SHOT_HEIGHT_PLATFORM
-	CALL jp.LevelPlaftormColision
-	CP A, jp.PL_COL_RET_A_NO
+	LD H, PLATFORM_MARGIN_UP
+	LD L, PLATFORM_MARGIN_DOWN
+	CALL jp.LevelPlaftormHit
+	CP A, jp.PL_HIT_RET_A_NO
 	JR Z, .afterPlatformColision
 	CALL sr.SpriteHit
 .afterPlatformColision

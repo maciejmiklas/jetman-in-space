@@ -47,7 +47,7 @@ GameLoop
 	LD B, A	
 	CALL ep.RespownNextEnemy	
 
-	CALL jc.JetmanEnemiesColision
+	;CALL jc.JetmanEnemiesColision
 	CALL ro.CheckHitTank
 	
 	LD IY, ed.formation

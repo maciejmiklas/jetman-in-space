@@ -85,6 +85,12 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
+PLATF_MARGIN_HIT_UP		= -12
+PLATF_MARGIN_HIT_DOWN	= -2
+
+PLATF_MARGIN_MOVE_UP	= -15
+PLATF_MARGIN_MOVE_DOWN	= 2
+
 ;----------------------------------------------------------;
 ;                  #RestartMovePattern                     ;
 ;----------------------------------------------------------;
@@ -168,7 +174,7 @@ MoveEnemy
 	CALL MoveEnemyX
 	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
 
-	RET
+	RET											; Return - sprite is exploding
 .afterAliveCheck
 
 	; Should the enemy move along the platform to avoid collision?
@@ -177,16 +183,18 @@ MoveEnemy
 	
 	; Check the collision with the platform
 	PUSH IY, HL
-	CALL jp.LevelPlaftormColision
+	LD H, PLATF_MARGIN_MOVE_UP
+	LD L, PLATF_MARGIN_MOVE_DOWN
+	CALL jp.LevelPlaftormHit
 	POP HL, IY
 
-	CP A, jp.PL_COL_RET_A_NO
+	CP A, jp.PL_HIT_RET_A_NO
 	JR Z, .afterMoveAlong						; Jump if there is no collision
 
 	; Avoid collision with the platform by moving along it 
 	CALL MoveEnemyX
 	CALL sr.UpdateSpritePosition				; Move sprite to new X,Y coordinates
-	RET
+	RET											; Return, sprite moves along platform
 .afterMoveAlong
 
 	; Check if counter for X has already reached 0, or is set to 0
@@ -245,7 +253,7 @@ MoveEnemy
 	CP 0
 	JR Z, .resetXYCounters						; Jump if X and Y counters has reached 0
 
-	JR .checkPlatformCollision
+	JR .checkPlatformHit
 
 .resetXYCounters
 	; X and Y have reached the max value. First, reset the X and Y counters, and afterward, decrease the repetition counter
@@ -260,7 +268,7 @@ MoveEnemy
 	; Decrease repetition counter for move step and return
 	LD (IY + ENP.MOVE_PAT_STEP_RCNT), A			; Store decreased counter
 	
-	JR .checkPlatformCollision
+	JR .checkPlatformHit
 
 .nextMovePattern
 	; Setup next move pattern
@@ -297,27 +305,25 @@ MoveEnemy
 	LD A, D
 	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits	
 	LD (IY + ENP.MOVE_DELAY_CNT), A
-	RET
+	JR .checkPlatformHit
 
 .restartMovePattern
 	; Restart move pattern, it has reached max value
 	CALL RestartMovePattern
 
-; Check the collision with the platform
-.checkPlatformCollision
+; Check the collision with the platform.
+; Check platform hit independent of move-along-bit. The margin for move-along is more significant than one for the hit. Sprite can hit 
+; the platform where it's impossible to avoid a collision, such as a front hit.
+.checkPlatformHit
 
-	; Do not check the collision here if the move-along-platform bit is set. Since the sprite was moved in the X and Y directions, 
-	; the collision here can only end with an explosion. If the move-along-platform platform is set, the next call of this method will 
-	; move the sprite along the platform, avoiding vertical movement (code is on top of this method).  
-	BIT ENP_SETUP_ALONG_BIT, (IY + ENP.SETUP)
-	RET NZ
-
-	CALL jp.LevelPlaftormColision
-	CP A, jp.PL_COL_RET_A_NO
+	LD H, PLATF_MARGIN_HIT_UP
+	LD L, PLATF_MARGIN_HIT_DOWN
+	CALL jp.LevelPlaftormHit
+	CP A, jp.PL_HIT_RET_A_NO
 	RET Z										; Return if there is no collision
 
 	CALL sr.SpriteHit							; Explode!
-
+	
 	RET
 
 ;----------------------------------------------------------;
