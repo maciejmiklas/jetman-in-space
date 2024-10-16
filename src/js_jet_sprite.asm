@@ -154,15 +154,15 @@ ChangeJetSpritePattern
 	XOR A										; Set A to 0
 	LD (sprDBRemain), A							; No more bytes to process within the current DB record will cause the fast switch to the next.
 
-	CALL UpdateJetSpritePattern				    ; Update the next animation frame immediately
+	CALL AnimateJetSprite				    ; Update the next animation frame immediately
 	
 	RET
 
 ;----------------------------------------------------------;
-;               #UpdateJetSpritePattern                    ;
+;               #AnimateJetSprite                    ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
-UpdateJetSpritePattern
+AnimateJetSprite
 	; Return if flying rocket
 	LD A, (jt.jetAir)
 	CP jt.AIR_FLY_ROCKET

@@ -63,6 +63,7 @@ Counter04
 	; CALL functions that need to be updated every xx-th loop
 	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
+	CALL js.AnimateJetSprite
 	RET	
 
 ;----------------------------------------------------------;
@@ -86,7 +87,7 @@ Counter06
 	LD (cd.counter06FliFLop), A
 
 	; CALL functions that need to be updated every xx-th loop
-
+	
 	RET		
 
 ;----------------------------------------------------------;
@@ -110,8 +111,6 @@ Counter08
 	LD (cd.counter08FliFLop), A
 
 	; CALL functions that need to be updated every xx-th loop
-	
-	CALL js.UpdateJetSpritePattern
 	CALL jw.AnimateShots
 	
 	; Animate enemies
@@ -119,7 +118,6 @@ Counter08
 	LD A, (ed.spritesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
-
 
 	CALL ro.AnimateRocketReady
 	CALL ro.AnimateTankExplode

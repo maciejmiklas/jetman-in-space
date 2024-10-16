@@ -55,7 +55,7 @@ ELEMENT_ID				BYTE					; ID of rocket element, 4-6
 SPRITE_REF				BYTE					; ID of the Sprite from spr-file
 	ENDS
 
-ROCKET_DOWN_SPR_ID		= 40					; Sprite ID is used to lower the rocket part, which has the engine and fuel
+ROCKET_DOWN_SPR_ID		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel
 MIN_DROP_HEIGHT			= 220					; Jetman has to be above the rocket to drop the element, 170 > Y >10
 
 ROCKET_SPR_ID_READY1	= 63					; Once the rocket is ready, it will start blinking using #ROCKET_SPR_ID_READY1 and #ROCKET_SPR_ID_READY2
@@ -64,12 +64,12 @@ ROCKET_SPR_ID_READY2	= 59
 rocketEl
 ; rocket element
 	ROCKET {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, ROCKET_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}	; bottom element
-	ROCKET {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 41/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}	; middle element
-	ROCKET {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 42/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
+	ROCKET {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}	; middle element
+	ROCKET {120/*DROP_X*/, 145/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
 ; fuel tank
-	ROCKET {015/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	ROCKET {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	ROCKET {230/*DROP_X*/, 059/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {015/*DROP_X*/, 235/*DROP_LAND_Y*/, 235/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 53/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {160/*DROP_X*/, 235/*DROP_LAND_Y*/, 219/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 53/*SPRITE_REF*/, 0/*Y*/}
+	ROCKET {230/*DROP_X*/, 059/*DROP_LAND_Y*/, 203/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 53/*SPRITE_REF*/, 0/*Y*/}
 
 fuelLevel
 	FUEL_LEVEL {4/*ELEMENT_ID*/, 61/*SPRITE_REF*/}

@@ -6,6 +6,13 @@
 JOY_DISABLED_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
 JOY_DISABLED_BUMP		= 6						; Disable the joystick for a few frames because Jetman is bumping into the platform
 
+; Compensation for height of Jetman's sprite to land on the platform
+PLATFORM_LAND_AJD_LX	= 8
+PLATFORM_LAND_AJD_RX	= -1
+PLATFORM_LAND_AJD_Y		= 23
+
+PLATFORM_HIT_AJD_X		= 16
+
 ; Coordinates for a platform
 	STRUCT PLA
 X_START					WORD					; X start of the platform
@@ -16,12 +23,16 @@ Y_END					BYTE					; Y end of the platform
 
 ; [amount of plaftorms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels
 platform
-	PLA {3*8-16/*X_START*/,  8*8+16/*X_END*/,  14*8/*Y_START*/, 14*8+8/*Y_END*/}
+	PLA {3*8/*X_START*/,  8*8/*X_END*/,  14*8/*Y_START*/, 14*8+8/*Y_END*/}
 platform2
-	PLA {11*8-16/*X_START*/, 17*8+16/*X_END*/, 20*8/*Y_START*/, 20*8+8/*Y_END*/}
+	PLA {11*8/*X_START*/, 17*8/*X_END*/, 20*8/*Y_START*/, 20*8+8/*Y_END*/}
 platform3
-	PLA {25*8-16/*X_START*/, 30*8+16/*X_END*/, 9*8/*Y_START*/,  9*8+8/*Y_END*/}
+	PLA {25*8/*X_START*/, 30*8/*X_END*/, 9*8/*Y_START*/,  9*8+8/*Y_END*/}
 platformSize 			BYTE 3
+
+; A number of the platform that hetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK
+platformWalkNumber		BYTE 0
+PLATFORM_WALK_INCATIVE	= $FF					; Not on any plaftorm.
 
 ;----------------------------------------------------------;
 ;                   #LevelPlaftormHit                      ;
@@ -71,12 +82,18 @@ PlaftormHit
 
 	; Check the collision from the left side of the platform
 	LD HL, (IX + sr.SPR.X)						; HL = X postion of the sprite
+	LD DE, PLATFORM_HIT_AJD_X
+	ADD HL, DE
+
 	LD DE, (IY + PLA.X_START)					; DE = start of the platform (left side)
 	SBC HL, DE									; HL - DE
 	JP M, .continueLoopOverPlatfroms			; continue (no collision) if HL - DE < 0
 
 	; Sprite is on the left from the platform's left corner. Now check whether it's not over the end 
 	LD DE, (IX + sr.SPR.X)						; DE = X postion of the sprite	
+	LD HL, PLATFORM_HIT_AJD_X
+	SUB DE, HL
+
 	LD HL, (IY + PLA.X_END)						; HL = start of the platform (left side)
 	SBC HL, DE									; HL - DE
 	JP M, .continueLoopOverPlatfroms			; continue (no collision) if HL - DE < 0
@@ -196,6 +213,10 @@ JetTakesoff
 	; Play takeoff animation					
 	LD A, js.SDB_T_WF
 	CALL js.ChangeJetSpritePattern
+
+	; Not walking on platrofm anymore
+	LD A, PLATFORM_WALK_INCATIVE
+	LD (platformWalkNumber), A	
 	RET											; END #JetTakesoff
 
 ;----------------------------------------------------------;
@@ -234,38 +255,45 @@ JetLanding
 ;----------------------------------------------------------;
 ; Is Jetman landing on one of the platforms?
 LandingOnPlatform
-/*
+
 	LD A, (jt.jetState)
 	BIT jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no landing ;)
-
-	; Is Jetman too far right (above 255 there are no platforms)?
-	LD BC, (jo.jetX)
-	LD A, B										; #jetX has 16bit, load MSB into A to see if its > 0 (jetX >= 257)
-	CP 0
-	RET NZ										; Return if Jetman is after 257 on X
 	
-	LD IX, platformWalk
-	LD A, (platformWalkSize)					; Load into B the number of platforms to check
+	LD IX, platform
+	LD A, (platformSize)						; Load into B the number of platforms to check
 	LD B, A
+
 .platformsLoop	
 	LD A, (jo.jetY)								; A holds current Y position
-	LD C, (IX + PLA.Y)						; C contains [Y]
+	ADD PLATFORM_LAND_AJD_Y
+	LD C, (IX + PLA.Y_START)					; C contains [Y]
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
 
-	; Jetman is on Y of the current platform, now check X
-	LD A, (jo.jetX)								; A holds current X position
-	LD D, (IX + PLA.X_START)					; D contains [X start]		
-	CP D										; Compare #jetX position to [X start]
-	JR C, .platformsLoopEnd						; Jump if #jetX < [X start]
+	; Jetman is on Y of the current platform, now check X. We start wirh left side.
+	LD HL, (jo.jetX)							; HL = X postion of the Jetman
+	LD DE, PLATFORM_LAND_AJD_LX
+	ADD HL, DE
+	LD DE, (IX + PLA.X_START)					; DE = start of the platform (left side)
+	SBC HL, DE									; HL - DE
+	JP M, .platformsLoopEnd						; continue (no collision) if HL - DE < 0
 
-	; Jetman is on the current platform level after it's begun, we have to check if he is not too far to the right
-	LD E, (IX + PLA.X_END)					; E contains [X end]		
-	CP E
-	JR NC, .platformsLoopEnd					; Jump if #jetX > [X end]
+	; Jetman is on the left from the platform's left corner. Now check whether it's not over the end 
+	LD DE, (jo.jetX)							; DE = X postion of the Jetman	
+	LD HL, PLATFORM_LAND_AJD_RX
+	ADD DE, HL
+	LD HL, (IX + PLA.X_END)						; HL = start of the platform (left side)
+	SBC HL, DE									; HL - DE
+	JP M, .platformsLoopEnd						; continue (no collision) if HL - DE < 0
 
 	; Jetman is landing on the platform!
+
+	; Update #platformWalkNumber = #platformSize - B
+	LD A, (platformSize)
+	SUB B
+	LD (platformWalkNumber), A
+
 	CALL JetLanding
 	RET
 
@@ -274,7 +302,6 @@ LandingOnPlatform
 	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 
-	*/
 	RET
 
 ;----------------------------------------------------------;
@@ -412,35 +439,38 @@ BumpIntoPlatformLR
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls 
 FallingFromPlatform
-/*
-	LD A, (jt.jetGnd)
-	CP jt.GND_WALK								; Is Jemtan in the air?
-	RET NZ										; Return if not walking, no walking - no falling ;)
+	
+	; Does Jetman walk on any plaform?
+	LD A, (platformWalkNumber)
+	CP PLATFORM_WALK_INCATIVE
+	RET Z
 
-	LD IX, platformWalk
-	LD A, (platformCollisionSize)
-	LD B, A										; Load into B the number of platforms to check
-.platformsLoop	
-	LD A, (jo.jetY)								; A holds current Y position
-	LD C, (IX + PLA.Y)							; C contains [Y]
-	CP C
-	JR NZ, .platformsLoopEnd					; Jump if Jetman is on a different level than the current platform
+	; #platform contains a list of all platforms, each with a size of #PLA. #platformWalkNumber contains offset to current platform.
+	; Now, we have to set IX so that it points to the platform on which the Jetman walks: IX = #platform + #PLA * #platformWalkNumber
+	LD IX, platform
+	LD A, (platformWalkNumber)					; Jetman is walking on this platform
+	LD D, A
+	LD E, PLA
+	MUL D, E									; E contains #platformWalkNumber * #PLA, D is 0 (D * E < 256)
+	ADD IX, DE									; IX points to the current platform
 
-	; Jetman is on Y of the current platform, now check X
-	LD A, (jo.jetX)								; A holds current X position
-	LD D, (IX + PLA.X_START)					; D contains [X start]	
-	CP D										; Compare #jetX position to [X start]
-	JR C, .fallingLeft							; Jump if #jetX < [X start], meaning Jetman is falling from the left side of the platform
+	; Does Jetman fall from the platform on the left side?
+	LD HL, (jo.jetX)							; HL = X postion of the Jetman
+	LD DE, PLATFORM_LAND_AJD_LX
+	ADD HL, DE
+	LD DE, (IX + PLA.X_START)					; DE = start of the platform (left side)
+	SBC HL, DE									; HL - DE
+	JP M, .fallingLeft							; HL - DE < 0 -> falling left
 
-	LD E, (IX + PLA.X_END)					; E contains [X end]
-	CP E
-	JR NC, .fallingRight						; Jump if #jetX > [X end], meaning Jetman is falling from the right side of the platform
-
-.platformsLoopEnd
-	LD DE, PLA
-	ADD IX, DE
-	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
-	JR .afterFalling							; Jetman is still on the platform
+	; Does Jetman fall from the platform on the right side?
+	LD DE, (jo.jetX)							; DE = X postion of the Jetman	
+	LD HL, PLATFORM_LAND_AJD_RX
+	ADD DE, HL
+	LD HL, (IX + PLA.X_END)						; HL = start of the platform (left side)
+	SBC HL, DE									; HL - DE
+	JP M, .fallingRight							; HL - DE < 0 -> falling right
+	
+	RET											; Still on the platform
 
 ; Jetman is falling from the platform, left or right
 .fallingLeft
@@ -463,7 +493,11 @@ FallingFromPlatform
 	LD (id.joyDisabledCnt), A
 
 .afterFalling
-*/
+
+	; Not walking on platrofm anymore
+	LD A, PLATFORM_WALK_INCATIVE
+	LD (platformWalkNumber), A	
+	
 	RET
 
 ;----------------------------------------------------------;
