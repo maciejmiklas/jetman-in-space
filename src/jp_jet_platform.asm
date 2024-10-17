@@ -22,31 +22,31 @@ Y_END					BYTE					; Y end of the platform
 	ENDS
 
 ; [amount of plaftorms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels
-platform
+platforms
 	PLA {3*8/*X_START*/,  8*8/*X_END*/,  14*8/*Y_START*/, 14*8+8/*Y_END*/}
 platform2
 	PLA {11*8/*X_START*/, 17*8/*X_END*/, 20*8/*Y_START*/, 20*8+8/*Y_END*/}
 platform3
 	PLA {25*8/*X_START*/, 30*8/*X_END*/, 9*8/*Y_START*/,  9*8+8/*Y_END*/}
-platformSize 			BYTE 3
+platformsSize 			BYTE 3
 
 ; A number of the platform that hetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK
 platformWalkNumber		BYTE 0
 PLATFORM_WALK_INCATIVE	= $FF					; Not on any plaftorm.
 
 ;----------------------------------------------------------;
-;                   #LevelPlaftormHit                      ;
+;               #LevelPlaftormSpriteHit                    ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by IX hits one of the platforms
 ;  - IX: 	Pointer to #SPR, single sprite to check colsion for
 ;  - H:		Platform margin up
 ;  - L:		Platform margin down
 ; Modifies: A, B, DE, HL, IY
-LevelPlaftormHit
+LevelPlaftormSpriteHit
 
-	LD IY, platform
+	LD IY, platforms
 
-	LD A, (jp.platformSize)
+	LD A, (jp.platformsSize)
 	LD B, A
 
 	CALL jp.PlaftormHit
@@ -260,8 +260,8 @@ LandingOnPlatform
 	BIT jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no landing ;)
 	
-	LD IX, platform
-	LD A, (platformSize)						; Load into B the number of platforms to check
+	LD IX, platforms
+	LD A, (platformsSize)						; Load into B the number of platforms to check
 	LD B, A
 
 .platformsLoop	
@@ -290,7 +290,7 @@ LandingOnPlatform
 	; Jetman is landing on the platform!
 
 	; Update #platformWalkNumber = #platformSize - B
-	LD A, (platformSize)
+	LD A, (platformsSize)
 	SUB B
 	LD (platformWalkNumber), A
 
@@ -304,30 +304,38 @@ LandingOnPlatform
 
 	RET
 
+
+
 ;----------------------------------------------------------;
 ;                #BumpIntoPlatFormBelow                    ;
 ;----------------------------------------------------------;
 BumpIntoPlatFormBelow
-/*
+
+	LD HL, 0
+	CALL LevelPlaftormSpriteHit
+
+	RET 
+
+;----------------------------------------------------------;
+;                #BumpIntoPlatFormBelow                    ;
+;----------------------------------------------------------;
+BumpIntoPlatFormBelow1
+
 	LD A, (jt.jetState)
 	BIT jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air?
 	RET Z										; Return if not flaying, no flying - no collision ;)
 
-	; Is Jetman too far right (above 255 there are no platforms)?
-	LD BC, (jo.jetX)
-	LD A, B										; #jetX has 16bit, load MSB into A to see if its > 0 (jetX >= 257)
-	CP 0
-	RET NZ										; Return if Jetman is after 257 on X
 
-	LD IX, platformCollision
-	LD A, (platformCollisionSize)						; Load into B the number of platforms to check
+	LD IX, platforms
+	LD A, (platformsSize)						; Load into B the number of platforms to check
 	LD B, A
 .platformsLoop	
 	LD A, (jo.jetY)								; A holds current Y position
-	LD C, (IX + PLA.Y_END)					; C contains [Y end]
+	LD C, (IX + PLA.Y_END)						; C contains [Y end]
 	CP C
 	JR NZ, .platformsLoopEnd					; Jump if Jetman is not precisely on the bottom level of the platform -> [Y] != #jetY
-
+	
+	/*
 	; Jetman is on the bottom of the platform, now check whether he is withing its horizonlat bounds
 	LD A, (jo.jetX)								; A holds current X position
 
@@ -353,12 +361,12 @@ BumpIntoPlatFormBelow
 	LD (id.joyDisabledCnt), A
 
 	POP BC
+	*/
 .platformsLoopEnd
-	LD DE, PCL
+	LD DE, PLA
 	ADD IX, DE
 	DJNZ .platformsLoop							; Decrease B until all platforms have been evaluated
 
-	*/
 	RET
 
 ;----------------------------------------------------------;
@@ -447,7 +455,7 @@ FallingFromPlatform
 
 	; #platform contains a list of all platforms, each with a size of #PLA. #platformWalkNumber contains offset to current platform.
 	; Now, we have to set IX so that it points to the platform on which the Jetman walks: IX = #platform + #PLA * #platformWalkNumber
-	LD IX, platform
+	LD IX, platforms
 	LD A, (platformWalkNumber)					; Jetman is walking on this platform
 	LD D, A
 	LD E, PLA

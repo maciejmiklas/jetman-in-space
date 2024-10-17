@@ -29,6 +29,7 @@ GameLoop
 	ENDIF	
 
 	; First update graphics, logic follows afterwards!
+	CALL js.AnimateJetSprite
 	CALL js.UpdateJetSpritePositionRotation
 	
 	CALL jw.FireDelayCounter

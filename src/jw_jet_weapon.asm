@@ -221,7 +221,7 @@ MoveShots
 	; Check the collision with the platform
 	LD H, PLATFORM_MARGIN_UP
 	LD L, PLATFORM_MARGIN_DOWN
-	CALL jp.LevelPlaftormHit
+	CALL jp.LevelPlaftormSpriteHit
 	CP A, jp.PL_HIT_RET_A_NO
 	JR Z, .afterPlatformColision
 	CALL sr.SpriteHit

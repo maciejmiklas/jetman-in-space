@@ -185,7 +185,7 @@ MoveEnemy
 	PUSH IY, HL
 	LD H, PLATF_MARGIN_MOVE_UP
 	LD L, PLATF_MARGIN_MOVE_DOWN
-	CALL jp.LevelPlaftormHit
+	CALL jp.LevelPlaftormSpriteHit
 	POP HL, IY
 
 	CP A, jp.PL_HIT_RET_A_NO
@@ -318,7 +318,7 @@ MoveEnemy
 
 	LD H, PLATF_MARGIN_HIT_UP
 	LD L, PLATF_MARGIN_HIT_DOWN
-	CALL jp.LevelPlaftormHit
+	CALL jp.LevelPlaftormSpriteHit
 	CP A, jp.PL_HIT_RET_A_NO
 	RET Z										; Return if there is no collision
 

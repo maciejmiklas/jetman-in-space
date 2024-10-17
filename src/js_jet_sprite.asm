@@ -26,69 +26,79 @@ SDB_FRAME_SIZE			= 2
 ; The animation system is based on a state machine. Its database is divided into records, each containing a list of frames to be played and 
 ; a reference to the next record that will be played once all frames from the current record have been executed.
 ; DB Record:
-;    [ID], [OFF_NX], [SIZE], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]] 
+;    [ID], [OFF_NX], [SIZE], [DELAY], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]] 
 ; where:
 ;	- ID: 			Entry ID for lookup via CPIR
 ;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
 ;	- SIZE:			Amount of bytes in this record
+;	- DELAY:		Amount animation calls to skip (slows down animation)
 ;	- FRAME_UP:		Offset for the upper part of the Jetman
 ;	- FRAME_LW: 	Offset for the lower part of the Jetman
 spriteDB
 	; Jetman is flaying
-	DB SDB_FLY,		SDB_FLY - SDB_SUB,		48
+	DB SDB_FLY,		SDB_FLY - SDB_SUB,		48, 5
 											DB 00,10, 00,11, 01,12, 01,13, 02,11, 02,12, 03,10, 03,11, 04,12, 04,13
 											DB 05,12, 05,11, 03,10, 03,11, 04,12, 04,13, 05,10, 05,12, 03,10, 03,11
 											DB 04,12, 04,13, 05,12, 05,10
 
 	; Jetman hovers
-	DB SDB_HOVER,	SDB_HOVER - SDB_SUB,	48 
+	DB SDB_HOVER,	SDB_HOVER - SDB_SUB,	48, 10
 											DB 00,14, 00,15, 01,16, 01,10, 02,11, 02,12, 03,13, 03,10, 04,11, 04,12 
 											DB 05,13, 05,14, 03,15, 03,16, 04,10, 04,11, 05,12, 05,13, 03,10, 03,11
 											DB 04,12, 04,13, 05,10, 05,11
 
 	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
-	DB SDB_WALK_ST,	SDB_WALK	- SDB_SUB,	02, 03, 07
+	DB SDB_WALK_ST,	SDB_WALK	- SDB_SUB,	02, 3
+											DB 03,07
 
 	; Jetman is walking
-	DB SDB_WALK, 	SDB_WALK - SDB_SUB,		48
+	DB SDB_WALK, 	SDB_WALK - SDB_SUB,		48, 3
 											DB 03,06, 03,07, 04,08, 04,09, 05,06, 05,06, 03,08, 03,09, 04,06, 04,07
 											DB 05,08, 05,09, 00,06, 00,07, 01,08, 01,09, 02,06, 02,07, 03,08, 03,09 
 											DB 04,06, 04,07, 05,08, 05,09
 
 	; Jetman stands in place
-	DB SDB_STAND,	SDB_STAND - SDB_SUB,	46 
+	DB SDB_STAND,	SDB_STAND - SDB_SUB,	46, 5
 											DB 03,17, 03,18, 04,19, 04,18, 05,17, 05,19, 03,17, 03,18, 04,19, 04,17
 											DB 05,19, 05,18, 00,19, 00,18, 01,17, 01,18, 02,17, 02,19, 03,18, 03,18
 											DB 04,19, 05,17, 05,18
 
 	; Jetman stands on the ground for a very short time
-	DB SDB_JSTAND,	SDB_STAND - SDB_SUB, 	02, 03,36
+	DB SDB_JSTAND,	SDB_STAND - SDB_SUB, 	02, 3
+											DB 03,11
 
 	; Jetman got hit
-	DB SDB_RIP,		SDB_RIP - SDB_SUB,		08, 00,27, 01,28, 02,15, 03,29
+	DB SDB_RIP,		SDB_RIP - SDB_SUB,		08, 5 
+											DB 00,27, 01,28, 02,15, 03,29
 
 	; Transition: walking -> flaying
-	DB SDB_T_WF,	SDB_FLY - SDB_SUB, 		08, 03,26, 04,25, 05,24, 03,23
+	DB SDB_T_WF,	SDB_FLY - SDB_SUB, 		08, 5
+											DB 03,26, 04,25, 05,24, 03,23
 
 	; Transition: flaying -> standing
-	DB SDB_T_FS, 	SDB_STAND - SDB_SUB,	4, 03,23, 04,24, 05,25, 03,26
+	DB SDB_T_FS, 	SDB_STAND - SDB_SUB,	04, 5
+											DB 03,23, 04,24, 05,25, 03,26
 
 	; Transition: flaying -> walking
-	DB SDB_T_FW, 	SDB_WALK - SDB_SUB,		4, 03,23, 04,24, 05,25, 03,26
+	DB SDB_T_FW, 	SDB_WALK - SDB_SUB,		4, 5
+											DB 03,23, 04,24, 05,25, 03,26
 
 	; Transition: kinking -> flying
-	DB SDB_T_KF,	SDB_FLY - SDB_SUB, 		08, 03,27, 04,28, 05,15, 03,29
+	DB SDB_T_KF,	SDB_FLY - SDB_SUB, 		08, 5
+											DB 03,27, 04,28, 05,15, 03,29
 
 sprDBIdx			WORD 0						; Current position in DB
 sprDBRemain			BYTE 0						; Amount of bytes that have to be still processed from the current record
 sprDBNextID			BYTE SDB_FLY				; ID in #spriteDB for next animation/DB record
+sprDBDelay			BYTE 0						; Value from #DELAY
+sprDBDelayCnt		BYTE 0						; Counter from #sprDBDelay to 0
 
 SPR_STATE_HIDE		= 0
 SPR_STATE_SHOW		= 1
 sprState			BYTE SPR_STATE_SHOW
 
 ;----------------------------------------------------------;
-;          #UpdateJetSpritePositionRotation                ;
+;             #UpdateJetSpritePositionRotation             ;
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation	
 	; Return if flying rocket
@@ -154,12 +164,12 @@ ChangeJetSpritePattern
 	XOR A										; Set A to 0
 	LD (sprDBRemain), A							; No more bytes to process within the current DB record will cause the fast switch to the next.
 
-	CALL AnimateJetSprite				    ; Update the next animation frame immediately
+	CALL AnimateJetSprite						; Update the next animation frame immediately
 	
 	RET
 
 ;----------------------------------------------------------;
-;               #AnimateJetSprite                    ;
+;                  #AnimateJetSprite                       ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
 AnimateJetSprite
@@ -167,7 +177,29 @@ AnimateJetSprite
 	LD A, (jt.jetAir)
 	CP jt.AIR_FLY_ROCKET
 	RET Z
+
+	; Delay animation
+	LD A, (sprDBDelay)
+	CP 0
+	JR Z, .afterAnimationDelay					; Jump if delay is off
 	
+	; Animation delay is on. Check if counter has reached 0 and needs to be reset
+	LD A, (sprDBDelayCnt)
+	CP 0
+	JR NZ, .decResetDelay
+	
+	; Delay counter is 0, reset it
+	LD A, (sprDBDelay)
+	LD (sprDBDelayCnt), A
+	JR .afterAnimationDelay
+.decResetDelay
+	DEC A
+	LD (sprDBDelayCnt), A
+
+	RET 
+.afterAnimationDelay	
+
+
 	; Switch to the next DB record if all bytes from the current one have been used
 	LD A, (sprDBRemain)
 	CP 0
@@ -187,6 +219,11 @@ AnimateJetSprite
 	INC HL										; HL points to [SIZE]
 	LD A, (HL)									; Update SIZE
 	LD (sprDBRemain), A
+
+	INC HL										; HL points to [DELAY]
+	LD A, (HL)
+	LD (sprDBDelay), A
+	LD (sprDBDelayCnt), A
 
 	INC HL										; HL points to first sprite data (upper/lower parts)
 	LD (sprDBIdx), HL							; Database offset points to be bytes containing sprite offsets from sprite file

@@ -38,7 +38,6 @@ Counter02
 	; CALL functions that need to be updated every xx-th loop
 	CALL jc.JetInvincible
 	CALL ro.FlyRocket
-
 	RET
 
 ;----------------------------------------------------------;
@@ -63,7 +62,6 @@ Counter04
 	; CALL functions that need to be updated every xx-th loop
 	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
-	CALL js.AnimateJetSprite
 	RET	
 
 ;----------------------------------------------------------;
