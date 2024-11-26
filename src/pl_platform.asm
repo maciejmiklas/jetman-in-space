@@ -21,10 +21,6 @@ jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 22/*Y_TOP*/, 02/*Y_BOTTOM*/}
 ; it exceeds the margin defined here, resetting #joyOffBump
 jetAwayMargin	PLAM { 25/*X_LEFT*/, 15/*X_RIGHT*/, 30/*Y_TOP*/, 15/*Y_BOTTOM*/}
 
-; Compensation for height of Jetman's sprite to fall from the platform
-PLATFORM_FALL_LX		= 8
-PLATFORM_FALL_RX		= -1
-
 ; Coordinates for a platform
 	STRUCT PLA
 X_LEFT					WORD					; X start of the platform
@@ -46,13 +42,14 @@ platformsSize 			BYTE 3
 PLATFORM_WALK_INCATIVE	= $FF					; Not on any plaftorm.
 platformWalkNumber		BYTE PLATFORM_WALK_INCATIVE
 
-joyOffBump			BYTE _CF_JOY_OFF_BUMP
+joyOffBump				BYTE _CF_PL_JOY_OFF_BUMP
 
+tmp byte 0
 ;----------------------------------------------------------;
 ;                #JetPlatformHitOnJoyMove                  ;
 ;----------------------------------------------------------;
 JetPlatformHitOnJoyMove
-	; ##########################################
+
 	; Check whether a collision with a platform is possible.
 	LD A, (jt.jetAir)
 	CP jt.AIR_FLY
@@ -76,6 +73,7 @@ JetPlatformHitOnJoyMove
 	CP PL_DHIT_RET_A_NO
 	RET Z
 	LD D, A										; Keep return flag D
+
 
 	; ##########################################
 	; Jetman hits the plafrom, now check what it means
@@ -116,7 +114,7 @@ JetPlatformHitOnJoyMove
 	
 	; Jetman hits the platform
 	LD A, jt.AIR_BUMP_LEFT
-	LD (jt.jetAir), A
+	CALL jt.SetJetStateAir
 
 	CALL jpo.DecJetX
 	CALL JetHitsPlatfrom
@@ -137,7 +135,7 @@ JetPlatformHitOnJoyMove
 	
 	; Jetman hits the platform
 	LD A, jt.AIR_BUMP_RIGHT
-	LD (jt.jetAir), A
+	CALL jt.SetJetStateAir
 
 	CALL jpo.IncJetX
 	CALL JetHitsPlatfrom
@@ -158,7 +156,7 @@ JetPlatformHitOnJoyMove
 	
 	; Jetman hits the platform from the bottom
 	LD A, jt.AIR_BUMP_BOTTOM
-	LD (jt.jetAir), A
+	CALL jt.SetJetStateAir
 
 	CALL jpo.IncJetY
 	CALL JetHitsPlatfrom
@@ -175,15 +173,15 @@ ResetJoyOffBump
 	
 	; Do not reset if already done
 	LD A, (joyOffBump)
-	CP _CF_JOY_OFF_BUMP
+	CP _CF_PL_JOY_OFF_BUMP
 	RET Z
 
 	; Reset the joystick bump only if Jetman is away from the platform,  or it walks on it
 
 	; Does Jetman walk on the platform?
-	LD A, (jt.jetState)
-	BIT jt.JET_STATE_GND_BIT, A
-	JR NZ, .reset
+	LD A, (jt.jetGnd)
+	CP jt.STATE_INACTIVE
+	JR NZ, .reset								; Reset imedatelly if walking
 	
 	; Call PlaftormHit to check whether Jetman is close to the platform. now, we will load the params for this method
 	LD HL, jpo.jetX
@@ -202,7 +200,7 @@ ResetJoyOffBump
 
 .reset
 	; Jetman far from the platform - reset
-	LD A, _CF_JOY_OFF_BUMP
+	LD A, _CF_PL_JOY_OFF_BUMP
 	LD (joyOffBump), A
 
 	RET											; ## END of the function ##
@@ -221,13 +219,13 @@ JetHitsPlatfrom
 
 	; ##########################################
 	; decrement joystick off time with every bump
-	CP _CF_JOY_OFF_BUMP_DEC
+	CP _CF_PL_JOY_OFF_BUMP_DEC
 	RET C										; Return to limit minimum value 
 	
 	CP 2
 	RET C										; Return if < 2 -> do not allow #joyOffBump to reach 0. Otherwise, States will not reset correctly
 	
-	SUB _CF_JOY_OFF_BUMP_DEC
+	SUB _CF_PL_JOY_OFF_BUMP_DEC
 	LD (joyOffBump), A
 
 	RET											; ## END of the function ##
@@ -372,13 +370,13 @@ AnimateJetHitPlatfromBelow
 JetPlatformTakesoff
 
 	; Transition from walking to flaying
-	LD A, (jt.jetState)
-	BIT jt.JET_STATE_GND_BIT, A					; Check if Jetnan is on the ground/platform
+	LD A, (jt.jetGnd)
+	CP jt.STATE_INACTIVE						; Check if Jetnan is on the ground/platform
 	RET Z
 
 	; Jetman is taking off
 	LD A, jt.AIR_FLY
-	CALL jt.ChangeJetStateAir
+	CALL jt.SetJetStateAir
 
 	; Play takeoff animation					
 	LD A, js.SDB_T_WF
@@ -396,31 +394,32 @@ JetPlatformTakesoff
 JetLanding
 
 	; Ignore landing if jetman is already on the ground
-	LD A, (jt.jetState)
-	BIT jt.JET_STATE_GND_BIT, A
+	LD A, (jt.jetGnd)
+	CP jt.STATE_INACTIVE
 	RET NZ
 
+	ld a, (tmp)
+	inc a
+	ld (tmp), a
+
 	; Update state as we are walking
-	CALL jt.ChangeJetStateGnd
+	LD A, jt.GND_WALK
+	CALL jt.SetJetStateGnd
 	
 	; Jemans is landing, trigger transition: flying -> standing/walking
 	LD A, (ind.joyDirection)
 	AND ind.MOVE_MSK_LR
 	CP 1	
-	JR C, .afterMoveLR							; Jump, if there is no movement right/left (A >= 1) -> Jemtan lands and stands still
+	JR C, .afterMoveLR							; Jump, if there is no movement right/left (A >= 1) -> Jemtan lands horizontaly and stands still
 	
-	; Jetman moves left/right
-	LD A, jt.GND_WALK							; Update #jetGnd as we are walking
-	LD (jt.jetGnd), A	
-
 	LD A, js.SDB_T_FW							; Play transition from landing -> walking
 	CALL js.ChangeJetSpritePattern
 
 	JR .afterStand								; The animation is already loaded, do not overweigh it with standing
 .afterMoveLR	
 
-	LD A, jt.GND_STAND							; Update #jetGnd as we are standing
-	LD (jt.jetGnd), A	
+	LD A, jt.GND_STAND
+	CALL jt.SetJetStateGnd						; Update state as we are standing
 
 	LD A, js.SDB_T_FS							; Play transition from landing -> standing
 	CALL js.ChangeJetSpritePattern
@@ -458,7 +457,7 @@ AnimateJetSideHitPlatfrom
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls 
 JetFallingFromPlatform
-	
+
 	; Does Jetman walk on any plaform?
 	LD A, (platformWalkNumber)
 	CP PLATFORM_WALK_INCATIVE
@@ -475,7 +474,7 @@ JetFallingFromPlatform
 
 	; Does Jetman fall from the platform on the left side?
 	LD HL, (jpo.jetX)							; HL = X postion of the Jetman
-	LD DE, PLATFORM_FALL_LX
+	LD DE, _CF_PL_FALL_LX
 	ADD HL, DE
 	LD DE, (IX + PLA.X_LEFT)					; DE = start of the platform (left side)
 	SBC HL, DE									; HL - DE
@@ -483,7 +482,7 @@ JetFallingFromPlatform
 
 	; Does Jetman fall from the platform on the right side?
 	LD DE, (jpo.jetX)							; DE = X postion of the Jetman	
-	LD HL, PLATFORM_FALL_RX
+	LD HL, _CF_PL_FALL_RX
 	ADD DE, HL
 	LD HL, (IX + PLA.X_RIGHT)					; HL = start of the platform (left side)
 	SBC HL, DE									; HL - DE
@@ -502,14 +501,14 @@ JetFallingFromPlatform
 .afterFallingRight
 	
 	; Jetman if falling, in the air - A contains poroper air state
-	CALL jt.ChangeJetStateAir
+	CALL jt.SetJetStateAir
 
 	; Trigger transition: walking -> falling
 	LD A, js.SDB_T_KF
 	CALL js.ChangeJetSpritePattern
 
-	; Disable joystick, because Jetman loses control for #_CF_JOY_OFF_FALL frames
-	LD A, _CF_JOY_OFF_FALL
+	; Disable joystick, because Jetman loses control for #_CF_PL_JOY_OFF_FALL frames
+	LD A, _CF_PL_JOY_OFF_FALL
 	LD (ind.joyOffCnt), A
 
 .afterFalling
@@ -746,6 +745,7 @@ PlaftormDirectionHit
 ;  - A: 	Sprite's Y coordinate
 ; Modifies: DE
 LoadSpriteYtoA
+
 	LD DE, HL
 	ADD DE, Y_OFFSET
 	LD A, (DE)									; A holds current sprite Y position
@@ -820,7 +820,6 @@ CheckPlatformHitTop
 ; Modifies: C
 CheckPlatformHitBottom
 	
-	; ##########################################
 	; Check [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y]
 	LD A, (IY + PLA.Y_BOTTOM)
 	ADD (IX + PLAM.Y_BOTTOM)
@@ -869,7 +868,6 @@ CheckPlatformHitBottom
 ; Modifies: BC, DE
 CheckPlatformHitLeft
 
-	; ##########################################
 	; Check [#PLA.X_LEFT - #PLAM.X_LEFT + #_CF_PL_HIT_MARGIN] > [sprite X]
 	LD DE, (IY + PLA.X_LEFT)
 	LD BC, _CF_PL_HIT_MARGIN
@@ -926,7 +924,6 @@ CheckPlatformHitLeft
 ; Modifies: BC, DE
 CheckPlatformHitRight
 
-	; ##########################################
 	; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X]
 	LD DE, (IY + PLA.X_RIGHT)
 	LD BC, (IX + PLAM.X_RIGHT)
@@ -982,7 +979,6 @@ CheckPlatformHitRight
 ; Modifies: BC, DE
 CheckPlatformHitHorizontal
 
-	; ##########################################
 	; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] 
 	LD DE, (IY + PLA.X_RIGHT)
 	LD BC, (IX + PLAM.X_RIGHT)
@@ -1035,7 +1031,6 @@ CheckPlatformHitHorizontal
 ;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
 CheckPlatformHitVertical
 
-	; ##########################################
 	; Check [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM] > [sprite Y] > [sprite Y]
 	LD A, (IY + PLA.Y_BOTTOM)
 	ADD (IX + PLAM.Y_BOTTOM)

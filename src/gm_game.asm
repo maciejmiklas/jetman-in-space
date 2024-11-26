@@ -7,8 +7,9 @@
 ;                      #GameInit                           ;
 ;----------------------------------------------------------;
 GameInit
+
 	CALL gc.RespawnJet
-	CALL ro.StartRocketAssembly
+	; CALL ro.StartRocketAssembly  TODO
 	RET
 
 ;----------------------------------------------------------;
@@ -17,6 +18,7 @@ GameInit
 	//DEFINE  PERFORMANCE_BORDER 
 
 GameLoop
+
 	IFDEF PERFORMANCE_BORDER
 		LD	A, _COL_GREEN
 		OUT (_BORDER_IO_HFE), A

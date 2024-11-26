@@ -108,10 +108,11 @@ sprState			BYTE SPR_STATE_SHOW
 ;----------------------------------------------------------;
 ;             #UpdateJetSpritePositionRotation             ;
 ;----------------------------------------------------------;
-UpdateJetSpritePositionRotation	
-	; Return if flying rocket
-	LD A, (jt.jetAir)
-	CP jt.AIR_FLY_RO
+UpdateJetSpritePositionRotation
+
+	; Return if inactive
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
 	RET Z
 
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
@@ -159,7 +160,7 @@ UpdateJetSpritePositionRotation
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position
 
 	RET											; ## END of the function ##
-	
+
 ;----------------------------------------------------------;
 ;                #ChangeJetSpritePattern                   ;
 ;----------------------------------------------------------;
@@ -167,17 +168,16 @@ UpdateJetSpritePositionRotation
 ; Input:
 ;   - A: ID for #jesSprites, to siwtch to the next animation record
 ChangeJetSpritePattern
-	
-	LD (sprDBNextID), A							; Next animation record
 
 	; Do not change the animation if the same animation is already playing, it will restart it
 	LD B, A
 	LD A, (sprDBCurrentID)
 	CP B
 	RET Z
-	
+
 	LD A, B										; Restore method param
 
+	LD (sprDBNextID), A							; Next animation record
 	LD (sprDBCurrentID), A
 
 	XOR A										; Set A to 0
@@ -192,11 +192,13 @@ ChangeJetSpritePattern
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
 AnimateJetSprite
-	; Return if flying rocket
-	LD A, (jt.jetAir)
-	CP jt.AIR_FLY_RO
+
+	; Return if inactive
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
 	RET Z
 
+	; ##########################################
 	; Delay animation
 	LD A, (sprDBDelay)
 	CP 0
@@ -217,7 +219,7 @@ AnimateJetSprite
 
 	RET 
 .afterAnimationDelay	
-
+	; ##########################################
 	; Switch to the next DB record if all bytes from the current one have been used
 	LD A, (sprDBRemain)
 	CP 0
@@ -246,7 +248,6 @@ AnimateJetSprite
 
 	INC HL										; HL points to first sprite data (upper/lower parts)
 	LD (sprDBIdx), HL							; Database offset points to be bytes containing sprite offsets from sprite file
-
 .afterRecordChange
 
 	; 2 bytes will be consumed from current DB record -> upper and lower sprite for Jetman
@@ -292,6 +293,7 @@ AnimateJetSprite
 ; Input:
 ; - A:	Flip Flop counter, ie: #counter002FliFLop
 BlinkJetSprite
+
 	CP gld.FLIP_ON
 	JR NZ, .flipOff
 	
@@ -308,9 +310,10 @@ BlinkJetSprite
 ;                     #ShowJetSprite                       ;
 ;----------------------------------------------------------;
 ShowJetSprite
-	; Return if flying rocket
-	LD A, (jt.jetAir)
-	CP jt.AIR_FLY_RO
+
+	; Return if Jetman is inactive
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
 	RET Z
 
 	LD A, SPR_STATE_SHOW
@@ -325,6 +328,7 @@ ShowJetSprite
 ;                     #HideJetSprite                       ;
 ;----------------------------------------------------------;
 HideJetSprite
+
 	LD A, SPR_STATE_HIDE
 	LD (sprState), A
 
@@ -339,6 +343,7 @@ HideJetSprite
 ; Input:
 ;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE
 ShowOrHideJetSprite
+
 	LD HL, (sprDBIdx)							; Load current sprite pattern
 	ADD HL, -SDB_FRAME_SIZE						; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record
 
@@ -361,15 +366,15 @@ ShowOrHideJetSprite
 ;                #ChangeJetSpriteOnFlyDown                 ;
 ;----------------------------------------------------------;
 ChangeJetSpriteOnFlyDown
-	
+
 	; Change animation only if Jetman is flying
 	LD A, (jt.jetAir)
 	CP jt.AIR_FLY
 	RET NZ
 
 	; Switch to flaying down animation
-	LD A, js.SDB_FLYD
-	CALL js.ChangeJetSpritePattern
+	LD A, SDB_FLYD
+	CALL ChangeJetSpritePattern
 
 	RET											; ## END of the function ##
 
@@ -378,14 +383,15 @@ ChangeJetSpriteOnFlyDown
 ;               #ChangeJetSpriteOnFlyUp                    ;
 ;----------------------------------------------------------;
 ChangeJetSpriteOnFlyUp
+
 	; Change animation only if Jetman is flying
 	LD A, (jt.jetAir)
 	CP jt.AIR_FLY
 	RET NZ
 
 	; Switch to flaying animation
-	LD A, js.SDB_FLY
-	CALL js.ChangeJetSpritePattern
+	LD A, SDB_FLY
+	CALL ChangeJetSpritePattern
 	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;

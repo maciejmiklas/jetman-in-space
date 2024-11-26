@@ -134,6 +134,7 @@ RestartMovePattern
 ;  - HL: 	Points to the current move pattern's step.
 ; Modifies: A
 LoadCurrentMoveStep
+
 	LD HL, (IY + ENP.MOVE_PAT_POINTER)			; HL points to start of the #movePattern
 	LD A, (IY + ENP.MOVE_PAT_POS)
 	ADD HL, A									; Move HL from the beginning of the move pattern to current element
@@ -326,6 +327,7 @@ MoveEnemy
 ;  - HL: 	Points to the current move pattern's step.
 ; Modifies: A, BC
 MoveEnemyX
+
 	LD D, MOVEX_SETUP						; D contains configuration for MoveX
 	BIT ENP_SETUP_DEPLOY_BIT, (IY + ENP.SETUP)
 	JR NZ, .deployedLeft						; Jump if bit is 0 -> deploy left
@@ -365,6 +367,7 @@ MoveEnemyX
 ;  - B:		Sprites size
 ; Modifies: ALL
 MoveEnemies
+
 	; Loop ever all enemies skipping hidden 
 .loop
 	PUSH BC										; Preserve B for loop counter
@@ -482,7 +485,7 @@ RES_SE_OUT_YES					= 1				; Enemy did respawn
 RES_SE_OUT_NO					= 0				; Enemy did not respawn
 ; Modifies: all
 RespownEnemy
-	
+
 	BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
 	JR Z, .afterVisibilityCheck					; Skipp this sprite if it's already visible
 	

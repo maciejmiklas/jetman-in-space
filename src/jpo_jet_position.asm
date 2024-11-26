@@ -13,6 +13,7 @@ jetY 					BYTE 0					; 0-256px
 ;                          #IncJetX                        ;
 ;----------------------------------------------------------;
 IncJetX
+
 	LD BC, (jpo.jetX)	
 	INC BC
 
@@ -36,6 +37,7 @@ IncJetX
 ;                        #DecJetX                          ;
 ;----------------------------------------------------------;
 DecJetX
+
 	LD BC, (jpo.jetX)	
 	DEC BC
 
@@ -58,6 +60,7 @@ DecJetX
 ;                          #IncJetY                        ;
 ;----------------------------------------------------------;
 IncJetY
+
 	LD A, (jpo.jetY)	
 	INC A
 	LD (jpo.jetY), A
@@ -70,6 +73,7 @@ IncJetY
 ;                          #DecJetY                        ;
 ;----------------------------------------------------------;
 DecJetY
+
 	LD A, (jpo.jetY)	
 	DEC A
 	LD (jpo.jetY), A
@@ -84,6 +88,7 @@ DecJetY
 ; Input 
 ; - B: number of pixels to move Jetman Up
 IncJetYbyB
+
 	LD A, (jpo.jetY)	
 .loop	
 	ADD B
@@ -99,6 +104,7 @@ IncJetYbyB
 ; Input 
 ; - B: number of pixels to move Jetman Up
 DecJetYbyB
+
 	LD A, (jpo.jetY)	
 	SUB B
 	LD (jpo.jetY), A
@@ -111,6 +117,7 @@ DecJetYbyB
 ;                      #JetmanMoves                        ;
 ;----------------------------------------------------------;
 JetmanMoves
+
 	CALL bg.UpdateBackgroundOnJetmanMove
 	CALL ro.UpdateRocketOnJetmanMove
 

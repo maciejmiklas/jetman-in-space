@@ -80,6 +80,7 @@ srSpriteDB
 ; Input
 ;  - IX:	Pointer to #SPR
 SpriteHit
+
 	LD A, (IX + SPR.STATE)						; Sprite is dying; turn off collision detection
 	RES SPRITE_ST_ACTIVE_BIT, A
 	LD (IX + SPR.STATE), A
@@ -124,6 +125,7 @@ AnimateSprites
 ;  - IX:	Pointer to #SPR
 ; Modifies: A
 SetSpriteId
+
 	LD A, (IX + SPR.ID)
 	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands
 
@@ -136,6 +138,7 @@ SetSpriteId
 ;  - IX:	pointer to #SPR
 ; Modifies: A, BC
 UpdateSpritePosition
+
 	; Move the sprite to the X position, the 9-bit value requires a few tricks. 
 	LD BC, (IX + SPR.X)						
 
@@ -186,7 +189,8 @@ HideSprite
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: 	Pointer to #SPR
-ShowSprite	
+ShowSprite
+
 	LD A, (IX + SPR.SDB_INIT)
 	CALL LoadSpritePattern						; Reset pattern
 
@@ -203,6 +207,7 @@ ShowSprite
 ;  - A:		Prepared state
 ; Modifies: A
 SetStateVisible
+
 	SET SPRITE_ST_VISIBLE_BIT, A
 	SET SPRITE_ST_ACTIVE_BIT, A
 	LD (IX + SPR.STATE), A
@@ -217,6 +222,7 @@ SetStateVisible
 ;  - IX:	Pointer to #SPR
 ; Modifies: A, BC, HL
 UpdateSpritePattern
+
 	; Switch to the next DB record if all bytes from the current one have been used
 	LD A, (IX + SPR.REMAINING)
 	CP 0
@@ -264,6 +270,7 @@ UpdateSpritePattern
 ;  - A:		ID in #srSpriteDB
 ; Modifies: A, BC, HL
 LoadSpritePattern
+
 	; Find DB record
 	LD HL, srSpriteDB							; HL points to the beginning of the DB
 	LD BC, 0									; Do not limit CPIR search
@@ -301,6 +308,7 @@ MVX_IN_D_2PX_ROL			= %0000'0'010		; Move the sprite by 2 pixels and roll over sp
 MVX_IN_D_MASK_CNT			= %00000'111
 ; Modifies; A, B, HL
 MoveX
+
 	; Load counter for .moveLeftLoop into B
 	LD A, D
 	AND MVX_IN_D_MASK_CNT
@@ -392,6 +400,7 @@ MOVE_RET_VISIBLE 			= 1					; Sprite is still visible
 MOVE_RET_HIDDEN 			= 0					; Sprite outside screen, or hits ground
 ; Modifies: A
 MoveY
+
 	CP MOVE_Y_IN_UP
 	JR Z, .afterMovingUp						; Jump if moving up
 

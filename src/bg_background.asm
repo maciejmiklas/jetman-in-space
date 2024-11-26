@@ -7,7 +7,6 @@
 ;             UpdateBackgroundOnJetmanMove                 ;
 ;----------------------------------------------------------;
 UpdateBackgroundOnJetmanMove
-
 	; Horizontal movement
 	LD A, (jpo.jetY)
 

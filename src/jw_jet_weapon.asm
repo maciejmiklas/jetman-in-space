@@ -174,6 +174,7 @@ ShotsColision
 ;----------------------------------------------------------;
 ; Modifies: ALL
 MoveShots
+
 	; Loop ever all shots# skipping hidden sprites
 	LD IX, shots	
 	LD B, SHOTS_SIZE 
@@ -229,10 +230,17 @@ MoveShots
 ;                  #FireDelayCounter                       ;
 ;----------------------------------------------------------;
 FireDelayCounter
+
+	; Return if Jetman is inactive
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+	
 	; Increase shot counter
 	LD A, (shotsDelayCnt)
 	CP FIRE_DELAY
 	RET Z										; Do increase the delay counter when it has reached the required value
+
 	INC A
 	LD (shotsDelayCnt), A
 	 
@@ -242,6 +250,7 @@ FireDelayCounter
 ;                    #AnimateShots                         ;
 ;----------------------------------------------------------;
 AnimateShots
+
 	LD IX, shots	
 	LD B, SHOTS_SIZE 
 	CALL sr.AnimateSprites
@@ -252,6 +261,7 @@ AnimateShots
 ;                          #Fire                           ;
 ;----------------------------------------------------------;
 Fire
+
 	; Check delay to limit fire speed
 	LD A, (shotsDelayCnt)
 	CP FIRE_DELAY

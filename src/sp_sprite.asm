@@ -20,6 +20,7 @@
 ; - HL:		RAM address containing sprite binary data.
 ; - BC:		Number of bytes to copy, i.e. 4 sprites 16x16: "LD BC, 16*16*4".
 LoadSpritesFPGA
+
 	; Store dynamic values into DMA program
 	LD (spSpriteDMAPortA), HL					; Copy sprite sheet address from HL
 	LD (spSpriteDMADataLength), BC				; Copy sprite file length into WR0
@@ -105,6 +106,7 @@ HideSprite
 ;                 #SetIdAndHideSprite                      ;
 ;----------------------------------------------------------;
 SetIdAndHideSprite
+
 ; Input:
 ;  - A: Sprite ID
 

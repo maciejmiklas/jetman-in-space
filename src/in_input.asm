@@ -16,8 +16,12 @@ JoyInput
 	RET Z
 
 	LD A, (jt.jetState)
-	BIT jt.JET_STATE_RIP_BIT, A
-	RET NZ										; Do not process input if Jetman is dying
+	CP jt.JET_ST_RIP
+	RET Z										; Do not process input if Jetman is dying
+
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z										; Do not process input if Jetman is disabled
 
 	CALL JoyStart
 	
@@ -100,10 +104,10 @@ JoySlowdown
 	INC A
 	LD (ind.joyDelayCnt), A
 
-	CP _CF_JOY_DELAY
+	CP _CF_PL_JOY_DELAY
 	JR Z, .delayReached
 
-	LD A, JOY_SL_RET_JOY_OFF					; Return because #joyDelayCnt !=  #_CF_JOY_DELAY
+	LD A, JOY_SL_RET_JOY_OFF					; Return because #joyDelayCnt !=  #_CF_PL_JOY_DELAY
 	RET
 .delayReached									; Delay counter has been reached	
 
@@ -124,16 +128,15 @@ JOY_DIS_RET_JOY_ON 		= 1						; Process joystick input
 JOY_DIS_RET_JOY_OFF		= 2						; Disable joystick input processing for this loop
 
 JoyDisabled
+	; Joystic disabled if Jetman is inactive
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	JR NZ, .jetActive
 
-	; Joystic disabled if flying rocket
-	LD A, (jt.jetAir)
-	CP jt.AIR_FLY_RO
-	JR NZ, .notFlying
-
-	; Do not process input, flying rocket
+	; Do not process input
 	LD A, JOY_DIS_RET_JOY_OFF
 	RET
-.notFlying	
+.jetActive	
 
 	LD A, (ind.joyOffCnt)
 	CP 0
@@ -163,7 +166,6 @@ JoyDisabled
 ;                      JoyWillEnable                       ;
 ;----------------------------------------------------------;
 JoyWillEnable
-
 	CALL jt.UpdateStateOnJoyWillEnable
 
 	RET											; ## END of the function ##
@@ -208,7 +210,6 @@ JoyEnd
 ;                        JoyRight                          ;
 ;----------------------------------------------------------;
 JoyRight
-
 	; Update temp state
 	LD A, (ind.joyDirection)
 	SET ind.MOVE_RIGHT_BIT, A	
@@ -244,7 +245,6 @@ JoyUp
 	LD (ind.joyDirection), A
 
 	; ##########################################
-
 	CALL jm.JoyMoveUp
 
 	RET											; ## END of the function ##
@@ -253,11 +253,13 @@ JoyUp
 ;                         JoyDown                          ;
 ;----------------------------------------------------------;
 JoyDown
+
 	; Update #joyDirection state
 	LD A, (ind.joyDirection)
 	SET ind.MOVE_DOWN_BIT, A	
 	LD (ind.joyDirection), A
 
+	; ##########################################
 	CALL jm.JoyMoveDown
 
 	RET											; ## END of the function ##
@@ -266,6 +268,7 @@ JoyDown
 ;                     JoyDownRelease                       ;
 ;----------------------------------------------------------;
 JoyDownRelease
+
 	CALL jm.JoyMoveDownRelease
 
 	RET											; ## END of the function ##	
@@ -274,6 +277,7 @@ JoyDownRelease
 ;                        JoyFire                           ;
 ;----------------------------------------------------------;
 JoyFire
+
 	CALL jw.Fire
 
 	RET											; ## END of the function ##

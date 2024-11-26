@@ -6,9 +6,9 @@
 ; Number of GameLoop040 cycles to drop next rocket module
 dropNextDelay			BYTE 0
 
-rocketElementCnt		BYTE 0 					; Counts from _CF_RO_EL_LOW to _CF_RO_EL_TANK_3, both inclusive
+rocketElementCnt		BYTE _CF_RO_EL_TANK_3 					; TODO Counts from _CF_RO_EL_LOW to _CF_RO_EL_TANK_3, both inclusive
 
-rocketState				BYTE RO_ST_INACTIVE
+rocketState				BYTE RO_ST_READY
 
 RO_ST_INACTIVE			= 0
 RO_ST_FALL_PICKUP		= 1						; Rocket element (or fuel tank) is falling down for pickup
@@ -39,9 +39,9 @@ Y						BYTE					; Current Y position
 
 rocketEl
 ; rocket element
-	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _CF_RO_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y 0!!!!!*/}	; bottom element
-	RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}	; middle element
-	RO {120/*DROP_X*/, 147/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
+	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _CF_RO_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 233/*Y 0 TODO !!!!!*/}	; bottom element
+	RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 56/*SPRITE_REF*/, 217/*Y*/}	; middle element
+	RO {120/*DROP_X*/, 147/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 52/*SPRITE_REF*/, 201/*Y*/}	; top of the rocket
 ; fuel tank
 	RO {030/*DROP_X*/, 099/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
 	RO {110/*DROP_X*/, 147/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
@@ -55,7 +55,7 @@ EXPLODE_TANK_MAX		= 4						; The amount of explosion sprites
 
 rocketExhaustDB									; Sprite IDs for exhaust
 	DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
-rocketExhaustCnt		BYTE 0					; Counts from 0 (inclusive) to #_RO_EXHAUST_MAX (exclusive)
+rocketExhaustCnt		BYTE 0					; Counts from 0 (inclusive) to #_CF_RO_EXHAUST_MAX (exclusive)
 
 rocketDistance			WORD 0					; Increases with every rocket move when the rocket is flying towards the next planet
 
@@ -74,6 +74,7 @@ rocketExplodeCnt		BYTE 0					; Counts from 1 to _CF_RO_EXPLODE_MAX (both inclusi
 ;                  #StartRocketAssembly                    ;
 ;----------------------------------------------------------;
 StartRocketAssembly
+
 	CALL ResetAndDisableRocket
 
 	LD A, RO_ST_WAIT_DROP
@@ -85,14 +86,15 @@ StartRocketAssembly
 ;----------------------------------------------------------;
 ResetAndDisableRocket
 
-	; ##########################################
 	XOR A
 	LD (rocketState), A
 	LD (expolodeTankCnt), A
-	LD (rocketDistance), A
 	LD (rocketExplodeCnt), A
 	LD (rocketElementCnt), A
 
+	LD HL, 0
+	LD (rocketDistance), HL
+	
 	; ##########################################
 	LD A, _CF_RO_FLY_DELAY
 	LD (rocketFlyDelay), A
@@ -117,6 +119,7 @@ ResetAndDisableRocket
 ;             #UpdateRocketOnJetmanMove                    ;
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
+
 	CALL PickupRocketElement
 	CALL CarryRocketElement
 	CALL BoardRocket
@@ -127,6 +130,7 @@ UpdateRocketOnJetmanMove
 ;                     #BoardRocket                         ;
 ;----------------------------------------------------------;
 BoardRocket
+
 	; Return if rocket is not ready for boarding
 	LD A, (rocketState)
 	CP RO_ST_READY
@@ -148,7 +152,7 @@ BoardRocket
 	LD A, RO_ST_FLY
 	LD (rocketState), A
 
-	CALL gc.TakeOff
+	CALL gc.RocketTakesOff
 
 	RET											; ## END of the function ##
 
@@ -157,12 +161,13 @@ BoardRocket
 ;----------------------------------------------------------;
 ; Start explosion sequece. The rocket explodes when the state is flying and counter above zero
 StartRocketExplosion
+
 	LD A, 1
 	LD (rocketExplodeCnt), A
 
 	; ##########################################
 	; Hide exhaust
-	LD A, _RO_EXHAUST_SPR_ID					; Hide sprite on display	
+	LD A, _CF_RO_EXHAUST_SPR_ID					; Hide sprite on display	
 	CALL sp.SetIdAndHideSprite
 
 	RET											; ## END of the function ##
@@ -172,7 +177,6 @@ StartRocketExplosion
 ;----------------------------------------------------------;
 HideRocket
 
-	; ##########################################
 	; Hide the top rockets element
 	LD IX, rocketEl
 	LD A, _CF_RO_EL_TOP
@@ -331,8 +335,8 @@ CheckHitTank
 ;----------------------------------------------------------;
 ;                  #AnimateTankExplode                     ;
 ;----------------------------------------------------------;
-AnimateTankExplode	
-	
+AnimateTankExplode
+
 	; Return if tank is not exploding
 	LD A, (rocketState)
 	CP RO_ST_TANK_EXPLODE
@@ -378,7 +382,8 @@ AnimateTankExplode
 ;----------------------------------------------------------;
 ;                 #AnimateRocketExhaust                    ;
 ;----------------------------------------------------------;
-AnimateRocketExhaust	
+AnimateRocketExhaust
+
 	; Return if rocket is not flying
 	LD A, (rocketState)
 	CP RO_ST_FLY
@@ -387,7 +392,7 @@ AnimateRocketExhaust
 	; Increment sprite pattern counter
 	LD A, (rocketExhaustCnt)
 	INC A
-	CP _RO_EXHAUST_MAX
+	CP _CF_RO_EXHAUST_MAX
 	JP NZ, .afterIncrement
 	XOR A										; Reset counter
 .afterIncrement	
@@ -395,7 +400,7 @@ AnimateRocketExhaust
 	LD (rocketExhaustCnt), A					; Store current counter (increased or reset)
 
 	; Set the ID of the sprite for the following commands
-	LD A, _RO_EXHAUST_SPR_ID
+	LD A, _CF_RO_EXHAUST_SPR_ID
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Load spirte pattern to A
@@ -411,9 +416,10 @@ AnimateRocketExhaust
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #SwitchRocketSpriteForBlink                 ;
+;                   #BlinkRocketReady                      ;
 ;----------------------------------------------------------;
-SwitchRocketSpriteForBlink
+BlinkRocketReady
+
 	; Return if rocket is not flying
 	LD A, (rocketState)
 	CP RO_ST_FLY
@@ -479,7 +485,6 @@ MoveFlyingRocket
 
 	XOR A
 	LD (rocketDelayDistance), A
-
 .afterDelay
 
 	; ##########################################
@@ -509,14 +514,22 @@ MoveFlyingRocket
 	LD IX, rocketEl								; Load the pointer to #rocket into IX
 
 	; ##########################################
+	; Did the rocket reach the middle of the screen, and should it stop moving?
+	LD A, (IX + RO.Y)
+	CP _CF_RO_FLY_STOP_AT
+	JR NC, .keepMoving
+
+	; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation
+	LD A, (rocketAssemblyX)
+	CALL UpdateElementPosition
+	RET
+.keepMoving
+	; Keep moving
+
+	; ##########################################
 	; Move bottom rocket element (nr.1)
 	LD A, (IX + RO.Y)
 
-	; Did the rocket reach the middle of the screen, and should it stop moving?
-	CP _CF_RO_FLY_STOP_AT
-	RET C
-	
-	; Keep moving
 	DEC A
 	LD (IX + RO.Y), A
 
@@ -553,6 +566,7 @@ MoveFlyingRocket
 ;                       #FlyRocket                         ;
 ;----------------------------------------------------------;
 FlyRocket
+
 	; Return if rocket is not flying
 	LD A, (rocketState)
 	CP RO_ST_FLY
@@ -562,7 +576,7 @@ FlyRocket
 
 	; ##########################################
 	; Flames coming out of the exhaust
-	LD A, _RO_EXHAUST_SPR_ID
+	LD A, _CF_RO_EXHAUST_SPR_ID
 	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands
 
 	; Sprite X coordinate from assembly location
@@ -617,7 +631,6 @@ UpdateElementPosition
 ;  - IX:	Current #RO pointer
 ;  - D:		sprite pattern
 UpdateSpritePattern
-
 	; Set the ID of the sprite for the following commands
 	LD A, (IX + RO.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
@@ -634,6 +647,7 @@ UpdateSpritePattern
 ;              #ResetCarryingRocketElement                 ;
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
+
 	; Return if the state does not match carry
 	LD A, (rocketState)
 	CP RO_ST_CARRY
@@ -647,6 +661,7 @@ ResetCarryingRocketElement
 ;                 #ResetRocketElement                      ;
 ;----------------------------------------------------------;
 ResetRocketElement
+
 	; Reset to wait for drop, hide spirte
 	CALL SetIXtoCurrentRocketElement
 
@@ -673,7 +688,7 @@ ResetRocketElement
 ;                  #CarryRocketElement                     ;
 ;----------------------------------------------------------;
 CarryRocketElement
-	
+
 	; Return if the state does not match
 	LD A, (rocketState)
 	CP RO_ST_CARRY
@@ -689,7 +704,7 @@ CarryRocketElement
 ;                #JetmanDropsRocketElement                 ;
 ;----------------------------------------------------------;
 JetmanDropsRocketElement
-	
+
 	; Is Jetman over the drop location (+/- #_CF_RO_PICK_MARG_X) ?
 	LD BC, (jpo.jetX)
 	LD A, (rocketAssemblyX)
@@ -763,8 +778,8 @@ PickupRocketElement
 	; ##########################################
 	;  Exit if RiP
 	LD A, (jt.jetState)
-	BIT jt.JET_STATE_RIP_BIT, A
-	RET NZ
+	CP jt.JET_ST_RIP
+	RET Z
 
 	; ##########################################
 	; Set IX to current #rocket postion
@@ -799,6 +814,7 @@ COLLISION_NO			= 0
 COLLISION_YES			= 1
 
 JetmanElementCollision
+
 	; Compare X coordinate of element and Jetman
 	LD B, 0										; X is 8bit -> reset MSB
 	LD HL, (jpo.jetX)							; X of the Jetman
@@ -842,7 +858,8 @@ JetmanElementCollision
 ;----------------------------------------------------------;
 ;              #RocketElementFallsForPickup                ;
 ;----------------------------------------------------------;
-RocketElementFallsForPickup	
+RocketElementFallsForPickup
+
 	; Return if there is no fall
 	LD A, (rocketState)
 	CP RO_ST_FALL_PICKUP
@@ -874,7 +891,8 @@ RocketElementFallsForPickup
 ;----------------------------------------------------------;
 ;                  #AnimateRocketReady                     ;
 ;----------------------------------------------------------;
-AnimateRocketReady	
+AnimateRocketReady
+
 	; Return if rocket is not ready
 	LD A, (rocketState)
 	CP RO_ST_READY
@@ -901,7 +919,8 @@ AnimateRocketReady
 ;----------------------------------------------------------;
 ;             #RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
-RocketElementFallsForAssembly	
+RocketElementFallsForAssembly
+
 	; Return if there is no assebly
 	LD A, (rocketState)
 	CP RO_ST_FALL_ASSEMBLY
@@ -963,6 +982,7 @@ RocketElementFallsForAssembly
 ;               #DropNextRocketElement                     ;
 ;----------------------------------------------------------;
 DropNextRocketElement
+
 	; Check state
 	LD A, (rocketState)
 	CP RO_ST_WAIT_DROP
@@ -1032,6 +1052,7 @@ SetIXtoCurrentRocketElement
 ; Input:
 ;  - A:	rocket element from 1 to 6
 MoveIXtoGivenRocketElement
+
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
 	LD IX, rocketEl
 	

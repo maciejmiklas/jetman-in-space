@@ -21,9 +21,10 @@ invincibleCnt			WORD 0					; Makes Jetman invincible when > 0
 ;                #JetmanEnemiesColision                    ;
 ;----------------------------------------------------------;
 JetmanEnemiesColision
+
 	; Collision disabled if flying rocket
-	LD A, (jt.jetAir)
-	CP jt.AIR_FLY_RO
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
 	RET Z
 
 	LD IX, ed.sprite01
@@ -42,6 +43,7 @@ JetmanEnemiesColision
 ;  - B:		Number of enemies in IX
 ; Modifies: ALL
 EnemiesColision
+
 .loop
 	PUSH BC										; Preserve B for loop counter
 	CALL EnemyColision
@@ -68,6 +70,7 @@ COLLISION_NO			= 0
 COLLISION_YES			= 1
 
 CheckCollision
+
 	; Compare X coordinate of enemy and Jetman
 	LD BC, (IX + sr.SPR.X)						; X of the enemy
 	LD HL, (jpo.jetX)							; X of the Jetman
@@ -135,7 +138,10 @@ EnemyColision
 	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
 	RET Z
 
+	; ################################
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman
+
+	; It's flying, now check the collision
 	LD E, 0
 	LD D, _CF_ENP_MARG_VERT_KICK
 	CALL CheckCollision
@@ -143,19 +149,33 @@ EnemyColision
 	JR NZ, .noKicking
 	
 	; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already
-	LD A, (jt.jetState)
-	BIT jt.JET_STATE_KICK_BIT, A
-	RET NZ										; Animation playes already
+	LD A, (jt.jetAir)
+	CP jt.AIR_KICK
+	RET Z										; Animation playes already
 	
 	; Play animation and set state
-	LD A, (jt.jetState)
-	SET jt.JET_STATE_KICK_BIT, A
-	LD (jt.jetState), A
+	LD A, jt.AIR_KICK
+	CALL jt.SetJetStateAir
 
 	LD A, js.SDB_T_KF
 	CALL js.ChangeJetSpritePattern				; Play the animation and keep checking for RiP collision
 
 .noKicking
+
+	; ################################
+	; Check if we should reset kicking state
+	LD A, (jt.jetAir)
+	CP jt.AIR_KICK
+	JR NZ, .afterKickReset
+
+	; Reset kick state
+	LD A, jt.AIR_FLY
+	CALL jt.SetJetStateAir
+
+	JR NZ, .afterKickReset
+.afterKickReset	
+
+	; ################################
 	; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die
 	LD D, _CF_ENP_MARG_VERT_UP
 	LD E, _CF_ENP_MARG_VERT_LOW
@@ -172,9 +192,10 @@ EnemyColision
 ;                        #JetRip                           ;
 ;----------------------------------------------------------;
 JetRip
+
 	LD A, (jt.jetState)
-	BIT jt.JET_STATE_RIP_BIT, A
-	RET Z										; Exit if not RiP
+	CP jt.JET_ST_RIP
+	RET NZ										; Exit if not RiP
 
 	CALL RipMove
 
@@ -195,12 +216,12 @@ JetRip
 ; Input
 ;  - HL:	Number of loops (#counter002) to keep Jemtan invincible
 MakeJetInvincible
+
 	LD (invincibleCnt), HL						; Store invincibility duration
 	
 	; Update state
-	LD A, (jt.jetState)
-	SET jt.JET_STATE_INV_BIT, A
-	LD (jt.jetState), A
+	LD A, jt.JET_ST_INV
+	CALL jt.SetJetState
 
 	RET											; ## END of the function ##
 
@@ -208,6 +229,7 @@ MakeJetInvincible
 ;                   #JetInvincible                         ;
 ;----------------------------------------------------------;
 JetInvincible
+
 	; Exit if #invincibleCnt == 0 (HL == B)
 	LD HL, (invincibleCnt)
 	LD B, 0
@@ -246,10 +268,8 @@ JetInvincible
 	RET
 .lastIteration	
 	; It is the last iteration, remove invincibility
-
-	LD A, (jt.jetState)
-	RES jt.JET_STATE_INV_BIT, A
-	LD (jt.jetState), A
+	LD A, jt.JET_ST_NORMAL
+	CALL jt.SetJetState
 
 	CALL js.ShowJetSprite
 
@@ -259,6 +279,7 @@ JetInvincible
 ;                    #ResetRipMove                         ;
 ;----------------------------------------------------------;	
 ResetRipMove
+
 	LD A, RIP_MOVE_MUL_INC
 	LD (ripMoveMul), A
 	LD (ripMoveCnt), A
@@ -270,6 +291,7 @@ ResetRipMove
 ;----------------------------------------------------------;	
 ; Jetman moves in zig-zac towards the upper side of the screen. 
 RipMove
+
 	CALL bg.UpdateBackgroundOnJetmanMove
 
 	; Move left or right

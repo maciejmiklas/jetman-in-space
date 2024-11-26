@@ -4,12 +4,12 @@
 	MODULE gc
 
 ;----------------------------------------------------------;
-;                       #TakeOff                           ;
+;                    #RocketTakesOff                       ;
 ;----------------------------------------------------------;
-TakeOff
+RocketTakesOff
 
 	CALL js.HideJetSprite
-	CALL jt.ChangeJetStateFlyRocket
+	CALL jt.SetJetStateInactive
 	CALL gb.HideGameBar
 
 	RET											; ## END of the function ##
@@ -23,6 +23,23 @@ RocketExplosionOver
 	CALL ro.ResetAndDisableRocket
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #RocketMovingStart                      ;
+;----------------------------------------------------------;
+RocketMovingStart
+	CALL sc.ShakeScreen
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #RocketMovingEnd                       ;
+;----------------------------------------------------------;
+RocketMovingEnd
+
+
+	RET											; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                      #JetHitsEnemy                       ;
@@ -50,17 +67,17 @@ EnemyHitsJet
 	; ##########################################
 	; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy
 	LD A, (jt.jetState)							
-	BIT jt.JET_STATE_RIP_BIT, A
-	RET NZ										; Exit if RIP
+	CP jt.JET_ST_RIP
+	RET Z										; Exit if RIP
 
 	; ##########################################
 	; Is Jetman invincible? If so, just kill the enemy
-	BIT jt.JET_STATE_INV_BIT, A
-	RET NZ										; Exit if invincible
+	CP jt.JET_ST_INV
+	RET Z										; Exit if invincible
 
 	; ##########################################
 	; This is the first enemy hit
-	CALL jt.ChangeJetStateRip
+	CALL jt.SetJetStateRip
 	
 	LD A, js.SDB_RIP							; Change animation
 	CALL js.ChangeJetSpritePattern
@@ -71,6 +88,7 @@ EnemyHitsJet
 ;                      #RespawnJet                         ;
 ;----------------------------------------------------------;
 RespawnJet
+
 	; Set respawn coordinates
 	LD BC, _CF_JET_RESPOWN_X
 	LD (jpo.jetX), BC
@@ -78,7 +96,7 @@ RespawnJet
 	LD A, _CF_JET_RESPOWN_Y
 	LD (jpo.jetY), A
 
-	CALL jt.ChangeJetStateRespown
+	CALL jt.SetJetStateRespown
 
 	LD HL, _CF_INVINCIBLE
 	CALL jco.MakeJetInvincible

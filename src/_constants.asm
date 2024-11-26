@@ -262,7 +262,7 @@ _SPR_PATTERN_HIDE		= %00000000
 ;  3rd write = Y1 position
 ;  4rd write = Y2 position
 ;  The values are 0,159,0,255 after a Reset
-_TI_CLIP_WINDOW_H1B		= $1B
+_CF_TI_CLIP_WINDOW_H1B		= $1B
 
 ; Tilemap Offset X MSB
 ; bits 7-2 = Reserved, must be 0
@@ -358,7 +358,7 @@ _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800
 
 ; ##############################################
 ; Joystick
-_CF_JOY_DELAY				= 1					; Probe joystick every few loops, 1 for each loop, 0 is not supported
+_CF_PL_JOY_DELAY				= 1					; Probe joystick every few loops, 1 for each loop, 0 is not supported
 
 ; ##############################################
 ; Margins for collision Jetman - enemy
@@ -384,10 +384,14 @@ _CF_JET_RESPOWN_X		= 100
 _CF_JET_RESPOWN_Y		= 100
 
 ; ##############################################
-; Joysitck
-_CF_JOY_OFF_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
-_CF_JOY_OFF_BUMP		= 10					; Disable the joystick for a few frames because Jetman is bumping into the platform
-_CF_JOY_OFF_BUMP_DEC	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value
+; Platform
+_CF_PL_JOY_OFF_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
+_CF_PL_JOY_OFF_BUMP		= 10					; Disable the joystick for a few frames because Jetman is bumping into the platform
+_CF_PL_JOY_OFF_BUMP_DEC	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value
+
+; Compensation for height of Jetman's sprite to fall from the platform
+_CF_PL_FALL_LX			= 8
+_CF_PL_FALL_RX			= -1
 
 ; ##############################################
 ; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
@@ -422,8 +426,8 @@ _CF_RO_FLY_STOP_AT		= 140					; The rocket will stop flying when the Y's positio
 _CF_RO_FLY_DELAY		= 8
 _CF_RO_FLY_DELAY_DIST	= 5
 _CF_RO_EXPLODE_MAX		= 24					; Max value for #rocketExplodeCnt, when reached, the explosion is done, and a new level begins
-_RO_EXHAUST_MAX			= 18
-_RO_EXHAUST_SPR_ID		= 43					; Sprite ID for exhaust
+_CF_RO_EXHAUST_MAX		= 18
+_CF_RO_EXHAUST_SPR_ID	= 43					; Sprite ID for exhaust
 
 ; ##############################################
 ; Game screen 
@@ -435,8 +439,8 @@ _CF_GSC_GROUND			= 217					; The lowest walking platform
 
 ; ##############################################
 ; Screen 
-_CF_SC_SYNC_SL			= 255					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
-_CF_SC_SHAKE_BY			= 5						; Number of pixels to move the screen by shaking
+_CF_SC_SYNC_SL			= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
+_CF_SC_SHAKE_BY			= 2						; Number of pixels to move the screen by shaking
 _CF_SC_MAX_X			= 319
 _CF_SC_MAX_Y			= 255
 
@@ -464,10 +468,10 @@ _CF_TI_EMPTY			= 57					; Empty tile
 _CF_TI_MAP_BYTES		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 _CF_TI_DEF_MAX			= 6910					; Max size of tile definitions (sprite file). 8192 = 16*4*4*32 -> 16x4 sprites, each takes 4*32 bytes
 
-_TI_CLIP_X1				= 0
-_TI_CLIP_X2				= 159
-_TI_CLIP_Y1				= 0
-_TI_CLIP_Y2				= 255 - _CF_TI_PIXELS
+_CF_TI_CLIP_X1			= 0
+_CF_TI_CLIP_X2			= 159
+_CF_TI_CLIP_Y1			= 0
+_CF_TI_CLIP_Y2			= 255 - _CF_TI_PIXELS
 
 ; ##############################################
 ; Tile definition (sprite file)
@@ -487,9 +491,13 @@ _CF_ITS_MOVE_FROM		= 50					; Start moving stats when the rocket reaches the giv
 
 ; ##############################################
 ; Text
-_CF_TX_ASCII_OFFSET	= 34						; Tiles containing characters beginning with '!' - this is 33 in the ASCII table
-_CF_TX_PALETTE	= 0								; Palette byte for tile characters
+_CF_TX_ASCII_OFFSET		= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table
+_CF_TX_PALETTE			= 0						; Palette byte for tile characters
 
 ; ##############################################
 ; Game Bar
 _CF_GB_TILES			= 320 / 8 * 3
+
+; ##############################################
+; Util
+_CF_UT_PAUSE_TIME					= 10

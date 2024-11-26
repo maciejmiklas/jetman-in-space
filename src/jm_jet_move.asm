@@ -13,11 +13,11 @@ jetInactivityCnt		BYTE 0
 ;----------------------------------------------------------;
 ; Transition from standing/landing on ground to walking
 StandToWalk
-	
-	LD A, (jt.jetState)
-	BIT jt.JET_STATE_GND_BIT, A
+
+	LD A, (jt.jetGnd)
+	CP jt.STATE_INACTIVE
 	RET Z										; Exit if Jetman is not on the ground
-	 
+
 	; Jetman is on the ground, is he already walking?
 	LD A, (jt.jetGnd)	
 	CP jt.GND_WALK
@@ -25,7 +25,7 @@ StandToWalk
 
 	; Jetman is standing and starts walking now
 	LD A, jt.GND_WALK
-	LD (jt.jetGnd), A
+	CALL jt.SetJetStateGnd
 	
 	LD A, js.SDB_WALK_ST
 	CALL js.ChangeJetSpritePattern
@@ -37,7 +37,7 @@ StandToWalk
 ;----------------------------------------------------------;
 ; Method gets called on any joystick movement (only real key press), but not fire pressed
 JoystickMoves
-	
+
 	CALL pl.ResetJoyOffBump
 	CALL bg.UpdateBackgroundOnJetmanMove
 	CALL ro.UpdateRocketOnJetmanMove
@@ -56,7 +56,7 @@ JoystickMoves
 
 	; Jetman is hovering, but we have movement, so switch state to fly
 	LD A, jt.AIR_FLY
-	LD (jt.jetAir), A
+	CALL jt.SetJetStateAir
 	
 	; Switch to flaying animation
 	LD A, js.SDB_FLY
@@ -69,7 +69,6 @@ JoystickMoves
 ;                      #JoyMoveUp                          ;
 ;----------------------------------------------------------;
 JoyMoveUp
-
 	CALL JoystickMoves
 
 	; ##########################################
@@ -165,9 +164,9 @@ JoyMoveLeft
 JoyMoveDown
 
 	; Cannot move down when walking
-	LD A, (jt.jetState)
-	BIT jt.JET_STATE_GND_BIT, A
-	RET NZ	
+	LD A, (jt.jetGnd)
+	CP jt.STATE_INACTIVE
+	RET NZ
 
 	; ##########################################
 	CALL JoystickMoves
@@ -214,12 +213,12 @@ JoyMoveDownRelease
 	CALL js.ChangeJetSpriteOnFlyUp
 	RET											; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                      #JoyMoveEnd                         ;
 ;----------------------------------------------------------;
 ; After input processing, #JoyEnd gets executed as the last procedure
 JoyMoveEnd
+
 	; ##########################################
 	; Ignore the situation when Jetman stands on the ground and only down is present. This does not count as movement
 	LD A, (jt.jetGnd)
@@ -249,8 +248,8 @@ JoyMoveEnd
 
 	; ##########################################
 	; Should Jetman hover?
-	LD A, (jt.jetState)
-	bit jt.JET_STATE_AIR_BIT, A					; Is Jemtan in the air already?
+	LD A, (jt.jetAir)
+	CP jt.STATE_INACTIVE						; Is Jemtan in the air?
 	JR Z, .afterHoover							; Jump if not flaying
 
 	LD A, (jt.jetAir)
@@ -264,7 +263,7 @@ JoyMoveEnd
 
 	; Jetamn starts to hover!
 	LD A, jt.AIR_HOOVER
-	LD (jt.jetAir), A
+	CALL jt.SetJetStateAir
 
 	LD A, js.SDB_HOVER
 	CALL js.ChangeJetSpritePattern
@@ -273,8 +272,8 @@ JoyMoveEnd
 
 	; ##########################################
 	; Jetman is not hovering, but should he stand?
-	LD A, (jt.jetState)
-	BIT jt.JET_STATE_GND_BIT, A					; Is Jemtan on the ground already?
+	LD A, (jt.jetGnd)
+	CP jt.STATE_INACTIVE						; Is Jemtan on the ground already?
 	JR Z, .afterInactivity						; Jump if not on the ground
 
 	LD A, (jt.jetGnd)
@@ -289,7 +288,7 @@ JoyMoveEnd
 	
 	; Transtion from walking to standing
 	LD A, jt.GND_STAND
-	LD (jt.jetGnd), A
+	CALL jt.SetJetStateGnd
 
 	LD A, js.SDB_STAND							; Change animation
 	CALL js.ChangeJetSpritePattern
@@ -310,7 +309,7 @@ JoyMoveEnd
 	JR NZ, .afterInactivity						; Jump if Jetman stands for too short to trigger j-standing
 
 	LD A, jt.GND_JSTAND
-	LD (jt.jetGnd), A
+	CALL jt.SetJetStateGnd
 
 	LD A, js.SDB_JSTAND							; Change animation
 	CALL js.ChangeJetSpritePattern

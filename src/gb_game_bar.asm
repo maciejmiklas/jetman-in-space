@@ -11,7 +11,7 @@ gamebarState	BYTE GB_ST_VISIBLE
 ;                    #HideGameBar                          ;
 ;----------------------------------------------------------;
 HideGameBar
-
+	RET ; TODO
 	; Update state
 	LD A, GB_ST_HIDDEN
 	LD (gamebarState), A
@@ -38,6 +38,7 @@ ShowGameBar
 ;                     #PrintDebug                          ;
 ;----------------------------------------------------------;
 PrintDebug
+
 	; Return if gabebar is hidden
 	LD A, (gamebarState)
 	CP GB_ST_VISIBLE
@@ -51,28 +52,28 @@ PrintDebug
 	; ##########################################
 	LD B, 6
 	LD H, 0
-	LD A,  (jpo.jetY)
+	LD A, (jpo.jetY)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 12
 	LD H, 0
-	LD A,  (ro.rocketState)
+	LD A, (ro.rocketState)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 18
 	LD H, 0
-	LD A,  (ro.rocketElementCnt)
+	LD A, (jt.jetGnd)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 24
 	LD H, 0
-	LD A,  (ro.dropNextDelay)
+	LD A,  (jt.jetGnd)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 

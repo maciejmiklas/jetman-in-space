@@ -93,10 +93,10 @@ LoadTiles
 
 	; ##########################################
 	; Setup clip window to hide bottom tile row
-	NEXTREG _TI_CLIP_WINDOW_H1B, _TI_CLIP_X1
-	NEXTREG _TI_CLIP_WINDOW_H1B, _TI_CLIP_X2
-	NEXTREG _TI_CLIP_WINDOW_H1B, _TI_CLIP_Y1
-	NEXTREG _TI_CLIP_WINDOW_H1B, _TI_CLIP_Y2
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X1
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X2
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y1
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y2
 
 	; ##########################################
 	; Tell harware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5

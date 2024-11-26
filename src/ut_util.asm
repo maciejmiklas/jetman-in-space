@@ -8,6 +8,7 @@
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
 CdivD
+
 ; Input:
 ;  - C: numerator
 ;  - D: denominator
@@ -31,6 +32,7 @@ CdivD
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
 AbsDE
+
 	BIT 7, D
 	RET Z
 	XOR A
@@ -47,6 +49,7 @@ AbsDE
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
 AbsBC
+
 	BIT 7, B
 	RET Z
 	XOR A 
@@ -63,6 +66,7 @@ AbsBC
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
 AbsHL
+
 	BIT 7, H
 	RET Z
 	XOR A
@@ -78,6 +82,7 @@ AbsHL
 ;                          AbsA                            ;
 ;----------------------------------------------------------;
 AbsA
+
 	OR A
 	RET P
 	NEG
@@ -93,6 +98,7 @@ AbsA
 ;  - B:		Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
 PrintNumHLDebug
+
 	PUSH BC, DE, IX, IY
 	
 	CALL tx.PrintNumHL
@@ -113,6 +119,7 @@ HL_NOT_B				= 1
 ; Return:
 ;  - A:		#HL_IS_0 or #HL_NOT_0
 HlEqualB
+
 	LD A, H										; Check if H == B
 	CP B
 	JR NZ, .notEqual							; Jump if H != B
@@ -133,6 +140,7 @@ HlEqualB
 ;                       #PauseShort                        ;
 ;----------------------------------------------------------;
 PauseShort
+
 	CALL CountdownBC
 	
 	RET											; ## END of the function ##
@@ -140,11 +148,12 @@ PauseShort
 ;----------------------------------------------------------;
 ;                         #Pause                           ;
 ;----------------------------------------------------------;
-PAUSE_TIME					= 10
+
 Pause
+
 	PUSH AF, BC, DE, HL, IX, IY
 
-	LD A, PAUSE_TIME
+	LD A, _CF_UT_PAUSE_TIME
 .loop:
 	CALL CountdownBC
 
@@ -160,6 +169,7 @@ Pause
 ;                       #CountdownBC                       ;
 ;----------------------------------------------------------;
 CountdownBC
+
 	PUSH AF, BC, DE, HL, IX, IY
 
 	LD BC, 65000

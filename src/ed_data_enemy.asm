@@ -144,7 +144,7 @@ spriteEf07
 	sr.SPR {41/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}	
 
 spritesSize					BYTE 15+7			; The total amount of visible sprites - including single enemies (15) and formation (7)
-singleSpritesSize			BYTE 15				; Amount of sprites that can respawn as a single enemy
+singleSpritesSize			BYTE 5				; Amount of sprites that can respawn as a single enemy
 
 formation ef.EF{spriteEf01/*SPRITE_POINTER*/, 200/*RESPOWN_DELAY*/, 0/*RESPOWN_DELAY_CNT*/, 7/*SPRITES*/, 0/*SPRITES_CNT*/}
 

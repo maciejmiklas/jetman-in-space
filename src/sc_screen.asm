@@ -7,6 +7,7 @@
 ;                      #SetupScreen                        ;
 ;----------------------------------------------------------;
 SetupScreen
+
 	; Sprite and Layers system. Bits:
 	;  - 7: 0 - low RES mode off
 	;  - 6: 1 - sprite on top
@@ -42,6 +43,7 @@ SetupScreen
 ; - A:		8k memory bank containing layer 2 palette data
 ; - HL:		address of layer 2 palette data
 SetupLayer2Palette
+
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Assign bank 24 to slot 7	
 
 	; Bits
@@ -80,6 +82,7 @@ SetupLayer2Palette
 ; - B:		Number of colors to copy
 ; - HL:		Address of layer 2 palette data 
 SetupTilemapPalette
+
 	NEXTREG _DC_REG_TI_TRANSP_H4C, $00		; Black for tilemap transparency
 
 	; Bits
@@ -105,6 +108,7 @@ SetupTilemapPalette
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
 ; Based on: https://github.com/robgmoran/DougieDoSource
 WaitForScanline     
+
 ; Read NextReg $1F - LSB of current raster line
 	LD BC, _GL_REG_SELECT_H243B					; TBBlue Register Select
 	LD A, _GL_REG_VL_H1F						; Port to access - Active Video Line LSB Register
@@ -123,13 +127,14 @@ WaitForScanline
 ;                   #ShakeScreen                           ;
 ;----------------------------------------------------------;
 ShakeScreen
-	LD A, (gld.counter004FliFLop)				; Oscilates beetwen 1 and 0
+
+	LD A, (gld.counter002FliFLop)				; Oscilates beetwen 1 and 0
 	LD D, A
 	LD E, _CF_SC_SHAKE_BY
 	MUL D, E
 	LD A, E
-	NEXTREG _DC_REG_TI_X_LSB_H30, A			; X tile offset
-	NEXTREG _DC_REG_TI_Y_H31, A				; Y tile offset
+	NEXTREG _DC_REG_TI_X_LSB_H30, A				; X tile offset
+	NEXTREG _DC_REG_TI_Y_H31, A					; Y tile offset
 	
 	RET											; ## END of the function ##
 
