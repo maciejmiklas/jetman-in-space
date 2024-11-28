@@ -361,6 +361,38 @@ MoveEnemyX
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     #KillOneEnemy                        ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:	Pointer to #SPR
+;  - B:		Sprites size
+KillOneEnemy
+	; Loop ever all enemies skipping hidden 
+.loop
+
+	; ##########################################
+	; Ignore this enemy if it's hidden/exploding
+	LD A, (IX + sr.SPR.STATE)
+	AND sr.SPRITE_ST_ALIVE						; Reset all bits but hidden/exploding
+	CP sr.SPRITE_ST_ALIVE
+	JR NZ, .continue							; Jump if this enemy is already dead or exploding
+
+	; ##########################################
+	CALL gc.EnemyHit
+	RET
+
+.continue
+	; ##########################################
+	; Move IX to the beginning of the next #SPR
+	LD DE, sr.SPR
+	ADD IX, DE
+
+	; ##########################################
+	DJNZ .loop
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       #MoveEnemies                       ;
 ;----------------------------------------------------------;
 ;  - IX:	Pointer to #SPR
@@ -403,18 +435,15 @@ MoveEnemies
 	CALL MoveEnemy
 	
 .continue	
-
-	; Jump if B > 0 (loop starts with B = #SPR)
-	POP BC
-	DEC B
-	LD A, B
-	CP 0
-	RET Z										; Exit if B has reached 0
-
+	
+	; ##########################################
 	; Move IX to the beginning of the next #SPR
 	LD DE, sr.SPR
 	ADD IX, DE
-	JP .loop
+
+	; ##########################################
+	POP BC
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #SPR)
 
 	RET											; ## END of the function ##	
 

@@ -37,16 +37,15 @@ RocketMovingStart
 ;----------------------------------------------------------;
 RocketMovingEnd
 
-
 	RET											; ## END of the function ##
 
 
 ;----------------------------------------------------------;
-;                      #JetHitsEnemy                       ;
+;                        #EnemyHit                         ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:	Pointer enemy's #SPR
-JetHitsEnemy
+EnemyHit
 
 	CALL sr.SetSpriteId
 	CALL sr.SpriteHit

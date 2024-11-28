@@ -28,13 +28,15 @@ EXT_DATA_POINTER		WORD					; Pointer to additional data structure for this sprit
 
 ; When a weapon hits something, the sprite first gets status #SPRITE_ST_ACTIVE_BIT. After it stops exploding, it becomes status #SPRITE_ST_VISIBLE_BIT
 
-; Active flag, 1 - sprite is alive/active, 0 - sprite is dying (not active), disabled for colistion detection, but visible
+; Active flag, 1 - sprite is alive/active, 0 - sprite is dying (not active), disabled for colistion detection, but visible (exploding/dying)
 SPRITE_ST_ACTIVE_BIT		= 1
 SPRITE_ST_ACTIVE			= %00000010
 
-; Visible flag, 1 = displayed, 0 = hidden, disabled for colistion detection
+; Visible flag, 1 = visible (enabled for colistion detection only if active bit is set), 0 = hidden (can be reused)
 SPRITE_ST_VISIBLE_BIT		= 0
 SPRITE_ST_VISIBLE			= %00000001
+
+SPRITE_ST_ALIVE				= %00000011			; Alive and visible
 
 ; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37
 SPRITE_ST_MIRROR_X_BIT		= 3

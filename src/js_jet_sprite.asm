@@ -110,11 +110,6 @@ sprState			BYTE SPR_STATE_SHOW
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation
 
-	; Return if inactive
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
 	LD BC, (jpo.jetX)
 
@@ -193,12 +188,6 @@ ChangeJetSpritePattern
 ; Update sprite pattern for the next animation frame
 AnimateJetSprite
 
-	; Return if inactive
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; Delay animation
 	LD A, (sprDBDelay)
 	CP 0

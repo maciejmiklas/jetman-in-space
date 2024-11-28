@@ -78,7 +78,7 @@ CheckHitEnemies
 	JR NZ, .continue							; Jump if there is no hit
 
 	; We have hit!
-	CALL gc.JetHitsEnemy
+	CALL gc.EnemyHit
 
 .continue
 	; Move HL to the beginning of the next enemy
@@ -138,7 +138,7 @@ ShotsColision
 	JR C, .continueShotsLoop					; Jump if A(#_CF_FIRE_THICKNESS) < L
 	
 	; We are here because the shot is horizontal with the enemy, now check the vertical match
-	LD A, (IX + sr.SPR.Y)					; A holds Y from the shot
+	LD A, (IX + sr.SPR.Y)						; A holds Y from the shot
 
 	; Subtracts C from A and check whether the result is less than or equal to #_CF_FIRE_THICKNESS
 	SUB C
@@ -230,11 +230,6 @@ MoveShots
 ;                  #FireDelayCounter                       ;
 ;----------------------------------------------------------;
 FireDelayCounter
-
-	; Return if Jetman is inactive
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
 	
 	; Increase shot counter
 	LD A, (shotsDelayCnt)

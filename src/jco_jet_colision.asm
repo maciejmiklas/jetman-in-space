@@ -22,11 +22,6 @@ invincibleCnt			WORD 0					; Makes Jetman invincible when > 0
 ;----------------------------------------------------------;
 JetmanEnemiesColision
 
-	; Collision disabled if flying rocket
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
 	LD B, A

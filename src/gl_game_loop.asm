@@ -34,24 +34,44 @@ GameLoop000
 	; CALL functions that need to be updated every loop
 	; First update graphics, logic follows afterwards!
 
-	CALL js.AnimateJetSprite
-	CALL js.UpdateJetSpritePositionRotation
-	CALL jw.FireDelayCounter
-	CALL jco.JetRip
-	CALL GameLoop000OnDisabledJoy
-	CALL jco.JetmanEnemiesColision
-	CALL ro.CheckHitTank
 	CALL jw.MoveShots
 	CALL jw.WeaponHitEnemies
-	CALL gb.PrintDebug
-	CALL ro.FlyRocket
-	CALL GameLoop000OnMovingRocket
 
+	CALL jco.JetRip
+	CALL gb.PrintDebug
+
+	CALL ro.CheckHitTank
+	CALL ro.FlyRocket
+
+	CALL GameLoop000OnDisabledJoy
+	CALL GameLoop000OnMovingRocket
+	CALL GameLoop000OnActiveJetman
+	
 	; ##########################################
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
 	LD B, A 	
 	CALL ep.MoveEnemies
+
+	CALL in.JoyInput
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #GameLoop000OnActiveJetman                 ;
+;----------------------------------------------------------;
+GameLoop000OnActiveJetman
+
+	; Return if inactive
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
+	CALL js.AnimateJetSprite
+	CALL js.UpdateJetSpritePositionRotation
+	CALL jw.FireDelayCounter
+	CALL jco.JetmanEnemiesColision
 
 	; ##########################################
 	LD IX, ed.sprite01
@@ -61,12 +81,53 @@ GameLoop000
 	
 	; ##########################################
 	LD IY, ed.formation
-	CALL ef.RespownFormation
+	CALL ef.RespownFormation	
 
-	CALL in.JoyInput
+	RET											; ## END of the function ##	
+
+;----------------------------------------------------------;
+;               #GameLoop000OnDisabledJoy                  ;
+;----------------------------------------------------------;
+GameLoop000OnDisabledJoy
+
+	; Return if the joystick is about to enable
+	LD A, (ind.joyOffCnt)
+	CP 2
+	RET C										; Return on the last off loop (#joyOffCnt < 2) - this one is used to reset status and not to animate
+
+	; ##########################################
+	CALL pl.AnimateJetSideHitPlatfrom
+	CALL pl.AnimateJetFallingFromPlatform
+	CALL pl.AnimateJetHitPlatfromBelow
+
+	RET											; ## END of the function ##	
+
+;----------------------------------------------------------;
+;              #GameLoop000OnMovingRocket                  ;
+;----------------------------------------------------------;
+GameLoop000OnMovingRocket
+
+	; Return if rocket is not flying
+	LD A, (ro.rocketState)
+	CP ro.RO_ST_FLY
+	RET NZ
+
+	; ##########################################
+	; Execute function until the rocket has reached its destination, where it stops and only stars are moving
+	LD HL, (ro.rocketDistance)
+	LD A, H										; H is always 0, because distance < 255
+	CP 0
+	RET NZ
+
+	LD A, L
+	CP _CF_RO_FLY_STOP_AT
+	RET NC
+
+	; ##########################################
+	CALL sc.ShakeScreen
 
 	RET											; ## END of the function ##
-
+	
 ;----------------------------------------------------------;
 ;                       #GameLoop002                       ;
 ;----------------------------------------------------------;
@@ -216,6 +277,25 @@ GameLoop010
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
+	CALL GameLoop010OnFlyingRocket
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;              #GameLoop010OnFlyingRocket                  ;
+;----------------------------------------------------------;
+GameLoop010OnFlyingRocket
+
+	; Return if rocket is not flying
+	LD A, (ro.rocketState)
+	CP ro.RO_ST_FLY
+	RET NZ
+
+	; ##########################################
+	LD IX, ed.sprite01
+	LD A, (ed.singleSpritesSize)
+	LD B, A
+	CALL ep.KillOneEnemy
 
 	RET											; ## END of the function ##
 
@@ -264,48 +344,6 @@ GameLoop080
 
 	RET											; ## END of the function ##
 
-;----------------------------------------------------------;
-;               #GameLoop000OnDisabledJoy                  ;
-;----------------------------------------------------------;
-GameLoop000OnDisabledJoy
-
-	; Return if the joystick is about to enable
-	LD A, (ind.joyOffCnt)
-	CP 2
-	RET C										; Return on the last off loop (#joyOffCnt < 2) - this one is used to reset status and not to animate
-
-	; ##########################################
-	CALL pl.AnimateJetSideHitPlatfrom
-	CALL pl.AnimateJetFallingFromPlatform
-	CALL pl.AnimateJetHitPlatfromBelow
-
-	RET											; ## END of the function ##	
-
-;----------------------------------------------------------;
-;              #GameLoop000OnMovingRocket                  ;
-;----------------------------------------------------------;
-GameLoop000OnMovingRocket
-
-	; Return if rocket is not flying
-	LD A, (ro.rocketState)
-	CP ro.RO_ST_FLY
-	RET NZ
-
-	; ##########################################
-	; Execute function until the rocket has reached its destination, where it stops and only stars are moving
-	LD HL, (ro.rocketDistance)
-	LD A, H										; H is always 0, because distance < 255
-	CP 0
-	RET NZ
-
-	LD A, L
-	CP _CF_RO_FLY_STOP_AT
-	RET NC
-
-	; ##########################################
-	CALL sc.ShakeScreen
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
