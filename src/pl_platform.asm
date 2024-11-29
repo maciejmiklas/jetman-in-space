@@ -327,9 +327,9 @@ PlaftormSpriteHit
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #AnimateJetFallingFromPlatform               ;
+;              #MoveJetOnFallingFromPlatform               ;
 ;----------------------------------------------------------;
-AnimateJetFallingFromPlatform
+MoveJetOnFallingFromPlatform
 
 	; Is Jetman falling from the platform on the right side?
 	LD A, (jt.jetAir)
@@ -361,9 +361,9 @@ AnimateJetFallingFromPlatform
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #AnimateJetHitPlatfromBelow                 ;
+;              #MoveJetOnHitPlatfromBelow                  ;
 ;----------------------------------------------------------;
-AnimateJetHitPlatfromBelow
+MoveJetOnHitPlatfromBelow
 
 	; Jetmat hits the platform from the bottom?
 	LD A, (jt.jetAir)

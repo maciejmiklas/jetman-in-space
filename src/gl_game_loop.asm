@@ -101,10 +101,10 @@ GameLoop000OnDisabledJoy
 
 	; ##########################################
 	CALL pl.MoveJetOnPlatfromSideHit
-	CALL pl.AnimateJetFallingFromPlatform
-	CALL pl.AnimateJetHitPlatfromBelow
+	CALL pl.MoveJetOnFallingFromPlatform
+	CALL pl.MoveJetOnHitPlatfromBelow
 
-	RET											; ## END of the function ##	
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;           #GameLoop000OnRocketTakingOff                  ;

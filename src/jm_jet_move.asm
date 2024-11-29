@@ -337,8 +337,14 @@ JoyCntEnabled
 .afterEnableCheck	
 
 	; ##########################################
-	; Allow input processing if Jetman is close to the platform. This allows for example to move left/right when hitting platform from
-	; below and keeping pressed up + left (or right)
+	; Allow input processing if Jetman is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when
+	; hitting the platform from below and pressing up + left (or right). 
+	; We can have the following situation: Jemtan is below the platform and is not bumping off anymore because it's close long enough.
+	; The player still keeps pressing up and simultaneously, let's say, left. We want to allow movement to the left, but not up.
+	; Because #joyOffCnt > 0, the function #GameLoop000OnDisabledJoy will be executed. It will move Jetman one pixel down, which is good
+	; because pressing up has moved him one pixel up. To allow movement left, we ignore #joyOffBump because it is so small that we know
+	; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Jaystick's movement up, ignoring #joyOffBump allows movement to the left.
+
 	LD A, (pl.joyOffBump)
 	CP _CF_PL_BUMP_JOY_OFF_DEC+1
 	JR C, .joyEnabled
