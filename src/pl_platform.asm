@@ -192,10 +192,6 @@ JetPlatformHitOnJoyMove
 .bumpDonwOnPixel
 	CALL jpo.IncJetY
 
-	;XOR A
-	;LD (joyOffBump), A
-	;LD (ind.joyOffCnt),A
-
 	RET
 .afterHitBottom	
 
@@ -253,7 +249,7 @@ JetHitsPlatfrom
 	LD (ind.joyOffCnt), A
 
 	; ##########################################
-	; decrement joystick off time with every bump
+	; Decrement joystick off time with every bump
 	
 	CP _CF_PL_BUMP_JOY_OFF_DEC+1
 	RET C										; Do not allow #joyOffBump to reach 0, otherwise Jemtan will go troug the obsticle

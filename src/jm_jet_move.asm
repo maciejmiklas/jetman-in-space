@@ -336,24 +336,15 @@ JoyCntEnabled
 	CALL gc.JoyWillEnable
 .afterEnableCheck	
 
-	LD A, _CF_RET_OFF
-	RET											; Do not process input, as the joystick is disabled
-
-/*
+	; ##########################################
+	; Allow input processing if Jetman is close to the platform. This allows for example to move left/right when hitting platform from
+	; below and keeping pressed up + left (or right)
 	LD A, (pl.joyOffBump)
 	CP _CF_PL_BUMP_JOY_OFF_DEC+1
-	JR C, .bumpLeftOnPixel
+	JR C, .joyEnabled
 
 	LD A, _CF_RET_OFF
 	RET											; Do not process input, as the joystick is disabled
-
-.bumpLeftOnPixel
-
-	LD A, _CF_RET_ON
-	RET
-
-*/
-
 
 .joyEnabled							; Process input
 	LD A, _CF_RET_ON
