@@ -7,9 +7,8 @@
 ;                    #RocketTakesOff                       ;
 ;----------------------------------------------------------;
 RocketTakesOff
-
-	CALL js.HideJetSprite
 	CALL jt.SetJetStateInactive
+	CALL js.HideJetSprite
 	CALL gb.HideGameBar
 
 	RET											; ## END of the function ##
@@ -25,20 +24,11 @@ RocketExplosionOver
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #RocketMovingStart                      ;
-;----------------------------------------------------------;
-RocketMovingStart
-	CALL sc.ShakeScreen
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                   #RocketMovingEnd                       ;
 ;----------------------------------------------------------;
 RocketMovingEnd
 
 	RET											; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                        #EnemyHit                         ;

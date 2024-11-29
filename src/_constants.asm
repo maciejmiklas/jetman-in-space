@@ -422,7 +422,7 @@ _CF_RO_PICK_MARG_Y		= 16
 _CF_RO_CARRY_ADJUST_Y	= 10
 _CF_RO_EXPLODE_Y_HI		= 3						; HI byte from #starsDistance to explode rocket,950 = $3B6
 _CF_RO_EXPLODE_Y_LO		= $B6					; LO byte from #starsDistance to explode rocket
-_CF_RO_FLY_STOP_AT		= 140					; The rocket will stop flying when the Y's position is reached
+_CF_RO_MOVE_STOP		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position
 _CF_RO_FLY_DELAY		= 8
 _CF_RO_FLY_DELAY_DIST	= 5
 _CF_RO_EXPLODE_MAX		= 24					; Max value for #rocketExplodeCnt, when reached, the explosion is done, and a new level begins
@@ -461,7 +461,7 @@ _CF_TI_OFFSET	= (_CF_TI_START - _RAM_SLOT2_START_H4000) >> 8
 _CF_TI_PIXELS			= 8						; Size of a single tile in pixels
 _CF_TI_H_TILES			= 320/8					; 40 horizontal tiles
 _CF_TI_H_BYTES			= _CF_TI_H_TILES * 2	; 320/8*2 = 80 bytes pro row -> silgle tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes
-_CF_TI_V_TILES			= 256/8					; 256/8 = 32 rows
+_CF_TI_V_TILES			= 256/8					; 256/8 = 32 rows (256 - vertival screen size)
 _CF_TI_V_BYTES			= _CF_TI_V_TILES * 2	; 64 bytes pro row
 _CF_TI_MAX_X			= 255 - 8				; Lower tile row is reserved for scrolling
 _CF_TI_EMPTY			= 57					; Empty tile

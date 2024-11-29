@@ -516,7 +516,7 @@ MoveFlyingRocket
 	; ##########################################
 	; Did the rocket reach the middle of the screen, and should it stop moving?
 	LD A, (IX + RO.Y)
-	CP _CF_RO_FLY_STOP_AT
+	CP _CF_RO_MOVE_STOP
 	JR NC, .keepMoving
 
 	; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation

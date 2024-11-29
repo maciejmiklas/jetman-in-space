@@ -106,7 +106,7 @@ SetJetStateRespown
 
 	LD A, AIR_HOOVER
 	LD (jetAir), A
-
+	
 	LD A, JET_ST_NORMAL
 	LD (jetState), A
 	

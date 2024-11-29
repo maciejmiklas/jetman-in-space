@@ -216,7 +216,7 @@ JoyMoveDownRelease
 ;----------------------------------------------------------;
 ;                      #JoyMoveEnd                         ;
 ;----------------------------------------------------------;
-; After input processing, #JoyEnd gets executed as the last procedure
+; It gets executed as a last procedure after the input has been processed, only if there was an input
 JoyMoveEnd
 
 	; ##########################################

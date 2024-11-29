@@ -6,7 +6,8 @@
 GB_ST_VISIBLE			= 1
 GB_ST_HIDDEN			= 0
 
-gamebarState	BYTE GB_ST_VISIBLE
+gamebarState			BYTE GB_ST_VISIBLE
+refreshCnt 				BYTE 0
 ;----------------------------------------------------------;
 ;                    #HideGameBar                          ;
 ;----------------------------------------------------------;
@@ -57,25 +58,42 @@ PrintDebug
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
+	LD A, (refreshCnt)
+	INC A
+	LD (refreshCnt), A
+
 	LD B, 12
 	LD H, 0
-	LD A, (ro.rocketState)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 18
 	LD H, 0
-	LD A, (jt.jetGnd)
+	LD A, (gl.tmp)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 24
 	LD H, 0
-	LD A,  (jt.jetGnd)
+	LD A,  (jt.jetState)
 	LD L, A
 	CALL ut.PrintNumHLDebug
+
+	; ##########################################
+	LD B, 30
+	LD H, 0
+	LD A,  (jt.jetAir)
+	LD L, A
+	CALL ut.PrintNumHLDebug	
+
+	; ##########################################
+	LD B, 36
+	LD H, 0
+	LD A,  (jt.jetGnd)
+	LD L, A
+	CALL ut.PrintNumHLDebug		
 
 	RET											; ## END of the function ##
 

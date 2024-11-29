@@ -27,7 +27,7 @@
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
 PrintText
 
-	LD HL, _CF_TI_START						; HL points to screen memory containing tilemap 
+	LD HL, _CF_TI_START							; HL points to screen memory containing tilemap 
 	DEC HL										; TODO why (verify _CF_TI_START)?
 	
 	; HL will point to the memory location containing the data of the first character (tile)
@@ -43,7 +43,7 @@ PrintText
 	INC DE										; Move to the next char 
 	ADD A, -_CF_TX_ASCII_OFFSET					; Remove ASCII offset as tiles begin with 0
 
-	LD (HL), _CF_TX_PALETTE					; Set palette for tile
+	LD (HL), _CF_TX_PALETTE						; Set palette for tile
 	INC HL
 	LD (HL), A									; Set character for tile
 	INC HL
@@ -55,18 +55,10 @@ PrintText
 ;----------------------------------------------------------;
 ;                       #CleanTiles                        ;
 ;----------------------------------------------------------;
-;  - E:		An offset to first tile to start cleaning
 ;  - B:		Amount of tiles to clean 
 CleanTiles
-	LD HL, _CF_TI_START						; HL points to screen memory containing tilemap 
+	LD HL, _CF_TI_START							; HL points to screen memory containing tilemap 
 	DEC HL										; TODO why (verify _CF_TI_START)?
-
-	; Each tile takes 2 bytes, multiply E by two, and use it as offset to tile location in RAM
-	;LD D, 2
-	;MUL D, E
-
-	;LD HL, _CF_TI_START						; HL points to screen memory containing tilemap 
-	;ADD HL, DE									; HL points to first tile
 
 	; ##########################################
 	LD A, _CF_TI_EMPTY
@@ -101,7 +93,7 @@ LoadTiles
 	; ##########################################
 	; Tell harware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5
 	NEXTREG _TI_MAP_ADR_H6E, _CF_TI_OFFSET		; MSB of tilemap in bank 5
-	NEXTREG _TI_DEF_ADR_H6F, _CF_TID_OFFSET	; MSB of tilemap definitions (sprites)
+	NEXTREG _TI_DEF_ADR_H6F, _CF_TID_OFFSET		; MSB of tilemap definitions (sprites)
 
 	; ##########################################
 	; Setup palette

@@ -224,7 +224,11 @@ MakeJetInvincible
 ;                   #JetInvincible                         ;
 ;----------------------------------------------------------;
 JetInvincible
+	LD A, (jt.jetState)
+	CP jt.JET_ST_INV
+	RET NZ
 
+	; ##########################################
 	; Exit if #invincibleCnt == 0 (HL == B)
 	LD HL, (invincibleCnt)
 	LD B, 0
@@ -236,12 +240,14 @@ JetInvincible
 	DEC HL
 	LD (invincibleCnt), HL						; Decrement counter and store it
 
+	; ##########################################
 	; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
 	LD B, 0
 	CALL ut.HlEqualB
 	CP ut.HL_IS_B
 	JR Z, .lastIteration						; HL == 0
 
+	; ##########################################
 	; Still invincible - blink Jetman sprite (at first blink fast, last few seconds blink slow)
 	; Shold blink slow or fast?
 	LD A, H										; H should be 0 because the last blink phase (slow blink) is 8 bits
@@ -261,7 +267,9 @@ JetInvincible
 
 	CALL js.BlinkJetSprite
 	RET
+	
 .lastIteration	
+	; ##########################################
 	; It is the last iteration, remove invincibility
 	LD A, jt.JET_ST_NORMAL
 	CALL jt.SetJetState

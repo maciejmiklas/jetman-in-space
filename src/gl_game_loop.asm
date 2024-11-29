@@ -44,7 +44,7 @@ GameLoop000
 	CALL ro.FlyRocket
 
 	CALL GameLoop000OnDisabledJoy
-	CALL GameLoop000OnMovingRocket
+	CALL GameLoop000OnRocketTakingOff
 	CALL GameLoop000OnActiveJetman
 	
 	; ##########################################
@@ -57,6 +57,7 @@ GameLoop000
 
 	RET											; ## END of the function ##
 
+tmp byte 0
 ;----------------------------------------------------------;
 ;               #GameLoop000OnActiveJetman                 ;
 ;----------------------------------------------------------;
@@ -67,6 +68,9 @@ GameLoop000OnActiveJetman
 	CP jt.STATE_INACTIVE
 	RET Z
 
+	ld a, (tmp)
+	inc a 
+	ld (tmp),a
 	; ##########################################
 	CALL js.AnimateJetSprite
 	CALL js.UpdateJetSpritePositionRotation
@@ -103,9 +107,9 @@ GameLoop000OnDisabledJoy
 	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
-;              #GameLoop000OnMovingRocket                  ;
+;           #GameLoop000OnRocketTakingOff                  ;
 ;----------------------------------------------------------;
-GameLoop000OnMovingRocket
+GameLoop000OnRocketTakingOff
 
 	; Return if rocket is not flying
 	LD A, (ro.rocketState)
@@ -120,7 +124,7 @@ GameLoop000OnMovingRocket
 	RET NZ
 
 	LD A, L
-	CP _CF_RO_FLY_STOP_AT
+	CP _CF_RO_MOVE_STOP
 	RET NC
 
 	; ##########################################
@@ -277,28 +281,40 @@ GameLoop010
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-	CALL GameLoop010OnFlyingRocket
 
+	CALL GameLoop010nFlyingRocket
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #GameLoop010OnFlyingRocket                  ;
+;               #GameLoop010nFlyingRocket                  ;
 ;----------------------------------------------------------;
-GameLoop010OnFlyingRocket
+GameLoop010nFlyingRocket
 
 	; Return if rocket is not flying
 	LD A, (ro.rocketState)
 	CP ro.RO_ST_FLY
 	RET NZ
 
+	LD A, (gld.counter008FliFLop)
+	CP gld.FLIP_ON
+	JR Z, .flip
+
 	; ##########################################
 	LD IX, ed.sprite01
 	LD A, (ed.singleSpritesSize)
 	LD B, A
-	CALL ep.KillOneEnemy
+	CALL sr.KillOneSprite
 
+	JR .afterFilpFlop
+.flip
+	; ##########################################
+	LD IX, ed.spriteEf01
+	LD A, (ed.formation.SPRITES)
+	LD B, A
+	CALL sr.KillOneSprite
+
+.afterFilpFlop
 	RET											; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                       #GameLoop040                       ;
 ;----------------------------------------------------------;
