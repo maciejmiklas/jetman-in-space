@@ -453,9 +453,9 @@ JetLanding
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #MoveJetOnPlatfromHit                    ;
+;                #MoveJetOnPlatfromSideHit                 ;
 ;----------------------------------------------------------;
-MoveJetOnPlatfromHit
+MoveJetOnPlatfromSideHit
 
 	; Is Jetman bumping into the platform from the right?
 	LD A, (jt.jetAir)

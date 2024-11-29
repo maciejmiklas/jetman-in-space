@@ -96,11 +96,11 @@ GameLoop000OnDisabledJoy
 
 	; Return if the joystick is about to enable
 	LD A, (ind.joyOffCnt)
-	CP 2
-	RET C										; Return on the last off loop (#joyOffCnt < 2) - this one is used to reset status and not to animate
+	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	RET C										; Return on the last off loop - this one is used to reset status and not to animate
 
 	; ##########################################
-	CALL pl.MoveJetOnPlatfromHit
+	CALL pl.MoveJetOnPlatfromSideHit
 	CALL pl.AnimateJetFallingFromPlatform
 	CALL pl.AnimateJetHitPlatfromBelow
 

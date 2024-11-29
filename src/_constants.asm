@@ -389,7 +389,7 @@ _CF_PL_FALL_JOY_OFF		= 10					; Disable the joystick for a few frames because Je
 _CF_PL_FALL_Y			= 4						; Amount of pixels to move Jetman down when falling from the platform
 _CF_PL_FALL_X			= 2
 
-_CF_PL_BUMP_JOY_OFF		= 10					; Disable the joystick for a few frames because Jetman is bumping into the platform
+_CF_PL_BUMP_JOY_OFF		= 15					; Disable the joystick for a few frames because Jetman is bumping into the platform
 _CF_PL_BUMP_JOY_OFF_DEC	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value
 _CF_PL_BUMP_Y			= 4						; Amount of pixels to move Jetman down when hitting platform from below
 _CF_PL_BUMP_X			= 4
