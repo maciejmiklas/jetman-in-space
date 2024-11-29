@@ -145,11 +145,11 @@ EnemyColision
 	
 	; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already
 	LD A, (jt.jetAir)
-	CP jt.AIR_KICK
+	CP jt.AIR_ENEMY_KICK
 	RET Z										; Animation playes already
 	
 	; Play animation and set state
-	LD A, jt.AIR_KICK
+	LD A, jt.AIR_ENEMY_KICK
 	CALL jt.SetJetStateAir
 
 	LD A, js.SDB_T_KF
@@ -160,7 +160,7 @@ EnemyColision
 	; ################################
 	; Check if we should reset kicking state
 	LD A, (jt.jetAir)
-	CP jt.AIR_KICK
+	CP jt.AIR_ENEMY_KICK
 	JR NZ, .afterKickReset
 
 	; Reset kick state
@@ -224,6 +224,7 @@ MakeJetInvincible
 ;                   #JetInvincible                         ;
 ;----------------------------------------------------------;
 JetInvincible
+	RET
 	LD A, (jt.jetState)
 	CP jt.JET_ST_INV
 	RET NZ
@@ -309,12 +310,11 @@ RipMove
 	JR .afterMove
 .moveLeft
 	; Move left
-	CALL jpo.IncJetX
-	CALL jpo.IncJetX
-	CALL jpo.IncJetX
+	LD B, _CF_RIP_MOVE_X
+	CALL jpo.IncJetXbyB
 .afterMove
 
-	LD B, 4									; Going up
+	LD B, _CF_RIP_MOVE_Y						; Going up
 	CALL jpo.DecJetYbyB
 
 	; Decrement move counter

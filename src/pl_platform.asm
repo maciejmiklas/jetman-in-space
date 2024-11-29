@@ -42,9 +42,8 @@ platformsSize 			BYTE 3
 PLATFORM_WALK_INCATIVE	= $FF					; Not on any plaftorm.
 platformWalkNumber		BYTE PLATFORM_WALK_INCATIVE
 
-joyOffBump				BYTE _CF_PL_JOY_OFF_BUMP
+joyOffBump				BYTE _CF_PL_BUMP_JOY_OFF
 
-tmp byte 0
 ;----------------------------------------------------------;
 ;                #JetPlatformHitOnJoyMove                  ;
 ;----------------------------------------------------------;
@@ -116,11 +115,22 @@ JetPlatformHitOnJoyMove
 	LD A, jt.AIR_BUMP_LEFT
 	CALL jt.SetJetStateAir
 
-	CALL jpo.DecJetX
 	CALL JetHitsPlatfrom
 
+	; When Jetman bumps away from the platform, he has to move left at least one pixel to compensate for Joystick's movement or a few pixels to really bump off
+	LD A, (joyOffBump)
+	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	JR C, .bumpLeftOnPixel
+
+	LD B, _CF_PL_BUMP_X
+	CALL jpo.DecJetXbyB
 	RET
-.afterHitLeft	
+.bumpLeftOnPixel
+	CALL jpo.DecJetX
+
+
+	RET
+.afterHitLeft
 
 	; ##########################################
 	; Does Jetman hit the platform from the right side?
@@ -133,15 +143,25 @@ JetPlatformHitOnJoyMove
 	BIT ind.MOVE_LEFT_BIT, A
 	JR Z, .afterHitRight						; Jump if left down bit is not set
 	
-	; Jetman hits the platform
+	; Jetman hits the platform from the right side and bumps off to the right
 	LD A, jt.AIR_BUMP_RIGHT
 	CALL jt.SetJetStateAir
 
-	CALL jpo.IncJetX
 	CALL JetHitsPlatfrom
 
+	; When Jetman bumps away from the platform, he has to move rigth at least one pixel to compensate for Joystick's movement or a few pixels to really bump off
+	LD A, (joyOffBump)
+	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	JR C, .bumpRightOnPixel
+
+	LD B, _CF_PL_BUMP_X
+	CALL jpo.IncJetXbyB
 	RET
-.afterHitRight	
+.bumpRightOnPixel
+	CALL jpo.IncJetX
+
+	RET
+.afterHitRight
 
 	; ##########################################
 	; Does Jetman hit the platform from the bottom?
@@ -158,8 +178,23 @@ JetPlatformHitOnJoyMove
 	LD A, jt.AIR_BUMP_BOTTOM
 	CALL jt.SetJetStateAir
 
-	CALL jpo.IncJetY
 	CALL JetHitsPlatfrom
+
+	; When Jetman bumps away from the platform, he has to move down at least one pixel to compensate for Joystick's movement or a few pixels to really bump off
+	LD A, (joyOffBump)
+	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	JR C, .bumpDonwOnPixel
+
+	LD B, _CF_PL_BUMP_Y
+	CALL jpo.IncJetYbyB
+	RET
+
+.bumpDonwOnPixel
+	CALL jpo.IncJetY
+
+	;XOR A
+	;LD (joyOffBump), A
+	;LD (ind.joyOffCnt),A
 
 	RET
 .afterHitBottom	
@@ -173,7 +208,7 @@ ResetJoyOffBump
 	
 	; Do not reset if already done
 	LD A, (joyOffBump)
-	CP _CF_PL_JOY_OFF_BUMP
+	CP _CF_PL_BUMP_JOY_OFF
 	RET Z
 
 	; Reset the joystick bump only if Jetman is away from the platform,  or it walks on it
@@ -200,7 +235,7 @@ ResetJoyOffBump
 
 .reset
 	; Jetman far from the platform - reset
-	LD A, _CF_PL_JOY_OFF_BUMP
+	LD A, _CF_PL_BUMP_JOY_OFF
 	LD (joyOffBump), A
 
 	RET											; ## END of the function ##
@@ -219,13 +254,11 @@ JetHitsPlatfrom
 
 	; ##########################################
 	; decrement joystick off time with every bump
-	CP _CF_PL_JOY_OFF_BUMP_DEC
-	RET C										; Return to limit minimum value 
 	
-	CP 2
-	RET C										; Return if < 2 -> do not allow #joyOffBump to reach 0. Otherwise, States will not reset correctly
+	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	RET C										; Do not allow #joyOffBump to reach 0, otherwise Jemtan will go troug the obsticle
 	
-	SUB _CF_PL_JOY_OFF_BUMP_DEC
+	SUB _CF_PL_BUMP_JOY_OFF_DEC
 	LD (joyOffBump), A
 
 	RET											; ## END of the function ##
@@ -308,10 +341,10 @@ AnimateJetFallingFromPlatform
 	JR NZ, .afterFallingRight
 
 	; Yes, Jetman is falling from the platform
-	CALL jpo.IncJetX
-	CALL jpo.IncJetX
+	LD B, _CF_PL_FALL_X
+	CALL jpo.IncJetXbyB
 
-	LD B, 3
+	LD B, _CF_PL_FALL_Y
 	CALL jpo.IncJetYbyB
 
 	RET											; Do not check falling left  because Jetman is already falling
@@ -325,8 +358,8 @@ AnimateJetFallingFromPlatform
 	; Yes, Jetman is falling from the platform
 	CALL jpo.DecJetX
 	CALL jpo.DecJetX
-
-	LD B, 3
+	
+	LD B, _CF_PL_FALL_Y
 	CALL jpo.IncJetYbyB
 
 	RET											; ## END of the function ##
@@ -398,10 +431,6 @@ JetLanding
 	CP jt.STATE_INACTIVE
 	RET NZ
 
-	ld a, (tmp)
-	inc a
-	ld (tmp), a
-
 	; Update state as we are walking
 	LD A, jt.GND_WALK
 	CALL jt.SetJetStateGnd
@@ -428,9 +457,9 @@ JetLanding
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #AnimateJetSideHitPlatfrom                  ;
+;                 #MoveJetOnPlatfromHit                    ;
 ;----------------------------------------------------------;
-AnimateJetSideHitPlatfrom
+MoveJetOnPlatfromHit
 
 	; Is Jetman bumping into the platform from the right?
 	LD A, (jt.jetAir)
@@ -507,8 +536,8 @@ JetFallingFromPlatform
 	LD A, js.SDB_T_KF
 	CALL js.ChangeJetSpritePattern
 
-	; Disable joystick, because Jetman loses control for #_CF_PL_JOY_OFF_FALL frames
-	LD A, _CF_PL_JOY_OFF_FALL
+	; Disable joystick, because Jetman loses control for #_CF_PL_FALL_JOY_OFF frames
+	LD A, _CF_PL_FALL_JOY_OFF
 	LD (ind.joyOffCnt), A
 
 .afterFalling

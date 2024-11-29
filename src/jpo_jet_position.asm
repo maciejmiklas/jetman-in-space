@@ -29,7 +29,22 @@ IncJetX
 .lessThanMaxX
 	LD (jpo.jetX), BC							; Update new X position
 
-	CALL JetmanMoves
+	CALL gc.JetmanMoves
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                         #IncJetXbyB                      ;
+;----------------------------------------------------------;
+; Input 
+; - B: number of pixels to move Jetman Up
+IncJetXbyB
+
+.loop	
+	PUSH BC
+	CALL IncJetX
+	POP BC
+	DJNZ .loop
 
 	RET											; ## END of the function ##
 
@@ -52,7 +67,22 @@ DecJetX
 .afterResetX
 	LD (jpo.jetX), BC
 
-	CALL JetmanMoves
+	CALL gc.JetmanMoves
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                         #DecJetXbyB                      ;
+;----------------------------------------------------------;
+; Input 
+; - B: number of pixels to move Jetman Up
+DecJetXbyB
+
+.loop	
+	PUSH BC
+	CALL DecJetX
+	POP BC
+	DJNZ .loop
 
 	RET											; ## END of the function ##
 
@@ -65,7 +95,7 @@ IncJetY
 	INC A
 	LD (jpo.jetY), A
 
-	CALL JetmanMoves
+	CALL gc.JetmanMoves
 
 	RET											; ## END of the function ##
 
@@ -78,7 +108,7 @@ DecJetY
 	DEC A
 	LD (jpo.jetY), A
 
-	CALL JetmanMoves
+	CALL gc.JetmanMoves
 
 	RET											; ## END of the function ##
 
@@ -89,12 +119,11 @@ DecJetY
 ; - B: number of pixels to move Jetman Up
 IncJetYbyB
 
-	LD A, (jpo.jetY)	
-.loop	
+	LD A, (jpo.jetY)
 	ADD B
 	LD (jpo.jetY), A
 
-	CALL JetmanMoves
+	CALL gc.JetmanMoves
 
 	RET											; ## END of the function ##
 
@@ -109,19 +138,9 @@ DecJetYbyB
 	SUB B
 	LD (jpo.jetY), A
 
-	CALL JetmanMoves
+	CALL gc.JetmanMoves
 
 	RET											; ## END of the function ##	
-
-;----------------------------------------------------------;
-;                      #JetmanMoves                        ;
-;----------------------------------------------------------;
-JetmanMoves
-
-	CALL bg.UpdateBackgroundOnJetmanMove
-	CALL ro.UpdateRocketOnJetmanMove
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -100,7 +100,7 @@ GameLoop000OnDisabledJoy
 	RET C										; Return on the last off loop (#joyOffCnt < 2) - this one is used to reset status and not to animate
 
 	; ##########################################
-	CALL pl.AnimateJetSideHitPlatfrom
+	CALL pl.MoveJetOnPlatfromHit
 	CALL pl.AnimateJetFallingFromPlatform
 	CALL pl.AnimateJetHitPlatfromBelow
 

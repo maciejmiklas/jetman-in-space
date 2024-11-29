@@ -68,33 +68,34 @@ PrintDebug
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
-	LD B, 18
+	LD B, 40
 	LD H, 0
-	LD A, (gl.tmp)
+	LD A, (jt.jetAir)
 	LD L, A
 	CALL ut.PrintNumHLDebug
+
 
 	; ##########################################
-	LD B, 24
+	LD B, 46
 	LD H, 0
-	LD A,  (jt.jetState)
+	LD A, (ind.joyOffCnt)
 	LD L, A
 	CALL ut.PrintNumHLDebug
-
+/*
 	; ##########################################
 	LD B, 30
 	LD H, 0
-	LD A,  (jt.jetAir)
+	LD A,  (jm.tmp3)
 	LD L, A
-	CALL ut.PrintNumHLDebug	
+	CALL ut.PrintNumHLDebug
 
 	; ##########################################
-	LD B, 36
+	LD B, 40
 	LD H, 0
-	LD A,  (jt.jetGnd)
+	LD A,  (jm.tmp4)
 	LD L, A
-	CALL ut.PrintNumHLDebug		
-
+	CALL ut.PrintNumHLDebug
+*/
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

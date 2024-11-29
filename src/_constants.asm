@@ -369,7 +369,7 @@ _CF_ENP_MARG_VERT_KICK	= 25
 
 ; ##############################################
 ; Jetman invincibility 
-_CF_INVINCIBLE = 150							; Number of loops to keep Jetman invincible
+_CF_INVINCIBLE 			= 150						; Number of loops to keep Jetman invincible
 _CF_INVINCIBLE_BLINK	= 130
 
 ; ##############################################
@@ -385,9 +385,14 @@ _CF_JET_RESPOWN_Y		= 100
 
 ; ##############################################
 ; Platform
-_CF_PL_JOY_OFF_FALL		= 6						; Disable the joystick for a few frames because Jetman is falling from the platform
-_CF_PL_JOY_OFF_BUMP		= 10					; Disable the joystick for a few frames because Jetman is bumping into the platform
-_CF_PL_JOY_OFF_BUMP_DEC	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value
+_CF_PL_FALL_JOY_OFF		= 10					; Disable the joystick for a few frames because Jetman is falling from the platform
+_CF_PL_FALL_Y			= 4						; Amount of pixels to move Jetman down when falling from the platform
+_CF_PL_FALL_X			= 2
+
+_CF_PL_BUMP_JOY_OFF		= 10					; Disable the joystick for a few frames because Jetman is bumping into the platform
+_CF_PL_BUMP_JOY_OFF_DEC	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value
+_CF_PL_BUMP_Y			= 4						; Amount of pixels to move Jetman down when hitting platform from below
+_CF_PL_BUMP_X			= 4
 
 ; Compensation for height of Jetman's sprite to fall from the platform
 _CF_PL_FALL_LX			= 8
@@ -475,7 +480,7 @@ _CF_TI_CLIP_Y2			= 255 - _CF_TI_PIXELS
 
 ; ##############################################
 ; Tile definition (sprite file)
-_CF_TID_OFFSETSTART	= _CF_TI_START + _CF_TI_MAP_BYTES ; Tiledefinitions (sprite file)
+_CF_TID_OFFSETSTART	= _CF_TI_START + _CF_TI_MAP_BYTES ; Tilfedefinitions (sprite file)
 	ASSERT _CF_TID_OFFSETSTART >= _RAM_SLOT2_START_H4000
 	ASSERT _CF_TID_OFFSETSTART <= _RAM_SLOT3_END_H7FFF
 	
@@ -499,5 +504,15 @@ _CF_TX_PALETTE			= 0						; Palette byte for tile characters
 _CF_GB_TILES			= 320 / 8 * 3
 
 ; ##############################################
+; Jet RiP
+_CF_RIP_MOVE_X			= 3
+_CF_RIP_MOVE_Y			= 4
+
+; ##############################################
 ; Util
 _CF_UT_PAUSE_TIME					= 10
+
+; ##############################################
+; Common return types
+_CF_RET_ON							= 1
+_CF_RET_OFF							= 2

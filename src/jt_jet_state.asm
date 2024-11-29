@@ -13,7 +13,7 @@ AIR_FALL_LEFT			= 13					; Jetman falls from paltform on the left
 AIR_BUMP_RIGHT			= 14					; Jetman bumps into a platform from the right, he faces/moves left
 AIR_BUMP_LEFT			= 15					; Jetman bumps into a platform from the left, he faces/moves right
 AIR_BUMP_BOTTOM			= 16					; Jetman bumps into a platform from the bottom
-AIR_KICK				= 17					; Jetman flies above the enemy and kicks
+AIR_ENEMY_KICK			= 17					; Jetman flies above the enemy and kicks
 
 jetAir					BYTE AIR_HOOVER			; Game start, Jetman in the air
 
