@@ -6,20 +6,22 @@
 ; Number of GameLoop040 cycles to drop next rocket module
 dropNextDelay			BYTE 0
 
-rocketElementCnt		BYTE _CF_RO_EL_TANK_3 					; TODO Counts from _CF_RO_EL_LOW to _CF_RO_EL_TANK_3, both inclusive
+rocketElementCnt		BYTE _CF_RO_EL_TANK_1 ;0 					; Counts from _CF_RO_EL_LOW to _CF_RO_EL_TANK_3, both inclusive
 
-rocketState				BYTE RO_ST_READY
+rocketState				BYTE RO_ST_READY ;RO_ST_WAIT_DROP
 
 RO_ST_INACTIVE			= 0
-RO_ST_FALL_PICKUP		= 1						; Rocket element (or fuel tank) is falling down for pickup
-RO_ST_FALL_ASSEMBLY		= 2						; The rocket element (or fuel tank) falls towards the rocket for assembly
-RO_ST_WAIT_PICKUP		= 3						; Rocket element (or fuel tank) is waiting for pickup
-RO_ST_WAIT_DROP			= 4						; Rocket element (or fuel tank) is waiting for drop from the sky
-RO_ST_CARRY				= 5						; Jetman carries rocket element (or fuel tank)
-RO_ST_TANK_EXPLODE		= 6
-RO_ST_READY				= 7						; Rocket is ready to start and waits only for Jetman
-RO_ST_FLY				= 20					; The rocket is flying towards an unknown planet, or explodes when #rocketExplodeCnt > 0 
-RO_ST_ROCKET_EXPLODE	= 21					; Rocket explodes after hitting something
+RO_ST_WAIT_DROP			= 1						; Rocket element (or fuel tank) is waiting for drop from the sky. This is initial state
+
+RO_ST_FALL_PICKUP		= 10					; Rocket element (or fuel tank) is falling down for pickup
+RO_ST_FALL_ASSEMBLY		= 11					; The rocket element (or fuel tank) falls towards the rocket for assembly
+RO_ST_WAIT_PICKUP		= 12					; Rocket element (or fuel tank) is waiting for pickup
+RO_ST_CARRY				= 13					; Jetman carries rocket element (or fuel tank)
+RO_ST_TANK_EXPLODE		= 14
+
+RO_ST_READY				= 100					; Rocket is ready to start and waits only for Jetman
+RO_ST_FLY				= 101					; The rocket is flying towards an unknown planet
+RO_ST_EXPLODE			= 102					; Rocket explodes after hitting something
 
 ; The single rocket element or fule tank
 ; The X coordinate of the rocket element is stored in two locations: 
@@ -39,7 +41,7 @@ Y						BYTE					; Current Y position
 
 rocketEl
 ; rocket element
-	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _CF_RO_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 233/*Y 0 TODO !!!!!*/}	; bottom element
+	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _CF_RO_DOWN_SPR_ID/*SPRITE_ID*/, 60/*SPRITE_REF*/, 233/* !!!! 0Y*/}	; bottom element
 	RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 56/*SPRITE_REF*/, 217/*Y*/}	; middle element
 	RO {120/*DROP_X*/, 147/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 52/*SPRITE_REF*/, 201/*Y*/}	; top of the rocket
 ; fuel tank
@@ -55,7 +57,9 @@ EXPLODE_TANK_MAX		= 4						; The amount of explosion sprites
 
 rocketExhaustDB									; Sprite IDs for exhaust
 	DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
-rocketExhaustCnt		BYTE 0					; Counts from 0 (inclusive) to #_CF_RO_EXHAUST_MAX (exclusive)
+
+rocketExhaustCnt		BYTE 0					; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive)
+RO_EXHAUST_MAX			= 18
 
 rocketDistance			WORD 0					; Increases with every rocket move when the rocket is flying towards the next planet
 
@@ -68,7 +72,8 @@ rocketExplodeDB1		DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,3
 rocketExplodeDB2		DB 56,56,56,56, 30,31,32,31, 30,31,32,31, 32,30,32,31, 30,31,32,33	; middle element
 rocketExplodeDB3		DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,32,33	; top of the rocket
 
-rocketExplodeCnt		BYTE 0					; Counts from 1 to _CF_RO_EXPLODE_MAX (both inclusice). 1 indicates that the rocket starts to explode
+rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusice)
+RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeDB[1-3]
 
 ;----------------------------------------------------------;
 ;                  #StartRocketAssembly                    ;
@@ -170,6 +175,10 @@ StartRocketExplosion
 	LD A, _CF_RO_EXHAUST_SPR_ID					; Hide sprite on display	
 	CALL sp.SetIdAndHideSprite
 
+	; ##########################################
+	; Update state
+	LD A, RO_ST_EXPLODE
+	LD (rocketState), A
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -210,14 +219,15 @@ HideRocket
 ;----------------------------------------------------------;
 AdminateRocketExplosion
 
-	; Is rocket exploding (#rocketExplodeCnt > 0) ?
-	LD A, (rocketExplodeCnt)
-	CP 0
-	RET Z
+	; Is rocket exploding ?
+	LD A, (rocketState)
+	CP RO_ST_EXPLODE
+	RET NZ
 	
 	; ##########################################
 	; Is the exploding sequence over?
-	CP _CF_RO_EXPLODE_MAX
+	LD A, (rocketExplodeCnt)
+	CP RO_EXPLODE_MAX
 	JR Z, .explodingEnds
 	; Nope, keep exploding
 
@@ -276,7 +286,6 @@ AdminateRocketExplosion
 .explodingEnds
 	; Sequecen is over, load next level
 	CALL gc.RocketExplosionOver
-	RET
 
 	RET											; ## END of the function ##
 
@@ -392,7 +401,7 @@ AnimateRocketExhaust
 	; Increment sprite pattern counter
 	LD A, (rocketExhaustCnt)
 	INC A
-	CP _CF_RO_EXHAUST_MAX
+	CP RO_EXHAUST_MAX
 	JP NZ, .afterIncrement
 	XOR A										; Reset counter
 .afterIncrement	

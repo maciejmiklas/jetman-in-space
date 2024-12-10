@@ -19,7 +19,7 @@ jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 22/*Y_TOP*/, 02/*Y_BOTTOM*/}
 
 ; Be careful - Jetman bumps into a platform and gets pushed away, which counts as movement. When Jetman gets pushed too far, 
 ; it exceeds the margin defined here, resetting #joyOffBump
-jetAwayMargin	PLAM { 25/*X_LEFT*/, 15/*X_RIGHT*/, 30/*Y_TOP*/, 15/*Y_BOTTOM*/}
+jetAwayMargin	PLAM { 30/*X_LEFT*/, 20/*X_RIGHT*/, 30/*Y_TOP*/, 10/*Y_BOTTOM*/}
 
 ; Coordinates for a platform
 	STRUCT PLA
@@ -42,7 +42,7 @@ platformsSize 			BYTE 3
 PLATFORM_WALK_INCATIVE	= $FF					; Not on any plaftorm.
 platformWalkNumber		BYTE PLATFORM_WALK_INCATIVE
 
-joyOffBump				BYTE _CF_PL_BUMP_JOY_OFF
+joyOffBump				BYTE _CF_PL_BUMP_JOY_OFF; The amount of pixels to bump off the platform decreases with each hit
 
 ;----------------------------------------------------------;
 ;                #JetPlatformHitOnJoyMove                  ;
@@ -117,7 +117,8 @@ JetPlatformHitOnJoyMove
 
 	CALL JetHitsPlatfrom
 
-	; When Jetman bumps away from the platform, he has to move left at least one pixel to compensate for Joystick's movement or a few pixels to really bump off
+	; When Jetman bumps away from the platform, he has to move left at least one pixel to compensate for Joystick's movement,
+	; or a few pixels to really bump off
 	LD A, (joyOffBump)
 	CP _CF_PL_BUMP_JOY_OFF_DEC+1
 	JR C, .bumpLeftOnPixel
@@ -127,7 +128,6 @@ JetPlatformHitOnJoyMove
 	RET
 .bumpLeftOnPixel
 	CALL jpo.DecJetX
-
 
 	RET
 .afterHitLeft
@@ -225,7 +225,6 @@ ResetJoyOffBump
 	LD IX, jetAwayMargin
 
 	CALL PlaftormHit
-
 	CP PL_HIT_RET_A_YES							; Jetman is close to platform - do not reset the bump
 	RET Z	
 
@@ -233,7 +232,7 @@ ResetJoyOffBump
 	; Jetman far from the platform - reset
 	LD A, _CF_PL_BUMP_JOY_OFF
 	LD (joyOffBump), A
-
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

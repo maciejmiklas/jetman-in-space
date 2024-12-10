@@ -18,6 +18,7 @@ RocketTakesOff
 ;----------------------------------------------------------;
 RocketExplosionOver
 
+	nextreg 2,8
 	CALL ro.HideRocket
 	CALL ro.ResetAndDisableRocket
 

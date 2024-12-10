@@ -211,7 +211,6 @@ JetRip
 ; Input
 ;  - HL:	Number of loops (#counter002) to keep Jemtan invincible
 MakeJetInvincible
-
 	LD (invincibleCnt), HL						; Store invincibility duration
 	
 	; Update state
@@ -224,13 +223,13 @@ MakeJetInvincible
 ;                   #JetInvincible                         ;
 ;----------------------------------------------------------;
 JetInvincible
-	RET
+
 	LD A, (jt.jetState)
 	CP jt.JET_ST_INV
 	RET NZ
 
 	; ##########################################
-	; Exit if #invincibleCnt == 0 (HL == B)
+	; Exit if #invincibleCnt == 0 (B == 0 -> H == B and L == B)
 	LD HL, (invincibleCnt)
 	LD B, 0
 	CALL ut.HlEqualB

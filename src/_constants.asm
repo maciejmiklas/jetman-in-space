@@ -369,8 +369,8 @@ _CF_ENP_MARG_VERT_KICK	= 25
 
 ; ##############################################
 ; Jetman invincibility 
-_CF_INVINCIBLE 			= 150						; Number of loops to keep Jetman invincible
-_CF_INVINCIBLE_BLINK	= 130
+_CF_INVINCIBLE 			= 400						; Number of loops to keep Jetman invincible
+_CF_INVINCIBLE_BLINK	= 100
 
 ; ##############################################
 ; Start times to change animations
@@ -425,13 +425,11 @@ _CF_RO_EL_TANK_3		= 6
 _CF_RO_PICK_MARG_X		= 8
 _CF_RO_PICK_MARG_Y		= 16
 _CF_RO_CARRY_ADJUST_Y	= 10
-_CF_RO_EXPLODE_Y_HI		= 3						; HI byte from #starsDistance to explode rocket,950 = $3B6
-_CF_RO_EXPLODE_Y_LO		= $B6					; LO byte from #starsDistance to explode rocket
+_CF_RO_EXPLODE_Y_HI		= 3						; HI byte from #starsDistance to explode rocket,900 = $384
+_CF_RO_EXPLODE_Y_LO		= $84					; LO byte from #starsDistance to explode rocket
 _CF_RO_MOVE_STOP		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position
 _CF_RO_FLY_DELAY		= 8
 _CF_RO_FLY_DELAY_DIST	= 5
-_CF_RO_EXPLODE_MAX		= 24					; Max value for #rocketExplodeCnt, when reached, the explosion is done, and a new level begins
-_CF_RO_EXHAUST_MAX		= 18
 _CF_RO_EXHAUST_SPR_ID	= 43					; Sprite ID for exhaust
 
 ; ##############################################

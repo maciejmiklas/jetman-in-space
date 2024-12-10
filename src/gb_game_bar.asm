@@ -39,7 +39,7 @@ ShowGameBar
 ;                     #PrintDebug                          ;
 ;----------------------------------------------------------;
 PrintDebug
-
+	RET
 	; Return if gabebar is hidden
 	LD A, (gamebarState)
 	CP GB_ST_VISIBLE
@@ -67,18 +67,19 @@ PrintDebug
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
+
+
+	; ##########################################
 	; ##########################################
 	LD B, 40
-	LD H, 0
-	LD A, (jt.jetAir)
-	LD L, A
+	LD HL, (jco.invincibleCnt)
 	CALL ut.PrintNumHLDebug
 
 
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (ind.joyOffCnt)
+	LD A, (jt.jetState)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 /*
