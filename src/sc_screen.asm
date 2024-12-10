@@ -122,22 +122,6 @@ WaitForScanline
 	JR NZ, .waitForScanline
 
 	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #ShakeScreen                           ;
-;----------------------------------------------------------;
-ShakeScreen
-
-	LD A, (gld.counter002FliFLop)				; Oscilates beetwen 1 and 0
-	LD D, A
-	LD E, _CF_SC_SHAKE_BY
-	MUL D, E
-	LD A, E
-	NEXTREG _DC_REG_TI_X_LSB_H30, A				; X tile offset
-	NEXTREG _DC_REG_TI_Y_H31, A					; Y tile offset
-	
-	RET											; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

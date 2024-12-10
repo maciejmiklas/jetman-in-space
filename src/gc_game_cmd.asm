@@ -18,7 +18,7 @@ RocketTakesOff
 ;----------------------------------------------------------;
 RocketExplosionOver
 
-	nextreg 2,8
+	CALL ti.ResetTilemapOffset
 	CALL ro.HideRocket
 	CALL ro.ResetAndDisableRocket
 

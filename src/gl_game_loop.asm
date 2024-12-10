@@ -128,7 +128,7 @@ GameLoop000OnRocketTakingOff
 	RET NC
 
 	; ##########################################
-	CALL sc.ShakeScreen
+	CALL ti.ShakeTilemap
 
 	RET											; ## END of the function ##
 	
