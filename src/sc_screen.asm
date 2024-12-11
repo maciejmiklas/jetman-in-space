@@ -30,8 +30,8 @@ SetupScreen
 	OUT (_BORDER_IO_HFE), A
 
 	; Layer 2 Palette
-	LD A, $$db.backGroundPalette				; Memory bank (8kb) containing layer 2 palette data
-	LD HL, db.backGroundPalette					; Address of first byte of layer 2 palette data
+	LD A, $$db.backGroundL1Palette				; Memory bank (8kb) containing layer 2 palette data
+	LD HL, db.backGroundL1Palette				; Address of first byte of layer 2 palette data
 	CALL SetupLayer2Palette
 
 	RET											; ## END of the function ##

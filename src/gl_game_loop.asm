@@ -188,7 +188,8 @@ GameLoop004
 	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AdminateRocketExplosion
-
+	CALL bg.AnimateBackgroundOnFlyRocket
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

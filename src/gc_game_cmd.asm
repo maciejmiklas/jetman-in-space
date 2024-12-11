@@ -10,7 +10,8 @@ RocketTakesOff
 	CALL jt.SetJetStateInactive
 	CALL js.HideJetSprite
 	CALL gb.HideGameBar
-
+	CALL bg.SetupBackgroundOnRocketTakeoff
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

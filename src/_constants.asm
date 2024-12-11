@@ -18,10 +18,10 @@ _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 ; Layer 2 RAM bank
 _DC_REG_L2_BANK_H12		= $12
 
-; Layer2 Offset X
+; Layer2 Offset X (0-255) (0 after a reset)
 _DC_REG_L2_OFFSET_X_H16	= $16
 
-; Layer2 Offset Y
+; Layer2 Offset Y. (0-191) (0 after a reset)
 _DC_REG_L2_OFFSET_Y_H17	= $17
 
 ; Tilemap Offset X MSB
@@ -357,6 +357,11 @@ _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800
 ;----------------------------------------------------------;
 
 ; ##############################################
+; Common return types
+_CF_RET_ON							= 1
+_CF_RET_OFF							= 2
+
+; ##############################################
 ; Joystick
 _CF_PL_JOY_DELAY				= 1					; Probe joystick every few loops, 1 for each loop, 0 is not supported
 
@@ -425,8 +430,8 @@ _CF_RO_EL_TANK_3		= 6
 _CF_RO_PICK_MARG_X		= 8
 _CF_RO_PICK_MARG_Y		= 16
 _CF_RO_CARRY_ADJUST_Y	= 10
-_CF_RO_EXPLODE_Y_HI		= 3						; HI byte from #starsDistance to explode rocket,900 = $384
-_CF_RO_EXPLODE_Y_LO		= $84					; LO byte from #starsDistance to explode rocket
+_CF_RO_EXPLODE_Y_HI		= 4						; HI byte from #starsDistance to explode rocket,1150 = $47E
+_CF_RO_EXPLODE_Y_LO		= $7E					; LO byte from #starsDistance to explode rocket
 _CF_RO_MOVE_STOP		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position
 _CF_RO_FLY_DELAY		= 8
 _CF_RO_FLY_DELAY_DIST	= 5
@@ -488,8 +493,8 @@ _CF_TID_OFFSET	= (_CF_TID_OFFSETSTART - _RAM_SLOT2_START_H4000) >> 8
 ; ##############################################
 ; Tile stars map
 _CF_TIS_START			= _CF_TI_START + (_CF_TI_V_TILES -1) * _CF_TI_H_BYTES ; Stars begin at the last tile row
-_CF_TIS_BYTES			= _CF_TI_MAP_BYTES*3	; 7680=40*32*3*2 bytes, 3 screens
-_CF_TIS_ROWS			= _CF_TI_V_TILES*3		; 96 rows, tile starts takes two horizontal screens
+_CF_TIS_BYTES			= _CF_TI_MAP_BYTES*4	; 10240=40*32*4*2 bytes, 3 screens
+_CF_TIS_ROWS			= _CF_TI_V_TILES*4		; 128 rows (4*32), tile starts takes two horizontal screens
 _CF_ITS_MOVE_FROM		= 50					; Start moving stats when the rocket reaches the given height
 
 ; ##############################################
@@ -511,6 +516,6 @@ _CF_RIP_MOVE_Y			= 4
 _CF_UT_PAUSE_TIME					= 10
 
 ; ##############################################
-; Common return types
-_CF_RET_ON							= 1
-_CF_RET_OFF							= 2
+; In game backgrount on Level 2
+_CF_GBG_MOVE_FROM		= 100					; Start moving background when the rocket reaches the given height
+
