@@ -36,8 +36,8 @@ tilePixelCnt			BYTE 0					; Runns from 0 to 7
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#starsRow)
 NextStarsRow
-	NEXTREG _MMU_REG_SLOT6_H56, db.STARTS_SB44	; Assign bank 44 to slot 6 (see di_data_bin.asm)
-	NEXTREG _MMU_REG_SLOT7_H57, db.STARTS_EB45	; Assign bank 45 to slot 7
+	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_STARTS_BANK1 ; Assign bank 44 to slot 6 (see di_data_bin.asm)
+	NEXTREG _MMU_REG_SLOT7_H57, _CF_BIN_STARTS_BANK2 ; Assign bank 45 to slot 7
 
 	; ##########################################
 	; Decrement counters

@@ -1,6 +1,6 @@
 Tiles:
   - 00 - 56: Font, palette 0
-  - 59     : Rmpty, each palette
+  - 59     : Empty, each palette
   - 60 - 67: Ground 1, palette 1
   - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
   - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023

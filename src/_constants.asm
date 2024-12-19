@@ -1,6 +1,7 @@
 ;----------------------------------------------------------;
 ;                     Global Constants                     ;
 ;----------------------------------------------------------;
+; Lots of documentation commes from https://wiki.specnext.dev
 
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
@@ -23,6 +24,10 @@ _DC_REG_L2_OFFSET_X_H16	= $16
 
 ; Layer2 Offset Y. (0-191) (0 after a reset)
 _DC_REG_L2_OFFSET_Y_H17	= $17
+
+; The coordinate values are 0,255,0,191 after a Reset
+; For Layer 2 at 320x256 use 0,159,0,255
+_DC_REG_L2_CLIP_H18		= $18
 
 ; Tilemap Offset X MSB
 ; Bits:
@@ -48,6 +53,12 @@ _DC_REG_ULA_Y_H33		= $33
 ;  - 7: 1 to enable Layer 2 (alias for bit 1 in Layer 2 Access Port $123B)
 ;  - 6: 1 to enable ULA shadow display (alias for bit 3 in Memory Paging Control $7FFD)
 ;  - 5-0: Alias for bits 5-0 in Timex Sinclair Video Mode Control $xxFF
+;
+; The 256x192x8bpp mode is simple 256 colour mode, one pixel is one byte (index into Layer 2 palette), pixels are stored from left to right, 
+; from top to bottom.
+; The 320x256x8bpp mode is similar, but pixels are stored from top to bottom, then from left to right.
+; 
+; Don't forget to set up the clip window (_DC_REG_L2_CLIP_H18) for 320x256 mode, to make whole area visible, use 0,159,0,255 settings.
 _DC_REG_CONTROL1_H69	= $69
 
 ; Bits:
@@ -384,11 +395,6 @@ _CF_STAND_START			= 30
 _CF_JSTAND_START		= 100
 
 ; ##############################################
-; Respown location
-_CF_JET_RESPOWN_X		= 100
-_CF_JET_RESPOWN_Y		= 100
-
-; ##############################################
 ; Platform
 _CF_PL_FALL_JOY_OFF		= 10					; Disable the joystick for a few frames because Jetman is falling from the platform
 _CF_PL_FALL_Y			= 4						; Amount of pixels to move Jetman down when falling from the platform
@@ -443,7 +449,7 @@ _CF_GSC_X_MIN			= 0
 _CF_GSC_X_MAX			= 315
 _CF_GSC_Y_MIN			= 15
 _CF_GSC_Y_MAX			= 232
-_CF_GSC_GROUND			= 217					; The lowest walking platform
+_CF_GSC_JET_GND			= 217					; Ground level from Jetman's sprite perspective
 
 ; ##############################################
 ; Screen 
@@ -471,24 +477,29 @@ _CF_TI_H_TILES			= 320/8					; 40 horizontal tiles
 _CF_TI_H_BYTES			= _CF_TI_H_TILES * 2	; 320/8*2 = 80 bytes pro row -> silgle tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes
 _CF_TI_V_TILES			= 256/8					; 256/8 = 32 rows (256 - vertival screen size)
 _CF_TI_V_BYTES			= _CF_TI_V_TILES * 2	; 64 bytes pro row
-_CF_TI_MAX_X			= 255 - 8				; Lower tile row is reserved for scrolling
 _CF_TI_EMPTY			= 57					; Empty tile
 _CF_TI_MAP_BYTES		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
-_CF_TI_DEF_MAX			= 6910					; Max size of tile definitions (sprite file). 8192 = 16*4*4*32 -> 16x4 sprites, each takes 4*32 bytes
 
-_CF_TI_CLIP_X1			= 0
+; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
+; each taking 4x32 bytes = 128bytes. We can assign to the whole tile sprites file 6910 bytes, 6910/128 = 53.
+; The editor stores 4 sprites (4x4) in a single row. 53/4 = 13 rows. The editor can contain at most 4x13 large sprites.
+;   6910                 =           $7FFF      -    $5B00     -     2560
+_CF_TI_DEF_MAX			 = _RAM_SLOT3_END_H7FFF - _CF_TI_START - _CF_TI_MAP_BYTES
+
+_CF_TI_CLIP_X1			= 0 
 _CF_TI_CLIP_X2			= 159
 _CF_TI_CLIP_Y1			= 0
-_CF_TI_CLIP_Y2			= 255 - _CF_TI_PIXELS
+_CF_TI_CLIP_FULL_Y2		= _CF_SC_MAX_Y -16
+_CF_TI_CLIP_ROCKET_Y2	= _CF_SC_MAX_Y - _CF_TI_PIXELS
 
 ; ##############################################
 ; Tile definition (sprite file)
-_CF_TID_OFFSETSTART	= _CF_TI_START + _CF_TI_MAP_BYTES ; Tilfedefinitions (sprite file)
-	ASSERT _CF_TID_OFFSETSTART >= _RAM_SLOT2_START_H4000
-	ASSERT _CF_TID_OFFSETSTART <= _RAM_SLOT3_END_H7FFF
+_CF_TID_START	= _CF_TI_START + _CF_TI_MAP_BYTES ; Tilfedefinitions (sprite file)
+	ASSERT _CF_TID_START >= _RAM_SLOT2_START_H4000
+	ASSERT _CF_TID_START <= _RAM_SLOT3_END_H7FFF
 	
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-_CF_TID_OFFSET	= (_CF_TID_OFFSETSTART - _RAM_SLOT2_START_H4000) >> 8
+_CF_TID_OFFSET	= (_CF_TID_START - _RAM_SLOT2_START_H4000) >> 8
 
 ; ##############################################
 ; Tile stars map
@@ -516,6 +527,39 @@ _CF_RIP_MOVE_Y			= 4
 _CF_UT_PAUSE_TIME					= 10
 
 ; ##############################################
-; In game backgrount on Level 2
-_CF_GBG_MOVE_FROM		= 100					; Start moving background when the rocket reaches the given height
+; In game backgrount on Layer 2
+_CF_GBG_MOVE_ROCKET		= 100					; Start moving background when the rocket reaches the given height
+_CF_GBG_GROUND			= _CF_GSC_JET_GND - 3*8 ; 
+; ##############################################
+; Binary Data Loader
+_CF_BIN_SPRITE_BANK1	= 40					; Sprites on bank 40, 41
+_CF_BIN_SPRITE_BANK2	= 41
 
+_CF_BIN_TILES_BANK1		= 42
+_CF_BIN_TILES_BANK2		= 43
+
+_CF_BIN_STARTS_BANK1	= 44
+_CF_BIN_STARTS_BANK2	= 45
+
+; Each background image has 80Kb (320x256), taking 10 banks + 1 bank for the palette
+
+; Image for current background
+_CF_BIN_BGR_ST_BANK		= 18					; Background image occupies six 8K banks from 18 to 23 (starts on 16K bank 9)
+_CF_BIN_BGR_END_BANK	= 23					; Last background bank
+_CF_BIN_BGR_PAL_BANK	= 24					; Pallete for the background
+_CF_BIN_BGR_PAL_16BANK	= 9						; 16K bank 9 = 8k bank 18
+
+; Image for Level 1
+_CF_BIN_BGR_L1_ST_BANK	= 46					; First background image bank (inclusice)
+_CF_BIN_BGR_L1_END_BANK	= 60					; Last background image bank (inclusice)
+_CF_BIN_BGR_L1_PAL_BANK	= 61
+
+; Image for Level 2
+_CF_BIN_BGR_L2_ST_BANK	= 57					; First background image bank (inclusice)
+_CF_BIN_BGR_L2_END_BANK	= 66					; Last background image bank (inclusice)
+_CF_BIN_BGR_L2_PAL_BANK	= 67
+
+; ##############################################
+; Respown location
+_CF_JET_RESPOWN_X		= 100
+_CF_JET_RESPOWN_Y		= _CF_GSC_JET_GND		; Jetman must respond by standing on the ground. Otherwise, the background will be off.

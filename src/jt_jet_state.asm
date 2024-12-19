@@ -15,14 +15,14 @@ AIR_BUMP_LEFT			= 15					; Jetman bumps into a platform from the left, he faces/
 AIR_BUMP_BOTTOM			= 16					; Jetman bumps into a platform from the bottom
 AIR_ENEMY_KICK			= 17					; Jetman flies above the enemy and kicks
 
-jetAir					BYTE AIR_HOOVER			; Game start, Jetman in the air
+jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _CF_JET_RESPOWN_Y)
 
 ; States for Jetman on the platform/ground
 GND_WALK				= 51					; Jetman walks on the ground
 GND_JSTAND				= 52					; Jetman stands on the ground for a very short time, not enougt to switch to #GND_STAND
 GND_STAND				= 53					; Jetman stands on the ground
 
-jetGnd					BYTE STATE_INACTIVE
+jetGnd					BYTE GND_STAND
 
 ; Jetman states
 JET_ST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != STATE_INACTIVE) or walking (#jetGnd != STATE_INACTIVE)

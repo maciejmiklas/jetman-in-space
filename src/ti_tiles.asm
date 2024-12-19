@@ -111,10 +111,7 @@ LoadTiles
 
 	; ##########################################
 	; Setup clip window to hide bottom tile row
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X1
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X2
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y1
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y2
+	CALL SetTilesClipFull
 
 	; ##########################################
 	; Tell harware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5
@@ -125,7 +122,7 @@ LoadTiles
 	; Setup palette
 	LD HL, db.tilePaletteBin					; Address of palette data in memory
 	LD B, db.tilePaletteBinLength				; Number of colors to copy
-	CALL sc.SetupTilemapPalette
+	CALL SetupTilemapPalette
 
 	; ##########################################
 	; Copy tilemap to expected memory
@@ -136,13 +133,63 @@ LoadTiles
 
 	; ##########################################
 	; Copy tile definitions to expected memory
-	LD DE, _CF_TID_OFFSETSTART
+	LD DE, _CF_TID_START
 	LD HL, db.tileDefBin						; Address of tiles in memory
 	LD BC, db.tileDefBinLength					; Number of bytes to copy
 	LDIR	
 
 	RET											; ## END of the function ##
 
+;----------------------------------------------------------;
+;                  #SetupTilemapPalette                    ;
+;----------------------------------------------------------;
+; Input:
+; - B:		Number of colors to copy
+; - HL:		Address of layer 2 palette data 
+SetupTilemapPalette
+
+	NEXTREG _DC_REG_TI_TRANSP_H4C, $00		; Black for tilemap transparency
+
+	; Bits
+	;  - 0: 1 = Enabe ULANext mode
+	;  - 1-3: 0 = First palette 
+	;  - 6-4: 011 = Tilemap first palette
+	;  - 7: 0 = enable autoincrement on write
+	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
+	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start with color index 0
+
+	; Copy 8 bit palette
+.loop
+	LD A, (HL)									; Load RRRGGGBB into A
+	INC HL										; Increment to next entry
+	NEXTREG _DC_REG_LA2_PAL_VAL_H41, A			; Send entry to Next HW
+	DJNZ .loop									; Repeat until B=0
+
+	RET											; ## END of the function ##
+	
+;----------------------------------------------------------;
+;                   #SetTilesClipFull                      ;
+;----------------------------------------------------------;
+SetTilesClipFull
+
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X1
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X2
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y1
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_FULL_Y2
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #SetTilesClipRocket                      ;
+;----------------------------------------------------------;
+SetTilesClipRocket
+
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X1
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X2
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y1
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_ROCKET_Y2
+
+	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

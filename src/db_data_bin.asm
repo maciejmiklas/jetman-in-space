@@ -1,67 +1,64 @@
 ;----------------------------------------------------------;
-;                Binary Data Loader - Part 1               ;
+;                 Binary Data Loader                       ;
 ;----------------------------------------------------------;
 	module db
 
-BGR_IMG_L1_SB18			= 18					; Background image occupies six 8K banks from 18 to 23 (starts on 16K bank 9)
-BGR_IMG_L1_EB23			= 23					; Last background bank
-
-BGR_IMG_PAL_B24			= 24					; Pallete for the background
-BGR_IMG_PAL_16B9		= 9						; 16K bank 9 = 8k bank 18
-
-SPRITE_B40				= 40					; Sprites on bank 40, 41
-SPRITE_B41				= 41
-
-TILES_B42				= 42
-TILES_B43				= 43
-
-STARTS_SB44				= 44
-STARTS_EB45				= 45
-
-BGR_IMG_L2_SB46			= 46					; Background image occupies six 8K banks from 46 to 51 (starts on 16K bank 9)
-BGR_IMG_L2_EB52			= 51					; Last background bank
-
 ;----------------------------------------------------------;
-;    #Load Game Background for Leve 1 (Bank 18...23)       ;
+;   #Load Game Background for Level 1 (Bank 18...23)       ;
 ;----------------------------------------------------------;
-; Load background into bank 18...23 (48K) mapping it to slot 7
+	; Load background into bank 18...23 (48K) mapping it to slot 7
 
-	; Slot 7 = $E000..$FFFF, "n" option to auto-wrap into next page. The image file has 48KB (6 * 8KB), occupying 6 slots: 18 to 23. 
-	; The "n" option will ensure each slot is within $E000..$FFFF range. Once one slot is full (at $FFFF) it will start writing to a new slot at $E000
-	MMU _RAM_SLOT7 n, BGR_IMG_L1_SB18
+
+	MMU _RAM_SLOT7 n, _CF_BIN_BGR_ST_BANK
 	ORG _RAM_SLOT7_START_HE000
 
-	; Following command was used to convert bmp (8bit indexed): "gfx2next -bitmap -pal-std -preview xxxx.bmp" (https://github.com/benbaker76/Gfx2Next)
-	; I've used gimp to resize image to 256x192 and "Image -> Mode -> Indexed" to change palette to 8bit.
-	INCBIN "assets/l001_background.nxi", 0, 256*192
 
-	ASSERT $ == $E000 && $$ == BGR_IMG_L1_EB23 + 1	; Ensure that we loaded the whole image. MMU should be on the beginning of the next slot ("n" option)
+	INCBIN "assets/l002_background.nxi", 0, 320*256
+
+	;ASSERT $ == $E000 && $$ == _CF_BIN_BGR_END_BANK + 1	; Ensure that we loaded the whole image. MMU should be on the beginning of the next slot ("n" option)
 	
-	; After pre-loading the image pixel data, bank 24 should now automatically start at $E000
-	; The background palette will be stored in bank 24
+
+backGroundL0Palette
+	INCBIN  "assets/l002_background.nxp", 0, 512
+
+;----------------------------------------------------------;
+;   #Load Game Background for Level 1 into bank 46...56    ;
+;----------------------------------------------------------;
+	; The screen size is 320x256. However, the image is larger due to the horizontal scroll. It has 320x(256+110) = 122880 bytes (120KiB).
+	; Slot 7 has an address range of $E000..$FFFF. It can hold 8KiB and also fits into one bank. The "n" option will ensure that INCBIN 
+	; loads the whole 120KiB into 15 banks, each with an address range of slot 7. It will load the first 8KiB into the first bank. Once it has 
+	; reached $FFFF, it will switch to the following bank, set the address to $E000, and load the next 8KiB chunk, repeating the whole process.
+	MMU _RAM_SLOT7 n, _CF_BIN_BGR_L1_ST_BANK
+	ORG _RAM_SLOT7_START_HE000
+
+	INCBIN "assets/l001_background.nxi", 0, 320*(256+128)
+
+	ASSERT $ == $E000 && $$ == _CF_BIN_BGR_L1_END_BANK + 1			; MMU should be in the next slot because the last slot has been filed
+
 backGroundL1Palette
 	INCBIN  "assets/l001_background.nxp", 0, 512
-
+	ASSERT $$ == _CF_BIN_BGR_L1_PAL_BANK
+/*
 ;----------------------------------------------------------;
-;    #Load Game Background for Leve 2 (Bank 46...52)       ;
+;   #Load Game Background for Level 2 into bank 57...67    ;
 ;----------------------------------------------------------;
-; The same procedure as for Level 1 above
-	MMU _RAM_SLOT7 n, BGR_IMG_L2_SB46
+	MMU _RAM_SLOT7 n, _CF_BIN_BGR_L2_ST_BANK
 	ORG _RAM_SLOT7_START_HE000
 
-	INCBIN "assets/l002_background.nxi", 0, 256*192
+	INCBIN "assets/l002_background.nxi", 0, 320*256
 
-	ASSERT $ == $E000 && $$ == BGR_IMG_L2_EB52 + 1
+	ASSERT $ == $E000 && $$ == _CF_BIN_BGR_L2_END_BANK + 1			; MMU should be in the next slot because the last slot has been filed
 
 backGroundL2Palette
 	INCBIN  "assets/l002_background.nxp", 0, 512
-
+	ASSERT $$ == _CF_BIN_BGR_L2_PAL_BANK	
+*/
 ;----------------------------------------------------------;
 ;            #Load Game Sprites (Bank 40...41)             ;
 ;----------------------------------------------------------;
 ; Load sprites (16KB) into bank 40,41 mapping it to slot 6,7
 
-	MMU _RAM_SLOT6 _RAM_SLOT7, SPRITE_B40
+	MMU _RAM_SLOT6 _RAM_SLOT7, _CF_BIN_SPRITE_BANK1
 	ORG _RAM_SLOT6_START_HC000
 
 ; Sprites:
@@ -80,14 +77,14 @@ backGroundL2Palette
 ;   - 48-50: Flying enemey 2
 spritesBin INCBIN "assets/l001_sprites.spr", 0, 16384
 spritesBinLength = $ - spritesBin
-	ASSERT $$ == SPRITE_B41
+	ASSERT $$ == _CF_BIN_SPRITE_BANK2
 
 ;----------------------------------------------------------;
 ;           #Load Game Tiles (Bank 42...43)                ;
 ;----------------------------------------------------------;
-; Load tiles and pallete into bank 42 mapping it to slot 6
+; Load tiles and pallete into 8K bank 42,42 mapping it to slot 6,7
 	
-	MMU _RAM_SLOT6 _RAM_SLOT7, TILES_B42		; Assign slots 6,7 to banks 42,43
+	MMU _RAM_SLOT6 _RAM_SLOT7, _CF_BIN_TILES_BANK1 ; Assign slots 6,7 to banks 42,43
 	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6
 
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
@@ -95,7 +92,7 @@ tilemapBin INCBIN "assets/tiles.map"
 tilemapBinLength = $ - tilemapBin
 	ASSERT tilemapBinLength == _CF_TI_MAP_BYTES
 
-; Sprite editor settings: 4bit, 8x8. After downloading manually removed empty data!
+; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
 tileDefBin INCBIN "assets/tiles.spr"
 tileDefBinLength = $ - tileDefBin
 	ASSERT tileDefBinLength <= _CF_TI_DEF_MAX
@@ -112,15 +109,15 @@ tilePaletteBin									; RGB332, 8 bit
 	DB $E3, $40, $C, $20, $54, $8, $20, $30, $0, $E0, $40, $E0, $E0, $E0, $E0, $6F
 tilePaletteBinLength = $ - tilePaletteBin
 	
-	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7 
+	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ <= TILES_B43 						; All data should fit into bank 43
+	ASSERT $$ <= _CF_BIN_TILES_BANK2 			; All data should fit into bank 43
 
 ;----------------------------------------------------------;
 ;               #Load Star Tiles  (Bank 44)                ;
 ;----------------------------------------------------------;
 
-	MMU _RAM_SLOT6 _RAM_SLOT7, STARTS_SB44		; Assign slots 6,7 to banks 44,45
+	MMU _RAM_SLOT6 _RAM_SLOT7, _CF_BIN_STARTS_BANK1 ; Assign slots 6,7 to banks 44,45
 	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6
 
 starsBin INCBIN "assets/stars.map"
@@ -129,7 +126,7 @@ starsBinLength = $ - starsBin
 	ASSERT starsBinLength == _CF_TIS_BYTES
 	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7 
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ == STARTS_EB45 					; All data should fit into bank 43
+	ASSERT $$ == _CF_BIN_STARTS_BANK2 			; All data should fit into bank 43
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

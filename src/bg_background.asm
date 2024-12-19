@@ -3,18 +3,23 @@
 ;----------------------------------------------------------;
 	MODULE bg
 
-bgOffset				BYTE 192
+bgOffset				BYTE 0
 
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;
 ;----------------------------------------------------------;
 UpdateBackgroundOnJetmanMove
+
 	; Horizontal movement
 	LD A, (jpo.jetY)
+	LD B, A
+	LD A, _CF_GSC_JET_GND
+	SUB B
+	LD (bgOffset), A
 
 	; Divide position to limit movement
 	LD C, A
-	LD D, 3
+	LD D, 2
 	CALL ut.CdivD
 	LD A, C
 	LD (bgOffset), A
@@ -45,11 +50,11 @@ AnimateBackgroundOnFlyRocket
 	; Start animation when the rocket reaches given height
 	LD HL, (ro.rocketDistance)
 	LD A, H
-	CP 0										; If H > 0 then distance is definitely > _CF_GBG_MOVE_FROM
+	CP 0										; If H > 0 then distance is definitely > _CF_GBG_MOVE_ROCKET
 	JR NZ, .afterAnimationStart
 
 	LD A, L
-	CP _CF_GBG_MOVE_FROM
+	CP _CF_GBG_MOVE_ROCKET
 	RET C
 .afterAnimationStart
 

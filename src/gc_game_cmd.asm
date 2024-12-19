@@ -11,7 +11,8 @@ RocketTakesOff
 	CALL js.HideJetSprite
 	CALL gb.HideGameBar
 	CALL bg.SetupBackgroundOnRocketTakeoff
-	
+	CALL ti.SetTilesClipRocket
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -22,7 +23,7 @@ RocketExplosionOver
 	CALL ti.ResetTilemapOffset
 	CALL ro.HideRocket
 	CALL ro.ResetAndDisableRocket
-
+	CALL ti.SetTilesClipFull
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

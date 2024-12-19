@@ -21,8 +21,14 @@ SetupScreen
 
 	; Setup Layer 2
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
-	NEXTREG _DC_REG_LA2_H70, %000'00'000		; Layer 2 has 256x192x8bpp
-	NEXTREG _DC_REG_L2_BANK_H12, db.BGR_IMG_PAL_16B9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
+	NEXTREG _DC_REG_LA2_H70, %00'01'0000		; Layer 2 320x256x8bpp
+	NEXTREG _DC_REG_L2_BANK_H12, _CF_BIN_BGR_PAL_16BANK ; Layer 2 image (background) starts at 16k-bank 9 (default)
+
+	; Clip window for layer 2, required to display full picture at 320x256
+	NEXTREG _DC_REG_L2_CLIP_H18, 0
+	NEXTREG _DC_REG_L2_CLIP_H18, 159
+	NEXTREG _DC_REG_L2_CLIP_H18, 0
+	NEXTREG _DC_REG_L2_CLIP_H18, 255
 
 	NEXTREG _GL_REG_TRANP_COL_H14, 00			; Global transparency
 
@@ -30,8 +36,8 @@ SetupScreen
 	OUT (_BORDER_IO_HFE), A
 
 	; Layer 2 Palette
-	LD A, $$db.backGroundL1Palette				; Memory bank (8kb) containing layer 2 palette data
-	LD HL, db.backGroundL1Palette				; Address of first byte of layer 2 palette data
+	LD A, $$db.backGroundL0Palette				; Memory bank (8KiB) containing layer 2 palette data
+	LD HL, db.backGroundL0Palette				; Address of first byte of layer 2 palette data
 	CALL SetupLayer2Palette
 
 	RET											; ## END of the function ##
@@ -72,33 +78,6 @@ SetupLayer2Palette
 	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
 	INC HL		
 	DJNZ .loop
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #SetupTilemapPalette                    ;
-;----------------------------------------------------------;
-; Input:
-; - B:		Number of colors to copy
-; - HL:		Address of layer 2 palette data 
-SetupTilemapPalette
-
-	NEXTREG _DC_REG_TI_TRANSP_H4C, $00		; Black for tilemap transparency
-
-	; Bits
-	;  - 0: 1 = Enabe ULANext mode
-	;  - 1-3: 0 = First palette 
-	;  - 6-4: 011 = Tilemap first palette
-	;  - 7: 0 = enable autoincrement on write
-	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'0'0'0'1 
-	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start with color index 0
-
-	; Copy 8 bit palette
-.loop
-	LD A, (HL)									; Load RRRGGGBB into A
-	INC HL										; Increment to next entry
-	NEXTREG _DC_REG_LA2_PAL_VAL_H41, A			; Send entry to Next HW
-	DJNZ .loop									; Repeat until B=0
 
 	RET											; ## END of the function ##
 

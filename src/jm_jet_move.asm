@@ -197,7 +197,7 @@ JoyMoveDown
 	; ##########################################
 	; Increment Y position
 	LD A, (jpo.jetY)
-	CP _CF_GSC_GROUND							; Do not increment if Jetman has reached the ground
+	CP _CF_GSC_JET_GND							; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
 
 	CALL jpo.IncJetY							; Move Jetman 1px down
@@ -205,7 +205,7 @@ JoyMoveDown
 
 	; ##########################################
 	; Landing on the ground
-	CP _CF_GSC_GROUND
+	CP _CF_GSC_JET_GND
 	CALL Z, pl.JetLanding						; Execute landing on the ground if Jetman has reached the ground
 
 	; ##########################################
