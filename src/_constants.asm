@@ -473,6 +473,7 @@ _CF_TI_START	= _ULA_COLOR_ENND_H5AFF + 1	; Start of tilemap
 _CF_TI_OFFSET	= (_CF_TI_START - _RAM_SLOT2_START_H4000) >> 8
 
 _CF_TI_PIXELS			= 8						; Size of a single tile in pixels
+_CF_TI_GND				= 16					; The thickness of the ground (tilemap)
 _CF_TI_H_TILES			= 320/8					; 40 horizontal tiles
 _CF_TI_H_BYTES			= _CF_TI_H_TILES * 2	; 320/8*2 = 80 bytes pro row -> silgle tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes
 _CF_TI_V_TILES			= 256/8					; 256/8 = 32 rows (256 - vertival screen size)
@@ -489,7 +490,7 @@ _CF_TI_DEF_MAX			 = _RAM_SLOT3_END_H7FFF - _CF_TI_START - _CF_TI_MAP_BYTES
 _CF_TI_CLIP_X1			= 0 
 _CF_TI_CLIP_X2			= 159
 _CF_TI_CLIP_Y1			= 0
-_CF_TI_CLIP_FULL_Y2		= _CF_SC_MAX_Y -16
+_CF_TI_CLIP_FULL_Y2		= _CF_SC_MAX_Y - _CF_TI_GND
 _CF_TI_CLIP_ROCKET_Y2	= _CF_SC_MAX_Y - _CF_TI_PIXELS
 
 ; ##############################################
@@ -529,7 +530,9 @@ _CF_UT_PAUSE_TIME					= 10
 ; ##############################################
 ; In game backgrount on Layer 2
 _CF_GBG_MOVE_ROCKET		= 100					; Start moving background when the rocket reaches the given height
-_CF_GBG_GROUND			= _CF_GSC_JET_GND - 3*8 ; 
+_CF_GBG_GROUND			= _CF_GSC_JET_GND + _CF_TI_GND ; 217+16 = 201
+_CF_GBG_MOVE_SLOW		= 3
+
 ; ##############################################
 ; Binary Data Loader
 _CF_BIN_SPRITE_BANK1	= 40					; Sprites on bank 40, 41
@@ -563,3 +566,8 @@ _CF_BIN_BGR_L2_PAL_BANK	= 67
 ; Respown location
 _CF_JET_RESPOWN_X		= 100
 _CF_JET_RESPOWN_Y		= _CF_GSC_JET_GND		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+
+; ##############################################
+; Game Counters
+_GC_FLIP_ON			= 1	
+_GC_FLIP_OFF		= 0

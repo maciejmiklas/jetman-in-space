@@ -7,8 +7,6 @@
 ;   #Load Game Background for Level 1 (Bank 18...23)       ;
 ;----------------------------------------------------------;
 	; Load background into bank 18...23 (48K) mapping it to slot 7
-
-
 	MMU _RAM_SLOT7 n, _CF_BIN_BGR_ST_BANK
 	ORG _RAM_SLOT7_START_HE000
 

@@ -1,10 +1,7 @@
 ;----------------------------------------------------------;
-;                   Global Counters                        ;
+;                    Game Counters                         ;
 ;----------------------------------------------------------;
 	MODULE gld 
-
-FLIP_ON				= 1	
-FLIP_OFF			= 0
 
 counter000FliFLop	BYTE 0						; Changes with evety counter run from 1 to 0 and so on
 

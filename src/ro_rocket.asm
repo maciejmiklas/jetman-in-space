@@ -439,7 +439,7 @@ BlinkRocketReady
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink
 	LD A, (gld.counter008FliFLop)
-	CP gld.FLIP_ON
+	CP _GC_FLIP_ON
 	JR Z, .flip
 	LD A, _CF_RO_SPR_PAT_READY1
 	JR .afterSet
@@ -913,7 +913,7 @@ AnimateRocketReady
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman
 	LD A, (gld.counter008FliFLop)
-	CP gld.FLIP_ON
+	CP _GC_FLIP_ON
 	JR Z, .flip
 	LD A, _CF_RO_SPR_PAT_READY1
 	JR .afterSet

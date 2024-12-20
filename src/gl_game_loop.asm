@@ -297,7 +297,7 @@ GameLoop010nFlyingRocket
 	RET NZ
 
 	LD A, (gld.counter008FliFLop)
-	CP gld.FLIP_ON
+	CP _GC_FLIP_ON
 	JR Z, .flip
 
 	; ##########################################

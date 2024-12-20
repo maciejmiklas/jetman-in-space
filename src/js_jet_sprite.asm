@@ -283,7 +283,7 @@ AnimateJetSprite
 ; - A:	Flip Flop counter, ie: #counter002FliFLop
 BlinkJetSprite
 
-	CP gld.FLIP_ON
+	CP _GC_FLIP_ON
 	JR NZ, .flipOff
 	
 	; Show sprite
