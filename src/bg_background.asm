@@ -22,12 +22,12 @@ UpdateBackgroundOnJetmanMove
 	CALL ut.CdivD
 	LD B, C										; B contains #jetY/_CF_GBG_MOVE_SLOW
 
-	; Take Jemtan's ground position and subtract it from its current Jetman's position (half of it). If Jetman is on the ground, it should be 0
+	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0
 	LD A, _CF_GSC_JET_GND/_CF_GBG_MOVE_SLOW
 	SUB B										; A contains _CF_GSC_JET_GND - #jetY
 	LD B, A
 
-	; Move background above the ground
+	; Move background above the ground line
 	LD A, _CF_TI_GND
 	SUB B
 	LD (bgOffset), A
@@ -78,8 +78,31 @@ AnimateBackgroundOnFlyRocket
 	LD A, 192
 	LD (bgOffset), A
 .afterBgOffsetReset
+
 	RET											; ## END of the function ##
 
+;----------------------------------------------------------;
+;                 #LoadBackgroundImage                     ;
+;----------------------------------------------------------;
+; Input:
+;  - A: start bank containing background image source
+LoadBackgroundImage
+	
+	; Layer 2 Palette
+	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_BGR_PAL_BANK ; Memory bank (8KiB) containing layer 2 palette data
+	LD HL, db.backGroundL1Palette				; Address of first byte of layer 2 palette data
+	CALL sc.SetupLayer2Palette
+
+	RET
+	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_BGR_L1_ST_BANK				; Read from
+	NEXTREG _MMU_REG_SLOT7_H57, _CF_BIN_BGR_ST_BANK ; Write to
+
+	LD HL, _RAM_SLOT6_START_HC000				; Source
+	LD DE, _RAM_SLOT7_START_HE000				; Destination
+	LD BC, 8*1024
+	LDIR
+
+	RET											; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

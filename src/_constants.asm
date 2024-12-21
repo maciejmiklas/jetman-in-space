@@ -505,6 +505,7 @@ _CF_TID_OFFSET	= (_CF_TID_START - _RAM_SLOT2_START_H4000) >> 8
 ; ##############################################
 ; Tile stars map
 _CF_TIS_START			= _CF_TI_START + (_CF_TI_V_TILES -1) * _CF_TI_H_BYTES ; Stars begin at the last tile row
+
 _CF_TIS_BYTES			= _CF_TI_MAP_BYTES*4	; 10240=40*32*4*2 bytes, 3 screens
 _CF_TIS_ROWS			= _CF_TI_V_TILES*4		; 128 rows (4*32), tile starts takes two horizontal screens
 _CF_ITS_MOVE_FROM		= 50					; Start moving stats when the rocket reaches the given height
@@ -530,11 +531,20 @@ _CF_UT_PAUSE_TIME					= 10
 ; ##############################################
 ; In game backgrount on Layer 2
 _CF_GBG_MOVE_ROCKET		= 100					; Start moving background when the rocket reaches the given height
-_CF_GBG_GROUND			= _CF_GSC_JET_GND + _CF_TI_GND ; 217+16 = 201
+_CF_GBG_GROUND			= _CF_GSC_JET_GND + _CF_TI_GND ; 217+16 = 233
+	ASSERT _CF_GBG_GROUND == 233
+
 _CF_GBG_MOVE_SLOW		= 3
+_CF_GBG_EXTRA_LINES		= 76					; Extra lines for horizontal scrolling 
+_CF_GBG_IMG_BYTES		= 320*(256+_CF_GBG_EXTRA_LINES)
+	ASSERT _CF_GBG_IMG_BYTES == 106240
+
+_CF_GBG_PAL_BYTES		= 512
+_CF_GBG_IMG_BANKS		= 13
 
 ; ##############################################
 ; Binary Data Loader
+_CF_BIN_SPRITE_BYTES	= 16384
 _CF_BIN_SPRITE_BANK1	= 40					; Sprites on bank 40, 41
 _CF_BIN_SPRITE_BANK2	= 41
 
@@ -546,21 +556,26 @@ _CF_BIN_STARTS_BANK2	= 45
 
 ; Each background image has 80Kb (320x256), taking 10 banks + 1 bank for the palette
 
-; Image for current background
-_CF_BIN_BGR_ST_BANK		= 18					; Background image occupies six 8K banks from 18 to 23 (starts on 16K bank 9)
-_CF_BIN_BGR_END_BANK	= 23					; Last background bank
-_CF_BIN_BGR_PAL_BANK	= 24					; Pallete for the background
-_CF_BIN_BGR_PAL_16BANK	= 9						; 16K bank 9 = 8k bank 18
+; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _CF_BIN_BGR_16KBANK"
+_CF_BIN_BGR_ST_BANK		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 banks)
+_CF_BIN_BGR_END_BANK	= 27					; Last background bank
+_CF_BIN_BGR_16KBANK		= 9						; 16K bank 9 = 8k bank 18
 
-; Image for Level 1
-_CF_BIN_BGR_L1_ST_BANK	= 46					; First background image bank (inclusice)
-_CF_BIN_BGR_L1_END_BANK	= 60					; Last background image bank (inclusice)
-_CF_BIN_BGR_L1_PAL_BANK	= 61
+; Image for Level 1 (all inclusive)
+_CF_BIN_BGR_L1_ST_BANK	= 46
+_CF_BIN_BGR_L1_END_BANK	= _CF_BIN_BGR_L1_ST_BANK+_CF_GBG_IMG_BANKS-1; -1 because inclusive
+	ASSERT _CF_BIN_BGR_L1_END_BANK == 58
 
-; Image for Level 2
-_CF_BIN_BGR_L2_ST_BANK	= 57					; First background image bank (inclusice)
-_CF_BIN_BGR_L2_END_BANK	= 66					; Last background image bank (inclusice)
-_CF_BIN_BGR_L2_PAL_BANK	= 67
+; Image for Level 2 (all inclusive)
+_CF_BIN_BGR_L2_ST_BANK	= _CF_BIN_BGR_L1_END_BANK+1
+_CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_GBG_IMG_BANKS-1
+	ASSERT _CF_BIN_BGR_L2_END_BANK == 71
+
+_CF_BIN_BGR_PAL_BANK	= _CF_BIN_BGR_L2_END_BANK+1
+	ASSERT _CF_BIN_BGR_PAL_BANK == 72
+
+_CF_BIN_BGR_PAL_SLOT	= _RAM_SLOT6	
+_CF_BIN_BGR_PAL_ADDR	= _RAM_SLOT6_START_HC000
 
 ; ##############################################
 ; Respown location
@@ -569,5 +584,5 @@ _CF_JET_RESPOWN_Y		= _CF_GSC_JET_GND		; Jetman must respond by standing on the g
 
 ; ##############################################
 ; Game Counters
-_GC_FLIP_ON			= 1	
+_GC_FLIP_ON			= 1
 _GC_FLIP_OFF		= 0

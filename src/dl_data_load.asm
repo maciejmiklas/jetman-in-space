@@ -17,7 +17,7 @@
 ; Load tiles into PFGA
 
 	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_TILES_BANK1	; Assign bank 42 to slot 6 (see di_data_bin.asm)
-	NEXTREG _MMU_REG_SLOT7_H57, _CF_BIN_TILES_BANK2	; Assign bank 42 to slot 6 (see di_data_bin.asm)
+	NEXTREG _MMU_REG_SLOT7_H57, _CF_BIN_TILES_BANK2	; Assign bank 43 to slot 7 (see di_data_bin.asm)
 	CALL ti.LoadTiles
 
 ;----------------------------------------------------------;

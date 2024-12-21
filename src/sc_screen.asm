@@ -22,7 +22,7 @@ SetupScreen
 	; Setup Layer 2
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
 	NEXTREG _DC_REG_LA2_H70, %00'01'0000		; Layer 2 320x256x8bpp
-	NEXTREG _DC_REG_L2_BANK_H12, _CF_BIN_BGR_PAL_16BANK ; Layer 2 image (background) starts at 16k-bank 9 (default)
+	NEXTREG _DC_REG_L2_BANK_H12, _CF_BIN_BGR_16KBANK ; Layer 2 image (background) starts at 16k-bank 9 (default)
 
 	; Clip window for layer 2, required to display full picture at 320x256
 	NEXTREG _DC_REG_L2_CLIP_H18, 0
@@ -35,22 +35,14 @@ SetupScreen
 	LD	A, _COL_BLACK							; Set border color
 	OUT (_BORDER_IO_HFE), A
 
-	; Layer 2 Palette
-	LD A, $$db.backGroundL0Palette				; Memory bank (8KiB) containing layer 2 palette data
-	LD HL, db.backGroundL0Palette				; Address of first byte of layer 2 palette data
-	CALL SetupLayer2Palette
-
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                 #SetupLayer2Palette                      ;
 ;----------------------------------------------------------;
 ; Input:
-; - A:		8k memory bank containing layer 2 palette data
-; - HL:		address of layer 2 palette data
+; - HL:		Address of layer 2 palette data
 SetupLayer2Palette
-
-	NEXTREG _MMU_REG_SLOT7_H57, A				; Assign bank 24 to slot 7	
 
 	; Bits
 	;  - 0: 1 = Enabe ULANext mode
