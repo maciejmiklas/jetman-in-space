@@ -104,10 +104,10 @@ backGroundLXXPalette
 	MMU _RAM_SLOT6 n, _CF_BIN_BGR_L1_ST_BANK
 	ORG _RAM_SLOT6_START_HC000
 backGroundL1Img	
-	INCBIN "assets/l001_background.nxi", 0, _CF_GBG_IMG_BYTES
+	INCBIN "assets/l001_background_down.nxi", 0, _CF_GBG_IMG_BYTES
 
 	; MMU should be in the next slot because the last slot has been filed
-	ASSERT $$ == _CF_BIN_BGR_L1_END_BANK		; Image has 106240 bytes, 13 baks can hold 106496
+	ASSERT $$ == _CF_BIN_BGR_L1_END_BANK+1		; Image has 106240 bytes, 13 baks can hold 106496
 	ASSERT $$backGroundL1Img == _CF_BIN_BGR_L1_ST_BANK
 
 ;----------------------------------------------------------;

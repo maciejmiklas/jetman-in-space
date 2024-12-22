@@ -85,7 +85,7 @@ AnimateBackgroundOnFlyRocket
 ;                 #LoadBackgroundImage                     ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: start bank containing background image source
+;  - D: start bank containing background image source
 LoadBackgroundImage
 	
 	; Layer 2 Palette
@@ -93,15 +93,30 @@ LoadBackgroundImage
 	LD HL, db.backGroundL1Palette				; Address of first byte of layer 2 palette data
 	CALL sc.SetupLayer2Palette
 
-	RET
-	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_BGR_L1_ST_BANK				; Read from
-	NEXTREG _MMU_REG_SLOT7_H57, _CF_BIN_BGR_ST_BANK ; Write to
+	LD E, _CF_BIN_BGR_ST_BANK					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
 
+	LD B, _CF_GBG_IMG_BANKS						; Number of banks/iterations
+.slotLoop										; Image has 320x256 and occupies 10 banks, each loop copies single bank
+	PUSH BC
+
+	LD A, D
+	NEXTREG _MMU_REG_SLOT6_H56, A				; Read from
+
+	LD A, E
+	NEXTREG _MMU_REG_SLOT7_H57, A				; Write to
+
+	PUSH DE
 	LD HL, _RAM_SLOT6_START_HC000				; Source
 	LD DE, _RAM_SLOT7_START_HE000				; Destination
-	LD BC, 8*1024
+	LD BC, _CF_BANK_BYTES
 	LDIR
+	POP DE
 
+	INC D										; Next bank
+	INC E										; Next bank
+	
+	POP BC
+	DJNZ .slotLoop
 	RET											; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -369,8 +369,9 @@ _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800
 
 ; ##############################################
 ; Common return types
-_CF_RET_ON							= 1
-_CF_RET_OFF							= 2
+_CF_RET_ON				= 1
+_CF_RET_OFF				= 2
+_CF_BANK_BYTES			= 8*1024
 
 ; ##############################################
 ; Joystick
@@ -536,11 +537,11 @@ _CF_GBG_GROUND			= _CF_GSC_JET_GND + _CF_TI_GND ; 217+16 = 233
 
 _CF_GBG_MOVE_SLOW		= 3
 _CF_GBG_EXTRA_LINES		= 76					; Extra lines for horizontal scrolling 
-_CF_GBG_IMG_BYTES		= 320*(256+_CF_GBG_EXTRA_LINES)
-	ASSERT _CF_GBG_IMG_BYTES == 106240
+_CF_GBG_IMG_BYTES		= 320*256
+	ASSERT _CF_GBG_IMG_BYTES == 81920
 
 _CF_GBG_PAL_BYTES		= 512
-_CF_GBG_IMG_BANKS		= 13
+_CF_GBG_IMG_BANKS		= 10
 
 ; ##############################################
 ; Binary Data Loader
@@ -564,15 +565,15 @@ _CF_BIN_BGR_16KBANK		= 9						; 16K bank 9 = 8k bank 18
 ; Image for Level 1 (all inclusive)
 _CF_BIN_BGR_L1_ST_BANK	= 46
 _CF_BIN_BGR_L1_END_BANK	= _CF_BIN_BGR_L1_ST_BANK+_CF_GBG_IMG_BANKS-1; -1 because inclusive
-	ASSERT _CF_BIN_BGR_L1_END_BANK == 58
+	ASSERT _CF_BIN_BGR_L1_END_BANK == 55
 
 ; Image for Level 2 (all inclusive)
 _CF_BIN_BGR_L2_ST_BANK	= _CF_BIN_BGR_L1_END_BANK+1
 _CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_GBG_IMG_BANKS-1
-	ASSERT _CF_BIN_BGR_L2_END_BANK == 71
+	ASSERT _CF_BIN_BGR_L2_END_BANK == 65
 
 _CF_BIN_BGR_PAL_BANK	= _CF_BIN_BGR_L2_END_BANK+1
-	ASSERT _CF_BIN_BGR_PAL_BANK == 72
+	ASSERT _CF_BIN_BGR_PAL_BANK == 66
 
 _CF_BIN_BGR_PAL_SLOT	= _RAM_SLOT6	
 _CF_BIN_BGR_PAL_ADDR	= _RAM_SLOT6_START_HC000

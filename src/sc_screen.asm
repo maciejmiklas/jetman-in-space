@@ -42,6 +42,7 @@ SetupScreen
 ;----------------------------------------------------------;
 ; Input:
 ; - HL:		Address of layer 2 palette data
+; Modifies: A,B,HL
 SetupLayer2Palette
 
 	; Bits
