@@ -558,7 +558,8 @@ _CF_BIN_TILES_BANK2		= 43
 _CF_BIN_STARTS_BANK1	= 44
 _CF_BIN_STARTS_BANK2	= 45
 
-; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette
+; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette. However, we load only 256x128 into RAM, 
+; and the last 64 lines (two 8K banks) are filled with transparency.
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _CF_BIN_BGR_16KBANK"
 _CF_BIN_BGR_ST_BANK		= 18					; Background image occupies 6 8K banks from 18 to 23 (starts on 16K bank 9, uses 3 16K banks)
