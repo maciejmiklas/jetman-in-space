@@ -3,35 +3,32 @@
 ;----------------------------------------------------------;
 	MODULE bg
 
-bgOffset				BYTE _CF_TI_GND
-
+bgOffset				BYTE 191
 
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;
 ;----------------------------------------------------------;
-; The background starts at the bottom of the screen with offset 16. That is the height of the ground. The background should begin exactly
-; where the ground ends. From the bottom of the screen, there is ground, 16 pixels high, and the background follows after it. When Jetman
-; moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset. It starts 
-; with 16 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
+; Offset = _CF_SC_L2_MAX_OFFSET - (_CF_GSC_JET_GND - #jetY)/_CF_GBG_MOVE_SLOW, or with numbers: 191 - (217 - #jetY)/3
 UpdateBackgroundOnJetmanMove
 
-	; Divide the Jetman's position by _CF_GBG_MOVE_SLOW to slow down the movement of the background
 	LD A, (jpo.jetY)
+	LD B, A
+	LD A, _CF_GSC_JET_GND
+	SUB B										; A = _CF_GSC_JET_GND - #jetY
+
 	LD C, A
 	LD D, _CF_GBG_MOVE_SLOW
-	CALL ut.CdivD
-	LD B, C										; B contains #jetY/_CF_GBG_MOVE_SLOW
+	CALL ut.CdivD								; C contains (_CF_GSC_JET_GND - #jetY)/_CF_GBG_MOVE_SLOW
 
-	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0
-	LD A, _CF_GSC_JET_GND/_CF_GBG_MOVE_SLOW
-	SUB B										; A contains _CF_GSC_JET_GND - #jetY
-	LD B, A
-
-	; Move background above the ground line
-	LD A, _CF_TI_GND
-	SUB B
+	LD A, _CF_SC_L2_MAX_OFFSET
+	SUB C
 	LD (bgOffset), A
-	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
+
+	; Limit movement so that the planet does not roll over
+	CP _CF_GBG_OFFSET_MAX
+	RET C										; Return if A < _CF_GBG_OFFSET_MAX
+
+	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A			; Set layer 2 Offset
 
 	RET											; ## END of the function ##
 
@@ -86,38 +83,15 @@ AnimateBackgroundOnFlyRocket
 ;----------------------------------------------------------;
 ; Input:
 ;  - D: start bank containing background image source
+;  - HL: Address of layer 2 palette data
 LoadBackgroundImage
-	
-	; Layer 2 Palette
-	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_BGR_PAL_BANK ; Memory bank (8KiB) containing layer 2 palette data
-	LD HL, db.backGroundL1Palette				; Address of first byte of layer 2 palette data
-	CALL sc.SetupLayer2Palette
 
-	LD E, _CF_BIN_BGR_ST_BANK					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
+	LD B, _CF_GBG_IMG_BANKS
+	CALL sc.LoadLevel2Image
 
-	LD B, _CF_GBG_IMG_BANKS						; Number of banks/iterations
-.slotLoop										; Image has 320x256 and occupies 10 banks, each loop copies single bank
-	PUSH BC
-
-	LD A, D
-	NEXTREG _MMU_REG_SLOT6_H56, A				; Read from
-
-	LD A, E
-	NEXTREG _MMU_REG_SLOT7_H57, A				; Write to
-
-	PUSH DE
-	LD HL, _RAM_SLOT6_START_HC000				; Source
-	LD DE, _RAM_SLOT7_START_HE000				; Destination
-	LD BC, _CF_BANK_BYTES
-	LDIR
-	POP DE
-
-	INC D										; Next bank
-	INC E										; Next bank
-	
-	POP BC
-	DJNZ .slotLoop
+	CALL sc.FillLevel2Image
 	RET											; ## END of the function ##
+	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

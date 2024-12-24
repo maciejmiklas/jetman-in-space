@@ -358,9 +358,8 @@ GameLoop080
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-
+	
 	RET											; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -19,10 +19,10 @@ _GL_REG_VL_H1F			= $1F				; Active video line (LSB)
 ; Layer 2 RAM bank
 _DC_REG_L2_BANK_H12		= $12
 
-; Layer2 Offset X (0-255) (0 after a reset)
+; Layer 2 Offset X (0-255) (0 after a reset)
 _DC_REG_L2_OFFSET_X_H16	= $16
 
-; Layer2 Offset Y. (0-191) (0 after a reset)
+; Layer 2 Offset Y. (0-191) (0 after a reset)
 _DC_REG_L2_OFFSET_Y_H17	= $17
 
 ; The coordinate values are 0,255,0,191 after a Reset
@@ -343,6 +343,7 @@ _COL_GREEN				= 4
 _COL_CYAN				= 5
 _COL_YELLOW				= 6
 _COL_WHITE				= 7
+_COL_TRANSPARENT		= 0
 
 ;----------------------------------------------------------;
 ;                     Input processing                     ;
@@ -371,7 +372,7 @@ _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800
 ; Common return types
 _CF_RET_ON				= 1
 _CF_RET_OFF				= 2
-_CF_BANK_BYTES			= 8*1024
+_CF_BANK_BYTES			= 8*1024				; 8192
 
 ; ##############################################
 ; Joystick
@@ -456,8 +457,11 @@ _CF_GSC_JET_GND			= 217					; Ground level from Jetman's sprite perspective
 ; Screen 
 _CF_SC_SYNC_SL			= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
 _CF_SC_SHAKE_BY			= 2						; Number of pixels to move the screen by shaking
-_CF_SC_MAX_X			= 319
-_CF_SC_MAX_Y			= 255
+_CF_SC_3MAX_X			= 319
+_CF_SC_3MAX_Y			= 255
+_CF_SC_2MAX_X			= 255
+_CF_SC_2MAX_Y			= 191
+_CF_SC_L2_MAX_OFFSET	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17
 
 ; Plaftorm 
 _CF_PL_HIT_MARGIN		= 5	
@@ -491,8 +495,8 @@ _CF_TI_DEF_MAX			 = _RAM_SLOT3_END_H7FFF - _CF_TI_START - _CF_TI_MAP_BYTES
 _CF_TI_CLIP_X1			= 0 
 _CF_TI_CLIP_X2			= 159
 _CF_TI_CLIP_Y1			= 0
-_CF_TI_CLIP_FULL_Y2		= _CF_SC_MAX_Y - _CF_TI_GND
-_CF_TI_CLIP_ROCKET_Y2	= _CF_SC_MAX_Y - _CF_TI_PIXELS
+_CF_TI_CLIP_FULL_Y2		= _CF_SC_3MAX_Y
+_CF_TI_CLIP_ROCKET_Y2	= _CF_SC_3MAX_Y - _CF_TI_PIXELS
 
 ; ##############################################
 ; Tile definition (sprite file)
@@ -532,16 +536,15 @@ _CF_UT_PAUSE_TIME					= 10
 ; ##############################################
 ; In game backgrount on Layer 2
 _CF_GBG_MOVE_ROCKET		= 100					; Start moving background when the rocket reaches the given height
-_CF_GBG_GROUND			= _CF_GSC_JET_GND + _CF_TI_GND ; 217+16 = 233
-	ASSERT _CF_GBG_GROUND == 233
+_CF_GBG_OFFSET_MAX		= 130
 
 _CF_GBG_MOVE_SLOW		= 3
 _CF_GBG_EXTRA_LINES		= 76					; Extra lines for horizontal scrolling 
-_CF_GBG_IMG_BYTES		= 320*256
-	ASSERT _CF_GBG_IMG_BYTES == 81920
+_CF_GBG_IMG_BYTES		= 256*(192-64)			; 64 lines are black/transparent. 64 lines = 2 8K banks
+	ASSERT _CF_GBG_IMG_BYTES == 32768
 
 _CF_GBG_PAL_BYTES		= 512
-_CF_GBG_IMG_BANKS		= 10
+_CF_GBG_IMG_BANKS		= 6 - 2					; 2 for 64 blck lines
 
 ; ##############################################
 ; Binary Data Loader
@@ -555,25 +558,26 @@ _CF_BIN_TILES_BANK2		= 43
 _CF_BIN_STARTS_BANK1	= 44
 _CF_BIN_STARTS_BANK2	= 45
 
-; Each background image has 80Kb (320x256), taking 10 banks + 1 bank for the palette
+; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _CF_BIN_BGR_16KBANK"
-_CF_BIN_BGR_ST_BANK		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 banks)
-_CF_BIN_BGR_END_BANK	= 27					; Last background bank
+_CF_BIN_BGR_ST_BANK		= 18					; Background image occupies 6 8K banks from 18 to 23 (starts on 16K bank 9, uses 3 16K banks)
+_CF_BIN_BGR_END_BANK	= 23					; Last background bank (inclusive)
 _CF_BIN_BGR_16KBANK		= 9						; 16K bank 9 = 8k bank 18
 
+_CF_BIN_BGR_PAL_BANK	= 24
+
 ; Image for Level 1 (all inclusive)
-_CF_BIN_BGR_L1_ST_BANK	= 46
+_CF_BIN_BGR_L1_ST_BANK	= 47
 _CF_BIN_BGR_L1_END_BANK	= _CF_BIN_BGR_L1_ST_BANK+_CF_GBG_IMG_BANKS-1; -1 because inclusive
-	ASSERT _CF_BIN_BGR_L1_END_BANK == 55
+	ASSERT _CF_BIN_BGR_L1_END_BANK == 50
 
 ; Image for Level 2 (all inclusive)
 _CF_BIN_BGR_L2_ST_BANK	= _CF_BIN_BGR_L1_END_BANK+1
-_CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_GBG_IMG_BANKS-1
-	ASSERT _CF_BIN_BGR_L2_END_BANK == 65
+	ASSERT _CF_BIN_BGR_L2_ST_BANK == 51
 
-_CF_BIN_BGR_PAL_BANK	= _CF_BIN_BGR_L2_END_BANK+1
-	ASSERT _CF_BIN_BGR_PAL_BANK == 66
+_CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_GBG_IMG_BANKS-1
+	ASSERT _CF_BIN_BGR_L2_END_BANK == 54
 
 _CF_BIN_BGR_PAL_SLOT	= _RAM_SLOT6	
 _CF_BIN_BGR_PAL_ADDR	= _RAM_SLOT6_START_HC000

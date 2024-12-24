@@ -55,6 +55,7 @@ mainLoop
 	INCLUDE "jw_jet_weapon.asm"
 	INCLUDE "ro_rocket.asm"
 	INCLUDE "st_stars.asm"
+	INCLUDE "lo_lobby.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "db_data_bin.asm"

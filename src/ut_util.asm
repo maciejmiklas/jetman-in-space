@@ -184,6 +184,29 @@ CountdownBC
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                        #FillBank                         ;
+;----------------------------------------------------------;
+; Input:
+;  - A:  Destination bank
+;  - D:  Value to fill banks with
+;  - HL: Start address
+; Modifies: AF,BC,HL
+FillBank
+
+	LD BC, _CF_BANK_BYTES						; 8192 bytes is a full bank	
+.loop
+	LD (HL), D
+	INC HL
+	DEC BC
+
+	; Check if BC is 0. OR returns 0 when both params are 0, it also sets ZF
+	LD A, B
+	OR C
+	JR NZ, .loop								; Keep looping if ZF is not set (BC != 0)
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE

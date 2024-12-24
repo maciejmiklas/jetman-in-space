@@ -9,7 +9,7 @@ TILES_ROW_RESET			= _CF_TI_V_TILES-1
 tilesRow				BYTE TILES_ROW_RESET	; Current tiles row, runns from _CF_TI_V_TILES-1 to 0
 starsRow				BYTE _CF_TIS_ROWS		; Current start row, runns from from _CF_TIS_ROWS to 0
 
-tileOffset				BYTE _CF_SC_MAX_Y		; Runns from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _CF_SC_MAX_Y" in sc.SetupScreen
+tileOffset				BYTE _CF_SC_3MAX_Y		; Runns from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _CF_SC_3MAX_Y" in sc.SetupScreen
 tilePixelCnt			BYTE 0					; Runns from 0 to 7
 
 ;----------------------------------------------------------;
@@ -21,7 +21,7 @@ tilePixelCnt			BYTE 0					; Runns from 0 to 7
 	LD A, _CF_TIS_ROWS
 	LD (starsRow), A
 
-	LD A, _CF_SC_MAX_Y
+	LD A, _CF_SC_3MAX_Y
 	LD (tileOffset), A
 
 	XOR A

@@ -80,7 +80,7 @@ starsBinLength = $ - starsBin
 ;----------------------------------------------------------;
 ;   #Load Game Background for Level 1 (Bank 18...23)       ;
 ;----------------------------------------------------------;
-
+/*
 	; Load background into bank 18...23 (48K) mapping it to slot 7
 	MMU _RAM_SLOT7 n, _CF_BIN_BGR_ST_BANK
 	ORG _RAM_SLOT7_START_HE000
@@ -89,36 +89,36 @@ starsBinLength = $ - starsBin
 
 	ASSERT $ == $E000 && $$ == _CF_BIN_BGR_END_BANK + 1
 	
-/*
+
 backGroundLXXPalette
 	INCBIN  "assets/l002_background.nxp", 0, _CF_GBG_PAL_BYTES
 */
 
 ;----------------------------------------------------------;
-;   #Load Game Background for Level 1 into bank 46...56    ;
-;----------------------------------------------------------;
-	; The screen size is 320x256. However, the image is larger due to the horizontal scroll. It has 320*(256+76)=106240 bytes (104KiB).
-	; Slot 7 has an address range of $E000..$FFFF. It can hold 8KiB and also fits into one bank. The "n" option will ensure that INCBIN 
-	; loads the whole 104KiB into 13 banks, each with an address range of slot 7. It will load the first 8KiB into the first bank. Once it has 
-	; reached $FFFF, it will switch to the following bank, set the address to $E000, and load the next 8KiB chunk, repeating the whole process.
-	MMU _RAM_SLOT6 n, _CF_BIN_BGR_L1_ST_BANK
-	ORG _RAM_SLOT6_START_HC000
-backGroundL1Img	
-	INCBIN "assets/l001_background_down.nxi", 0, _CF_GBG_IMG_BYTES
-
-	; MMU should be in the next slot because the last slot has been filed
-	ASSERT $$ == _CF_BIN_BGR_L1_END_BANK+1		; Image has 106240 bytes, 13 baks can hold 106496
-	ASSERT $$backGroundL1Img == _CF_BIN_BGR_L1_ST_BANK
-
-;----------------------------------------------------------;
-;     #Load Game Background Palettes into bank 33          ;
+;     #Load Game Background Palettes into bank 46          ;
 ;----------------------------------------------------------;
 	MMU _CF_BIN_BGR_PAL_SLOT, _CF_BIN_BGR_PAL_BANK
 	ORG _CF_BIN_BGR_PAL_ADDR
 
 backGroundL1Palette
-	INCBIN  "assets/l002_background.nxp", 0, _CF_GBG_PAL_BYTES
+	INCBIN  "assets/l001_background.nxp", 0, _CF_GBG_PAL_BYTES
 	ASSERT $$ == _CF_BIN_BGR_PAL_BANK
+
+;----------------------------------------------------------;
+;   #Load Game Background for Level 1 into bank 47...50    ;
+;----------------------------------------------------------;
+; The screen size is 256x192 (49152 bytes, 48KiB). Slot 7 has an address range of $E000..$FFFF. It can hold 8KiB and also fits into one bank.
+; The "n" option will ensure that INCBIN loads the 48KiB into 6 banks, each with an address range of slot 7. It will load the first 8KiB 
+; into the first bank. Once it has reached $FFFF, it will switch to the following bank, set the address to $E000, 
+; and load the next 8KiB chunk, repeating the whole process.
+	MMU _RAM_SLOT6 n, _CF_BIN_BGR_L1_ST_BANK
+	ORG _RAM_SLOT6_START_HC000
+backGroundL1Img	
+	INCBIN "assets/l001_background.nxi", 0, _CF_GBG_IMG_BYTES
+
+	; MMU should be in the next slot because the last slot has been filed
+	ASSERT $$ == _CF_BIN_BGR_L1_END_BANK+1		; Image has 32768 bytes, 4 banks
+	ASSERT $$backGroundL1Img == _CF_BIN_BGR_L1_ST_BANK
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
