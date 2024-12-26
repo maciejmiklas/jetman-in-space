@@ -31,7 +31,7 @@ SetupScreen
 	LD	A, _COL_BLACK							; Set border color
 	OUT (_BORDER_IO_HFE), A
 
-	CALL SetupScreen256
+	CALL SetupScreen320
 
 	RET											; ## END of the function ##
 

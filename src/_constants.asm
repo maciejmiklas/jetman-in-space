@@ -531,21 +531,21 @@ _CF_RIP_MOVE_Y			= 4
 
 ; ##############################################
 ; Util
-_CF_UT_PAUSE_TIME					= 10
+_CF_UT_PAUSE_TIME		= 10
 
 ; ##############################################
 ; In game backgrount on Layer 2
 _CF_GBG_MOVE_ROCKET		= 100					; Start moving background when the rocket reaches the given height
-_CF_GBG_OFFSET_MAX		= 130
 
 _CF_GBG_MOVE_SLOW		= 3
 _CF_GBG_EXTRA_LINES		= 76					; Extra lines for horizontal scrolling 
-_CF_GBG_IMG_BYTES		= 256*(192-64)			; 64 lines are black/transparent. 64 lines = 2 8K banks
-	ASSERT _CF_GBG_IMG_BYTES == 32768
+_CF_GBG_IMG_BYTES		= 320*256
+	ASSERT _CF_GBG_IMG_BYTES == 81920
 
 _CF_GBG_PAL_BYTES		= 512
-_CF_GBG_IMG_BANKS		= 6 - 2					; 2 for 64 blck lines
+_CF_GBG_IMG_BANKS		= 10
 
+_CF_GBG_OFFSET 			= _CF_TI_GND-2
 ; ##############################################
 ; Binary Data Loader
 _CF_BIN_SPRITE_BYTES	= 16384
@@ -571,14 +571,14 @@ _CF_BIN_BGR_PAL_BANK	= 24
 ; Image for Level 1 (all inclusive)
 _CF_BIN_BGR_L1_ST_BANK	= 47
 _CF_BIN_BGR_L1_END_BANK	= _CF_BIN_BGR_L1_ST_BANK+_CF_GBG_IMG_BANKS-1; -1 because inclusive
-	ASSERT _CF_BIN_BGR_L1_END_BANK == 50
+	ASSERT _CF_BIN_BGR_L1_END_BANK == 56
 
 ; Image for Level 2 (all inclusive)
 _CF_BIN_BGR_L2_ST_BANK	= _CF_BIN_BGR_L1_END_BANK+1
-	ASSERT _CF_BIN_BGR_L2_ST_BANK == 51
+	ASSERT _CF_BIN_BGR_L2_ST_BANK == 57
 
 _CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_GBG_IMG_BANKS-1
-	ASSERT _CF_BIN_BGR_L2_END_BANK == 54
+	ASSERT _CF_BIN_BGR_L2_END_BANK == 66
 
 _CF_BIN_BGR_PAL_SLOT	= _RAM_SLOT6	
 _CF_BIN_BGR_PAL_ADDR	= _RAM_SLOT6_START_HC000
