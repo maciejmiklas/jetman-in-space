@@ -3,8 +3,9 @@
 ;----------------------------------------------------------;
 	MODULE bg
 
-bgOffset				BYTE 191
+bgOffset				BYTE 0
 
+tmp				BYTE 0
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;
 ;----------------------------------------------------------;
@@ -23,48 +24,46 @@ UpdateBackgroundOnJetmanMove
 
 	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0
 	LD A, _CF_GSC_JET_GND/_CF_GBG_MOVE_SLOW
-	SUB B										; A contains _CF_GSC_JET_GND - #jetY
+	SUB B										; A contains _CF_GSC_JET_GND - #jetY. It's 0 when Jemant stands on the ground.
 	LD B, A
 
 	; Move background above the ground line
 	LD A, _CF_GBG_OFFSET
 	SUB B
-	LD (bgOffset), A
 	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
 
-	RET											; ## END of the function ##
+	; ##########################################
+	; Hide picture line going behind the horizon	
 
-;----------------------------------------------------------;
-;             UpdateBackgroundOnJetmanMove                 ;
-;----------------------------------------------------------;
-/*
-; Offset = _CF_SC_L2_MAX_OFFSET - (_CF_GSC_JET_GND - #jetY)/_CF_GBG_MOVE_SLOW, or with numbers: 191 - (217 - #jetY)/3
-UpdateBackgroundOnJetmanMove
+	; Calculate the line number that needs to be replaced. It's the line going behind the horizon.
+	;LD A, _CF_BM_YRES-1
+	;SUB B
+	;LD E, A
 
-	LD A, (jpo.jetY)
-	LD B, A
-	LD A, _CF_GSC_JET_GND
-	SUB B										; A = _CF_GSC_JET_GND - #jetY
+	;LD A, (bgOffset)
+	;DEC A
+	;LD (bgOffset), A
+	;LD E, A
 
-	LD C, A
-	LD D, _CF_GBG_MOVE_SLOW
-	CALL ut.CdivD								; C contains (_CF_GSC_JET_GND - #jetY)/_CF_GBG_MOVE_SLOW
-
-	LD A, _CF_SC_L2_MAX_OFFSET
-	SUB C
+	LD A, (bgOffset)
+	INC A
 	LD (bgOffset), A
 
-	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A			; Set layer 2 Offset
+	CP 200
+	RET C
+	
+	LD A, (tmp)
+	INC A
+	LD (tmp), A
 
+	;CALL bm.ReplaceImageLine
 	RET											; ## END of the function ##
-*/
+
 ;----------------------------------------------------------;
 ;            #SetupBackgroundOnRocketTakeoff               ;
 ;----------------------------------------------------------;
 SetupBackgroundOnRocketTakeoff
 
-	;XOR A
-	;LD (bgOffset), A
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -112,8 +111,8 @@ AnimateBackgroundOnFlyRocket
 ;  - HL: Address of layer 2 palette data
 LoadBackgroundImage
 
-	LD B, _CF_GBG_IMG_BANKS
-	CALL sc.LoadLevel2Image
+	LD B, _CF_BM_BANKS
+	CALL bm.LoadLevel2Image
 
 	RET											; ## END of the function ##
 	

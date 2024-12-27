@@ -68,7 +68,6 @@ PrintDebug
 	CALL ut.PrintNumHLDebug
 
 
-
 	; ##########################################
 	; ##########################################
 	LD B, 40
@@ -77,14 +76,13 @@ PrintDebug
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
-/*
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (jt.jetState)
+	LD A, (bg.tmp)
 	LD L, A
 	CALL ut.PrintNumHLDebug
-
+/*
 	; ##########################################
 	LD B, 52
 	LD H, 0

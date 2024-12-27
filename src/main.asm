@@ -14,7 +14,7 @@ start
 	CALL sc.SetupScreen
 	CALL gm.GameInit
 	CALL gc.LoadLevel1
-
+	
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
@@ -37,6 +37,7 @@ mainLoop
 
 	INCLUDE "gm_game.asm"
 
+	INCLUDE "bm_bitmap.asm"
 	INCLUDE "gc_game_cmd.asm"
 	INCLUDE "gb_game_bar.asm"
 	INCLUDE "sc_screen.asm"

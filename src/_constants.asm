@@ -534,18 +534,25 @@ _CF_RIP_MOVE_Y			= 4
 _CF_UT_PAUSE_TIME		= 10
 
 ; ##############################################
+; Bitmap Manipulation
+_CF_BM_16KBANK			= 9						; 16K bank 9 = 8k bank 18
+
+_CF_BM_XRES				= 320
+_CF_BM_YRES				= 256
+_CF_BM_BYTES		= _CF_BM_XRES*_CF_BM_YRES
+	ASSERT _CF_BM_BYTES == 81920
+
+_CF_BM_PAL_BYTES		= 512
+_CF_BM_BANKS			= 10
+
+; ##############################################
 ; In game backgrount on Layer 2
 _CF_GBG_MOVE_ROCKET		= 100					; Start moving background when the rocket reaches the given height
 
 _CF_GBG_MOVE_SLOW		= 3
-_CF_GBG_EXTRA_LINES		= 76					; Extra lines for horizontal scrolling 
-_CF_GBG_IMG_BYTES		= 320*256
-	ASSERT _CF_GBG_IMG_BYTES == 81920
 
-_CF_GBG_PAL_BYTES		= 512
-_CF_GBG_IMG_BANKS		= 10
+_CF_GBG_OFFSET 			= _CF_TI_GND-2			; 16-2 = 24
 
-_CF_GBG_OFFSET 			= _CF_TI_GND-2
 ; ##############################################
 ; Binary Data Loader
 _CF_BIN_SPRITE_BYTES	= 16384
@@ -561,23 +568,22 @@ _CF_BIN_STARTS_BANK2	= 45
 ; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette. However, we load only 256x128 into RAM, 
 ; and the last 64 lines (two 8K banks) are filled with transparency.
 
-; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _CF_BIN_BGR_16KBANK"
+; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _CF_BM_16KBANK"
 _CF_BIN_BGR_ST_BANK		= 18					; Background image occupies 6 8K banks from 18 to 23 (starts on 16K bank 9, uses 3 16K banks)
 _CF_BIN_BGR_END_BANK	= 23					; Last background bank (inclusive)
-_CF_BIN_BGR_16KBANK		= 9						; 16K bank 9 = 8k bank 18
 
 _CF_BIN_BGR_PAL_BANK	= 24
 
 ; Image for Level 1 (all inclusive)
 _CF_BIN_BGR_L1_ST_BANK	= 47
-_CF_BIN_BGR_L1_END_BANK	= _CF_BIN_BGR_L1_ST_BANK+_CF_GBG_IMG_BANKS-1; -1 because inclusive
+_CF_BIN_BGR_L1_END_BANK	= _CF_BIN_BGR_L1_ST_BANK+_CF_BM_BANKS-1; -1 because inclusive
 	ASSERT _CF_BIN_BGR_L1_END_BANK == 56
 
 ; Image for Level 2 (all inclusive)
 _CF_BIN_BGR_L2_ST_BANK	= _CF_BIN_BGR_L1_END_BANK+1
 	ASSERT _CF_BIN_BGR_L2_ST_BANK == 57
 
-_CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_GBG_IMG_BANKS-1
+_CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_BM_BANKS-1
 	ASSERT _CF_BIN_BGR_L2_END_BANK == 66
 
 _CF_BIN_BGR_PAL_SLOT	= _RAM_SLOT6	

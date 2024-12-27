@@ -14,6 +14,16 @@ LoadLevel1
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #LoadLevel2                         ;
+;----------------------------------------------------------;
+LoadLevel2
+	LD D, $$db.backGroundL2Img
+	LD HL, db.backGroundL2Palette
+	CALL bg.LoadBackgroundImage
+
+	RET											; ## END of the function ##	
+
+;----------------------------------------------------------;
 ;                    #RocketTakesOff                       ;
 ;----------------------------------------------------------;
 RocketTakesOff

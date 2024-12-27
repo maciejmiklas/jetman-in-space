@@ -186,6 +186,15 @@ JoyDownRelease
 JoyFire
 
 	CALL jw.Fire
+	
+	LD E, 30
+	CALL bm.ReplaceImageLine
+
+	LD E, 60
+	CALL bm.ReplaceImageLine
+
+	LD E, 80
+	CALL bm.ReplaceImageLine
 
 	RET											; ## END of the function ##
 

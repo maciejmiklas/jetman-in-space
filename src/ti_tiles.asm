@@ -104,7 +104,7 @@ CleanTiles
 ;                         #LoadTiles                       ;
 ;----------------------------------------------------------;
 LoadTiles
-
+	
 	; Enable tilemap mode
 	NEXTREG _TI_MAP_CONTROL_H6B, %10000001		; 40x32, 8-pixel tiles = 320x256
 	NEXTREG _TI_ATTRIBTE_H6C, %00000000			; Palette offset, visuals
@@ -175,7 +175,7 @@ SetTilesClipFull
 	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X1
 	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X2
 	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y1
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_FULL_Y2
+	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_FULL_Y2-32
 
 	RET											; ## END of the function ##
 
