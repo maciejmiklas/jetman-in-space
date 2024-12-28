@@ -32,7 +32,7 @@ FillLevel2Image
 LoadLevel2Image
 	
 	; Setup layer 2 palette
-	CALL LoadLayer2Palette
+	;CALL LoadLayer2Palette
 
 	; ##########################################
 	; Copy image data from temp RAM into screen memory
@@ -71,13 +71,14 @@ LoadLevel2Image
 LoadLayer2Palette
 
 	; Setup palette that is going to be written, bits:
-	;  - 0:   1 = Enabe ULANext mode
+	;  - 0:   0 = Disable ULANext mode
 	;  - 1-3: 0 = First palette 
 	;  - 6-4: 001 = Write layer 2 first palette
-	;  - 7:   1 = disable palette write auto-increment
-	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'001'0'0'0'1 
-	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Palette starts with color index 0
+	;  - 7:   0 = enable palette write auto-increment for _DC_REG_LA2_PAL_VAL_H44
+	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'001'000'1 
 
+	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start writing the palette from the first color, we will replace all 256 colors
+		
 	; Memory bank (8KiB) containing layer 2 palette data
 	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_BGR_PAL_BANK
 

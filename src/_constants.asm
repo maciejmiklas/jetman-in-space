@@ -70,7 +70,7 @@ _DC_REG_CONTROL1_H69	= $69
 ;  - 3-0: Palette offset (0 after soft reset)
 _DC_REG_LA2_H70			= $70
 
-; Palette index
+; Selects colour index that will be read or written (_DC_REG_LA2_PAL_VAL_H44)
 _DC_REG_LA2_PAL_IDX_H40	= $40
 
 ; Palette Value (8 bit colour)
@@ -81,7 +81,7 @@ _DC_REG_LA2_PAL_VAL_H41	= $41
 
 ; Palette Control
 ; Bits:
-;  - 7: '1' to disable palette write auto-increment
+;  - 7: '1' to disable palette write auto-increment (for _DC_REG_LA2_PAL_VAL_H44)
 ;  - 6-4: Select palette for reading or writing:
 ;     000 = ULA first palette
 ;     100 = ULA second palette

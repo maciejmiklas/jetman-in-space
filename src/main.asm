@@ -14,14 +14,19 @@ start
 	CALL sc.SetupScreen
 	CALL gm.GameInit
 
+	LD HL, db.backGroundL1Palette
+	CALL bm.LoadLayer2Palette
 	CALL gc.LoadLevel1
 
 	CALL ut.Pause
 	CALL ut.Pause
-	CALL ut.Pause
-	CALL ut.Pause
 
-	CALL gc.LoadLevel2
+	LD HL, db.backGroundL1Palette
+	CALL bm.LoadLayer2Palette
+
+	CALL ut.Pause
+	CALL ut.Pause
+	CALL gc.LoadLevel1
 
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
