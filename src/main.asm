@@ -13,8 +13,16 @@ start
 	INCLUDE "dl_data_load.asm"
 	CALL sc.SetupScreen
 	CALL gm.GameInit
+
 	CALL gc.LoadLevel1
-	
+
+	CALL ut.Pause
+	CALL ut.Pause
+	CALL ut.Pause
+	CALL ut.Pause
+
+	CALL gc.LoadLevel2
+
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;

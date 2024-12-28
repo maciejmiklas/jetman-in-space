@@ -9,7 +9,7 @@
 LoadLevel1
 	LD D, $$db.backGroundL1Img
 	LD HL, db.backGroundL1Palette
-	CALL bg.LoadBackgroundImage
+	CALL bm.LoadLevel2Image
 
 	RET											; ## END of the function ##
 
@@ -19,7 +19,7 @@ LoadLevel1
 LoadLevel2
 	LD D, $$db.backGroundL2Img
 	LD HL, db.backGroundL2Palette
-	CALL bg.LoadBackgroundImage
+	CALL bm.LoadLevel2Image
 
 	RET											; ## END of the function ##	
 

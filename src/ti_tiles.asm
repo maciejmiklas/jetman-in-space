@@ -122,7 +122,7 @@ LoadTiles
 	; Setup palette
 	LD HL, db.tilePaletteBin					; Address of palette data in memory
 	LD B, db.tilePaletteBinLength				; Number of colors to copy
-	CALL SetupTilemapPalette
+	CALL LoadTilemapPalette
 
 	; ##########################################
 	; Copy tilemap to expected memory
@@ -141,14 +141,15 @@ LoadTiles
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #SetupTilemapPalette                    ;
+;                  #LoadTilemapPalette                     ;
 ;----------------------------------------------------------;
 ; Input:
 ; - B:		Number of colors to copy
 ; - HL:		Address of layer 2 palette data 
-SetupTilemapPalette
+LoadTilemapPalette
 
-	NEXTREG _DC_REG_TI_TRANSP_H4C, $00		; Black for tilemap transparency
+	; Black for tilemap transparency
+	NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_TRANSPARENT
 
 	; Bits
 	;  - 0: 1 = Enabe ULANext mode

@@ -101,21 +101,7 @@ AnimateBackgroundOnFlyRocket
 	LD (bgOffset), A
 .afterBgOffsetReset
 
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #LoadBackgroundImage                     ;
-;----------------------------------------------------------;
-; Input:
-;  - D: start bank containing background image source
-;  - HL: Address of layer 2 palette data
-LoadBackgroundImage
-
-	LD B, _CF_BM_BANKS
-	CALL bm.LoadLevel2Image
-
-	RET											; ## END of the function ##
-	
+	RET											; ## END of the function ##	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
