@@ -16,11 +16,6 @@ start
 
 	CALL gc.LoadLevel1
 
-	CALL ut.Pause
-	CALL ut.Pause
-
-	CALL gc.LoadLevel2
-
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
 ;----------------------------------------------------------;
