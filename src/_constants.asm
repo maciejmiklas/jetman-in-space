@@ -572,7 +572,7 @@ _CF_BIN_STARTS_BANK2	= 45
 _CF_BIN_BGR_ST_BANK		= 18					; Background image occupies 6 8K banks from 18 to 23 (starts on 16K bank 9, uses 3 16K banks)
 _CF_BIN_BGR_END_BANK	= 23					; Last background bank (inclusive)
 
-_CF_BIN_BGR_PAL_BANK	= 24
+_CF_BIN_BGR_PAL_BANK	= 46
 
 ; Image for Level 1 (all inclusive)
 _CF_BIN_BGR_L1_ST_BANK	= 47
@@ -585,9 +585,6 @@ _CF_BIN_BGR_L2_ST_BANK	= _CF_BIN_BGR_L1_END_BANK+1
 
 _CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_BM_BANKS-1
 	ASSERT _CF_BIN_BGR_L2_END_BANK == 66
-
-_CF_BIN_BGR_PAL_SLOT	= _RAM_SLOT6	
-_CF_BIN_BGR_PAL_ADDR	= _RAM_SLOT6_START_HC000
 
 ; ##############################################
 ; Respown location

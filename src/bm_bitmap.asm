@@ -32,7 +32,7 @@ FillLevel2Image
 LoadLevel2Image
 	
 	; Setup layer 2 palette
-	;CALL LoadLayer2Palette
+	CALL LoadLayer2Palette
 
 	; ##########################################
 	; Copy image data from temp RAM into screen memory
@@ -61,6 +61,9 @@ LoadLevel2Image
 	DJNZ .slotLoop
 
 	RET											; ## END of the function ##
+
+xxx
+	INCBIN  "assets/l001_background.nxp", 0, _CF_BM_PAL_BYTES
 
 ;----------------------------------------------------------;
 ;                  #LoadLayer2Palette                      ;
@@ -102,44 +105,6 @@ LoadLayer2Palette
 	DJNZ .loop
 
 	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #SetupLayer2Palette                      ;
-;----------------------------------------------------------;
-; Input:
-; - HL:		Address of layer 2 palette data
-; Modifies: A,B,HL
-SetupLayer2Palette
-
-	; Bits
-	;  - 0: 1 = Enabe ULANext mode
-	;  - 1-3: 0 = First palette 
-	;  - 6-4: 001 = Layer 2 first palette
-	;  - 7: 0 = enable autoincrement on write	
-	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'001'0'0'0'1 
-	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start with color index 0
-
-	; Copy 9 bit (2 bytes per color) palette
-	LD B, 255									; 256 colors (loop counter), palette has 512 bytes, but we read two bytes in one iteration
-.loop:
-	
-	; - Two consecutive writes are needed to write the 9 bit colour:
-	; - 1st write: bits 7-0 = RRRGGGBB
-	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B
-
-	; 1st write
-	LD A, (HL)
-	INC HL
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
-
-	; 2nd write
-	LD A, (HL)
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
-	INC HL		
-	DJNZ .loop
-
-	RET											; ## END of the function ##
-
 
 tmp byte 0
 ;----------------------------------------------------------;

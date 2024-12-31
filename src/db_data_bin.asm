@@ -80,8 +80,8 @@ starsBinLength = $ - starsBin
 ;----------------------------------------------------------;
 ;     #Load Game Background Palettes into bank 46          ;
 ;----------------------------------------------------------;
-	MMU _CF_BIN_BGR_PAL_SLOT, _CF_BIN_BGR_PAL_BANK
-	ORG _CF_BIN_BGR_PAL_ADDR
+	MMU _RAM_SLOT6, _CF_BIN_BGR_PAL_BANK
+	ORG _RAM_SLOT6_START_HC000
 
 backGroundL1Palette
 	INCBIN  "assets/l001_background.nxp", 0, _CF_BM_PAL_BYTES
