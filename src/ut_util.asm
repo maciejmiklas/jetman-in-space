@@ -152,7 +152,7 @@ Pause
 
 	PUSH AF, BC, DE, HL, IX, IY
 
-	LD A, _CF_UT_PAUSE_TIME
+	LD A, _UT_PAUSE_TIME_D10
 .loop:
 	CALL CountdownBC
 
@@ -192,7 +192,7 @@ CountdownBC
 ; Modifies: AF,BC,HL
 FillBank
 
-	LD BC, _CF_BANK_BYTES						; 8192 bytes is a full bank	
+	LD BC, _BANK_BYTES_D8192						; 8192 bytes is a full bank	
 .loop
 	LD (HL), D
 	INC HL

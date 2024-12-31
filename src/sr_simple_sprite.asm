@@ -363,16 +363,16 @@ MoveX
 	CP 0										; H holds MSB from X, if H > 0 than X > 256
 	JR NZ, .continueLeftLoop
 
-	; H is 0, check whether L has reached #_CF_GSC_X_MIN
+	; H is 0, check whether L has reached #_GSC_X_MIN_D0
 	LD A, L
-	CP _CF_GSC_X_MIN
+	CP _GSC_X_MIN_D0
 	JR NZ, .continueLeftLoop
 
-	; HL == #_CF_GSC_X_MIN
+	; HL == #_GSC_X_MIN_D0
 	BIT MVX_IN_D_HIDE_BIT, D					; Hide sprite or roll over?
 	JR NZ, .hideSpriteL
 	
-	LD HL, _CF_GSC_X_MAX						; Roll over 
+	LD HL, _GSC_X_MAX_D315						; Roll over 
 	JR .afterMoving
 
 .continueLeftLoop
@@ -405,7 +405,7 @@ MoveX
 	
 	; Roll over 
 	LD H, 0
-	LD L, _CF_GSC_X_MIN
+	LD L, _GSC_X_MIN_D0
 	JR .afterMoving
 
 .continueRightLoop
@@ -444,8 +444,8 @@ MoveY
 	INC A
 
 	; Check whether a enemy hits ground
-	CP _CF_GSC_Y_MAX
-	JR C, .afterMoving							; Jump if the enemy is above ground (A < _CF_GSC_Y_MAX)
+	CP _GSC_Y_MAX_D232
+	JR C, .afterMoving							; Jump if the enemy is above ground (A < _GSC_Y_MAX_D232)
 
 	; Enemy hits the ground
 	LD A, MOVE_RET_HIDDEN
@@ -458,8 +458,8 @@ MoveY
 	DEC A
 
 	; check if sprite is above screen
-	CP _CF_GSC_Y_MIN
-	JR NC, .afterMoving							; Jump if the enemy is below max screen postion (A >= _CF_GSC_Y_MIN)
+	CP _GSC_Y_MIN_D15
+	JR NC, .afterMoving							; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15)
 
 	; Sprite is above screen -> hide it
 	CALL HideSprite

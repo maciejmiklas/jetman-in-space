@@ -15,7 +15,7 @@ AIR_BUMP_LEFT			= 15					; Jetman bumps into a platform from the left, he faces/
 AIR_BUMP_BOTTOM			= 16					; Jetman bumps into a platform from the bottom
 AIR_ENEMY_KICK			= 17					; Jetman flies above the enemy and kicks
 
-jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _CF_JET_RESPOWN_Y)
+jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _JET_RESPOWN_Y_D217)
 
 ; States for Jetman on the platform/ground
 GND_WALK				= 51					; Jetman walks on the ground

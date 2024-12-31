@@ -17,15 +17,15 @@ SetupScreen
 	;  - 0: 1 - sprites visible
 	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'110'1'1
 
-	NEXTREG _DC_REG_TI_Y_H31, _CF_SC_3MAX_Y		; Reverses scrolling of the tiles, required by tl.NextStarsRow
+	NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255		; Reverses scrolling of the tiles, required by tl.NextStarsRow
 
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
 	
-	NEXTREG _GL_REG_TRANP_COL_H14, _COL_TRANSPARENT ; Global transparency
+	NEXTREG _GL_REG_TRANP_COL_H14, _COL_TRANSPARENT_D0 ; Global transparency
 
 	NEXTREG _DC_REG_LA2_H70, %00'01'0000		; Layer 2 320x256x8bpp, palette offset at 0
 
-	LD	A, _COL_BLACK							; Set border color
+	LD	A, _COL_BLACK_D0							; Set border color
 	OUT (_BORDER_IO_HFE), A
 
 	; Clip window for layer 2, required to display full picture at 320x256
@@ -49,10 +49,10 @@ WaitForScanline
 	OUT (C), A									; Select NextReg $1F
 	INC B										; TBBlue Register Access
 
-; Wait for scanline (#_CF_SC_SYNC_SL)
+; Wait for scanline (#_SC_SYNC_SL_D192)
 .waitForScanline
 	IN A, (C)									; Read the raster line LSB into A
-	CP _CF_SC_SYNC_SL
+	CP _SC_SYNC_SL_D192
 	JR NZ, .waitForScanline
 
 	RET											; ## END of the function ##

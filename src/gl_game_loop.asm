@@ -96,7 +96,7 @@ GameLoop000OnDisabledJoy
 
 	; Return if the joystick is about to enable
 	LD A, (ind.joyOffCnt)
-	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	CP _C_PL_BUMP_JOY_DEC_D1+1
 	RET C										; Return on the last off loop - this one is used to reset status and not to animate
 
 	; ##########################################
@@ -124,7 +124,7 @@ GameLoop000OnRocketTakingOff
 	RET NZ
 
 	LD A, L
-	CP _CF_RO_MOVE_STOP
+	CP _RO_MOVE_STOP_D120
 	RET NC
 
 	; ##########################################
@@ -297,7 +297,7 @@ GameLoop010nFlyingRocket
 	RET NZ
 
 	LD A, (gld.counter008FliFLop)
-	CP _GC_FLIP_ON
+	CP _GC_FLIP_ON_D1
 	JR Z, .flip
 
 	; ##########################################

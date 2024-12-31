@@ -19,7 +19,7 @@ HideGameBar
 
 	; ##########################################
 	; Remove gamebar from screen
-	LD B, _CF_GB_TILES
+	LD B, _C_GB_TILES_D13
 	CALL ti.CleanTiles
 
 	RET											; ## END of the function ##
@@ -72,14 +72,14 @@ PrintDebug
 	; ##########################################
 	LD B, 40
 	LD H, 0
-	LD A,  (bg.bgOffset)
+	LD A,  (bg.tmp)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (bg.tmp)
+	LD A, (bm.tmp)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 /*

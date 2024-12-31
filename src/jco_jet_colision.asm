@@ -80,7 +80,7 @@ CheckCollision
 	RET		
 .keepCheckingHorizontal	
 	LD A, L
-	LD B, _CF_ENP_MARG_HOR
+	LD B, _ENP_MARG_HOR_D12
 	CP B
 	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical
 	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision	
@@ -89,7 +89,7 @@ CheckCollision
 
 	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical
 	LD B, (IX + sr.SPR.Y)						; Y of the enemy
-	LD A, (jpo.jetY)								; Y of the Jetman
+	LD A, (jpo.jetY)							; Y of the Jetman
 
 	; Is Jemtan above or below the enemy?
 	CP B
@@ -138,7 +138,7 @@ EnemyColision
 
 	; It's flying, now check the collision
 	LD E, 0
-	LD D, _CF_ENP_MARG_VERT_KICK
+	LD D, _ENP_MARG_VERT_KICK_D25
 	CALL CheckCollision
 	CP COLLISION_YES
 	JR NZ, .noKicking
@@ -172,8 +172,8 @@ EnemyColision
 
 	; ################################
 	; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die
-	LD D, _CF_ENP_MARG_VERT_UP
-	LD E, _CF_ENP_MARG_VERT_LOW
+	LD D, _ENP_MARG_VERT_UP_D18
+	LD E, _ENP_MARG_VERT_LOW_D15
 	CALL CheckCollision
 	CP COLLISION_YES
 	RET NZ
@@ -255,10 +255,10 @@ JetInvincible
 	JR NZ, .blinkFast							; #invincibleCnt > 255 (H != 0) -> blink fast
 
 	LD A, L
-	CP _CF_INVINCIBLE_BLINK
-	JR NC, .blinkFast							; #invincibleCnt > #_CF_INVINCIBLE_BLINK -> blink fast
+	CP _INVINCIBLE_BLINK_D100
+	JR NC, .blinkFast							; #invincibleCnt > #_INVINCIBLE_BLINK_D100 -> blink fast
 
-	;  #invincibleCnt < #_CF_INVINCIBLE_BLINK -> blink slow (invincibility is almost over)
+	;  #invincibleCnt < #_INVINCIBLE_BLINK_D100 -> blink slow (invincibility is almost over)
 	LD A, (gld.counter004FliFLop)
 	JR .afterBlinkSet
 .blinkFast	
@@ -309,11 +309,11 @@ RipMove
 	JR .afterMove
 .moveLeft
 	; Move left
-	LD B, _CF_RIP_MOVE_X
+	LD B, _RIP_MOVE_X_D3
 	CALL jpo.IncJetXbyB
 .afterMove
 
-	LD B, _CF_RIP_MOVE_Y						; Going up
+	LD B, _RIP_MOVE_Y_D4						; Going up
 	CALL jpo.DecJetYbyB
 
 	; Decrement move counter

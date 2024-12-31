@@ -9,14 +9,14 @@
 ; Fill last two banks of layer 2 image with transparent color
 FillLevel2Image
 
-	NEXTREG _MMU_REG_SLOT7_H57, _CF_BIN_BGR_END_BANK-1
+	NEXTREG _MMU_REG_SLOT7_H57, _BIN_BGR_END_BANK_D27-1
 	LD HL, _RAM_SLOT7_START_HE000				; Start address of bank in slot 6
-	LD D, _COL_TRANSPARENT
+	LD D, _COL_TRANSPARENT_D0
 	CALL ut.FillBank
 
-	NEXTREG _MMU_REG_SLOT7_H57, _CF_BIN_BGR_END_BANK
+	NEXTREG _MMU_REG_SLOT7_H57, _BIN_BGR_END_BANK_D27
 	LD HL, _RAM_SLOT7_START_HE000				; Start address of bank in slot 6
-	LD D, _COL_TRANSPARENT
+	LD D, _COL_TRANSPARENT_D0
 	CALL ut.FillBank
 
 	RET											; ## END of the function ##
@@ -36,9 +36,9 @@ LoadLevel2Image
 
 	; ##########################################
 	; Copy image data from temp RAM into screen memory
-	NEXTREG _DC_REG_L2_BANK_H12, _CF_BM_16KBANK ; Layer 2 image (background) starts at 16k-bank 9 (default)
-	LD E, _CF_BIN_BGR_ST_BANK					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
-	LD B, _CF_BM_BANKS							; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4
+	NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
+	LD E, _BIN_BGR_ST_BANK_D18					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
+	LD B, _BM_BANKS_D10							; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4
 .slotLoop										; Each loop copies single bank, there are 10 iterations
 	PUSH BC
 	LD A, D
@@ -50,7 +50,7 @@ LoadLevel2Image
 	PUSH DE
 	LD HL, _RAM_SLOT6_START_HC000				; Source
 	LD DE, _RAM_SLOT7_START_HE000				; Destination
-	LD BC, _CF_BANK_BYTES
+	LD BC, _BANK_BYTES_D8192
 	LDIR
 	POP DE
 
@@ -63,7 +63,7 @@ LoadLevel2Image
 	RET											; ## END of the function ##
 
 xxx
-	INCBIN  "assets/l001_background.nxp", 0, _CF_BM_PAL_BYTES
+	INCBIN  "assets/l001_background.nxp", 0, _BM_PAL_BYTES_D512
 
 ;----------------------------------------------------------;
 ;                  #LoadLayer2Palette                      ;
@@ -83,7 +83,7 @@ LoadLayer2Palette
 	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start writing the palette from the first color, we will replace all 256 colors
 		
 	; Memory bank (8KiB) containing layer 2 palette data
-	NEXTREG _MMU_REG_SLOT6_H56, _CF_BIN_BGR_PAL_BANK
+	NEXTREG _MMU_REG_SLOT6_H56, _BIN_BGR_PAL_BANK_D46
 
 	; Copy 9 bit (2 bytes per color) palette
 	LD B, 255									; 256 colors (loop counter), palette has 512 bytes, but we read two bytes in one iteration
@@ -108,33 +108,40 @@ LoadLayer2Palette
 
 tmp byte 0
 ;----------------------------------------------------------;
-;                   #ReplaceImageLine                      ;
+;                   #HideImageLine                         ;
 ;----------------------------------------------------------;
+; Replaces line of the image with transparent color.
 ; Input:
 ;  - E:  Line number
-ReplaceImageLine
+HideImageLine
 
 	LD A, E
 	LD (tmp), A
 
 	; ##########################################
-	LD B, _CF_BM_BANKS
-.bankLoop
-	LD A, _CF_BIN_BGR_L1_ST_BANK - 1
-	ADD B
-	NEXTREG _MMU_REG_SLOT7_H57, A
+	LD B, _BM_BANKS_D10
+.bankLoop										; Loop from 10 (_BM_BANKS_D10) to 0
 
+	; We will iterate over 10 banks ascending from _BIN_BGR_ST_BANK_D18 to _BIN_BGR_END_BANK_D27.
+	; However, the loop starts at 10 (inclusive) and goes to 0 (exclusive)
+	LD A, _BIN_BGR_END_BANK_D27 + 1				; 27 + 1 - 10 = 18 -> _BIN_BGR_END_BANK_D27 + 1 - _BM_BANKS_D10 = _BIN_BGR_ST_BANK_D18
+	SUB B
+	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify dispalyed image
+
+	; Each bank contains lines, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the picture), 
+	; we have to set byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
 	LD HL, _RAM_SLOT7_START_HE000
 	LD D, 0
-	ADD HL, DE
+	ADD HL, DE									; HL poits at first line
 
 	; ##########################################
+	; Iterate over each picture line in the current bank. Each bank has 8*1024/256=32 lines
 	PUSH BC
 
-	LD B, 32
+	LD B, _BANK_BYTES_D8192/_BM_YRES_D256		; 8*1024/256=32
 .linesLoop
-	LD (HL), 10
-	ADD HL, 256
+	LD (HL), _COL_TRANSPARENT_D0
+	ADD HL, _BM_YRES_D256						; Move HL to the next line by adding 256 pixels
 	DJNZ .linesLoop
 	POP BC
 	

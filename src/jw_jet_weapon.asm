@@ -68,8 +68,8 @@ CheckHitEnemies
 	JR Z, .continue	
 	
 	; Enemy is visible, check colision with leaser beam
-	LD DE, (IX + sr.SPR.X)					; X of the enemy
-	LD C, (IX + sr.SPR.Y)					; Y of the enemy
+	LD DE, (IX + sr.SPR.X)						; X of the enemy
+	LD C, (IX + sr.SPR.Y)						; Y of the enemy
 
 	PUSH IX
 	CALL ShotsColision
@@ -127,26 +127,26 @@ ShotsColision
 	SBC DE, HL
 	CALL ut.AbsDE
 
-	; We will compare E with _CF_FIRE_THICKNESS but first ensure that D is 0. Otherwise, the following can happen: DE = 300, HL = 30. 
+	; We will compare E with _FIRE_THICKNESS_D10 but first ensure that D is 0. Otherwise, the following can happen: DE = 300, HL = 30. 
 	; The distance is 270. However, 270 occupies two bytes: D=1, E=14. If we compare only E and ignore that D is 1, we will have a hit!
 	XOR A										; Set A to 0
 	CP D
 	JR NZ, .continueShotsLoop
 
-	LD A, _CF_FIRE_THICKNESS
+	LD A, _FIRE_THICKNESS_D10
 	CP E										; SUB result is < 256, we can ignore H
-	JR C, .continueShotsLoop					; Jump if A(#_CF_FIRE_THICKNESS) < L
+	JR C, .continueShotsLoop					; Jump if A(#_FIRE_THICKNESS_D10) < L
 	
 	; We are here because the shot is horizontal with the enemy, now check the vertical match
 	LD A, (IX + sr.SPR.Y)						; A holds Y from the shot
 
-	; Subtracts C from A and check whether the result is less than or equal to #_CF_FIRE_THICKNESS
+	; Subtracts C from A and check whether the result is less than or equal to #_FIRE_THICKNESS_D10
 	SUB C
 	CALL ut.AbsA
 	LD D, A
-	LD A, _CF_FIRE_THICKNESS
+	LD A, _FIRE_THICKNESS_D10
 	CP D
-	JR C, .continueShotsLoop					; Jump if A(#_CF_FIRE_THICKNESS) < D
+	JR C, .continueShotsLoop					; Jump if A(#_FIRE_THICKNESS_D10) < D
 
 	; We have hit! Hide shot and return
 	CALL sr.SetSpriteId
@@ -295,7 +295,7 @@ Fire
 
 	; Set X coordinate for laser beam
 	LD HL, (jpo.jetX)
-	ADD HL, _CF_ADJUST_FIRE_X
+	ADD HL, _FIRE_ADJUST_X_D10
 	LD (IX + sr.SPR.X), HL
 
 	JR .afterMoving
@@ -307,7 +307,7 @@ Fire
 
 	; Set X coordinate for laser beam
 	LD HL, (jpo.jetX)
-	ADD HL, -_CF_ADJUST_FIRE_X
+	ADD HL, -_FIRE_ADJUST_X_D10
 	LD (IX + sr.SPR.X), HL
 .afterMoving
 
@@ -315,7 +315,7 @@ Fire
 
 	; Set Y coordinate for laser beam
 	LD A, (jpo.jetY)
-	ADD a, _CF_ADJUST_FIRE_Y
+	ADD a, _FIRE_ADJUST_Y_D4
 	LD (IX + sr.SPR.Y), A
 
 	; Setup laser beam pattern, IX already points to the right memory address

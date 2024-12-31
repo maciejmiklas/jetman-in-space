@@ -42,7 +42,7 @@ platformsSize 			BYTE 3
 PLATFORM_WALK_INCATIVE	= $FF					; Not on any plaftorm.
 platformWalkNumber		BYTE PLATFORM_WALK_INCATIVE
 
-joyOffBump				BYTE _CF_PL_BUMP_JOY_OFF; The amount of pixels to bump off the platform decreases with each hit
+joyOffBump				BYTE _PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decreases with each hit
 
 ;----------------------------------------------------------;
 ;                #JetPlatformHitOnJoyMove                  ;
@@ -120,10 +120,10 @@ JetPlatformHitOnJoyMove
 	; When Jetman bumps away from the platform, he has to move left at least one pixel to compensate for Joystick's movement,
 	; or a few pixels to really bump off
 	LD A, (joyOffBump)
-	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	CP _C_PL_BUMP_JOY_DEC_D1+1
 	JR C, .bumpLeftOnPixel
 
-	LD B, _CF_PL_BUMP_X
+	LD B, _PL_BUMP_X_D4
 	CALL jpo.DecJetXbyB
 	RET
 .bumpLeftOnPixel
@@ -151,10 +151,10 @@ JetPlatformHitOnJoyMove
 
 	; When Jetman bumps away from the platform, he has to move rigth at least one pixel to compensate for Joystick's movement or a few pixels to really bump off
 	LD A, (joyOffBump)
-	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	CP _C_PL_BUMP_JOY_DEC_D1+1
 	JR C, .bumpRightOnPixel
 
-	LD B, _CF_PL_BUMP_X
+	LD B, _PL_BUMP_X_D4
 	CALL jpo.IncJetXbyB
 	RET
 .bumpRightOnPixel
@@ -182,10 +182,10 @@ JetPlatformHitOnJoyMove
 
 	; When Jetman bumps away from the platform, he has to move down at least one pixel to compensate for Joystick's movement or a few pixels to really bump off
 	LD A, (joyOffBump)
-	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	CP _C_PL_BUMP_JOY_DEC_D1+1
 	JR C, .bumpDonwOnPixel
 
-	LD B, _CF_PL_BUMP_Y
+	LD B, _PL_BUMP_Y_D4
 	CALL jpo.IncJetYbyB
 	RET
 
@@ -204,7 +204,7 @@ ResetJoyOffBump
 	
 	; Do not reset if already done
 	LD A, (joyOffBump)
-	CP _CF_PL_BUMP_JOY_OFF
+	CP _PL_BUMP_JOY_D15
 	RET Z
 
 	; Reset the joystick bump only if Jetman is away from the platform,  or it walks on it
@@ -230,7 +230,7 @@ ResetJoyOffBump
 
 .reset
 	; Jetman far from the platform - reset
-	LD A, _CF_PL_BUMP_JOY_OFF
+	LD A, _PL_BUMP_JOY_D15
 	LD (joyOffBump), A
 	
 	RET											; ## END of the function ##
@@ -250,10 +250,10 @@ JetHitsPlatfrom
 	; ##########################################
 	; Decrement joystick off time with every bump
 	
-	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	CP _C_PL_BUMP_JOY_DEC_D1+1
 	RET C										; Do not allow #joyOffBump to reach 0, otherwise Jemtan will go troug the obsticle
 	
-	SUB _CF_PL_BUMP_JOY_OFF_DEC
+	SUB _C_PL_BUMP_JOY_DEC_D1
 	LD (joyOffBump), A
 
 	RET											; ## END of the function ##
@@ -336,10 +336,10 @@ MoveJetOnFallingFromPlatform
 	JR NZ, .afterFallingRight
 
 	; Yes, Jetman is falling from the platform
-	LD B, _CF_PL_FALL_X
+	LD B, _PL_FALL_X_D2
 	CALL jpo.IncJetXbyB
 
-	LD B, _CF_PL_FALL_Y
+	LD B, _PL_FALL_Y_D4
 	CALL jpo.IncJetYbyB
 
 	RET											; Do not check falling left  because Jetman is already falling
@@ -354,7 +354,7 @@ MoveJetOnFallingFromPlatform
 	CALL jpo.DecJetX
 	CALL jpo.DecJetX
 	
-	LD B, _CF_PL_FALL_Y
+	LD B, _PL_FALL_Y_D4
 	CALL jpo.IncJetYbyB
 
 	RET											; ## END of the function ##
@@ -498,7 +498,7 @@ JetFallingFromPlatform
 
 	; Does Jetman fall from the platform on the left side?
 	LD HL, (jpo.jetX)							; HL = X postion of the Jetman
-	LD DE, _CF_PL_FALL_LX
+	LD DE, _PL_FALL_LX_D8
 	ADD HL, DE
 	LD DE, (IX + PLA.X_LEFT)					; DE = start of the platform (left side)
 	SBC HL, DE									; HL - DE
@@ -506,7 +506,7 @@ JetFallingFromPlatform
 
 	; Does Jetman fall from the platform on the right side?
 	LD DE, (jpo.jetX)							; DE = X postion of the Jetman	
-	LD HL, _CF_PL_FALL_RX
+	LD HL, _C_PL_FALL_RX_N1
 	ADD DE, HL
 	LD HL, (IX + PLA.X_RIGHT)					; HL = start of the platform (left side)
 	SBC HL, DE									; HL - DE
@@ -531,8 +531,8 @@ JetFallingFromPlatform
 	LD A, js.SDB_T_KF
 	CALL js.ChangeJetSpritePattern
 
-	; Disable joystick, because Jetman loses control for #_CF_PL_FALL_JOY_OFF frames
-	LD A, _CF_PL_FALL_JOY_OFF
+	; Disable joystick, because Jetman loses control for #_PL_FALL_JOY_OFF_D10 frames
+	LD A, _PL_FALL_JOY_OFF_D10
 	LD (ind.joyOffCnt), A
 
 .afterFalling
@@ -780,7 +780,7 @@ LoadSpriteYtoA
 ;                 #CheckPlatformHitTop                     ;
 ;----------------------------------------------------------;
 ; Check the collision with the top side of the platform.
-; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #_CF_PL_HIT_MARGIN] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP]
+; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #_PL_HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP]
 ; Input:
 ;  - HL: 	Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision. 
 ;  - IX:	Pointer to #PLAM
@@ -794,12 +794,12 @@ PL_COL_RET_A_YES		= 1						; Colision
 CheckPlatformHitTop
 
 	; ##########################################
-	; Check [#PLA.Y_TOP - #PLAM.Y_TOP + #_CF_PL_HIT_MARGIN] > [sprite Y]
+	; Check [#PLA.Y_TOP - #PLAM.Y_TOP + #_PL_HIT_MARGIN_D5] > [sprite Y]
 	LD A, (IY + PLA.Y_TOP)
-	LD C, _CF_PL_HIT_MARGIN
+	LD C, _PL_HIT_MARGIN_D5
 	ADD C
 	SUB (IX + PLAM.Y_TOP)
-	LD C, A										; C holds [#PLA.Y_TOP + #_CF_PL_HIT_MARGIN]
+	LD C, A										; C holds [#PLA.Y_TOP + #_PL_HIT_MARGIN_D5]
 
 	CALL LoadSpriteYtoA							; A holds current sprite Y position
 
@@ -834,7 +834,7 @@ CheckPlatformHitTop
 ;               #CheckPlatformHitBottom                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the bottom side of the platform.
-; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_CF_PL_HIT_MARGIN]
+; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_PL_HIT_MARGIN_D5]
 ; Input:
 ;  - HL: 	Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision. 
 ;  - IX:	Pointer to #PLAM
@@ -859,12 +859,12 @@ CheckPlatformHitBottom
 .keepChecking
 
 	; ##########################################
-	; Check [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_CF_PL_HIT_MARGIN]
+	; Check [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_PL_HIT_MARGIN_D5]
 
 	LD A, (IY + PLA.Y_BOTTOM)
 	ADD (IX + PLAM.Y_BOTTOM)
-	SUB _CF_PL_HIT_MARGIN
-	LD C, A										; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_CF_PL_HIT_MARGIN]
+	SUB _PL_HIT_MARGIN_D5
+	LD C, A										; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_PL_HIT_MARGIN_D5]
 
 	CALL LoadSpriteYtoA							; A holds current sprite Y position
 
@@ -882,7 +882,7 @@ CheckPlatformHitBottom
 ;                 #CheckPlatformHitLeft                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the left side of the platform.
-; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #_CF_PL_HIT_MARGIN] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT]
+; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #_PL_HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT]
 ; Input:
 ;  - HL: 	Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision. 
 ;  - IX:	Pointer to #PLAM
@@ -892,13 +892,13 @@ CheckPlatformHitBottom
 ; Modifies: BC, DE
 CheckPlatformHitLeft
 
-	; Check [#PLA.X_LEFT - #PLAM.X_LEFT + #_CF_PL_HIT_MARGIN] > [sprite X]
+	; Check [#PLA.X_LEFT - #PLAM.X_LEFT + #_PL_HIT_MARGIN_D5] > [sprite X]
 	LD DE, (IY + PLA.X_LEFT)
-	LD BC, _CF_PL_HIT_MARGIN
+	LD BC, _PL_HIT_MARGIN_D5
 	ADD DE, BC
 
 	LD BC, (IX + PLAM.X_LEFT)
-	SUB DE, BC									; DE contains [#PLA.X_LEFT - #PLAM.X_LEFT + #_CF_PL_HIT_MARGIN] 
+	SUB DE, BC									; DE contains [#PLA.X_LEFT - #PLAM.X_LEFT + #_PL_HIT_MARGIN_D5] 
 
 	; Load (HL) into HL (sprite X), as preperation for SBC
 	PUSH HL
@@ -938,7 +938,7 @@ CheckPlatformHitLeft
 ;                #CheckPlatformHitRight                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the left side of the platform.
-; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #_CF_PL_HIT_MARGIN]
+; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #_PL_HIT_MARGIN_D5]
 ; Input:
 ;  - HL: 	Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision. 
 ;  - IX:	Pointer to #PLAM
@@ -967,13 +967,13 @@ CheckPlatformHitRight
 .keepChecking
 
 	; ##########################################
-	; Check [sprite X] > [#PLA.X_RIGHT  + PLAM.X_RIGHT- #_CF_PL_HIT_MARGIN]
+	; Check [sprite X] > [#PLA.X_RIGHT  + PLAM.X_RIGHT- #_PL_HIT_MARGIN_D5]
 	PUSH HL
 
 	LD BC, (HL)									; BC contains sprite X
 
 	LD HL, (IY + PLA.X_RIGHT)
-	LD DE, _CF_PL_HIT_MARGIN
+	LD DE, _PL_HIT_MARGIN_D5
 	SBC HL, DE
 	LD DE, (IX + PLAM.X_RIGHT)
 	ADD HL, DE 									; HL contains [#PLA.X_RIGHT  + PLAM.X_RIGHT- #PLAM.X_RIGHT]

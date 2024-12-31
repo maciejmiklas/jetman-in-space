@@ -328,7 +328,7 @@ MoveEnemy
 ; Modifies: A, BC
 MoveEnemyX
 
-	LD D, MOVEX_SETUP						; D contains configuration for MoveX
+	LD D, MOVEX_SETUP							; D contains configuration for MoveX
 	BIT ENP_SETUP_DEPLOY_BIT, (IY + ENP.SETUP)
 	JR NZ, .deployedLeft						; Jump if bit is 0 -> deploy left
 
@@ -374,7 +374,7 @@ MoveEnemies
 
 	; Ignore this sprite if it's hidden
 	LD A, (IX + sr.SPR.STATE)
-	AND sr.SPRITE_ST_VISIBLE						; Reset all bits but visibility
+	AND sr.SPRITE_ST_VISIBLE					; Reset all bits but visibility
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden)
 
@@ -535,12 +535,12 @@ RespownEnemy
 	JR NZ, .deployLeft							; Jump if bit is 0 -> deploy left
 
 	; Deploy right
-	LD BC, _CF_GSC_X_MAX
+	LD BC, _GSC_X_MAX_D315
 	SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + sr.SPR.STATE)	; Mirror sprite, because it deploys on the right and moves to the left side 
 	JR .afterLR
 .deployLeft	
 	; Deploy left
-	LD BC, _CF_GSC_X_MIN
+	LD BC, _GSC_X_MIN_D0
 
 .afterLR
 	LD (IX + sr.SPR.X), BC

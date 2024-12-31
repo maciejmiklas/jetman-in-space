@@ -56,14 +56,14 @@ DecJetX
 	LD BC, (jpo.jetX)	
 	DEC BC
 
-	; If X == 0 (_CF_GSC_X_MIN) then set it to 315. X == 0 when B and C are 0
+	; If X == 0 (_GSC_X_MIN_D0) then set it to 315. X == 0 when B and C are 0
 	LD A, B
-	CP _CF_GSC_X_MIN							; If B > 0 then X is also > 0
+	CP _GSC_X_MIN_D0							; If B > 0 then X is also > 0
 	JR NZ, .afterResetX
 	LD A, C
-	CP _CF_GSC_X_MIN							; If C > 0 then X is also > 0
+	CP _GSC_X_MIN_D0							; If C > 0 then X is also > 0
 	JR NZ, .afterResetX
-	LD BC, _CF_GSC_X_MAX						; X == 0 (both A and B are 0) -> set X to 315
+	LD BC, _GSC_X_MAX_D315						; X == 0 (both A and B are 0) -> set X to 315
 .afterResetX
 	LD (jpo.jetX), BC
 

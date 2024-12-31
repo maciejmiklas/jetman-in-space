@@ -102,15 +102,15 @@ EnemyHitsJet
 RespawnJet
 
 	; Set respawn coordinates
-	LD BC, _CF_JET_RESPOWN_X
+	LD BC, _JET_RESPOWN_X_D100
 	LD (jpo.jetX), BC
 
-	LD A, _CF_JET_RESPOWN_Y
+	LD A, _JET_RESPOWN_Y_D217
 	LD (jpo.jetY), A
 
 	CALL jt.SetJetStateRespown
 
-	LD HL, _CF_INVINCIBLE
+	LD HL, _INVINCIBLE_D400
 	CALL jco.MakeJetInvincible
 
 	CALL bg.UpdateBackgroundOnJetmanMove
@@ -154,7 +154,7 @@ MovementInactivity
 
 	; Jetman is in the air, not hovering, but is he not moving long enough?
 	LD A, (jm.jetInactivityCnt)
-	CP _CF_HOVER_START
+	CP _HOVER_START_D250
 	JR NZ, .afterHoover							; Jetman is not moving, by sill not long enough to start hovering
 
 	; Jetamn starts to hover!
@@ -179,7 +179,7 @@ MovementInactivity
 	; ##########################################
 	; Jetman is on the ground and does not move, but is he not moving long enough?
 	LD A, (jm.jetInactivityCnt)
-	CP _CF_STAND_START
+	CP _STAND_START_D30
 	JR NZ, .afterStand							; Jump if Jetman stands for too short to trigger standing
 	
 	; Transtion from walking to standing
@@ -191,7 +191,7 @@ MovementInactivity
 	RET
 .afterStand
 
-	; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < _CF_STAND_START 
+	; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < _STAND_START_D30 
 	; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.	
 	LD A, (jt.jetGnd)
 	CP jt.GND_WALK
@@ -201,7 +201,7 @@ MovementInactivity
 	RET Z										; Jump already j-standing (just standing - for a short time)
 
 	LD A, (jm.jetInactivityCnt)
-	CP _CF_JSTAND_START
+	CP _JSTAND_START_D100
 	RET NZ										; Jump if Jetman stands for too short to trigger j-standing
 
 	LD A, jt.GND_JSTAND

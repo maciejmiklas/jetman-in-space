@@ -188,13 +188,13 @@ JoyFire
 	CALL jw.Fire
 	
 	LD E, 30
-	CALL bm.ReplaceImageLine
+	CALL bm.HideImageLine
 
 	LD E, 60
-	CALL bm.ReplaceImageLine
+	CALL bm.HideImageLine
 
 	LD E, 80
-	CALL bm.ReplaceImageLine
+	CALL bm.HideImageLine
 
 	RET											; ## END of the function ##
 

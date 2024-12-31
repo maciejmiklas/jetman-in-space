@@ -7,9 +7,9 @@
 ; Timemap for single screen at 320x200 requires 2650 bytes:
 ; - 320 = 8*40 - 40 horizontal tiles
 ; - 256 = 8*32 - 32 vertical tiles
-; Each tile occupies 2 bytes (tile offset and palette offset): 40*32*2 = 2560 bytes
+; Each tile occupies 2 bytes (tile offset and palette offset): 40*32*2 = 2560 bytes.
 ;
-; Size of a single tile definition (tile sprite): 8x8 pixels, but each has 4 bit pallte: 8*8/2 = 32 bytes
+; Size of a single tile definition (tile sprite): 8x8 pixels, but each has 4 bit pallte: 8*8/2 = 32 bytes.
 ;
 ; Memory organization:
 ; - $4000 - $5AFF - ULA
@@ -23,7 +23,7 @@ ShakeTilemap
 
 	LD A, (gld.counter002FliFLop)				; Oscilates beetwen 1 and 0
 	LD D, A
-	LD E, _CF_SC_SHAKE_BY
+	LD E, _SC_SHAKE_BY_D2
 	MUL D, E
 	LD A, E
 	NEXTREG _DC_REG_TI_X_LSB_H30, A				; X tile offset
@@ -53,8 +53,8 @@ ResetTilemapOffset
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
 PrintText
 
-	LD HL, _CF_TI_START							; HL points to screen memory containing tilemap 
-	DEC HL										; TODO why (verify _CF_TI_START)?
+	LD HL, _TI_START_H5B00						; HL points to screen memory containing tilemap 
+	DEC HL										; TODO why (verify _TI_START_H5B00)?
 	
 	; HL will point to the memory location containing the data of the first character (tile)
 	PUSH DE
@@ -67,9 +67,9 @@ PrintText
 .loop
 	LD A, (DE)									; Load current char
 	INC DE										; Move to the next char 
-	ADD A, -_CF_TX_ASCII_OFFSET					; Remove ASCII offset as tiles begin with 0
+	ADD A, -_TX_ASCII_OFFSET_D34					; Remove ASCII offset as tiles begin with 0
 
-	LD (HL), _CF_TX_PALETTE						; Set palette for tile
+	LD (HL), _TX_PALETTE_D0						; Set palette for tile
 	INC HL
 	LD (HL), A									; Set character for tile
 	INC HL
@@ -83,14 +83,14 @@ PrintText
 ;----------------------------------------------------------;
 ;  - B:		Amount of tiles to clean 
 CleanTiles
-	LD HL, _CF_TI_START							; HL points to screen memory containing tilemap 
-	DEC HL										; TODO why (verify _CF_TI_START)?
+	LD HL, _TI_START_H5B00							; HL points to screen memory containing tilemap 
+	DEC HL										; TODO why (verify _TI_START_H5B00)?
 
 	; ##########################################
-	LD A, _CF_TI_EMPTY
+	LD A, _TI_EMPTY_D57
 .loop
 	
-	LD (HL), _CF_TX_PALETTE						; Set palette for tile
+	LD (HL), _TX_PALETTE_D0						; Set palette for tile
 	INC HL
 	
 	LD (HL), A									; Set tile ind.
@@ -115,8 +115,8 @@ LoadTiles
 
 	; ##########################################
 	; Tell harware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5
-	NEXTREG _TI_MAP_ADR_H6E, _CF_TI_OFFSET		; MSB of tilemap in bank 5
-	NEXTREG _TI_DEF_ADR_H6F, _CF_TID_OFFSET		; MSB of tilemap definitions (sprites)
+	NEXTREG _TI_MAP_ADR_H6E, _TI_OFFSET		; MSB of tilemap in bank 5
+	NEXTREG _TI_DEF_ADR_H6F, _TID_OFFSET		; MSB of tilemap definitions (sprites)
 
 	; ##########################################
 	; Setup palette
@@ -126,14 +126,14 @@ LoadTiles
 
 	; ##########################################
 	; Copy tilemap to expected memory
-	LD DE, _CF_TI_START
+	LD DE, _TI_START_H5B00
 	LD HL, db.tilemapBin						; Addreess of tilemap in memory
 	LD BC, db.tilemapBinLength	
 	LDIR
 
 	; ##########################################
 	; Copy tile definitions to expected memory
-	LD DE, _CF_TID_START
+	LD DE, _TID_START_H6500
 	LD HL, db.tileDefBin						; Address of tiles in memory
 	LD BC, db.tileDefBinLength					; Number of bytes to copy
 	LDIR	
@@ -149,7 +149,7 @@ LoadTiles
 LoadTilemapPalette
 
 	; Black for tilemap transparency
-	NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_TRANSPARENT
+	NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_TRANSPARENT_D0
 
 	; Bits
 	;  - 0: 1 = Enabe ULANext mode
@@ -173,10 +173,10 @@ LoadTilemapPalette
 ;----------------------------------------------------------;
 SetTilesClipFull
 
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X1
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X2
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y1
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_FULL_Y2-32
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X1_D0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X2_D159
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_Y1_D0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_FULLY2_D255-32
 
 	RET											; ## END of the function ##
 
@@ -185,10 +185,10 @@ SetTilesClipFull
 ;----------------------------------------------------------;
 SetTilesClipRocket
 
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X1
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_X2
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_Y1
-	NEXTREG _CF_TI_CLIP_WINDOW_H1B, _CF_TI_CLIP_ROCKET_Y2
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X1_D0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X2_D159
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_Y1_D0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_ROCKETY2_D247
 
 	RET											; ## END of the function ##	
 

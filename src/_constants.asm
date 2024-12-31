@@ -70,7 +70,7 @@ _DC_REG_CONTROL1_H69	= $69
 ;  - 3-0: Palette offset (0 after soft reset)
 _DC_REG_LA2_H70			= $70
 
-; Selects colour index that will be read or written (_DC_REG_LA2_PAL_VAL_H44)
+; Selects colour index that will be read or written (_DC_REG_LA2_PAL_VAL_H44).
 _DC_REG_LA2_PAL_IDX_H40	= $40
 
 ; Palette Value (8 bit colour)
@@ -273,7 +273,7 @@ _SPR_PATTERN_HIDE		= %00000000
 ;  3rd write = Y1 position
 ;  4rd write = Y2 position
 ;  The values are 0,159,0,255 after a Reset
-_CF_TI_CLIP_WINDOW_H1B		= $1B
+_C_TI_CLIP_WINDOW_H1B	= $1B
 
 ; Tilemap Offset X MSB
 ; bits 7-2 = Reserved, must be 0
@@ -335,15 +335,15 @@ _DMA_PORT_H6B			= $6B					; Datagear DMA Port in zxnDMA mode, https://wiki.specn
 ;                        Colors                            ;
 ;----------------------------------------------------------;
 _BORDER_IO_HFE			= $FE
-_COL_BLACK				= 0
-_COL_BLUE				= 1
-_COL_RED				= 2
-_COL_MAGENTA			= 3
-_COL_GREEN				= 4
-_COL_CYAN				= 5
-_COL_YELLOW				= 6
-_COL_WHITE				= 7
-_COL_TRANSPARENT		= 0
+_COL_BLACK_D0			= 0
+_COL_BLUE_D1			= 1
+_COL_RED_D2				= 2
+_COL_MAGENTA_D3			= 3
+_COL_GREEN_D4			= 4
+_COL_CYAN_D5			= 5
+_COL_YELLOW_D6			= 6
+_COL_WHITE_D7			= 7
+_COL_TRANSPARENT_D0		= 0
 
 ;----------------------------------------------------------;
 ;                     Input processing                     ;
@@ -370,228 +370,230 @@ _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800
 
 ; ##############################################
 ; Common return types
-_CF_RET_ON				= 1
-_CF_RET_OFF				= 2
-_CF_BANK_BYTES			= 8*1024				; 8192
+_RET_ON_D1				= 1
+_RET_OFF_D0				= 2
+_BANK_BYTES_D8192		= 8*1024
 
 ; ##############################################
 ; Joystick
-_CF_PL_JOY_DELAY				= 1					; Probe joystick every few loops, 1 for each loop, 0 is not supported
+_PL_JOY_DELAY			= 1					; Probe joystick every few loops, 1 for each loop, 0 is not supported
 
 ; ##############################################
 ; Margins for collision Jetman - enemy
-_CF_ENP_MARG_HOR		= 12
-_CF_ENP_MARG_VERT_UP	= 18
-_CF_ENP_MARG_VERT_LOW	= 15
-_CF_ENP_MARG_VERT_KICK	= 25
+_ENP_MARG_HOR_D12		= 12
+_ENP_MARG_VERT_UP_D18	= 18
+_ENP_MARG_VERT_LOW_D15	= 15
+_ENP_MARG_VERT_KICK_D25	= 25
 
 ; ##############################################
 ; Jetman invincibility 
-_CF_INVINCIBLE 			= 400						; Number of loops to keep Jetman invincible
-_CF_INVINCIBLE_BLINK	= 100
+_INVINCIBLE_D400 		= 400						; Number of loops to keep Jetman invincible
+_INVINCIBLE_BLINK_D100	= 100
 
 ; ##############################################
 ; Start times to change animations
-_CF_HOVER_START			= 250
-_CF_STAND_START			= 30
-_CF_JSTAND_START		= 100
+_HOVER_START_D250		= 250
+_STAND_START_D30		= 30
+_JSTAND_START_D100		= 100
 
 ; ##############################################
 ; Platform
-_CF_PL_FALL_JOY_OFF		= 10					; Disable the joystick for a few frames because Jetman is falling from the platform
-_CF_PL_FALL_Y			= 4						; Amount of pixels to move Jetman down when falling from the platform
-_CF_PL_FALL_X			= 2
+_PL_FALL_JOY_OFF_D10	= 10					; Disable the joystick for a few frames because Jetman is falling from the platform
+_PL_FALL_Y_D4			= 4						; Amount of pixels to move Jetman down when falling from the platform
+_PL_FALL_X_D2			= 2
 
-_CF_PL_BUMP_JOY_OFF		= 15					; Disable the joystick for a few frames because Jetman is bumping into the platform
-_CF_PL_BUMP_JOY_OFF_DEC	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value
-_CF_PL_BUMP_Y			= 4						; Amount of pixels to move Jetman down when hitting platform from below
-_CF_PL_BUMP_X			= 4
+_PL_BUMP_JOY_D15		= 15					; Disable the joystick for a few frames because Jetman is bumping into the platform
+_C_PL_BUMP_JOY_DEC_D1	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value
+_PL_BUMP_Y_D4			= 4						; Amount of pixels to move Jetman down when hitting platform from below
+_PL_BUMP_X_D4			= 4
 
 ; Compensation for height of Jetman's sprite to fall from the platform
-_CF_PL_FALL_LX			= 8
-_CF_PL_FALL_RX			= -1
+_PL_FALL_LX_D8			= 8
+_C_PL_FALL_RX_N1		= -1
 
 ; ##############################################
 ; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
-_CF_ADJUST_FIRE_X		= 10			
-_CF_ADJUST_FIRE_Y		= 4
-
-; ##############################################
-; Fire collistion
-_CF_FIRE_THICKNESS		= 10
+_FIRE_ADJUST_X_D10		= 10			
+_FIRE_ADJUST_Y_D4		= 4
+_FIRE_THICKNESS_D10		= 10
 
 ; ##############################################
 ; Rocket 
-_CF_RO_DROP_NEXT		= 5
-_CF_RO_DROP_H			= 220					; Jetman has to be above the rocket to drop the element, 170 > Y >10
-_CF_RO_FLAME_OFFSET		= 16
-_CF_RO_DOWN_SPR_ID		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel
-_CF_RO_SPR_PAT_READY1	= 60					; Once the rocket is ready, it will start blinking using #_CF_RO_SPR_PAT_READY1 and #_CF_RO_SPR_PAT_READY2
-_CF_RO_SPR_PAT_READY2	= 61
-_CF_RO_EL_LOW			= 1
-_CF_RO_EL_MID			= 2
-_CF_RO_EL_TOP			= 3
-_CF_RO_EL_TANK_1		= 4
-_CF_RO_EL_TANK_2		= 5
-_CF_RO_EL_TANK_3		= 6
+_RO_DROP_NEXT_D5		= 5
+_RO_DROP_H_D220			= 220					; Jetman has to be above the rocket to drop the element, 170 > Y >10
+_RO_FLAME_OFFSET_D16	= 16
+_RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel
+_RO_SPR_PAT_READY1_D60	= 60					; Once the rocket is ready, it will start blinking using #_RO_SPR_PAT_READY1_D60 and #_RO_SPR_PAT_READY2_D61
+_RO_SPR_PAT_READY2_D61	= 61
+_RO_EL_LOW_D1			= 1
+_RO_EL_MID_D2			= 2
+_RO_EL_TOP_D3			= 3
+_RO_EL_TANK1_D4			= 4
+_RO_EL_TANK2_D5			= 5
+_RO_EL_TANK3_D6			= 6
 
-_CF_RO_PICK_MARG_X		= 8
-_CF_RO_PICK_MARG_Y		= 16
-_CF_RO_CARRY_ADJUST_Y	= 10
-_CF_RO_EXPLODE_Y_HI		= 4						; HI byte from #starsDistance to explode rocket,1150 = $47E
-_CF_RO_EXPLODE_Y_LO		= $7E					; LO byte from #starsDistance to explode rocket
-_CF_RO_MOVE_STOP		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position
-_CF_RO_FLY_DELAY		= 8
-_CF_RO_FLY_DELAY_DIST	= 5
-_CF_RO_EXHAUST_SPR_ID	= 43					; Sprite ID for exhaust
+_RO_PICK_MARGX_D8		= 8
+_RO_PICK_MARGY_D16		= 16
+_RO_CARRY_ADJUSTY_D10	= 10
+_RO_EXPLODE_Y_HI_H4		= 4						; HI byte from #starsDistance to explode rocket,1150 = $47E
+_RO_EXPLODE_Y_LO_H7E	= $7E					; LO byte from #starsDistance to explode rocket
+_RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position
+_RO_FLY_DELAY_D8		= 8
+_RO_FLY_DELAY_DIST_D5	= 5
+_RO_EXHAUST_SPRID_D43	= 43					; Sprite ID for exhaust
 
 ; ##############################################
 ; Game screen 
-_CF_GSC_X_MIN			= 0
-_CF_GSC_X_MAX			= 315
-_CF_GSC_Y_MIN			= 15
-_CF_GSC_Y_MAX			= 232
-_CF_GSC_JET_GND			= 217					; Ground level from Jetman's sprite perspective
+_GSC_X_MIN_D0			= 0
+_GSC_X_MAX_D315			= 315
+_GSC_Y_MIN_D15			= 15
+_GSC_Y_MAX_D232			= 232
+_GSC_JET_GND_D217		= 217					; Ground level from Jetman's sprite perspective
 
 ; ##############################################
 ; Screen 
-_CF_SC_SYNC_SL			= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
-_CF_SC_SHAKE_BY			= 2						; Number of pixels to move the screen by shaking
-_CF_SC_3MAX_X			= 319
-_CF_SC_3MAX_Y			= 255
-_CF_SC_2MAX_X			= 255
-_CF_SC_2MAX_Y			= 191
-_CF_SC_L2_MAX_OFFSET	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17
+_SC_SYNC_SL_D192		= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
+_SC_SHAKE_BY_D2			= 2						; Number of pixels to move the screen by shaking
+
+_SC_RESX_D320			= 320
+_SC_RESX1_D319			= _SC_RESX_D320 - 1
+
+_SC_RESY_D256			= 256
+_SC_RESY1_D255			= _SC_RESY_D256 -1
+
+_SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17
 
 ; Plaftorm 
-_CF_PL_HIT_MARGIN		= 5	
+_PL_HIT_MARGIN_D5		= 5	
 
 ; ##############################################
 ; Tilemap
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3. 
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00
-_CF_TI_START	= _ULA_COLOR_ENND_H5AFF + 1	; Start of tilemap
-	ASSERT _CF_TI_START >= _RAM_SLOT2_START_H4000
-	ASSERT _CF_TI_START <= _RAM_SLOT3_END_H7FFF
+_TI_START_H5B00	= _ULA_COLOR_ENND_H5AFF + 1	; Start of tilemap
+	ASSERT _TI_START_H5B00 >= _RAM_SLOT2_START_H4000
+	ASSERT _TI_START_H5B00 <= _RAM_SLOT3_END_H7FFF
 
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-_CF_TI_OFFSET	= (_CF_TI_START - _RAM_SLOT2_START_H4000) >> 8
+_TI_OFFSET	= (_TI_START_H5B00 - _RAM_SLOT2_START_H4000) >> 8
 
-_CF_TI_PIXELS			= 8						; Size of a single tile in pixels
-_CF_TI_GND				= 16					; The thickness of the ground (tilemap)
-_CF_TI_H_TILES			= 320/8					; 40 horizontal tiles
-_CF_TI_H_BYTES			= _CF_TI_H_TILES * 2	; 320/8*2 = 80 bytes pro row -> silgle tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes
-_CF_TI_V_TILES			= 256/8					; 256/8 = 32 rows (256 - vertival screen size)
-_CF_TI_V_BYTES			= _CF_TI_V_TILES * 2	; 64 bytes pro row
-_CF_TI_EMPTY			= 57					; Empty tile
-_CF_TI_MAP_BYTES		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
+_TI_PIXELS_D8			= 8						; Size of a single tile in pixels
+_TI_GND_D16				= 16					; The thickness of the ground (tilemap)
+_TI_HTILES_D40			= 320/8					; 40 horizontal tiles
+
+; 320/8*2 = 80 bytes pro row -> silgle tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes
+_TI_H_BYTES_D80			= _TI_HTILES_D40 * 2
+
+_TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertival screen size)
+_TI_VBYTES_D64			= _TI_VTILES_D32 * 2	; 64 bytes pro row
+_TI_EMPTY_D57			= 57					; Empty tile
+_TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 
 ; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
 ; each taking 4x32 bytes = 128bytes. We can assign to the whole tile sprites file 6910 bytes, 6910/128 = 53.
 ; The editor stores 4 sprites (4x4) in a single row. 53/4 = 13 rows. The editor can contain at most 4x13 large sprites.
 ;   6910                 =           $7FFF      -    $5B00     -     2560
-_CF_TI_DEF_MAX			 = _RAM_SLOT3_END_H7FFF - _CF_TI_START - _CF_TI_MAP_BYTES
+TI_DEF_MAX_D6910		 = _RAM_SLOT3_END_H7FFF - _TI_START_H5B00 - _TI_MAP_BYTES_D2560
 
-_CF_TI_CLIP_X1			= 0 
-_CF_TI_CLIP_X2			= 159
-_CF_TI_CLIP_Y1			= 0
-_CF_TI_CLIP_FULL_Y2		= _CF_SC_3MAX_Y
-_CF_TI_CLIP_ROCKET_Y2	= _CF_SC_3MAX_Y - _CF_TI_PIXELS
+_TI_CLIP_X1_D0			= 0 
+_TI_CLIP_X2_D159		= 159
+_TI_CLIP_Y1_D0			= 0
+_TI_CLIP_FULLY2_D255	= _SC_RESY1_D255
+_TI_CLIP_ROCKETY2_D247	= _SC_RESY1_D255 - _TI_PIXELS_D8
 
 ; ##############################################
 ; Tile definition (sprite file)
-_CF_TID_START	= _CF_TI_START + _CF_TI_MAP_BYTES ; Tilfedefinitions (sprite file)
-	ASSERT _CF_TID_START >= _RAM_SLOT2_START_H4000
-	ASSERT _CF_TID_START <= _RAM_SLOT3_END_H7FFF
+_TID_START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tilfedefinitions (sprite file)
+	ASSERT _TID_START_H6500 >= _RAM_SLOT2_START_H4000
+	ASSERT _TID_START_H6500 <= _RAM_SLOT3_END_H7FFF
 	
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-_CF_TID_OFFSET	= (_CF_TID_START - _RAM_SLOT2_START_H4000) >> 8
+_TID_OFFSET	= (_TID_START_H6500 - _RAM_SLOT2_START_H4000) >> 8
 
 ; ##############################################
 ; Tile stars map
-_CF_TIS_START			= _CF_TI_START + (_CF_TI_V_TILES -1) * _CF_TI_H_BYTES ; Stars begin at the last tile row
+_TIS_START				= _TI_START_H5B00 + (_TI_VTILES_D32 -1) * _TI_H_BYTES_D80 ; Stars begin at the last tile row
 
-_CF_TIS_BYTES			= _CF_TI_MAP_BYTES*4	; 10240=40*32*4*2 bytes, 3 screens
-_CF_TIS_ROWS			= _CF_TI_V_TILES*4		; 128 rows (4*32), tile starts takes two horizontal screens
-_CF_ITS_MOVE_FROM		= 50					; Start moving stats when the rocket reaches the given height
+_TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=40*32*4*2 bytes, 3 screens
+_TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens
+_ITS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height
 
 ; ##############################################
 ; Text
-_CF_TX_ASCII_OFFSET		= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table
-_CF_TX_PALETTE			= 0						; Palette byte for tile characters
+_TX_ASCII_OFFSET_D34	= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table
+_TX_PALETTE_D0			= 0						; Palette byte for tile characters
 
 ; ##############################################
 ; Game Bar
-_CF_GB_TILES			= 320 / 8 * 3
+_C_GB_TILES_D13			= 320 / 8 * 3
 
 ; ##############################################
 ; Jet RiP
-_CF_RIP_MOVE_X			= 3
-_CF_RIP_MOVE_Y			= 4
+_RIP_MOVE_X_D3			= 3
+_RIP_MOVE_Y_D4			= 4
 
 ; ##############################################
 ; Util
-_CF_UT_PAUSE_TIME		= 10
+_UT_PAUSE_TIME_D10		= 10
 
 ; ##############################################
 ; Bitmap Manipulation
-_CF_BM_16KBANK			= 9						; 16K bank 9 = 8k bank 18
+_BM_16KBANK_D9			= 9						; 16K bank 9 = 8k bank 18
 
-_CF_BM_XRES				= 320
-_CF_BM_YRES				= 256
-_CF_BM_BYTES		= _CF_BM_XRES*_CF_BM_YRES
-	ASSERT _CF_BM_BYTES == 81920
+_BM_XRES_D320			= 320
+_BM_YRES_D256			= 256
 
-_CF_BM_PAL_BYTES		= 512
-_CF_BM_BANKS			= 10
+_BM_BYTES_D81920		= _BM_XRES_D320*_BM_YRES_D256
+	ASSERT _BM_BYTES_D81920 == 81920
+
+_BM_PAL_BYTES_D512		= 512
+_BM_BANKS_D10			= 10
 
 ; ##############################################
 ; In game backgrount on Layer 2
-_CF_GBG_MOVE_ROCKET		= 100					; Start moving background when the rocket reaches the given height
-
-_CF_GBG_MOVE_SLOW		= 3
-
-_CF_GBG_OFFSET 			= _CF_TI_GND-2			; 16-2 = 24
+_GBG_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height
+_GBG_MOVE_SLOW_D3		= 3
+_GBG_OFFSET_D24 		= _TI_GND_D16-2			; 16-2 = 24
 
 ; ##############################################
 ; Binary Data Loader
-_CF_BIN_SPRITE_BYTES	= 16384
-_CF_BIN_SPRITE_BANK1	= 40					; Sprites on bank 40, 41
-_CF_BIN_SPRITE_BANK2	= 41
+_BIN_SPRITE_BYT_D16384	= 16384
+_BIN_SPRITE_BANK1_D40	= 40					; Sprites on bank 40, 41
+_BIN_SPRITE_BANK2_D41	= 41
 
-_CF_BIN_TILES_BANK1		= 42
-_CF_BIN_TILES_BANK2		= 43
+_BIN_TILES_BANK1_D42	= 42
+_BIN_TILES_BANK2_D43	= 43
 
-_CF_BIN_STARTS_BANK1	= 44
-_CF_BIN_STARTS_BANK2	= 45
+_BIN_STARTS_BANK1_D44	= 44
+_BIN_STARTS_BANK2_D45	= 45
 
 ; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette. However, we load only 256x128 into RAM, 
 ; and the last 64 lines (two 8K banks) are filled with transparency.
 
-; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _CF_BM_16KBANK"
-_CF_BIN_BGR_ST_BANK		= 18					; Background image occupies 6 8K banks from 18 to 23 (starts on 16K bank 9, uses 3 16K banks)
-_CF_BIN_BGR_END_BANK	= 23					; Last background bank (inclusive)
+; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9"
+_BIN_BGR_ST_BANK_D18	= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks)
+_BIN_BGR_END_BANK_D27	= 27					; Last background bank (inclusive)
 
-_CF_BIN_BGR_PAL_BANK	= 46
+_BIN_BGR_PAL_BANK_D46	= 46
 
 ; Image for Level 1 (all inclusive)
-_CF_BIN_BGR_L1_ST_BANK	= 47
-_CF_BIN_BGR_L1_END_BANK	= _CF_BIN_BGR_L1_ST_BANK+_CF_BM_BANKS-1; -1 because inclusive
-	ASSERT _CF_BIN_BGR_L1_END_BANK == 56
+_BIN_BGR_L1_ST_BANK_D47	= 47
+_BIN_BGR_L1_EN_BANK_D56 = _BIN_BGR_L1_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive
+	ASSERT _BIN_BGR_L1_EN_BANK_D56 == 56
 
 ; Image for Level 2 (all inclusive)
-_CF_BIN_BGR_L2_ST_BANK	= _CF_BIN_BGR_L1_END_BANK+1
-	ASSERT _CF_BIN_BGR_L2_ST_BANK == 57
+_BIN_BGR_L2_ST_BANK_D57	= _BIN_BGR_L1_EN_BANK_D56+1
+	ASSERT _BIN_BGR_L2_ST_BANK_D57 == 57
 
-_CF_BIN_BGR_L2_END_BANK	= _CF_BIN_BGR_L2_ST_BANK+_CF_BM_BANKS-1
-	ASSERT _CF_BIN_BGR_L2_END_BANK == 66
+_BIN_BGR_L2_EN_BANK_D66	= _BIN_BGR_L2_ST_BANK_D57+_BM_BANKS_D10-1
+	ASSERT _BIN_BGR_L2_EN_BANK_D66 == 66
 
 ; ##############################################
 ; Respown location
-_CF_JET_RESPOWN_X		= 100
-_CF_JET_RESPOWN_Y		= _CF_GSC_JET_GND		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+_JET_RESPOWN_X_D100		= 100
+_JET_RESPOWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 ; ##############################################
 ; Game Counters
-_GC_FLIP_ON			= 1
-_GC_FLIP_OFF		= 0
+_GC_FLIP_ON_D1			= 1
+_GC_FLIP_OFF_D0			= 0

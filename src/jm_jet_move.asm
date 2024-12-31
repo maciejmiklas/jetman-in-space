@@ -5,7 +5,7 @@
 
 ; Hovering/Standing
 ; The counter increases with each frame when no up/down is pressed.
-; When it reaches #_CF_HOVER_START, Jetman will start hovering
+; When it reaches #_HOVER_START_D250, Jetman will start hovering
 jetInactivityCnt		BYTE 0
 
 ;----------------------------------------------------------;
@@ -71,7 +71,7 @@ JoystickMoves
 JoyMoveUp
 
 	CALL CanJetMove
-	CP _CF_RET_ON
+	CP _RET_ON_D1
 	RET NZ										; Do not process input on disabled joystick
 
 .afterJoyCntEnabled
@@ -82,7 +82,7 @@ JoyMoveUp
 	; ##########################################
 	; Decrement Y position
 	LD A, (jpo.jetY)	
-	CP _CF_GSC_Y_MIN 							; Do not decrement if Jetman has reached the top of the screen
+	CP _GSC_Y_MIN_D15 							; Do not decrement if Jetman has reached the top of the screen
 	JR Z, .afterDec
 	CALL jpo.DecJetY
 .afterDec	
@@ -113,7 +113,7 @@ JoyMoveUp
 JoyMoveRight
 
 	CALL CanJetMove
-	CP _CF_RET_ON
+	CP _RET_ON_D1
 	RET NZ										; Do not process input on disabled joystick
 
 	; ##########################################
@@ -148,7 +148,7 @@ JoyMoveRight
 JoyMoveLeft
 
 	CALL CanJetMove
-	CP _CF_RET_ON
+	CP _RET_ON_D1
 	RET NZ										; Do not process input on disabled joystick
 
 	; ##########################################
@@ -182,7 +182,7 @@ JoyMoveLeft
 JoyMoveDown
 
 	CALL CanJetMove
-	CP _CF_RET_ON
+	CP _RET_ON_D1
 	RET NZ										; Do not process input on disabled joystick
 
 	; ##########################################
@@ -197,7 +197,7 @@ JoyMoveDown
 	; ##########################################
 	; Increment Y position
 	LD A, (jpo.jetY)
-	CP _CF_GSC_JET_GND							; Do not increment if Jetman has reached the ground
+	CP _GSC_JET_GND_D217							; Do not increment if Jetman has reached the ground
 	JR Z, .afterInc						
 
 	CALL jpo.IncJetY							; Move Jetman 1px down
@@ -205,7 +205,7 @@ JoyMoveDown
 
 	; ##########################################
 	; Landing on the ground
-	CP _CF_GSC_JET_GND
+	CP _GSC_JET_GND_D217
 	CALL Z, pl.JetLanding						; Execute landing on the ground if Jetman has reached the ground
 
 	; ##########################################
@@ -241,12 +241,12 @@ JoyMoveDownRelease
 ;----------------------------------------------------------;
 ; Output:
 ;	A containing one of the values:
-;     - _CF_RET_ON:		Process joystick input
-;     - _CF_RET_OFF:	Disable joystick input processing for this loop
+;     - _RET_ON_D1:		Process joystick input
+;     - _RET_OFF_D0:	Disable joystick input processing for this loop
 CanJetMove
 
 	CALL JoyCntEnabled
-	CP _CF_RET_OFF
+	CP _RET_OFF_D0
 	RET Z
 
 	; ##########################################
@@ -256,13 +256,13 @@ CanJetMove
 	JR NZ, .jetActive
 
 	; Do not process input
-	LD A, _CF_RET_OFF
+	LD A, _RET_OFF_D0
 	RET
 .jetActive	
 
 	; ##########################################
 	CALL JoySlowdown
-	CP _CF_RET_OFF
+	CP _RET_OFF_D0
 	RET Z
 
 	; ##########################################
@@ -271,14 +271,14 @@ CanJetMove
 	JR NZ, .afterRip							; Do not process input if Jetman is dying
 
 	; Do not process input, Jet is dying
-	LD A, _CF_RET_OFF
+	LD A, _RET_OFF_D0
 	RET
 .afterRip
 
 	; ##########################################
 	; Process input
 
-	LD A, _CF_RET_ON
+	LD A, _RET_ON_D1
 
 	RET											; ## END of the function ##
 
@@ -288,24 +288,24 @@ CanJetMove
 ; Slow down joystick input and, therefore, speed of Jetman movement
 ; Output:
 ;	A containing one of the values:
-;     - _CF_RET_ON:		Process joystick input
-;     - _CF_RET_OFF:	Disable joystick input processing for this loop
+;     - _RET_ON_D1:		Process joystick input
+;     - _RET_OFF_D0:	Disable joystick input processing for this loop
 JoySlowdown
 	LD A, (ind.joyDelayCnt)
 	INC A
 	LD (ind.joyDelayCnt), A
 
-	CP _CF_PL_JOY_DELAY
+	CP _PL_JOY_DELAY
 	JR Z, .delayReached
 
-	LD A, _CF_RET_OFF							; Return because #joyDelayCnt !=  #_CF_PL_JOY_DELAY
+	LD A, _RET_OFF_D0							; Return because #joyDelayCnt !=  #_PL_JOY_DELAY
 	RET
 .delayReached									; Delay counter has been reached	
 
 	XOR A										; Set A to 0						
 	LD (ind.joyDelayCnt), A						; Reset delay counter
 
-	LD A, _CF_RET_ON							; Process input, because counter has been reached
+	LD A, _RET_ON_D1							; Process input, because counter has been reached
 
 	RET											; ## END of the function ##
 
@@ -315,8 +315,8 @@ JoySlowdown
 ; Disable joystick and, therefore, control over the Jetman 
 ; Output:
 ;	A containing one of the values:
-;     - _CF_RET_ON:		Process joystick input
-;     - _CF_RET_OFF:	Disable joystick input processing for this loop
+;     - _RET_ON_D1:		Process joystick input
+;     - _RET_OFF_D0:	Disable joystick input processing for this loop
 JoyCntEnabled
 
 	LD A, (ind.joyOffCnt)
@@ -346,14 +346,14 @@ JoyCntEnabled
 	; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Jaystick's movement up, ignoring #joyOffBump allows movement to the left.
 
 	LD A, (pl.joyOffBump)
-	CP _CF_PL_BUMP_JOY_OFF_DEC+1
+	CP _C_PL_BUMP_JOY_DEC_D1+1
 	JR C, .joyEnabled
 
-	LD A, _CF_RET_OFF
+	LD A, _RET_OFF_D0
 	RET											; Do not process input, as the joystick is disabled
 
-.joyEnabled							; Process input
-	LD A, _CF_RET_ON
+.joyEnabled										; Process input
+	LD A, _RET_ON_D1
 
 	RET											; ## END of the function ##
 
@@ -364,7 +364,7 @@ JoyCntEnabled
 JoystickInputProcessed
 
 	CALL jm.CanJetMove
-	CP _CF_RET_ON
+	CP _RET_ON_D1
 	RET NZ										; Do not process input on disabled joystick
 
 	; ##########################################
