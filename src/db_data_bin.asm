@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
 ;            #Load Game Sprites (Bank 40...41)             ;
 ;----------------------------------------------------------;
-; Load sprites (16KB) into bank 40,41 mapping it to slot 6,7
+; Load sprites (16KB) into bank 40,41 mapping it to slot 6,7.
 	MMU _RAM_SLOT6 _RAM_SLOT7, _BIN_SPRITE_BANK1_D40
 	ORG _RAM_SLOT6_START_HC000
 
@@ -32,10 +32,10 @@ spritesBinLength = $ - spritesBin
 ;----------------------------------------------------------;
 ;           #Load Game Tiles (Bank 42...43)                ;
 ;----------------------------------------------------------;
-; Load tiles and pallete into 8K bank 42,42 mapping it to slot 6,7
+; Load tiles and pallete into 8K bank 42,42 mapping it to slot 6,7.
 	
-	MMU _RAM_SLOT6 _RAM_SLOT7, _BIN_TILES_BANK1_D42 ; Assign slots 6,7 to banks 42,43
-	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6
+	MMU _RAM_SLOT6 _RAM_SLOT7, _BIN_TILES_BANK1_D42 ; Assign slots 6,7 to banks 42,43.
+	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6.
 
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 tilemapBin INCBIN "assets/tiles.map"
@@ -59,23 +59,23 @@ tilePaletteBin									; RGB332, 8 bit
 	DB $E3, $40, $C, $20, $54, $8, $20, $30, $0, $E0, $40, $E0, $E0, $E0, $E0, $6F
 tilePaletteBinLength = $ - tilePaletteBin
 	
-	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7
+	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ <= _BIN_TILES_BANK2_D43 			; All data should fit into bank 43
+	ASSERT $$ <= _BIN_TILES_BANK2_D43 			; All data should fit into bank 43.
 
 ;----------------------------------------------------------;
 ;               #Load Star Tiles  (Bank 44)                ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6 _RAM_SLOT7, _BIN_STARTS_BANK1_D44 ; Assign slots 6,7 to banks 44,45
-	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6
+	MMU _RAM_SLOT6 _RAM_SLOT7, _BIN_STARTS_BANK1_D44 ; Assign slots 6,7 to banks 44,45.
+	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6.
 
 starsBin INCBIN "assets/stars.map"
 starsBinLength = $ - starsBin
 
 	ASSERT starsBinLength == _TIS_BYTES_D10240
-	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7 
+	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ == _BIN_STARTS_BANK2_D45 			; All data should fit into bank 43
+	ASSERT $$ == _BIN_STARTS_BANK2_D45 			; All data should fit into bank 43.
 
 ;----------------------------------------------------------;
 ;     #Load Game Background Palettes into bank 46          ;
@@ -104,7 +104,7 @@ backGroundL1Img
 	INCBIN "assets/l001_background.nxi", 0, _BM_BYTES_D81920
 
 	; MMU should be in the next slot because the last slot has been filed.
-	ASSERT $$ == _BIN_BGR_L1_EN_BANK_D56+1		; Image has 32768 bytes, 4 banks
+	ASSERT $$ == _BIN_BGR_L1_EN_BANK_D56+1		; Image has 32768 bytes, 4 banks.
 	ASSERT $$backGroundL1Img == _BIN_BGR_L1_ST_BANK_D47
 
 ;----------------------------------------------------------;
@@ -116,7 +116,7 @@ backGroundL2Img
 	INCBIN "assets/l002_background.nxi", 0, _BM_BYTES_D81920
 
 	; MMU should be in the next slot because the last slot has been filed.
-	ASSERT $$ == _BIN_BGR_L2_EN_BANK_D66+1		; Image has 32768 bytes, 4 banks
+	ASSERT $$ == _BIN_BGR_L2_EN_BANK_D66+1		; Image has 32768 bytes, 4 banks.
 	ASSERT $$backGroundL2Img == _BIN_BGR_L2_ST_BANK_D57
 
 ;----------------------------------------------------------;

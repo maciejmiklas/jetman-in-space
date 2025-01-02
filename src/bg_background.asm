@@ -4,7 +4,7 @@
 	MODULE bg
 
 bgOffset				BYTE 0
-tmp				BYTE 0
+
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;
 ;----------------------------------------------------------;
@@ -14,14 +14,14 @@ tmp				BYTE 0
 ; with 16 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
 UpdateBackgroundOnJetmanMove
 
-	; Divide the Jetman's position by _GBG_MOVE_SLOW_D3 to slow down the movement of the background
+	; Divide the Jetman's position by _GBG_MOVE_SLOW_D3 to slow down the movement of the background.
 	LD A, (jpo.jetY)
 	LD C, A
 	LD D, _GBG_MOVE_SLOW_D3
 	CALL ut.CdivD
-	LD B, C										; B contains #jetY/_GBG_MOVE_SLOW_D3
+	LD B, C										; B contains #jetY/_GBG_MOVE_SLOW_D3.
 
-	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0
+	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0.
 	LD A, _GSC_JET_GND_D217/_GBG_MOVE_SLOW_D3
 	SUB B										; A contains _GSC_JET_GND_D217 - #jetY. It's 0 when Jemant stands on the ground.
 	LD B, A
@@ -29,29 +29,55 @@ UpdateBackgroundOnJetmanMove
 
 	; Move background above the ground line
 	LD A, _GBG_OFFSET_D24
-	SUB B										; B contains background offset
+	SUB B										; B contains background offset.
 	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
 
-	; ##########################################
-	; Hide picture line going behind the horizon	
-
-	; Calculate the line number that needs to be replaced. It's the line going behind the horizon.  It's always the bottom line on the image
-	LD A, _BM_YRES_D256-1
-	SUB B										; B contains background offset
-
-	; Do not remove the line if the Jetman is on the ground (offset is 255)
-	CP _BM_YRES_D256-1
-	RET Z
-
-	LD (tmp), A
-	LD E, A
-	CALL bm.HideImageLine
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;            #SetupBackgroundOnRocketTakeoff               ;
+;              HideBackgroundBehindHorizon                 ;
 ;----------------------------------------------------------;
-SetupBackgroundOnRocketTakeoff
+; Hide picture line going behind the horizon	
+HideBackgroundBehindHorizon
+
+	; Calculate the line number that needs to be replaced. It's the line going behind the horizon.  It's always the bottom line on the image.
+	LD A, (bgOffset)
+	LD B, A
+	LD A, _BM_YRES_D256-1
+	SUB B										; B contains background offset.
+
+	; Do not remove the line if the Jetman is on the ground (offset is 255).
+	CP _BM_YRES_D256-1
+	RET Z
+
+	ADD 1
+	LD E, A										; E contains bottom line.
+	CALL bm.HideImageLine
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;              ShowBackgroundAboveHorizon                  ;
+;----------------------------------------------------------;
+; Copy lower background image line from original picture.
+ShowBackgroundAboveHorizon
+
+	; Calculate the line number that needs to be replaced. It's the line going behind the horizon.  It's always the bottom line on the image.
+	LD A, (bgOffset)
+	LD B, A
+	LD A, _BM_YRES_D256-1
+	SUB B										; B contains background offset.
+
+	; Do not remove the line if the Jetman is on the ground (offset is 255).
+	CP _BM_YRES_D256-1
+	RET Z
+
+	ADD 1
+	LD E, A										; E contains bottom line.
+
+	LD A, _BIN_BGR_L1_ST_BANK_D47
+	LD C, A
+	CALL bm.ReplaceImageLine
 
 	RET											; ## END of the function ##
 
@@ -60,16 +86,16 @@ SetupBackgroundOnRocketTakeoff
 ;----------------------------------------------------------;
 AnimateBackgroundOnFlyRocket
 
-	; Return if rocket is not flying
+	; Return if rocket is not flying.
 	LD A, (ro.rocketState)
 	CP ro.RO_ST_FLY
 	RET NZ
 
 	; ##########################################
-	; Start animation when the rocket reaches given height
+	; Start animation when the rocket reaches given height.
 	LD HL, (ro.rocketDistance)
 	LD A, H
-	CP 0										; If H > 0 then distance is definitely > _GBG_MOVE_ROCKET_D100
+	CP 0										; If H > 0 then distance is definitely > _GBG_MOVE_ROCKET_D100.
 	JR NZ, .afterAnimationStart
 
 	LD A, L
@@ -78,7 +104,7 @@ AnimateBackgroundOnFlyRocket
 .afterAnimationStart
 
 	; ##########################################
-	; Move the background image
+	; Move the background image.
 	
 	LD A, (bgOffset)
 	DEC A

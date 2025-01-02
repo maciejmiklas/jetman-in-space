@@ -3,12 +3,12 @@
 ;----------------------------------------------------------;
 STACK_SIZE				= 100
 
-	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions
-	ORG _RAM_SLOT4_START_H8000 + STACK_SIZE		; Stack strats at 8000
+	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions.
+	ORG _RAM_SLOT4_START_H8000 + STACK_SIZE		; Stack strats at 8000.
 
 start
-	DI											; Disable Interrupts, use wait_for_scanline instead
-	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz
+	DI											; Disable Interrupts, use wait_for_scanline instead.
+	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz.
 			
 	INCLUDE "dl_data_load.asm"
 	CALL sc.SetupScreen
@@ -66,15 +66,15 @@ mainLoop
 ;----------------------------------------------------------;
 ; https://z00m128.github.io/sjasmplus/documentation.html
 
-	CSPECTMAP "jetman.map"						; Generate a map file for use with Cspect
+	CSPECTMAP "jetman.map"						; Generate a map file for use with Cspect.
 
 	; This sets the name of the project, the start address, and the initial stack pointer.
 	SAVENEX OPEN "jetman.nex", start, _RAM_SLOT4_START_H8000
 
-	; This asserts the minimum core version. 
+	; This asserts the minimum core version.
 	SAVENEX CORE 3,0,0
 
-	; SAVENEX CFG <border 0..7>[,<fileHandle 0/1/$4000+>[,<PreserveNextRegs 0/1>[,<2MbRamReq 0/1>]]]
+	; SAVENEX CFG <border 0..7>[,<fileHandle 0/1/$4000+>[,<PreserveNextRegs 0/1>[,<2MbRamReq 0/1>]]].
 	SAVENEX CFG 0,0,0,0
 
 	; Generate the Nex file automatically based on which pages you use.

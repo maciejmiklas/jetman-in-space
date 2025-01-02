@@ -31,7 +31,7 @@ GameLoop000
 	LD (gld.counter000FliFLop), A
 
 	; ##########################################
-	; CALL functions that need to be updated every loop
+	; CALL functions that need to be updated every loop.
 	; First update graphics, logic follows afterwards!
 
 	CALL jw.MoveShots
@@ -87,7 +87,7 @@ GameLoop000OnActiveJetman
 	LD IY, ed.formation
 	//CALL ef.RespownFormation	
 
-	RET											; ## END of the function ##	
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;               #GameLoop000OnDisabledJoy                  ;
@@ -97,7 +97,7 @@ GameLoop000OnDisabledJoy
 	; Return if the joystick is about to enable
 	LD A, (ind.joyOffCnt)
 	CP _C_PL_BUMP_JOY_DEC_D1+1
-	RET C										; Return on the last off loop - this one is used to reset status and not to animate
+	RET C										; Return on the last off loop - this one is used to reset status and not to animate.
 
 	; ##########################################
 	CALL pl.MoveJetOnPlatfromSideHit
@@ -117,9 +117,9 @@ GameLoop000OnRocketTakingOff
 	RET NZ
 
 	; ##########################################
-	; Execute function until the rocket has reached its destination, where it stops and only stars are moving
+	; Execute function until the rocket has reached its destination, where it stops and only stars are moving.
 	LD HL, (ro.rocketDistance)
-	LD A, H										; H is always 0, because distance < 255
+	LD A, H										; H is always 0, because distance < 255.
 	CP 0
 	RET NZ
 
@@ -137,15 +137,15 @@ GameLoop000OnRocketTakingOff
 ;----------------------------------------------------------;
 GameLoop002
 
-	; Increment the counter
+	; Increment the counter.
 	LD A, (gld.counter002)
 	INC A
 	LD (gld.counter002), A
 	CP gld.COUNTER002_MAX
 	RET NZ
 
-	; Reset the counter
-	XOR A										; Set A to 0
+	; Reset the counter.
+	XOR A										; Set A to 0.
 	LD (gld.counter002), A
 
 	; ##########################################
@@ -155,7 +155,7 @@ GameLoop002
 	LD (gld.counter002FliFLop), A
 
 	; ##########################################
-	; CALL functions that need to be updated every xx-th loop
+	; CALL functions that need to be updated every xx-th loop.
 	CALL jco.JetInvincible
 	CALL st.AnimateStarsOnFlyRocket
 
@@ -166,14 +166,14 @@ GameLoop002
 ;----------------------------------------------------------;
 GameLoop004
 
-	; Increment the counter
+	; Increment the counter.
 	LD A, (gld.counter004)
 	INC A
 	LD (gld.counter004), A
 	CP gld.COUNTER004_MAX
 	RET NZ
 	
-	; Reset the counter
+	; Reset the counter.
 	XOR A										; Set A to 0
 	LD (gld.counter004), A
 
@@ -184,7 +184,7 @@ GameLoop004
 	LD (gld.counter004FliFLop), A
 
 	; ##########################################
-	; CALL functions that need to be updated every xx-th loop
+	; CALL functions that need to be updated every xx-th loop.
 	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AdminateRocketExplosion
@@ -197,14 +197,14 @@ GameLoop004
 ;----------------------------------------------------------;
 GameLoop006
 
-	; Increment the counter
+	; Increment the counter.
 	LD A, (gld.counter006)
 	INC A
 	LD (gld.counter006), A
 	CP gld.COUNTER006_MAX
 	RET NZ
 
-	; Reset the counter
+	; Reset the counter.
 	XOR A										; Set A to 0
 	LD (gld.counter006), A
 
@@ -215,7 +215,7 @@ GameLoop006
 	LD (gld.counter006FliFLop), A
 
 	; ##########################################
-	; CALL functions that need to be updated every xx-th loop
+	; CALL functions that need to be updated every xx-th loop.
 	
 	RET											; ## END of the function ##
 
@@ -224,14 +224,14 @@ GameLoop006
 ;----------------------------------------------------------;
 GameLoop008
 
-	; Increment the counter
+	; Increment the counter.
 	LD A, (gld.counter008)
 	INC A
 	LD (gld.counter008), A
 	CP gld.COUNTER008_MAX
 	RET NZ
 
-	; Reset the counter
+	; Reset the counter.
 	XOR A										; Set A to 0
 	LD (gld.counter008), A
 
@@ -242,7 +242,7 @@ GameLoop008
 	LD (gld.counter008FliFLop), A
 
 	; ##########################################
-	; CALL functions that need to be updated every xx-th loop
+	; CALL functions that need to be updated every xx-th loop.
 	CALL jw.AnimateShots
 	
 	; Animate enemies
@@ -263,14 +263,14 @@ GameLoop008
 ;----------------------------------------------------------;
 GameLoop010
 
-	; Increment the counter
+	; Increment the counter.
 	LD A, (gld.counter010)
 	INC A
 	LD (gld.counter010), A
 	CP gld.COUNTER010_MAX
 	RET NZ
 
-	; Reset the counter
+	; Reset the counter.
 	XOR A										; Set A to 0
 	LD (gld.counter010), A
 
@@ -281,7 +281,7 @@ GameLoop010
 	LD (gld.counter010FliFLop), A
 
 	; ##########################################
-	; CALL functions that need to be updated every xx-th loop
+	; CALL functions that need to be updated every xx-th loop.
 
 	CALL GameLoop010nFlyingRocket
 	RET											; ## END of the function ##
@@ -291,7 +291,7 @@ GameLoop010
 ;----------------------------------------------------------;
 GameLoop010nFlyingRocket
 
-	; Return if rocket is not flying
+	; Return if rocket is not flying.
 	LD A, (ro.rocketState)
 	CP ro.RO_ST_FLY
 	RET NZ
@@ -321,7 +321,7 @@ GameLoop010nFlyingRocket
 ;----------------------------------------------------------;
 GameLoop040
 
-	; Increment the counter
+	; Increment the counter.
 	LD A, (gld.counter040)
 	INC A
 	LD (gld.counter040), A
@@ -329,7 +329,7 @@ GameLoop040
 	RET NZ
 
 	; ##########################################
-	; Reset the counter
+	; Reset the counter.
 	XOR A										; Set A to 0
 	LD (gld.counter040), A
 
@@ -344,7 +344,7 @@ GameLoop040
 ;----------------------------------------------------------;
 GameLoop080
 
-	; Increment the counter
+	; Increment the counter.
 	LD A, (gld.counter080)
 	INC A
 	LD (gld.counter080), A
@@ -352,7 +352,7 @@ GameLoop080
 	RET NZ
 
 	; ##########################################
-	; Reset the counter
+	; Reset the counter.
 	XOR A										; Set A to 0
 	LD (gld.counter080), A
 

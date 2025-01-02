@@ -5,25 +5,25 @@
 
 ; Hovering/Standing
 ; The counter increases with each frame when no up/down is pressed.
-; When it reaches #_HOVER_START_D250, Jetman will start hovering
+; When it reaches #_HOVER_START_D250, Jetman will start hovering.
 jetInactivityCnt		BYTE 0
 
 ;----------------------------------------------------------;
 ;                       #StandToWalk                       ; 
 ;----------------------------------------------------------;
-; Transition from standing/landing on ground to walking
+; Transition from standing/landing on ground to walking.
 StandToWalk
 
 	LD A, (jt.jetGnd)
 	CP jt.STATE_INACTIVE
-	RET Z										; Exit if Jetman is not on the ground
+	RET Z										; Exit if Jetman is not on the ground.
 
 	; Jetman is on the ground, is he already walking?
 	LD A, (jt.jetGnd)	
 	CP jt.GND_WALK
-	RET Z										; Exit if Jetman is already walking
+	RET Z										; Exit if Jetman is already walking.
 
-	; Jetman is standing and starts walking now
+	; Jetman is standing and starts walking now.
 	LD A, jt.GND_WALK
 	CALL jt.SetJetStateGnd
 	
@@ -35,7 +35,7 @@ StandToWalk
 ;----------------------------------------------------------;
 ;                     #JoystickMoves                       ;
 ;----------------------------------------------------------;
-; Method gets called on any joystick movement (only real key press), but not fire pressed
+; Method gets called on any joystick movement (only real key press), but not fire pressed.
 JoystickMoves
 
 	CALL pl.ResetJoyOffBump
@@ -44,21 +44,21 @@ JoystickMoves
 	CALL pl.JetPlatformHitOnJoyMove
 	
 	; ##########################################
-	; Reset inactivity counter as we have movement
-	XOR A										; Set A to 0
+	; Reset inactivity counter as we have movement.
+	XOR A										; Set A to 0.
 	LD (jetInactivityCnt), A
 
 	; ##########################################
 	; Transition from hovering to flying?
 	LD A, (jt.jetAir)
 	CP jt.AIR_HOOVER							; Is Jemtman hovering?
-	JR NZ, .afterHovering						; Jump if not hovering
+	JR NZ, .afterHovering						; Jump if not hovering.
 
-	; Jetman is hovering, but we have movement, so switch state to fly
+	; Jetman is hovering, but we have movement, so switch state to fly.
 	LD A, jt.AIR_FLY
 	CALL jt.SetJetStateAir
 	
-	; Switch to flaying animation
+	; Switch to flaying animation.
 	LD A, js.SDB_FLY
 	CALL js.ChangeJetSpritePattern
 .afterHovering	
@@ -72,7 +72,7 @@ JoyMoveUp
 
 	CALL CanJetMove
 	CP _RET_ON_D1
-	RET NZ										; Do not process input on disabled joystick
+	RET NZ										; Do not process input on disabled joystick.
 
 .afterJoyCntEnabled
 
@@ -82,27 +82,27 @@ JoyMoveUp
 	; ##########################################
 	; Decrement Y position
 	LD A, (jpo.jetY)	
-	CP _GSC_Y_MIN_D15 							; Do not decrement if Jetman has reached the top of the screen
+	CP _GSC_Y_MIN_D15 							; Do not decrement if Jetman has reached the top of the screen.
 	JR Z, .afterDec
 	CALL jpo.DecJetY
 .afterDec	
 
 	; ##########################################
-	; Direction change: down -> up
+	; Direction change: down -> up.
 	LD A, (ind.jetDirection)
 	AND ind.MOVE_UP_MASK						; Are we moving Up already?
 	CP ind.MOVE_UP_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (ind.jetDirection)					; Update #jetState by resetting down and setting up
+	LD A, (ind.jetDirection)					; Update #jetState by resetting down and setting up.
 	RES ind.MOVE_DOWN_BIT, A
 	SET ind.MOVE_UP_BIT, A
 	LD (ind.jetDirection), A
 .afterDirectionChange
 
 	; ##########################################	
-	CALL pl.JetPlatformTakesoff					; Transition from walking to flaying
+	CALL pl.JetPlatformTakesoff					; Transition from walking to flaying.
 	CALL js.ChangeJetSpriteOnFlyUp	
 
 	RET											; ## END of the function ##
@@ -114,7 +114,7 @@ JoyMoveRight
 
 	CALL CanJetMove
 	CP _RET_ON_D1
-	RET NZ										; Do not process input on disabled joystick
+	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
 	CALL JoystickMoves
@@ -129,7 +129,7 @@ JoyMoveRight
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (ind.jetDirection)					; Reset left and set right
+	LD A, (ind.jetDirection)					; Reset left and set right.
 	RES ind.MOVE_LEFT_BIT, A
 	SET ind.MOVE_RIGHT_BIT, A
 	LD (ind.jetDirection), A
@@ -149,7 +149,7 @@ JoyMoveLeft
 
 	CALL CanJetMove
 	CP _RET_ON_D1
-	RET NZ										; Do not process input on disabled joystick
+	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
 	CALL JoystickMoves	
@@ -157,14 +157,14 @@ JoyMoveLeft
 	CALL jpo.DecJetX
 
 	; ##########################################
-	; Direction change: right -> left
+	; Direction change: right -> left.
 	LD A, (ind.jetDirection)
 	AND ind.MOVE_LEFT_MASK						; Are we moving left already?
 	CP ind.MOVE_LEFT_MASK
-	JR Z, .afterDirectionChange					; Jetman is moving left already -> end
+	JR Z, .afterDirectionChange					; Jetman is moving left already -> end.
 
-	; We have direction change!		
-	LD A, (ind.jetDirection)					; Reset right and set left
+	; We have direction change!	
+	LD A, (ind.jetDirection)					; Reset right and set left.
 	RES ind.MOVE_RIGHT_BIT, A
 	SET ind.MOVE_LEFT_BIT, A
 	LD (ind.jetDirection), A
@@ -183,10 +183,10 @@ JoyMoveDown
 
 	CALL CanJetMove
 	CP _RET_ON_D1
-	RET NZ										; Do not process input on disabled joystick
+	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
-	; Cannot move down when walking
+	; Cannot move down when walking.
 	LD A, (jt.jetGnd)
 	CP jt.STATE_INACTIVE
 	RET NZ
@@ -197,16 +197,16 @@ JoyMoveDown
 	; ##########################################
 	; Increment Y position
 	LD A, (jpo.jetY)
-	CP _GSC_JET_GND_D217							; Do not increment if Jetman has reached the ground
+	CP _GSC_JET_GND_D217						; Do not increment if Jetman has reached the ground.
 	JR Z, .afterInc						
 
-	CALL jpo.IncJetY							; Move Jetman 1px down
+	CALL jpo.IncJetY							; Move Jetman 1px down.
 .afterInc	
 
 	; ##########################################
 	; Landing on the ground
 	CP _GSC_JET_GND_D217
-	CALL Z, pl.JetLanding						; Execute landing on the ground if Jetman has reached the ground
+	CALL Z, pl.JetLanding						; Execute landing on the ground if Jetman has reached the ground.
 
 	; ##########################################
 	; Direction change? 
@@ -216,7 +216,7 @@ JoyMoveDown
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (ind.jetDirection)					; Update #jetState by resetting Up/Hover and setting Down
+	LD A, (ind.jetDirection)					; Update #jetState by resetting Up/Hover and setting Down.
 	RES ind.MOVE_UP_BIT, A
 	SET ind.MOVE_DOWN_BIT, A	
 	LD (ind.jetDirection), A
@@ -241,8 +241,8 @@ JoyMoveDownRelease
 ;----------------------------------------------------------;
 ; Output:
 ;	A containing one of the values:
-;     - _RET_ON_D1:		Process joystick input
-;     - _RET_OFF_D0:	Disable joystick input processing for this loop
+;     - _RET_ON_D1:		Process joystick input.
+;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
 CanJetMove
 
 	CALL JoyCntEnabled
@@ -250,12 +250,12 @@ CanJetMove
 	RET Z
 
 	; ##########################################
-	; Joystic disabled if Jetman is inactive
+	; Joystic disabled if Jetman is inactive.
 	LD A, (jt.jetState)
 	CP jt.STATE_INACTIVE
 	JR NZ, .jetActive
 
-	; Do not process input
+	; Do not process input.
 	LD A, _RET_OFF_D0
 	RET
 .jetActive	
@@ -268,9 +268,9 @@ CanJetMove
 	; ##########################################
 	LD A, (jt.jetState)
 	CP jt.JET_ST_RIP
-	JR NZ, .afterRip							; Do not process input if Jetman is dying
+	JR NZ, .afterRip							; Do not process input if Jetman is dying.
 
-	; Do not process input, Jet is dying
+	; Do not process input, Jet is dying.
 	LD A, _RET_OFF_D0
 	RET
 .afterRip
@@ -285,11 +285,11 @@ CanJetMove
 ;----------------------------------------------------------;
 ;                       #JoySlowdown                       ;
 ;----------------------------------------------------------;
-; Slow down joystick input and, therefore, speed of Jetman movement
+; Slow down joystick input and, therefore, speed of Jetman movement.
 ; Output:
 ;	A containing one of the values:
-;     - _RET_ON_D1:		Process joystick input
-;     - _RET_OFF_D0:	Disable joystick input processing for this loop
+;     - _RET_ON_D1:		Process joystick input.
+;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
 JoySlowdown
 	LD A, (ind.joyDelayCnt)
 	INC A
@@ -298,41 +298,41 @@ JoySlowdown
 	CP _PL_JOY_DELAY
 	JR Z, .delayReached
 
-	LD A, _RET_OFF_D0							; Return because #joyDelayCnt !=  #_PL_JOY_DELAY
+	LD A, _RET_OFF_D0							; Return because #joyDelayCnt !=  #_PL_JOY_DELAY.
 	RET
-.delayReached									; Delay counter has been reached	
+.delayReached									; Delay counter has been reached.
 
-	XOR A										; Set A to 0						
-	LD (ind.joyDelayCnt), A						; Reset delay counter
+	XOR A										; Set A to 0.
+	LD (ind.joyDelayCnt), A						; Reset delay counter.
 
-	LD A, _RET_ON_D1							; Process input, because counter has been reached
+	LD A, _RET_ON_D1							; Process input, because counter has been reached.
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                     #JoyCntEnabled                       ;
 ;----------------------------------------------------------;
-; Disable joystick and, therefore, control over the Jetman 
+; Disable joystick and, therefore, control over the Jetman.
 ; Output:
 ;	A containing one of the values:
-;     - _RET_ON_D1:		Process joystick input
-;     - _RET_OFF_D0:	Disable joystick input processing for this loop
+;     - _RET_ON_D1:		Process joystick input.
+;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
 JoyCntEnabled
 
 	LD A, (ind.joyOffCnt)
 	CP 0
-	JR Z, .joyEnabled							; Jump if joystick is enabled -> #joyOffCnt > 0
+	JR Z, .joyEnabled							; Jump if joystick is enabled -> #joyOffCnt > 0.
 
 	; ##########################################
 	; Joystick is disabled
-	DEC A										; Decrement disabled counter
+	DEC A										; Decrement disabled counter.
 	LD (ind.joyOffCnt), A
 
 	; Joystick will enable on the next loop?
 	CP 0
 	JR NZ, .afterEnableCheck
 
-	; Yes, this was the last blocking loop
+	; Yes, this was the last blocking loop.
 	CALL gc.JoyWillEnable
 .afterEnableCheck	
 
@@ -350,9 +350,9 @@ JoyCntEnabled
 	JR C, .joyEnabled
 
 	LD A, _RET_OFF_D0
-	RET											; Do not process input, as the joystick is disabled
+	RET											; Do not process input, as the joystick is disabled.
 
-.joyEnabled										; Process input
+.joyEnabled										; Process input.
 	LD A, _RET_ON_D1
 
 	RET											; ## END of the function ##
@@ -360,15 +360,15 @@ JoyCntEnabled
 ;----------------------------------------------------------;
 ;               #JoystickInputProcessed                    ;
 ;----------------------------------------------------------;
-; It gets executed as a last procedure after the input has been processed, regardless of whether there was movement, or not
+; It gets executed as a last procedure after the input has been processed, regardless of whether there was movement, or not.
 JoystickInputProcessed
 
 	CALL jm.CanJetMove
 	CP _RET_ON_D1
-	RET NZ										; Do not process input on disabled joystick
+	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
-	; Ignore the situation when Jetman stands on the ground and only down is present. This does not count as movement
+	; Ignore the situation when Jetman stands on the ground and only down is present. This does not count as movement.
 	LD A, (jt.jetGnd)
 	CP jt.STATE_INACTIVE
 	JR Z, .afterDownOnGround
@@ -376,7 +376,7 @@ JoystickInputProcessed
 	; Jetman is on the ground, but is only down key pressed (without left/right)?
 	LD A, (ind.joyDirection)
 	CP ind.MOVE_DOWN_MASK
-	JR Z, .inactive								; Jump if, Jetman is on the ground and only down is pressed, we have inactivity, skip other checks
+	JR Z, .inactive								; Jump if, Jetman is on the ground and only down is pressed, we have inactivity, skip other checks.
 
 .afterDownOnGround
 	
@@ -384,7 +384,7 @@ JoystickInputProcessed
 	; Is there a movement?
 	LD A, (ind.joyDirection)
 	CP ind.MOVE_INACTIVE
-	RET NZ										; Jump if there is a movement
+	RET NZ										; Jump if there is a movement.
 
 .inactive
 

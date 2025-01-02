@@ -92,9 +92,9 @@ AbsA
 ;----------------------------------------------------------;
 ;                    PrintNumHLDebug                       ;
 ;----------------------------------------------------------;
-; Print 16 bit number from HL. Each character takes 8x8 pixels
+; Print 16 bit number from HL. Each character takes 8x8 pixels.
 ;Input:
-;  - HL:	16-bit number to print
+;  - HL:	16-bit number to print.
 ;  - B:		Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
 PrintNumHLDebug
@@ -110,12 +110,12 @@ PrintNumHLDebug
 ;----------------------------------------------------------;
 ;                       #HlEqualB                          ;
 ;----------------------------------------------------------;
-; Check if both H and L are equal to B
+; Check if both H and L are equal to B.
 HL_IS_B					= 0
 HL_NOT_B				= 1
 ; Input:
-;  - HL:	Value to compare to B
-;  - B:		Value to compare to HL
+;  - HL:	Value to compare to B.
+;  - B:		Value to compare to HL.
 ; Return:
 ;  - A:		#HL_IS_0 or #HL_NOT_0
 HlEqualB
@@ -186,22 +186,22 @@ CountdownBC
 ;                        #FillBank                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Destination bank
-;  - D:  Value to fill banks with
-;  - HL: Start address
+;  - A:  Destination bank.
+;  - D:  Value to fill banks with.
+;  - HL: Start address.
 ; Modifies: AF,BC,HL
 FillBank
 
-	LD BC, _BANK_BYTES_D8192						; 8192 bytes is a full bank	
+	LD BC, _BANK_BYTES_D8192						; 8192 bytes is a full bank.
 .loop
 	LD (HL), D
 	INC HL
 	DEC BC
 
-	; Check if BC is 0. OR returns 0 when both params are 0, it also sets ZF
+	; Check if BC is 0. OR returns 0 when both params are 0, it also sets ZF.
 	LD A, B
 	OR C
-	JR NZ, .loop								; Keep looping if ZF is not set (BC != 0)
+	JR NZ, .loop								; Keep looping if ZF is not set (BC != 0).
 
 	RET											; ## END of the function ##
 
