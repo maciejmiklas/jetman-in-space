@@ -550,10 +550,10 @@ _BM_PAL_BYTES_D512		= 512
 _BM_BANKS_D10			= 10
 
 ; ##############################################
-; In game backgrount on Layer 2
+; In game backgrount on Layer 2.
 _GBG_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
 _GBG_MOVE_SLOW_D3		= 3
-_GBG_OFFSET_D24 		= _TI_GND_D16-2			; 16-2 = 24
+_GBG_OFFSET_D14 		= _TI_GND_D16-2			; 16-2 = 14
 
 ; ##############################################
 ; Binary Data Loader
@@ -570,18 +570,18 @@ _BIN_STARTS_BANK2_D45	= 45
 ; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette. However, we load only 256x128 into RAM, 
 ; and the last 64 lines (two 8K banks) are filled with transparency.
 
-; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9"
-_BIN_BGR_ST_BANK_D18	= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks)
-_BIN_BGR_END_BANK_D27	= 27					; Last background bank (inclusive)
+; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
+_BIN_BGR_ST_BANK_D18	= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
+_BIN_BGR_END_BANK_D27	= 27					; Last background bank (inclusive).
 
 _BIN_BGR_PAL_BANK_D46	= 46
 
-; Image for Level 1 (all inclusive)
+; Image for Level 1 (all inclusive).
 _BIN_BGR_L1_ST_BANK_D47	= 47
 _BIN_BGR_L1_EN_BANK_D56 = _BIN_BGR_L1_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _BIN_BGR_L1_EN_BANK_D56 == 56
 
-; Image for Level 2 (all inclusive)
+; Image for Level 2 (all inclusive).
 _BIN_BGR_L2_ST_BANK_D57	= _BIN_BGR_L1_EN_BANK_D56+1
 	ASSERT _BIN_BGR_L2_ST_BANK_D57 == 57
 

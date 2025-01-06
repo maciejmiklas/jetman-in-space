@@ -73,7 +73,7 @@ PrintDebug
 	/*
 	LD B, 40
 	LD H, 0
-	LD A,  (bg.tmp)
+	LD A,  (bg.bgOffset)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 

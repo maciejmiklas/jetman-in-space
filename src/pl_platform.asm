@@ -402,8 +402,8 @@ JetPlatformTakesoff
 	CP jt.STATE_INACTIVE						; Check if Jetnan is on the ground/platform.
 	RET Z
 
-	; Jetman is taking off
-	LD A, jt.AIR_FLY.
+	; Jetman is taking off.
+	LD A, jt.AIR_FLY
 	CALL jt.SetJetStateAir
 
 	; Play takeoff animation.
@@ -420,7 +420,7 @@ JetPlatformTakesoff
 ;                      #JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
-
+	
 	; Ignore landing if jetman is already on the ground.
 	LD A, (jt.jetGnd)
 	CP jt.STATE_INACTIVE

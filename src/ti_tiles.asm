@@ -153,7 +153,7 @@ LoadTilemapPalette
 
 	; Bits
 	;  - 0: 1 = Enabe ULANext mode,
-	;  - 1-3: 0 = First palette ,
+	;  - 1-3: 0 = First palette,
 	;  - 6-4: 011 = Tilemap first palette,
 	;  - 7: 0 = enable autoincrement on write.
 	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
@@ -176,7 +176,7 @@ SetTilesClipFull
 	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X1_D0
 	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X2_D159
 	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_Y1_D0
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_FULLY2_D255-32
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_FULLY2_D255
 
 	RET											; ## END of the function ##
 

@@ -126,7 +126,7 @@ HideImageLine
 	; Each bank contains lines, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the picture),
 	; we have to set byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
 	LD HL, _RAM_SLOT7_START_HE000
-	LD D, 0
+	LD D, 0										; E contains the line number, reset only D to use DE for 16-bit math.
 	ADD HL, DE									; HL poits at line that will be replaced.
 
 	; ##########################################
@@ -136,7 +136,8 @@ HideImageLine
 	LD B, _BANK_BYTES_D8192/_BM_YRES_D256		; 8*1024/256=32
 .linesLoop
 	LD (HL), _COL_TRANSPARENT_D0
-	ADD HL, _BM_YRES_D256						; Move HL to the next line by adding 256 pixels.
+	ADD HL, _BM_YRES_D256						; Move DE to the next pixel to the right by adding 256 pixels.
+
 	DJNZ .linesLoop
 	POP BC
 	
@@ -144,7 +145,6 @@ HideImageLine
 
 	RET											; ## END of the function ##
 
-tmp byte 0
 ;----------------------------------------------------------;
 ;                 #ReplaceImageLine                        ;
 ;----------------------------------------------------------;
@@ -155,8 +155,8 @@ tmp byte 0
 ReplaceImageLine
 
 	LD B, 0
-.bankLoop										; Loop from 0 to _BM_BANKS_D10 - 1
-
+.bankLoop										; Loop from 0 to _BM_BANKS_D10 - 1.
+	
 	; ##########################################
 	; Setup banks. The source image will be stored in bank 6, destination image in bank 7. We will copy line from 6 to 7.
 
@@ -164,8 +164,8 @@ ReplaceImageLine
 	LD A, C
 	ADD B										; A points to current bank from the soure image.
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Slot 6 contains source of the image.
-
-	; Setup slot 7 with destination
+	
+	; Setup slot 7 with destination.
 	LD A, _BIN_BGR_ST_BANK_D18
 	ADD B										; A points to current bank of the source image.
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify dispalyed image.
@@ -175,6 +175,7 @@ ReplaceImageLine
 	PUSH BC
 
 	LD B, _BANK_BYTES_D8192/_BM_YRES_D256		; 8*1024/256=32
+	LD D, 0										; E contains the line number, reset only D to use DE for 16-bit math.
 .linesLoop
 
 	; Copy a pixel from the source image into C.
@@ -187,19 +188,17 @@ ReplaceImageLine
 	ADD HL, DE									; Move DE from the beginning of the bank to the current pixel.
 	LD (HL), C									; Store pixel value.
 
-	ADD DE, _BM_YRES_D256						; Move DE to the next line by adding 256 pixels.
+	ADD DE, _BM_YRES_D256						; Move DE to the next pixel to the right by adding 256 pixels.
 
 	DJNZ .linesLoop
 	POP BC
 	
-	DJNZ .bankLoop
-
 	; ##########################################
 	; Loop from 0 to _BM_BANKS_D10 - 1.
 	LD A, B
-	SUB 1
+	INC A
 	LD B, A
-	CP _BM_BANKS_D10 - 1
+	CP _BM_BANKS_D10
 	JR NZ, .bankLoop
 
 	RET											; ## END of the function ##

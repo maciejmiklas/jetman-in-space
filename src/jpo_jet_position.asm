@@ -119,11 +119,11 @@ DecJetY
 ; - B: number of pixels to move Jetman Up
 IncJetYbyB
 
-	LD A, (jpo.jetY)
-	ADD B
-	LD (jpo.jetY), A
-
-	CALL gc.JetmanMoves
+.loop	
+	PUSH BC
+	CALL IncJetY
+	POP BC
+	DJNZ .loop
 
 	RET											; ## END of the function ##
 
@@ -134,11 +134,11 @@ IncJetYbyB
 ; - B: number of pixels to move Jetman Up
 DecJetYbyB
 
-	LD A, (jpo.jetY)	
-	SUB B
-	LD (jpo.jetY), A
-
-	CALL gc.JetmanMoves
+.loop	
+	PUSH BC
+	CALL DecJetY
+	POP BC
+	DJNZ .loop
 
 	RET											; ## END of the function ##	
 

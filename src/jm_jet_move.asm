@@ -39,7 +39,6 @@ StandToWalk
 JoystickMoves
 
 	CALL pl.ResetJoyOffBump
-	CALL bg.UpdateBackgroundOnJetmanMove
 	CALL ro.UpdateRocketOnJetmanMove
 	CALL pl.JetPlatformHitOnJoyMove
 	
@@ -205,6 +204,7 @@ JoyMoveDown
 
 	; ##########################################
 	; Landing on the ground
+	LD A, (jpo.jetY)
 	CP _GSC_JET_GND_D217
 	CALL Z, pl.JetLanding						; Execute landing on the ground if Jetman has reached the ground.
 
