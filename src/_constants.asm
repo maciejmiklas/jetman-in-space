@@ -547,46 +547,48 @@ _BM_BYTES_D81920		= _BM_XRES_D320*_BM_YRES_D256
 	ASSERT _BM_BYTES_D81920 == 81920
 
 _BM_PAL_BYTES_D512		= 512
+_BM_PAL_COLORS_D255		= 255
 _BM_BANKS_D10			= 10
 
 ; ##############################################
 ; In game backgrount on Layer 2.
-_GBG_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GBG_MOVE_SLOW_D3		= 3
-_GBG_OFFSET_D14 		= _TI_GND_D16-2			; 16-2 = 14
+_GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
+_GB_MOVE_SLOW_D3		= 3
+_GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
 ; ##############################################
 ; Binary Data Loader
-_BIN_SPRITE_BYT_D16384	= 16384
-_BIN_SPRITE_BANK1_D40	= 40					; Sprites on bank 40, 41.
-_BIN_SPRITE_BANK2_D41	= 41
+_BN_SPRITE_BYT_D16384	= 16384
+_BN_SPRITE_BANK1_D40	= 40					; Sprites on bank 40, 41.
+_BN_SPRITE_BANK2_D41	= 41
 
-_BIN_TILES_BANK1_D42	= 42
-_BIN_TILES_BANK2_D43	= 43
+_BN_TILES_BANK1_D42		= 42
+_BN_TILES_BANK2_D43		= 43
 
-_BIN_STARTS_BANK1_D44	= 44
-_BIN_STARTS_BANK2_D45	= 45
+_BN_STARTS_BANK1_D44	= 44
+_BN_STARTS_BANK2_D45	= 45
 
 ; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette. However, we load only 256x128 into RAM, 
 ; and the last 64 lines (two 8K banks) are filled with transparency.
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
-_BIN_BGR_ST_BANK_D18	= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
-_BIN_BGR_END_BANK_D27	= 27					; Last background bank (inclusive).
+_BN_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
+_BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 
-_BIN_BGR_PAL_BANK_D46	= 46
+_BN_BG_PAL_BANK_D46		= 46
 
 ; Image for Level 1 (all inclusive).
-_BIN_BGR_L1_ST_BANK_D47	= 47
-_BIN_BGR_L1_EN_BANK_D56 = _BIN_BGR_L1_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BIN_BGR_L1_EN_BANK_D56 == 56
+_BN_BG_L1_PAL_COL_D45	= 45
+_BN_BG_L1_ST_BANK_D47	= 47
+_BN_BG_L1_EN_BANK_D56 = _BN_BG_L1_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L1_EN_BANK_D56 == 56
 
 ; Image for Level 2 (all inclusive).
-_BIN_BGR_L2_ST_BANK_D57	= _BIN_BGR_L1_EN_BANK_D56+1
-	ASSERT _BIN_BGR_L2_ST_BANK_D57 == 57
+_BN_BG_L2_ST_BANK_D57	= _BN_BG_L1_EN_BANK_D56+1
+	ASSERT _BN_BG_L2_ST_BANK_D57 == 57
 
-_BIN_BGR_L2_EN_BANK_D66	= _BIN_BGR_L2_ST_BANK_D57+_BM_BANKS_D10-1
-	ASSERT _BIN_BGR_L2_EN_BANK_D66 == 66
+_BN_BG_L2_EN_BANK_D66	= _BN_BG_L2_ST_BANK_D57+_BM_BANKS_D10-1
+	ASSERT _BN_BG_L2_EN_BANK_D66 == 66
 
 ; ##############################################
 ; Respown location

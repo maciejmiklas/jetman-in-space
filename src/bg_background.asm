@@ -14,21 +14,21 @@ bgOffset				BYTE 0
 ; It starts with 16 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
 UpdateBackgroundOnJetmanMove
 
-	; Divide the Jetman's position by _GBG_MOVE_SLOW_D3 to slow down the movement of the background.
+	; Divide the Jetman's position by _GB_MOVE_SLOW_D3 to slow down the movement of the background.
 	LD A, (jpo.jetY)
 	LD C, A
-	LD D, _GBG_MOVE_SLOW_D3
+	LD D, _GB_MOVE_SLOW_D3
 	CALL ut.CdivD
-	LD B, C										; B contains #jetY/_GBG_MOVE_SLOW_D3.
+	LD B, C										; B contains #jetY/_GB_MOVE_SLOW_D3.
 
 	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0.
-	LD A, _GSC_JET_GND_D217/_GBG_MOVE_SLOW_D3
+	LD A, _GSC_JET_GND_D217/_GB_MOVE_SLOW_D3
 	SUB B										; A contains _GSC_JET_GND_D217 - #jetY. It's 0 when Jemant stands on the ground.
 	LD B, A
 	LD (bgOffset), A
 
 	; Move background above the ground line
-	LD A, _GBG_OFFSET_D14
+	LD A, _GB_OFFSET_D14
 	SUB B										; B contains background offset.
 	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
 
@@ -84,7 +84,7 @@ ShowBackgroundAboveHorizon
 	INC A										; Move image one pixel down (TODO why is that ncessary?)
 	LD E, A										; E contains bottom line.
 
-	LD C, _BIN_BGR_L1_ST_BANK_D47
+	LD C, _BN_BG_L1_ST_BANK_D47
 	CALL bm.ReplaceImageLine
 
 	RET											; ## END of the function ##
@@ -103,11 +103,11 @@ AnimateBackgroundOnFlyRocket
 	; Start animation when the rocket reaches given height.
 	LD HL, (ro.rocketDistance)
 	LD A, H
-	CP 0										; If H > 0 then distance is definitely > _GBG_MOVE_ROCKET_D100.
+	CP 0										; If H > 0 then distance is definitely > _GB_MOVE_ROCKET_D100.
 	JR NZ, .afterAnimationStart
 
 	LD A, L
-	CP _GBG_MOVE_ROCKET_D100
+	CP _GB_MOVE_ROCKET_D100
 	RET C
 .afterAnimationStart
 

@@ -7,8 +7,11 @@
 ;                      #LoadLevel1                         ;
 ;----------------------------------------------------------;
 LoadLevel1
-	LD D, $$db.backGroundL1Img
+	LD B, _BN_BG_L1_PAL_COL_D45
 	LD HL, db.backGroundL1Palette
+	CALL bm.LoadLayer2Palette
+
+	LD D, $$db.backGroundL1Img
 	CALL bm.LoadLevel2Image
 
 	RET											; ## END of the function ##

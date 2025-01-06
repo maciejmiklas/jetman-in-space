@@ -9,12 +9,12 @@
 ; Fill last two banks of layer 2 image with transparent color.
 FillLevel2Image
 
-	NEXTREG _MMU_REG_SLOT7_H57, _BIN_BGR_END_BANK_D27-1
+	NEXTREG _MMU_REG_SLOT7_H57, _BN_BG_END_BANK_D27-1
 	LD HL, _RAM_SLOT7_START_HE000				; Start address of bank in slot 6.
 	LD D, _COL_TRANSPARENT_D0
 	CALL ut.FillBank
 
-	NEXTREG _MMU_REG_SLOT7_H57, _BIN_BGR_END_BANK_D27
+	NEXTREG _MMU_REG_SLOT7_H57, _BN_BG_END_BANK_D27
 	LD HL, _RAM_SLOT7_START_HE000				; Start address of bank in slot 6.
 	LD D, _COL_TRANSPARENT_D0
 	CALL ut.FillBank
@@ -28,16 +28,11 @@ FillLevel2Image
 ; display data (NEXTREG _DC_REG_L2_BANK_H12).
 ; Input:
 ;  - D:  Start bank containing background image source
-;  - HL: Address of layer 2 palette data. Must be in slot 6 ($C000-$DFFF)
 LoadLevel2Image
 	
-	; Setup layer 2 palette.
-	CALL LoadLayer2Palette
-
-	; ##########################################
 	; Copy image data from temp RAM into screen memory
 	NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default).
-	LD E, _BIN_BGR_ST_BANK_D18					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ....".
+	LD E, _BN_BG_ST_BANK_D18					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ....".
 	LD B, _BM_BANKS_D10							; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4.
 .slotLoop										; Each loop copies single bank, there are 10 iterations.
 	PUSH BC
@@ -62,13 +57,11 @@ LoadLevel2Image
 
 	RET											; ## END of the function ##
 
-xxx
-	INCBIN  "assets/l001_background.nxp", 0, _BM_PAL_BYTES_D512
-
 ;----------------------------------------------------------;
 ;                  #LoadLayer2Palette                      ;
 ;----------------------------------------------------------;
 ; Input:
+;  - B:  Sieze of the pallete in bytes.
 ;  - HL: Address of layer 2 palette data. Must be in slot 6 ($C000-$DFFF).
 ; Modifies: A,B,HL
 LoadLayer2Palette
@@ -83,11 +76,12 @@ LoadLayer2Palette
 	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start writing the palette from the first color, we will replace all 256 colors.
 		
 	; Memory bank (8KiB) containing layer 2 palette data.
-	NEXTREG _MMU_REG_SLOT6_H56, _BIN_BGR_PAL_BANK_D46
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_BG_PAL_BANK_D46
 
-	; Copy 9 bit (2 bytes per color) palette.
-	LD B, 255									; 256 colors (loop counter), palette has 512 bytes, but we read two bytes in one iteration.
-.loop:
+	; ##########################################
+	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
+	PUSH BC
+.loopCopyColor:
 	
 	; - Two consecutive writes are needed to write the 9 bit colour:
 	; - 1st write: bits 7-0 = RRRGGGBB
@@ -102,7 +96,24 @@ LoadLayer2Palette
 	LD A, (HL)
 	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
 	INC HL		
-	DJNZ .loop
+	DJNZ .loopCopyColor
+	POP BC
+
+	; ##########################################
+	; Fill the remaining colors with transparent.
+
+	; We copied the number of colors given by B, but we had to copy 256 colors (512 bytes). 
+	LD A, _BM_PAL_COLORS_D255
+	SUB B
+	LD B, A										; B contains the number of colors that must be filled to complete 256.
+	
+	LD A, _COL_TRANSPARENT_D0					; Fill remaining colors with transparent
+.loopFillBlank:
+
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 1st write
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 2nd write
+
+	DJNZ .loopFillBlank
 
 	RET											; ## END of the function ##
 
@@ -117,9 +128,9 @@ HideImageLine
 	LD B, _BM_BANKS_D10
 .bankLoop										; Loop from 10 (_BM_BANKS_D10) to 0.
 
-	; We will iterate over 10 banks ascending from _BIN_BGR_ST_BANK_D18 to _BIN_BGR_END_BANK_D27.
+	; We will iterate over 10 banks ascending from _BN_BG_ST_BANK_D18 to _BN_BG_END_BANK_D27.
 	; However, the loop starts at 10 (inclusive) and goes to 0 (exclusive)
-	LD A, _BIN_BGR_END_BANK_D27 + 1				; 27 + 1 - 10 = 18 -> _BIN_BGR_END_BANK_D27 + 1 - _BM_BANKS_D10 = _BIN_BGR_ST_BANK_D18
+	LD A, _BN_BG_END_BANK_D27 + 1				; 27 + 1 - 10 = 18 -> _BN_BG_END_BANK_D27 + 1 - _BM_BANKS_D10 = _BN_BG_ST_BANK_D18
 	SUB B
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify dispalyed image.
 
@@ -166,7 +177,7 @@ ReplaceImageLine
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Slot 6 contains source of the image.
 	
 	; Setup slot 7 with destination.
-	LD A, _BIN_BGR_ST_BANK_D18
+	LD A, _BN_BG_ST_BANK_D18
 	ADD B										; A points to current bank of the source image.
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify dispalyed image.
 
