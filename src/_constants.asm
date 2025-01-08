@@ -578,7 +578,6 @@ _BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 _BN_BG_PAL_BANK_D46		= 46
 
 ; Image for Level 1 (all inclusive).
-_BN_BG_L1_PAL_COL_D45	= 45
 _BN_BG_L1_ST_BANK_D47	= 47
 _BN_BG_L1_EN_BANK_D56 = _BN_BG_L1_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _BN_BG_L1_EN_BANK_D56 == 56

@@ -70,9 +70,9 @@ tilePaletteBinLength = $ - tilePaletteBin
 	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6.
 
 starsBin INCBIN "assets/stars.map"
-starsBinLength = $ - starsBin
+starsBinSize = $ - starsBin
 
-	ASSERT starsBinLength == _TIS_BYTES_D10240
+	ASSERT starsBinSize == _TIS_BYTES_D10240
 	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
 	ASSERT $$ == _BN_STARTS_BANK2_D45 			; All data should fit into bank 43.
@@ -83,11 +83,17 @@ starsBinLength = $ - starsBin
 	MMU _RAM_SLOT6, _BN_BG_PAL_BANK_D46
 	ORG _RAM_SLOT6_START_HC000
 
-backGroundL1Palette
-	INCBIN  "assets/l001_background.nxp", 0, _BN_BG_L1_PAL_COL_D45*2
+backgroundL1Palette
+	INCBIN  "assets/l001_background.nxp"
 
-backGroundL2Palette
-	INCBIN  "assets/l002_background.nxp", 0, _BM_PAL_BYTES_D512
+backgroundL1PaletteSize = $ - backgroundL1Palette
+	ASSERT backgroundL1PaletteSize <= _BM_PAL_BYTES_D512
+
+backgroundL2Palette
+	INCBIN  "assets/l002_background.nxp"
+
+backgroundL2PaletteSize = $ - backgroundL2Palette
+	ASSERT backgroundL2PaletteSize <= _BM_PAL_BYTES_D512	
 
 	ASSERT $$ == _BN_BG_PAL_BANK_D46
 
@@ -112,12 +118,12 @@ backGroundL1Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L2_ST_BANK_D57
 	ORG _RAM_SLOT6_START_HC000
-backGroundL2Img	
+backgroundL2Img	
 	INCBIN "assets/l002_background.nxi", 0, _BM_BYTES_D81920
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L2_EN_BANK_D66+1		; Image has 32768 bytes, 4 banks.
-	ASSERT $$backGroundL2Img == _BN_BG_L2_ST_BANK_D57
+	ASSERT $$backgroundL2Img == _BN_BG_L2_ST_BANK_D57
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

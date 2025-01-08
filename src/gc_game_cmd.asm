@@ -7,8 +7,8 @@
 ;                      #LoadLevel1                         ;
 ;----------------------------------------------------------;
 LoadLevel1
-	LD B, _BN_BG_L1_PAL_COL_D45
-	LD HL, db.backGroundL1Palette
+	LD B, db.backgroundL1PaletteSize
+	LD HL, db.backgroundL1Palette
 	CALL bm.LoadLayer2Palette
 
 	LD D, $$db.backGroundL1Img
@@ -20,8 +20,11 @@ LoadLevel1
 ;                      #LoadLevel2                         ;
 ;----------------------------------------------------------;
 LoadLevel2
-	LD D, $$db.backGroundL2Img
-	LD HL, db.backGroundL2Palette
+	
+	LD B, db.backgroundL1PaletteSize
+	LD HL, db.backgroundL2Palette
+
+	LD D, $$db.backgroundL2Img
 	CALL bm.LoadLevel2Image
 
 	RET											; ## END of the function ##	
@@ -46,6 +49,7 @@ RocketExplosionOver
 	CALL ro.HideRocket
 	CALL ro.ResetAndDisableRocket
 	CALL ti.SetTilesClipFull
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
