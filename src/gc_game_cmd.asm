@@ -14,6 +14,21 @@ LoadLevel1
 	LD D, $$db.backGroundL1Img
 	CALL bm.LoadLevel2Image
 
+	LD DE, $1FF
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	CALL bm.BrightnessDown
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -22,6 +22,108 @@ FillLevel2Image
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                    #BrightnessDown                       ;
+;----------------------------------------------------------;
+; Input
+;  - DE: Contains 9-bit color.
+; Output:
+;  - DE: Given color with decremented brightness.
+BrightnessDown
+
+	; Decrement red color (RRR'xxx'xx)
+	LD A, E
+	AND _BM_PAL_RRR_MASK						; Reset all bits but red.
+
+	CP 0										; Do not decrement if red is already at 0.
+	JR Z, .afterDecrementRed
+
+	; Red is above 0, decrement it.
+	SUB _BM_PAL_RRR_INC
+
+	; Update orginal color in DE
+	LD B, A										; Keep A in B, A contains new RRR value.
+
+	LD A, E										; Load RRR'GGG'BB into A and reset RRR, because we will set it to new value with XOR.
+	AND _BM_PAL_RRR_MASKN
+	XOR B										; Set new RRR value to E.
+	LD E, A										; Update orginal input/return value.
+
+.afterDecrementRed
+
+	; ##########################################
+	; Decrement green color (xxx'GGG'xxx)
+
+	LD A, E
+	AND _BM_PAL_GGG_MASK						; Reset all bits but green.
+
+	CP 0										; Do not decrement if green is already at 0.
+	JR Z, .afterDecrementGreen
+
+	; Green is above 0, decrement it.
+	SUB _BM_PAL_GGG_INC
+
+	; Update orginal color in DE.
+	LD B, A										; Keep A in B, A contains new GGG value.
+
+	LD A, E										; Load RRR'GGG'BB into A and reset GGG, because we will set it to new value with XOR.
+	AND _BM_PAL_GGG_MASKN
+	XOR B										; Set new GGG value to E.
+	LD E, A										; Update orginal input/return value.
+.afterDecrementGreen	
+
+	; ##########################################
+	; Decrement blue color part 1: xxx'xxx'BB
+
+.beforeDecrementBB
+	; Try decrementing the first byte: xxx'xxx'BB
+	LD A, E
+	AND _BM_PAL_BB_MASK							; Reset all bits but blue.
+
+	CP 0										; Do not decrement if blue is already at 0
+	JR Z, .afterDecrementBB
+
+	; Blue is above 0, decrement it.
+	DEC A
+
+	; Update orginal color in DE.
+	LD B, A										; Keep A in B, A contains new BB value.
+
+	LD A, E										; Load RRR'GGG'BB into A and reset BB, because we will set it to new value with XOR.
+	AND _BM_PAL_BB_MASKN
+	XOR B										; Set new GGG value to E.
+	LD E, A										; Update orginal input/return value.
+	JR .afterDecrementB							; Do not decrement B if BB was decremented.
+.afterDecrementBB
+
+	; ##########################################
+	; Decrement blue color part 2: B'0000000. Decrement B only if BB is already 0 and B is 1.
+
+	; Check
+	LD A, E
+	AND _BM_PAL_BB_MASK							; Reset all bits but blue.
+
+	; Check if BB is 0
+	CP 0										; Do not decrement B if BB > 0
+	JR NZ, .afterDecrementB
+
+	; BB == 0, but is B > 0 ?
+	LD A, D
+	CP 0
+	JR Z, .afterDecrementB						; Jump if A (and also D) is already 0
+
+	; B is 1, reset it and set BB to 11. 
+	XOR A
+	LD D, A										; D is 0
+
+	; Set BB to 11
+	LD A, E
+	XOR _BM_PAL_BB_MASK							; BB is 00 -> 00 XOR 11 = 11
+	LD E, A	
+.afterDecrementB
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                    #LoadLevel2Image                      ;
 ;----------------------------------------------------------;
 ; Copies data from slots 6 to 7. Slot 6 points to the bank containing the source of the image, and slot 7 points to the bank that contains 

@@ -550,6 +550,20 @@ _BM_PAL_BYTES_D512		= 512
 _BM_PAL_COLORS_D255		= 255
 _BM_BANKS_D10			= 10
 
+_BM_PAL_RRR_MASK		= %111'000'00 			; Mask red color
+_BM_PAL_RRR_MASKN		= %000'111'11 			; Mask all but red color
+_BM_PAL_RRR_INC			= %001'000'00 			; Increase/decrease red color
+
+_BM_PAL_GGG_MASK		= %000'111'00 			; Mask green color
+_BM_PAL_GGG_MASKN		= %111'000'11 			; Mask all but green color
+_BM_PAL_GGG_INC			= %000'001'00 			; Increase/decrease green color
+
+
+_BM_PAL_BB_MASK			= %000'000'11
+_BM_PAL_BB_MASKN		= %111'111'00
+
+_BM_PAL_B_MASK			= %0000000'1 
+
 ; ##############################################
 ; In game backgrount on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
