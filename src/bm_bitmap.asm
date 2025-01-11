@@ -4,28 +4,10 @@
 	MODULE bm
 
 ;----------------------------------------------------------;
-;                    #FillLevel2Image                      ;
-;----------------------------------------------------------;
-; Fill last two banks of layer 2 image with transparent color.
-FillLevel2Image
-
-	NEXTREG _MMU_REG_SLOT7_H57, _BN_BG_END_BANK_D27-1
-	LD HL, _RAM_SLOT7_START_HE000				; Start address of bank in slot 6.
-	LD D, _COL_TRANSPARENT_D0
-	CALL ut.FillBank
-
-	NEXTREG _MMU_REG_SLOT7_H57, _BN_BG_END_BANK_D27
-	LD HL, _RAM_SLOT7_START_HE000				; Start address of bank in slot 6.
-	LD D, _COL_TRANSPARENT_D0
-	CALL ut.FillBank
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                    #BrightnessDown                       ;
 ;----------------------------------------------------------;
 ; Input
-;  - DE: Contains 9-bit color.
+;  - DE: Contains 9-bit color. D = xxxxxxx'B, E = RRR'BBB'GG
 ; Output:
 ;  - DE: Given color with decremented brightness.
 BrightnessDown
@@ -124,6 +106,142 @@ BrightnessDown
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                 #CopyPalleteToTmp                        ;
+;----------------------------------------------------------;
+; Input:
+;  - BC: Sieze of the pallete in bytes.
+;  - HL: Address of layer 2 palette data. Must be in slot 6 ($C000-$DFFF).
+CopyPalleteToTmp
+
+	CALL SetupPaletteBank
+	
+	LD DE, db.backgroundTmpPalette				; Destination
+	LDIR
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #PaletteBrightnessDown                     ;
+;----------------------------------------------------------;
+; Decreases brightness of each color in #backgroundTmpPalette and loads it. Call #CopyPalleteToTmp to setup tmep.
+; Input:
+;  - B:  Sieze of the pallete in bytes.
+PaletteBrightnessDown
+
+	CALL SetupPaletteLoad
+	
+	; ##########################################
+	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
+	LD HL, db.backgroundTmpPalette
+.loopCopyColor:
+	
+	; ##########################################
+	; Decrease the brightness of the current color.
+	PUSH BC
+	LD DE, (HL)
+	CALL BrightnessDown							; DE contains color.
+	LD (HL), DE									; Update temp color.
+	POP BC
+
+	; - Two consecutive writes are needed to write the 9 bit colour:
+	; - 1st write: bits 7-0 = RRRGGGBB
+	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B
+
+	; 1st write
+	LD A, E
+	INC HL
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+
+	; 2nd write
+	LD A, D
+	
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+	INC HL		
+	DJNZ .loopCopyColor
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #SetupPaletteLoad                      ;
+;----------------------------------------------------------;
+SetupPaletteLoad
+
+	; Setup palette that is going to be written, bits:
+	;  - 0:   0 = Disable ULANext mode
+	;  - 1-3: 0 = First palette 
+	;  - 6-4: 001 = Write layer 2 first palette
+	;  - 7:   0 = enable palette write auto-increment for _DC_REG_LA2_PAL_VAL_H44
+	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'001'000'1 
+
+	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start writing the palette from the first color, we will replace all 256 colors.
+		
+	CALL SetupPaletteBank
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #SetupPaletteBank                      ;
+;----------------------------------------------------------;
+SetupPaletteBank
+
+	; Memory bank (8KiB) containing layer 2 palette data.
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_BG_PAL_BANK_D46
+	
+	RET											; ## END of the function ##
+;----------------------------------------------------------;
+;                  #LoadLayer2Palette                      ;
+;----------------------------------------------------------;
+; Input:
+;  - B:  Sieze of the pallete in bytes.
+;  - HL: Address of layer 2 palette data. Must be in slot 6 ($C000-$DFFF).
+LoadLayer2Palette
+
+	CALL SetupPaletteLoad
+	; ##########################################
+	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
+.loopCopyColor:
+	
+	; - Two consecutive writes are needed to write the 9 bit colour:
+	; - 1st write: bits 7-0 = RRRGGGBB,
+	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B.
+
+	; 1st write
+	LD A, (HL)
+	INC HL
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+
+	; 2nd write
+	LD A, (HL)
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+	INC HL		
+	DJNZ .loopCopyColor
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #FillLayer2Palette                      ;
+;----------------------------------------------------------;
+; Fill the remaining colors with transparent.
+; Input:
+;  - B:  Sieze of the pallete in bytes.
+FillLayer2Palette
+
+	; We copied the number of colors given by B, but we had to copy 256 colors (512 bytes). 
+	LD A, _BM_PAL_COLORS_D255
+	SUB B
+	LD B, A										; B contains the number of colors that must be filled to complete 256.
+	
+	LD A, _COL_TRANSPARENT_D0					; Fill remaining colors with transparent
+.loopFillBlank:
+
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 1st write
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 2nd write
+
+	DJNZ .loopFillBlank
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                    #LoadLevel2Image                      ;
 ;----------------------------------------------------------;
 ; Copies data from slots 6 to 7. Slot 6 points to the bank containing the source of the image, and slot 7 points to the bank that contains 
@@ -156,66 +274,6 @@ LoadLevel2Image
 	
 	POP BC
 	DJNZ .slotLoop
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #LoadLayer2Palette                      ;
-;----------------------------------------------------------;
-; Input:
-;  - B:  Sieze of the pallete in bytes.
-;  - HL: Address of layer 2 palette data. Must be in slot 6 ($C000-$DFFF).
-; Modifies: A,B,HL
-LoadLayer2Palette
-
-	; Setup palette that is going to be written, bits:
-	;  - 0:   0 = Disable ULANext mode
-	;  - 1-3: 0 = First palette 
-	;  - 6-4: 001 = Write layer 2 first palette
-	;  - 7:   0 = enable palette write auto-increment for _DC_REG_LA2_PAL_VAL_H44
-	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'001'000'1 
-
-	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start writing the palette from the first color, we will replace all 256 colors.
-		
-	; Memory bank (8KiB) containing layer 2 palette data.
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_BG_PAL_BANK_D46
-
-	; ##########################################
-	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
-	PUSH BC
-.loopCopyColor:
-	
-	; - Two consecutive writes are needed to write the 9 bit colour:
-	; - 1st write: bits 7-0 = RRRGGGBB
-	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B
-
-	; 1st write
-	LD A, (HL)
-	INC HL
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
-
-	; 2nd write
-	LD A, (HL)
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
-	INC HL		
-	DJNZ .loopCopyColor
-	POP BC
-
-	; ##########################################
-	; Fill the remaining colors with transparent.
-
-	; We copied the number of colors given by B, but we had to copy 256 colors (512 bytes). 
-	LD A, _BM_PAL_COLORS_D255
-	SUB B
-	LD B, A										; B contains the number of colors that must be filled to complete 256.
-	
-	LD A, _COL_TRANSPARENT_D0					; Fill remaining colors with transparent
-.loopFillBlank:
-
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 1st write
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 2nd write
-
-	DJNZ .loopFillBlank
 
 	RET											; ## END of the function ##
 

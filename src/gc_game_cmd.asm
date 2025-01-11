@@ -9,25 +9,49 @@
 LoadLevel1
 	LD B, db.backgroundL1PaletteSize
 	LD HL, db.backgroundL1Palette
+	PUSH BC
 	CALL bm.LoadLayer2Palette
+	POP BC
+	CALL bm.FillLayer2Palette
 
-	LD D, $$db.backGroundL1Img
+	LD D, $$db.backgroundL1Img
 	CALL bm.LoadLevel2Image
 
-	LD DE, $1FF
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
-	CALL bm.BrightnessDown
+	LD BC, db.backgroundL1PaletteSize
+	LD HL, db.backgroundL1Palette
+	CALL bm.CopyPalleteToTmp
+	
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	CALL ut.Pause
+	LD B, db.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown	
 	
 	RET											; ## END of the function ##
 

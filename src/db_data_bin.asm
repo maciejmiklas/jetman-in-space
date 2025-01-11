@@ -78,7 +78,7 @@ starsBinSize = $ - starsBin
 	ASSERT $$ == _BN_STARTS_BANK2_D45 			; All data should fit into bank 43.
 
 ;----------------------------------------------------------;
-;     #Load Game Background Palettes into bank 46          ;
+;          #Load Game Palettes into bank 46                ;
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6, _BN_BG_PAL_BANK_D46
 	ORG _RAM_SLOT6_START_HC000
@@ -97,6 +97,10 @@ backgroundL2PaletteSize = $ - backgroundL2Palette
 
 	ASSERT $$ == _BN_BG_PAL_BANK_D46
 
+	; Space for temp palette
+	ASSERT $ < _RAM_SLOT6_END_HDFFF - _BM_PAL_BYTES_D512
+backgroundTmpPalette
+
 ;----------------------------------------------------------;
 ;   #Load Game Background for Level 1 into bank 47...56    ;
 ;----------------------------------------------------------;
@@ -106,12 +110,12 @@ backgroundL2PaletteSize = $ - backgroundL2Palette
 ; and load the next 8KiB chunk, repeating the whole process.
 	MMU _RAM_SLOT6 n, _BN_BG_L1_ST_BANK_D47
 	ORG _RAM_SLOT6_START_HC000
-backGroundL1Img	
+backgroundL1Img	
 	INCBIN "assets/l001_background.nxi", 0, _BM_BYTES_D81920
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L1_EN_BANK_D56+1		; Image has 32768 bytes, 4 banks.
-	ASSERT $$backGroundL1Img == _BN_BG_L1_ST_BANK_D47
+	ASSERT $$backgroundL1Img == _BN_BG_L1_ST_BANK_D47
 
 ;----------------------------------------------------------;
 ;   #Load Game Background for Level 2 into bank 57...66    ;
