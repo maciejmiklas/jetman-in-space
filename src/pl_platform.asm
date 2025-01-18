@@ -42,7 +42,7 @@ platformsSize 			BYTE 3
 PLATFORM_WALK_INCATIVE	= $FF					; Not on any plaftorm.
 platformWalkNumber		BYTE PLATFORM_WALK_INCATIVE
 
-joyOffBump				BYTE _PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decreases with each hit.
+joyOffBump				BYTE _PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
 
 ;----------------------------------------------------------;
 ;                #JetPlatformHitOnJoyMove                  ;
@@ -576,7 +576,7 @@ PlaftormHit
 	LD HL, DE									; HL holds X postion of the sprite.
 	PUSH HL
 
-	; Subtracting the left margin from the left side of the platform will move the left margin to the left and increase the platform's left width.
+	; Subtracting the left margin from the left side of the platform will move the left margin to the left and increment the platform's left width.
 	LD HL, (IY + PLA.X_LEFT)					; HL holds start of the platform (left side).
 	LD DE, (IX + PLAM.X_LEFT)					; DE holds left margin.
 	SBC HL, DE

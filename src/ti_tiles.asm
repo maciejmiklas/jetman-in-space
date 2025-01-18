@@ -120,22 +120,22 @@ LoadTiles
 
 	; ##########################################
 	; Setup palette
-	LD HL, db.tilePaletteBin					; Address of palette data in memory.
-	LD B, db.tilePaletteBinLength				; Number of colors to copy.
+	LD HL, dbi.tilePaletteBin					; Address of palette data in memory.
+	LD B, dbi.tilePaletteBinLength				; Number of colors to copy.
 	CALL LoadTilemapPalette
 
 	; ##########################################
 	; Copy tilemap to expected memory.
 	LD DE, _TI_START_H5B00
-	LD HL, db.tilemapBin						; Addreess of tilemap in memory.
-	LD BC, db.tilemapBinLength	
+	LD HL, dbi.tilemapBin						; Addreess of tilemap in memory.
+	LD BC, dbi.tilemapBinLength	
 	LDIR
 
 	; ##########################################
 	; Copy tile definitions to expected memory.
 	LD DE, _TID_START_H6500
-	LD HL, db.tileDefBin						; Address of tiles in memory.
-	LD BC, db.tileDefBinLength					; Number of bytes to copy.
+	LD HL, dbi.tileDefBin						; Address of tiles in memory.
+	LD BC, dbi.tileDefBinLength					; Number of bytes to copy.
 	LDIR
 
 	RET											; ## END of the function ##

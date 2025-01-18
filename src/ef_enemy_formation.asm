@@ -29,15 +29,15 @@ RespownFormation
 	; Compare timer
 	LD A, B
 	CP D
-	JR NZ, .increaseDelayTimer					; Jump if B != E.
+	JR NZ, .incrementDelayTimer					; Jump if B != E.
 
 	LD A, C
 	CP E
-	JR NZ, .increaseDelayTimer					; Jump if C != E.
+	JR NZ, .incrementDelayTimer					; Jump if C != E.
 
 	JR .afterDelayTimer							; RESPOWN_DELAY == RESPOWN_DELAY_CNT -> deplyment is active.
-.increaseDelayTimer
-	INC DE										; Increase delay timer and return.
+.incrementDelayTimer
+	INC DE										; Increment delay timer and return.
 	LD (IY + EF.RESPOWN_DELAY_CNT), DE
 	RET
 .afterDelayTimer

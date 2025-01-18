@@ -52,11 +52,11 @@ NextStarsRow
 	; ##########################################
 	; Prepare tile copy fom temp RAM to screen RAM.
 
-	; Load the memory address of the starts row to be copied into HL. HL = db.starsBin + starsRow * _TI_H_BYTES_D80.
+	; Load the memory address of the starts row to be copied into HL. HL = dbi.starsBin + starsRow * _TI_H_BYTES_D80.
 	LD D, A
 	LD E, _TI_H_BYTES_D80
 	MUL D, E									; DE contains byte offset to current row.
-	LD HL, db.starsBin
+	LD HL, dbi.starsBin
 	ADD HL, DE									; Move RAM pointer to current row.
 
 	; Load the memory address of ingame tiles into DE. This row will be replaced with stars. DE = _TI_START_H5B00 + tilesRow * _TI_H_BYTES_D8.0

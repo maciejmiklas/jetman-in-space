@@ -61,11 +61,11 @@ rocketExhaustDB									; Sprite IDs for exhaust
 rocketExhaustCnt		BYTE 0					; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
 RO_EXHAUST_MAX			= 18
 
-rocketDistance			WORD 0					; Increases with every rocket move when the rocket is flying towards the next planet.
+rocketDistance			WORD 0					; Increments with every rocket move when the rocket is flying towards the next planet.
 
-rocketDelayDistance		BYTE 0					; Counts from 0 to _RO_FLY_DELAY_DIST_D5, increases with every rocket move (when #rocketFlyDelay resets).
-rocketFlyDelay			BYTE _RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, decreasess with every skipped rocket move.
-rocketFlyDelayCnt		BYTE _RO_FLY_DELAY_D8	; Counts from _RO_FLY_DELAY_D8 to 0, decreasess when #rocketDelayDistance resets.
+rocketDelayDistance		BYTE 0					; Counts from 0 to _RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets).
+rocketFlyDelay			BYTE _RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, decrementss with every skipped rocket move.
+rocketFlyDelayCnt		BYTE _RO_FLY_DELAY_D8	; Counts from _RO_FLY_DELAY_D8 to 0, decrementss when #rocketDelayDistance resets.
 
 ; Three explode DBs for three rocket elements.
 rocketExplodeDB1		DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33	; bottom element
@@ -406,7 +406,7 @@ AnimateRocketExhaust
 	XOR A										; Reset counter.
 .afterIncrement	
 
-	LD (rocketExhaustCnt), A					; Store current counter (increased or reset).
+	LD (rocketExhaustCnt), A					; Store current counter (incrementd or reset).
 
 	; Set the ID of the sprite for the following commands.
 	LD A, _RO_EXHAUST_SPRID_D43
@@ -458,8 +458,8 @@ MoveFlyingRocket
 
 	; Slow down rocket movement speed while taking off. 
 	; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
-	; with a given delay. When the current section ends, the following section begins, but with decreased delay. During each section, 
-	; the rocket moves by the same amount of pixels on the Y axis, only the delay decreases with each following section.
+	; with a given delay. When the current section ends, the following section begins, but with decrementd delay. During each section, 
+	; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
 
 	; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.
 	LD A, (rocketFlyDelayCnt)
@@ -486,7 +486,7 @@ MoveFlyingRocket
 	CP _RO_FLY_DELAY_DIST_D5
 	JR NZ, .afterDelay							; Jump if rocket should still move with current delay.
 
-	; The rocket traveled far enough, decrease the delay for the next section.
+	; The rocket traveled far enough, decrement the delay for the next section.
 	LD A, (rocketFlyDelayCnt)
 	DEC A
 	LD (rocketFlyDelayCnt), A

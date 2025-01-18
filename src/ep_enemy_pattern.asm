@@ -4,8 +4,8 @@
 	MODULE ep
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPOWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
-respownDelayCnt 			DB 0
-respownDelay 				DB 20				; Amount of game loops to respawn single enemy.
+respownDelayCnt 		DB 0
+respownDelay 			DB 20					; Amount of game loops to respawn single enemy.
 
 ; Extends #SPR by additional params.
 	STRUCT ENP
@@ -55,7 +55,7 @@ MOVE_DELAY_CNT_INC		= %0001'0000
 ; 4) _    , DEC Y:	%0'011'1'011
 ; 5) _,     DEC Y:	%0'011'1'100
 ; 6) _,     DEC Y:	%0'011'1'101
-; In this example, both counters count up, and hoverer X position is increased (move right), and Y is decrementd (move up).
+; In this example, both counters count up, and hoverer X position is incrementd (move right), and Y is decrementd (move up).
 
 MOVE_PAT_X_MASK			= %0'000'0'111
 MOVE_PAT_X_ADD			= %0'000'0'001

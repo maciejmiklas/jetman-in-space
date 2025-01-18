@@ -4,7 +4,7 @@
 	MODULE jm
 
 ; Hovering/Standing
-; The counter increases with each frame when no up/down is pressed.
+; The counter increments with each frame when no up/down is pressed.
 ; When it reaches #_HOVER_START_D250, Jetman will start hovering.
 jetInactivityCnt		BYTE 0
 

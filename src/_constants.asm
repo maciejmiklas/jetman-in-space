@@ -546,23 +546,25 @@ _BM_YRES_D256			= 256
 _BM_BYTES_D81920		= _BM_XRES_D320*_BM_YRES_D256
 	ASSERT _BM_BYTES_D81920 == 81920
 
-_BM_PAL_BYTES_D512		= 512
-_BM_PAL_COLORS_D255		= 255
+_BM_PAL2_BYTES_D512		= 512
+_BM_PAL2_COLORS_D255	= 255
 _BM_BANKS_D10			= 10
 
-_BM_PAL_RRR_MASK		= %111'000'00 			; Mask red color
-_BM_PAL_RRR_MASKN		= %000'111'11 			; Mask all but red color
-_BM_PAL_RRR_INC			= %001'000'00 			; Increase/decrease red color
+_BM_PAL2_MIN			= 0
+_BM_PAL2_MAX			= 7
+_BM_PAL2_RRR_MASK		= %111'000'00 			; Mask red color
+_BM_PAL2_RRR_MASKN		= %000'111'11 			; Mask all but red color
+_BM_PAL2_RRR_INC		= %001'000'00 			; Increment/decrement red color
 
-_BM_PAL_GGG_MASK		= %000'111'00 			; Mask green color
-_BM_PAL_GGG_MASKN		= %111'000'11 			; Mask all but green color
-_BM_PAL_GGG_INC			= %000'001'00 			; Increase/decrease green color
+_BM_PAL2_GGG_MASK		= %000'111'00 			; Mask green color
+_BM_PAL2_GGG_MASKN		= %111'000'11 			; Mask all but green color
+_BM_PAL2_GGG_INC		= %000'001'00 			; Increment/decrement green color
 
 
-_BM_PAL_BB_MASK			= %000'000'11
-_BM_PAL_BB_MASKN		= %111'111'00
+_BM_PAL2_BB_MASK		= %000'000'11
+_BM_PAL2_BB_MASKN		= %111'111'00
 
-_BM_PAL_B_MASK			= %0000000'1 
+_BM_PAL2_B_MASK			= %0000000'1 
 
 ; ##############################################
 ; In game backgrount on Layer 2.
@@ -589,19 +591,20 @@ _BN_STARTS_BANK2_D45	= 45
 _BN_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
 _BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 
-_BN_BG_PAL_BANK_D46		= 46
+_BN_PAL2_BANK_D46		= 46					; Layer 2 palletes
+_BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for palletes from _BN_PAL2_BANK_D46
 
 ; Image for Level 1 (all inclusive).
-_BN_BG_L1_ST_BANK_D47	= 47
-_BN_BG_L1_EN_BANK_D56 = _BN_BG_L1_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L1_EN_BANK_D56 == 56
+_BN_BG_L1_ST_BANK_D48	= 48
+_BN_BG_L1_EN_BANK_D57 = _BN_BG_L1_ST_BANK_D48+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L1_EN_BANK_D57 == 57
 
 ; Image for Level 2 (all inclusive).
-_BN_BG_L2_ST_BANK_D57	= _BN_BG_L1_EN_BANK_D56+1
-	ASSERT _BN_BG_L2_ST_BANK_D57 == 57
+_BN_BG_L2_ST_BANK_D58	= _BN_BG_L1_EN_BANK_D57+1
+	ASSERT _BN_BG_L2_ST_BANK_D58 == 58
 
-_BN_BG_L2_EN_BANK_D66	= _BN_BG_L2_ST_BANK_D57+_BM_BANKS_D10-1
-	ASSERT _BN_BG_L2_EN_BANK_D66 == 66
+_BN_BG_L2_EN_BANK_D67	= _BN_BG_L2_ST_BANK_D58+_BM_BANKS_D10-1
+	ASSERT _BN_BG_L2_EN_BANK_D67 == 67
 
 ; ##############################################
 ; Respown location

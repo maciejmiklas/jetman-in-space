@@ -29,7 +29,7 @@ shots10
 SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 FIRE_DELAY				= 15
-; The counter is increased with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY.
+; The counter is incrementd with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY.
 shotsDelayCnt
 	DB 0
 
@@ -231,10 +231,10 @@ MoveShots
 ;----------------------------------------------------------;
 FireDelayCounter
 	
-	; Increase shot counter.
+	; Increment shot counter.
 	LD A, (shotsDelayCnt)
 	CP FIRE_DELAY
-	RET Z										; Do increase the delay counter when it has reached the required value.
+	RET Z										; Do increment the delay counter when it has reached the required value.
 
 	INC A
 	LD (shotsDelayCnt), A

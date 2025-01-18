@@ -384,7 +384,7 @@ MoveX
 	JR .afterMoving
 
 .moveRight
-	; Moving right - increase X coordinate.
+	; Moving right - increment X coordinate.
 	LD HL, (IX + SPR.X)	
 
 .moveRightLoop	
