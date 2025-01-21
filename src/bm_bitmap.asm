@@ -6,6 +6,46 @@
 brL2PaletteAddr 		WORD 0					; Pointer to current brightness palette.
 
 ;----------------------------------------------------------;
+;                  #PaletteBrightnessUp                    ;
+;----------------------------------------------------------;
+; Input
+;  - BC:  Sieze of the pallete in bytes.
+PaletteBrightnessUp
+
+	CALL SetupPaletteLoad
+
+	; ##########################################
+	; Moves #brL2PaletteAddr to the previous palette
+	LD HL, (brL2PaletteAddr)
+	ADD HL, -_BM_PAL2_BYTES_D512
+	LD (brL2PaletteAddr), HL
+	
+	; ##########################################
+	; Load colors
+	CALL BytesToColors							; BC contains color size in bytes, we need number of colors in B.
+
+.loop
+	LD DE, (HL)
+	CALL WriteColor
+	INC HL
+	INC HL
+	DJNZ .loop
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #PaletteBrightnessDown                   ;
+;----------------------------------------------------------;
+; Input:
+;  - BC:  Sieze of the pallete in bytes.
+PaletteBrightnessDown
+
+	CALL DecrementPaletteColors
+	CALL bm.NextBrightnessPalette
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                    #BrightnessDown                       ;
 ;----------------------------------------------------------;
 ; Input
@@ -58,18 +98,19 @@ BrightnessDown
 .afterDecrementGreen	
 
 	; ##########################################
-	; Decrement blue color part 1: E: xxx'xxx'BB D: B'xxxxxxx
+	; Decrement blue color part 1: E: xxx'xxx'BB D: xxxxxxx'B
 
-	; Prepare BBB for decrement oparation: xxx'xxx'BB B'xxxxxxx -> 00000BBB
+	; Prepare BBB for decrement oparation: xxx'xxx'BB xxxxxxx'B-> 00000BBB
 	LD A, E
-	AND _BM_PAL2_BB_MASK							; A contains 000'000'BB.
-	RL D										; Rotate left D, if B'xxxxxxx is set, it will set CF.
+	AND _BM_PAL2_BB_MASK						; A contains 000'000'BB.
+	RR D										; Rotate D right, if xxxxxxx'B is set, it will set CF.
 	RLA											; Rotale left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF.
-
+	
 	; Ensure that BBB is > 0 before decreasing it.
 	CP _BM_PAL2_MIN
 	JR Z, .afterDecrementBlue
 
+	; A contains BBB as 00000'BBB, decrement it and update DE
 	DEC A										; Decrement BBB.
 
 	; Apply new BBB value to orginal DE.
@@ -96,6 +137,7 @@ InitPaletteBrightness
 
 	CALL SetupPaletteBank
 	
+	; Set the palette address to the beginning of the bank holding it.
 	LD DE, dbi.brL2Palette						; Destination
 	LD (brL2PaletteAddr), DE					; Reset palette pointer.
 	LDIR
@@ -120,49 +162,14 @@ BytesToColors
 
 	RET											; ## END of the function ##
 
-;----------------------------------------------------------;
-;                  #PaletteBrightnessUp                    ;
-;----------------------------------------------------------;
-; Input
-;  - BC:  Sieze of the pallete in bytes.
-PaletteBrightnessUp
-
-	; Moves #brL2PaletteAddr to the previous palette
-	LD HL, (brL2PaletteAddr)
-	LD DE, HL
-	ADD DE, -_BM_PAL2_BYTES_D512
-	LD (brL2PaletteAddr), DE
-
-	; ##########################################
-	; Load colors
-	CALL BytesToColors							; BC contains color size in bytes, we need number of colors in B.
-.loopCopyColor
-	LD DE, (HL)
-
-	CALL WriteColor
-	INC HL
-	INC HL
-	DJNZ .loopCopyColor
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #PaletteBrightnessDown                   ;
-;----------------------------------------------------------;
-; Input:
-;  - BC:  Sieze of the pallete in bytes.
-PaletteBrightnessDown
-
-	CALL DecrementPaletteColors
-	CALL bm.NextBrightnessPalette
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;              #NextBrightnessPalette                      ;
 ;----------------------------------------------------------;
 ; Moves #brL2PaletteAddr to the next palette and copies the previous palette there. Once this is done, the colors in the created palette 
 ; can be changed by #DecrementPaletteColors.
+; Input:
+;  - BC:  Sieze of the pallete in bytes.
 NextBrightnessPalette
 
 	; Moves #brL2PaletteAddr to the next palette 
@@ -197,29 +204,24 @@ DecrementPaletteColors
 	CALL SetupPaletteLoad
 	
 	; ##########################################
-	; Calculate the palette's address. Load the address of the first palette to HL and left right by A-1.
-	LD HL, dbi.brL2Palette
-
-	; ##########################################
-	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
+	; Copy 9 bit (2 bytes per color) palette
+	LD HL, (brL2PaletteAddr)					; The address of current palette set by #NextBrightnessPalette.
 
 	CALL BytesToColors							; BC contains color size in bytes, we need number of colors in B.
-.loopCopyColor
+.loopColor
 	PUSH BC
 
 	; ##########################################
 	; Decrement the brightness of the current color.
-
 	LD DE, (HL)									; DE contains color the will be changed
 	CALL BrightnessDown
 	LD (HL), DE									; Update temp color.
 	INC HL
 	INC HL
-
 	CALL WriteColor
 
 	POP BC
-	DJNZ .loopCopyColor
+	DJNZ .loopColor
 
 	RET											; ## END of the function ##
 
@@ -227,7 +229,7 @@ DecrementPaletteColors
 ;                     #WriteColor                          ;
 ;----------------------------------------------------------;
 ; Input
-;  - DE - conatins given color, E: RRRGGGBB, D: Bxxxxxxx
+;  - DE - conatins given color, E: RRRGGGBB, D: xxxxxxxB
 WriteColor
 
 	; - Two consecutive writes are needed to write the 9 bit colour:

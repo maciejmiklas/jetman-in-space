@@ -58,38 +58,47 @@ LoadLevel1
 	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessDown
-	
+
 	CALL ut.Pause
 	CALL ut.Pause
 	CALL ut.Pause
 
 	; ### 1
+	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessUp
 
 	; ### 2
+	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessUp
 
 	; ### 3
+	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessUp
 
 	; ### 4
+	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessUp
 
 	; ### 5
+	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessUp
 
 	; ### 6
+	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessUp
 
+
 	; ### 7
+	CALL ut.Pause
 	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp						
+	CALL bm.PaletteBrightnessUp	
+				
 
 	RET											; ## END of the function ##
 

@@ -60,7 +60,7 @@ mainLoop
 	INCLUDE "lo_lobby.asm"
 
 	; LAST import due to bank offset!
-	INCLUDE "db_data_bin.asm"
+	INCLUDE "dbi_data_bin.asm"
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;
