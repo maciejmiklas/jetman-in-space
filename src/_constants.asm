@@ -615,3 +615,15 @@ _JET_RESPOWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on t
 ; Game Counters
 _GC_FLIP_ON_D1			= 1
 _GC_FLIP_OFF_D0			= 0
+
+; ##############################################
+; Times of Day
+_TOD_STEP_FULL_DAY		= 0
+_TOD_STEP_DAY			= 1
+_TOD_STEP_NIGHT			= 5
+
+_TOD_STEPDIR_DAY		= 1						; Day to night.
+_TOD_STEPDIR_NIGHT		= 2						; Night to day.
+
+_TOD_STEP_DURATION		= 5
+_TOD_DAY_DURATION		= 20

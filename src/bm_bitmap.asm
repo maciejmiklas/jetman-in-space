@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE bm
 
-brL2PaletteAddr 		WORD 0					; Pointer to current brightness palette.
+todL2PaletteAddr 		WORD 0					; Pointer to current brightness palette.
 
 ;----------------------------------------------------------;
 ;                  #PaletteBrightnessUp                    ;
@@ -15,10 +15,10 @@ PaletteBrightnessUp
 	CALL SetupPaletteLoad
 
 	; ##########################################
-	; Moves #brL2PaletteAddr to the previous palette
-	LD HL, (brL2PaletteAddr)
+	; Moves #todL2PaletteAddr to the previous palette
+	LD HL, (todL2PaletteAddr)
 	ADD HL, -_BM_PAL2_BYTES_D512
-	LD (brL2PaletteAddr), HL
+	LD (todL2PaletteAddr), HL
 	
 	; ##########################################
 	; Load colors
@@ -127,22 +127,35 @@ BrightnessDown
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #InitPaletteBrightness                     ;
+;               #InitTimeOfDayPalette                      ;
 ;----------------------------------------------------------;
-; Copies first palette to #brL2Palette and resets #brL2PaletteAddr
+; Copies first palette to #todL2Palette and resets #todL2PaletteAddr
 ; Input:
 ;  - BC: Sieze of the pallete in bytes.
-;  - HL: Address of layer 2 palette data to be copied into #brL2Palette. Must be in slot 6 ($C000-$DFFF).
-InitPaletteBrightness
+;  - HL: Address of layer 2 palette data to be copied into #todL2Palette. Must be in slot 6 ($C000-$DFFF).
+InitTimeOfDayPalette
 
 	CALL SetupPaletteBank
 	
 	; Set the palette address to the beginning of the bank holding it.
-	LD DE, dbi.brL2Palette						; Destination
-	LD (brL2PaletteAddr), DE					; Reset palette pointer.
+	LD DE, dbi.todL2Palette						; Destination
+	LD (todL2PaletteAddr), DE					; Reset palette pointer.
 	LDIR
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #ResetTimeOfDayPalette                    ;
+;----------------------------------------------------------;
+ResetTimeOfDayPalette
+
+	CALL SetupPaletteBank
+	
+	; Set the palette address to the beginning of the bank holding it.
+	LD DE, dbi.todL2Palette
+	LD (todL2PaletteAddr), DE
+
+	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
 ;                     #BytesToColors                       ;
@@ -166,17 +179,17 @@ BytesToColors
 ;----------------------------------------------------------;
 ;              #NextBrightnessPalette                      ;
 ;----------------------------------------------------------;
-; Moves #brL2PaletteAddr to the next palette and copies the previous palette there. Once this is done, the colors in the created palette 
+; Moves #todL2PaletteAddr to the next palette and copies the previous palette there. Once this is done, the colors in the created palette 
 ; can be changed by #DecrementPaletteColors.
 ; Input:
 ;  - BC:  Sieze of the pallete in bytes.
 NextBrightnessPalette
 
-	; Moves #brL2PaletteAddr to the next palette 
-	LD HL, (brL2PaletteAddr)
+	; Moves #todL2PaletteAddr to the next palette 
+	LD HL, (todL2PaletteAddr)
 	LD DE, HL
 	ADD DE, _BM_PAL2_BYTES_D512					; Move DE to the next (destination) palette.
-	LD (brL2PaletteAddr), DE					; Move palette pointer to copied palette.
+	LD (todL2PaletteAddr), DE					; Move palette pointer to copied palette.
 
 	LDIR										; Copy palette from HL to DE, size is given by BC (method param).
 
@@ -186,15 +199,15 @@ NextBrightnessPalette
 ;              #DecrementPaletteColors                     ;
 ;----------------------------------------------------------;
 ; Up to 7 brightness palettes, each 512 bytes, are stored in Bank _BN_PAL2_BR_BANK_D47. This function will modify the palette given by
-; #brL2PaletteAddr. Make sure to initialize the palette properly by calling #InitPaletteBrightness or #NextBrightnessPalette.
+; #todL2PaletteAddr. Make sure to initialize the palette properly by calling #InitTimeOfDayPalette or #NextBrightnessPalette.
 ; The whole brightness change works like this: 
 ; First, we have to decrease the palette brightness up to 7 times. It will store up to 7 arrays (7*512) containing changed colors for each
 ; palette. Afterward, you can reverse this process and increase brightness using already created palettes.
-; 1) Call #InitPaletteBrightness to copy the initial pallet file (nxp) to the first brightness palette. It will initialize palette number 1,
-;    and set pointer to it: #brL2PaletteAddr
-; 2) Call #DecrementPaletteColors. It decreases all colors in brightness palette 1 (given by #brL2PaletteAddr) and updates the picture.
-; 3) Call #NextBrightnessPalette. It will copy brightness palette 1 to 2, and update #brL2PaletteAddr that it points on 2.
-; 4) Call #DecrementPaletteColors. It decreases all colors in brightness balette 2 (given by #brL2PaletteAddr) and updates the picture.
+; 1) Call #InitTimeOfDayPalette to copy the initial pallet file (nxp) to the first brightness palette. It will initialize palette number 1,
+;    and set pointer to it: #todL2PaletteAddr
+; 2) Call #DecrementPaletteColors. It decreases all colors in brightness palette 1 (given by #todL2PaletteAddr) and updates the picture.
+; 3) Call #NextBrightnessPalette. It will copy brightness palette 1 to 2, and update #todL2PaletteAddr that it points on 2.
+; 4) Call #DecrementPaletteColors. It decreases all colors in brightness balette 2 (given by #todL2PaletteAddr) and updates the picture.
 ; 5) Repeat 3) and 4). You can create up to 7 brightness palettes (more makes no sense).
 ;
 ; Input:
@@ -205,7 +218,7 @@ DecrementPaletteColors
 	
 	; ##########################################
 	; Copy 9 bit (2 bytes per color) palette
-	LD HL, (brL2PaletteAddr)					; The address of current palette set by #NextBrightnessPalette.
+	LD HL, (todL2PaletteAddr)					; The address of current palette set by #NextBrightnessPalette.
 
 	CALL BytesToColors							; BC contains color size in bytes, we need number of colors in B.
 .loopColor
@@ -275,6 +288,7 @@ SetupPaletteBank
 	NEXTREG _MMU_REG_SLOT7_H57, _BN_PAL2_BR_BANK_D47	
 	
 	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                  #LoadLayer2Palette                      ;
 ;----------------------------------------------------------;
@@ -283,7 +297,10 @@ SetupPaletteBank
 ;  - HL: Address of layer 2 palette data. Must be in slot 6 ($C000-$DFFF).
 LoadLayer2Palette
 
+	PUSH BC
+
 	CALL SetupPaletteLoad
+
 	; ##########################################
 	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
 .loopCopyColor:
@@ -303,6 +320,11 @@ LoadLayer2Palette
 	INC HL		
 	DJNZ .loopCopyColor
 
+	POP BC
+
+	;###########################################
+	CALL bm.FillLayer2Palette
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

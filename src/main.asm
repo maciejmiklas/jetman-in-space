@@ -58,6 +58,7 @@ mainLoop
 	INCLUDE "ro_rocket.asm"
 	INCLUDE "st_stars.asm"
 	INCLUDE "lo_lobby.asm"
+	INCLUDE "td_times_of_day.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "dbi_data_bin.asm"

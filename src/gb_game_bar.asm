@@ -70,27 +70,28 @@ PrintDebug
 
 	; ##########################################
 	; ##########################################
-	/*
+	
 	LD B, 40
 	LD H, 0
-	LD A,  (bg.bgOffset)
+	LD A,  (td.step)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (bm.tmp)
+	LD A, (td.stepCnt)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 52
 	LD H, 0
-	LD A,  (jm.tmp3)
+	LD A,  (td.stepCntDir)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
+/*
 	; ##########################################
 	LD B, 58
 	LD H, 0

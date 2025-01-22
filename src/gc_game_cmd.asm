@@ -10,21 +10,21 @@ LoadLevel1
 
 	LD B, dbi.backgroundL1PaletteSize
 	LD HL, dbi.backgroundL1Palette
-	PUSH BC
 	CALL bm.LoadLayer2Palette
-	POP BC
-	CALL bm.FillLayer2Palette
-
+	
 	LD D, $$dbi.backgroundL1Img
 	CALL bm.LoadLevel2Image
 
+	LD BC, dbi.backgroundL1PaletteSize
+	LD HL, dbi.backgroundL1Palette
+	CALL bm.InitTimeOfDayPalette
+
+/*
 	CALL ut.Pause
 	CALL ut.Pause
 
 	; ### 1
-	LD BC, dbi.backgroundL1PaletteSize
-	LD HL, dbi.backgroundL1Palette
-	CALL bm.InitPaletteBrightness
+
 	
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessDown
@@ -99,7 +99,7 @@ LoadLevel1
 	LD BC, dbi.backgroundL1PaletteSize
 	CALL bm.PaletteBrightnessUp	
 				
-
+*/
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -113,7 +113,7 @@ LoadLevel2
 	LD D, $$dbi.backgroundL2Img
 	CALL bm.LoadLevel2Image
 
-	RET											; ## END of the function ##	
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    #RocketTakesOff                       ;
@@ -327,7 +327,6 @@ MovementInactivity
 	LD A, js.SDB_JSTAND							; Change animation.
 	CALL js.ChangeJetSpritePattern
 
-
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -337,6 +336,51 @@ JoyWillEnable
 	CALL jt.UpdateStateOnJoyWillEnable
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #NextFromDayToNight                      ;
+;----------------------------------------------------------;
+; The function will be called 6x when a night transitions to a bright day.
+; Input
+;  -A: Value from _TOD_STEP_NIGHT to _TOD_STEP_DAY inclusive
+NextFromDayToNight
+
+	LD BC, dbi.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessUp
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #NextFromNightToDay                       ;
+;----------------------------------------------------------;
+; The function will be called 6x when a bright day shifts to a night.
+; Input
+;  -A: Value from _TOD_STEP_DAY to _TOD_STEP_NIGHT inclusive
+NextFromNightToDay
+
+	LD BC, dbi.backgroundL1PaletteSize
+	CALL bm.PaletteBrightnessDown
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #TimeOfDayChangeToFullDay                  ;
+;----------------------------------------------------------;
+; Called when the lighting condition changed to a full day.
+TimeOfDayChangeToFullDay
+
+	CALL bm.ResetTimeOfDayPalette
+
+/*
+	LD B, dbi.backgroundL1PaletteSize
+	LD HL, dbi.backgroundL1Palette
+	CALL bm.LoadLayer2Palette
+
+	LD BC, dbi.backgroundL1PaletteSize
+	LD HL, dbi.backgroundL1Palette
+	CALL bm.InitTimeOfDayPalette
+*/
+	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

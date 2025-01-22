@@ -102,7 +102,7 @@ backgroundL2PaletteSize = $ - backgroundL2Palette
 	MMU _RAM_SLOT7, _BN_PAL2_BR_BANK_D47
 	ORG _RAM_SLOT7_START_HE000
 
-brL2Palette	
+todL2Palette	
 
 ;----------------------------------------------------------;
 ;        Game Background for Level 1 (Bank 48...57)        ;
