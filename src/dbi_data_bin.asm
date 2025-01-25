@@ -1,7 +1,11 @@
 ;----------------------------------------------------------;
-;                 Binary Data Loader                       ;
+;                    Binary Data Loader                    ;
 ;----------------------------------------------------------;
 	module dbi
+
+;----------------------------------------------------------;
+;                            Temps                         ;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                Game Sprites (Bank 40...41)               ;
@@ -82,11 +86,11 @@ starsBinSize = $ - starsBin
 	MMU _RAM_SLOT6, _BN_PAL2_BANK_D46
 	ORG _RAM_SLOT6_START_HC000
 
-backgroundL1Palette
+bgrL1PaletteAdr
 	INCBIN  "assets/l001_background.nxp"
 
-backgroundL1PaletteSize = $ - backgroundL1Palette
-	ASSERT backgroundL1PaletteSize <= _BM_PAL2_BYTES_D512
+bgrL1PaletteBytes = $ - bgrL1PaletteAdr
+	ASSERT bgrL1PaletteBytes <= _BM_PAL2_BYTES_D512
 
 backgroundL2Palette
 	INCBIN  "assets/l002_background.nxp"
@@ -102,7 +106,7 @@ backgroundL2PaletteSize = $ - backgroundL2Palette
 	MMU _RAM_SLOT7, _BN_PAL2_BR_BANK_D47
 	ORG _RAM_SLOT7_START_HE000
 
-todL2Palette	
+todL2Palettes
 
 ;----------------------------------------------------------;
 ;        Game Background for Level 1 (Bank 48...57)        ;
@@ -113,12 +117,12 @@ todL2Palette
 ; and load the next 8KiB chunk, repeating the whole process.
 	MMU _RAM_SLOT6 n, _BN_BG_L1_ST_BANK_D48
 	ORG _RAM_SLOT6_START_HC000
-backgroundL1Img	
+bgrL1Img	
 	INCBIN "assets/l001_background.nxi", 0, _BM_BYTES_D81920
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L1_EN_BANK_D57+1		; Image has 81920 bytes, 10 banks.
-	ASSERT $$backgroundL1Img == _BN_BG_L1_ST_BANK_D48
+	ASSERT $$bgrL1Img == _BN_BG_L1_ST_BANK_D48
 
 ;----------------------------------------------------------;
 ;         Game Background for Level 2 (Bank 58...67)       ;

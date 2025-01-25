@@ -38,7 +38,9 @@ mainLoop
 
 	INCLUDE "gm_game.asm"
 
+	INCLUDE "ll_level_loader.asm"
 	INCLUDE "bm_bitmap.asm"
+	INCLUDE "bp_bitmap_palette.asm"
 	INCLUDE "gc_game_cmd.asm"
 	INCLUDE "gb_game_bar.asm"
 	INCLUDE "sc_screen.asm"

@@ -94,6 +94,7 @@ ShowBackgroundAboveHorizon
 ;----------------------------------------------------------;
 AnimateBackgroundOnFlyRocket
 
+	; ##########################################
 	; Return if rocket is not flying.
 	LD A, (ro.rocketState)
 	CP ro.RO_ST_FLY

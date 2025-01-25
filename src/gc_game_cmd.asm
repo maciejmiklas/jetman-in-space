@@ -8,98 +8,8 @@
 ;----------------------------------------------------------;
 LoadLevel1
 
-	LD B, dbi.backgroundL1PaletteSize
-	LD HL, dbi.backgroundL1Palette
-	CALL bm.LoadLayer2Palette
-	
-	LD D, $$dbi.backgroundL1Img
-	CALL bm.LoadLevel2Image
+	CALL ll.LoadLevelData1
 
-	LD BC, dbi.backgroundL1PaletteSize
-	LD HL, dbi.backgroundL1Palette
-	CALL bm.InitTimeOfDayPalette
-
-/*
-	CALL ut.Pause
-	CALL ut.Pause
-
-	; ### 1
-
-	
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
-
-	; ### 2
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
-
-	; ### 3
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
-
-	; ### 4
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
-
-	; ### 5
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
-
-	; ### 6
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
-
-	; ### 7
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
-
-	CALL ut.Pause
-	CALL ut.Pause
-	CALL ut.Pause
-
-	; ### 1
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp
-
-	; ### 2
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp
-
-	; ### 3
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp
-
-	; ### 4
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp
-
-	; ### 5
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp
-
-	; ### 6
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp
-
-
-	; ### 7
-	CALL ut.Pause
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp	
-				
-*/
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -107,11 +17,6 @@ LoadLevel1
 ;----------------------------------------------------------;
 LoadLevel2
 	
-	LD B, dbi.backgroundL1PaletteSize
-	LD HL, dbi.backgroundL2Palette
-
-	LD D, $$dbi.backgroundL2Img
-	CALL bm.LoadLevel2Image
 
 	RET											; ## END of the function ##
 
@@ -345,8 +250,8 @@ JoyWillEnable
 ;  -A: Value from _TOD_STEP_NIGHT to _TOD_STEP_DAY inclusive
 NextFromDayToNight
 
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessUp
+	LD BC, dbi.bgrL1PaletteBytes
+	CALL bp.PaletteBrightnessUp
 
 	RET											; ## END of the function ##
 
@@ -358,8 +263,8 @@ NextFromDayToNight
 ;  -A: Value from _TOD_STEP_DAY to _TOD_STEP_NIGHT inclusive
 NextFromNightToDay
 
-	LD BC, dbi.backgroundL1PaletteSize
-	CALL bm.PaletteBrightnessDown
+	LD BC, dbi.bgrL1PaletteBytes
+	CALL bp.PaletteBrightnessDown
 
 	RET											; ## END of the function ##
 
@@ -369,17 +274,8 @@ NextFromNightToDay
 ; Called when the lighting condition changed to a full day.
 TimeOfDayChangeToFullDay
 
-	CALL bm.ResetTimeOfDayPalette
+	CALL bp.ResetTimeOfDayPaletteArrd
 
-/*
-	LD B, dbi.backgroundL1PaletteSize
-	LD HL, dbi.backgroundL1Palette
-	CALL bm.LoadLayer2Palette
-
-	LD BC, dbi.backgroundL1PaletteSize
-	LD HL, dbi.backgroundL1Palette
-	CALL bm.InitTimeOfDayPalette
-*/
 	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
