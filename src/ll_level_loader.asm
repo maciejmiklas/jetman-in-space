@@ -13,15 +13,18 @@ LoadLevelData1
 
 	; Load palette size into a global variable.
 	LD HL, dbi.bgrL1PaletteBytes
-	LD (bp.palBytes), HL
+	LD (btd.palBytes), HL
 
 	; Load the address of the original palette into a global variable.
 	LD HL, dbi.bgrL1PaletteAdr
-	LD (bp.palAdr), HL
+	LD (btd.palAdr), HL
 
-	CALL bp.BgImageVariablesSet					; Palette global variables are set.
-	CALL bp.LoadLayer2Palette					; Load orginal palette into hardware.
-	CALL bp.CreateTimeOfDayPalettes				; Create palettes for different times of day.
+	;moze zrobic jedna methode initialize?
+	;gdzie dac LoadTodPalette? to powinno byc cos jak LoadDefaultPalette??
+	; zpbatrz: LoadLevel2Image
+	CALL btd.VariablesSet						; Palette global variables are set.
+	CALL btd.LoadTodPalette						; Load orginal palette into hardware.
+	CALL btd.CreateTodPalettes					; Create palettes for different times of day.
 
 	; ##########################################
 	; Load background image

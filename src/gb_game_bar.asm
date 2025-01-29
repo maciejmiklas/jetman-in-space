@@ -73,21 +73,21 @@ PrintDebug
 	
 	LD B, 40
 	LD H, 0
-	LD A,  (td.step)
+	LD A, (td.step)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (td.stepCnt)
+	LD A, (td.stepDuration)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 52
 	LD H, 0
-	LD A,  (td.stepCntDir)
+	LD A,  (td.stepDir)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 

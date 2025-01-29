@@ -309,7 +309,7 @@ ShowJetSprite
 	LD (sprState), A
 
 	LD B, _SPR_PATTERN_SHOW
-	CALL ShowOrHideJetSprite
+	CALL _ShowOrHideJetSprite
 
 	RET											; ## END of the function ##
 
@@ -322,32 +322,7 @@ HideJetSprite
 	LD (sprState), A
 
 	LD B, _SPR_PATTERN_HIDE
-	CALL ShowOrHideJetSprite
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #ShowOrHideJetSprite                     ;
-;----------------------------------------------------------;
-; Input:
-;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE.
-ShowOrHideJetSprite
-
-	LD HL, (sprDBIdx)							; Load current sprite pattern.
-	ADD HL, -SDB_FRAME_SIZE						; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record.
-
-	; Update upper sprite
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands.
-	LD A, (HL)
-	OR B										; Store pattern number into Sprite Attribute.
-	NEXTREG _SPR_REG_ATR3_H38, A	
-
-	; Update lower sprite
-	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands.
-	INC HL
-	LD A, (HL)
-	OR B										; Store pattern number into Sprite Attribute.
-	NEXTREG _SPR_REG_ATR3_H38, A	
+	CALL _ShowOrHideJetSprite
 
 	RET											; ## END of the function ##
 
@@ -383,6 +358,36 @@ ChangeJetSpriteOnFlyUp
 	CALL ChangeJetSpritePattern
 	RET											; ## END of the function ##	
 
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                 #_ShowOrHideJetSprite                    ;
+;----------------------------------------------------------;
+; Input:
+;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE.
+_ShowOrHideJetSprite
+
+	LD HL, (sprDBIdx)							; Load current sprite pattern.
+	ADD HL, -SDB_FRAME_SIZE						; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record.
+
+	; Update upper sprite
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands.
+	LD A, (HL)
+	OR B										; Store pattern number into Sprite Attribute.
+	NEXTREG _SPR_REG_ATR3_H38, A	
+
+	; Update lower sprite
+	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands.
+	INC HL
+	LD A, (HL)
+	OR B										; Store pattern number into Sprite Attribute.
+	NEXTREG _SPR_REG_ATR3_H38, A	
+
+	RET											; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

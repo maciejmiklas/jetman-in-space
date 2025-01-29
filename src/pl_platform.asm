@@ -57,7 +57,7 @@ JetPlatformHitOnJoyMove
 	; ##########################################
 	; Check for plafrom hit.
 
-	; Params for PlaftormHit.
+	; Params for _PlaftormHit.
 	LD HL, jpo.jetX
 
 	LD IY, platforms
@@ -67,7 +67,7 @@ JetPlatformHitOnJoyMove
 
 	LD IX, jetHitMargin
 
-	CALL PlaftormDirectionHit
+	CALL _PlaftormDirectionHit
 
 	CP PL_DHIT_RET_A_NO
 	RET Z
@@ -115,7 +115,7 @@ JetPlatformHitOnJoyMove
 	LD A, jt.AIR_BUMP_LEFT
 	CALL jt.SetJetStateAir
 
-	CALL JetHitsPlatfrom
+	CALL _JetHitsPlatfrom
 
 	; When Jetman bumps away from the platform, he has to move left at least one pixel to compensate for Joystick's movement,
 	; or a few pixels to really bump off.
@@ -147,7 +147,7 @@ JetPlatformHitOnJoyMove
 	LD A, jt.AIR_BUMP_RIGHT
 	CALL jt.SetJetStateAir
 
-	CALL JetHitsPlatfrom
+	CALL _JetHitsPlatfrom
 
 	; When Jetman bumps away from the platform, he has to move rigth at least one pixel to compensate for Joystick's movement or a few pixels to really bump off.
 	LD A, (joyOffBump)
@@ -178,7 +178,7 @@ JetPlatformHitOnJoyMove
 	LD A, jt.AIR_BUMP_BOTTOM
 	CALL jt.SetJetStateAir
 
-	CALL JetHitsPlatfrom
+	CALL _JetHitsPlatfrom
 
 	; When Jetman bumps away from the platform, he has to move down at least one pixel to compensate for Joystick's movement or a few pixels to really bump off.
 	LD A, (joyOffBump)
@@ -214,7 +214,7 @@ ResetJoyOffBump
 	CP jt.STATE_INACTIVE
 	JR NZ, .reset								; Reset imedatelly if walking.
 	
-	; Call PlaftormHit to check whether Jetman is close to the platform. now, we will load the params for this method.
+	; Call _PlaftormHit to check whether Jetman is close to the platform. now, we will load the params for this method.
 	LD HL, jpo.jetX
 
 	LD IY, platforms
@@ -224,7 +224,7 @@ ResetJoyOffBump
 
 	LD IX, jetAwayMargin
 
-	CALL PlaftormHit
+	CALL _PlaftormHit
 	CP PL_HIT_RET_A_YES							; Jetman is close to platform - do not reset the bump.
 	RET Z	
 
@@ -233,29 +233,6 @@ ResetJoyOffBump
 	LD A, _PL_BUMP_JOY_D15
 	LD (joyOffBump), A
 	
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #JetHitsPlatfrom                       ;
-;----------------------------------------------------------;
-JetHitsPlatfrom
-
-	LD A, js.SDB_T_KF							; Play animation.
-	CALL js.ChangeJetSpritePattern
-	
-	; Disable joystick, because Jetman looses control for a few frames.
-	LD A, (joyOffBump)
-	LD (ind.joyOffCnt), A
-
-	; ##########################################
-	; Decrement joystick off time with every bump.
-	
-	CP _C_PL_BUMP_JOY_DEC_D1+1
-	RET C										; Do not allow #joyOffBump to reach 0, otherwise Jemtan will go troug the obsticle.
-	
-	SUB _C_PL_BUMP_JOY_DEC_D1
-	LD (joyOffBump), A
-
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -269,7 +246,7 @@ JetHitsPlatfrom
 PlaftormEnemyHit
 
 	LD IY, enemyHitMargin
-	CALL PlaftormSpriteHit
+	CALL _PlaftormSpriteHit
 
 	RET											; ## END of the function ##
 
@@ -284,44 +261,7 @@ PlaftormEnemyHit
 PlaftormWeaponHit
 
 	LD IY, shotHitMargin
-	CALL PlaftormSpriteHit
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #PlaftormSpriteHit                       ;
-;----------------------------------------------------------;
-; Check whether the sprite (#SPR) one of the platforms.
-; Input:
-;  - IX: 	Pointer to #SPR, single sprite to check colsion for.
-;  - IY:	Pointer to #PLAM.
-; Output:
-;  - A: 	#PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
-PlaftormSpriteHit
-
-	; Exit if sprite is not alive.
-	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)	
-	JR NZ, .alive								; Jump if sprite is alive.
-
-	LD A, PL_HIT_RET_A_NO
-	RET
-.alive
-
-	PUSH IX
-
-	; Params for PlaftormHit.
-	LD HL, IX
-	ADD	HL, sr.SPR.X
-
-	LD IX, IY
-	LD IY, platforms
-
-	LD A, (platformsSize)
-	LD B, A
-
-	CALL PlaftormHit
-
-	POP IX
+	CALL _PlaftormSpriteHit
 
 	RET											; ## END of the function ##
 
@@ -393,9 +333,9 @@ MoveJetOnHitPlatfromBelow
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetPlatformTakesoff                  ;
+;                    #JetPlatformTakesOff                  ;
 ;----------------------------------------------------------;
-JetPlatformTakesoff
+JetPlatformTakesOff
 
 	; Transition from walking to flaying.
 	LD A, (jt.jetGnd)
@@ -544,10 +484,16 @@ JetFallingFromPlatform
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #PlaftormHit                          ;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                    #_PlaftormHit                         ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms. It does not provide direction, just an indication that 
-; there was a hit. To get directions use #PlaftormDirectionHit.
+; there was a hit. To get directions use #_PlaftormDirectionHit.
 ; Input:
 ;  - HL: 	Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision.
 ;  - IY:	Pointert to #PLA list.
@@ -561,7 +507,7 @@ PL_HIT_RET_A_NO 		= 0						; No colision.
 PL_HIT_RET_A_YES 		= 1						; Sprite hits the platform.
 ; Modifies:  A, BC, DE, IY
 ; Unchanged: HL, IX
-PlaftormHit
+_PlaftormHit
 
 .loopOverPlatforms
 
@@ -648,7 +594,7 @@ PlaftormHit
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #PlaftormDirectionHit                      ;
+;               #_PlaftormDirectionHit                     ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms, also provides platform number and side.
 ; Input:
@@ -666,7 +612,7 @@ PL_DHIT_RET_A_TOP		= 3						; Sprite hits the platform from above
 PL_DHIT_RET_A_BOTTOM	= 4						; Sprite hits the platform from below
 ; Modifies: All
 
-PlaftormDirectionHit
+_PlaftormDirectionHit
 
 .loopOverPlatforms
 
@@ -674,14 +620,14 @@ PlaftormDirectionHit
 	; Check the collision from the left side of the platform.
 
 	PUSH BC
-	CALL CheckPlatformHitLeft
+	CALL _CheckPlatformHitLeft
 	POP BC
 
 	CP PL_COL_RET_A_YES
 	JR NZ, .afterHitLeft
 
 	; We have a hit from the left side, now check whether Jetman is within the vertical bounds of the platform.
-	CALL CheckPlatformHitVertical
+	CALL _CheckPlatformHitVertical
 
 	CP PL_COL_RET_A_YES
 	JR NZ, .afterHitLeft
@@ -694,14 +640,14 @@ PlaftormDirectionHit
 	; Check the collision from the right side of the platform.
 
 	PUSH BC
-	CALL CheckPlatformHitRight
+	CALL _CheckPlatformHitRight
 	POP BC
 
 	CP PL_COL_RET_A_YES
 	JR NZ, .afterHitRight
 
 	; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
-	CALL CheckPlatformHitVertical
+	CALL _CheckPlatformHitVertical
 
 	CP PL_COL_RET_A_YES
 	JR NZ, .afterHitRight
@@ -713,13 +659,13 @@ PlaftormDirectionHit
 	; ##########################################
 	; Check the collision from the top side of the platform.
 
-	CALL CheckPlatformHitTop
+	CALL _CheckPlatformHitTop
 	CP PL_COL_RET_A_YES
 	JR NZ, .afterHitTop
 
 	; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
 	PUSH BC
-	CALL CheckPlatformHitHorizontal
+	CALL _CheckPlatformHitHorizontal
 	POP BC
 
 	CP PL_COL_RET_A_YES
@@ -732,13 +678,13 @@ PlaftormDirectionHit
 	; ##########################################
 	; Check the collision from the bottom side of the platform.
 
-	CALL CheckPlatformHitBottom
+	CALL _CheckPlatformHitBottom
 	CP PL_COL_RET_A_YES
 	JR NZ, .afterHitBottom
 
 	; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
 	PUSH BC
-	CALL CheckPlatformHitHorizontal
+	CALL _CheckPlatformHitHorizontal
 	POP BC
 
 	CP PL_COL_RET_A_YES
@@ -760,7 +706,7 @@ PlaftormDirectionHit
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #LoadSpriteYtoA                       ;
+;                   #_LoadSpriteYtoA                       ;
 ;----------------------------------------------------------;
 ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of WORD.
 ; Input:
@@ -768,7 +714,7 @@ PlaftormDirectionHit
 ; Output:
 ;  - A: 	Sprite's Y coordinate.
 ; Modifies: DE
-LoadSpriteYtoA
+_LoadSpriteYtoA
 
 	LD DE, HL
 	ADD DE, Y_OFFSET
@@ -777,7 +723,7 @@ LoadSpriteYtoA
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #CheckPlatformHitTop                     ;
+;                #_CheckPlatformHitTop                     ;
 ;----------------------------------------------------------;
 ; Check the collision with the top side of the platform.
 ; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #_PL_HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
@@ -791,7 +737,7 @@ LoadSpriteYtoA
 PL_COL_RET_A_NO			= 0						; No colision
 PL_COL_RET_A_YES		= 1						; Colision
 
-CheckPlatformHitTop
+_CheckPlatformHitTop
 
 	; ##########################################
 	; Check [#PLA.Y_TOP - #PLAM.Y_TOP + #_PL_HIT_MARGIN_D5] > [sprite Y]
@@ -801,7 +747,7 @@ CheckPlatformHitTop
 	SUB (IX + PLAM.Y_TOP)
 	LD C, A										; C holds [#PLA.Y_TOP + #_PL_HIT_MARGIN_D5].
 
-	CALL LoadSpriteYtoA							; A holds current sprite Y position.
+	CALL _LoadSpriteYtoA							; A holds current sprite Y position.
 
 	CP C
 	JR C, .keepChecking							; Jump if A (sprite Y) < C.
@@ -818,7 +764,7 @@ CheckPlatformHitTop
 	SUB (IX + PLAM.Y_TOP)
 	LD C, A										; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
 
-	CALL LoadSpriteYtoA							; A holds current sprite Y position.
+	CALL _LoadSpriteYtoA							; A holds current sprite Y position.
 
 	CP C
 	JR NC, .hit									; Jump if A (spirte Y) >= C.
@@ -831,7 +777,7 @@ CheckPlatformHitTop
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #CheckPlatformHitBottom                    ;
+;               #_CheckPlatformHitBottom                   ;
 ;----------------------------------------------------------;
 ; Check the collision with the bottom side of the platform.
 ; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_PL_HIT_MARGIN_D5]
@@ -842,14 +788,14 @@ CheckPlatformHitTop
 ; Output:
 ;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
 ; Modifies: C
-CheckPlatformHitBottom
+_CheckPlatformHitBottom
 	
 	; Check [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y].
 	LD A, (IY + PLA.Y_BOTTOM)
 	ADD (IX + PLAM.Y_BOTTOM)
 	LD C, A										; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM].
 
-	CALL LoadSpriteYtoA							; A holds current sprite Y position.
+	CALL _LoadSpriteYtoA							; A holds current sprite Y position.
 
 	CP C
 	JR C, .keepChecking							; Jump if A (sprite Y) < C.
@@ -866,7 +812,7 @@ CheckPlatformHitBottom
 	SUB _PL_HIT_MARGIN_D5
 	LD C, A										; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #_PL_HIT_MARGIN_D5].
 
-	CALL LoadSpriteYtoA							; A holds current sprite Y position.
+	CALL _LoadSpriteYtoA							; A holds current sprite Y position.
 
 	CP C
 	JR NC, .hit									; Jump if A (spirte Y) >= C.
@@ -879,7 +825,7 @@ CheckPlatformHitBottom
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #CheckPlatformHitLeft                    ;
+;                #_CheckPlatformHitLeft                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the left side of the platform.
 ; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #_PL_HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
@@ -890,7 +836,7 @@ CheckPlatformHitBottom
 ; Output:
 ;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
 ; Modifies: BC, DE
-CheckPlatformHitLeft
+_CheckPlatformHitLeft
 
 	; Check [#PLA.X_LEFT - #PLAM.X_LEFT + #_PL_HIT_MARGIN_D5] > [sprite X].
 	LD DE, (IY + PLA.X_LEFT)
@@ -935,7 +881,7 @@ CheckPlatformHitLeft
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #CheckPlatformHitRight                    ;
+;               #_CheckPlatformHitRight                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the left side of the platform.
 ; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #_PL_HIT_MARGIN_D5].
@@ -946,7 +892,7 @@ CheckPlatformHitLeft
 ; Output:
 ;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
 ; Modifies: BC, DE
-CheckPlatformHitRight
+_CheckPlatformHitRight
 
 	; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X].
 	LD DE, (IY + PLA.X_RIGHT)
@@ -990,7 +936,7 @@ CheckPlatformHitRight
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #CheckPlatformHitHorizontal                 ;
+;             #_CheckPlatformHitHorizontal                 ;
 ;----------------------------------------------------------;
 ; Jetman is within the platform's horizontal bounds when:
 ; [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
@@ -1001,7 +947,7 @@ CheckPlatformHitRight
 ; Output:
 ;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
 ; Modifies: BC, DE
-CheckPlatformHitHorizontal
+_CheckPlatformHitHorizontal
 
 	; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X].
 	LD DE, (IY + PLA.X_RIGHT)
@@ -1043,7 +989,7 @@ CheckPlatformHitHorizontal
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #CheckPlatformHitVertical                  ;
+;               #_CheckPlatformHitVertical                 ;
 ;----------------------------------------------------------;
 ; Jetman is within the platform's vertival bounds when:
 ; [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
@@ -1053,14 +999,14 @@ CheckPlatformHitHorizontal
 ;  - IY:	Pointer to #PLA.
 ; Output:
 ;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
-CheckPlatformHitVertical
+_CheckPlatformHitVertical
 
 	; Check [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM] > [sprite Y] > [sprite Y].
 	LD A, (IY + PLA.Y_BOTTOM)
 	ADD (IX + PLAM.Y_BOTTOM)
 	LD C, A										; C holds [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM].
 
-	CALL LoadSpriteYtoA							; A holds current sprite Y position.
+	CALL _LoadSpriteYtoA							; A holds current sprite Y position.
 
 	CP C
 	JR C, .keepChecking							; Jump if A (sprite Y) < C.
@@ -1077,7 +1023,7 @@ CheckPlatformHitVertical
 	SUB (IX + PLAM.Y_TOP)
 	LD C, A										; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
 
-	CALL LoadSpriteYtoA							; A holds current sprite Y position.
+	CALL _LoadSpriteYtoA							; A holds current sprite Y position.
 
 	CP C
 	JR NC, .hit									; Jump if A (spirte Y) >= C.
@@ -1086,6 +1032,66 @@ CheckPlatformHitVertical
 	RET
 .hit
 	LD A, PL_COL_RET_A_YES
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #_PlaftormSpriteHit                      ;
+;----------------------------------------------------------;
+; Check whether the sprite (#SPR) one of the platforms.
+; Input:
+;  - IX: 	Pointer to #SPR, single sprite to check colsion for.
+;  - IY:	Pointer to #PLAM.
+; Output:
+;  - A: 	#PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
+_PlaftormSpriteHit
+
+	; Exit if sprite is not alive.
+	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)	
+	JR NZ, .alive								; Jump if sprite is alive.
+
+	LD A, PL_HIT_RET_A_NO
+	RET
+.alive
+
+	PUSH IX
+
+	; Params for _PlaftormHit.
+	LD HL, IX
+	ADD	HL, sr.SPR.X
+
+	LD IX, IY
+	LD IY, platforms
+
+	LD A, (platformsSize)
+	LD B, A
+
+	CALL _PlaftormHit
+
+	POP IX
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #_JetHitsPlatfrom                       ;
+;----------------------------------------------------------;
+_JetHitsPlatfrom
+
+	LD A, js.SDB_T_KF							; Play animation.
+	CALL js.ChangeJetSpritePattern
+	
+	; Disable joystick, because Jetman looses control for a few frames.
+	LD A, (joyOffBump)
+	LD (ind.joyOffCnt), A
+
+	; ##########################################
+	; Decrement joystick off time with every bump.
+	
+	CP _C_PL_BUMP_JOY_DEC_D1+1
+	RET C										; Do not allow #joyOffBump to reach 0, otherwise Jemtan will go troug the obsticle.
+	
+	SUB _C_PL_BUMP_JOY_DEC_D1
+	LD (joyOffBump), A
 
 	RET											; ## END of the function ##
 

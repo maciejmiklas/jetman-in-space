@@ -35,29 +35,12 @@ UpdateBackgroundOnJetmanMove
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                GetBottomBackgroundLine                   ;
-;----------------------------------------------------------;
-; Return:
-;  - A: A number of bottom image lines based on the background offset.
-GBL_RET_A_GND				= _BM_YRES_D256-1
-
-GetBottomBackgroundLine
-
-	; Calculate the line number that needs to be replaced. It's the line going behind the horizon.  It's always the bottom line on the image.
-	LD A, (bgOffset)
-	LD B, A
-	LD A, _BM_YRES_D256-1
-	SUB B										; Move A by B (background offset).
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;              HideBackgroundBehindHorizon                 ;
 ;----------------------------------------------------------;
 ; Hide picture line going behind the horizon	
 HideBackgroundBehindHorizon
 
-	CALL GetBottomBackgroundLine
+	CALL _GetBottomBackgroundLine
 
 	; Do not remove the line if the Jetman is on the ground (offset is 255).
 	CP GBL_RET_A_GND
@@ -75,7 +58,7 @@ HideBackgroundBehindHorizon
 ; Copy lower background image line from original picture.
 ShowBackgroundAboveHorizon
 
-	CALL GetBottomBackgroundLine
+	CALL _GetBottomBackgroundLine
 
 	; Do not remove the line if the Jetman is on the ground (offset is 255).
 	CP GBL_RET_A_GND
@@ -126,7 +109,31 @@ AnimateBackgroundOnFlyRocket
 	LD (bgOffset), A
 .afterBgOffsetReset
 
-	RET											; ## END of the function ##	
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;               _GetBottomBackgroundLine                   ;
+;----------------------------------------------------------;
+; Return:
+;  - A: A number of bottom image lines based on the background offset.
+GBL_RET_A_GND				= _BM_YRES_D256-1
+
+_GetBottomBackgroundLine
+
+	; Calculate the line number that needs to be replaced. It's the line going behind the horizon.  It's always the bottom line on the image.
+	LD A, (bgOffset)
+	LD B, A
+	LD A, _BM_YRES_D256-1
+	SUB B										; Move A by B (background offset).
+
+	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

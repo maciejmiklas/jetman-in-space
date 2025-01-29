@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE ro
 
-; Number of GameLoop040 cycles to drop next rocket module.
+; Number of _GameLoop040 cycles to drop next rocket module.
 dropNextDelay			BYTE 0
 
 rocketElementCnt		BYTE _RO_EL_TANK1_D4 ;0 					; Counts from _RO_EL_LOW_D1 to _RO_EL_TANK3_D6, both inclusive.
@@ -111,7 +111,7 @@ ResetAndDisableRocket
 .rocketElLoop
 	LD A, B
 	LD IX, rocketEl
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	XOR A
 	LD (IX + RO.Y), A
@@ -125,60 +125,10 @@ ResetAndDisableRocket
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
 
-	CALL PickupRocketElement
-	CALL CarryRocketElement
-	CALL BoardRocket
+	CALL _PickupRocketElement
+	CALL _CarryRocketElement
+	CALL _BoardRocket
 
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #BoardRocket                         ;
-;----------------------------------------------------------;
-BoardRocket
-
-	; Return if rocket is not ready for boarding.
-	LD A, (rocketState)
-	CP RO_ST_READY
-	RET NZ
-	
-	; ##########################################
-	; Jetman collision with first (lowest) rocket element triggers take off.
-	LD IX, rocketEl
-
-	LD BC, (rocketAssemblyX)					; X of the element.
-	LD B, 0
-	LD D, (IX + RO.Y)							; Y of the element.
-	CALL JetmanElementCollision
-	CP COLLISION_NO
-	RET Z
-
-	; ##########################################
-	; Jetman boards the rocket!
-	LD A, RO_ST_FLY
-	LD (rocketState), A
-
-	CALL gc.RocketTakesOff
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                #StartRocketExplosion                     ;
-;----------------------------------------------------------;
-; Start explosion sequece. The rocket explodes when the state is flying and counter above zero.
-StartRocketExplosion
-
-	LD A, 1
-	LD (rocketExplodeCnt), A
-
-	; ##########################################
-	; Hide exhaust
-	LD A, _RO_EXHAUST_SPRID_D43					; Hide sprite on display.
-	CALL sp.SetIdAndHideSprite
-
-	; ##########################################
-	; Update state
-	LD A, RO_ST_EXPLODE
-	LD (rocketState), A
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -189,7 +139,7 @@ HideRocket
 	; Hide the top rockets element.
 	LD IX, rocketEl
 	LD A, _RO_EL_TOP_D3
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.SPRITE_ID)
 	CALL sp.SetIdAndHideSprite
@@ -198,7 +148,7 @@ HideRocket
 	; Hide the middle rockets element.
 	LD IX, rocketEl
 	LD A, _RO_EL_MID_D2
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.SPRITE_ID)
 	CALL sp.SetIdAndHideSprite
@@ -207,7 +157,7 @@ HideRocket
 	; Hide the bottom rockets element.
 	LD IX, rocketEl
 	LD A, _RO_EL_LOW_D1
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.SPRITE_ID)
 	CALL sp.SetIdAndHideSprite
@@ -235,7 +185,7 @@ AdminateRocketExplosion
 	; Animation for the top rockets element.
 	LD IX, rocketEl
 	LD A, _RO_EL_TOP_D3
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame.
 	LD DE, (rocketExplodeCnt)
@@ -250,7 +200,7 @@ AdminateRocketExplosion
 	; Animation for the middle rockets element.
 	LD IX, rocketEl
 	LD A, _RO_EL_MID_D2
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame.
 	LD DE, (rocketExplodeCnt)
@@ -265,7 +215,7 @@ AdminateRocketExplosion
 	; Animation for the bottom rockets element.
 	LD IX, rocketEl
 	LD A, _RO_EL_LOW_D1
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame
 	LD DE, (rocketExplodeCnt)
@@ -307,7 +257,7 @@ CheckHitTank
 
 	; ##########################################
 	; Check hit by leaser beam.
-	CALL SetIXtoCurrentRocketElement
+	CALL _SetIXtoCurrentRocketElement
 
 	; The X coordinate of the rocket element is stored in two locations: 
 	;  1) #RO.DROP_X: when elements drop for pickup by Jetman,
@@ -360,12 +310,12 @@ AnimateTankExplode
 	LD A, RO_ST_WAIT_DROP
 	LD (rocketState), A
 
-	CALL ResetRocketElement
+	CALL _ResetRocketElement
 	RET
 
 .keepExploding
 
-	CALL SetIXtoCurrentRocketElement
+	CALL _SetIXtoCurrentRocketElement
 
 	; Set the ID of the sprite for the following commands.
 	LD A, (IX + RO.SPRITE_ID)
@@ -435,7 +385,7 @@ BlinkRocketReady
 	RET NZ
 		
 	LD A, _RO_EL_LOW_D1
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink.
 	LD A, (gld.counter008FliFLop)
@@ -452,126 +402,6 @@ BlinkRocketReady
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #MoveFlyingRocket                       ;
-;----------------------------------------------------------;
-MoveFlyingRocket
-
-	; Slow down rocket movement speed while taking off. 
-	; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
-	; with a given delay. When the current section ends, the following section begins, but with decrementd delay. During each section, 
-	; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
-
-	; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.
-	LD A, (rocketFlyDelayCnt)
-	CP 0
-	JR Z, .afterDelay
-
-	; Decrement delay counter.
-	LD A, (rocketFlyDelay)
-	DEC A
-	LD (rocketFlyDelay), A
-
-	CP 0
-	RET NZ										; Return if delay counter has not been reached.
-	
-	; The counter reached 0, reset it and increment the distance counter.
-	LD A, (rocketFlyDelayCnt)
-	LD (rocketFlyDelay), A
-
-	LD A, (rocketDelayDistance)
-	INC A
-	LD (rocketDelayDistance), A
-
-	; Has the traveled distance of the rocket with the current delay been reached?
-	CP _RO_FLY_DELAY_DIST_D5
-	JR NZ, .afterDelay							; Jump if rocket should still move with current delay.
-
-	; The rocket traveled far enough, decrement the delay for the next section.
-	LD A, (rocketFlyDelayCnt)
-	DEC A
-	LD (rocketFlyDelayCnt), A
-	LD (rocketFlyDelay), A
-
-	XOR A
-	LD (rocketDelayDistance), A
-.afterDelay
-
-	; ##########################################
-	; Increment total distance.
-	LD HL, (rocketDistance)
-	INC HL
-	LD (rocketDistance), HL
-
-	; ##########################################
-	; Has the rocket reached the asteroid, and should the explosion sequence begin?
-	LD A, H
-	CP _RO_EXPLODE_Y_HI_H4
-	JR NZ, .notAtAsteroid
-
-	LD A, L
-	CP _RO_EXPLODE_Y_LO_H7E
-	JR C, .notAtAsteroid
-
-	CALL StartRocketExplosion
-	RET
-.notAtAsteroid
-
-	; ##########################################
-	; The current position of rocket elements is stored in #rocketAssemblyX and #RO.Y 
-	; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
-	
-	LD IX, rocketEl								; Load the pointer to #rocket into IX
-
-	; ##########################################
-	; Did the rocket reach the middle of the screen, and should it stop moving?
-	LD A, (IX + RO.Y)
-	CP _RO_MOVE_STOP_D120
-	JR NC, .keepMoving
-
-	; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
-	LD A, (rocketAssemblyX)
-	CALL UpdateElementPosition
-	RET
-.keepMoving
-	; Keep moving
-
-	; ##########################################
-	; Move bottom rocket element (nr.1).
-	LD A, (IX + RO.Y)
-
-	DEC A
-	LD (IX + RO.Y), A
-
-	LD A, (rocketAssemblyX)
-	CALL UpdateElementPosition
-
-	; ##########################################
-	; Move middle rocket element.
-	LD A, _RO_EL_MID_D2
-	CALL MoveIXtoGivenRocketElement
-
-	LD A, (IX + RO.Y)
-	DEC A
-	LD (IX + RO.Y), A
-
-	LD A, (rocketAssemblyX)
-	CALL UpdateElementPosition
-
-	; ##########################################
-	; Move top rocket element.
-	LD A, _RO_EL_TOP_D3
-	CALL MoveIXtoGivenRocketElement
-
-	LD A, (IX + RO.Y)
-	DEC A
-	LD (IX + RO.Y), A
-	
-	LD A, (rocketAssemblyX)
-	CALL UpdateElementPosition
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                       #FlyRocket                         ;
 ;----------------------------------------------------------;
 FlyRocket
@@ -581,7 +411,7 @@ FlyRocket
 	CP RO_ST_FLY
 	RET NZ
 
-	CALL MoveFlyingRocket
+	CALL _MoveFlyingRocket
 
 	; ##########################################
 	; Flames coming out of the exhaust.
@@ -602,34 +432,6 @@ FlyRocket
 	NEXTREG _SPR_REG_Y_H36, A
 
 	CALL js.HideJetSprite						; Keep hiding Jemtan sprite, just in case oter procedure would show it.
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #UpdateElementPosition                   ;
-;----------------------------------------------------------;
-; Input:
-;  - IX:	Current #RO pointer
-;  - A:		X postion
-UpdateElementPosition
-
-	LD B, A										; Backup A.
-
-	LD D, (IX + RO.SPRITE_REF)
-	CALL UpdateSpritePattern
-
-	; ##########################################
-	; Sprite X coordinate from A param
-	LD A, B										; Restore A.
-	NEXTREG _SPR_REG_X_H35, A
-
-	LD A, _SPR_REG_ATR2_EMPTY
-	NEXTREG _SPR_REG_ATR2_H37, A
-
-	; ##########################################
-	; Sprite Y coordinate
-	LD A, (IX + RO.Y)
-	NEXTREG _SPR_REG_Y_H36, A
 
 	RET											; ## END of the function ##
 
@@ -662,207 +464,9 @@ ResetCarryingRocketElement
 	CP RO_ST_CARRY
 	RET NZ
 
-	CALL ResetRocketElement
+	CALL _ResetRocketElement
 	
 	RET											; ## END of the function ##	
-
-;----------------------------------------------------------;
-;                 #ResetRocketElement                      ;
-;----------------------------------------------------------;
-ResetRocketElement
-
-	; Reset to wait for drop, hide spirte.
-	CALL SetIXtoCurrentRocketElement
-
-	; Hide rocket element sprite.
-	LD A, (IX + RO.SPRITE_ID)
-	CALL sp.SetIdAndHideSprite
-
-	; Reset the state and decrement element counter -> we will drop this element again.
-	LD A, (rocketElementCnt)
-	DEC A
-	LD (rocketElementCnt), A
-
-	; Change state.
-	LD A, RO_ST_WAIT_DROP
-	LD (rocketState), A
-
-	; Reset drop delay.
-	XOR A										; Set A to 0.
-	LD (dropNextDelay), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #CarryRocketElement                     ;
-;----------------------------------------------------------;
-CarryRocketElement
-
-	; Return if the state does not match.
-	LD A, (rocketState)
-	CP RO_ST_CARRY
-	RET NZ
-
-	CALL SetIXtoCurrentRocketElement
-	CALL MoveWithJetman
-	CALL JetmanDropsRocketElement
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                #JetmanDropsRocketElement                 ;
-;----------------------------------------------------------;
-JetmanDropsRocketElement
-
-	; Is Jetman over the drop location (+/- #_RO_PICK_MARGX_D8)?
-	LD BC, (jpo.jetX)
-	LD A, (rocketAssemblyX)
-	SUB C										; Ignore B because X < 255.
-	CP _RO_PICK_MARGX_D8
-	RET NC
-
-	; ##########################################
-	; Js Jetman above rocket?
-	LD A, (jpo.jetY)
-	CP _RO_DROP_H_D220
-	RET NC
-
-	; ##########################################
-	; Jetman drops rocket element.
-	LD A, RO_ST_FALL_ASSEMBLY
-	LD (rocketState), A
-
-	; ##########################################
-	; Store the height of the drop so that the element can keep falling from this location into the assembly place.
-	CALL SetIXtoCurrentRocketElement			; Set IX to current #rocket postion.
-	LD A, (jpo.jetY)
-	LD (IX + RO.Y), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    #MoveWithJetman                       ;
-;----------------------------------------------------------;
-; Move the element to the current Jetman's position.
-MoveWithJetman
-
-	; Set the ID of the sprite for the following commands.
-	LD A, (IX + RO.SPRITE_ID)
-	NEXTREG _SPR_REG_NR_H34, A
-
-	; ##########################################
-	; Set sprite X coordinate.
-	LD BC, (jpo.jetX)
-	LD A, C		
-	NEXTREG _SPR_REG_X_H35, A					; Set _SPR_REG_NR_H34 with LDB from Jetmans X postion.
-	
-	; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
-	LD A, B										; Load MSB from X into A.
-	AND %00000001								; Keep only an overflow bit.
-	NEXTREG _SPR_REG_ATR2_H37, A
-
-	; ##########################################
-	; Set Y coordinate
-	LD A, (jpo.jetY)
-	ADD _RO_CARRY_ADJUSTY_D10
-	NEXTREG _SPR_REG_Y_H36, A					; Set Y position.
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #PickupRocketElement                     ;
-;----------------------------------------------------------;
-PickupRocketElement
-
-	; Return if there is no element/tank to pick up. Status must be #RO_ST_WAIT_PICKUP or #RO_ST_FALL_PICKUP.
-	LD A, (rocketState)
-	CP RO_ST_WAIT_PICKUP
-	JR Z, .afterStatusCheck
-
-	CP RO_ST_FALL_PICKUP
-	RET NZ
-	
-.afterStatusCheck
-
-	; ##########################################
-	;  Exit if RiP.
-	LD A, (jt.jetState)
-	CP jt.JET_ST_RIP
-	RET Z
-
-	; ##########################################
-	; Set IX to current #rocket postion.
-	CALL SetIXtoCurrentRocketElement
-
-	; ##########################################
-	; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
-	LD BC, (IX + RO.DROP_X)						; X of the element.
-	LD B, 0
-	LD D, (IX + RO.Y)							; Y of the element.
-	CALL JetmanElementCollision
-	CP COLLISION_NO
-	RET Z
-
-	; ##########################################
-	; Jetman picks up element/tank. Update state to reflect it and return.
-	LD A, RO_ST_CARRY
-	LD (rocketState), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                #JetmanElementCollision                   ;
-;----------------------------------------------------------;
-; Checks whether Jetman overlaps with rocket element/tank.
-; Input:
-;  - BC: X postion of rocket element.
-;  - D: Y postion of rocket element.
-; Output:
-;  - A:		COLLISION_NO or COLLISION_YES
-COLLISION_NO			= 0
-COLLISION_YES			= 1
-
-JetmanElementCollision
-
-	; Compare X coordinate of element and Jetman.
-	LD B, 0										; X is 8bit -> reset MSB.
-	LD HL, (jpo.jetX)							; X of the Jetman.
-
-	; Check whether Jetman is horizontal with the element.
-	SBC HL, BC	
-	CALL ut.AbsHL								; HL contains a positive distance between the enemy and Jetman.
-	LD A, H
-	CP 0
-	JR Z, .keepCheckingHorizontal				; HL > 256 -> no collision.
-	LD A, COLLISION_NO
-	RET		
-.keepCheckingHorizontal	
-	LD A, L
-	LD B, _RO_PICK_MARGX_D8
-	CP B
-	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical.
-	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision.
-	RET
-.checkVertical
-	
-	; We are here because Jemtman's horizontal position matches that of the element, now check vertical.
-	LD A, (jpo.jetY)								; Y of the Jetman.
-
-	; Subtracts B from A and check whether the result is less than or equal to #_RO_PICK_MARGY_D16.
-	SUB D										; D is method param (Y postion of rocket element).
-	CALL ut.AbsA
-	LD B, A
-	LD A, _RO_PICK_MARGY_D16
-	CP B
-	JR NC, .collision							; Jump if A(#_RO_PICK_MARGY_D16) >= B
-
-.noCollision
-	LD A, COLLISION_NO
-	RET
-.collision
-	LD A, COLLISION_YES
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;              #RocketElementFallsForPickup                ;
@@ -874,7 +478,7 @@ RocketElementFallsForPickup
 	CP RO_ST_FALL_PICKUP
 	RET NZ										; Return if falling bit is not set.
 
-	CALL SetIXtoCurrentRocketElement			; Set IX to current #rocket postion.
+	CALL _SetIXtoCurrentRocketElement			; Set IX to current #rocket postion.
 
 	; Move element one pixel down.
 	LD A, (IX + RO.Y)
@@ -883,7 +487,7 @@ RocketElementFallsForPickup
 
 	; Update rocket spirte.
 	LD A, (IX + RO.DROP_X)					; Sprite X coordinate, do not change value - element is falling down.
-	CALL UpdateElementPosition
+	CALL _UpdateElementPosition
 
 	; Has the horizontal destination been reached?
 	LD B, A
@@ -937,7 +541,7 @@ RocketElementFallsForAssembly
 
 	; ##########################################
 	; Set IX to current #rocket postion.
-	CALL SetIXtoCurrentRocketElement
+	CALL _SetIXtoCurrentRocketElement
 
 	; ##########################################
 	; Set the ID of the sprite for the following commands.
@@ -1031,7 +635,7 @@ DropNextRocketElement
 	LD (rocketState), A
 
 	; Drop next rocket element/tank, first set IX to current #rocket postion.
-	CALL SetIXtoCurrentRocketElement
+	CALL _SetIXtoCurrentRocketElement
 
 	; Reset Y for element/tank to top of the screen.
 	XOR A										; Set A to 0
@@ -1040,10 +644,16 @@ DropNextRocketElement
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #SetIXtoCurrentRocketElement                ;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;             #_SetIXtoCurrentRocketElement                ;
 ;----------------------------------------------------------;
 ; Set IX to current #rocket postion
-SetIXtoCurrentRocketElement
+_SetIXtoCurrentRocketElement
 
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element.
 	LD IX, rocketEl
@@ -1051,16 +661,16 @@ SetIXtoCurrentRocketElement
     ; Now, move IX so that it points to the #RO given by the deploy counter. First, load the counter into A (value 1-6).
 	; Afterward, load A indo D and the size of the #RO into E, and multiply D by E.
 	LD A, (rocketElementCnt)
-	CALL MoveIXtoGivenRocketElement
+	CALL _MoveIXtoGivenRocketElement
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                MoveIXtoGivenRocketElement                ;
+;               _MoveIXtoGivenRocketElement                ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:	rocket element from 1 to 6.
-MoveIXtoGivenRocketElement
+_MoveIXtoGivenRocketElement
 
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element.
 	LD IX, rocketEl
@@ -1070,6 +680,403 @@ MoveIXtoGivenRocketElement
 	LD E, RO									; D contains A, E contains size of #RO.
 	MUL D, E									; DE contains D * E.
 	ADD IX, DE									; IX points to active #rocket (#RO).
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_JetmanElementCollision                   ;
+;----------------------------------------------------------;
+; Checks whether Jetman overlaps with rocket element/tank.
+; Input:
+;  - BC: X postion of rocket element.
+;  - D: Y postion of rocket element.
+; Output:
+;  - A:		COLLISION_NO or COLLISION_YES
+COLLISION_NO			= 0
+COLLISION_YES			= 1
+
+_JetmanElementCollision
+
+	; Compare X coordinate of element and Jetman.
+	LD B, 0										; X is 8bit -> reset MSB.
+	LD HL, (jpo.jetX)							; X of the Jetman.
+
+	; Check whether Jetman is horizontal with the element.
+	SBC HL, BC	
+	CALL ut.AbsHL								; HL contains a positive distance between the enemy and Jetman.
+	LD A, H
+	CP 0
+	JR Z, .keepCheckingHorizontal				; HL > 256 -> no collision.
+	LD A, COLLISION_NO
+	RET		
+.keepCheckingHorizontal	
+	LD A, L
+	LD B, _RO_PICK_MARGX_D8
+	CP B
+	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical.
+	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision.
+	RET
+.checkVertical
+	
+	; We are here because Jemtman's horizontal position matches that of the element, now check vertical.
+	LD A, (jpo.jetY)								; Y of the Jetman.
+
+	; Subtracts B from A and check whether the result is less than or equal to #_RO_PICK_MARGY_D16.
+	SUB D										; D is method param (Y postion of rocket element).
+	CALL ut.AbsA
+	LD B, A
+	LD A, _RO_PICK_MARGY_D16
+	CP B
+	JR NC, .collision							; Jump if A(#_RO_PICK_MARGY_D16) >= B
+
+.noCollision
+	LD A, COLLISION_NO
+	RET
+.collision
+	LD A, COLLISION_YES
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #_PickupRocketElement                    ;
+;----------------------------------------------------------;
+_PickupRocketElement
+
+	; Return if there is no element/tank to pick up. Status must be #RO_ST_WAIT_PICKUP or #RO_ST_FALL_PICKUP.
+	LD A, (rocketState)
+	CP RO_ST_WAIT_PICKUP
+	JR Z, .afterStatusCheck
+
+	CP RO_ST_FALL_PICKUP
+	RET NZ
+	
+.afterStatusCheck
+
+	; ##########################################
+	;  Exit if RiP.
+	LD A, (jt.jetState)
+	CP jt.JET_ST_RIP
+	RET Z
+
+	; ##########################################
+	; Set IX to current #rocket postion.
+	CALL _SetIXtoCurrentRocketElement
+
+	; ##########################################
+	; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
+	LD BC, (IX + RO.DROP_X)						; X of the element.
+	LD B, 0
+	LD D, (IX + RO.Y)							; Y of the element.
+	CALL _JetmanElementCollision
+	CP COLLISION_NO
+	RET Z
+
+	; ##########################################
+	; Jetman picks up element/tank. Update state to reflect it and return.
+	LD A, RO_ST_CARRY
+	LD (rocketState), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #_MoveWithJetman                       ;
+;----------------------------------------------------------;
+; Move the element to the current Jetman's position.
+_MoveWithJetman
+
+	; Set the ID of the sprite for the following commands.
+	LD A, (IX + RO.SPRITE_ID)
+	NEXTREG _SPR_REG_NR_H34, A
+
+	; ##########################################
+	; Set sprite X coordinate.
+	LD BC, (jpo.jetX)
+	LD A, C		
+	NEXTREG _SPR_REG_X_H35, A					; Set _SPR_REG_NR_H34 with LDB from Jetmans X postion.
+	
+	; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
+	LD A, B										; Load MSB from X into A.
+	AND %00000001								; Keep only an overflow bit.
+	NEXTREG _SPR_REG_ATR2_H37, A
+
+	; ##########################################
+	; Set Y coordinate
+	LD A, (jpo.jetY)
+	ADD _RO_CARRY_ADJUSTY_D10
+	NEXTREG _SPR_REG_Y_H36, A					; Set Y position.
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #_JetmanDropsRocketElement                ;
+;----------------------------------------------------------;
+_JetmanDropsRocketElement
+
+	; Is Jetman over the drop location (+/- #_RO_PICK_MARGX_D8)?
+	LD BC, (jpo.jetX)
+	LD A, (rocketAssemblyX)
+	SUB C										; Ignore B because X < 255.
+	CP _RO_PICK_MARGX_D8
+	RET NC
+
+	; ##########################################
+	; Js Jetman above rocket?
+	LD A, (jpo.jetY)
+	CP _RO_DROP_H_D220
+	RET NC
+
+	; ##########################################
+	; Jetman drops rocket element.
+	LD A, RO_ST_FALL_ASSEMBLY
+	LD (rocketState), A
+
+	; ##########################################
+	; Store the height of the drop so that the element can keep falling from this location into the assembly place.
+	CALL _SetIXtoCurrentRocketElement			; Set IX to current #rocket postion.
+	LD A, (jpo.jetY)
+	LD (IX + RO.Y), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #_CarryRocketElement                    ;
+;----------------------------------------------------------;
+_CarryRocketElement
+
+	; Return if the state does not match.
+	LD A, (rocketState)
+	CP RO_ST_CARRY
+	RET NZ
+
+	CALL _SetIXtoCurrentRocketElement
+	CALL _MoveWithJetman
+	CALL _JetmanDropsRocketElement
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #_ResetRocketElement                      ;
+;----------------------------------------------------------;
+_ResetRocketElement
+
+	; Reset to wait for drop, hide spirte.
+	CALL _SetIXtoCurrentRocketElement
+
+	; Hide rocket element sprite.
+	LD A, (IX + RO.SPRITE_ID)
+	CALL sp.SetIdAndHideSprite
+
+	; Reset the state and decrement element counter -> we will drop this element again.
+	LD A, (rocketElementCnt)
+	DEC A
+	LD (rocketElementCnt), A
+
+	; Change state.
+	LD A, RO_ST_WAIT_DROP
+	LD (rocketState), A
+
+	; Reset drop delay.
+	XOR A										; Set A to 0.
+	LD (dropNextDelay), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #_UpdateElementPosition                   ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:	Current #RO pointer
+;  - A:		X postion
+_UpdateElementPosition
+
+	LD B, A										; Backup A.
+
+	LD D, (IX + RO.SPRITE_REF)
+	CALL UpdateSpritePattern
+
+	; ##########################################
+	; Sprite X coordinate from A param
+	LD A, B										; Restore A.
+	NEXTREG _SPR_REG_X_H35, A
+
+	LD A, _SPR_REG_ATR2_EMPTY
+	NEXTREG _SPR_REG_ATR2_H37, A
+
+	; ##########################################
+	; Sprite Y coordinate
+	LD A, (IX + RO.Y)
+	NEXTREG _SPR_REG_Y_H36, A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #_MoveFlyingRocket                       ;
+;----------------------------------------------------------;
+_MoveFlyingRocket
+
+	; Slow down rocket movement speed while taking off. 
+	; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
+	; with a given delay. When the current section ends, the following section begins, but with decrementd delay. During each section, 
+	; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
+
+	; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.
+	LD A, (rocketFlyDelayCnt)
+	CP 0
+	JR Z, .afterDelay
+
+	; Decrement delay counter.
+	LD A, (rocketFlyDelay)
+	DEC A
+	LD (rocketFlyDelay), A
+
+	CP 0
+	RET NZ										; Return if delay counter has not been reached.
+	
+	; The counter reached 0, reset it and increment the distance counter.
+	LD A, (rocketFlyDelayCnt)
+	LD (rocketFlyDelay), A
+
+	LD A, (rocketDelayDistance)
+	INC A
+	LD (rocketDelayDistance), A
+
+	; Has the traveled distance of the rocket with the current delay been reached?
+	CP _RO_FLY_DELAY_DIST_D5
+	JR NZ, .afterDelay							; Jump if rocket should still move with current delay.
+
+	; The rocket traveled far enough, decrement the delay for the next section.
+	LD A, (rocketFlyDelayCnt)
+	DEC A
+	LD (rocketFlyDelayCnt), A
+	LD (rocketFlyDelay), A
+
+	XOR A
+	LD (rocketDelayDistance), A
+.afterDelay
+
+	; ##########################################
+	; Increment total distance.
+	LD HL, (rocketDistance)
+	INC HL
+	LD (rocketDistance), HL
+
+	; ##########################################
+	; Has the rocket reached the asteroid, and should the explosion sequence begin?
+	LD A, H
+	CP _RO_EXPLODE_Y_HI_H4
+	JR NZ, .notAtAsteroid
+
+	LD A, L
+	CP _RO_EXPLODE_Y_LO_H7E
+	JR C, .notAtAsteroid
+
+	CALL _StartRocketExplosion
+	RET
+.notAtAsteroid
+
+	; ##########################################
+	; The current position of rocket elements is stored in #rocketAssemblyX and #RO.Y 
+	; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
+	
+	LD IX, rocketEl								; Load the pointer to #rocket into IX
+
+	; ##########################################
+	; Did the rocket reach the middle of the screen, and should it stop moving?
+	LD A, (IX + RO.Y)
+	CP _RO_MOVE_STOP_D120
+	JR NC, .keepMoving
+
+	; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
+	LD A, (rocketAssemblyX)
+	CALL _UpdateElementPosition
+	RET
+.keepMoving
+	; Keep moving
+
+	; ##########################################
+	; Move bottom rocket element (nr.1).
+	LD A, (IX + RO.Y)
+
+	DEC A
+	LD (IX + RO.Y), A
+
+	LD A, (rocketAssemblyX)
+	CALL _UpdateElementPosition
+
+	; ##########################################
+	; Move middle rocket element.
+	LD A, _RO_EL_MID_D2
+	CALL _MoveIXtoGivenRocketElement
+
+	LD A, (IX + RO.Y)
+	DEC A
+	LD (IX + RO.Y), A
+
+	LD A, (rocketAssemblyX)
+	CALL _UpdateElementPosition
+
+	; ##########################################
+	; Move top rocket element.
+	LD A, _RO_EL_TOP_D3
+	CALL _MoveIXtoGivenRocketElement
+
+	LD A, (IX + RO.Y)
+	DEC A
+	LD (IX + RO.Y), A
+	
+	LD A, (rocketAssemblyX)
+	CALL _UpdateElementPosition
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_StartRocketExplosion                     ;
+;----------------------------------------------------------;
+; Start explosion sequece. The rocket explodes when the state is flying and counter above zero.
+_StartRocketExplosion
+
+	LD A, 1
+	LD (rocketExplodeCnt), A
+
+	; ##########################################
+	; Hide exhaust
+	LD A, _RO_EXHAUST_SPRID_D43					; Hide sprite on display.
+	CALL sp.SetIdAndHideSprite
+
+	; ##########################################
+	; Update state
+	LD A, RO_ST_EXPLODE
+	LD (rocketState), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #_BoardRocket                         ;
+;----------------------------------------------------------;
+_BoardRocket
+
+	; Return if rocket is not ready for boarding.
+	LD A, (rocketState)
+	CP RO_ST_READY
+	RET NZ
+	
+	; ##########################################
+	; Jetman collision with first (lowest) rocket element triggers take off.
+	LD IX, rocketEl
+
+	LD BC, (rocketAssemblyX)					; X of the element.
+	LD B, 0
+	LD D, (IX + RO.Y)							; Y of the element.
+	CALL _JetmanElementCollision
+	CP COLLISION_NO
+	RET Z
+
+	; ##########################################
+	; Jetman boards the rocket!
+	LD A, RO_ST_FLY
+	LD (rocketState), A
+
+	CALL gc.RocketTakesOff
 
 	RET											; ## END of the function ##
 

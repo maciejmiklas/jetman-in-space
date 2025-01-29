@@ -43,50 +43,7 @@ WeaponHitEnemies
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
 	LD B, A
-	CALL CheckHitEnemies
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    #CheckHitEnemies                      ;
-;----------------------------------------------------------;
-; Checks all active enemies given by IX for collision with leaser beam.
-; Input
-;  - IX:	Pointer to #SPR, the enemies.
-;  - B:		Number of enemies in IX.
-; Modifies: ALL
-CheckHitEnemies
-
-.loop											; Loop over every enemy.
-	PUSH BC										; Preserve B for loop counter.
-	LD A, (IX + sr.SPR.STATE)
-	BIT sr.SPRITE_ST_VISIBLE_BIT, A
-	JR Z, .continue								; Jump if enemy is hidden.
-
-	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
-	BIT sr.SPRITE_ST_ACTIVE_BIT, A
-	JR Z, .continue	
-	
-	; Enemy is visible, check colision with leaser beam.
-	LD DE, (IX + sr.SPR.X)						; X of the enemy.
-	LD C, (IX + sr.SPR.Y)						; Y of the enemy.
-
-	PUSH IX
-	CALL ShotsColision
-	POP IX
-	CP SHOT_HIT
-	JR NZ, .continue							; Jump if there is no hit.
-
-	; We have hit!
-	CALL gc.EnemyHit
-
-.continue
-	; Move HL to the beginning of the next enemy.
-	LD DE, sr.SPR
-	ADD IX, DE
-
-	POP BC
-	DJNZ .loop									; Jump if B > 0.
+	CALL _CheckHitEnemies
 
 	RET											; ## END of the function ##
 
@@ -324,6 +281,54 @@ Fire
 
 	RET											; ## END of the function ##
 
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                    #_CheckHitEnemies                     ;
+;----------------------------------------------------------;
+; Checks all active enemies given by IX for collision with leaser beam.
+; Input
+;  - IX:	Pointer to #SPR, the enemies.
+;  - B:		Number of enemies in IX.
+; Modifies: ALL
+_CheckHitEnemies
+
+.loop											; Loop over every enemy.
+	PUSH BC										; Preserve B for loop counter.
+	LD A, (IX + sr.SPR.STATE)
+	BIT sr.SPRITE_ST_VISIBLE_BIT, A
+	JR Z, .continue								; Jump if enemy is hidden.
+
+	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
+	BIT sr.SPRITE_ST_ACTIVE_BIT, A
+	JR Z, .continue	
+	
+	; Enemy is visible, check colision with leaser beam.
+	LD DE, (IX + sr.SPR.X)						; X of the enemy.
+	LD C, (IX + sr.SPR.Y)						; Y of the enemy.
+
+	PUSH IX
+	CALL ShotsColision
+	POP IX
+	CP SHOT_HIT
+	JR NZ, .continue							; Jump if there is no hit.
+
+	; We have hit!
+	CALL gc.EnemyHit
+
+.continue
+	; Move HL to the beginning of the next enemy.
+	LD DE, sr.SPR
+	ADD IX, DE
+
+	POP BC
+	DJNZ .loop									; Jump if B > 0.
+
+	RET											; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

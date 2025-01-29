@@ -121,7 +121,7 @@ SpriteHit
 	LD (IX + SPR.STATE), A
 
 	LD A, SDB_EXPLODE
-	CALL LoadSpritePattern						; Enemy expoldes.
+	CALL _LoadSpritePattern						; Enemy expoldes.
 	
 	RET											; ## END of the function ##
 
@@ -227,7 +227,7 @@ HideSprite
 ShowSprite
 
 	LD A, (IX + SPR.SDB_INIT)
-	CALL LoadSpritePattern						; Reset pattern
+	CALL _LoadSpritePattern						; Reset pattern
 
 	CALL UpdateSpritePosition					; Set X, Y position for sprite
 	CALL UpdateSpritePattern					; Render sprite
@@ -275,7 +275,7 @@ UpdateSpritePattern
 
 	; Load new DB record.
 	LD A, (IX + SPR.NEXT)
-	CALL LoadSpritePattern
+	CALL _LoadSpritePattern
 
 .afterRecordChange
 
@@ -293,35 +293,6 @@ UpdateSpritePattern
 	LD HL, (IX + SPR.SDB_POINTER)
 	INC HL
 	LD (IX + SPR.SDB_POINTER), HL
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #LoadSpritePattern                      ;
-;----------------------------------------------------------;
-; Set given pointer IX to animation pattern from #srSpriteDB given by B.
-; Input:
-;  - IX: 	Pointer to #SPR.
-;  - A:		ID in #srSpriteDB.
-; Modifies: A, BC, HL
-LoadSpritePattern
-
-	; Find DB record.
-	LD HL, srSpriteDB							; HL points to the beginning of the DB.
-	LD BC, 0									; Do not limit CPIR search.
-	CPIR										; CPIR will keep increasing HL until it finds a record ID from A.
-
-	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
-	LD A, (HL)	
-	ADD SDB_SUB									; Add 100 because DB value had  -100, to avoid collision with ID.
-	LD (IX + SPR.NEXT), A						; Update #SPR.NEXT.
-
-	INC HL										; HL points to [SIZE] in DB.
-	LD A, (HL)									
-	LD (IX + SPR.REMAINING), A					; Update #SPR.REMAINING.
-
-	INC HL										; HL points to [FRAME] in DB.
-	LD (IX + SPR.SDB_POINTER), HL				; Update #SPR.SDB_POINTER.
 
 	RET											; ## END of the function ##
 
@@ -473,6 +444,40 @@ MoveY
 
 	RET											; ## END of the function ##
 
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                 #_LoadSpritePattern                      ;
+;----------------------------------------------------------;
+; Set given pointer IX to animation pattern from #srSpriteDB given by B.
+; Input:
+;  - IX: 	Pointer to #SPR.
+;  - A:		ID in #srSpriteDB.
+; Modifies: A, BC, HL
+_LoadSpritePattern
+
+	; Find DB record.
+	LD HL, srSpriteDB							; HL points to the beginning of the DB.
+	LD BC, 0									; Do not limit CPIR search.
+	CPIR										; CPIR will keep increasing HL until it finds a record ID from A.
+
+	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
+	LD A, (HL)	
+	ADD SDB_SUB									; Add 100 because DB value had  -100, to avoid collision with ID.
+	LD (IX + SPR.NEXT), A						; Update #SPR.NEXT.
+
+	INC HL										; HL points to [SIZE] in DB.
+	LD A, (HL)									
+	LD (IX + SPR.REMAINING), A					; Update #SPR.REMAINING.
+
+	INC HL										; HL points to [FRAME] in DB.
+	LD (IX + SPR.SDB_POINTER), HL				; Update #SPR.SDB_POINTER.
+
+	RET											; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

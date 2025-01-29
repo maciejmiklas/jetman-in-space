@@ -238,43 +238,54 @@ MovementInactivity
 ;                      JoyWillEnable                       ;
 ;----------------------------------------------------------;
 JoyWillEnable
+
 	CALL jt.UpdateStateOnJoyWillEnable
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #NextFromDayToNight                      ;
+;                 #NextDayToNight                      ;
 ;----------------------------------------------------------;
-; The function will be called 6x when a night transitions to a bright day.
-; Input
-;  -A: Value from _TOD_STEP_NIGHT to _TOD_STEP_DAY inclusive
-NextFromDayToNight
+; The function will be called when a night shifts to a day.
+; Call sequece:
+; A) NextDayToNight -> NextDayToNight -> .... -> NextDayToNight -> GOTO B)
+; B) NextNightToDay -> NextNightToDay -> .... -> NextNightToDay -> TimeOfDayChangeToFullDay -> GOTO A)
+NextDayToNight
 
-	LD BC, dbi.bgrL1PaletteBytes
-	CALL bp.PaletteBrightnessUp
+	CALL btd.PrevTodPalette
+
+	LD IX, (btd.todPalAddr)
+	LD A, $DD
+	nextreg 2,8
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #NextFromNightToDay                       ;
+;                  #NextNightToDay                         ;
 ;----------------------------------------------------------;
-; The function will be called 6x when a bright day shifts to a night.
-; Input
-;  -A: Value from _TOD_STEP_DAY to _TOD_STEP_NIGHT inclusive
-NextFromNightToDay
+; The function will be called when a day shifts to a night.
+NextNightToDay
 
-	LD BC, dbi.bgrL1PaletteBytes
-	CALL bp.PaletteBrightnessDown
+	CALL btd.NextTodPalette
+
+	LD IX, (btd.todPalAddr)
+	LD A, $AA
+	nextreg 2,8
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;               #TimeOfDayChangeToFullDay                  ;
 ;----------------------------------------------------------;
-; Called when the lighting condition changed to a full day.
+; Called when the lighting condition has changed to a full day.
 TimeOfDayChangeToFullDay
 
-	CALL bp.ResetTimeOfDayPaletteArrd
+	CALL btd.ResetPaletteArrd
+	CALL btd.LoadCurrentTodPalette
+
+	LD IX, (btd.todPalAddr)
+	LD A, $FF
+	nextreg 2,8
 
 	RET											; ## END of the function ##	
 

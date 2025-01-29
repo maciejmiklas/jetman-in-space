@@ -17,20 +17,20 @@ JoyInput
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
 	PUSH AF										; Keep A on the stack to avoid rereading the same input.
 	BIT 2, A									; Bit 2 reset -> Rright pressed.
-	CALL Z, JoyRight
+	CALL Z, _JoyRight
 	POP AF
 
 	; ##########################################
 	; Key Up pressed ?
 	PUSH AF
 	BIT 3, A									; Bit 3 reset -> Up pressed.
-	CALL Z, JoyUp
+	CALL Z, _JoyUp
 	POP AF
 	
 	; ##########################################
 	; Key Down pressed ?
 	BIT 4, A									; Bit 4 reset -> Down pressed.
-	CALL Z, JoyDown
+	CALL Z, _JoyDown
 
 	; ##########################################
 	; Joystick right pressed ?
@@ -38,57 +38,63 @@ JoyInput
 	IN A, (_JOY_REG_H1F) 						; Read joystick input into A.
 	PUSH AF										; Keep A on the stack to avoid rereading the same input.
 	BIT 0, A									; Bit 0 set -> Right pressed.
-	CALL NZ, JoyRight	
+	CALL NZ, _JoyRight	
 	POP AF
 
 	; ##########################################
 	; Joystick left pressed ?
 	PUSH AF
 	BIT 1, A									; Bit 1 set -> Left pressed.
-	CALL NZ, JoyLeft
+	CALL NZ, _JoyLeft
 	POP AF
 
 	; ##########################################
 	; Joystick down pressed ?
 	PUSH AF
 	BIT 2, A									; Bit 2 set -> Down pressed.
-	CALL NZ, JoyDown
+	CALL NZ, _JoyDown
 	POP AF
 
 	; ##########################################
 	; Joystick fire pressed ?
 	PUSH AF
 	AND %01110000								; Any of three fires pressed?
-	CALL NZ, JoyFire	
+	CALL NZ, _JoyFire	
 	POP AF
 
 	; ##########################################
 	; Joystick up pressed ?
 	BIT 3, A									; Bit 3 set -> Up pressed.
-	CALL NZ, JoyUp
+	CALL NZ, _JoyUp
 
 	; ##########################################
 	; Key Fire (Z) pressed ?
 	LD A, _KB_V_TO_Z_HFE						; $FD -> A (5...1).
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
 	BIT 1, A									; Bit 1 reset -> Z pressed.
-	CALL Z, JoyFire
+	CALL Z, _JoyFire
 	
 	; ##########################################
 	; Key Left pressed ?
 	LD A, _KB_5_TO_1_HF7						; $FD -> A (5...1).
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
 	BIT 4, A									; Bit 4 reset -> Left pressed.
-	CALL Z, JoyLeft		
+	CALL Z, _JoyLeft		
 
-	CALL JoyEnd
+	CALL _JoyEnd
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         JoyEnd                           ;
 ;----------------------------------------------------------;
-JoyEnd
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                        _JoyEnd                           ;
+;----------------------------------------------------------;
+_JoyEnd
 	CALL jm.JoystickInputProcessed
 
 	; ##########################################
@@ -113,9 +119,9 @@ JoyEnd
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        JoyRight                          ;
+;                        _JoyRight                         ;
 ;----------------------------------------------------------;
-JoyRight
+_JoyRight
 	; Update temp state.
 	LD A, (ind.joyDirection)
 	SET ind.MOVE_RIGHT_BIT, A	
@@ -127,9 +133,9 @@ JoyRight
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        JoyLeft                           ;
+;                       _JoyLeft                           ;
 ;----------------------------------------------------------;
-JoyLeft
+_JoyLeft
 
 	; Update #joyDirection state.
 	LD A, (ind.joyDirection)
@@ -142,9 +148,9 @@ JoyLeft
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          JoyUp                           ;
+;                          _JoyUp                          ;
 ;----------------------------------------------------------;
-JoyUp
+_JoyUp
 
 	; Update #joyDirection state.
 	LD A, (ind.joyDirection)
@@ -157,9 +163,9 @@ JoyUp
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         JoyDown                          ;
+;                        _JoyDown                          ;
 ;----------------------------------------------------------;
-JoyDown
+_JoyDown
 
 	; Update #joyDirection state.
 	LD A, (ind.joyDirection)
@@ -172,18 +178,18 @@ JoyDown
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     JoyDownRelease                       ;
+;                     _JoyDownRelease                      ;
 ;----------------------------------------------------------;
-JoyDownRelease
+_JoyDownRelease
 
 	CALL jm.JoyMoveDownRelease
 
 	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
-;                        JoyFire                           ;
+;                        _JoyFire                          ;
 ;----------------------------------------------------------;
-JoyFire
+_JoyFire
 
 	CALL jw.Fire
 

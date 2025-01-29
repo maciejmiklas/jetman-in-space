@@ -8,22 +8,28 @@
 ;----------------------------------------------------------;
 GameLoop
 
-	CALL GameLoop000
-	CALL GameLoop002
-	CALL GameLoop002
-	CALL GameLoop004	
-	CALL GameLoop006
-	CALL GameLoop008
-	CALL GameLoop010
-	CALL GameLoop040
-	CALL GameLoop080
+	CALL _GameLoop000
+	CALL _GameLoop002
+	CALL _GameLoop002
+	CALL _GameLoop004	
+	CALL _GameLoop006
+	CALL _GameLoop008
+	CALL _GameLoop010
+	CALL _GameLoop040
+	CALL _GameLoop080
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #GameLoop000                        ;
 ;----------------------------------------------------------;
-GameLoop000
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     #_GameLoop000                        ;
+;----------------------------------------------------------;
+_GameLoop000
 
 	; 1 -> 0 and 0 -> 1
 	LD A, (gld.counter000FliFLop)
@@ -43,9 +49,9 @@ GameLoop000
 	CALL ro.CheckHitTank
 	CALL ro.FlyRocket
 
-	CALL GameLoop000OnDisabledJoy
-	CALL GameLoop000OnRocketTakingOff
-	CALL GameLoop000OnActiveJetman
+	CALL _GameLoop000OnDisabledJoy
+	CALL _GameLoop000OnRocketTakingOff
+	CALL _GameLoop000OnActiveJetman
 	
 	; ##########################################
 	LD IX, ed.sprite01
@@ -57,11 +63,10 @@ GameLoop000
 
 	RET											; ## END of the function ##
 
-tmp byte 0
 ;----------------------------------------------------------;
-;               #GameLoop000OnActiveJetman                 ;
+;               #_GameLoop000OnActiveJetman                ;
 ;----------------------------------------------------------;
-GameLoop000OnActiveJetman
+_GameLoop000OnActiveJetman
 
 	; Return if inactive
 	LD A, (jt.jetState)
@@ -90,9 +95,9 @@ GameLoop000OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #GameLoop000OnDisabledJoy                  ;
+;               #_GameLoop000OnDisabledJoy                 ;
 ;----------------------------------------------------------;
-GameLoop000OnDisabledJoy
+_GameLoop000OnDisabledJoy
 
 	; Return if the joystick is about to enable
 	LD A, (ind.joyOffCnt)
@@ -107,9 +112,9 @@ GameLoop000OnDisabledJoy
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;           #GameLoop000OnRocketTakingOff                  ;
+;           #_GameLoop000OnRocketTakingOff                 ;
 ;----------------------------------------------------------;
-GameLoop000OnRocketTakingOff
+_GameLoop000OnRocketTakingOff
 
 	; Return if rocket is not flying
 	LD A, (ro.rocketState)
@@ -131,11 +136,11 @@ GameLoop000OnRocketTakingOff
 	CALL ti.ShakeTilemap
 
 	RET											; ## END of the function ##
-	
+
 ;----------------------------------------------------------;
-;                       #GameLoop002                       ;
+;                       #_GameLoop002                      ;
 ;----------------------------------------------------------;
-GameLoop002
+_GameLoop002
 
 	; Increment the counter.
 	LD A, (gld.counter002)
@@ -162,9 +167,9 @@ GameLoop002
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #GameLoop004                        ;
+;                     #_GameLoop004                        ;
 ;----------------------------------------------------------;
-GameLoop004
+_GameLoop004
 
 	; Increment the counter.
 	LD A, (gld.counter004)
@@ -193,9 +198,9 @@ GameLoop004
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #GameLoop006                        ;
+;                      #_GameLoop006                       ;
 ;----------------------------------------------------------;
-GameLoop006
+_GameLoop006
 
 	; Increment the counter.
 	LD A, (gld.counter006)
@@ -220,9 +225,9 @@ GameLoop006
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #GameLoop008                        ;
+;                     #_GameLoop008                        ;
 ;----------------------------------------------------------;
-GameLoop008
+_GameLoop008
 
 	; Increment the counter.
 	LD A, (gld.counter008)
@@ -259,9 +264,9 @@ GameLoop008
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #GameLoop010                        ;
+;                     #_GameLoop010                        ;
 ;----------------------------------------------------------;
-GameLoop010
+_GameLoop010
 
 	; Increment the counter.
 	LD A, (gld.counter010)
@@ -283,15 +288,15 @@ GameLoop010
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
 
-	CALL GameLoop010nFlyingRocket
+	CALL _GameLoop010nFlyingRocket
 	CALL td.NextTimeOfDayTrigger
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #GameLoop010nFlyingRocket                  ;
+;               #_GameLoop010nFlyingRocket                  ;
 ;----------------------------------------------------------;
-GameLoop010nFlyingRocket
+_GameLoop010nFlyingRocket
 
 	; Return if rocket is not flying.
 	LD A, (ro.rocketState)
@@ -318,10 +323,11 @@ GameLoop010nFlyingRocket
 
 .afterFilpFlop
 	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
-;                       #GameLoop040                       ;
+;                      #_GameLoop040                       ;
 ;----------------------------------------------------------;
-GameLoop040
+_GameLoop040
 
 	; Increment the counter.
 	LD A, (gld.counter040)
@@ -342,9 +348,9 @@ GameLoop040
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #GameLoop080                       ;
+;                      #_GameLoop080                       ;
 ;----------------------------------------------------------;
-GameLoop080
+_GameLoop080
 
 	; Increment the counter.
 	LD A, (gld.counter080)
@@ -363,6 +369,7 @@ GameLoop080
 	
 	
 	RET											; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

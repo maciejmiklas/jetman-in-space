@@ -13,23 +13,6 @@ tileOffset				BYTE _SC_RESY1_D255		; Runns from 255 to 0, see also "NEXTREG _DC_
 tilePixelCnt			BYTE 0					; Runns from 0 to 7.
 
 ;----------------------------------------------------------;
-;                       #ResetStars                        ;
-;----------------------------------------------------------;
-	LD A, TILES_ROW_RESET
-	LD (tilesRow), A
-
-	LD A, _TIS_ROWS_D128
-	LD (starsRow), A
-
-	LD A, _SC_RESY1_D255
-	LD (tileOffset), A
-
-	XOR A
-	LD (tilePixelCnt), A
-	
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                       #NextStarsRow                      ;
 ;----------------------------------------------------------;
 ; This method is called when the ingame tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
@@ -142,6 +125,30 @@ AnimateStarsOnFlyRocket
 	LD (tileOffset), A
 	NEXTREG _DC_REG_TI_Y_H31, A					; Y tile offset.
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      #_ResetStars                        ;
+;----------------------------------------------------------;
+_ResetStars
+	LD A, TILES_ROW_RESET
+	LD (tilesRow), A
+
+	LD A, _TIS_ROWS_D128
+	LD (starsRow), A
+
+	LD A, _SC_RESY1_D255
+	LD (tileOffset), A
+
+	XOR A
+	LD (tilePixelCnt), A
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -618,15 +618,11 @@ _GC_FLIP_OFF_D0			= 0
 
 ; ##############################################
 ; Times of Day.
-; There are 6 palette brightness levels. 0 is full day, using the original palette. 1 to 6 contains darkness levels, 
-; where 1 is slightly dimmed, and 6 is night.
-_TOD_STEP_FULL_DAY		= 0
-_TOD_STEP_DAY			= 1						; Full day dimmed by on step.
-_TOD_STEP_NIGHT			= 5						; Indicates maximum darkness.
-_TOD_PALETTES			= 5
+_TOD_STEPS				= 4
 
-_TOD_STEPDIR_DAY		= 1						; Day to night.
-_TOD_STEPDIR_NIGHT		= 2						; Night to day.
+_TOD_DIR_DAY_NIGHT		= 1						; Day to night.
+_TOD_DIR_NIGHT_DAY		= 2						; Night to day.
+_TOD_DIR_FULL_DAY		= 3						; Full day.
 
 _TOD_STEP_DURATION		= 5
 _TOD_DAY_DURATION		= 20
