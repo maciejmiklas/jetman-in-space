@@ -73,9 +73,6 @@ _GameLoop000OnActiveJetman
 	CP jt.STATE_INACTIVE
 	RET Z
 
-	ld a, (tmp)
-	inc a 
-	ld (tmp),a
 	; ##########################################
 	CALL js.AnimateJetSprite
 	CALL js.UpdateJetSpritePositionRotation
@@ -86,11 +83,11 @@ _GameLoop000OnActiveJetman
 	LD IX, ed.sprite01
 	LD A, (ed.singleSpritesSize)
 	LD B, A	
-	//CALL ep.RespownNextEnemy
+	CALL ep.RespownNextEnemy
 	
 	; ##########################################
 	LD IY, ed.formation
-	//CALL ef.RespownFormation	
+	CALL ef.RespownFormation	
 
 	RET											; ## END of the function ##
 
@@ -366,7 +363,7 @@ _GameLoop080
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-	
+
 	
 	RET											; ## END of the function ##
 

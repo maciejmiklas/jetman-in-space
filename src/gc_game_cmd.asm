@@ -243,20 +243,34 @@ JoyWillEnable
 
 	RET											; ## END of the function ##
 
+
 ;----------------------------------------------------------;
-;                 #NextDayToNight                      ;
+;                         NightEnds                        ;
+;----------------------------------------------------------;
+NightEnds
+
+	;LD IX, (btd.todPalAddr)
+	;LD A, $E1
+	;nextreg 2,8
+
+	; #NextTodPalette moves the palette address to the next chunk after loading colors into the hardware. Now, we are after the last 
+	; transition step from day to night (night to day will start), and the palette address points to the memory containing the next step, 
+	; but there is no palette on that address. We have to move the back palette addresses by one palette so that it points to the last 
+	; palette containing colors for the darkest night.
+	CALL btd.PrevTodPaletteAddr
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #NextDayToNight                       ;
 ;----------------------------------------------------------;
 ; The function will be called when a night shifts to a day.
 ; Call sequece:
 ; A) NextDayToNight -> NextDayToNight -> .... -> NextDayToNight -> GOTO B)
-; B) NextNightToDay -> NextNightToDay -> .... -> NextNightToDay -> TimeOfDayChangeToFullDay -> GOTO A)
+; B) NextNightToDay -> NextNightToDay -> .... -> NextNightToDay -> ChangeToFullDay -> GOTO A)
 NextDayToNight
 
-	CALL btd.PrevTodPalette
-
-	LD IX, (btd.todPalAddr)
-	LD A, $DD
-	nextreg 2,8
+	CALL btd.NextTodPalette
 
 	RET											; ## END of the function ##
 
@@ -266,26 +280,18 @@ NextDayToNight
 ; The function will be called when a day shifts to a night.
 NextNightToDay
 
-	CALL btd.NextTodPalette
-
-	LD IX, (btd.todPalAddr)
-	LD A, $AA
-	nextreg 2,8
+	CALL btd.PrevTodPalette
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #TimeOfDayChangeToFullDay                  ;
+;                   #ChangeToFullDay                       ;
 ;----------------------------------------------------------;
 ; Called when the lighting condition has changed to a full day.
-TimeOfDayChangeToFullDay
+ChangeToFullDay
 
 	CALL btd.ResetPaletteArrd
 	CALL btd.LoadCurrentTodPalette
-
-	LD IX, (btd.todPalAddr)
-	LD A, $FF
-	nextreg 2,8
 
 	RET											; ## END of the function ##	
 

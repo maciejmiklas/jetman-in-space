@@ -6,9 +6,9 @@
 ; Number of _GameLoop040 cycles to drop next rocket module.
 dropNextDelay			BYTE 0
 
-rocketElementCnt		BYTE _RO_EL_TANK1_D4 ;0 					; Counts from _RO_EL_LOW_D1 to _RO_EL_TANK3_D6, both inclusive.
+rocketElementCnt		BYTE 0 					; Counts from _RO_EL_LOW_D1 to _RO_EL_TANK3_D6, both inclusive.
 
-rocketState				BYTE RO_ST_READY ;RO_ST_WAIT_DROP
+rocketState				BYTE RO_ST_WAIT_DROP
 
 RO_ST_INACTIVE			= 0
 RO_ST_WAIT_DROP			= 1						; Rocket element (or fuel tank) is waiting for drop from the sky. This is initial state.
@@ -41,9 +41,9 @@ Y						BYTE					; Current Y position.
 
 rocketEl
 ; rocket element
-	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _RO_DOWN_SPR_ID_D50/*SPRITE_ID*/, 60/*SPRITE_REF*/, 233/* !!!! 0Y*/}	; bottom element
-	RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 56/*SPRITE_REF*/, 217/*Y*/}	; middle element
-	RO {120/*DROP_X*/, 147/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 52/*SPRITE_REF*/, 201/*Y*/}	; top of the rocket
+	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _RO_DOWN_SPR_ID_D50/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}	; bottom element
+	RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 	56/*SPRITE_REF*/, 0/*Y*/}	; middle element
+	RO {120/*DROP_X*/, 147/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 	52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
 ; fuel tank
 	RO {030/*DROP_X*/, 099/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
 	RO {110/*DROP_X*/, 147/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}

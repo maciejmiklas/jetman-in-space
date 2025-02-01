@@ -17,10 +17,10 @@ LoadTodPalette
 
 	; ##########################################
 	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
-	LD A, (palColors)					; Number of colors/iterations.
+	LD A, (palColors)							; Number of colors/iterations.
 	LD B, A
 
-	LD HL, (palAdr)					; Address of the palette.
+	LD HL, (palAdr)								; Address of the palette.
 .loopCopyColor
 	
 	; - Two consecutive writes are needed to write the 9 bit colour:
@@ -47,8 +47,8 @@ NextTodPalette
 	
 	CALL _LoadColors
 
-	; Moves #todPalAddr to the previous palette
-	ADD HL, -_BM_PAL2_BYTES_D512
+	; Moves #todPalAddr to the next palette
+	ADD HL, _BM_PAL2_BYTES_D512
 	LD (todPalAddr), HL
 
 	RET											; ## END of the function ##
@@ -59,9 +59,18 @@ NextTodPalette
 PrevTodPalette
 	
 	CALL _LoadColors
+	CALL PrevTodPaletteAddr
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #PrevTodPaletteAddr                    ;
+;----------------------------------------------------------;
+PrevTodPaletteAddr
+	
 	; Moves #todPalAddr to the next palette
-	ADD HL, _BM_PAL2_BYTES_D512
+	LD HL, (todPalAddr)	
+	ADD HL, -_BM_PAL2_BYTES_D512
 	LD (todPalAddr), HL
 
 	RET											; ## END of the function ##
@@ -94,7 +103,7 @@ CreateTodPalettes
 	; Set the palette address to the beginning of the bank holding it, and copy initial palette.
 	LD HL, (palAdr)
 	LD BC, (palColors)
-	CALL ResetPaletteArrd				; Sets bank and DE as destination for LDIR
+	CALL ResetPaletteArrd						; Sets bank and DE as destination for LDIR
 	LDIR										; HL (source) and BC (amount) are method params
 
 	; ##########################################
@@ -156,7 +165,7 @@ VariablesSet
 _WriteColors
 
 	; Load colors
-	CALL bp.BytesToColors							; BC contains color size in bytes, we need number of colors in B.
+	CALL bp.BytesToColors						; BC contains color size in bytes, we need number of colors in B.
 
 	LD A, (palColors)
 	LD B, A
@@ -213,7 +222,7 @@ _DecrementPaletteColors
 
 	; ##########################################
 	; Copy 9 bit (2 bytes per color) palette
-	LD HL, (todPalAddr)					; The address of current palette set by #_NextBrightnessPalette.
+	LD HL, (todPalAddr)							; The address of current palette set by #_NextBrightnessPalette.
 
 	LD A, (palColors)
 	LD B, A
@@ -239,7 +248,7 @@ _DecrementPaletteColors
 ; Fill the remaining colors with transparent.
 __NOT_USED__FillLayer2Palette
 
-	LD A, (palColors)					; Number of colors/iterations.
+	LD A, (palColors)							; Number of colors/iterations.
 	LD B, A
 
 	; We copied the number of colors given by B, but we had to copy 256 colors (512 bytes).

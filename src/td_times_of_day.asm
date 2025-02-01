@@ -93,6 +93,7 @@ _NextStepDayToNight
 	LD A, 1									; Switching should be short
 	LD (stepDuration), A
 
+	CALL gc.NightEnds
 	RET
 
 .nextStep
@@ -131,7 +132,7 @@ _NextStepNightToDay
 	LD A, _TOD_DAY_DURATION
 	LD (stepDuration), A
 
-	CALL gc.TimeOfDayChangeToFullDay
+	CALL gc.ChangeToFullDay
 
 	RET
 

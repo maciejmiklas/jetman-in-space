@@ -624,5 +624,5 @@ _TOD_DIR_DAY_NIGHT		= 1						; Day to night.
 _TOD_DIR_NIGHT_DAY		= 2						; Night to day.
 _TOD_DIR_FULL_DAY		= 3						; Full day.
 
-_TOD_STEP_DURATION		= 5
-_TOD_DAY_DURATION		= 20
+_TOD_STEP_DURATION		= 50
+_TOD_DAY_DURATION		= 200
