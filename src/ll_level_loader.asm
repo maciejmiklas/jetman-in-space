@@ -19,21 +19,14 @@ LoadLevelData1
 	LD HL, dbi.bgrL1PaletteAdr
 	LD (btd.palAdr), HL
 
-	;moze zrobic jedna methode initialize?
-	;gdzie dac LoadTodPalette? to powinno byc cos jak LoadDefaultPalette??
-	; zpbatrz: LoadLevel2Image
-	CALL btd.VariablesSet						; Palette global variables are set.
-	CALL btd.LoadTodPalette						; Load orginal palette into hardware.
-	CALL btd.CreateTodPalettes					; Create palettes for different times of day.
+	CALL btd.LoadLevelPalette
 
 	; ##########################################
 	; Load background image
 
-	; Load the address of the image into a global variable.
+	; Load the address of the image into a global variable. LoadBgImage will be called on #RespawnJet
 	LD A, $$dbi.bgrL1Img
 	LD (bm.imageBank), A
-
-	CALL bm.LoadLevel2Image						; Load image into hardware.
 	
 	RET											; ## END of the function ##
 

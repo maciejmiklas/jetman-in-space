@@ -529,7 +529,8 @@ _C_GB_TILES_D13			= 320 / 8 * 3
 
 ; ##############################################
 ; Jet RiP
-_RIP_MOVE_X_D3			= 3
+_RIP_MOVE_R_D3			= 3
+_RIP_MOVE_L_D3			= 3
 _RIP_MOVE_Y_D4			= 4
 
 ; ##############################################
@@ -559,7 +560,6 @@ _BM_PAL2_RRR_INC		= %001'000'00 			; Increment/decrement red color
 _BM_PAL2_GGG_MASK		= %000'111'00 			; Mask green color
 _BM_PAL2_GGG_MASKN		= %111'000'11 			; Mask all but green color
 _BM_PAL2_GGG_INC		= %000'001'00 			; Increment/decrement green color
-
 
 _BM_PAL2_BB_MASK		= %000'000'11
 _BM_PAL2_BB_MASKN		= %111'111'00

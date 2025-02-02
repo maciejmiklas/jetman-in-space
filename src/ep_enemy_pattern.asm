@@ -232,7 +232,7 @@ RespownEnemy
 	CALL _LoadMoveDelayCounter	
 	LD (IY + ENP.MOVE_DELAY_CNT), A
 
-	CALL RestartMovePattern
+	CALL _RestartMovePattern
 
 	; Set Y (horizontal respown).
 	LD A,  (IY + ENP.RESPOWN_Y)
@@ -486,7 +486,7 @@ _MoveEnemy
 
 .restartMovePattern
 	; Restart move pattern, it has reached max value.
-	CALL RestartMovePattern
+	CALL _RestartMovePattern
 
 ; Check the collision with the platform.
 ; Check platform hit independent of move-along-bit. The margin for move-along is more significant than one for the hit. Sprite can hit 
@@ -519,14 +519,14 @@ _LoadCurrentMoveStep
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #RestartMovePattern                     ;
+;                 #_RestartMovePattern                     ;
 ;----------------------------------------------------------;
 ; This method resets the move pattern (#ENP) so animation can start from the first move pattern. It does not modify #SPR.
 ; Input
 ;  - IX:	Pointer to #SPR holding data for single spreite that will be moved.
 ;  - IY: 	Pointer to #ENP for current sprite.
 ; Modifies: A, IY, BC, HL
-RestartMovePattern
+_RestartMovePattern
 
 	LD BC, (IX + sr.SPR.EXT_DATA_POINTER)		; Load #ENP for this sprite to IY.
 	LD IY, BC

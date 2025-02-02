@@ -6,11 +6,11 @@
 imageBank				BYTE 0					; Bank containing backgotund image.
 
 ;----------------------------------------------------------;
-;                    #LoadLevel2Image                      ;
+;                    #LoadBgImage                   	   ;
 ;----------------------------------------------------------;
 ; Copies data from slots 6 to 7. Slot 6 points to the bank containing the source of the image, and slot 7 points to the bank that contains 
 ; display data (NEXTREG _DC_REG_L2_BANK_H12).
-LoadLevel2Image
+LoadBgImage
 	
 	; Load into D the start bank containing background image source
 	LD A, (imageBank)

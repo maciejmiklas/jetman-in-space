@@ -3,14 +3,14 @@
 ;----------------------------------------------------------;
 	MODULE bg
 
-bgOffset				BYTE 0
+bgOffset				BYTE 0					; Offset of the background image.
 
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;
 ;----------------------------------------------------------;
-; The background starts at the bottom of the screen with offset 16. That is the height of the ground. The background should begin where 
-; the ground ends (2 pixels overlap). From the bottom of the screen, there is ground, 16 pixels high, and the background follows after it. 
-; When Jetman moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset. 
+; The background starts at the bottom of the screen with offset 16. That is the height of the ground. The background should begin where
+; the ground ends (2 pixels overlap). From the bottom of the screen, there is ground, 16 pixels high, and the background follows after it.
+; When Jetman moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset.
 ; It starts with 16 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
 UpdateBackgroundOnJetmanMove
 
@@ -27,20 +27,33 @@ UpdateBackgroundOnJetmanMove
 	LD B, A
 	LD (bgOffset), A
 
-	; Move background above the ground line
-	LD A, _GB_OFFSET_D14
-	SUB B										; B contains background offset.
-	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
+	CALL _MoveBackground
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;             UpdateBackgroundOnRocketMove                 ;
+;----------------------------------------------------------;
+UpdateBackgroundOnRocketMove
+
+	LD A, (bgOffset)
+	CP _SC_RESY1_D255							; Keep increasing until we reach 255, the whole image is hidden afterward.
+	RET Z
+
+	INC A
+	LD (bgOffset), A
+
+	CALL _MoveBackground
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;              HideBackgroundBehindHorizon                 ;
 ;----------------------------------------------------------;
-; Hide picture line going behind the horizon	
+; Hide picture line going behind the horizon
 HideBackgroundBehindHorizon
 
-	CALL _GetBottomBackgroundLine
+	CALL _GetGroundImageLine
 
 	; Do not remove the line if the Jetman is on the ground (offset is 255).
 	CP GBL_RET_A_GND
@@ -58,7 +71,7 @@ HideBackgroundBehindHorizon
 ; Copy lower background image line from original picture.
 ShowBackgroundAboveHorizon
 
-	CALL _GetBottomBackgroundLine
+	CALL _GetGroundImageLine
 
 	; Do not remove the line if the Jetman is on the ground (offset is 255).
 	CP GBL_RET_A_GND
@@ -72,44 +85,6 @@ ShowBackgroundAboveHorizon
 
 	RET											; ## END of the function ##
 
-;----------------------------------------------------------;
-;             #AnimateBackgroundOnFlyRocket                ;
-;----------------------------------------------------------;
-AnimateBackgroundOnFlyRocket
-
-	; ##########################################
-	; Return if rocket is not flying.
-	LD A, (ro.rocketState)
-	CP ro.RO_ST_FLY
-	RET NZ
-
-	; ##########################################
-	; Start animation when the rocket reaches given height.
-	LD HL, (ro.rocketDistance)
-	LD A, H
-	CP 0										; If H > 0 then distance is definitely > _GB_MOVE_ROCKET_D100.
-	JR NZ, .afterAnimationStart
-
-	LD A, L
-	CP _GB_MOVE_ROCKET_D100
-	RET C
-.afterAnimationStart
-
-	; ##########################################
-	; Move the background image.
-	
-	LD A, (bgOffset)
-	DEC A
-	LD (bgOffset), A
-	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
-
-	CP 0
-	JR NZ, .afterBgOffsetReset
-	LD A, 192
-	LD (bgOffset), A
-.afterBgOffsetReset
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -118,15 +93,28 @@ AnimateBackgroundOnFlyRocket
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;               _GetBottomBackgroundLine                   ;
+;                    _MoveBackground                       ;
+;----------------------------------------------------------;
+_MoveBackground
+
+	LD (bgOffset), A
+		LD B, A
+	LD A, _GB_OFFSET_D14
+	SUB B										; B contains background offset (current #bgOffset).
+	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  _GetGroundImageLine                     ;
 ;----------------------------------------------------------;
 ; Return:
-;  - A: A number of bottom image lines based on the background offset.
+;  - A: Returns the line number of the background image at ground level based on the horizontal image movement given by #bgOffset.
 GBL_RET_A_GND				= _BM_YRES_D256-1
 
-_GetBottomBackgroundLine
+_GetGroundImageLine
 
-	; Calculate the line number that needs to be replaced. It's the line going behind the horizon.  It's always the bottom line on the image.
+	; Calculate the line number that needs to be replaced. It's the line going behind the horizon. It's always the bottom line on the image.
 	LD A, (bgOffset)
 	LD B, A
 	LD A, _BM_YRES_D256-1

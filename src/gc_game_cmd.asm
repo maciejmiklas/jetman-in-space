@@ -44,11 +44,21 @@ RocketExplosionOver
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #RocketMovingEnd                       ;
+;                   #RocketFlyingEnd                       ;
 ;----------------------------------------------------------;
-RocketMovingEnd
+RocketFlyingEnd
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #RocketFlying                        ;
+;----------------------------------------------------------;
+RocketFlying
+	
+	CALL bg.UpdateBackgroundOnRocketMove
+	CALL bg.HideBackgroundBehindHorizon
+
+	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
 ;                        #EnemyHit                         ;
@@ -105,7 +115,8 @@ RespawnJet
 	LD A, _JET_RESPOWN_Y_D217
 	LD (jpo.jetY), A
 
-	; TODO reset background image.
+	; Reload image becase it has moved with the Jetman and now he reponds on the ground.
+	CALL bm.LoadBgImage
 
 	CALL jt.SetJetStateRespown
 
@@ -115,7 +126,8 @@ RespawnJet
 	CALL bg.UpdateBackgroundOnJetmanMove
 	CALL ro.ResetCarryingRocketElement
 
-	LD A, js.SDB_FLY							; Switch to flaying animation.
+	; Switch to flaying animation.
+	LD A, js.SDB_FLY
 	CALL js.ChangeJetSpritePattern
 
 	RET											; ## END of the function ##	
@@ -154,7 +166,7 @@ JetmanMovesDown
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #MovementInactivity                        ;
+;                 #MovementInactivity                      ;
 ;----------------------------------------------------------;
 ; It gets executed as a last procedure after the input has been processed, and there was no movemet from joystick.
 MovementInactivity

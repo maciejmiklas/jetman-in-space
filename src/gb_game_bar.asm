@@ -73,10 +73,10 @@ PrintDebug
 	
 	LD B, 40
 	LD H, 0
-	LD A, (td.step)
+	LD A, (bg.bgOffset)
 	LD L, A
 	CALL ut.PrintNumHLDebug
-
+/*
 	; ##########################################
 	LD B, 46
 	LD H, 0
@@ -91,7 +91,7 @@ PrintDebug
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
-/*
+
 	; ##########################################
 	LD B, 58
 	LD H, 0

@@ -9,7 +9,7 @@
 GameInit
 
 	CALL gc.RespawnJet
-	; CALL ro.StartRocketAssembly  TODO
+	CALL ro.StartRocketAssembly
 	RET
 
 ;----------------------------------------------------------;

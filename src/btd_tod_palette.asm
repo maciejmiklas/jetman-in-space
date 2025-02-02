@@ -2,6 +2,7 @@
 ;                     Bitmap Palette                       ;
 ;----------------------------------------------------------;
 	MODULE btd
+	
 ; TOD - Time of Day
 palBytes				WORD 0					; Size in bytes of background palette, max 512.
 palColors				BYTE 0					; Amount of colors in background palette, max 255.
@@ -126,6 +127,18 @@ CreateTodPalettes
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  #LoadLevelPalette                       ;
+;----------------------------------------------------------;
+; Method called after settgin: #palBytes and #palAdr
+LoadLevelPalette
+
+	CALL btd.VariablesSet						; Palette global variables are set.
+	CALL btd.LoadTodPalette						; Load orginal palette into hardware.
+	CALL btd.CreateTodPalettes					; Create palettes for different times of day.
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  #ResetPaletteArrd                       ;
 ;----------------------------------------------------------;
 ResetPaletteArrd
@@ -141,6 +154,7 @@ ResetPaletteArrd
 ;----------------------------------------------------------;
 ;                     #VariablesSet                        ;
 ;----------------------------------------------------------;
+; Method called after settgin: #palBytes and #palAdr
 VariablesSet
 
 	; Set #palColors from #palBytes

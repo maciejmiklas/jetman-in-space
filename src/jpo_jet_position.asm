@@ -53,7 +53,7 @@ IncJetXbyB
 ;----------------------------------------------------------;
 DecJetX
 
-	LD BC, (jpo.jetX)	
+	LD BC, (jpo.jetX)
 	DEC BC
 
 	; If X == 0 (_GSC_X_MIN_D0) then set it to 315. X == 0 when B and C are 0.
@@ -97,6 +97,7 @@ IncJetY
 
 	CALL gc.JetmanMoves
 	CALL gc.JetmanMovesDown
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -11,10 +11,12 @@ start
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz.
 			
 	INCLUDE "dl_data_load.asm"
+	
 	CALL sc.SetupScreen
+	CALL gc.LoadLevel1
 	CALL gm.GameInit
 
-	CALL gc.LoadLevel1
+	;CALL ro.AssemblyRocketForDebug 				; FIXME - remoe it!
 
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;

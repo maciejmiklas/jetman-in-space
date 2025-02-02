@@ -75,6 +75,38 @@ rocketExplodeDB3		DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,3
 rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusice).
 RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
+
+;----------------------------------------------------------;
+;               #AssemblyRocketForDebug                    ;
+;----------------------------------------------------------;
+AssemblyRocketForDebug
+
+	LD A, _RO_EL_TANK3_D6
+	LD (rocketElementCnt), A
+
+	LD A, RO_ST_READY
+	LD (rocketState), A
+
+	LD A, 1
+	LD IX, rocketEl
+	CALL _MoveIXtoGivenRocketElement
+	LD A, 233
+	LD (IX + RO.Y), A
+
+	LD A, 2
+	LD IX, rocketEl
+	CALL _MoveIXtoGivenRocketElement
+	LD A, 217
+	LD (IX + RO.Y), A
+
+	LD A, 3
+	LD IX, rocketEl
+	CALL _MoveIXtoGivenRocketElement
+	LD A, 217
+	LD (IX + RO.Y), 201	
+
+	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                  #StartRocketAssembly                    ;
 ;----------------------------------------------------------;
@@ -86,6 +118,7 @@ StartRocketAssembly
 	LD (rocketState), A
 
 	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                #ResetAndDisableRocket                    ;
 ;----------------------------------------------------------;
@@ -954,6 +987,8 @@ _MoveFlyingRocket
 	LD (rocketDelayDistance), A
 .afterDelay
 
+	CALL gc.RocketFlying
+	
 	; ##########################################
 	; Increment total distance.
 	LD HL, (rocketDistance)

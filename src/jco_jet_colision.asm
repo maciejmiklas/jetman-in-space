@@ -216,13 +216,13 @@ _RipMove
 	JR Z, .moveLeft
 
 	; Move right.
-	CALL jpo.DecJetX
-	CALL jpo.DecJetX
-	CALL jpo.DecJetX
+	LD B, _RIP_MOVE_L_D3
+	CALL jpo.DecJetXbyB
 	JR .afterMove
+
 .moveLeft
 	; Move left.
-	LD B, _RIP_MOVE_X_D3
+	LD B, _RIP_MOVE_R_D3
 	CALL jpo.IncJetXbyB
 .afterMove
 
