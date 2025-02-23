@@ -243,6 +243,7 @@ _SPR_REG_ATR4_H39		= $39
 ;  - 5: Enable sprite clipping in over border mode (1 = enabled),
 ;  - 4-2: set layers priorities:
 ;   Reset default is 000, sprites over the Layer 2, over the ULA graphics:
+;    S - Sprites, L - Layer 2, U - ULA
 ;    - 000: S L U
 ;    - 001: L S U
 ;    - 010: S U L - (Top - Sprites, Enhanced_ULA, Layer 2)
@@ -584,8 +585,7 @@ _BN_TILES_BANK2_D43		= 43
 _BN_STARTS_BANK1_D44	= 44
 _BN_STARTS_BANK2_D45	= 45
 
-; Each background image has 48KiB (256x192), taking 6 banks + 1 bank for the palette. However, we load only 256x128 into RAM, 
-; and the last 64 lines (two 8K banks) are filled with transparency.
+; Each background image has 80KiB (320x256), taking 10 banks + 1 bank for the palette.
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
 _BN_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).

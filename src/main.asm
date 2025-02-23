@@ -61,9 +61,10 @@ mainLoop
 	INCLUDE "ed_data_enemy.asm"
 	INCLUDE "jw_jet_weapon.asm"
 	INCLUDE "ro_rocket.asm"
-	INCLUDE "st_stars.asm"
+	INCLUDE "ros_rocket_stars.asm"
 	INCLUDE "lo_lobby.asm"
 	INCLUDE "td_times_of_day.asm"
+	INCLUDE "st_stars.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "dbi_data_bin.asm"

@@ -1,16 +1,20 @@
 ;----------------------------------------------------------;
-;                           Bitmap                         ;
+;              Bitmap on Layer 2 at 320x256                ;
 ;----------------------------------------------------------;
+; The image on Layer Two has a resolution of 320x256 and occupies 81920 bytes (80KiB) in 10 banks.
+; The pixel orientation is from top to bottom, left to right. 
+; Each bank has 8KiB = 8192 bytes and can hold 32 horizontal lines. 10 banks hold 320 lines.
+
 	MODULE bm
 
-imageBank				BYTE 0					; Bank containing backgotund image.
+imageBank				BYTE 0					; Bank containing the image.
 
 ;----------------------------------------------------------;
-;                    #LoadBgImage                   	   ;
+;                     #LoadImage                           ;
 ;----------------------------------------------------------;
-; Copies data from slots 6 to 7. Slot 6 points to the bank containing the source of the image, and slot 7 points to the bank that contains 
+; Copies data from slot 6 to 7. Slot 6 points to the bank containing the source of the image, and slot 7 points to the bank that contains 
 ; display data (NEXTREG _DC_REG_L2_BANK_H12).
-LoadBgImage
+LoadImage
 	
 	; Load into D the start bank containing background image source
 	LD A, (imageBank)
@@ -35,12 +39,13 @@ LoadBgImage
 	LDIR
 	POP DE
 
-	INC D										; Next bank.
-	INC E										; Next bank.
+	INC D										; Next source bank.
+	INC E										; Next destination bank.
 	
 	POP BC
 	DJNZ .slotLoop
 
+	CALL st.LoadStars
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -61,7 +66,7 @@ HideImageLine
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify dispalyed image.
 
 	; Each bank contains lines, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the picture),
-	; we have to set byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
+	; we have to start at byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
 	LD HL, _RAM_SLOT7_START_HE000
 	LD D, 0										; E contains the line number, reset only D to use DE for 16-bit math.
 	ADD HL, DE									; HL poits at line that will be replaced.

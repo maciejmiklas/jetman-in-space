@@ -83,11 +83,11 @@ _GameLoop000OnActiveJetman
 	LD IX, ed.sprite01
 	LD A, (ed.singleSpritesSize)
 	LD B, A	
-	CALL ep.RespownNextEnemy
+	;CALL ep.RespownNextEnemy
 	
 	; ##########################################
 	LD IY, ed.formation
-	CALL ef.RespownFormation	
+	;CALL ef.RespownFormation	
 
 	RET											; ## END of the function ##
 
@@ -159,7 +159,7 @@ _GameLoop002
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
 	CALL jco.JetInvincible
-	CALL st.AnimateStarsOnFlyRocket
+	CALL ros.AnimateStarsOnFlyRocket
 
 	RET											; ## END of the function ##
 

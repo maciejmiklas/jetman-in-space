@@ -24,10 +24,10 @@ LoadLevelData1
 	; ##########################################
 	; Load background image
 
-	; Load the address of the image into a global variable. LoadBgImage will be called on #RespawnJet
+	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD A, $$dbi.bgrL1Img
 	LD (bm.imageBank), A
-	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

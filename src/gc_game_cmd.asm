@@ -116,7 +116,7 @@ RespawnJet
 	LD (jpo.jetY), A
 
 	; Reload image becase it has moved with the Jetman and now he reponds on the ground.
-	CALL bm.LoadBgImage
+	CALL bm.LoadImage
 
 	CALL jt.SetJetStateRespown
 
@@ -260,10 +260,6 @@ JoyWillEnable
 ;                         NightEnds                        ;
 ;----------------------------------------------------------;
 NightEnds
-
-	;LD IX, (btd.todPalAddr)
-	;LD A, $E1
-	;nextreg 2,8
 
 	; #NextTodPalette moves the palette address to the next chunk after loading colors into the hardware. Now, we are after the last 
 	; transition step from day to night (night to day will start), and the palette address points to the memory containing the next step, 
