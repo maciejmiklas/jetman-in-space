@@ -104,7 +104,7 @@ CleanTiles
 ;                         #LoadTiles                       ;
 ;----------------------------------------------------------;
 LoadTiles
-	
+	RET
 	; Enable tilemap mode.
 	NEXTREG _TI_MAP_CONTROL_H6B, %10000001		; 40x32, 8-pixel tiles = 320x256.
 	NEXTREG _TI_ATTRIBTE_H6C, %00000000			; Palette offset, visuals.

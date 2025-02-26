@@ -10,7 +10,8 @@ GameInit
 
 	CALL gc.RespawnJet
 	CALL ro.StartRocketAssembly
-	RET
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      #GameLoop                           ;

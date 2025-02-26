@@ -45,7 +45,6 @@ LoadImage
 	POP BC
 	DJNZ .slotLoop
 
-	CALL st.LoadStars
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

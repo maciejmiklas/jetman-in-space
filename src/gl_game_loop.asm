@@ -285,7 +285,6 @@ _GameLoop010
 	; CALL functions that need to be updated every xx-th loop.
 
 	CALL _GameLoop010nFlyingRocket
-	CALL td.NextTimeOfDayTrigger
 
 	RET											; ## END of the function ##
 
@@ -340,6 +339,7 @@ _GameLoop040
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
 	CALL ro.DropNextRocketElement
+	CALL td.NextTimeOfDayTrigger
 	
 	RET											; ## END of the function ##
 

@@ -126,6 +126,9 @@ RespawnJet
 	CALL bg.UpdateBackgroundOnJetmanMove
 	CALL ro.ResetCarryingRocketElement
 
+	; Show stars after loadin background image.
+	CALL st.ShowStars
+
 	; Switch to flaying animation.
 	LD A, js.SDB_FLY
 	CALL js.ChangeJetSpritePattern
@@ -152,6 +155,7 @@ JetmanMovesUp
 	; a one pixel delay, but at the same time, it ensures that the previously hidden line will get repainted by direction change.
 	CALL bg.HideBackgroundBehindHorizon
 	CALL bg.UpdateBackgroundOnJetmanMove
+	CALL st.MoveStarsDown
 
 	RET											; ## END of the function ##
 
@@ -162,6 +166,7 @@ JetmanMovesDown
 
 	CALL bg.ShowBackgroundAboveHorizon
 	CALL bg.UpdateBackgroundOnJetmanMove
+	CALL st.MoveStarsUp
 
 	RET											; ## END of the function ##
 

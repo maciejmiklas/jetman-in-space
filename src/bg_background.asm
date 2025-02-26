@@ -98,7 +98,7 @@ ShowBackgroundAboveHorizon
 _MoveBackground
 
 	LD (bgOffset), A
-		LD B, A
+	LD B, A
 	LD A, _GB_OFFSET_D14
 	SUB B										; B contains background offset (current #bgOffset).
 	NEXTREG _DC_REG_L2_OFFSET_Y_H17, A

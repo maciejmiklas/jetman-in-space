@@ -67,27 +67,26 @@ PrintDebug
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
-
 	; ##########################################
 	; ##########################################
-	
+	/*
 	LD B, 40
 	LD H, 0
-	LD A, (bg.bgOffset)
+	LD A, (st.starsState)
 	LD L, A
 	CALL ut.PrintNumHLDebug
-/*
+
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (td.stepDuration)
+	LD A, (st.tmp1)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 52
 	LD H, 0
-	LD A,  (td.stepDir)
+	LD A,  (st.tmp2)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
@@ -95,7 +94,7 @@ PrintDebug
 	; ##########################################
 	LD B, 58
 	LD H, 0
-	LD A,  (jm.tmp4)
+	LD A, (st.tmp3)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 */
