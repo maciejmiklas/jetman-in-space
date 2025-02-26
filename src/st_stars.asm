@@ -26,8 +26,7 @@ SIZE					BYTE					; Amount ot the columns.
 	STRUCT SC									; Stars column.
 BANK					BYTE					; Bank number from 0 to 9.
 X_OFSET					BYTE					; X offset from the beginning of the bank, max 32 (32=8192/256)
-Y_MAX					BYTE					
-SIZE					BYTE
+SIZE					BYTE					; Amount of stars.
 	ENDS
 
 
@@ -41,7 +40,7 @@ starsState				BYTE ST_SHOW
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
 starsLayer1MaxY
 	DB 143/*X=2*/, 154/*X=8*/, 159/*X=20*/, 196/*X=37*/, 195/*X=47*/, 195/*X=51*/, 140/*X=68*/, 134/*X=75*/, 105/*X=84*/, 192/*X=97*/
-	DB 049/*X=116*/, 039/*X=124*/, 023/*X=130*/, 019/*X=143*/, 023/*X=151*/, 123/*X=171*/, 063/*X=180*/, 082/*X=197*/, 104/*X=212*/,
+	DB 049/*X=116*/, 039/*X=124*/, 023/*X=130*/, 019/*X=143*/, 023/*X=151*/, 123/*X=171*/, 063/*X=180*/, 082/*X=197*/, 104/*X=212*/
 	DB 187/*X=227*/, 187/*X=236*/, 187/*X=232*/, 127/*X=264*/, 119/*X=272*/, 102/*X=287*/, 220/*X=308*/, 230/*X=319*/
 
 starsLayer1
@@ -136,8 +135,7 @@ ShowStars
 	LD (starsState), A
 
 	; Render
-	LD A, 27
-	CALL _RenderStars
+	CALL _RenderLayer1Stars
 
 	RET											; ## END of the function ##
 
@@ -150,8 +148,7 @@ HideStars
 	LD (starsState), A
 
 	; Render
-	LD A, 27	
-	CALL _RenderStars
+	CALL _RenderLayer1Stars
 
 	RET											; ## END of the function ##
 
@@ -166,8 +163,7 @@ ReloadStars
 	RET C
 
 	; Render
-	LD A, 27
-	CALL _RenderStars
+	CALL _RenderLayer1Stars
 
 	RET											; ## END of the function ##
 
@@ -186,7 +182,7 @@ MoveStarsUp
 	LD (starsState), A
 
 	; Render
-	CALL _RenderStars
+	CALL _RenderLayer1Stars
 
 	RET											; ## END of the function ##
 
@@ -205,7 +201,7 @@ MoveStarsDown
 	LD (starsState), A
 
 	; Render
-	CALL _RenderStars
+	CALL _RenderLayer1Stars
 
 	RET											; ## END of the function ##
 
@@ -220,9 +216,9 @@ MoveStarsDown
 ;----------------------------------------------------------;
 _RenderLayer1Stars
 
-	LD A, _GB_LAYER1_SAARS
+	LD A, _GB_LAYER1_STARS
 	LD HL, starsLayer1							; HL points to the first stars column
-
+	CALL _RenderStars
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -258,7 +254,7 @@ _RenderStars
 ; Input 
 ;  - IX - Pointer to SC
 _RenderStarColumn
-
+	
 	; ##########################################
 	; Assing image bank that will be modified to slot 6.
 	LD A, (IX + SC.BANK)

@@ -114,7 +114,7 @@ GBL_RET_A_GND				= _BM_YRES_D256-1
 
 _GetGroundImageLine
 
-	; Calculate the line number that needs to be replaced. It's the line going behind the horizon. It's always the bottom line on the image.
+	; Calculate the line number that needs to be replaced. It's the line going behind the horizon. It's always the bottom line of the image.
 	LD A, (bgOffset)
 	LD B, A
 	LD A, _BM_YRES_D256-1
