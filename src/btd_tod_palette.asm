@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                     Bitmap Palette                       ;
+;                  Tinme of Day Palette                    ;
 ;----------------------------------------------------------;
 	MODULE btd
 	
@@ -16,6 +16,36 @@ LoadTodPalette
 
 	CALL bp.SetupPaletteLoad
 
+
+/*
+	; 0 - transp
+	LD DE, 0
+	CALL bp.WriteColor
+
+	; blue
+	LD A, (palColors)
+	LD B, A
+
+.loop1
+	LD D,0
+	LD E, %00000111
+	CALL bp.WriteColor
+
+	DJNZ .loop1
+
+	; 46 - red
+	LD D,0
+	LD E, %11100000
+	CALL bp.WriteColor
+
+	; 47 - green
+	LD D,0
+	LD E, %00011100
+	CALL bp.WriteColor	
+
+	RET
+*/
+
 	; ##########################################
 	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
 	LD A, (palColors)							; Number of colors/iterations.
@@ -24,6 +54,8 @@ LoadTodPalette
 	LD HL, (palAdr)								; Address of the palette.
 .loopCopyColor
 	
+	; TODO move to bp!
+
 	; - Two consecutive writes are needed to write the 9 bit colour:
 	; - 1st write: bits 7-0 = RRRGGGBB,
 	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B.
@@ -171,15 +203,13 @@ VariablesSet
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+; TODO move to bp!
 ;----------------------------------------------------------;
 ;                      #_WriteColors                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: Address of the pallete that will be copied
 _WriteColors
-
-	; Load colors
-	CALL bp.BytesToColors						; BC contains color size in bytes, we need number of colors in B.
 
 	LD A, (palColors)
 	LD B, A

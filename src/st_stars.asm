@@ -44,6 +44,9 @@ starsLayer1MaxY
 	DB 187/*X=227*/, 187/*X=236*/, 187/*X=232*/, 127/*X=264*/, 119/*X=272*/, 102/*X=287*/, 220/*X=308*/, 230/*X=319*/
 
 starsLayer1
+	;SC {0/*BANK*/, 02/*X_OFSET*/, 1/*SIZE*/}	; X=2
+	;DB 40, 50, 60, 70, 80, 90, 100, 105, 110, 115, 120, 130, 140, 142, 144, 146, 148, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250
+
 	SC {0/*BANK*/, 02/*X_OFSET*/, 06/*SIZE*/}	; X=2
 	DB 12, 15, 70, 94, 160, 250
 
@@ -216,7 +219,7 @@ MoveStarsDown
 ;----------------------------------------------------------;
 _RenderLayer1Stars
 
-	LD A, _GB_LAYER1_STARS
+	LD A, _GB_LAYER1_STARSC
 	LD HL, starsLayer1							; HL points to the first stars column
 	CALL _RenderStars
 	RET											; ## END of the function ##
@@ -231,6 +234,7 @@ _RenderStars
 
 	; Loop over all stars
 	LD B, A
+	LD IY, starsLayer1MaxY
 .columnsLoop
 
 	LD IX, HL
@@ -245,6 +249,7 @@ _RenderStars
 	LD A, (IX + SC.SIZE)						;  Move HL after pixel data of the current stars column.
 	ADD HL, A
 
+	INC IY										; Move to the next max-y.
 	DJNZ .columnsLoop	
 	RET											; ## END of the function ##
 
@@ -252,7 +257,8 @@ _RenderStars
 ;                 #_RenderStarColumn                       ;
 ;----------------------------------------------------------;
 ; Input 
-;  - IX - Pointer to SC
+;  - IX: Pointer to SC
+;  - IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9]).
 _RenderStarColumn
 	
 	; ##########################################
@@ -285,81 +291,138 @@ _RenderStarColumn
 	LD B, (IX + SC.SIZE)						; Number of pixels in this column = number of iterations
 	
 	; Register values:
-	; B  - number of stars in the row.
-	; HL - points to the first source pixel from stars column.
-	; DE - points to the top destination pixel (byte) in the column on the background image.
-
+	; B:  Number of stars in the row.
+	; HL: Ppoints to the first source pixel from stars column.
+	; DE: Ppoints to the top destination pixel (byte) in the column on the background (destination) image.
+	; IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9]).
 	; In this loop, we will copy one column of the stars from the source data (HL) into the layer 2 image (DE) column.
+
 .pixelLoop
-	; ##########################################
-	; Move DE to current pixel in the stars column.
-	PUSH DE										;  Keep DE so it always points to the top of the column in the image.
-	LD A, (HL)
-	ADD DE, A
+	PUSH DE, BC										;  Keep DE so it always points to the top of the column in the image.
 
 	; ##########################################
 	; Move star up/down or just show it.
 	LD A, (starsState)
-
-	; ##########################################
+	
 	; Do not move star if the command only shows it.
 	CP ST_SHOW
 	JR NZ, .afterOnlyShow
 
-	; Only show the current star without movement.
-	LD A, 18 ;TODO
-	LD (DE), A									; Set color on star position/pixel.
+	; Only show the current star without movement?
+	LD A, (HL)									; A contains current star position.
+	JR .showStar
 
-	JR .afterMove
 .afterOnlyShow
 
 	; ##########################################
-	; Move up?
+	; Move star up/down
 	CP ST_MOVE_UP
 	JR NZ, .afterMoveUp
-	; Move up: hide current star, move and finally show on new position.
 	
-	; Hide star on old position.
-	LD A, _GB_PAL_TRANSP
-	LD (DE), A
-
-	; Move star in DB.
+	; Move star up.
 	LD A, (HL)									; A contains current star position.
+	LD B, A 									; Keep the original star position before movement because we have to paint transparent pixel.
 	DEC A
 	LD (HL), A									; Store new star position.
-	
 	JR .afterMoveDown
-.afterMoveUp
-	; ##########################################
-	; Move down: hide current star, move and finally show on new position.
-	
-	; Hide star on old position.
-	LD A, _GB_PAL_TRANSP
-	LD (DE), A
 
-	; Move star in DB.
+.afterMoveUp
+	; Move star down.
 	LD A, (HL)									; A contains current star position
+	LD B, A 									; Keep the original star position before movement because we have to paint transparent pixel.
 	INC A
 	LD (HL), A									; Store new star position.
-
 .afterMoveDown
 
-	; Show star on a new position. A contains the position of the moved star from the top of the screen.
-	POP DE										; DE points to the top of the column on the image.
-	PUSH DE										; Keep DE so it always points to the top of the column in the image.
-	ADD DE, A									; DE points to the moved star on the image.
-	LD A, 16 ;TODO
+	; ##########################################
+	; Hide star only if it's not being placed on the original image.
+	; B contains a star position before it was moved - that's the one that should be hidden.
+	
+	CALL _CanShowStar
+	CP CANSS_YES
+	JR NZ, .afterPaintStar						; Skipp this star if it cannot be hidden.
+
+	; Hide star
+	PUSH DE										; Keep DE to point to the top of the column on the destination image.
+	LD A, B										; B contains the position of the star that needs to be hidden.
+	ADD DE, A									; DE contains a byte offset to a current column in the destination image, plus A will give the final star position.
+	LD A, _GB_PAL_TRANSP
+	LD (DE), A
+	POP DE
+
+.showStar
+	; ##########################################
+	; Print the moved (or not moved if #starsState == ST_SHOW) star if it's not behind something on the image.
+
+	PUSH DE										; Keep DE to point to the top of the column on the destination image.
+	LD B, (HL)									; A contains the position of the already moved star.
+	CALL _CanShowStar
+	POP DE
+	
+	CP CANSS_YES
+	JR NZ, .afterPaintStar						; Skipp this star if it cannot be painted.
+
+	; Paint star on new postion
+	LD A, (HL)									; A contains the position of the already moved star.
+
+	ADD DE, A									; DE contains a byte offset to a current column in the destination image, plus A will give the final star position.
+	LD A, 47 ;TODO
 	LD (DE), A
 
-.afterMove
+.afterPaintStar
 
 	; ##########################################
 	; Keep looping over stars in the column.
 	INC HL										; Move to the next pixel.
-	POP DE
+	POP BC, DE
 	DJNZ .pixelLoop
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #_CanShowStar                         ;
+;----------------------------------------------------------;
+; Input 
+;  - B:  Star postion to be checked.
+;  - IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9]).
+; Output:
+;  - A with value CANSS_XXX
+; Modifies: A,C
+CANSS_YES			= 1
+CANSS_NO			= 0
+
+_CanShowStar
+
+	; Load into C max star y-postion
+	LD A, (IY)									; C contains max y-pos from #starsMaxYLevel[0-9].
+
+	; A holds max star y-position and B current.
+	CP B
+	JR C, .notAllowed							; Jump if the max position (A) is below the current (B).
+
+.allowed
+	LD A, CANSS_YES
+	RET
+
+.notAllowed
+
+	; Stars could be behind the building, in which case it should be hidden, but it's also possible that the star is 
+	; below the building (basement?) in the picture that rolls over to the top of the screen. In this case, the star should be visible.
+	LD A, (bg.bgOffset)							; The background image moves down, releasing more room for stars.
+	LD C, A
+	LD A, _SC_RESY1_D255
+	SUB C
+
+	CP B
+	JR NC, .notAllowed1							; Jump if the max position (A) is below the current (B).
+	LD A, CANSS_YES
+	RET
+
+.notAllowed1
+ 	LD A, CANSS_NO
+	
+	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

@@ -69,13 +69,13 @@ PrintDebug
 
 	; ##########################################
 	; ##########################################
-	
+	/*
 	LD B, 40
 	LD H, 0
 	LD A, (bg.bgOffset)
 	LD L, A
 	CALL ut.PrintNumHLDebug
-/*
+
 	; ##########################################
 	LD B, 46
 	LD H, 0
@@ -90,14 +90,21 @@ PrintDebug
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
-
 	; ##########################################
 	LD B, 58
 	LD H, 0
 	LD A, (st.tmp3)
 	LD L, A
 	CALL ut.PrintNumHLDebug
+
+	; ##########################################
+	LD B, 64
+	LD H, 0
+	LD A, (st.tmp4)
+	LD L, A
+	CALL ut.PrintNumHLDebug
 */
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

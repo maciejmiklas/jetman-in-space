@@ -573,7 +573,7 @@ _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches
 _GB_MOVE_SLOW_D3		= 3
 _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
-_GB_LAYER1_STARS		= 27					; Number of #SC elements for stars on layer 1. 
+_GB_LAYER1_STARSC		= 27					; Number of #SC elements for stars on layer 1. 
 _GB_PAL_TRANSP			= 0 
 
 ; ##############################################
