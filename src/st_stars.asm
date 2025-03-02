@@ -37,6 +37,8 @@ ST_MOVE_UP				= 3
 ST_MOVE_DOWN			= 4
 starsState				BYTE ST_SHOW
 
+starsDelay1				BYTE _GB_LAYER1_DELAY_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
 starsLayer1MaxY
 	DB 143/*X=2*/, 154/*X=8*/, 159/*X=20*/, 196/*X=37*/, 195/*X=47*/, 195/*X=51*/, 140/*X=68*/, 134/*X=75*/, 105/*X=84*/, 192/*X=97*/
@@ -59,14 +61,14 @@ starsLayer1
 	SC {1/*BANK*/, 05/*X_OFSET*/, 05/*SIZE*/}	; X=37
 	DB 20, 80, 104, 150, 255
 
-	SC {1/*BANK*/, 15/*X_OFSET*/, 04/*SIZE*/}	; X=47
-	DB 10, 115, 130, 155
+	SC {1/*BANK*/, 15/*X_OFSET*/, 05/*SIZE*/}	; X=47
+	DB 10, 115, 130, 155, 230
 
-	SC {1/*BANK*/, 19/*X_OFSET*/, 05/*SIZE*/}	; X=51
-	DB 4, 90, 144, 148, 202
+	SC {1/*BANK*/, 19/*X_OFSET*/, 06/*SIZE*/}	; X=51
+	DB 4, 90, 144, 148, 202, 251
 
-	SC {2/*BANK*/, 04/*X_OFSET*/, 04/*SIZE*/}	; X=68
-	DB 14, 52, 113, 189
+	SC {2/*BANK*/, 04/*X_OFSET*/, 05/*SIZE*/}	; X=68
+	DB 14, 52, 113, 189, 241
 
 	SC {2/*BANK*/, 11/*X_OFSET*/, 04/*SIZE*/}	; X=75
 	DB 21, 92, 158, 221
@@ -89,8 +91,8 @@ starsLayer1
 	SC {4/*BANK*/, 15/*X_OFSET*/, 06/*SIZE*/}	; X=143
 	DB 47, 77, 93, 139, 188, 233
 
-	SC {4/*BANK*/, 23/*X_OFSET*/, 05/*SIZE*/}	; X=151
-	DB 5, 84, 98, 142, 168
+	SC {4/*BANK*/, 23/*X_OFSET*/, 06/*SIZE*/}	; X=151
+	DB 5, 84, 98, 142, 168, 201
 
 	SC {5/*BANK*/, 11/*X_OFSET*/, 05/*SIZE*/}	; X=171
 	DB 38, 78, 132, 149, 231
@@ -175,15 +177,30 @@ ReloadStars
 ;----------------------------------------------------------;
 MoveStarsUp
 	
+	;###########################################
 	; Move stars only if enabled.
 	LD A, (starsState)
 	CP ST_C_HIDDEN
 	RET C
 
+	;###########################################
+	; Delay movement
+	LD A, (starsDelay1)
+	DEC A
+	LD (starsDelay1), A
+	CP 0
+	RET NZ										; Do not move yet, wait for 0.
+	
+	; Reset delay
+	LD A, _GB_LAYER1_DELAY_D4
+	LD (starsDelay1), A
+
+	;###########################################
 	; Update state
 	LD A, ST_MOVE_UP
 	LD (starsState), A
 
+	;###########################################
 	; Render
 	CALL _RenderLayer1Stars
 
@@ -194,15 +211,30 @@ MoveStarsUp
 ;----------------------------------------------------------;
 MoveStarsDown
 	
+	;###########################################
 	; Move stars only if enabled.
 	LD A, (starsState)
 	CP ST_C_HIDDEN
 	RET C
 
+	;###########################################
+	; Delay movement
+	LD A, (starsDelay1)
+	DEC A
+	LD (starsDelay1), A
+	CP 0
+	RET NZ										; Do not move yet, wait for 0.
+	
+	; Reset delay
+	LD A, _GB_LAYER1_DELAY_D4
+	LD (starsDelay1), A
+
+	;###########################################
 	; Update state
 	LD A, ST_MOVE_DOWN
 	LD (starsState), A
 
+	;###########################################
 	; Render
 	CALL _RenderLayer1Stars
 
@@ -219,7 +251,7 @@ MoveStarsDown
 ;----------------------------------------------------------;
 _RenderLayer1Stars
 
-	LD A, _GB_LAYER1_STARSC
+	LD A, _GB_LAYER1_STARSC_D27
 	LD HL, starsLayer1							; HL points to the first stars column
 	CALL _RenderStars
 	RET											; ## END of the function ##
@@ -346,7 +378,7 @@ _RenderStarColumn
 	PUSH DE										; Keep DE to point to the top of the column on the destination image.
 	LD A, B										; B contains the position of the star that needs to be hidden.
 	ADD DE, A									; DE contains a byte offset to a current column in the destination image, plus A will give the final star position.
-	LD A, _GB_PAL_TRANSP
+	LD A, _GB_PAL_TRANSP_D0
 	LD (DE), A
 	POP DE
 
@@ -414,11 +446,11 @@ _CanShowStar
 	SUB C
 
 	CP B
-	JR NC, .notAllowed1							; Jump if the max position (A) is below the current (B).
+	JR NC, .notAllowed2							; Jump if the max position (A) is below the current (B).
 	LD A, CANSS_YES
 	RET
 
-.notAllowed1
+.notAllowed2
  	LD A, CANSS_NO
 	
 	RET											; ## END of the function ##

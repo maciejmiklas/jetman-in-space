@@ -570,11 +570,12 @@ _BM_PAL2_B_MASK			= %0000000'1
 ; ##############################################
 ; In game background on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GB_MOVE_SLOW_D3		= 3
+_GB_MOVE_SLOW_D1		= 1
 _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
-_GB_LAYER1_STARSC		= 27					; Number of #SC elements for stars on layer 1. 
-_GB_PAL_TRANSP			= 0 
+_GB_LAYER1_STARSC_D27	= 27					; Number of #SC elements for stars on layer 1.
+_GB_LAYER1_DELAY_D4		= 4
+_GB_PAL_TRANSP_D0		= 0 
 
 ; ##############################################
 ; Binary Data Loader
@@ -621,7 +622,7 @@ _GC_FLIP_OFF_D0			= 0
 
 ; ##############################################
 ; Times of Day.
-_TOD_STEPS				= 4						; Total number of steps (times of the day) from day to night.
+_TOD_STEPS_D4			= 4						; Total number of steps (times of the day) from day to night.
 
 ; State for #stepDir indicating the direction of the change: from day to night, night to day, or full day.
 _TOD_DIR_DAY_NIGHT		= 1						; Enviorment changes from day to night.

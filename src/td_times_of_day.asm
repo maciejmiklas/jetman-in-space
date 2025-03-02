@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE td
 
-step 					BYTE _TOD_STEPS			; Counts from _TOD_STEPS (inclusive) to 0 (exclusive)
+step 					BYTE _TOD_STEPS_D4			; Counts from _TOD_STEPS_D4 (inclusive) to 0 (exclusive)
 stepDuration			BYTE _TOD_DAY_DURATION	; Counts toward 0, when reached, the next #step executes.
 stepDir					BYTE _TOD_DIR_DAY_NIGHT	; _TOD_DIR_DAY_NIGHT or _TOD_DIR_NIGHT_DAY
 
@@ -65,7 +65,7 @@ _NextStepFullDay
 	LD A, _TOD_DIR_DAY_NIGHT
 	LD (stepDir), A
 
-	LD A, _TOD_STEPS
+	LD A, _TOD_STEPS_D4
 	LD (step), A	
 
 	RET											; ## END of the function ##
@@ -83,7 +83,7 @@ _NextStepDayToNight
 	; ##########################################
 	; Counter has reached 0, reverse direction.
 
-	LD A, _TOD_STEPS
+	LD A, _TOD_STEPS_D4
 	LD (step), A
 
 	; Reverse from day->night to night->day.

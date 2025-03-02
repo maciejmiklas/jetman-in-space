@@ -16,36 +16,6 @@ LoadTodPalette
 
 	CALL bp.SetupPaletteLoad
 
-
-/*
-	; 0 - transp
-	LD DE, 0
-	CALL bp.WriteColor
-
-	; blue
-	LD A, (palColors)
-	LD B, A
-
-.loop1
-	LD D,0
-	LD E, %00000111
-	CALL bp.WriteColor
-
-	DJNZ .loop1
-
-	; 46 - red
-	LD D,0
-	LD E, %11100000
-	CALL bp.WriteColor
-
-	; 47 - green
-	LD D,0
-	LD E, %00011100
-	CALL bp.WriteColor	
-
-	RET
-*/
-
 	; ##########################################
 	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
 	LD A, (palColors)							; Number of colors/iterations.
@@ -142,7 +112,7 @@ CreateTodPalettes
 	; ##########################################
 	; Copy remaining palettes.
 
-	LD B, _TOD_STEPS							
+	LD B, _TOD_STEPS_D4							
 .copyLoop
 	PUSH BC
 

@@ -83,11 +83,11 @@ _GameLoop000OnActiveJetman
 	LD IX, ed.sprite01
 	LD A, (ed.singleSpritesSize)
 	LD B, A	
-	;CALL ep.RespownNextEnemy
+	CALL ep.RespownNextEnemy
 	
 	; ##########################################
 	LD IY, ed.formation
-	;CALL ef.RespownFormation	
+	CALL ef.RespownFormation	
 
 	RET											; ## END of the function ##
 
