@@ -217,6 +217,7 @@ _GameLoop006
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
+	CALL st.BlinkStars
 	
 	RET											; ## END of the function ##
 
@@ -283,7 +284,7 @@ _GameLoop010
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-
+	CALL st.NextStarColor
 	CALL _GameLoop010nFlyingRocket
 	RET											; ## END of the function ##
 
@@ -339,8 +340,7 @@ _GameLoop040
 	; CALL functions that need to be updated every xx-th loop
 	CALL ro.DropNextRocketElement
 	CALL td.NextTimeOfDayTrigger
-	CALL st.NextStarColor
-	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
