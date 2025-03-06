@@ -22,23 +22,34 @@ BytesToColors
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #WriteColor                          ;
+;                     #LoadColors                          ;
 ;----------------------------------------------------------;
-; Input
-;  - DE - conatins given color, E: RRRGGGBB, D: xxxxxxxB
-WriteColor
+; Load palette address, set bank, and finally load colors into hardware.
+; Input:
+;  - HL: Contains the current palette address.
+;  - B:  Number of colors.
+LoadColors
+	
+	CALL bp.SetupPaletteLoad
+	CALL bp.WriteColors
 
-	; - Two consecutive writes are needed to write the 9 bit colour:
-	; - 1st write: bits 7-0 = RRRGGGBB
-	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B
+	RET											; ## END of the function ##
 
-	; 1st write
-	LD A, E
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+;----------------------------------------------------------;
+;                       #WriteColors                       ;
+;----------------------------------------------------------;
+; Input:
+;  - HL: Address of the pallete that will be copied
+;  - B:  Numnber of colors.
+WriteColors
 
-	; 2nd write
-	LD A, D
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+.loop
+	LD DE, (HL)
+	CALL bp.WriteColor
+	INC HL
+	INC HL
+	DJNZ .loop
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -152,6 +163,33 @@ BrightnessDown
 .afterDecrementBlue	
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #WriteColor                         ;
+;----------------------------------------------------------;
+; Input
+;  - DE - conatins given color, E: RRRGGGBB, D: xxxxxxxB
+WriteColor
+
+	; - Two consecutive writes are needed to write the 9 bit colour:
+	; - 1st write: bits 7-0 = RRRGGGBB
+	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B
+
+	; 1st write
+	LD A, E
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+
+	; 2nd write
+	LD A, D
+	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
+	
+	RET											; ## END of the function ##
+	
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -554,13 +554,13 @@ _BM_BANKS_D10			= 10
 
 _BM_PAL2_MIN			= 0
 _BM_PAL2_MAX			= 7
-_BM_PAL2_RRR_MASK		= %111'000'00 			; Mask red color
-_BM_PAL2_RRR_MASKN		= %000'111'11 			; Mask all but red color
-_BM_PAL2_RRR_INC		= %001'000'00 			; Increment/decrement red color
+_BM_PAL2_RRR_MASK		= %111'000'00 			; Mask red color.
+_BM_PAL2_RRR_MASKN		= %000'111'11 			; Mask all but red color.
+_BM_PAL2_RRR_INC		= %001'000'00 			; Increment/decrement red color.
 
-_BM_PAL2_GGG_MASK		= %000'111'00 			; Mask green color
-_BM_PAL2_GGG_MASKN		= %111'000'11 			; Mask all but green color
-_BM_PAL2_GGG_INC		= %000'001'00 			; Increment/decrement green color
+_BM_PAL2_GGG_MASK		= %000'111'00 			; Mask green color.
+_BM_PAL2_GGG_MASKN		= %111'000'11 			; Mask all but green color.
+_BM_PAL2_GGG_INC		= %000'001'00 			; Increment/decrement green color.
 
 _BM_PAL2_BB_MASK		= %000'000'11
 _BM_PAL2_BB_MASKN		= %111'111'00
@@ -570,12 +570,15 @@ _BM_PAL2_B_MASK			= %0000000'1
 ; ##############################################
 ; In game background on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GB_MOVE_SLOW_D1		= 1
+_GB_MOVE_SLOW_D2		= 2
 _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
-_GB_LAYER1_STARSC_D27	= 27					; Number of #SC elements for stars on layer 1.
-_GB_LAYER1_DELAY_D4		= 4
-_GB_PAL_TRANSP_D0		= 0 
+_GB_L1_STARSC_D27		= 27					; Number of #SC elements for stars on layer 1.
+_GB_L1_MOVE_DEL_D4		= 4						; Stars move delay.
+_GB_L1_COLOR_CNT_D10	= 4						; Color of every X-star will be changed. Set to 1 to change the color of every star.
+
+_GB_L1_PAL_D8			= 8						; Number of colors for stars.
+_GB_PAL_TRANSP_D0		= 0						; Index of transparent color.
 
 ; ##############################################
 ; Binary Data Loader
@@ -596,7 +599,7 @@ _BN_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 
 _BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 
 _BN_PAL2_BANK_D46		= 46					; Layer 2 palletes
-_BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for palletes from _BN_PAL2_BANK_D46
+_BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for palletes from _BN_PAL2_BANK_D46.
 
 ; Image for Level 1 (all inclusive).
 _BN_BG_L1_ST_BANK_D48	= 48

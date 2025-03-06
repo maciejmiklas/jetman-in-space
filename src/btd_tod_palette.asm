@@ -10,50 +10,22 @@ palAdr					WORD 0					; Address of the orginal palette data.
 todPalAddr 				WORD 0					; Pointer to current brightness palette.
 
 ;----------------------------------------------------------;
-;                    #LoadTodPalette                       ;
-;----------------------------------------------------------;
-LoadTodPalette
-
-	CALL bp.SetupPaletteLoad
-
-	; ##########################################
-	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
-	LD A, (palColors)							; Number of colors/iterations.
-	LD B, A
-
-	LD HL, (palAdr)								; Address of the palette.
-.loopCopyColor
-	
-	; TODO move to bp!
-
-	; - Two consecutive writes are needed to write the 9 bit colour:
-	; - 1st write: bits 7-0 = RRRGGGBB,
-	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B.
-
-	; 1st write
-	LD A, (HL)
-	INC HL
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
-
-	; 2nd write
-	LD A, (HL)
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A
-	INC HL		
-	DJNZ .loopCopyColor
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                     #NextTodPalette                      ;
 ;----------------------------------------------------------;
 NextTodPalette
 	
-	CALL _LoadColors
+	LD HL, (todPalAddr)
+	LD A, (palColors)
+	LD B, A	
+	PUSH HL
+	CALL bp.LoadColors
+	CALL gc.BackgroundPaletteLoaded
+	POP HL
 
 	; Moves #todPalAddr to the next palette
 	ADD HL, _BM_PAL2_BYTES_D512
 	LD (todPalAddr), HL
-
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -61,9 +33,14 @@ NextTodPalette
 ;----------------------------------------------------------;
 PrevTodPalette
 	
-	CALL _LoadColors
-	CALL PrevTodPaletteAddr
+	LD HL, (todPalAddr)
+	LD A, (palColors)
+	LD B, A
+	CALL bp.LoadColors
+	CALL gc.BackgroundPaletteLoaded
 
+	CALL PrevTodPaletteAddr
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -71,7 +48,7 @@ PrevTodPalette
 ;----------------------------------------------------------;
 PrevTodPaletteAddr
 	
-	; Moves #todPalAddr to the next palette
+	; Moves #todPalAddr to the previous palette
 	LD HL, (todPalAddr)	
 	ADD HL, -_BM_PAL2_BYTES_D512
 	LD (todPalAddr), HL
@@ -86,17 +63,49 @@ LoadCurrentTodPalette
 	CALL bp.SetupPaletteLoad
 
 	LD HL, (palAdr)
-	CALL _WriteColors
+	LD A, (palColors)
+	LD B, A	
+	CALL bp.WriteColors
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #CreateTodPalettes                      ;
+;                  #LoadLevelPalette                       ;
+;----------------------------------------------------------;
+; Method called after settgin: #palBytes and #palAdr
+LoadLevelPalette
+
+	CALL _VariablesSet							; Palette global variables are set.
+	CALL _LoadTodPalette						; Load orginal palette into hardware.
+	CALL _CreateTodPalettes						; Create palettes for different times of day.
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #ResetPaletteArrd                       ;
+;----------------------------------------------------------;
+ResetPaletteArrd
+
+	CALL bp.SetupPaletteBank
+	
+	; Set the palette address to the beginning of the bank holding it.
+	LD DE, dbi.todL2Palettes
+	LD (todPalAddr), DE
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                 #_CreateTodPalettes                      ;
 ;----------------------------------------------------------;
 ; This function creates up to 6 palettes for the transition from day to night from the palette given by HL.
 ; Palettes are stored in #todL2Palettes; each one has 512 bytes. #todPalAddr points to the first palette.
 ; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000
-CreateTodPalettes
+_CreateTodPalettes
 
 	CALL bp.SetupPaletteLoad
 
@@ -129,82 +138,16 @@ CreateTodPalettes
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevelPalette                       ;
+;                    #_VariablesSet                        ;
 ;----------------------------------------------------------;
 ; Method called after settgin: #palBytes and #palAdr
-LoadLevelPalette
-
-	CALL btd.VariablesSet						; Palette global variables are set.
-	CALL btd.LoadTodPalette						; Load orginal palette into hardware.
-	CALL btd.CreateTodPalettes					; Create palettes for different times of day.
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #ResetPaletteArrd                       ;
-;----------------------------------------------------------;
-ResetPaletteArrd
-
-	CALL bp.SetupPaletteBank
-	
-	; Set the palette address to the beginning of the bank holding it.
-	LD DE, dbi.todL2Palettes
-	LD (todPalAddr), DE
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #VariablesSet                        ;
-;----------------------------------------------------------;
-; Method called after settgin: #palBytes and #palAdr
-VariablesSet
+_VariablesSet
 
 	; Set #palColors from #palBytes
 	LD BC, (palBytes)
 	CALL bp.BytesToColors
 	LD A, B
 	LD (palColors), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-; TODO move to bp!
-;----------------------------------------------------------;
-;                      #_WriteColors                       ;
-;----------------------------------------------------------;
-; Input:
-;  - HL: Address of the pallete that will be copied
-_WriteColors
-
-	LD A, (palColors)
-	LD B, A
-.loop
-	LD DE, (HL)
-	CALL bp.WriteColor
-	INC HL
-	INC HL
-	DJNZ .loop
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #_LoadColors                         ;
-;----------------------------------------------------------;
-; Load palette address, set bank, and finally load colors into hardware.
-; Return:
-;  - HL - Contains the current palette address.
-_LoadColors
-	
-	LD HL, (todPalAddr)
-	PUSH HL
-	CALL bp.SetupPaletteLoad
-	CALL _WriteColors
-	POP HL
 
 	RET											; ## END of the function ##
 
@@ -257,27 +200,34 @@ _DecrementPaletteColors
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_FillLayer2Palette                      ;
+;                    #_LoadTodPalette                      ;
 ;----------------------------------------------------------;
-; Fill the remaining colors with transparent.
-__NOT_USED__FillLayer2Palette
+_LoadTodPalette
 
+	CALL bp.SetupPaletteLoad
+
+	; ##########################################
+	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
 	LD A, (palColors)							; Number of colors/iterations.
 	LD B, A
 
-	; We copied the number of colors given by B, but we had to copy 256 colors (512 bytes).
-	LD A, _BM_PAL2_COLORS_D255
-	SUB B
-	LD B, A										; B contains the number of colors that must be filled to complete 256.
+	LD HL, (palAdr)								; Address of the palette.
+.loopCopyColor
 	
-	LD A, _COL_TRANSPARENT_D0					; Fill remaining colors with transparent
-.loopFillBlank
+	; 1st write
+	LD A, (HL)
+	LD E, A
+	INC HL
 
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 1st write
-	NEXTREG _DC_REG_LA2_PAL_VAL_H44, A			; 2nd write
+	; 2nd write
+	LD A, (HL)
+	LD D, A
+	INC HL
+	CALL bp.WriteColor
 
-	DJNZ .loopFillBlank
+	DJNZ .loopCopyColor
 
+	CALL gc.BackgroundPaletteLoaded
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

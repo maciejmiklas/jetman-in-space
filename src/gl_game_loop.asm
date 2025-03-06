@@ -83,11 +83,11 @@ _GameLoop000OnActiveJetman
 	LD IX, ed.sprite01
 	LD A, (ed.singleSpritesSize)
 	LD B, A	
-	CALL ep.RespownNextEnemy
+	;CALL ep.RespownNextEnemy
 	
 	; ##########################################
 	LD IY, ed.formation
-	CALL ef.RespownFormation	
+	;CALL ef.RespownFormation	
 
 	RET											; ## END of the function ##
 
@@ -343,6 +343,7 @@ _GameLoop040
 	
 	RET											; ## END of the function ##
 
+tmp1 byte 0
 ;----------------------------------------------------------;
 ;                      #_GameLoop080                       ;
 ;----------------------------------------------------------;
@@ -362,8 +363,12 @@ _GameLoop080
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-
+	CALL st.NextStarColor
 	
+	LD A, (tmp1)
+	INC A
+	LD (tmp1), A
+
 	RET											; ## END of the function ##
 
 

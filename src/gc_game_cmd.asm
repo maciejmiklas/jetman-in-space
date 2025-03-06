@@ -21,6 +21,15 @@ LoadLevel2
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;              #BackgroundPaletteLoaded                    ;
+;----------------------------------------------------------;
+BackgroundPaletteLoaded
+
+	CALL st.LoadStarsPalette					; Call it after the level palette because the stars' colors are right after it.
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                    #RocketTakesOff                       ;
 ;----------------------------------------------------------;
 RocketTakesOff
