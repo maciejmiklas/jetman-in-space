@@ -285,11 +285,11 @@ _GameLoop010
 	; CALL functions that need to be updated every xx-th loop.
 
 	CALL _GameLoop010nFlyingRocket
-
+	CALL st.NextStarColor
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop010nFlyingRocket                  ;
+;               #_GameLoop010nFlyingRocket                 ;
 ;----------------------------------------------------------;
 _GameLoop010nFlyingRocket
 
@@ -343,7 +343,6 @@ _GameLoop040
 	
 	RET											; ## END of the function ##
 
-tmp1 byte 0
 ;----------------------------------------------------------;
 ;                      #_GameLoop080                       ;
 ;----------------------------------------------------------;
@@ -363,11 +362,7 @@ _GameLoop080
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-	CALL st.NextStarColor
-	
-	LD A, (tmp1)
-	INC A
-	LD (tmp1), A
+
 
 	RET											; ## END of the function ##
 

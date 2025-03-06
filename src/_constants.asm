@@ -573,12 +573,16 @@ _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches
 _GB_MOVE_SLOW_D2		= 2
 _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
-_GB_L1_STARSC_D27		= 27					; Number of #SC elements for stars on layer 1.
-_GB_L1_MOVE_DEL_D4		= 4						; Stars move delay.
-_GB_L1_COLOR_CNT_D10	= 4						; Color of every X-star will be changed. Set to 1 to change the color of every star.
+; ##############################################
+; In game stars
 
-_GB_L1_PAL_D8			= 8						; Number of colors for stars.
-_GB_PAL_TRANSP_D0		= 0						; Index of transparent color.
+_ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
+_ST_PAL_D8				= 8						; Number of colors for stars.
+_ST_SC_D27				= 27					; Number of #SC elements for stars.
+
+_ST_L1_MOVE_DEL_D4		= 4						; Stars move delay.
+
+_ST_PAL_TRANSP_D0		= 0						; Index of transparent color.
 
 ; ##############################################
 ; Binary Data Loader

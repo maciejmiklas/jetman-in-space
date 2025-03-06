@@ -14,33 +14,37 @@
 ; Because starfield moves together with Jetmanl, a new position for each star in this row is calculated by adding an offset value to each 
 ; start position with every move. Each column rolls from the bottom to the top when its position byte overflows. Each column also has a 
 ; maximal horizontal position (#SC.Y_MAX), after which the starts will not be painted to avoid overlapping with the background image.
-; Memory organization: _GB_L1_STARSC_D27*([SC], SC.SIZE*[star y position])
+; Memory organization: _ST_SC_D27*([SC], SC.SIZE*[star y position])
 
 
 	STRUCT SC									; Stars column.
 BANK					BYTE					; Bank number from 0 to 9.
 X_OFSET					BYTE					; X offset from the beginning of the bank, max 32 (32=8192/256)
 SIZE					BYTE					; Amount of stars.
-BLINK					BYTE					; Postion of blinking star, 0 for none, 1 for the first.
-BCOL					BYTE					; Current color is the blinking star, set during runtime.
+
+; Reversed position of a blinking star. 0 for none, #SIZE for the first, 1 for last.
+; For "DB 10, 20, 30, 40" and SIZE 4, we have: BLINK=1 -> 40, BLINK=3 -> 20. 
+BLINK					BYTE
+BCOLOR					BYTE					; Current color is the blinking star, set during runtime.
 	ENDS
 
+SC_BLINK_OFF			= 0
 
 ST_HIDDEN				= 0
 ST_C_HIDDEN				= ST_HIDDEN +1			; Value for RET C
 ST_SHOW					= 1
 ST_MOVE_UP				= 3
 ST_MOVE_DOWN			= 4
+
 starsState				BYTE ST_SHOW
 
-starsMoveDelay1			BYTE _GB_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
-starsColorChangeCnt		BYTE _GB_L1_COLOR_CNT_D10 ; Color change delay.
+starsMoveDelay			BYTE _ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 
 starsPal
-	DW $0038, $0180, $0180, $0180, $0180, $0180, $0180, $0180
-	;DW $0038, $01C0, $01FF, $01C0, $01FF, $01C0, $01FF, $01C0
+	DW $01FF, $0180, $01FF, $0180, $01FF, $0180, $01FF, $0180
+	;DW $0183, $01FF, $01FF, $00B8, $01FF, $0180, $00CB, $0018
 
-starsPalPos				BYTE 1					; From 0 to _GB_L1_PAL_D8 - 1
+starsPalPos				BYTE _ST_PAL_FIRST_D1	; From 0 to _ST_PAL_D8 - _ST_PAL_FIRST_D1
 
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
 starsLayer1MaxY
@@ -50,85 +54,85 @@ starsLayer1MaxY
 
 starsLayer1
 
-	SC {0/*BANK*/, 02/*X_OFSET*/, 06/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=2
+	SC {0/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/, 6/*BLINK*/, 0/*BCOLOR*/}	; X=2
 	DB 12, 15, 70, 94, 160, 250
 
-	SC {0/*BANK*/, 08/*X_OFSET*/, 05/*SIZE*/, 2/*BLINK*/, 0/*BCOL*/}	; X=8
+	SC {0/*BANK*/, 08/*X_OFSET*/, 5/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=8
 	DB 5, 38, 120, 158, 245
 
-	SC {0/*BANK*/, 20/*X_OFSET*/, 04/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=20
+	SC {0/*BANK*/, 20/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=20
 	DB 4, 42, 133, 245
 
-	SC {1/*BANK*/, 05/*X_OFSET*/, 05/*SIZE*/, 4/*BLINK*/, 0/*BCOL*/}	; X=37
+	SC {1/*BANK*/, 05/*X_OFSET*/, 5/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=37
 	DB 20, 80, 104, 150, 255
 
-	SC {1/*BANK*/, 15/*X_OFSET*/, 05/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=47
+	SC {1/*BANK*/, 15/*X_OFSET*/, 5/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=47
 	DB 10, 115, 130, 155, 230
 
-	SC {1/*BANK*/, 19/*X_OFSET*/, 06/*SIZE*/, 1/*BLINK*/, 0/*BCOL*/}	; X=51
+	SC {1/*BANK*/, 19/*X_OFSET*/, 6/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=51
 	DB 4, 90, 144, 148, 202, 251
 
-	SC {2/*BANK*/, 04/*X_OFSET*/, 05/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=68
+	SC {2/*BANK*/, 04/*X_OFSET*/, 5/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=68
 	DB 14, 52, 113, 189, 241
 
-	SC {2/*BANK*/, 11/*X_OFSET*/, 04/*SIZE*/, 3/*BLINK*/, 0/*BCOL*/}	; X=75
+	SC {2/*BANK*/, 11/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=75
 	DB 21, 92, 158, 221
 
-	SC {2/*BANK*/, 20/*X_OFSET*/, 05/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=84
+	SC {2/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=84
 	DB 31, 93, 159, 178, 248
 
-	SC {3/*BANK*/, 01/*X_OFSET*/, 06/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=97
+	SC {3/*BANK*/, 01/*X_OFSET*/, 6/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=97
 	DB 26, 45, 125, 138, 160, 193
 
-	SC {3/*BANK*/, 20/*X_OFSET*/, 05/*SIZE*/, 2/*BLINK*/, 0/*BCOL*/}	; X=116
+	SC {3/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 3/*BLINK*/, 0/*BCOLOR*/}	; X=116
 	DB 10, 104, 145, 190, 249
 
-	SC {3/*BANK*/, 28/*X_OFSET*/, 04/*SIZE*/, 1/*BLINK*/, 0/*BCOL*/}	; X=124
+	SC {3/*BANK*/, 28/*X_OFSET*/, 4/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=124
 	DB 86, 123, 158, 233
 
-	SC {4/*BANK*/, 02/*X_OFSET*/, 06/*SIZE*/, 2/*BLINK*/, 0/*BCOL*/}	; X=130
+	SC {4/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=130
 	DB 21, 55, 80, 144, 148, 243
 
-	SC {4/*BANK*/, 15/*X_OFSET*/, 06/*SIZE*/, 3/*BLINK*/, 0/*BCOL*/}	; X=143
+	SC {4/*BANK*/, 15/*X_OFSET*/, 6/*SIZE*/, 3/*BLINK*/, 0/*BCOLOR*/}	; X=143
 	DB 47, 77, 93, 139, 188, 233
 
-	SC {4/*BANK*/, 23/*X_OFSET*/, 06/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=151
+	SC {4/*BANK*/, 23/*X_OFSET*/, 6/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=151
 	DB 5, 84, 98, 142, 168, 201
 
-	SC {5/*BANK*/, 11/*X_OFSET*/, 05/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=171
+	SC {5/*BANK*/, 11/*X_OFSET*/, 5/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=171
 	DB 38, 78, 132, 149, 231
 
-	SC {5/*BANK*/, 20/*X_OFSET*/, 05/*SIZE*/, 4/*BLINK*/, 0/*BCOL*/}	; X=180
+	SC {5/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=180
 	DB 24, 44, 126, 160, 243
 
-	SC {6/*BANK*/, 05/*X_OFSET*/, 03/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=197
+	SC {6/*BANK*/, 05/*X_OFSET*/, 3/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=197
 	DB 64, 116, 174
 
-	SC {6/*BANK*/, 20/*X_OFSET*/, 05/*SIZE*/, 3/*BLINK*/, 0/*BCOL*/}	; X=212
+	SC {6/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 3/*BLINK*/, 0/*BCOLOR*/}	; X=212
 	DB 13, 44, 100, 143, 199
 
-	SC {7/*BANK*/, 03/*X_OFSET*/, 05/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=227
+	SC {7/*BANK*/, 03/*X_OFSET*/, 5/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=227
 	DB 55, 98, 120, 187, 255
 
-	SC {7/*BANK*/, 12/*X_OFSET*/, 04/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=236
+	SC {7/*BANK*/, 12/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=236
 	DB 11, 82, 148, 213
 
-	SC {7/*BANK*/, 30/*X_OFSET*/, 04/*SIZE*/, 4/*BLINK*/, 0/*BCOL*/}	; X=232
+	SC {7/*BANK*/, 30/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=232
 	DB 44, 113, 192, 253
 
-	SC {8/*BANK*/, 8/*X_OFSET*/, 05/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}		; X=264
+	SC {8/*BANK*/, 08/*X_OFSET*/, 5/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=264
 	DB 4, 39, 88, 133, 152
 
-	SC {8/*BANK*/, 16/*X_OFSET*/, 03/*SIZE*/, 2/*BLINK*/, 0/*BCOL*/}	; X=272
+	SC {8/*BANK*/, 16/*X_OFSET*/, 3/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=272
 	DB 3, 142, 241
 
-	SC {8/*BANK*/, 31/*X_OFSET*/, 04/*SIZE*/, 4/*BLINK*/, 0/*BCOL*/}	; X=287
+	SC {8/*BANK*/, 31/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=287
 	DB 30, 103, 150, 189
 
-	SC {9/*BANK*/, 20/*X_OFSET*/, 04/*SIZE*/, 0/*BLINK*/, 0/*BCOL*/}	; X=308
+	SC {9/*BANK*/, 20/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=308
 	DB 5, 36, 120, 211
 
-	SC {9/*BANK*/, 31/*X_OFSET*/, 04/*SIZE*/, 1/*BLINK*/, 0/*BCOL*/}	; X=319
+	SC {9/*BANK*/, 31/*X_OFSET*/, 4/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=319
 	DB 5, 102, 142, 240
 
 ;----------------------------------------------------------;
@@ -138,7 +142,7 @@ LoadStarsPalette
 
 	; Load colors for the stars.
 	LD HL, starsPal
-	LD A, _GB_L1_PAL_D8
+	LD A, _ST_PAL_D8
 	LD B, A
 	CALL bp.WriteColors
 
@@ -198,15 +202,15 @@ MoveStarsUp
 
 	;###########################################
 	; Delay movement
-	LD A, (starsMoveDelay1)
+	LD A, (starsMoveDelay)
 	DEC A
-	LD (starsMoveDelay1), A
+	LD (starsMoveDelay), A
 	CP 0
 	RET NZ										; Do not move yet, wait for 0.
 	
 	; Reset delay
-	LD A, _GB_L1_MOVE_DEL_D4
-	LD (starsMoveDelay1), A
+	LD A, _ST_L1_MOVE_DEL_D4
+	LD (starsMoveDelay), A
 
 	;###########################################
 	; Update state
@@ -232,15 +236,15 @@ MoveStarsDown
 
 	;###########################################
 	; Delay movement
-	LD A, (starsMoveDelay1)
+	LD A, (starsMoveDelay)
 	DEC A
-	LD (starsMoveDelay1), A
+	LD (starsMoveDelay), A
 	CP 0
 	RET NZ										; Do not move yet, wait for 0.
 	
 	; Reset delay
-	LD A, _GB_L1_MOVE_DEL_D4
-	LD (starsMoveDelay1), A
+	LD A, _ST_L1_MOVE_DEL_D4
+	LD (starsMoveDelay), A
 
 	;###########################################
 	; Update state
@@ -254,6 +258,64 @@ MoveStarsDown
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     #NextStarColor                       ;
+;----------------------------------------------------------;
+NextStarColor
+
+	; ##########################################
+	; Move the color index to the next position.
+	LD A, (starsPalPos)
+	INC A
+	LD (starsPalPos), A
+
+	CP _ST_PAL_D8
+	JR NZ, .afterColorIndex
+
+	; The counter reached the max value, reset it.
+	LD A, _ST_PAL_FIRST_D1						; Reset to the second color in the stars palette, the first color is used for all remaining stars.
+	LD (starsPalPos), A
+
+.afterColorIndex
+
+	; ##########################################
+	; Store color index in #SC
+
+	LD HL, starsLayer1							; HL points to the first stars column
+	
+	LD B, _ST_SC_D27
+.columnsLoop
+	LD IX, HL
+
+	LD A, (IX + SC.BLINK)
+	CP SC_BLINK_OFF
+	JR Z, .nextColumn
+
+	; ##########################################
+	; The star ins this column is blinking.
+	LD A, (btd.palColors)
+	LD C, A
+	LD A, (starsPalPos)
+	ADD C
+	LD (IX + SC.BCOLOR), A
+
+.nextColumn
+	; ##########################################
+	; Move HL to the next stars column.
+	LD A, SC									; Move HL after SC
+	ADD HL, A
+
+	LD A, (IX + SC.SIZE)						; Move HL after pixel data of the current stars column.
+	ADD HL, A
+	DJNZ .columnsLoop
+
+	; ##########################################
+	LD A, ST_SHOW
+	LD (starsState), A
+	CALL _RenderLayer1Stars
+	
+	RET											; ## END of the function ##
+	
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
@@ -264,7 +326,7 @@ MoveStarsDown
 ;----------------------------------------------------------;
 _RenderLayer1Stars
 
-	LD A, _GB_L1_STARSC_D27
+	LD A, _ST_SC_D27
 	LD HL, starsLayer1							; HL points to the first stars column
 	CALL _RenderStars
 
@@ -278,8 +340,6 @@ _RenderLayer1Stars
 ;  - HL: Pointer to first #SC
 _RenderStars
 	LD B, A
-
-	CALL _ResetStarsColorChangeCnt
 
 	; Loop over all stars
 	LD IY, starsLayer1MaxY
@@ -348,8 +408,6 @@ _RenderStarColumn
 .starsLoop
 	PUSH DE, BC										;  Keep DE so it always points to the top of the column in the image.
 
-	CALL _OnPaintStar
-
 	; ##########################################
 	; Move star up/down or just show it.
 	LD A, (starsState)
@@ -395,7 +453,7 @@ _RenderStarColumn
 	PUSH DE										; Keep DE to point to the top of the column on the destination image.
 	LD A, B										; B contains the position of the star that needs to be hidden.
 	ADD DE, A									; DE contains a byte offset to a current column in the destination image, plus A will give the final star position.
-	LD A, _GB_PAL_TRANSP_D0
+	LD A, _ST_PAL_TRANSP_D0
 	LD (DE), A
 	POP DE
 
@@ -415,6 +473,8 @@ _RenderStarColumn
 	LD A, (HL)									; A contains the position of the already moved star.
 	ADD DE, A									; DE contains a byte offset to a current column in the destination image, plus A will give the final star position.
 
+	POP BC										; Restore B
+	PUSH BC
 	CALL _GetStarColor							; Load star color
 	LD (DE), A
 
@@ -476,74 +536,34 @@ _CanShowStar
 ;----------------------------------------------------------;
 ;                     #_GetStarColor                       ;
 ;----------------------------------------------------------;
+; Input:
+;  - B:  Reversed position of a blinking star.
+;  - IX: Pointer to SC
 ; Output:
 ;  A: contains next star color.
-; Modifies: A, C
+; Modifies: A, B
 _GetStarColor
 
-	; ##########################################
-	; Skip color change?
-	LD A, (starsColorChangeCnt)
-	CP _GB_L1_COLOR_CNT_D10
-	JR NZ, .loadFirstColor
+	LD A, (IX + SC.BLINK)
 
-	; ##########################################
-	; Move color by #starsPalPos
-	LD A, (starsPalPos)
-	LD C, A
+	; Is blinking enabled?
+	CP SC_BLINK_OFF
+	JR Z, .loadFirstColor
+
+	; Blink is enabled, now check whether the star position in the column matches.
+	CP B
+	JR NZ, .loadFirstColor
+	
+	; This star is blinking
+	LD A, (IX + SC.BCOLOR)
+	LD B, A
 	LD A, (btd.palColors)
-	ADD C
+	ADD B
 
 	RET
 
-; ##########################################
 .loadFirstColor
 	LD A, (btd.palColors)						; Return the first color.
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #_OnPaintStar                        ;
-;----------------------------------------------------------;
-_OnPaintStar
-
-	;LD A, $AA
-	;nextreg 2,8
-
-	LD A, (starsColorChangeCnt)
-	DEC A
-	LD (starsColorChangeCnt), A
-	CP 0
-	RET NZ
-
-	CALL _ResetStarsColorChangeCnt
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;               #_ResetStarsColorChangeCnt                 ;
-;----------------------------------------------------------;
-_ResetStarsColorChangeCnt
-
-	LD A, _GB_L1_COLOR_CNT_D10
-	LD (starsColorChangeCnt), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #NextStarColor                       ;
-;----------------------------------------------------------;
-NextStarColor
-	LD A, (starsPalPos)
-	INC A
-	LD (starsPalPos), A
-
-	CP _GB_L1_PAL_D8
-	RET NZ
-
-	; The counter reached the max value, reset it.
-	LD A, 1										; Reset to the second color in the stars palette, the first color is used for all remaining stars.
-	LD (starsPalPos), A
 
 	RET											; ## END of the function ##
 
