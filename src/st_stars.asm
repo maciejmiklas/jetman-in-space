@@ -41,9 +41,9 @@ starsState				BYTE ST_SHOW
 starsMoveDelay			BYTE _ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 
 starsPal
-	DW $01FF, $0180, $01FF, $0180, $01FF, $0180, $01FF, $0180
-	;DW $0183, $01FF, $01FF, $00B8, $01FF, $0180, $00CB, $0018
-
+	;DW $01FF, $01F8, $0037, $0015, $01E0, $01EF, $003B, $0023
+	DW $01C0, $0003, $0038, $01C0, $0003, $0038, $01C0, $0003, $0038
+    //  R,    B,     G      R       B     G      R      B       G   
 starsPalPos				BYTE _ST_PAL_FIRST_D1	; From 0 to _ST_PAL_D8 - _ST_PAL_FIRST_D1
 
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
@@ -257,10 +257,22 @@ MoveStarsDown
 
 	RET											; ## END of the function ##
 
+tmp byte 0;
 ;----------------------------------------------------------;
 ;                     #NextStarColor                       ;
 ;----------------------------------------------------------;
 NextStarColor
+
+	LD A, (gld.counter010FliFLop)
+	CP 0
+	JR Z, .aaa
+	ld a, 2
+	jr .bbb
+.aaa
+	ld a, 0
+.bbb
+	ld (tmp),a
+
 
 	; ##########################################
 	; Move the color index to the next position.
@@ -291,11 +303,13 @@ NextStarColor
 	JR Z, .nextColumn
 
 	; ##########################################
-	; The star ins this column is blinking.
+	; The star in this column is blinking.
 	LD A, (btd.palColors)
 	LD C, A
 	LD A, (starsPalPos)
 	ADD C
+
+	;LD A, (tmp);!!!!!! remove this line!
 	LD (IX + SC.BCOLOR), A
 
 .nextColumn
@@ -401,7 +415,7 @@ _RenderStarColumn
 	; Register values:
 	; B:  Number of stars in the row.
 	; HL: Ppoints to the first source pixel from stars column.
-	; DE: Ppoints to the top destination pixel (byte) in the column on the background (destination) image.
+	; DE: Points to the top destination pixel (byte) in the column on the background (destination) image.
 	; IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9]).
 	; In this loop, we will copy one column of the stars from the source data (HL) into the layer 2 image (DE) column.
 
@@ -476,6 +490,7 @@ _RenderStarColumn
 	POP BC										; Restore B
 	PUSH BC
 	CALL _GetStarColor							; Load star color
+	;LD A, 2
 	LD (DE), A
 
 .afterPaintStar
@@ -533,6 +548,38 @@ _CanShowStar
 	
 	RET											; ## END of the function ##
 
+
+;----------------------------------------------------------;
+;                     #_GetStarColor                       ;
+;----------------------------------------------------------;
+; Input:
+;  - B:  Reversed position of a blinking star.
+;  - HL: Contains the position of the already moved star.
+;  - IX: Pointer to SC
+; Output:
+;  A: contains next star color.
+; Modifies: A, B
+_GetStarColor_
+
+	LD A, (IX + SC.BLINK)
+
+	; Is blinking enabled?
+	CP SC_BLINK_OFF
+	JR Z, .loadFirstColor
+
+	; Blink is enabled, now check whether the star position in the column matches.
+	CP B
+	JR NZ, .loadFirstColor
+	
+	; This star is blinking
+	LD A, (tmp)
+	RET
+
+.loadFirstColor
+	LD A, 2
+
+	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                     #_GetStarColor                       ;
 ;----------------------------------------------------------;
@@ -550,19 +597,17 @@ _GetStarColor
 	CP SC_BLINK_OFF
 	JR Z, .loadFirstColor
 
-	; Blink is enabled, now check whether the star position in the column matches.
+	; Blink is enabled, now check whether the star position in the column matches SC.BLINK.
 	CP B
 	JR NZ, .loadFirstColor
 	
 	; This star is blinking
 	LD A, (IX + SC.BCOLOR)
-	LD B, A
-	LD A, (btd.palColors)
-	ADD B
 
 	RET
 
 .loadFirstColor
+
 	LD A, (btd.palColors)						; Return the first color.
 
 	RET											; ## END of the function ##

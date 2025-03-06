@@ -31,7 +31,7 @@
 spritesBin INCBIN "assets/l001_sprites.spr", 0, _BN_SPRITE_BYT_D16384
 spritesBinLength = $ - spritesBin
 	ASSERT $$ == _BN_SPRITE_BANK2_D41
-
+counter002FliFLop
 ;----------------------------------------------------------;
 ;               Game Tiles (Bank 42...43)                  ;
 ;----------------------------------------------------------;
