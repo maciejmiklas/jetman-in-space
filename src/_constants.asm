@@ -570,14 +570,14 @@ _BM_PAL2_B_MASK			= %0000000'1
 ; ##############################################
 ; In game background on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GB_MOVE_SLOW_D2		= 2
+_GB_MOVE_SLOW_D2		= 1
 _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
 ; ##############################################
 ; In game stars
 
 _ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
-_ST_PAL_D11				= 20					; Number of colors for stars, min 3: one for starfield, two for blink.
+_ST_PAL_D20				= 20					; Number of colors for stars, min 3: one for starfield, two for blink.
 _ST_SC_D27				= 27					; Number of #SC elements for stars.
 
 _ST_L1_MOVE_DEL_D4		= 4						; Stars move delay.
