@@ -218,7 +218,7 @@ _GameLoop006
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL st.BlinkStars
+	CALL st.BlinkStarsL1
 
 	RET											; ## END of the function ##
 
