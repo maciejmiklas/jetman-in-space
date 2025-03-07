@@ -313,11 +313,17 @@ NextStarColor
 	CP C
 	JR C, .nextColumn
 
-	; Change the color
+	; Swap the color from "transparent" -> "visible" or from "visible" -> "transaprent"
+	LD A, (IX + SC.BCOLOR)
+	CP _ST_PAL_TRANSP_D0
+	JR NZ, .setTransparent
+
+	; Set non-transparent color
 	LD A, (btd.palColors)
-	LD C, A
-	LD A, (starsPalPos)
-	ADD C
+	JR .afterSetColor
+.setTransparent
+	LD A, _ST_PAL_TRANSP_D0
+.afterSetColor	
 	LD (IX + SC.BCOLOR), A
 
 .nextColumn
