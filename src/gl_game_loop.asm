@@ -96,6 +96,7 @@ _GameLoop000OnActiveJetman
 ;----------------------------------------------------------;
 _GameLoop000OnDisabledJoy
 
+	; ##########################################
 	; Return if the joystick is about to enable
 	LD A, (ind.joyOffCnt)
 	CP _C_PL_BUMP_JOY_DEC_D1+1
@@ -160,7 +161,8 @@ _GameLoop002
 	; CALL functions that need to be updated every xx-th loop.
 	CALL jco.JetInvincible
 	CALL ros.AnimateStarsOnFlyRocket
-
+	CALL st.BlinkStars
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -217,8 +219,8 @@ _GameLoop006
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL st.BlinkStars
-	
+
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

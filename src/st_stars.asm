@@ -23,7 +23,7 @@ X_OFSET					BYTE					; X offset from the beginning of the bank, max 32 (32=8192/
 SIZE					BYTE					; Amount of stars.
 
 ; Reversed position of a blinking star. 0 for none, #SIZE for the first, 1 for last.
-; For "DB 10, 20, 30, 40" and SIZE 4, we have: BLINK=1 -> 40, BLINK=3 -> 20. 
+; For "DB 10, 20, 30, 40" and SIZE 4, we have: BLINK=1 -> 40, BLINK=3 -> 20, BLINK=4 -> 10. 
 BLINK					BYTE
 BCOLOR					BYTE					; Current color is the blinking star, set during runtime.
 	ENDS
@@ -40,11 +40,10 @@ starsState				BYTE ST_SHOW
 
 starsMoveDelay			BYTE _ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 
+randColor				BYTE 0					; Rand value from the previous call.
+
 starsPal
-	;DW $01FF, $01F8, $0037, $0015, $01E0, $01EF, $003B, $0023
-	DW $0180, $01C7, $0180, $01C0, $0003, $0038, $01C0, $0003, $0038
-    //  R,    B,     G      R       B     G      R      B       G   
-starsPalPos				BYTE _ST_PAL_FIRST_D1	; From 0 to _ST_PAL_D8 - _ST_PAL_FIRST_D1
+	DW $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0
 
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
 starsLayer1MaxY
@@ -54,85 +53,85 @@ starsLayer1MaxY
 
 starsLayer1
 
-	SC {0/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/, 6/*BLINK*/, 0/*BCOLOR*/}	; X=2
+	SC {0/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/, 4/*BLINK*/, 1/*BCOLOR*/}	; X=2
 	DB 12, 15, 70, 94, 160, 250
 
-	SC {0/*BANK*/, 08/*X_OFSET*/, 5/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=8
+	SC {0/*BANK*/, 08/*X_OFSET*/, 5/*SIZE*/, 4/*BLINK*/, 5/*BCOLOR*/}	; X=8
 	DB 5, 38, 120, 158, 245
 
-	SC {0/*BANK*/, 20/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=20
+	SC {0/*BANK*/, 20/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 10/*BCOLOR*/}	; X=20
 	DB 4, 42, 133, 245
 
-	SC {1/*BANK*/, 05/*X_OFSET*/, 5/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=37
+	SC {1/*BANK*/, 05/*X_OFSET*/, 5/*SIZE*/, 1/*BLINK*/, 8/*BCOLOR*/}	; X=37
 	DB 20, 80, 104, 150, 255
 
-	SC {1/*BANK*/, 15/*X_OFSET*/, 5/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=47
+	SC {1/*BANK*/, 15/*X_OFSET*/, 5/*SIZE*/, 3/*BLINK*/, 3/*BCOLOR*/}	; X=47
 	DB 10, 115, 130, 155, 230
 
-	SC {1/*BANK*/, 19/*X_OFSET*/, 6/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=51
+	SC {1/*BANK*/, 19/*X_OFSET*/, 6/*SIZE*/, 6/*BLINK*/, 4/*BCOLOR*/}	; X=51
 	DB 4, 90, 144, 148, 202, 251
 
-	SC {2/*BANK*/, 04/*X_OFSET*/, 5/*SIZE*/, 5/*BLINK*/, 0/*BCOLOR*/}	; X=68
+	SC {2/*BANK*/, 04/*X_OFSET*/, 5/*SIZE*/, 2/*BLINK*/, 20/*BCOLOR*/}	; X=68
 	DB 14, 52, 113, 189, 241
 
-	SC {2/*BANK*/, 11/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=75
+	SC {2/*BANK*/, 11/*X_OFSET*/, 4/*SIZE*/, 3/*BLINK*/, 12/*BCOLOR*/}	; X=75
 	DB 21, 92, 158, 221
 
-	SC {2/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=84
+	SC {2/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 5/*BLINK*/, 4/*BCOLOR*/}	; X=84
 	DB 31, 93, 159, 178, 248
 
-	SC {3/*BANK*/, 01/*X_OFSET*/, 6/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=97
+	SC {3/*BANK*/, 01/*X_OFSET*/, 6/*SIZE*/, 2/*BLINK*/, 5/*BCOLOR*/}	; X=97
 	DB 26, 45, 125, 138, 160, 193
 
-	SC {3/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 3/*BLINK*/, 0/*BCOLOR*/}	; X=116
+	SC {3/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 4/*BLINK*/, 6/*BCOLOR*/}	; X=116
 	DB 10, 104, 145, 190, 249
 
-	SC {3/*BANK*/, 28/*X_OFSET*/, 4/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=124
+	SC {3/*BANK*/, 28/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 8/*BCOLOR*/}	; X=124
 	DB 86, 123, 158, 233
 
-	SC {4/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=130
+	SC {4/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/, 5/*BLINK*/, 2/*BCOLOR*/}	; X=130
 	DB 21, 55, 80, 144, 148, 243
 
-	SC {4/*BANK*/, 15/*X_OFSET*/, 6/*SIZE*/, 3/*BLINK*/, 0/*BCOLOR*/}	; X=143
+	SC {4/*BANK*/, 15/*X_OFSET*/, 6/*SIZE*/, 1/*BLINK*/, 3/*BCOLOR*/}	; X=143
 	DB 47, 77, 93, 139, 188, 233
 
-	SC {4/*BANK*/, 23/*X_OFSET*/, 6/*SIZE*/, 6/*BLINK*/, 0/*BCOLOR*/}	; X=151
+	SC {4/*BANK*/, 23/*X_OFSET*/, 6/*SIZE*/, 3/*BLINK*/, 18/*BCOLOR*/}	; X=151
 	DB 5, 84, 98, 142, 168, 201
 
-	SC {5/*BANK*/, 11/*X_OFSET*/, 5/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=171
+	SC {5/*BANK*/, 11/*X_OFSET*/, 5/*SIZE*/, 5/*BLINK*/, 11/*BCOLOR*/}	; X=171
 	DB 38, 78, 132, 149, 231
 
-	SC {5/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=180
+	SC {5/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 2/*BLINK*/, 3/*BCOLOR*/}	; X=180
 	DB 24, 44, 126, 160, 243
 
-	SC {6/*BANK*/, 05/*X_OFSET*/, 3/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=197
+	SC {6/*BANK*/, 05/*X_OFSET*/, 3/*SIZE*/, 3/*BLINK*/, 5/*BCOLOR*/}	; X=197
 	DB 64, 116, 174
 
-	SC {6/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 3/*BLINK*/, 0/*BCOLOR*/}	; X=212
+	SC {6/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/, 1/*BLINK*/, 8/*BCOLOR*/}	; X=212
 	DB 13, 44, 100, 143, 199
 
-	SC {7/*BANK*/, 03/*X_OFSET*/, 5/*SIZE*/, 5/*BLINK*/, 0/*BCOLOR*/}	; X=227
+	SC {7/*BANK*/, 03/*X_OFSET*/, 5/*SIZE*/, 4/*BLINK*/, 14/*BCOLOR*/}	; X=227
 	DB 55, 98, 120, 187, 255
 
-	SC {7/*BANK*/, 12/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=236
+	SC {7/*BANK*/, 12/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 4/*BCOLOR*/}	; X=236
 	DB 11, 82, 148, 213
 
-	SC {7/*BANK*/, 30/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=232
+	SC {7/*BANK*/, 30/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 16/*BCOLOR*/}	; X=232
 	DB 44, 113, 192, 253
 
-	SC {8/*BANK*/, 08/*X_OFSET*/, 5/*SIZE*/, 0/*BLINK*/, 0/*BCOLOR*/}	; X=264
+	SC {8/*BANK*/, 08/*X_OFSET*/, 5/*SIZE*/, 2/*BLINK*/, 20/*BCOLOR*/}	; X=264
 	DB 4, 39, 88, 133, 152
 
-	SC {8/*BANK*/, 16/*X_OFSET*/, 3/*SIZE*/, 2/*BLINK*/, 0/*BCOLOR*/}	; X=272
+	SC {8/*BANK*/, 16/*X_OFSET*/, 3/*SIZE*/, 3/*BLINK*/, 2/*BCOLOR*/}	; X=272
 	DB 3, 142, 241
 
-	SC {8/*BANK*/, 31/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=287
+	SC {8/*BANK*/, 31/*X_OFSET*/, 4/*SIZE*/, 1/*BLINK*/, 7/*BCOLOR*/}	; X=287
 	DB 30, 103, 150, 189
 
-	SC {9/*BANK*/, 20/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 0/*BCOLOR*/}	; X=308
+	SC {9/*BANK*/, 20/*X_OFSET*/, 4/*SIZE*/, 4/*BLINK*/, 14/*BCOLOR*/}	; X=308
 	DB 5, 36, 120, 211
 
-	SC {9/*BANK*/, 31/*X_OFSET*/, 4/*SIZE*/, 1/*BLINK*/, 0/*BCOLOR*/}	; X=319
+	SC {9/*BANK*/, 31/*X_OFSET*/, 4/*SIZE*/, 2/*BLINK*/, 3/*BCOLOR*/}	; X=319
 	DB 5, 102, 142, 240
 
 
@@ -154,7 +153,7 @@ LoadStarsPalette
 
 	; Load colors for the stars.
 	LD HL, starsPal
-	LD A, _ST_PAL_D8
+	LD A, _ST_PAL_D11
 	LD B, A
 	CALL bp.WriteColors
 
@@ -180,21 +179,6 @@ HideStars
 
 	LD A, ST_HIDDEN
 	LD (starsState), A
-
-	; Render
-	CALL _RenderLayer1Stars
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      #ReloadStars                        ;
-;----------------------------------------------------------;
-ReloadStars
-
-	; Show stars only if enabled.
-	LD A, (starsState)
-	CP ST_C_HIDDEN
-	RET C
 
 	; Render
 	CALL _RenderLayer1Stars
@@ -269,26 +253,11 @@ MoveStarsDown
 
 	RET											; ## END of the function ##
 
-randColorCnt			BYTE 0
+
 ;----------------------------------------------------------;
 ;                     #NextStarColor                       ;
 ;----------------------------------------------------------;
 NextStarColor
-
-	; ##########################################
-	; Move the color index to the next position.
-	LD A, (starsPalPos)
-	INC A
-	LD (starsPalPos), A
-
-	CP _ST_PAL_D8
-	JR NZ, .afterColorIndex
-
-	; The counter reached the max value, reset it.
-	LD A, _ST_PAL_FIRST_D1						; Reset to the second color in the stars palette, the first color is used for all remaining stars.
-	LD (starsPalPos), A
-
-.afterColorIndex
 
 	; ##########################################
 	; Store color index in #SC
@@ -304,26 +273,27 @@ NextStarColor
 	JR Z, .nextColumn
 
 	; ##########################################
-	; The star in this column is blinking. However, it changes the color randomly.
-	LD A, (randColorCnt)
-	INC A
-	LD (randColorCnt), A
-	LD A, C
+	; The star in this column is eligible for blinking. However, it happens randomly.
+
+	LD A, (randColor)
+	LD C, A
 	LD A, R 									; Load the random number into A register
+	LD (randColor), A
 	CP C
 	JR C, .nextColumn
 
-	; Swap the color from "transparent" -> "visible" or from "visible" -> "transaprent"
-	LD A, (IX + SC.BCOLOR)
-	CP _ST_PAL_TRANSP_D0
-	JR NZ, .setTransparent
+	ld a, (tmp)
+	inc a 
+	ld (tmp), a
 
-	; Set non-transparent color
-	LD A, (btd.palColors)
-	JR .afterSetColor
-.setTransparent
-	LD A, _ST_PAL_TRANSP_D0
-.afterSetColor	
+	LD A, (IX + SC.BCOLOR)
+	INC A
+
+	CP _ST_PAL_D11
+	JR NZ, .afterResetColor
+	LD A, _ST_PAL_FIRST_D1
+
+.afterResetColor
 	LD (IX + SC.BCOLOR), A
 
 .nextColumn
@@ -344,6 +314,7 @@ NextStarColor
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+tmp byte 0
 ;----------------------------------------------------------;
 ;               #_RenderLayer1Stars                        ;
 ;----------------------------------------------------------;
@@ -578,7 +549,10 @@ _GetStarColor
 	JR NZ, .loadFirstColor
 	
 	; This star is blinking
+	LD A, (btd.palColors)
+	LD B, A
 	LD A, (IX + SC.BCOLOR)
+	ADD B
 
 	RET
 

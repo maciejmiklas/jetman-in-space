@@ -69,20 +69,20 @@ PrintDebug
 
 	; ##########################################
 	; ##########################################
-	/*
+	
 	LD B, 40
 	LD H, 0
-	LD A, (gl.tmp1)
+	LD A, (st.tmp)
 	LD L, A
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (st.tmp1)
+	LD A, (st.randColor)
 	LD L, A
 	CALL ut.PrintNumHLDebug
-
+/*
 	; ##########################################
 	LD B, 52
 	LD H, 0
