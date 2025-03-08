@@ -420,8 +420,8 @@ _FIRE_THICKNESS_D10		= 10
 
 ; ##############################################
 ; Rocket
-_RO_DROP_NEXT_D5		= 5
-_RO_DROP_H_D220			= 220					; Jetman has to be above the rocket to drop the element, 170 > Y >10.
+_RO_DROP_NEXT_D5		= 10 ;10 TODO
+_RO_DROP_H_D200			= 160					; Jetman has to be above the rocket to drop the element.
 _RO_FLAME_OFFSET_D16	= 16
 _RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 _RO_SPR_PAT_READY1_D60	= 60					; Once the rocket is ready, it will start blinking using #_RO_SPR_PAT_READY1_D60 and #_RO_SPR_PAT_READY2_D61.
@@ -570,7 +570,7 @@ _BM_PAL2_B_MASK			= %0000000'1
 ; ##############################################
 ; In game background on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GB_MOVE_SLOW_D2		= 1
+_GB_MOVE_SLOW_D1		= 1
 _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
 ; ##############################################
@@ -604,12 +604,12 @@ _BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 _BN_PAL2_BANK_D46		= 46					; Layer 2 palletes
 _BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for palletes from _BN_PAL2_BANK_D46.
 
-; Image for Level 1 (all inclusive).
+; Image for Level 1 (all values inclusive).
 _BN_BG_L1_ST_BANK_D48	= 48
 _BN_BG_L1_EN_BANK_D57 = _BN_BG_L1_ST_BANK_D48+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _BN_BG_L1_EN_BANK_D57 == 57
 
-; Image for Level 2 (all inclusive).
+; Image for Level 2 (all values inclusive).
 _BN_BG_L2_ST_BANK_D58	= _BN_BG_L1_EN_BANK_D57+1
 	ASSERT _BN_BG_L2_ST_BANK_D58 == 58
 

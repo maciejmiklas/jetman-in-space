@@ -161,7 +161,8 @@ _GameLoop002
 	; CALL functions that need to be updated every xx-th loop.
 	CALL jco.JetInvincible
 	CALL ros.AnimateStarsOnFlyRocket
-
+	CALL ro.RocketElementFallsForPickup
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -188,7 +189,6 @@ _GameLoop004
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AdminateRocketExplosion
 	CALL st.BlinkStarsL2

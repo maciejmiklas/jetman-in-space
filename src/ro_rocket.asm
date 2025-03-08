@@ -43,11 +43,11 @@ rocketEl
 ; rocket element
 	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _RO_DOWN_SPR_ID_D50/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}	; bottom element
 	RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 	56/*SPRITE_REF*/, 0/*Y*/}	; middle element
-	RO {120/*DROP_X*/, 147/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 	52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
+	RO {140/*DROP_X*/, 227/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 	52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
 ; fuel tank
 	RO {030/*DROP_X*/, 099/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	RO {110/*DROP_X*/, 147/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	RO {230/*DROP_X*/, 059/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	RO {070/*DROP_X*/, 227/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	RO {250/*DROP_X*/, 227/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
 
 rocketAssemblyX			BYTE 170
 
@@ -625,7 +625,7 @@ RocketElementFallsForAssembly
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #DropNextRocketElement                     ;
+;                 #DropNextRocketElement                   ;
 ;----------------------------------------------------------;
 DropNextRocketElement
 
@@ -853,9 +853,9 @@ _JetmanDropsRocketElement
 	RET NC
 
 	; ##########################################
-	; Js Jetman above rocket?
+	; Is Jetman's horizontal position within bounds to drop?
 	LD A, (jpo.jetY)
-	CP _RO_DROP_H_D220
+	CP _RO_DROP_H_D200
 	RET NC
 
 	; ##########################################
