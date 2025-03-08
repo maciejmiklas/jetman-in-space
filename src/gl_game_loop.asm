@@ -83,11 +83,11 @@ _GameLoop000OnActiveJetman
 	LD IX, ed.sprite01
 	LD A, (ed.singleSpritesSize)
 	LD B, A	
-	;CALL ep.RespownNextEnemy
+	CALL ep.RespownNextEnemy
 	
 	; ##########################################
 	LD IY, ed.formation
-	;CALL ef.RespownFormation	
+	CALL ef.RespownFormation	
 
 	RET											; ## END of the function ##
 
@@ -191,6 +191,7 @@ _GameLoop004
 	CALL ro.RocketElementFallsForPickup
 	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AdminateRocketExplosion
+	CALL st.BlinkStarsL2
 
 	RET											; ## END of the function ##
 

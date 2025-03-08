@@ -579,6 +579,7 @@ _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 _ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
 
 _ST_L1_MOVE_DEL_D4		= 4						; Stars move delay.
+_ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
 
 _ST_PAL_TRANSP_D0		= 0						; Index of transparent color.
 
@@ -634,5 +635,5 @@ _TOD_DIR_DAY_NIGHT		= 1						; Enviorment changes from day to night.
 _TOD_DIR_NIGHT_DAY		= 2						; Enviorment changes from night to day.
 _TOD_DIR_FULL_DAY		= 3						; It's a full day.
 
-_TOD_STEP_DURATION		= 50					; Duration of a single time of day, except for a full day.
-_TOD_DAY_DURATION		= 200					; Duration of the full day
+_TOD_STEP_DURATION		= 10					; Duration of a single time of day, except for a full day.
+_TOD_DAY_DURATION		= 50					; Duration of the full day

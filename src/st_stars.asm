@@ -32,17 +32,18 @@ ST_MOVE_DOWN			= 4
 
 starsState				BYTE ST_SHOW
 
-starsMoveL1Delay			BYTE _ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+starsMoveL1Delay		BYTE _ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+starsMoveL2Delay		BYTE _ST_L2_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 
 randColor				BYTE 0					; Rand value from the previous call.
 
 starsPalL1
-	DW $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
-starsPalL1Size			BYTE  23				; Number of colors for stars.
+	DW $1FF, $1FF, $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
+starsPalL1Size			BYTE  25				; Number of colors for stars.
 
 starsPalL2
-	DW $3, $8, $B, $40, $43, $48, $50, $0, $0, $0, $0, $0, $0
-starsPalL2Size			BYTE  13				; Number of colors for stars.
+	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
+starsPalL2Size			BYTE  10				; Number of colors for stars.
 
 ; Currenty rendered palette.
 starsPal				WORD 0
@@ -138,62 +139,68 @@ starsDataL1
 	SC {9/*BANK*/, 31/*X_OFSET*/, 4/*SIZE*/}	; X=319
 	DB 5,3, 102,6, 142,9, 240,12
 
+starsDataL2MaxY
+	DB 153/*X=010*/, 158/*X=015*/, 196/*X=035*/, 142/*X=066*/, 106/*X=082*/, 087/*X=108*/, 082/*X=114*/, 037/*X=129*/, 024/*X=153*/
+	DB 121/*X=175*/, 063/*X=180*/, 080/*X=194*/, 087/*X=202*/, 187/*X=235*/, 123/*X=268*/, 104/*X=281*/, 221/*X=301*/
+
 starsDataL2Size			BYTE 17						; Number of #SC elements for stars.
 starsDataL2
-	SC {0/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/}	; X=2
-	DB 12,1, 15,4, 70,5, 94,15, 160,8, 250,19
 
-	SC {0/*BANK*/, 08/*X_OFSET*/, 5/*SIZE*/}	; X=8
-	DB 5,3, 38,6, 120,10, 158,4, 245,18
+	SC {0/*BANK*/, 10/*X_OFSET*/, 4/*SIZE*/}	; X=10
+	DB 4,4, 42,8, 133,1, 245,9
 
-	SC {0/*BANK*/, 20/*X_OFSET*/, 4/*SIZE*/}	; X=20
-	DB 4,4, 42,8, 133,1, 245,15
+	SC {1/*BANK*/, 15/*X_OFSET*/, 6/*SIZE*/}	; X=15
+	DB 26,3, 45,8, 125,4, 138,3, 160,9, 193,2
 
-	SC {1/*BANK*/, 05/*X_OFSET*/, 5/*SIZE*/}	; X=37
-	DB 20,3, 80,8, 104,12, 150,9, 255,5
+	SC {1/*BANK*/, 03/*X_OFSET*/, 5/*SIZE*/}	; X=35
+	DB 14,2, 52,4, 113,6, 189,8, 241,1
 
-	SC {1/*BANK*/, 15/*X_OFSET*/, 5/*SIZE*/}	; X=47
-	DB 10,1, 115,4, 130,9, 155,2, 230,15
+	SC {2/*BANK*/, 02/*X_OFSET*/, 5/*SIZE*/}	; X=66
+	DB 10,1, 115,4, 130,9, 155,2, 230,4
 
-	SC {1/*BANK*/, 19/*X_OFSET*/, 6/*SIZE*/}	; X=51
-	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,16
+	SC {2/*BANK*/, 18/*X_OFSET*/, 5/*SIZE*/}	; X=82
+	DB 38,1, 78,5, 132,9, 149,2, 231,5
 
-	SC {2/*BANK*/, 04/*X_OFSET*/, 5/*SIZE*/}	; X=68
-	DB 14,2, 52,4, 113,6, 189,8, 241,16
+	SC {3/*BANK*/, 12/*X_OFSET*/, 5/*SIZE*/}	; X=108
+	DB 5,3, 38,6, 120,9, 158,4, 245,1
 
-	SC {2/*BANK*/, 11/*X_OFSET*/, 4/*SIZE*/}	; X=75
-	DB 21,1, 92,6, 158,9, 221,19
+	SC {3/*BANK*/, 18/*X_OFSET*/, 5/*SIZE*/}	; X=114
+	DB 31,5, 93,4, 159,1, 178,8, 248,4
 
-	SC {2/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/}	; X=84
-	DB 31,5, 93,4, 159,13, 178,8, 248,19
+	SC {4/*BANK*/, 1/*X_OFSET*/, 5/*SIZE*/}		; X=129
+	DB 10,4, 104,5, 145,6, 190,8, 249,3
 
-	SC {3/*BANK*/, 01/*X_OFSET*/, 6/*SIZE*/}	; X=97
-	DB 26,3, 45,8, 125,4, 138,11, 160,9, 193,12
+	SC {4/*BANK*/, 25/*X_OFSET*/, 4/*SIZE*/}	; X=153
+	DB 21,1, 92,6, 158,9, 221,6
 
-	SC {3/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/}	; X=116
-	DB 10,4, 104,5, 145,6, 190,8, 249,12
-
-	SC {3/*BANK*/, 28/*X_OFSET*/, 4/*SIZE*/}	; X=124
-	DB 86,11, 123,7, 158,1, 233,19
-
-	SC {4/*BANK*/, 02/*X_OFSET*/, 6/*SIZE*/}	; X=130
-	DB 21,19, 55,11, 80,8, 144,3, 148,13, 243,2
-
-	SC {4/*BANK*/, 15/*X_OFSET*/, 6/*SIZE*/}	; X=143
-	DB 47,13, 77,2, 93,18, 139,1, 188,5, 233,7
-
-	SC {4/*BANK*/, 23/*X_OFSET*/, 6/*SIZE*/}	; X=151
-	DB 5,3, 84,5, 98,9, 142,12, 168,11, 201,10
-
-	SC {5/*BANK*/, 11/*X_OFSET*/, 5/*SIZE*/}	; X=171
-	DB 38,1, 78,5, 132,9, 149,12, 231,11
+	SC {5/*BANK*/, 15/*X_OFSET*/, 6/*SIZE*/}	; X=175
+	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,7
 
 	SC {5/*BANK*/, 20/*X_OFSET*/, 5/*SIZE*/}	; X=180
-	DB 24,2, 44,9, 126,3, 160,7, 243,17
+	DB 24,2, 44,9, 126,3, 160,7, 243,9
+
+	SC {6/*BANK*/, 04/*X_OFSET*/, 6/*SIZE*/}	; X=194
+	DB 12,1, 15,4, 70,5, 94,3, 160,8, 250,2
+
+	SC {6/*BANK*/, 10/*X_OFSET*/, 4/*SIZE*/}	; X=202
+	DB 86,3, 123,7, 158,1, 233,9
+
+	SC {7/*BANK*/, 11/*X_OFSET*/, 5/*SIZE*/}	; X=235
+	DB 20,3, 80,8, 104,2, 150,9, 255,5
+
+	SC {8/*BANK*/, 12/*X_OFSET*/, 6/*SIZE*/}	; X=268
+	DB 21,3, 55,4, 80,8, 144,5, 148,8, 243,6
+
+	SC {8/*BANK*/, 25/*X_OFSET*/, 6/*SIZE*/}	; X=281
+	DB 47,3, 77,2, 93,5, 139,7, 188,4, 233,1
+
+	SC {9/*BANK*/, 13/*X_OFSET*/, 6/*SIZE*/}	; X=301
+	DB 5,3, 84,5, 98,9, 142,1, 168,4, 201,5
 
 ; Currenty rendered stars.
 starsDataSize			BYTE 27
 starsData				WORD 0
+starsDataMaxY			WORD 0
 
 ;----------------------------------------------------------;
 ;                   #LoadStarsPalette                      ;
@@ -226,6 +233,9 @@ ShowStars
 	CALL _SetupLayer1
 	CALL _RenderStars
 
+	CALL _SetupLayer2
+	CALL _RenderStars	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -240,6 +250,9 @@ HideStars
 	CALL _SetupLayer1
 	CALL _RenderStars
 
+	CALL _SetupLayer2
+	CALL _RenderStars
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -247,23 +260,10 @@ HideStars
 ;----------------------------------------------------------;
 MoveStarsUp
 	
-	;###########################################
 	; Move stars only if enabled.
 	LD A, (starsState)
 	CP ST_C_HIDDEN
 	RET C
-
-	;###########################################
-	; Delay movement
-	LD A, (starsMoveL1Delay)
-	DEC A
-	LD (starsMoveL1Delay), A
-	CP 0
-	RET NZ										; Do not move yet, wait for 0.
-	
-	; Reset delay
-	LD A, _ST_L1_MOVE_DEL_D4
-	LD (starsMoveL1Delay), A
 
 	;###########################################
 	; Update state
@@ -271,9 +271,8 @@ MoveStarsUp
 	LD (starsState), A
 
 	;###########################################
-	; Render
-	CALL _SetupLayer1
-	CALL _RenderStars
+	CALL _MoveStarsL1Up
+	CALL _MoveStarsL2Up
 
 	RET											; ## END of the function ##
 
@@ -282,23 +281,10 @@ MoveStarsUp
 ;----------------------------------------------------------;
 MoveStarsDown
 	
-	;###########################################
 	; Move stars only if enabled.
 	LD A, (starsState)
 	CP ST_C_HIDDEN
 	RET C
-
-	;###########################################
-	; Delay movement
-	LD A, (starsMoveL1Delay)
-	DEC A
-	LD (starsMoveL1Delay), A
-	CP 0
-	RET NZ										; Do not move yet, wait for 0.
-	
-	; Reset delay
-	LD A, _ST_L1_MOVE_DEL_D4
-	LD (starsMoveL1Delay), A
 
 	;###########################################
 	; Update state
@@ -306,9 +292,8 @@ MoveStarsDown
 	LD (starsState), A
 
 	;###########################################
-	; Render
-	CALL _SetupLayer1
-	CALL _RenderStars
+	CALL _MoveStarsL1Down
+	CALL _MoveStarsL2Down
 
 	RET											; ## END of the function ##
 
@@ -339,11 +324,104 @@ BlinkStarsL2
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                   #_MoveStarsL1Down                      ;
+;----------------------------------------------------------;
+_MoveStarsL1Down
+
+	; Delay movement
+	LD A, (starsMoveL1Delay)
+	DEC A
+	LD (starsMoveL1Delay), A
+	CP 0
+	RET NZ										; Do not move yet, wait for 0.
+	
+	; Reset delay
+	LD A, _ST_L1_MOVE_DEL_D4
+	LD (starsMoveL1Delay), A
+
+
+	;###########################################
+	; Render
+	CALL _SetupLayer1
+	CALL _RenderStars
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #_MoveStarsL2Down                      ;
+;----------------------------------------------------------;
+_MoveStarsL2Down
+
+	; Delay movement
+	LD A, (starsMoveL2Delay)
+	DEC A
+	LD (starsMoveL2Delay), A
+	CP 0
+	RET NZ										; Do not move yet, wait for 0.
+	
+	; Reset delay
+	LD A, _ST_L2_MOVE_DEL_D4
+	LD (starsMoveL2Delay), A
+
+
+	;###########################################
+	; Render
+	CALL _SetupLayer2
+	CALL _RenderStars
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #_MoveStarsL1Up                       ;
+;----------------------------------------------------------;
+_MoveStarsL1Up
+
+	; Delay movement
+	LD A, (starsMoveL1Delay)
+	DEC A
+	LD (starsMoveL1Delay), A
+	CP 0
+	RET NZ										; Do not move yet, wait for 0.
+	
+	; Reset delay
+	LD A, _ST_L1_MOVE_DEL_D4
+	LD (starsMoveL1Delay), A
+
+	;###########################################
+	; Render
+	CALL _SetupLayer1
+	CALL _RenderStars
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #_MoveStarsL2Up                       ;
+;----------------------------------------------------------;
+_MoveStarsL2Up
+
+	; Delay movement
+	LD A, (starsMoveL2Delay)
+	DEC A
+	LD (starsMoveL2Delay), A
+	CP 0
+	RET NZ										; Do not move yet, wait for 0.
+	
+	; Reset delay
+	LD A, _ST_L2_MOVE_DEL_D4
+	LD (starsMoveL2Delay), A
+
+	;###########################################
+	; Render
+	CALL _SetupLayer2
+	CALL _RenderStars
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     #_SetupLayer1                        ;
 ;----------------------------------------------------------;
 _SetupLayer1
 
-	; ##########################################
 	; Palette
 	LD DE, starsPalL1
 	LD (starsPal), DE
@@ -363,13 +441,16 @@ _SetupLayer1
 	LD A, (starsDataL1Size)
 	LD (starsDataSize), A
 
+	LD DE, starsDataL1MaxY
+	LD (starsDataMaxY), DE
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                     #_SetupLayer2                        ;
 ;----------------------------------------------------------;
 _SetupLayer2
-	; ##########################################
+
 	; Palette
 	LD DE, starsPalL2
 	LD (starsPal), DE
@@ -388,6 +469,9 @@ _SetupLayer2
 
 	LD A, (starsDataL2Size)
 	LD (starsDataSize), A
+
+	LD DE, starsDataL1MaxY
+	LD (starsDataMaxY), DE	
 
 	RET											; ## END of the function ##
 
@@ -463,7 +547,7 @@ _RenderStars
 	LD HL, (starsData)
 
 	; Loop over all stars
-	LD IY, starsDataL1MaxY
+	LD IY, (starsDataMaxY)
 .columnsLoop
 
 	LD IX, HL
