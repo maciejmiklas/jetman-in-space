@@ -260,6 +260,8 @@ ResetAndDisableFlyRocket
     LD A, FLY_SOUND_REPEAT
     LD (soundRepeatDelay), A                    ;Set the count to max so the sound plays immediately when the rocket takes off.
 
+    ; ##########################################
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

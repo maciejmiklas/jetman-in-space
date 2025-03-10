@@ -3,7 +3,7 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                     Meteors Shower                     ;
+;                      Meteors Shower                      ;
 ;----------------------------------------------------------;
     MODULE rot
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
@@ -26,7 +26,7 @@ AS_SIZE                 = 3                     ; Number of 16x16 elemets buildi
 spSize                  DB 9                    ; Nuimber of 16x16 elemets building sprite.
 
 ; Sprite data for each active meteor.
-    STRUCT AS
+    STRUCT MET
 SID                     DB                      ; Sprite ID for the first sprite element, the following IDs will be incremented from this one.
 X                       DW
 Y                       DB
@@ -36,8 +36,8 @@ MOVE_PAT                DB                      ; MP1, MP2 or MP3
 ACTIVE                  DB
     ENDS
 
-; This structure will be copied over AS  (only matching keys) when a particular meteor is deployed. 
-    STRUCT ASD
+; This structure will be copied over MET  (only matching keys) when a particular meteor is deployed. 
+    STRUCT MED
 X                       DW
 Y                       DB
 MOVE_SPD                DB                      ; Number of game loops to skip.
@@ -51,24 +51,24 @@ AS_ACTIVE_NO            = 0
 MP1                     = 1                     ; Increment Y
 MP2                     = 2                     ; Increment Y,  decrement X
 
-meteors                                       ; Rocket has sprite ID 80-89
+meteors                                         ; Rocket has sprite ID 80-89
 ;       SID  X  Y  PAT MOVE_SPD MOVE_PAT ACTIVE
-    AS {00,  0, 0, 0,  0,       0,       0}
-    AS {10,  0, 0, 0,  0,       0,       0}
-    AS {20,  0, 0, 0,  0,       0,       0}
-    AS {30,  0, 0, 0,  0,       0,       0}
-    AS {40,  0, 0, 0,  0,       0,       0}
-    AS {50,  0, 0, 0,  0,       0,       0}
-    AS {60,  0, 0, 0,  0,       0,       0}
-    AS {70,  0, 0, 0,  0,       0,       0}
+    MET {00,  0, 0, 0,  0,       0,       0}
+    MET {10,  0, 0, 0,  0,       0,       0}
+    MET {20,  0, 0, 0,  0,       0,       0}
+    MET {30,  0, 0, 0,  0,       0,       0}
+    MET {40,  0, 0, 0,  0,       0,       0}
+    MET {50,  0, 0, 0,  0,       0,       0}
+    MET {60,  0, 0, 0,  0,       0,       0}
+    MET {70,  0, 0, 0,  0,       0,       0}
 
-asDeployAddr            DW 0                    ; Pointer to #ASD array, must contain 7 elements.
-AS_DEPLOY_SIZE          = 7
+metDeployAddr           DW 0                    ; Pointer to #MED array, must contain 7 elements.
+MET_DEPLOY_SIZE         = 7
 
 ; This list is used to adjust meteor's speeds over time. It contains pairs, let's call the elements in each pair A and B. For example: 
 ; "A,B, A,B, ... A,B". A loop runs every few seconds, each iteration takes the next AB pair from this list and applies it to the element 
-; from ASD list. A gives an index in the ASD list (starts from 0), and B is the applied value. B will be added or subtracted 
-; from ASD.MOVE_SPD. In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
+; from MED list. A gives an index in the MED list (starts from 0), and B is the applied value. B will be added or subtracted 
+; from MED.MOVE_SPD. In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
 randMovAddr             DW 0
 randMovPos              DB 0
 RAND_MOVE_SIZE_D30      = 30                    ; 30 elements, 60 bytes.
@@ -86,15 +86,20 @@ COL_ADD_X_N17           = -17
 CheckRocketCollision
 
     LD IX, meteors
-    LD B, AS_DEPLOY_SIZE
+    LD B, MET_DEPLOY_SIZE
 
-.asLoop
+.metLoop
+
+    ; Ignore inactive.
+    LD A, (IX + MET.ACTIVE)
+    CP AS_ACTIVE_NO
+    JR Z, .metLoopNext
 
     ; ##########################################
     ; Check Y collision.
     LD A, (ro.rocY)                             ; Y of the rocket.
     ADD COL_ADD_Y_N25
-    LD C, (IX + AS.Y)                           ; Y of the meteor.
+    LD C, (IX + MET.Y)                          ; Y of the meteor.
 
     ; Is rocket above or below the meteor?
     LD E, COL_MARGIN_Y_D30
@@ -104,8 +109,8 @@ CheckRocketCollision
     ; Rocket is below the meteor.
     SUB C
     CP E
-    JR C, .collisionOnY                            ; Jump if A - C < E (the distance between the rocket and the meteor is smaller than the margin)
-    JR .asLoopNext
+    JR C, .collisionOnY                         ; Jump if A - C < E (the distance between the rocket and the meteor is smaller than the margin)
+    JR .metLoopNext
 
     ; Rocket is above the meteor.
 .above
@@ -118,7 +123,7 @@ CheckRocketCollision
     
     CP E
     JR C, .collisionOnY
-    JR .asLoopNext
+    JR .metLoopNext
 
 .collisionOnY
     ; ##########################################
@@ -126,7 +131,7 @@ CheckRocketCollision
 
     LD DE, (ro.rocX)                             ; X of the rocket.
     ADD DE, COL_ADD_X_N17
-    LD HL, (IX + AS.X)                           ; X of the meteor.
+    LD HL, (IX + MET.X)                          ; X of the meteor.
 
     ; Check whether the rocket is horizontal with the meteor.
     SBC HL, DE
@@ -136,40 +141,39 @@ CheckRocketCollision
     JR Z, .keepCheckingX
 
     ; HL > 256  -> no collision.
-    JR .asLoopNext
+    JR .metLoopNext
 
 .keepCheckingX
     LD A, L
-    LD B, COL_MARGIN_X_D20
-    CP B
+    CP COL_MARGIN_X_D20
     JR C, .collisionFound
 
-.asLoopNext
+.metLoopNext
     ; ##########################################
     ; Meteor loop logic.
 
-    ; Move IX to next AS record.
-    LD DE, AS
+    ; Move IX to next MET record.
+    LD DE, MET
     ADD IX, DE
-    DJNZ .asLoop
+    DJNZ .metLoop
     RET
-
 .collisionFound
 
+    break
     CALL gc.RocketHitsMeteor
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     SetupMeteors                       ;
+;                       SetupMeteors                       ;
 ;----------------------------------------------------------;
 ; Remember to set #spH and #spV
 ; Input:
-; - DE: pointer to be sotred in #asDeployAddr
+; - DE: pointer to be sotred in #asDeployAddr, points to MED
 ; - HL: pointer to be sotred in #randMovAddr
 SetupMeteors
 
-    LD (asDeployAddr), DE
+    LD (metDeployAddr), DE
     LD (randMovAddr), HL
 
     XOR A
@@ -179,18 +183,18 @@ SetupMeteors
     ; Reset meteor data.
     LD IX, meteors
     LD IY, DE
-    LD B, AS_DEPLOY_SIZE
+    LD B, MET_DEPLOY_SIZE
 .asLoop
 
-    LD (IX + AS.ACTIVE), AS_ACTIVE_NO
-    LD (IY + ASD.ACTIVE), AS_ACTIVE_NO
-    
+    LD (IX + MET.ACTIVE), AS_ACTIVE_NO
+    LD (IY + MED.ACTIVE), AS_ACTIVE_NO
+
     ; ##########################################
     ; Loop logic.
-    LD DE, ASD
+    LD DE, MED
     ADD IY, DE
 
-    LD DE, AS
+    LD DE, MET
     ADD IX, DE
 
     DJNZ .asLoop
@@ -198,7 +202,7 @@ SetupMeteors
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  ChangeMeteorSpeed                     ;
+;                   ChangeMeteorSpeed                      ;
 ;----------------------------------------------------------;
 ChangeMeteorSpeed
 
@@ -215,16 +219,16 @@ ChangeMeteorSpeed
     INC HL
     LD C, (HL)
 
-    ; IX will point to ASD given by offset from B.
+    ; IX will point to MED given by offset from B.
     LD HL, meteors
     LD D, B
-    LD E, AS
+    LD E, MET
     MUL D, E
     ADD HL, DE
     LD IX, HL
 
-    ;  Add or subtract from AS.MOVE_SPD the value in C.
-    LD A, (IX + AS.MOVE_SPD)
+    ;  Add or subtract from MET.MOVE_SPD the value in C.
+    LD A, (IX + MET.MOVE_SPD)
 
     BIT RAND_SIGN_BIT_D7, C
     JR NZ, .sub
@@ -237,7 +241,7 @@ ChangeMeteorSpeed
     XOR A                                       ; Sub was negative, reset A to 1.
 .afterMath
 
-    LD (IX + AS.MOVE_SPD), A
+    LD (IX + MET.MOVE_SPD), A
 
     ; ##########################################
     ; Move the index to the next record, or reset it to the first one.
@@ -252,26 +256,25 @@ ChangeMeteorSpeed
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   DeployNextMeteor                     ;
+;                    DeployNextMeteor                      ;
 ;----------------------------------------------------------;
 DeployNextMeteor
 
     LD IX, meteors
-    LD IY, (asDeployAddr)
+    LD IY, (metDeployAddr)
 
     ; ##########################################
     ; We are looking for inactive meteor to deploy.
-    LD B, AS_DEPLOY_SIZE
+    LD B, MET_DEPLOY_SIZE
 .asLoop
-    LD A, (IY + ASD.ACTIVE)
-
+    LD A, (IY + MED.ACTIVE)
     CP AS_ACTIVE_NO
     JR Z, .foundAs
 
-    LD DE, AS
+    LD DE, MET
     ADD IX, DE
 
-    LD DE, ASD
+    LD DE, MED
     ADD IY, DE
 
     DJNZ .asLoop
@@ -282,20 +285,20 @@ DeployNextMeteor
     ; ##########################################
     ; Deploy the meteor given by IX, but first copy the initial data from the template provided by IY.
 
-    LD (IY + ASD.ACTIVE), AS_ACTIVE_YES
-    LD (IX + AS.ACTIVE), AS_ACTIVE_YES
+    LD (IY + MED.ACTIVE), AS_ACTIVE_YES
+    LD (IX + MET.ACTIVE), AS_ACTIVE_YES
 
-    LD HL, (IY + ASD.X)
-    LD (IX + AS.X), HL
+    LD HL, (IY + MED.X)
+    LD (IX + MET.X), HL
 
-    LD A, (IY + ASD.Y)
-    LD (IX + AS.Y), A
+    LD A, (IY + MED.Y)
+    LD (IX + MET.Y), A
 
-    LD A, (IY + ASD.MOVE_SPD)
-    LD (IX + AS.MOVE_SPD), A
+    LD A, (IY + MED.MOVE_SPD)
+    LD (IX + MET.MOVE_SPD), A
 
-    LD A, (IY + ASD.MOVE_PAT)
-    LD (IX + AS.MOVE_PAT), A
+    LD A, (IY + MED.MOVE_PAT)
+    LD (IX + MET.MOVE_PAT), A
 
     ; ##########################################
     ; Set up the meteor's sprite.
@@ -312,7 +315,7 @@ DeployNextMeteor
     ; Loop data:
     ; - H: counter from 0 to #spH-1.
     ; - L: counter from 0 to #spV-1.
-    ; - IX: points to AS.
+    ; - IX: points to MET.
     ; ##########################################
     ; Setup unified sprire based on current values from #spV and #spH
 
@@ -338,13 +341,13 @@ DeployNextMeteor
     ; Setup sprites
 
     ; Setup anchor sprite
-    LD A, (IX + AS.SID)
+    LD A, (IX + MET.SID)
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the sprite ID
 
-    LD A, (IX + AS.X)
+    LD A, (IX + MET.X)
     NEXTREG _SPR_REG_X_H35, A                   ; Set X position
 
-    LD A, (IX + AS.Y)
+    LD A, (IX + MET.Y)
     NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
     NEXTREG _SPR_REG_ATR2_H37, 0
     NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE_EXT
@@ -382,44 +385,44 @@ DeployNextMeteor
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       MoveMeteors                       ;
+;                       MoveMeteors                        ;
 ;----------------------------------------------------------;
 MoveMeteors
 
     LD IX, meteors
-    LD B, AS_DEPLOY_SIZE
+    LD B, MET_DEPLOY_SIZE
 
 .asLoop
     PUSH BC
 
     ; ##########################################
     ; Is meteor active?
-    LD A, (IX + AS.ACTIVE)
+    LD A, (IX + MET.ACTIVE)
     CP AS_ACTIVE_YES
     JR NZ, .asLoopNext
 
 .afterDelCnt
     ; ##########################################
-    LD A, (IX + AS.SID)
+    LD A, (IX + MET.SID)
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the sprite ID for the following commands.
 
     ; Increment Y based on the defined speed.
-    LD A, (IX + AS.MOVE_SPD)
+    LD A, (IX + MET.MOVE_SPD)
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .asLoopNext
-    LD B, (IX + AS.Y)
+    LD B, (IX + MET.Y)
     ADD B
-    LD (IX + AS.Y), A
+    LD (IX + MET.Y), A
     NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
 
     ; DEC X based on the defined speed and only if it's enabled.
-    LD A, (IX + AS.MOVE_PAT)
+    LD A, (IX + MET.MOVE_PAT)
     CP MP2
     JR NZ, .afterX
 
-    LD BC, (IX + AS.X)
+    LD BC, (IX + MET.X)
     DEC BC
-    LD (IX + AS.X), BC
+    LD (IX + MET.X), BC
     LD A, C
     NEXTREG _SPR_REG_X_H35, A
 
@@ -435,8 +438,8 @@ MoveMeteors
     ; ##########################################
     ; Meteor loop logic.
     
-    ; Move IX to next AS record.
-    LD DE, AS
+    ; Move IX to next MET record.
+    LD DE, MET
     ADD IX, DE
     POP BC
     DJNZ .asLoop
@@ -444,19 +447,19 @@ MoveMeteors
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  AnimateMeteors                        ;
+;                     AnimateMeteors                       ;
 ;----------------------------------------------------------;
 AnimateMeteors
 
     LD IX, meteors
-    LD B, AS_DEPLOY_SIZE
+    LD B, MET_DEPLOY_SIZE
 
 .asLoop
     PUSH BC
 
     ; ##########################################
     ; Is meteor active?
-    LD A, (IX + AS.ACTIVE)
+    LD A, (IX + MET.ACTIVE)
     CP AS_ACTIVE_YES
     JR NZ, .asLoopNext
 
@@ -464,13 +467,13 @@ AnimateMeteors
     ; Play next animation frame.
 
     ; Load next animation pattern into H. For #spSize = 9, H should have following values: 0, 9, 18, 27, 36
-    LD A, (IX + AS.PAT)
+    LD A, (IX + MET.PAT)
     INC A
     CP AS_PATTERNS
     JR NZ, .afterFrameNumber
     XOR A
 .afterFrameNumber
-    LD (IX + AS.PAT), A
+    LD (IX + MET.PAT), A
 
     LD D, A
     LD A, (spSize)
@@ -485,7 +488,7 @@ AnimateMeteors
     LD B, 0
 
     ; Sprite ID.
-    LD A, (IX + AS.SID)
+    LD A, (IX + MET.SID)
     LD L, A
 .patternLoop                                    ; Loop runds from B to C-1 -> from 0 to #spSize-1
 
@@ -517,8 +520,8 @@ AnimateMeteors
     ; ##########################################
     ; Meteor loop logic.
     
-    ; Move IX to next AS record.
-    LD DE, AS
+    ; Move IX to next MET record.
+    LD DE, MET
     ADD IX, DE
     POP BC
     DJNZ .asLoop
