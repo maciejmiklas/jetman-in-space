@@ -26,19 +26,19 @@
 ;   - 34-37: low, stand
 ;   - 38-41: explosion
 ;   - 42-44: fire	
-;   - 45-47: Flying enemey 1
-;   - 48-50: Flying enemey 2
-spritesBin INCBIN "assets/l001_sprites.spr", 0, _BN_SPRITE_BYT_D16384
+;   - 45-47: Flying enemy 1
+;   - 48-50: Flying enemy 2
+spritesBin INCBIN "assets/l01_sprites.spr", 0, _BN_SPRITE_BYT_D16384
 spritesBinLength = $ - spritesBin
 	ASSERT $$ == _BN_SPRITE_BANK2_D41
 counter002FliFLop
 ;----------------------------------------------------------;
 ;               Game Tiles (Bank 42...43)                  ;
 ;----------------------------------------------------------;
-; Load tiles and pallete into 8K bank 42,42 mapping it to slot 6,7.
+; Load tiles and palette into 8K bank 42,42 mapping it to slot 6,7.
 	
 	MMU _RAM_SLOT6 _RAM_SLOT7, _BN_TILES_BANK1_D42 ; Assign slots 6,7 to banks 42,43.
-	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6.
+	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6.
 
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 tilemapBin INCBIN "assets/tiles.map"
@@ -70,7 +70,7 @@ tilePaletteBinLength = $ - tilePaletteBin
 ;                   Star Tiles (Bank 44)                  ;
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 _RAM_SLOT7, _BN_STARTS_BANK1_D44 ; Assign slots 6,7 to banks 44,45.
-	ORG _RAM_SLOT6_START_HC000					; Set memmory pointer to start of the slot 6.
+	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6.
 
 starsBin INCBIN "assets/stars.map"
 starsBinSize = $ - starsBin
@@ -87,21 +87,21 @@ starsBinSize = $ - starsBin
 	ORG _RAM_SLOT6_START_HC000
 
 bgrL1PaletteAdr
-	INCBIN  "assets/l001_background.nxp"
+	INCBIN  "assets/l01_background.nxp"
 
 bgrL1PaletteBytes = $ - bgrL1PaletteAdr
 	ASSERT bgrL1PaletteBytes <= _BM_PAL2_BYTES_D512
 
-backgroundL2Palette
-	INCBIN  "assets/l002_background.nxp"
+bgrL2PaletteAdr
+	INCBIN  "assets/l02_background.nxp"
 
-backgroundL2PaletteSize = $ - backgroundL2Palette
-	ASSERT backgroundL2PaletteSize <= _BM_PAL2_BYTES_D512	
+bgrL2PaletteBytes = $ - bgrL2PaletteAdr
+	ASSERT bgrL2PaletteBytes <= _BM_PAL2_BYTES_D512
 
 	ASSERT $$ == _BN_PAL2_BANK_D46
 
 ;----------------------------------------------------------;
-;          Layer 2 Brignthess Palettes (Bank 47)           ;
+;          Layer 2 Brightness Palettes (Bank 47)           ;
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT7, _BN_PAL2_BR_BANK_D47
 	ORG _RAM_SLOT7_START_HE000
@@ -118,7 +118,7 @@ todL2Palettes
 	MMU _RAM_SLOT6 n, _BN_BG_L1_ST_BANK_D48
 	ORG _RAM_SLOT6_START_HC000
 bgrL1Img	
-	INCBIN "assets/l001_background.nxi", 0, _BM_BYTES_D81920
+	INCBIN "assets/l01_background.nxi", 0, _BM_BYTES_D81920
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L1_EN_BANK_D57+1		; Image has 81920 bytes, 10 banks.
@@ -129,12 +129,12 @@ bgrL1Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L2_ST_BANK_D58
 	ORG _RAM_SLOT6_START_HC000
-backgroundL2Img	
-	INCBIN "assets/l002_background.nxi", 0, _BM_BYTES_D81920
+bgrL2Img	
+	INCBIN "assets/l02_background.nxi", 0, _BM_BYTES_D81920
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L2_EN_BANK_D67+1		; Image has 81920 bytes, 10 banks.
-	ASSERT $$backgroundL2Img == _BN_BG_L2_ST_BANK_D58
+	ASSERT $$bgrL2Img == _BN_BG_L2_ST_BANK_D58
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

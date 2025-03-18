@@ -59,7 +59,9 @@ _GameLoop000
 	LD B, A 	
 	CALL ep.MoveEnemies
 
-	CALL in.JoyInput
+	; ##########################################
+	CALL gi.JoystickInput
+	CALL gi.KeyboardInput
 
 	RET											; ## END of the function ##
 
@@ -77,17 +79,17 @@ _GameLoop000OnActiveJetman
 	CALL js.AnimateJetSprite
 	CALL js.UpdateJetSpritePositionRotation
 	CALL jw.FireDelayCounter
-	CALL jco.JetmanEnemiesColision
+	CALL jco.JetmanEnemiesCollision
 
 	; ##########################################
 	LD IX, ed.sprite01
 	LD A, (ed.singleSpritesSize)
 	LD B, A	
-	CALL ep.RespownNextEnemy
+	;CALL ep.RespawnNextEnemy
 	
 	; ##########################################
 	LD IY, ed.formation
-	CALL ef.RespownFormation	
+	;CALL ef.RespawnFormation	
 
 	RET											; ## END of the function ##
 
@@ -98,14 +100,14 @@ _GameLoop000OnDisabledJoy
 
 	; ##########################################
 	; Return if the joystick is about to enable
-	LD A, (ind.joyOffCnt)
+	LD A, (gid.joyOffCnt)
 	CP _C_PL_BUMP_JOY_DEC_D1+1
 	RET C										; Return on the last off loop - this one is used to reset status and not to animate.
 
 	; ##########################################
-	CALL pl.MoveJetOnPlatfromSideHit
+	CALL pl.MoveJetOnPlatformSideHit
 	CALL pl.MoveJetOnFallingFromPlatform
-	CALL pl.MoveJetOnHitPlatfromBelow
+	CALL pl.MoveJetOnHitPlatformBelow
 
 	RET											; ## END of the function ##
 
@@ -190,7 +192,7 @@ _GameLoop004
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
 	CALL ro.RocketElementFallsForAssembly
-	CALL ro.AdminateRocketExplosion
+	CALL ro.AnimateRocketExplosion
 	CALL st.BlinkStarsL2
 
 	RET											; ## END of the function ##

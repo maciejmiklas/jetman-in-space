@@ -96,7 +96,7 @@ AbsA
 ;Input:
 ;  - HL:	16-bit number to print.
 ;  - B:		Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
-;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
+;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
 PrintNumHLDebug
 
 	PUSH BC, DE, IX, IY
@@ -192,7 +192,7 @@ CountdownBC
 ; Modifies: AF,BC,HL
 FillBank
 
-	LD BC, _BANK_BYTES_D8192						; 8192 bytes is a full bank.
+	LD BC, _BANK_BYTES_D8192					; 8192 bytes is a full bank.
 .loop
 	LD (HL), D
 	INC HL

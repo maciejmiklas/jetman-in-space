@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                     Global Constants                     ;
 ;----------------------------------------------------------;
-; Lots of documentation commes from https://wiki.specnext.dev
+; Lots of documentation comes from https://wiki.specnext.dev
 
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
@@ -54,7 +54,7 @@ _DC_REG_ULA_Y_H33		= $33
 ;  - 6: 1 to enable ULA shadow display (alias for bit 3 in Memory Paging Control $7FFD),
 ;  - 5-0: Alias for bits 5-0 in Timex Sinclair Video Mode Control $xxFF.
 ;
-; The 256x192x8bpp mode is simple 256 colour mode, one pixel is one byte (index into Layer 2 palette), pixels are stored from left to right, 
+; The 256x192x8bpp mode is simple 256 color mode, one pixel is one byte (index into Layer 2 palette), pixels are stored from left to right, 
 ; from top to bottom.
 ; The 320x256x8bpp mode is similar, but pixels are stored from top to bottom, then from left to right.
 ; 
@@ -70,12 +70,12 @@ _DC_REG_CONTROL1_H69	= $69
 ;  - 3-0: Palette offset (0 after soft reset),
 _DC_REG_LA2_H70			= $70
 
-; Selects colour index that will be read or written (_DC_REG_LA2_PAL_VAL_H44).
+; Selects color index that will be read or written (_DC_REG_LA2_PAL_VAL_H44).
 _DC_REG_LA2_PAL_IDX_H40	= $40
 
-; Palette Value (8 bit colour).
-; bits 7-0 = Colour for the palette index selected by the register 0x40.
-; (Format is RRRGGGBB - the lower blue bit of the 9-bit colour will be a logical or of blue bits 1 and 0 of this 8-bit value.)
+; Palette Value (8 bit color).
+; bits 7-0 = Color for the palette index selected by the register 0x40.
+; (Format is RRRGGGBB - the lower blue bit of the 9-bit color will be a logical or of blue bits 1 and 0 of this 8-bit value.)
 ; After the write, the palette index is auto-incremented to the next index if the auto-increment is enabled at reg 0x43.
 _DC_REG_LA2_PAL_VAL_H41	= $41
 
@@ -97,25 +97,25 @@ _DC_REG_LA2_PAL_VAL_H41	= $41
 ;  - 0: Enabe ULANext mode if 1. (0 after a reset).
 _DC_REG_LA2_PAL_CTR_H43	= $43
 
-; Palette Value (9 bit colour)
-; Two consecutive writes are needed to write the 9 bit colour
+; Palette Value (9 bit color)
+; Two consecutive writes are needed to write the 9 bit color
 ; 1st write: bits 7-0 = RRRGGGBB
 ; 2nd write:
 ;    If writing a L2 palette:
 ;      Bits:
-;       - 7: 1 for L2 priority colour, 0 for normal
-;            Priority colour will always be on top even on an SLU priority arrangement. If you need the exact same colour on priority and non 
-;            priority locations you will need to program the same colour twice changing bit 7 to 0 for the second colour.
+;       - 7: 1 for L2 priority color, 0 for normal
+;            Priority color will always be on top even on an SLU priority arrangement. If you need the exact same color on priority and non 
+;            priority locations you will need to program the same color twice changing bit 7 to 0 for the second color.
 ;       - 6-1: Reserved, must be 0
 ;       - 0: LSB B
 ;   If writing another palette:
 ;     Bits:
 ;      - 7-1: Reserved, must be 0
 ;      - 0:  LSB B
-; After the two consecutives writes the palette index is auto-incremented if the auto-increment is enabled by reg 0x43.
+; After the two consecutive writes the palette index is auto-incremented if the auto-increment is enabled by reg 0x43.
 _DC_REG_LA2_PAL_VAL_H44	= $44
 
-; Transparency index for the tilemap
+; Transparency index for the Tilemap
 ; Bits:
 ;  - 7-4 = Reserved, must be 0,
 ;  - 3-0 = Set the index value (0xF after reset).
@@ -207,7 +207,7 @@ _SPR_REG_X_H35			= $35					; Sprite X coordinate.
 _SPR_REG_Y_H36			= $36					; Sprite Y coordinate.
 
 ; Bits:
-;  - 7-4: Palette offset added to top 4 bits of sprite colour index,
+;  - 7-4: Palette offset added to top 4 bits of sprite color index,
 ;  - 3: X mirror,
 ;  - 2: Y mirror,
 ;  - 1: Rotate,
@@ -218,8 +218,8 @@ _SPR_REG_ATR2_MIRY_BIT	= 2
 _SPR_REG_ATR2_ROT_BIT	= 1
 _SPR_REG_ATR2_OVER_BIT	= 0
 _SPR_REG_ATR2_RES_PAL	= %00001111				; Mask to reset palette bits.
-_SPR_REG_ATR2_OVEFLOW	= %00000001
-_SPR_REG_ATR2_EMPTY		= %00000000				; No rotation, no mirrot, no overflow.
+_SPR_REG_ATR2_OVERFLOW	= %00000001
+_SPR_REG_ATR2_EMPTY		= %00000000				; No rotation, no mirror, no overflow.
 
 ; Bits:
 ;  - 7: Visible flag (1 = displayed),
@@ -238,7 +238,7 @@ _SPR_REG_ATR4_H39		= $39
 
 ; Sprite and Layers system.
 ; Bits:
-;  - 7: LoRes mode, 128 x 96 x 256 colours (1 = enabled),
+;  - 7: LoRes mode, 128 x 96 x 256 colors (1 = enabled),
 ;  - 6: Sprite priority (1 = sprite 0 on top, 0 = sprite 127 on top),
 ;  - 5: Enable sprite clipping in over border mode (1 = enabled),
 ;  - 4-2: set layers priorities:
@@ -307,7 +307,7 @@ _TI_MAP_CONTROL_H6B		= $6B
 ;  - bit 2: Y mirror,
 ;  - bit 1: Rotate,
 ;  - bit 0: ULA over tilemap. (bit 8 of the tile number if 512 tile mode is enabled). Active tile attribute if bit 5 of NEXTREG 0x6B is set.
-_TI_ATTRIBTE_H6C		= $6C
+_TI_ATTRIBUTE_H6C		= $6C
 
 ; Tilemap Base Address.
 ; The value written is an offset into Bank 5 allowing the tilemap to be placed at any multiple of 256 bytes.
@@ -330,7 +330,7 @@ _TI_DEF_ADR_H6F			= $6F
 ;----------------------------------------------------------;
 ;                         DMA                              ;
 ;----------------------------------------------------------;
-_DMA_PORT_H6B			= $6B					; Datagear DMA Port in zxnDMA mode, https://wiki.specnext.dev/DMA
+_DMA_PORT_H6B			= $6B					; DMA Port in zxnDMA mode, https://wiki.specnext.dev/DMA
 
 ;----------------------------------------------------------;
 ;                        Colors                            ;
@@ -349,20 +349,35 @@ _COL_TRANSPARENT_D0		= 0
 ;----------------------------------------------------------;
 ;                     Input processing                     ;
 ;----------------------------------------------------------;
-_KB_6_TO_0_HEF			= $EF					; Mask for keyboard input from 6 to 0 (to read arrow keys: up/down/right).
-_KB_5_TO_1_HF7			= $F7					; Mask for keyboard input from 5 to 1 (to read left arrow key).
-_KB_V_TO_Z_HFE			= $FE					; Mask for keyboard input from V to Z to read X for fire.
 
-_KB_REG_HFE				= $FE					; Activated keyboard input.
+; Bit:			4	3 	2 	1 	0
+; %11111110 	V	C	X	Z	SHIFT
+; %11111101		G	F	D	S	A
+; %11111011		T	R	E	W	Q
+; %11110111		5	4	3	2	1
+; %11101111		6	7	8	9	0
+; %11011111		Y	U	I	O	P
+; %10111111		H	J	K	L	ENTER
+; %01111111		B	N	M	DEL	SPC
+_KB_5_TO_1_HF7			= $F7					; Mask for row: 1, 2, 3, 4, & 5 and to read left arrow key.
+_KB_6_TO_0_HEF			= $EF					; Mask for row: 6, 7, 8 ,9, 0 and to read arrow keys: up/down/right.
+_KB_T_TO_Q_HFB			= $FB					; Mask for row: T, R, E, W, Q
+_KB_Y_TO_P_HDF			= $DF					; Mask for row: Y, U, I, O, P
+_KB_G_TO_A_HFD			= $FD					; Mask for row: G, F, D, S, T, A
+_KB_H_TO_ENT_HBF		= $BF					; Mask for row: H, J, K, L, ENTER
+_KB_V_TO_SH_HFE			= $FE					; Mask for row: V, C, X, Z, SHIFT
+_KB_B_TO_SPC_H7F		= $7F					; Mask for row: B, M, M, FULL-STOP, SPACE
 
+_KB_REG_HFE				= $FE					; Activate keyboard input.
+
+_JOY_REG_H1F			= $1F					; Activate kempston input.
 _JOY_MASK_H20			= $20					; Mask to read Kempston input.
-_JOY_REG_H1F			= $1F					; Activates Kempston input.
 
 ;----------------------------------------------------------;
-;                         ULA                             ;
+;                         ULA                              ;
 ;----------------------------------------------------------;
 _ULA_COLOR_START_H5800	= $5800					; Start of Display Color RAM.
-_ULA_COLOR_ENND_H5AFF	= $5AFF					; End of Display Color RAM.
+_ULA_COLOR_END_H5AFF	= $5AFF					; End of Display Color RAM.
 _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800.
 
 ;----------------------------------------------------------;
@@ -420,7 +435,7 @@ _FIRE_THICKNESS_D10		= 10
 
 ; ##############################################
 ; Rocket
-_RO_DROP_NEXT_D5		= 10 ;10 TODO
+_RO_DROP_NEXT_D5		= 10
 _RO_DROP_H_D200			= 160					; Jetman has to be above the rocket to drop the element.
 _RO_FLAME_OFFSET_D16	= 16
 _RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
@@ -464,14 +479,14 @@ _SC_RESY1_D255			= _SC_RESY_D256 -1
 
 _SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17.
 
-; Plaftorm 
+; Platform 
 _PL_HIT_MARGIN_D5		= 5	
 
 ; ##############################################
 ; Tilemap
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3. 
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
-_TI_START_H5B00	= _ULA_COLOR_ENND_H5AFF + 1	; Start of tilemap.
+_TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
 	ASSERT _TI_START_H5B00 >= _RAM_SLOT2_START_H4000
 	ASSERT _TI_START_H5B00 <= _RAM_SLOT3_END_H7FFF
 
@@ -482,10 +497,10 @@ _TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
 _TI_GND_D16				= 16					; The thickness of the ground (tilemap).
 _TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
 
-; 320/8*2 = 80 bytes pro row -> silgle tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
+; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
 _TI_H_BYTES_D80			= _TI_HTILES_D40 * 2
 
-_TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertival screen size).
+_TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
 _TI_VBYTES_D64			= _TI_VTILES_D32 * 2	; 64 bytes pro row.
 _TI_EMPTY_D57			= 57					; Empty tile.
 _TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
@@ -504,7 +519,7 @@ _TI_CLIP_ROCKETY2_D247	= _SC_RESY1_D255 - _TI_PIXELS_D8
 
 ; ##############################################
 ; Tile definition (sprite file)
-_TID_START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tilfedefinitions (sprite file).
+_TID_START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite file).
 	ASSERT _TID_START_H6500 >= _RAM_SLOT2_START_H4000
 	ASSERT _TID_START_H6500 <= _RAM_SLOT3_END_H7FFF
 	
@@ -513,7 +528,6 @@ _TID_OFFSET	= (_TID_START_H6500 - _RAM_SLOT2_START_H4000) >> 8
 
 ; ##############################################
 ; Tile stars map
-_TIS_START				= _TI_START_H5B00 + (_TI_VTILES_D32 -1) * _TI_H_BYTES_D80 ; Stars begin at the last tile row.
 
 _TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=40*32*4*2 bytes, 3 screens.
 _TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
@@ -583,6 +597,9 @@ _ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
 
 _ST_PAL_TRANSP_D0		= 0						; Index of transparent color.
 
+_ST_PAL_L1_SIZE			= 25					; Number of colors for stars on layer 1.
+_ST_PAL_L2_SIZE			= 10					; Number of colors for stars on layer 2.
+
 ; ##############################################
 ; Binary Data Loader
 _BN_SPRITE_BYT_D16384	= 16384
@@ -601,8 +618,8 @@ _BN_STARTS_BANK2_D45	= 45
 _BN_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
 _BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 
-_BN_PAL2_BANK_D46		= 46					; Layer 2 palletes
-_BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for palletes from _BN_PAL2_BANK_D46.
+_BN_PAL2_BANK_D46		= 46					; Layer 2 pallettes
+_BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for pallettes from _BN_PAL2_BANK_D46.
 
 ; Image for Level 1 (all values inclusive).
 _BN_BG_L1_ST_BANK_D48	= 48
@@ -617,9 +634,9 @@ _BN_BG_L2_EN_BANK_D67	= _BN_BG_L2_ST_BANK_D58+_BM_BANKS_D10-1
 	ASSERT _BN_BG_L2_EN_BANK_D67 == 67
 
 ; ##############################################
-; Respown location
-_JET_RESPOWN_X_D100		= 100
-_JET_RESPOWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+; Respawn location
+_JET_RESPAWN_X_D100		= 100
+_JET_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 ; ##############################################
 ; Game Counters
@@ -631,8 +648,8 @@ _GC_FLIP_OFF_D0			= 0
 _TOD_STEPS_D4			= 4						; Total number of steps (times of the day) from day to night.
 
 ; State for #stepDir indicating the direction of the change: from day to night, night to day, or full day.
-_TOD_DIR_DAY_NIGHT		= 1						; Enviorment changes from day to night.
-_TOD_DIR_NIGHT_DAY		= 2						; Enviorment changes from night to day.
+_TOD_DIR_DAY_NIGHT		= 1						; Environment changes from day to night.
+_TOD_DIR_NIGHT_DAY		= 2						; Environment changes from night to day.
 _TOD_DIR_FULL_DAY		= 3						; It's a full day.
 
 _TOD_STEP_DURATION		= 10					; Duration of a single time of day, except for a full day.

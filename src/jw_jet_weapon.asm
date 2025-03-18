@@ -29,7 +29,7 @@ shots10
 SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 FIRE_DELAY				= 15
-; The counter is incrementd with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY.
+; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY.
 shotsDelayCnt
 	DB 0
 
@@ -48,7 +48,7 @@ WeaponHitEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #ShotsColision                        ;
+;                    #ShotsCollision                        ;
 ;----------------------------------------------------------;
 ; The method checks whether any active laser beam has hit the sprite given by X/Y.
 ; Input:
@@ -60,7 +60,7 @@ WeaponHitEnemies
 SHOT_HIT					= 1
 SHOT_MISS					= 0
 
-ShotsColision
+ShotsCollision
 
 	; Loop ever all shots# skipping hidden shots.
 	LD IX, shots								; IX points to the shot.
@@ -165,14 +165,14 @@ MoveShots
 
 	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
 	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
-	JR Z, .afterPlatformColision				; Exit if sprite is not alive.
+	JR Z, .afterPlatformCollision				; Exit if sprite is not alive.
 
 	; Check the collision with the platform.
-	CALL pl.PlaftormWeaponHit
+	CALL pl.PlatformWeaponHit
 	CP A, pl.PL_HIT_RET_A_NO
-	JR Z, .afterPlatformColision
+	JR Z, .afterPlatformCollision
 	CALL sr.SpriteHit
-.afterPlatformColision
+.afterPlatformCollision
 
 .continue
 	; Move IX to the beginning of the next #shotsXX.
@@ -242,8 +242,8 @@ Fire
 	; We are here because free #shotsX has been found, and IX points to it.
 
 	; Is Jetman moving left or right?
-	LD A, (ind.jetDirection)
-	BIT ind.MOVE_LEFT_BIT, A
+	LD A, (gid.jetDirection)
+	BIT gid.MOVE_LEFT_BIT, A
 	JR NZ, .movingLeft							; Jump if Jetman is moving left.
 	
 	XOR A										; A will hold sr.SPR.STATE.
@@ -307,12 +307,12 @@ _CheckHitEnemies
 	BIT sr.SPRITE_ST_ACTIVE_BIT, A
 	JR Z, .continue	
 	
-	; Enemy is visible, check colision with leaser beam.
+	; Enemy is visible, check collision with leaser beam.
 	LD DE, (IX + sr.SPR.X)						; X of the enemy.
 	LD C, (IX + sr.SPR.Y)						; Y of the enemy.
 
 	PUSH IX
-	CALL ShotsColision
+	CALL ShotsCollision
 	POP IX
 	CP SHOT_HIT
 	JR NZ, .continue							; Jump if there is no hit.

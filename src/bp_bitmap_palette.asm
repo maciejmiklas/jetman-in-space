@@ -7,17 +7,23 @@
 ;                     #BytesToColors                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - BC: Sieze of the pallete in bytes.
+;  - BC: Sieze of the palette in bytes.
 ; Output:
 ;  - B: Number of colors.
 BytesToColors
 	
-	; Divide BC by 2 - two bytes carry one color
+	; Divide BC by 2 -> one color takes two bytes
 	SRL B										; Shift the higher byte (B) right by 1 bit
 	RR C										; Rotate right through carry the lower byte (C)
 
-	; Now BC contains max 255, becaue we have 512 colors
+	; Now BC contains max 255, because we have 512 colors
 	LD B, C
+
+	; In case of 512 colors there is an overflow, and B is 0.
+	LD A, B
+	CP 0
+	RET NZ
+	LD B, $FF
 
 	RET											; ## END of the function ##
 
@@ -39,8 +45,8 @@ LoadColors
 ;                       #WriteColors                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Address of the pallete that will be copied
-;  - B:  Numnber of colors.
+;  - HL: Address of the palette that will be copied
+;  - B:  Number of colors.
 WriteColors
 
 .loop
@@ -103,13 +109,13 @@ BrightnessDown
 	; Red is above 0, decrement it.
 	SUB _BM_PAL2_RRR_INC
 
-	; Update orginal color in DE
+	; Update original color in DE
 	LD B, A										; Keep A in B, A contains new RRR value.
 
 	LD A, E										; Load RRR'GGG'BB into A and reset RRR, because we will set it to new value with XOR.
 	AND _BM_PAL2_RRR_MASKN
 	XOR B										; Set new RRR value to E.
-	LD E, A										; Update orginal input/return value.
+	LD E, A										; Update original input/return value.
 
 .afterDecrementRed
 
@@ -125,24 +131,24 @@ BrightnessDown
 	; Green is above 0, decrement it.
 	SUB _BM_PAL2_GGG_INC 
 
-	; Update orginal color in DE.
+	; Update original color in DE.
 	LD B, A										; Keep A in B, A contains new GGG value.
 
 	LD A, E										; Load RRR'GGG'BB into A and reset GGG, because we will set it to new value with XOR.
 	AND _BM_PAL2_GGG_MASKN
 	XOR B										; Set new GGG value to E.
-	LD E, A										; Update orginal input/return value.
+	LD E, A										; Update original input/return value.
 
 .afterDecrementGreen	
 
 	; ##########################################
 	; Decrement blue: E: xxx'xxx'BB D: xxxxxxx'B
 
-	; Prepare BBB for decrement oparation: xxx'xxx'BB xxxxxxx'B-> 00000BBB
+	; Prepare BBB for decrement operation: xxx'xxx'BB xxxxxxx'B-> 00000BBB
 	LD A, E
 	AND _BM_PAL2_BB_MASK						; A contains 000'000'BB.
 	RR D										; Rotate D right, if xxxxxxx'B is set, it will set CF.
-	RLA											; Rotale left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF.
+	RLA											; Rotate left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF.
 
 	; Ensure that BBB is > 0 before decreasing it.
 	CP _BM_PAL2_MIN
@@ -151,7 +157,7 @@ BrightnessDown
 	; A contains BBB as 00000'BBB, decrement it and update DE
 	DEC A										; Decrement BBB.
 
-	; Apply new BBB value to orginal DE.
+	; Apply new BBB value to original DE.
 	RRA											; 00000'BBB -> 000000'BB -> CF
 	RL D										; 00000000 -> 0000000'CF -> D now contains proper value.
 	
@@ -168,10 +174,10 @@ BrightnessDown
 ;                      #WriteColor                         ;
 ;----------------------------------------------------------;
 ; Input
-;  - DE - conatins given color, E: RRRGGGBB, D: xxxxxxxB
+;  - DE - contains given color, E: RRRGGGBB, D: xxxxxxxB
 WriteColor
 
-	; - Two consecutive writes are needed to write the 9 bit colour:
+	; - Two consecutive writes are needed to write the 9 bit color:
 	; - 1st write: bits 7-0 = RRRGGGBB
 	; - 2nd write: bits 7-1 = 0, bit 0 = LSB B
 

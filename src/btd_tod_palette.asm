@@ -1,12 +1,12 @@
 ;----------------------------------------------------------;
-;                  Tinme of Day Palette                    ;
+;                   Time of Day Palette                    ;
 ;----------------------------------------------------------;
 	MODULE btd
 	
 ; TOD - Time of Day
 palBytes				WORD 0					; Size in bytes of background palette, max 512.
 palColors				BYTE 0					; Amount of colors in background palette, max 255.
-palAdr					WORD 0					; Address of the orginal palette data.
+palAdr					WORD 0					; Address of the original palette data.
 todPalAddr 				WORD 0					; Pointer to current brightness palette.
 
 ;----------------------------------------------------------;
@@ -72,11 +72,11 @@ LoadCurrentTodPalette
 ;----------------------------------------------------------;
 ;                  #LoadLevelPalette                       ;
 ;----------------------------------------------------------;
-; Method called after settgin: #palBytes and #palAdr
+; Method called after setting: #palBytes and #palAdr
 LoadLevelPalette
 
 	CALL _VariablesSet							; Palette global variables are set.
-	CALL _LoadTodPalette						; Load orginal palette into hardware.
+	CALL _LoadTodPalette						; Load original palette into hardware.
 	CALL _CreateTodPalettes						; Create palettes for different times of day.
 	RET											; ## END of the function ##
 
@@ -140,7 +140,7 @@ _CreateTodPalettes
 ;----------------------------------------------------------;
 ;                    #_VariablesSet                        ;
 ;----------------------------------------------------------;
-; Method called after settgin: #palBytes and #palAdr
+; Method called after setting: #palBytes and #palAdr
 _VariablesSet
 
 	; Set #palColors from #palBytes
@@ -148,7 +148,6 @@ _VariablesSet
 	CALL bp.BytesToColors
 	LD A, B
 	LD (palColors), A
-
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -165,7 +164,7 @@ _NextBrightnessPalette
 	LD (todPalAddr), DE							; Move palette pointer to copied palette.
 
 	; ##########################################
-	; Copy current palette to new addres given by #todPalAddr
+	; Copy current palette to new address given by #todPalAddr
 	LD BC, (palBytes)							; Number of bytes to be copied by LDIR
 	LDIR										; Copy palette from HL to DE
 
@@ -207,7 +206,7 @@ _LoadTodPalette
 	CALL bp.SetupPaletteLoad
 
 	; ##########################################
-	; Copy 9 bit (2 bytes per color) palette. Nubmer of colors is giveb by B (method param).
+	; Copy 9 bit (2 bytes per color) palette. Number of colors is given by B (method param).
 	LD A, (palColors)							; Number of colors/iterations.
 	LD B, A
 

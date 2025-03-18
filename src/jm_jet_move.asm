@@ -32,16 +32,16 @@ JoyMoveUp
 
 	; ##########################################
 	; Direction change: down -> up.
-	LD A, (ind.jetDirection)
-	AND ind.MOVE_UP_MASK						; Are we moving Up already?
-	CP ind.MOVE_UP_MASK
+	LD A, (gid.jetDirection)
+	AND gid.MOVE_UP_MASK						; Are we moving Up already?
+	CP gid.MOVE_UP_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (ind.jetDirection)					; Update #jetState by resetting down and setting up.
-	RES ind.MOVE_DOWN_BIT, A
-	SET ind.MOVE_UP_BIT, A
-	LD (ind.jetDirection), A
+	LD A, (gid.jetDirection)					; Update #jetState by resetting down and setting up.
+	RES gid.MOVE_DOWN_BIT, A
+	SET gid.MOVE_UP_BIT, A
+	LD (gid.jetDirection), A
 .afterDirectionChange
 
 	; ##########################################	
@@ -66,16 +66,16 @@ JoyMoveRight
 
 	; ##########################################
 	; Direction change: left -> right
-	LD A, (ind.jetDirection)
-	AND ind.MOVE_RIGHT_MASK						; Are we moving right already?
-	CP ind.MOVE_RIGHT_MASK
+	LD A, (gid.jetDirection)
+	AND gid.MOVE_RIGHT_MASK						; Are we moving right already?
+	CP gid.MOVE_RIGHT_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (ind.jetDirection)					; Reset left and set right.
-	RES ind.MOVE_LEFT_BIT, A
-	SET ind.MOVE_RIGHT_BIT, A
-	LD (ind.jetDirection), A
+	LD A, (gid.jetDirection)					; Reset left and set right.
+	RES gid.MOVE_LEFT_BIT, A
+	SET gid.MOVE_RIGHT_BIT, A
+	LD (gid.jetDirection), A
 	
 .afterDirectionChange
 
@@ -101,16 +101,16 @@ JoyMoveLeft
 
 	; ##########################################
 	; Direction change: right -> left.
-	LD A, (ind.jetDirection)
-	AND ind.MOVE_LEFT_MASK						; Are we moving left already?
-	CP ind.MOVE_LEFT_MASK
+	LD A, (gid.jetDirection)
+	AND gid.MOVE_LEFT_MASK						; Are we moving left already?
+	CP gid.MOVE_LEFT_MASK
 	JR Z, .afterDirectionChange					; Jetman is moving left already -> end.
 
 	; We have direction change!	
-	LD A, (ind.jetDirection)					; Reset right and set left.
-	RES ind.MOVE_RIGHT_BIT, A
-	SET ind.MOVE_LEFT_BIT, A
-	LD (ind.jetDirection), A
+	LD A, (gid.jetDirection)					; Reset right and set left.
+	RES gid.MOVE_RIGHT_BIT, A
+	SET gid.MOVE_LEFT_BIT, A
+	LD (gid.jetDirection), A
 .afterDirectionChange
 
 	; ##########################################
@@ -154,16 +154,16 @@ JoyMoveDown
 
 	; ##########################################
 	; Direction change? 
-	LD A, (ind.jetDirection)
-	AND ind.MOVE_DOWN_MASK						; Are we moving down already?
-	CP ind.MOVE_DOWN_MASK
+	LD A, (gid.jetDirection)
+	AND gid.MOVE_DOWN_MASK						; Are we moving down already?
+	CP gid.MOVE_DOWN_MASK
 	JR Z, .afterDirectionChange
 
 	; We have direction change!
-	LD A, (ind.jetDirection)					; Update #jetState by resetting Up/Hover and setting Down.
-	RES ind.MOVE_UP_BIT, A
-	SET ind.MOVE_DOWN_BIT, A	
-	LD (ind.jetDirection), A
+	LD A, (gid.jetDirection)					; Update #jetState by resetting Up/Hover and setting Down.
+	RES gid.MOVE_UP_BIT, A
+	SET gid.MOVE_DOWN_BIT, A	
+	LD (gid.jetDirection), A
 	
 	; ##########################################
 	CALL js.ChangeJetSpriteOnFlyDown
@@ -197,16 +197,16 @@ JoystickInputProcessed
 	JR Z, .afterDownOnGround
 
 	; Jetman is on the ground, but is only down key pressed (without left/right)?
-	LD A, (ind.joyDirection)
-	CP ind.MOVE_DOWN_MASK
+	LD A, (gid.joyDirection)
+	CP gid.MOVE_DOWN_MASK
 	JR Z, .inactive								; Jump if, Jetman is on the ground and only down is pressed, we have inactivity, skip other checks.
 
 .afterDownOnGround
 	
 	; ##########################################
 	; Is there a movement?
-	LD A, (ind.joyDirection)
-	CP ind.MOVE_INACTIVE
+	LD A, (gid.joyDirection)
+	CP gid.MOVE_INACTIVE
 	RET NZ										; Jump if there is a movement.
 
 .inactive
@@ -231,14 +231,14 @@ JoystickInputProcessed
 ;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
 _JoyCntEnabled
 
-	LD A, (ind.joyOffCnt)
+	LD A, (gid.joyOffCnt)
 	CP 0
 	JR Z, .joyEnabled							; Jump if joystick is enabled -> #joyOffCnt > 0.
 
 	; ##########################################
 	; Joystick is disabled
 	DEC A										; Decrement disabled counter.
-	LD (ind.joyOffCnt), A
+	LD (gid.joyOffCnt), A
 
 	; Joystick will enable on the next loop?
 	CP 0
@@ -251,11 +251,11 @@ _JoyCntEnabled
 	; ##########################################
 	; Allow input processing if Jetman is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when
 	; hitting the platform from below and pressing up + left (or right). 
-	; We can have the following situation: Jemtan is below the platform and is not bumping off anymore because it's close long enough.
+	; We can have the following situation: Jetman is below the platform and is not bumping off anymore because it's close long enough.
 	; The player still keeps pressing up and simultaneously, let's say, left. We want to allow movement to the left, but not up.
 	; Because #joyOffCnt > 0, the function #_GameLoop000OnDisabledJoy will be executed. It will move Jetman one pixel down, which is good
 	; because pressing up has moved him one pixel up. To allow movement left, we ignore #joyOffBump because it is so small that we know
-	; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Jaystick's movement up, ignoring #joyOffBump allows movement to the left.
+	; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
 
 	LD A, (pl.joyOffBump)
 	CP _C_PL_BUMP_JOY_DEC_D1+1
@@ -278,9 +278,9 @@ _JoyCntEnabled
 ;     - _RET_ON_D1:		Process joystick input.
 ;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
 _JoySlowdown
-	LD A, (ind.joyDelayCnt)
+	LD A, (gid.joyDelayCnt)
 	INC A
-	LD (ind.joyDelayCnt), A
+	LD (gid.joyDelayCnt), A
 
 	CP _PL_JOY_DELAY
 	JR Z, .delayReached
@@ -290,7 +290,7 @@ _JoySlowdown
 .delayReached									; Delay counter has been reached.
 
 	XOR A										; Set A to 0.
-	LD (ind.joyDelayCnt), A						; Reset delay counter.
+	LD (gid.joyDelayCnt), A						; Reset delay counter.
 
 	LD A, _RET_ON_D1							; Process input, because counter has been reached.
 
@@ -360,7 +360,7 @@ _JoystickMoves
 	; ##########################################
 	; Transition from hovering to flying?
 	LD A, (jt.jetAir)
-	CP jt.AIR_HOOVER							; Is Jemtman hovering?
+	CP jt.AIR_HOOVER							; Is Jetman hovering?
 	JR NZ, .afterHovering						; Jump if not hovering.
 
 	; Jetman is hovering, but we have movement, so switch state to fly.

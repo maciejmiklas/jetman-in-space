@@ -18,14 +18,14 @@ ripMoveMul				BYTE RIP_MOVE_MUL_INC
 invincibleCnt			WORD 0					; Makes Jetman invincible when > 0.
 
 ;----------------------------------------------------------;
-;                #JetmanEnemiesColision                    ;
+;               #JetmanEnemiesCollision                    ;
 ;----------------------------------------------------------;
-JetmanEnemiesColision
+JetmanEnemiesCollision
 
 	LD IX, ed.sprite01
 	LD A, (ed.spritesSize)
 	LD B, A
-	CALL _EnemiesColision
+	CALL _EnemiesCollision
 
 	RET											; ## END of the function ##
 
@@ -40,12 +40,12 @@ JetRip
 
 	CALL _RipMove
 
-	; Did Jetam reach the top of the screen (the RIP sequence is over)?
+	; Did Jetman reach the top of the screen (the RIP sequence is over)?
 	LD A, (jpo.jetY)
 	CP 4										; Going up is incremented by 2.
 	RET NC										; Nope, still going up (#jetY >= 4).
 
-	; Sequece is over, respown new live.
+	; Sequence is over, respawn new live.
 	CALL _ResetRipMove
 	CALL gc.RespawnJet 
 
@@ -55,7 +55,7 @@ JetRip
 ;                   #MakeJetInvincible                     ;
 ;----------------------------------------------------------;
 ; Input
-;  - HL:	Number of loops (#counter002) to keep Jemtan invincible.
+;  - HL:	Number of loops (#counter002) to keep Jetman invincible.
 MakeJetInvincible
 	LD (invincibleCnt), HL						; Store invincibility duration.
 	
@@ -95,7 +95,7 @@ JetInvincible
 
 	; ##########################################
 	; Still invincible - blink Jetman sprite (at first blink fast, last few seconds blink slow).
-	; Shold blink slow or fast?
+	; Should blink slow or fast?
 	LD A, H										; H should be 0 because the last blink phase (slow blink) is 8 bits.
 	CP 0
 	JR NZ, .blinkFast							; #invincibleCnt > 255 (H != 0) -> blink fast.
@@ -131,12 +131,12 @@ JetInvincible
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    #_EnemyColision                       ;
+;                    #_EnemyCollision                       ;
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
 ; Input:
-;  - IX:	Pointer to concreate single enemy, single #SPR.
-_EnemyColision
+;  - IX:	Pointer to concrete single enemy, single #SPR.
+_EnemyCollision
 
 	; Exit if enemy is not alive.
 	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
@@ -155,7 +155,7 @@ _EnemyColision
 	; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already.
 	LD A, (jt.jetAir)
 	CP jt.AIR_ENEMY_KICK
-	RET Z										; Animation playes already.
+	RET Z										; Animation plays already.
 	
 	; Play animation and set state
 	LD A, jt.AIR_ENEMY_KICK
@@ -187,7 +187,7 @@ _EnemyColision
 	CP COLLISION_YES
 	RET NZ
 
-	; We have colision!
+	; We have collision!
 	CALL gc.EnemyHitsJet
 
 	RET											; ## END of the function ##
@@ -257,7 +257,7 @@ _RipMove
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
 ; Input:
-;  - IX:	Pointer to concreate single enemy, single #SPR.
+;  - IX:	Pointer to concrete single enemy, single #SPR.
 ;  - D:		Upper thickness of the enemy (enemy above Jetman).
 ;  - E:		Lower thickness of the enemy (enemy below Jetman).
 ; Return:
@@ -288,13 +288,13 @@ _CheckCollision
 	RET
 .checkVertical
 
-	; We are here because Jemtman's horizontal position matches that of the enemy, now check vertical.
+	; We are here because Jetman's horizontal position matches that of the enemy, now check vertical.
 	LD B, (IX + sr.SPR.Y)						; Y of the enemy.
 	LD A, (jpo.jetY)							; Y of the Jetman.
 
-	; Is Jemtan above or below the enemy?
+	; Is Jetman above or below the enemy?
 	CP B
-	JR C, .jetmanAboveEnemy						; Jump if "Jet Y" < "eneymy Y". Jet is above enemy (0 is at the top, 256 bottom).
+	JR C, .jetmanAboveEnemy						; Jump if "Jet Y" < "enemy Y". Jet is above enemy (0 is at the top, 256 bottom).
 
 	; Jetman is below enemy.
 	SUB B
@@ -323,18 +323,18 @@ _CheckCollision
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_EnemiesColision                     ;
+;                    #_EnemiesCollision                     ;
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam.
 ; Input
 ;  - IX:	Pointer to #SPR, the enemies.
 ;  - B:		Number of enemies in IX.
 ; Modifies: ALL
-_EnemiesColision
+_EnemiesCollision
 
 .loop
 	PUSH BC										; Preserve B for loop counter.
-	CALL _EnemyColision
+	CALL _EnemyCollision
 .continue
 	; Move HL to the beginning of the next #shotsX
 	LD DE, sr.SPR

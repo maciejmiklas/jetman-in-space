@@ -5,26 +5,26 @@
 
 ; The move formation consists of multiple sprites. #EF.SPRITE_POINTER gives the first sprite, and #EF.SPRITES determines the amount. 
 ; For example, for #EF.SPRITE_POINTER=sprite10 and #EF.SPRITES=3, the formation will contain three sprites: sprite10, sprite11, and sprite12. 
-; The #EF.RESPOWN_DELAY determines the respawn delay of the first sprite in the formation. The #ENP.RESPOWN_DELAY for the remaining sprites 
+; The #EF.RESPAWN_DELAY determines the respawn delay of the first sprite in the formation. The #ENP.RESPAWN_DELAY for the remaining sprites 
 ; determines the deploy delay for the following sprite in the formation. 
 	STRUCT EF
 SPRITE_POINTER		WORD						; Pointer to the first sprite (#SPR).
-RESPOWN_DELAY		WORD						; Number of game loops delaying respawn.
-RESPOWN_DELAY_CNT	WORD						; Respawn delay counter.
+RESPAWN_DELAY		WORD						; Number of game loops delaying respawn.
+RESPAWN_DELAY_CNT	WORD						; Respawn delay counter.
 SPRITES				BYTE						; Number of sprites used in this formation, starting from #SPRITE_POINTER inclusive.
-SPRITES_CNT			BYTE						; Current respown position.
+SPRITES_CNT			BYTE						; Current respawn position.
 	ENDS
 
 ;----------------------------------------------------------;
-;                   #RespownFormation                      ;
+;                   #RespawnFormation                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IY:	Pointer to #EF.
-RespownFormation	
+RespawnFormation	
 
 	; Check whether it's time to start a new formation deployment.
-	LD BC, (IY + EF.RESPOWN_DELAY)
-	LD DE, (IY + EF.RESPOWN_DELAY_CNT)
+	LD BC, (IY + EF.RESPAWN_DELAY)
+	LD DE, (IY + EF.RESPAWN_DELAY_CNT)
 
 	; Compare timer
 	LD A, B
@@ -35,10 +35,10 @@ RespownFormation
 	CP E
 	JR NZ, .incrementDelayTimer					; Jump if C != E.
 
-	JR .afterDelayTimer							; RESPOWN_DELAY == RESPOWN_DELAY_CNT -> deplyment is active.
+	JR .afterDelayTimer							; RESPAWN_DELAY == RESPAWN_DELAY_CNT -> deployment is active.
 .incrementDelayTimer
 	INC DE										; Increment delay timer and return.
-	LD (IY + EF.RESPOWN_DELAY_CNT), DE
+	LD (IY + EF.RESPAWN_DELAY_CNT), DE
 	RET
 .afterDelayTimer
 
@@ -52,7 +52,7 @@ RespownFormation
 	; Deplyment is over
 	LD DE, 0									; Reset formation counters.
 	LD (IY + EF.SPRITES_CNT), E
-	LD (IY + EF.RESPOWN_DELAY_CNT), DE
+	LD (IY + EF.RESPAWN_DELAY_CNT), DE
 
 	RET
 .deplyNextEnemy	
@@ -68,7 +68,7 @@ RespownFormation
 	ADD IX, DE
 
 	PUSH IY
-	CALL ep.RespownEnemy
+	CALL ep.RespawnEnemy
 	POP IY
 
 	CP ep.RES_SE_OUT_YES						; Has the enemy respawned?

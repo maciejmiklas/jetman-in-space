@@ -121,7 +121,7 @@ SpriteHit
 	LD (IX + SPR.STATE), A
 
 	LD A, SDB_EXPLODE
-	CALL _LoadSpritePattern						; Enemy expoldes.
+	CALL _LoadSpritePattern						; Enemy explodes.
 	
 	RET											; ## END of the function ##
 
@@ -182,13 +182,13 @@ UpdateSpritePosition
 
 	; Update the H37
 	LD A, B										; Set MSB from BC (X).
-	AND _SPR_REG_ATR2_OVEFLOW					; Keep only an overflow bit.
+	AND _SPR_REG_ATR2_OVERFLOW					; Keep only an overflow bit.
 	LD B, A										; Backup A to B, as we need A.
 
 	LD A, (IX + SPR.STATE)
 	RES _SPR_REG_ATR2_OVER_BIT, A				; Reset overflow and set it in next command.
 	OR B										; Apply B to set MSB from X.
-	AND _SPR_REG_ATR2_RES_PAL					; Reset bits reserved for pallete.
+	AND _SPR_REG_ATR2_RES_PAL					; Reset bits reserved for palette.
 
 	RES _SPR_REG_ATR2_MIRY_BIT, A				; Reset rotation bits, as we use those for different things and might be set.
 	RES _SPR_REG_ATR2_ROT_BIT, A
@@ -303,7 +303,7 @@ UpdateSpritePattern
 ; Input
 ;  - IX:	Pointer to #SPR
 ;  - D: 	Configuration, bits:
-;			- 0-2: Number of pixels to move spirte,
+;			- 0-2: Number of pixels to move sprite,
 ;			- 3:  #MVX_IN_D_HIDE_BIT,
 ;			- 4:  #MVX_IN_D_DIR_BIT.
 MVX_IN_D_HIDE_BIT 			= 3					; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen.

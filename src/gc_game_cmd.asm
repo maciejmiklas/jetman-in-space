@@ -8,7 +8,7 @@
 ;----------------------------------------------------------;
 LoadLevel1
 
-	CALL ll.LoadLevelData1
+	CALL ll.LoadLevel1Data
 
 	RET											; ## END of the function ##
 
@@ -16,7 +16,8 @@ LoadLevel1
 ;                      #LoadLevel2                         ;
 ;----------------------------------------------------------;
 LoadLevel2
-	
+
+	CALL ll.LoadLevel2Data
 
 	RET											; ## END of the function ##
 
@@ -118,16 +119,16 @@ EnemyHitsJet
 RespawnJet
 
 	; Set respawn coordinates.
-	LD BC, _JET_RESPOWN_X_D100
+	LD BC, _JET_RESPAWN_X_D100
 	LD (jpo.jetX), BC
 
-	LD A, _JET_RESPOWN_Y_D217
+	LD A, _JET_RESPAWN_Y_D217
 	LD (jpo.jetY), A
 
-	; Reload image becase it has moved with the Jetman and now he reponds on the ground.
+	; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
 	CALL bm.LoadImage
 
-	CALL jt.SetJetStateRespown
+	CALL jt.SetJetStateRespawn
 
 	LD HL, _INVINCIBLE_D400
 	CALL jco.MakeJetInvincible
@@ -135,7 +136,7 @@ RespawnJet
 	CALL bg.UpdateBackgroundOnJetmanMove
 	CALL ro.ResetCarryingRocketElement
 
-	; Show stars after loadin background image.
+	; Show stars after loading the background image.
 	CALL st.ShowStars
 
 	; Switch to flaying animation.
@@ -182,7 +183,7 @@ JetmanMovesDown
 ;----------------------------------------------------------;
 ;                 #MovementInactivity                      ;
 ;----------------------------------------------------------;
-; It gets executed as a last procedure after the input has been processed, and there was no movemet from joystick.
+; It gets executed as a last procedure after the input has been processed, and there was no movement from joystick.
 MovementInactivity
 
 	; Increment inactivity counter.
@@ -193,7 +194,7 @@ MovementInactivity
 	; ##########################################
 	; Should Jetman hover?
 	LD A, (jt.jetAir)
-	CP jt.STATE_INACTIVE						; Is Jemtan in the air?
+	CP jt.STATE_INACTIVE						; Is Jetman in the air?
 	JR Z, .afterHoover							; Jump if not flaying.
 
 	LD A, (jt.jetAir)
@@ -205,23 +206,23 @@ MovementInactivity
 	CP _HOVER_START_D250
 	JR NZ, .afterHoover							; Jetman is not moving, by sill not long enough to start hovering.
 
-	; Jetamn starts to hover!
+	; Jetman starts to hover!
 	LD A, jt.AIR_HOOVER
 	CALL jt.SetJetStateAir
 
 	LD A, js.SDB_HOVER
 	CALL js.ChangeJetSpritePattern
-	RET						; Alerady hovering, do not check standing.
+	RET						; Already hovering, do not check standing.
 .afterHoover
 
 	; ##########################################
 	; Jetman is not hovering, but should he stand?
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE						; Is Jemtan on the ground already?
+	CP jt.STATE_INACTIVE						; Is Jetman on the ground already?
 	RET Z										; Jump if not on the ground.
 
 	LD A, (jt.jetGnd)
-	CP jt.GND_STAND								; Jetman is on the ground, but is he stainding already?
+	CP jt.GND_STAND								; Jetman is on the ground, but is he standing already?
 	RET Z										; Jump if already standing.
 
 	; ##########################################
@@ -287,7 +288,7 @@ NightEnds
 ;                    #NextDayToNight                       ;
 ;----------------------------------------------------------;
 ; The function will be called when a night shifts to a day.
-; Call sequece:
+; Call sequence:
 ; A) NextDayToNight -> NextDayToNight -> .... -> NextDayToNight -> GOTO B)
 ; B) NextNightToDay -> NextNightToDay -> .... -> NextNightToDay -> ChangeToFullDay -> GOTO A)
 NextDayToNight

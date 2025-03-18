@@ -1,40 +1,40 @@
 ;----------------------------------------------------------;
 ;                Joystick and Keyboard input               ;
 ;----------------------------------------------------------;
-	MODULE in
+	MODULE gi
 
 ;----------------------------------------------------------;
-;                         #JoyInput                        ;
+;                     #JoystickInput                       ;
 ;----------------------------------------------------------;
-JoyInput
+JoystickInput
 
-	LD A, ind.MOVE_INACTIVE						; Update #jetState by resetting left/hover and setting right.
-	LD (ind.joyDirection), A
+	LD A, gid.MOVE_INACTIVE						; Update #jetState by resetting left/hover and setting right.
+	LD (gid.joyDirection), A
 
 	; ##########################################	
-	; Key Rright pressed ?
+	; Key right pressed ?
 	LD A, _KB_6_TO_0_HEF						; $EF -> A (6...0).
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
 	PUSH AF										; Keep A on the stack to avoid rereading the same input.
-	BIT 2, A									; Bit 2 reset -> Rright pressed.
+	BIT 2, A									; Bit 2 reset -> right pressed.
 	CALL Z, _JoyRight
 	POP AF
 
 	; ##########################################
-	; Key Up pressed ?
+	; Key up pressed ?
 	PUSH AF
 	BIT 3, A									; Bit 3 reset -> Up pressed.
 	CALL Z, _JoyUp
 	POP AF
 	
 	; ##########################################
-	; Key Down pressed ?
+	; Key down pressed ?
 	BIT 4, A									; Bit 4 reset -> Down pressed.
 	CALL Z, _JoyDown
 
 	; ##########################################
 	; Joystick right pressed ?
-	LD A, _JOY_MASK_H20							; Activete joystick register.
+	LD A, _JOY_MASK_H20							; Activate joystick register.
 	IN A, (_JOY_REG_H1F) 						; Read joystick input into A.
 	PUSH AF										; Keep A on the stack to avoid rereading the same input.
 	BIT 0, A									; Bit 0 set -> Right pressed.
@@ -69,7 +69,7 @@ JoyInput
 
 	; ##########################################
 	; Key Fire (Z) pressed ?
-	LD A, _KB_V_TO_Z_HFE						; $FD -> A (5...1).
+	LD A, _KB_V_TO_SH_HFE						; $FD -> A (5...1).
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
 	BIT 1, A									; Bit 1 reset -> Z pressed.
 	CALL Z, _JoyFire
@@ -86,10 +86,123 @@ JoyInput
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                    #KeyboardInput                        ;
+;----------------------------------------------------------;
+KeyboardInput
+
+	; Handle row T...Q
+	LD A, _KB_T_TO_Q_HFB
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 0, A									; Q
+	CALL Z, _Key_Q
+	POP AF
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 1, A									; W
+	CALL Z, _Key_W
+	POP AF	
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 2, A									; E
+	CALL Z, _Key_E
+	POP AF
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 3, A									; R
+	CALL Z, _Key_R
+	POP AF
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 4, A									; T
+	CALL Z, _Key_T
+	POP AF		
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                        _Key_Q                            ;
+;----------------------------------------------------------;
+_Key_Q
+
+	CALL gc.LoadLevel1
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_W                            ;
+;----------------------------------------------------------;
+_Key_W
+
+	CALL gc.LoadLevel2
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_E                            ;
+;----------------------------------------------------------;
+_Key_E
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_R                            ;
+;----------------------------------------------------------;
+_Key_R
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_T                            ;
+;----------------------------------------------------------;
+_Key_T
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_Y                            ;
+;----------------------------------------------------------;
+_Key_Y
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_U                            ;
+;----------------------------------------------------------;
+_Key_U
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_I                            ;
+;----------------------------------------------------------;
+_Key_I
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_O                            ;
+;----------------------------------------------------------;
+_Key_O
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_P                            ;
+;----------------------------------------------------------;
+_Key_P
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                        _JoyEnd                           ;
@@ -99,13 +212,13 @@ _JoyEnd
 
 	; ##########################################
 	; Down key has been released?
-	LD A, (ind.joyDirection)
-	BIT ind.MOVE_DOWN_BIT, A
+	LD A, (gid.joyDirection)
+	BIT gid.MOVE_DOWN_BIT, A
 	JR NZ, .afterJoyDownRelease					; Jump if down is pressed now.
 
 	; Down is not pressed, now check whether it was pressed during the last loop.
-	LD A, (ind.joyPrevDirection)
-	BIT ind.MOVE_DOWN_BIT, A
+	LD A, (gid.joyPrevDirection)
+	BIT gid.MOVE_DOWN_BIT, A
 	JR Z, .afterJoyDownRelease					; Jump if down was not pressed.
 
 	; Down is not pressed now, but was in previous loop.
@@ -113,8 +226,8 @@ _JoyEnd
 	
 .afterJoyDownRelease
 	; ##########################################
-	LD A, (ind.joyDirection)
-	LD (ind.joyPrevDirection), A
+	LD A, (gid.joyDirection)
+	LD (gid.joyPrevDirection), A
 
 	RET											; ## END of the function ##
 
@@ -123,9 +236,9 @@ _JoyEnd
 ;----------------------------------------------------------;
 _JoyRight
 	; Update temp state.
-	LD A, (ind.joyDirection)
-	SET ind.MOVE_RIGHT_BIT, A	
-	LD (ind.joyDirection), A
+	LD A, (gid.joyDirection)
+	SET gid.MOVE_RIGHT_BIT, A	
+	LD (gid.joyDirection), A
 
 	; ##########################################
 	CALL jm.JoyMoveRight
@@ -138,9 +251,9 @@ _JoyRight
 _JoyLeft
 
 	; Update #joyDirection state.
-	LD A, (ind.joyDirection)
-	SET ind.MOVE_LEFT_BIT, A	
-	LD (ind.joyDirection), A
+	LD A, (gid.joyDirection)
+	SET gid.MOVE_LEFT_BIT, A	
+	LD (gid.joyDirection), A
 
 	; ##########################################
 	CALL jm.JoyMoveLeft
@@ -153,9 +266,9 @@ _JoyLeft
 _JoyUp
 
 	; Update #joyDirection state.
-	LD A, (ind.joyDirection)
-	SET ind.MOVE_UP_BIT, A	
-	LD (ind.joyDirection), A
+	LD A, (gid.joyDirection)
+	SET gid.MOVE_UP_BIT, A	
+	LD (gid.joyDirection), A
 
 	; ##########################################
 	CALL jm.JoyMoveUp
@@ -168,9 +281,9 @@ _JoyUp
 _JoyDown
 
 	; Update #joyDirection state.
-	LD A, (ind.joyDirection)
-	SET ind.MOVE_DOWN_BIT, A	
-	LD (ind.joyDirection), A
+	LD A, (gid.joyDirection)
+	SET gid.MOVE_DOWN_BIT, A	
+	LD (gid.joyDirection), A
 
 	; ##########################################
 	CALL jm.JoyMoveDown

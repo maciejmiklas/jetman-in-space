@@ -4,7 +4,7 @@
 STACK_SIZE				= 100
 
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions.
-	ORG _RAM_SLOT4_START_H8000 + STACK_SIZE		; Stack strats at 8000.
+	ORG _RAM_SLOT4_START_H8000 + STACK_SIZE		; Stack starts at 8000.
 
 start
 	DI											; Disable Interrupts, use wait_for_scanline instead.
@@ -16,7 +16,7 @@ start
 	CALL gc.LoadLevel1
 	CALL gm.GameInit
 
-	;CALL ro.AssemblyRocketForDebug 				; FIXME - remoe it!
+	;CALL ro.AssemblyRocketForDebug
 
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
@@ -30,8 +30,8 @@ mainLoop
 ;----------------------------------------------------------;
 	INCLUDE "_constants.asm"
 
-	INCLUDE "id_input_data.asm"
-	INCLUDE "in_input.asm"
+	INCLUDE "gid_game_input_data.asm"
+	INCLUDE "gi_game_input.asm"
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
 	INCLUDE "ut_util.asm"
@@ -51,7 +51,7 @@ mainLoop
 	INCLUDE "sp_sprite.asm"
 	INCLUDE "jt_jet_state.asm"
 	INCLUDE "jpo_jet_position.asm"
-	INCLUDE "jco_jet_colision.asm"
+	INCLUDE "jco_jet_collision.asm"
 	INCLUDE "js_jet_sprite.asm"
 	INCLUDE "pl_platform.asm"
 	INCLUDE "bg_background.asm"

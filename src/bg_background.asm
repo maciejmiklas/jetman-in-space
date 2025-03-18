@@ -23,7 +23,7 @@ UpdateBackgroundOnJetmanMove
 
 	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0.
 	LD A, _GSC_JET_GND_D217/_GB_MOVE_SLOW_D1
-	SUB B										; A contains _GSC_JET_GND_D217 - #jetY. It's 0 when Jemant stands on the ground.
+	SUB B										; A contains _GSC_JET_GND_D217 - #jetY. It's 0 when Jetman stands on the ground.
 	LD B, A
 	LD (bgOffset), A
 
@@ -59,7 +59,7 @@ HideBackgroundBehindHorizon
 	CP GBL_RET_A_GND
 	RET Z
 
-	INC A										; Move image one pixel down (TODO why is that ncessary?)
+	INC A										; Move image one pixel down (TODO why is that necessary?)
 	LD E, A										; E contains bottom line.
 	CALL bm.HideImageLine
 
@@ -77,7 +77,7 @@ ShowBackgroundAboveHorizon
 	CP GBL_RET_A_GND
 	RET Z
 
-	INC A										; Move image one pixel down (TODO why is that ncessary?)
+	INC A										; Move image one pixel down (TODO why is that necessary?)
 	LD E, A										; E contains bottom line.
 
 	LD C, _BN_BG_L1_ST_BANK_D48

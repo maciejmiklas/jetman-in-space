@@ -96,7 +96,7 @@ spriteDB
 
 sprDBIdx			WORD 0						; Current position in DB.
 sprDBRemain			BYTE 0						; Amount of bytes that have to be still processed from the current record.
-sprDBCurrentID		BYTE SDB_FLY				; Acrtive animation.
+sprDBCurrentID		BYTE SDB_FLY				; Active animation.
 sprDBNextID			BYTE SDB_FLY				; ID in #spriteDB for next animation/DB record.
 sprDBDelay			BYTE 0						; Value from #DELAY.
 sprDBDelayCnt		BYTE 0						; Counter from #sprDBDelay to 0.
@@ -122,10 +122,10 @@ UpdateJetSpritePositionRotation
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X).
 
 	; Set _SPR_REG_ATR2_H37 containing overflow bit from X position, rotation and mirror.
-	LD A, (ind.jetDirection)
+	LD A, (gid.jetDirection)
 	LD D, A
 	XOR A										; Clear A to set only rotation/mirror bits.
-	BIT ind.MOVE_LEFT_BIT, D						; Moving left bit set?
+	BIT gid.MOVE_LEFT_BIT, D						; Moving left bit set?
 	JR Z, .rotateRight
 	SET _SPR_REG_ATR2_MIRX_BIT, A				; Rotate sprite left.
 	JR .afterRotate	

@@ -40,7 +40,7 @@ ShowGameBar
 ;----------------------------------------------------------;
 PrintDebug
 	
-	; Return if gabebar is hidden.
+	; Return if gamebar is hidden.
 	LD A, (gamebarState)
 	CP GB_ST_VISIBLE
 	RET NZ

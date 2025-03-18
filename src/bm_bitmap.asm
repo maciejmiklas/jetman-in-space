@@ -62,13 +62,13 @@ HideImageLine
 	; However, the loop starts at 10 (inclusive) and goes to 0 (exclusive)
 	LD A, _BN_BG_END_BANK_D27 + 1				; 27 + 1 - 10 = 18 -> _BN_BG_END_BANK_D27 + 1 - _BM_BANKS_D10 = _BN_BG_ST_BANK_D18
 	SUB B
-	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify dispalyed image.
+	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify displayed image.
 
 	; Each bank contains lines, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the picture),
 	; we have to start at byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
 	LD HL, _RAM_SLOT7_START_HE000
 	LD D, 0										; E contains the line number, reset only D to use DE for 16-bit math.
-	ADD HL, DE									; HL poits at line that will be replaced.
+	ADD HL, DE									; HL points at line that will be replaced.
 
 	; ##########################################
 	; Iterate over each picture line in the current bank. Each bank has 8*1024/256=32 lines.
@@ -103,13 +103,13 @@ ReplaceImageLine
 
 	; Setup slot 6 with source.
 	LD A, C
-	ADD B										; A points to current bank from the soure image.
+	ADD B										; A points to current bank from the source image.
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Slot 6 contains source of the image.
 	
 	; Setup slot 7 with destination.
 	LD A, _BN_BG_ST_BANK_D18
 	ADD B										; A points to current bank of the source image.
-	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify dispalyed image.
+	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify displayed image.
 
 	; ##########################################
 	; Copy line from source to destination image.  Iterate over each picture line's pixel in current bank. Each bank has 8*1024/256=32 lines.

@@ -5,17 +5,17 @@
 
 TILES_ROW_RESET			= _TI_VTILES_D32-1
 
-; Ingame tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
-tilesRow				BYTE TILES_ROW_RESET	; Current tiles row, runns from _TI_VTILES_D32-1 to 0.
-starsRow				BYTE _TIS_ROWS_D128		; Current start row, runns from from _TIS_ROWS_D128 to 0.
+; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
+tilesRow				BYTE TILES_ROW_RESET	; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
+starsRow				BYTE _TIS_ROWS_D128		; Current start row, runs from from _TIS_ROWS_D128 to 0.
 
-tileOffset				BYTE _SC_RESY1_D255		; Runns from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt			BYTE 0					; Runns from 0 to 7.
+tileOffset				BYTE _SC_RESY1_D255		; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
+tilePixelCnt			BYTE 0					; Runs from 0 to 7.
 
 ;----------------------------------------------------------;
 ;                       #NextStarsRow                      ;
 ;----------------------------------------------------------;
-; This method is called when the ingame tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
+; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#starsRow).
 NextStarsRow
@@ -42,7 +42,7 @@ NextStarsRow
 	LD HL, dbi.starsBin
 	ADD HL, DE									; Move RAM pointer to current row.
 
-	; Load the memory address of ingame tiles into DE. This row will be replaced with stars. DE = _TI_START_H5B00 + tilesRow * _TI_H_BYTES_D8.0
+	; Load the memory address of in-game tiles into DE. This row will be replaced with stars. DE = _TI_START_H5B00 + tilesRow * _TI_H_BYTES_D8.0
 	LD A, (tilesRow)
 	LD D, A
 	LD E, _TI_H_BYTES_D80

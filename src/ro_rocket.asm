@@ -23,7 +23,7 @@ RO_ST_READY				= 100					; Rocket is ready to start and waits only for Jetman.
 RO_ST_FLY				= 101					; The rocket is flying towards an unknown planet.
 RO_ST_EXPLODE			= 102					; Rocket explodes after hitting something.
 
-; The single rocket element or fule tank.
+; The single rocket element or fuel tank.
 ; The X coordinate of the rocket element is stored in two locations: 
 ;  1) #RO.DROP_X: when elements drop for pickup by Jetman,
 ;  2) #rocketAssemblyX when building the rocket
@@ -51,8 +51,8 @@ rocketEl
 
 rocketAssemblyX			BYTE 170
 
-expolodeTankDB 			DB 30, 31, 32, 33		; Sprite IDs for explosion.
-expolodeTankCnt			BYTE 0					; Current position in #expolodeFuel.
+explodeTankDB 			DB 30, 31, 32, 33		; Sprite IDs for explosion.
+explodeTankCnt			BYTE 0					; Current position in #explodeTankDB.
 EXPLODE_TANK_MAX		= 4						; The amount of explosion sprites.
 
 rocketExhaustDB									; Sprite IDs for exhaust
@@ -64,15 +64,15 @@ RO_EXHAUST_MAX			= 18
 rocketDistance			WORD 0					; Increments with every rocket move when the rocket is flying towards the next planet.
 
 rocketDelayDistance		BYTE 0					; Counts from 0 to _RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets).
-rocketFlyDelay			BYTE _RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, decrementss with every skipped rocket move.
-rocketFlyDelayCnt		BYTE _RO_FLY_DELAY_D8	; Counts from _RO_FLY_DELAY_D8 to 0, decrementss when #rocketDelayDistance resets.
+rocketFlyDelay			BYTE _RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
+rocketFlyDelayCnt		BYTE _RO_FLY_DELAY_D8	; Counts from _RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
 
 ; Three explode DBs for three rocket elements.
 rocketExplodeDB1		DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33	; bottom element
 rocketExplodeDB2		DB 56,56,56,56, 30,31,32,31, 30,31,32,31, 32,30,32,31, 30,31,32,33	; middle element
 rocketExplodeDB3		DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,32,33	; top of the rocket
 
-rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusice).
+rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
 
@@ -126,7 +126,7 @@ ResetAndDisableRocket
 
 	XOR A
 	LD (rocketState), A
-	LD (expolodeTankCnt), A
+	LD (explodeTankCnt), A
 	LD (rocketExplodeCnt), A
 	LD (rocketElementCnt), A
 
@@ -198,9 +198,9 @@ HideRocket
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #AdminateRocketExplosion                    ;
+;              #AnimateRocketExplosion                    ;
 ;----------------------------------------------------------;
-AdminateRocketExplosion
+AnimateRocketExplosion
 
 	; Is rocket exploding ?
 	LD A, (rocketState)
@@ -300,24 +300,24 @@ CheckHitTank
 	JR Z, .assembly
 	
 	; Dropping rocket element for pickup.
-	LD DE, (IX + RO.DROP_X)						; X param for #ShotsColision.
+	LD DE, (IX + RO.DROP_X)						; X param for #ShotsCollision.
 	JR .afterAssembly
 .assembly
 	; The rocket is already assembled and waiting for fuel.
-	LD DE, (rocketAssemblyX)					; X param for #ShotsColision.
+	LD DE, (rocketAssemblyX)					; X param for #ShotsCollision.
 .afterAssembly
 
 	LD D, 0										; Reset D, X coordinate for drop is 8 bit.
 
-	LD C,  (IX + RO.Y)							; Y param for #ShotsColision.
-	CALL jw.ShotsColision
+	LD C,  (IX + RO.Y)							; Y param for #ShotsCollision.
+	CALL jw.ShotsCollision
 	CP jw.SHOT_HIT
 	RET NZ
 
 	; ##########################################
 	; The laser beam hits the falling rocket tank!
 	XOR A
-	LD (expolodeTankCnt), A
+	LD (explodeTankCnt), A
 
 	LD A, RO_ST_TANK_EXPLODE
 	LD (rocketState), A
@@ -335,11 +335,11 @@ AnimateTankExplode
 	RET NZ
 
 	; Is explosion over?
-	LD A, (expolodeTankCnt)
+	LD A, (explodeTankCnt)
 	CP EXPLODE_TANK_MAX
 	JR NZ, .keepExploding
 
-	; Exloding is over.
+	; Explosion is over.
 	LD A, RO_ST_WAIT_DROP
 	LD (rocketState), A
 
@@ -354,20 +354,20 @@ AnimateTankExplode
 	LD A, (IX + RO.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
 	
-	; Move #expolodeTankDB by #expolodeTankCnt, so that A points to current explosion frame.
-	LD A, (expolodeTankCnt)
+	; Move #explodeTankDB by #explodeTankCnt, so that A points to current explosion frame.
+	LD A, (explodeTankCnt)
 	LD B, A
-	LD A, (expolodeTankDB)
+	LD A, (explodeTankDB)
 	ADD B
 
 	; Set sprite pattern.
 	OR _SPR_PATTERN_SHOW						; Set show bit.
 	NEXTREG _SPR_REG_ATR3_H38, A
 
-	; Increment #expolodeTankCnt.
-	LD A, (expolodeTankCnt)
+	; Increment #explodeTankCnt.
+	LD A, (explodeTankCnt)
 	INC A
-	LD (expolodeTankCnt), A
+	LD (explodeTankCnt), A
 
 	RET											; ## END of the function ##
 
@@ -389,7 +389,7 @@ AnimateRocketExhaust
 	XOR A										; Reset counter.
 .afterIncrement	
 
-	LD (rocketExhaustCnt), A					; Store current counter (incrementd or reset).
+	LD (rocketExhaustCnt), A					; Store current counter (increment or reset).
 
 	; Set the ID of the sprite for the following commands.
 	LD A, _RO_EXHAUST_SPRID_D43
@@ -464,7 +464,7 @@ FlyRocket
 	ADD A, _RO_FLAME_OFFSET_D16
 	NEXTREG _SPR_REG_Y_H36, A
 
-	CALL js.HideJetSprite						; Keep hiding Jemtan sprite, just in case oter procedure would show it.
+	CALL js.HideJetSprite						; Keep hiding Jetman sprite, just in case other procedure would show it.
 
 	RET											; ## END of the function ##
 
@@ -519,7 +519,7 @@ RocketElementFallsForPickup
 	LD (IX + RO.Y), A
 
 	; Update rocket spirte.
-	LD A, (IX + RO.DROP_X)					; Sprite X coordinate, do not change value - element is falling down.
+	LD A, (IX + RO.DROP_X)						; Sprite X coordinate, do not change value - element is falling down.
 	CALL _UpdateElementPosition
 
 	; Has the horizontal destination been reached?
@@ -567,10 +567,10 @@ AnimateRocketReady
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly
 
-	; Return if there is no assebly.
+	; Return if there is no assembly.
 	LD A, (rocketState)
 	CP RO_ST_FALL_ASSEMBLY
-	RET NZ										; Return if assembky bit is not set
+	RET NZ										; Return if assembly bit is not set
 
 	; ##########################################
 	; Set IX to current #rocket postion.
@@ -751,7 +751,7 @@ _JetmanElementCollision
 	RET
 .checkVertical
 	
-	; We are here because Jemtman's horizontal position matches that of the element, now check vertical.
+	; We are here because Jetman's horizontal position matches that of the element, now check vertical.
 	LD A, (jpo.jetY)								; Y of the Jetman.
 
 	; Subtracts B from A and check whether the result is less than or equal to #_RO_PICK_MARGY_D16.
@@ -825,7 +825,7 @@ _MoveWithJetman
 	; Set sprite X coordinate.
 	LD BC, (jpo.jetX)
 	LD A, C		
-	NEXTREG _SPR_REG_X_H35, A					; Set _SPR_REG_NR_H34 with LDB from Jetmans X postion.
+	NEXTREG _SPR_REG_X_H35, A					; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion.
 	
 	; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
 	LD A, B										; Load MSB from X into A.
@@ -949,7 +949,7 @@ _MoveFlyingRocket
 
 	; Slow down rocket movement speed while taking off. 
 	; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
-	; with a given delay. When the current section ends, the following section begins, but with decrementd delay. During each section, 
+	; with a given delay. When the current section ends, the following section begins, but with decrement delay. During each section, 
 	; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
 
 	; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.

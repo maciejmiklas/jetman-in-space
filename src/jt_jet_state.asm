@@ -5,21 +5,21 @@
 
 STATE_INACTIVE			= 0
 
-; States for Jetmain in the air, 0 for not in the air.
+; States for Jetman in the air, 0 for not in the air.
 AIR_FLY					= 10					; Jetman is flaying.
 AIR_HOOVER				= 11					; Jetman is hovering.
-AIR_FALL_RIGHT			= 12					; Jetman falls from paltform on the right.
-AIR_FALL_LEFT			= 13					; Jetman falls from paltform on the left.
+AIR_FALL_RIGHT			= 12					; Jetman falls from platform on the right.
+AIR_FALL_LEFT			= 13					; Jetman falls from platform on the left.
 AIR_BUMP_RIGHT			= 14					; Jetman bumps into a platform from the right, he faces/moves left.
 AIR_BUMP_LEFT			= 15					; Jetman bumps into a platform from the left, he faces/moves right.
 AIR_BUMP_BOTTOM			= 16					; Jetman bumps into a platform from the bottom.
 AIR_ENEMY_KICK			= 17					; Jetman flies above the enemy and kicks.
 
-jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _JET_RESPOWN_Y_D217)
+jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _JET_RESPAWN_Y_D217)
 
 ; States for Jetman on the platform/ground
 GND_WALK				= 51					; Jetman walks on the ground.
-GND_JSTAND				= 52					; Jetman stands on the ground for a very short time, not enougt to switch to #GND_STAND.
+GND_JSTAND				= 52					; Jetman stands on the ground for a very short time, not enough to switch to #GND_STAND.
 GND_STAND				= 53					; Jetman stands on the ground.
 
 jetGnd					BYTE GND_STAND
@@ -27,7 +27,7 @@ jetGnd					BYTE GND_STAND
 ; Jetman states
 JET_ST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != STATE_INACTIVE) or walking (#jetGnd != STATE_INACTIVE).
 JET_ST_INV				= 102					; Jetman is invincible.
-JET_ST_RIP				= 110					; Jemtan got hit by enemy.
+JET_ST_RIP				= 110					; Jetman got hit by enemy.
 jetState				BYTE JET_ST_NORMAL		; Game start, Jetman in the air.
 
 ;----------------------------------------------------------;
@@ -90,9 +90,9 @@ SetJetStateRip
 	RET											; ## END of the function ##
 	
 ;----------------------------------------------------------;
-;                  #SetJetStateRespown                     ;
+;                  #SetJetStateRespawn                     ;
 ;----------------------------------------------------------;
-SetJetStateRespown
+SetJetStateRespawn
 
 	XOR A
 	LD (jetGnd), A

@@ -9,7 +9,7 @@
 ; - 256 = 8*32 - 32 vertical tiles.
 ; Each tile occupies 2 bytes (tile offset and palette offset): 40*32*2 = 2560 bytes.
 ;
-; Size of a single tile definition (tile sprite): 8x8 pixels, but each has 4 bit pallte: 8*8/2 = 32 bytes.
+; Size of a single tile definition (tile sprite): 8x8 pixels, but each has 4 bit palate: 8*8/2 = 32 bytes.
 ;
 ; Memory organization:
 ; - $4000 - $5AFF - ULA,
@@ -21,7 +21,7 @@
 ;----------------------------------------------------------;
 ShakeTilemap
 
-	LD A, (gld.counter002FliFLop)				; Oscilates beetwen 1 and 0.
+	LD A, (gld.counter002FliFLop)				; Oscillates between 1 and 0.
 	LD D, A
 	LD E, _SC_SHAKE_BY_D2
 	MUL D, E
@@ -50,7 +50,7 @@ ResetTilemapOffset
 ;  - DE:	Pointer to the text.
 ;  - B:		Amount of characters in DE.
 ;  - C: 	Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
-;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first charactes starts in second line.
+;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first character starts in second line.
 PrintText
 
 	LD HL, _TI_START_H5B00						; HL points to screen memory containing tilemap.
@@ -74,7 +74,7 @@ PrintText
 	LD (HL), A									; Set character for tile.
 	INC HL
 
-	DJNZ .loop									; Loop untill B == 0
+	DJNZ .loop									; Loop until B == 0
 
 	RET											; ## END of the function ##
 
@@ -93,10 +93,10 @@ CleanTiles
 	LD (HL), _TX_PALETTE_D0						; Set palette for tile.
 	INC HL
 	
-	LD (HL), A									; Set tile ind.
+	LD (HL), A									; Set tile gid.
 	INC HL	
 
-	DJNZ .loop									; Loop untill B == 0.
+	DJNZ .loop									; Loop until B == 0.
 
 	RET											; ## END of the function ##
 
@@ -107,14 +107,14 @@ LoadTiles
 
 	; Enable tilemap mode.
 	NEXTREG _TI_MAP_CONTROL_H6B, %10000001		; 40x32, 8-pixel tiles = 320x256.
-	NEXTREG _TI_ATTRIBTE_H6C, %00000000			; Palette offset, visuals.
+	NEXTREG _TI_ATTRIBUTE_H6C, %00000000			; Palette offset, visuals.
 
 	; ##########################################
 	; Setup clip window to hide bottom tile row.
 	CALL SetTilesClipFull
 
 	; ##########################################
-	; Tell harware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
+	; Tell hardware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
 	NEXTREG _TI_MAP_ADR_H6E, _TI_OFFSET			; MSB of tilemap in bank 5.
 	NEXTREG _TI_DEF_ADR_H6F, _TID_OFFSET		; MSB of tilemap definitions (sprites).
 
@@ -127,7 +127,7 @@ LoadTiles
 	; ##########################################
 	; Copy tilemap to expected memory.
 	LD DE, _TI_START_H5B00
-	LD HL, dbi.tilemapBin						; Addreess of tilemap in memory.
+	LD HL, dbi.tilemapBin						; Address of tilemap in memory.
 	LD BC, dbi.tilemapBinLength	
 	LDIR
 
@@ -152,10 +152,10 @@ LoadTilemapPalette
 	NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_TRANSPARENT_D0
 
 	; Bits
-	;  - 0: 1 = Enabe ULANext mode,
+	;  - 0: 1 = Enable ULANext mode,
 	;  - 1-3: 0 = First palette,
 	;  - 6-4: 011 = Tilemap first palette,
-	;  - 7: 0 = enable autoincrement on write.
+	;  - 7: 0 = enable auto increment on write.
 	NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
 	NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0			; Start with color index 0.
 
