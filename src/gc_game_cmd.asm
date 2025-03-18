@@ -8,6 +8,7 @@
 ;----------------------------------------------------------;
 LoadLevel1
 
+	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel1Data
 
 	RET											; ## END of the function ##
@@ -17,6 +18,7 @@ LoadLevel1
 ;----------------------------------------------------------;
 LoadLevel2
 
+	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel2Data
 
 	RET											; ## END of the function ##

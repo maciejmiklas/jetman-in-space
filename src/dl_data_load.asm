@@ -19,7 +19,6 @@
 	NEXTREG _MMU_REG_SLOT6_H56, _BN_TILES_BANK1_D42	; Assign bank 42 to slot 6 (see di_data_bin.asm).
 	NEXTREG _MMU_REG_SLOT7_H57, _BN_TILES_BANK2_D43	; Assign bank 43 to slot 7 (see di_data_bin.asm).
 	CALL ti.LoadTiles
-
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

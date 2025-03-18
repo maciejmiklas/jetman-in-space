@@ -37,8 +37,8 @@ ShakeTilemap
 ResetTilemapOffset
 
 	XOR A
-	NEXTREG _DC_REG_TI_X_LSB_H30, A				; X tile offset.
-	NEXTREG _DC_REG_TI_Y_H31, A					; Y tile offset.
+	NEXTREG _DC_REG_TI_X_LSB_H30, A				; X tile offset.roc
+	NEXTREG _DC_REG_TI_Y_H31, A
 
 	RET											; ## END of the function ##
 
@@ -107,7 +107,7 @@ LoadTiles
 
 	; Enable tilemap mode.
 	NEXTREG _TI_MAP_CONTROL_H6B, %10000001		; 40x32, 8-pixel tiles = 320x256.
-	NEXTREG _TI_ATTRIBUTE_H6C, %00000000			; Palette offset, visuals.
+	NEXTREG _TI_ATTRIBUTE_H6C, %00000000		; Palette offset, visuals.
 
 	; ##########################################
 	; Setup clip window to hide bottom tile row.

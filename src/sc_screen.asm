@@ -17,8 +17,6 @@ SetupScreen
 	;  - 0: 1 - sprites visible.
 	NEXTREG _SPR_REG_SETUP_H15, %0'1'0'110'1'1
 
-	NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255	; Reverses scrolling of the tiles, required by tl.NextStarsRow.
-
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
 	
 	NEXTREG _GL_REG_TRANP_COL_H14, _COL_TRANSPARENT_D0 ; Global transparency.

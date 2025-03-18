@@ -16,7 +16,7 @@ start
 	CALL gc.LoadLevel1
 	CALL gm.GameInit
 
-	;CALL ro.AssemblyRocketForDebug
+	CALL ro.AssemblyRocketForDebug
 
 ;----------------------------------------------------------;
 ;                      Game Loop                           ;
