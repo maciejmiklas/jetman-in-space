@@ -311,7 +311,7 @@ MoveStarsDown
 BlinkStarsL1
 
 	CALL _SetupLayer1
-	CALL _BlinkStars
+	CALL _NextStarsColor
 
 	RET											; ## END of the function ##
 
@@ -321,7 +321,7 @@ BlinkStarsL1
 BlinkStarsL2
 
 	CALL _SetupLayer2
-	CALL _BlinkStars
+	CALL _NextStarsColor
 
 	RET											; ## END of the function ##	
 	
@@ -478,15 +478,15 @@ _SetupLayer2
 	LD A, (starsDataL2Size)
 	LD (starsDataSize), A
 
-	LD DE, starsDataL1MaxY
+	LD DE, starsDataL2MaxY
 	LD (starsDataMaxY), DE	
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_BlinkStars                        ;
+;                    #_NextStarsColor                      ;
 ;----------------------------------------------------------;
-_BlinkStars
+_NextStarsColor
 
 	LD HL, (starsData)
 	LD A, (starsDataSize)
@@ -584,7 +584,7 @@ _RenderStars
 _RenderStarColumn
 	
 	; ##########################################
-	; Assing image bank that will be modified to slot 6.
+	; Assign image bank that will be modified to slot 6.
 	LD A, (IX + SC.BANK)
 	LD B, A
 	LD A, _BN_BG_ST_BANK_D18					; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".

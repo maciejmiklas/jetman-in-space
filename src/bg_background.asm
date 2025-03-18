@@ -80,11 +80,9 @@ ShowBackgroundAboveHorizon
 	INC A										; Move image one pixel down (TODO why is that necessary?)
 	LD E, A										; E contains bottom line.
 
-	LD C, _BN_BG_L1_ST_BANK_D48
 	CALL bm.ReplaceImageLine
 
 	RET											; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;

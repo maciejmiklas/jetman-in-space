@@ -48,7 +48,7 @@ LoadImage
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #HideImageLine                         ;
+;                     #HideImageLine                       ;
 ;----------------------------------------------------------;
 ; Replaces line of the image with transparent color.
 ; Input:
@@ -87,11 +87,10 @@ HideImageLine
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #ReplaceImageLine                        ;
+;                   #ReplaceImageLine                      ;
 ;----------------------------------------------------------;
 ; Replaces the line of the displayed layer 2 image with the corresponding line of the given image.
 ; Input:
-;  - C:  The first bank of the source image from which the given line will be taken.
 ;  - E:  Line number.
 ReplaceImageLine
 
@@ -102,7 +101,7 @@ ReplaceImageLine
 	; Setup banks. The source image will be stored in bank 6, destination image in bank 7. We will copy line from 6 to 7.
 
 	; Setup slot 6 with source.
-	LD A, C
+	LD A, (imageBank)
 	ADD B										; A points to current bank from the source image.
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Slot 6 contains source of the image.
 	
