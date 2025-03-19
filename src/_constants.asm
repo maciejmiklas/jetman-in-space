@@ -654,3 +654,8 @@ _TOD_DIR_FULL_DAY		= 3						; It's a full day.
 
 _TOD_STEP_DURATION		= 10					; Duration of a single time of day, except for a full day.
 _TOD_DAY_DURATION		= 50					; Duration of the full day
+
+; ##############################################
+; Structures and Arrays
+_ARR_BANK1_D68			= 68					; First bank for arrays, slot 6
+_ARR_BANK2_D69			= 69					; Second bank for arrays, slot 6

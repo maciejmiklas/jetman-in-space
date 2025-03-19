@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                    Binary Data Loader                    ;
 ;----------------------------------------------------------;
-	module dbi
+	module db
 
 ;----------------------------------------------------------;
 ;                            Temps                         ;
@@ -134,7 +134,11 @@ bgrL2Img
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L2_EN_BANK_D67+1		; Image has 81920 bytes, 10 banks.
-	ASSERT $$bgrL2Img == _BN_BG_L2_ST_BANK_D58
+	ASSERT $$bgrL2Img == _BN_BG_L2_ST_BANK_D58  ; Make sure that we have configured the right bank.
+
+;----------------------------------------------------------;
+;     Data Arrays (Bank 68, 69) - see db_data_bin.asm      ;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

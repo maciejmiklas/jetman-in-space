@@ -67,7 +67,9 @@ mainLoop
 	INCLUDE "st_stars.asm"
 
 	; LAST import due to bank offset!
-	INCLUDE "dbi_data_bin.asm"
+	INCLUDE "db_data_bin.asm"
+	INCLUDE "da_data_arrays.asm"
+	
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;

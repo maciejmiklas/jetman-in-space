@@ -88,7 +88,7 @@ ResetPaletteArrd
 	CALL bp.SetupPaletteBank
 	
 	; Set the palette address to the beginning of the bank holding it.
-	LD DE, dbi.todL2Palettes
+	LD DE, db.todL2Palettes
 	LD (todPalAddr), DE
 
 	RET											; ## END of the function ##
