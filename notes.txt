@@ -1,5 +1,5 @@
 BMP must have 320256 with 8bit palette (Image -> Mode -> Indexed)
-gfx2next -bitmap -pal-std -preview l02_background.bmp
+./gfx2next -bitmap -preview -bitmap-y -pal-min .\l02_background.bmp
 
 
 AI text for title:

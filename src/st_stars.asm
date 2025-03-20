@@ -37,168 +37,16 @@ starsMoveL2Delay		BYTE _ST_L2_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (
 
 randColor				BYTE 0					; Rand value from the previous call.
 
-starsPalL1
-	DW $1FF, $1FF, $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
-
-starsPalL2
-	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
-
 ; Currently rendered palette.
 starsPal				WORD 0
 starsPalSize			BYTE 0
 starsPalOffset			BYTE 0
-
-; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
-starsDataL1MaxY
-	DB 143/*X=002*/, 154/*X=008*/, 159/*X=020*/, 196/*X=037*/, 195/*X=047*/, 195/*X=051*/, 140/*X=068*/, 134/*X=075*/, 106/*X=084*/, 192/*X=097*/
-	DB 049/*X=116*/, 039/*X=124*/, 023/*X=130*/, 019/*X=143*/, 023/*X=151*/, 123/*X=171*/, 062/*X=180*/, 082/*X=197*/, 104/*X=212*/, 187/*X=227*/
-	DB 187/*X=236*/, 187/*X=254*/, 128/*X=264*/, 119/*X=272*/, 102/*X=287*/, 221/*X=308*/, 230/*X=318*/
-
-starsDataL2MaxY
-	DB 153/*X=010*/, 196/*X=042*/, 195/*X=052*/, 142/*X=066*/, 106/*X=082*/, 086/*X=108*/, 082/*X=114*/, 037/*X=129*/, 024/*X=153*/
-	DB 121/*X=175*/, 063/*X=180*/, 080/*X=194*/, 087/*X=202*/, 187/*X=235*/, 123/*X=268*/, 106/*X=281*/, 222/*X=301*/
 	
-starsDataL1Size			BYTE 27						; Number of #SC elements for stars.
-starsDataL1
-	SC {0/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}	; X=2
-	DB 12,1, 15,4, 70,5, 94,15, 160,8, 250,19
-
-	SC {0/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}	; X=8
-	DB 5,3, 38,6, 120,10, 158,4, 245,18
-
-	SC {0/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}	; X=20
-	DB 4,4, 42,8, 133,1, 245,15
-
-	SC {1/*BANK*/, 05/*X_OFFSET*/, 5/*SIZE*/}	; X=37
-	DB 20,3, 80,8, 104,12, 150,9, 255,5
-
-	SC {1/*BANK*/, 15/*X_OFFSET*/, 5/*SIZE*/}	; X=47
-	DB 10,1, 115,4, 130,9, 155,2, 230,15
-
-	SC {1/*BANK*/, 19/*X_OFFSET*/, 6/*SIZE*/}	; X=51
-	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,16
-
-	SC {2/*BANK*/, 04/*X_OFFSET*/, 5/*SIZE*/}	; X=68
-	DB 14,2, 52,4, 113,6, 189,8, 241,16
-
-	SC {2/*BANK*/, 11/*X_OFFSET*/, 4/*SIZE*/}	; X=75
-	DB 21,1, 92,6, 158,9, 221,19
-
-	SC {2/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=84
-	DB 31,5, 93,4, 159,13, 178,8, 248,19
-
-	SC {3/*BANK*/, 01/*X_OFFSET*/, 6/*SIZE*/}	; X=97
-	DB 26,3, 45,8, 125,4, 138,11, 160,9, 193,12
-
-	SC {3/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=116
-	DB 10,4, 104,5, 145,6, 190,8, 249,12
-
-	SC {3/*BANK*/, 28/*X_OFFSET*/, 4/*SIZE*/}	; X=124
-	DB 86,11, 123,7, 158,1, 233,19
-
-	SC {4/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}	; X=130
-	DB 21,19, 55,11, 80,8, 144,3, 148,13, 243,2
-
-	SC {4/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}	; X=143
-	DB 47,13, 77,2, 93,18, 139,1, 188,5, 233,7
-
-	SC {4/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}	; X=151
-	DB 5,3, 84,5, 98,9, 142,12, 168,11, 201,10
-
-	SC {5/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}	; X=171
-	DB 38,1, 78,5, 132,9, 149,12, 231,11
-
-	SC {5/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=180
-	DB 24,2, 44,9, 126,3, 160,7, 243,17
-
-	SC {6/*BANK*/, 05/*X_OFFSET*/, 3/*SIZE*/}	; X=197
-	DB 64,11, 116,3, 174,15
-
-	SC {6/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=212
-	DB 13,15, 44,3, 100,5, 143,7, 199,2
-
-	SC {7/*BANK*/, 03/*X_OFFSET*/, 5/*SIZE*/}	; X=227
-	DB 55,2, 98,3, 120,7, 187,11, 255,19
-
-	SC {7/*BANK*/, 12/*X_OFFSET*/, 4/*SIZE*/}	; X=236
-	DB 11,14, 82,16, 148,11, 213,9
-
-	SC {7/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}	; X=254
-	DB 44,1, 113,12, 192,15, 253,12
-
-	SC {8/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}	; X=264
-	DB 4,3, 39,1, 88,13, 133,2, 152,15
-
-	SC {8/*BANK*/, 16/*X_OFFSET*/, 3/*SIZE*/}	; X=272
-	DB 3,1, 142,4, 241,9
-
-	SC {8/*BANK*/, 31/*X_OFFSET*/, 4/*SIZE*/}	; X=287
-	DB 30,12, 103,3, 150,8, 189,2
-
-	SC {9/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}	; X=308
-	DB 5,4, 36,11, 120,14, 211,2
-
-	SC {9/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}	; X=318
-	DB 5,3, 102,6, 142,9, 240,12
-
-starsDataL2Size			BYTE 17						; Number of #SC elements for stars.
-starsDataL2
-
-	SC {0/*BANK*/, 10/*X_OFFSET*/, 4/*SIZE*/}	; X=10
-	DB 4,4, 42,8, 133,1, 245,9
-
-	SC {1/*BANK*/, 10/*X_OFFSET*/, 6/*SIZE*/}	; X=42
-	DB 26,3, 45,8, 125,4, 138,3, 160,9, 193,2
-
-	SC {1/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=52
-	DB 14,2, 52,4, 113,6, 189,8, 241,1
-
-	SC {2/*BANK*/, 02/*X_OFFSET*/, 5/*SIZE*/}	; X=66
-	DB 10,1, 115,4, 130,9, 155,2, 230,4
-
-	SC {2/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}	; X=82
-	DB 38,1, 78,5, 132,9, 149,2, 231,5
-
-	SC {3/*BANK*/, 12/*X_OFFSET*/, 5/*SIZE*/}	; X=108
-	DB 5,3, 38,6, 120,9, 158,4, 245,1
-
-	SC {3/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}	; X=114
-	DB 31,5, 93,4, 159,1, 178,8, 248,4
-
-	SC {4/*BANK*/, 1/*X_OFFSET*/, 5/*SIZE*/}	; X=129
-	DB 10,4, 104,5, 145,6, 190,8, 249,3
-
-	SC {4/*BANK*/, 25/*X_OFFSET*/, 4/*SIZE*/}	; X=153
-	DB 21,1, 92,6, 158,9, 221,6
-
-	SC {5/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}	; X=175
-	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,7
-
-	SC {5/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=180
-	DB 24,2, 44,9, 126,3, 160,7, 243,9
-
-	SC {6/*BANK*/, 04/*X_OFFSET*/, 6/*SIZE*/}	; X=194
-	DB 12,1, 15,4, 70,5, 94,3, 160,8, 250,2
-
-	SC {6/*BANK*/, 10/*X_OFFSET*/, 4/*SIZE*/}	; X=202
-	DB 86,3, 123,7, 158,1, 233,9
-
-	SC {7/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}	; X=235
-	DB 20,3, 80,8, 104,2, 150,9, 255,5
-
-	SC {8/*BANK*/, 12/*X_OFFSET*/, 6/*SIZE*/}	; X=268
-	DB 21,3, 55,4, 80,8, 144,5, 148,8, 243,6
-
-	SC {8/*BANK*/, 25/*X_OFFSET*/, 6/*SIZE*/}	; X=281
-	DB 47,3, 77,2, 93,5, 139,7, 188,4, 233,1
-
-	SC {9/*BANK*/, 13/*X_OFFSET*/, 6/*SIZE*/}	; X=301
-	DB 5,3, 84,5, 98,9, 142,1, 168,4, 201,5
 
 ; Currently rendered stars.
 starsDataSize			BYTE 27
-starsData				WORD 0
-starsDataMaxY			WORD 0
+starsData				WORD 0				; Before using: CALL ut.SetupDataArraysBank
+starsDataMaxY			WORD 0				; Before using: CALL ut.SetupDataArraysBank
 
 ;----------------------------------------------------------;
 ;                   #LoadStarsPalette                      ;
@@ -215,14 +63,16 @@ LoadStarsPalette
 	
 	; ##########################################
 	; Load colors for the stars on layer 1.
-	LD HL, starsPalL1
+	CALL ut.SetupStarDataBank
+	LD HL, sd.starsPalL1
 	LD A, _ST_PAL_L1_SIZE
 	LD B, A
 	CALL bp.WriteColors
 
 	; ##########################################
 	; Load colors for the stars on layer 2.
-	LD HL, starsPalL2
+	CALL ut.SetupStarDataBank
+	LD HL, sd.starsPalL2
 	LD A, _ST_PAL_L2_SIZE
 	LD B, A
 	CALL bp.WriteColors
@@ -431,7 +281,7 @@ _MoveStarsL2Up
 _SetupLayer1
 
 	; Palette
-	LD DE, starsPalL1
+	LD DE, sd.starsPalL1
 	LD (starsPal), DE
 
 	LD A, _ST_PAL_L1_SIZE
@@ -443,13 +293,13 @@ _SetupLayer1
 
 	; ##########################################
 	; Data
-	LD DE, starsDataL1
+	LD DE, sd.starsDataL1
 	LD (starsData), DE
 
-	LD A, (starsDataL1Size)
+	LD A, _ST_L1_SIZE
 	LD (starsDataSize), A
 
-	LD DE, starsDataL1MaxY
+	LD DE, sd.starsDataL1MaxY
 	LD (starsDataMaxY), DE
 
 	RET											; ## END of the function ##
@@ -460,7 +310,7 @@ _SetupLayer1
 _SetupLayer2
 
 	; Palette
-	LD DE, starsPalL2
+	LD DE, sd.starsPalL2
 	LD (starsPal), DE
 	
 	LD A, _ST_PAL_L2_SIZE
@@ -472,13 +322,12 @@ _SetupLayer2
 
 	; ##########################################
 	; Data
-	LD DE, starsDataL2
+	LD DE, sd.starsDataL2
 	LD (starsData), DE
-
-	LD A, (starsDataL2Size)
+	LD A, _ST_L2_SIZE
 	LD (starsDataSize), A
 
-	LD DE, starsDataL2MaxY
+	LD DE, sd.starsDataL2MaxY
 	LD (starsDataMaxY), DE	
 
 	RET											; ## END of the function ##
@@ -488,6 +337,7 @@ _SetupLayer2
 ;----------------------------------------------------------;
 _NextStarsColor
 
+	CALL ut.SetupStarDataBank
 	LD HL, (starsData)
 	LD A, (starsDataSize)
 	LD B, A
@@ -550,6 +400,7 @@ _NextStarsColor
 ;----------------------------------------------------------;
 _RenderStars
 
+	CALL ut.SetupStarDataBank
 	LD A, (starsDataSize)
 	LD B, A
 	LD HL, (starsData)

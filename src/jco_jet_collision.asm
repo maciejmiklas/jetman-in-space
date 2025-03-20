@@ -3,7 +3,6 @@
 ;----------------------------------------------------------;
 	MODULE jco
 
-
 RIP_MOVE_LEFT			= 0
 RIP_MOVE_RIGHT			= 1
 ripMoveState			BYTE 0					; 1 - move right, 0 - move left
@@ -22,8 +21,9 @@ invincibleCnt			WORD 0					; Makes Jetman invincible when > 0.
 ;----------------------------------------------------------;
 JetmanEnemiesCollision
 
-	LD IX, ed.sprite01
-	LD A, (ed.spritesSize)
+	CALL ut.SetupSpriteDataBank
+	LD IX, spd.sprite01
+	LD A, (spd.spritesSize)
 	LD B, A
 	CALL _EnemiesCollision
 

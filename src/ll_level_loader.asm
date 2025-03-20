@@ -4,11 +4,10 @@
 	MODULE ll
 
 ;----------------------------------------------------------;
-;                  #LoadLevel1Data                         ;
+;                    #LoadLevel1Data                       ;
 ;----------------------------------------------------------;
 LoadLevel1Data
 
-	; ##########################################
 	; Load palettes
 
 	; Load palette size into a global variable.
@@ -35,7 +34,6 @@ LoadLevel1Data
 ;----------------------------------------------------------;
 LoadLevel2Data
 
-	; ##########################################
 	; Load palettes
 
 	; Load palette size into a global variable.

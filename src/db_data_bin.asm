@@ -103,18 +103,19 @@ bgrL2PaletteBytes = $ - bgrL2PaletteAdr
 ;----------------------------------------------------------;
 ;          Layer 2 Brightness Palettes (Bank 47)           ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT7, _BN_PAL2_BR_BANK_D47
-	ORG _RAM_SLOT7_START_HE000
-
-todL2Palettes
+todL2Palettes									; Pallete will be generated during runtime.
 
 ;----------------------------------------------------------;
 ;        Game Background for Level 1 (Bank 48...57)        ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB). Slot 7 has an address range of $E000..$FFFF. It can hold 8KiB and also fits into one bank.
 ; The "n" option will ensure that INCBIN loads the 80KiB into 10 banks, each with an address range of slot 7. It will load the first 8KiB 
-; into the first bank. Once it has reached $FFFF, it will switch to the following bank, set the address to $E000, 
+; into the first bank. Once it has reached $FFFF, it will switch to the following bank, set the address to $E000,
 ; and load the next 8KiB chunk, repeating the whole process.
+;
+; BMP 320x256 with 8bit palette (Image -> Mode -> Indexed)
+; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\l02_background.bmp
+
 	MMU _RAM_SLOT6 n, _BN_BG_L1_ST_BANK_D48
 	ORG _RAM_SLOT6_START_HC000
 bgrL1Img	
@@ -137,7 +138,11 @@ bgrL2Img
 	ASSERT $$bgrL2Img == _BN_BG_L2_ST_BANK_D58  ; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
-;     Data Arrays (Bank 68, 69) - see db_data_bin.asm      ;
+;         Star Data (Bank 68) - st_star_data.asm           ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;         Enemy Data (Bank 69) - ed_enemy_data.asm         ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;

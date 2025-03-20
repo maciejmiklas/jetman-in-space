@@ -1,7 +1,15 @@
 ;----------------------------------------------------------;
-;                         Enemies                          ;
+;                       Sprite Data                        ;
 ;----------------------------------------------------------;
-	MODULE ed
+	MODULE spd
+
+;----------------------------------------------------------;
+;                       Enemy Data                         ;
+;----------------------------------------------------------;
+; Before using it call #SetupSpriteDataBank
+	MMU _RAM_SLOT7, _EN_BANK_D69
+	ORG _RAM_SLOT7_START_HE000
+enemiesBankStart
 
 ; Horizontal movemment
 movePattern01
@@ -125,7 +133,7 @@ sprite13
 sprite14
 	sr.SPR {33/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx14/*EXT_DATA_POINTER*/}
 sprite15
-	sr.SPR {34/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx15/*EXT_DATA_POINTER*/}				
+	sr.SPR {34/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx15/*EXT_DATA_POINTER*/}
 
 ; Formation sprites used by formation enemies (#spriteExEfXX)
 spriteEf01
@@ -141,12 +149,116 @@ spriteEf05
 spriteEf06
 	sr.SPR {40/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf06/*EXT_DATA_POINTER*/}
 spriteEf07
-	sr.SPR {41/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}	
+	sr.SPR {41/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}
 
 spritesSize					BYTE 15+7			; The total amount of visible sprites - including single enemies (15) and formation (7)
 singleSpritesSize			BYTE 15				; Amount of sprites that can respawn as a single enemy
 
 formation ef.EF{spriteEf01/*SPRITE_POINTER*/, 200/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 7/*SPRITES*/, 0/*SPRITES_CNT*/}
+
+;----------------------------------------------------------;
+;                 Jetman Sprite Data                       ;
+;----------------------------------------------------------;
+
+; The animation system is based on a state machine. Its database is divided into records, each containing a list of frames to be played and 
+; a reference to the next record that will be played once all frames from the current record have been executed.
+; DB Record:
+;    [ID], [OFF_NX], [SIZE], [DELAY], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]] 
+; where:
+;	- ID: 			Entry ID for lookup via CPIR.
+;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
+;	- SIZE:			Amount of bytes in this record.
+;	- DELAY:		Amount animation calls to skip (slows down animation).
+;	- FRAME_UP:		Offset for the upper part of the Jetman.
+;	- FRAME_LW: 	Offset for the lower part of the Jetman.
+jetSpriteDB
+	; Jetman is flaying.
+	DB js.SDB_FLY,		js.SDB_FLY - js.SDB_SUB,		48, 5
+											DB 00,10, 00,11, 01,12, 01,13, 02,11, 02,12, 03,10, 03,11, 04,12, 04,13
+											DB 05,12, 05,11, 03,10, 03,11, 04,12, 04,13, 05,10, 05,12, 03,10, 03,11
+											DB 04,12, 04,13, 05,12, 05,10
+
+	; Jetman is flaying down.
+	DB js.SDB_FLYD, 	js.SDB_FLYD - js.SDB_SUB,		48, 5
+											DB 00,12, 00,37, 01,38, 01,37, 02,12, 02,38, 03,12, 03,37, 04,38, 04,12
+											DB 05,38, 05,37, 03,37, 03,12, 04,38, 04,12, 05,37, 05,38, 03,37, 03,12
+											DB 04,12, 04,37, 05,38, 05,37
+
+	; Jetman hovers.
+	DB js.SDB_HOVER, 	js.SDB_HOVER - js.SDB_SUB,		48, 10
+											DB 00,14, 00,15, 01,16, 01,10, 02,11, 02,12, 03,13, 03,10, 04,11, 04,12 
+											DB 05,13, 05,14, 03,15, 03,16, 04,10, 04,11, 05,12, 05,13, 03,10, 03,11
+											DB 04,12, 04,13, 05,10, 05,11
+
+	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
+	DB js.SDB_WALK_ST,	js.SDB_WALK	- js.SDB_SUB,		02, 3
+											DB 03,07
+
+	; Jetman is walking.
+	DB js.SDB_WALK, 	js.SDB_WALK - js.SDB_SUB,		48, 3
+											DB 03,06, 03,07, 04,08, 04,09, 05,06, 05,06, 03,08, 03,09, 04,06, 04,07
+											DB 05,08, 05,09, 00,06, 00,07, 01,08, 01,09, 02,06, 02,07, 03,08, 03,09 
+											DB 04,06, 04,07, 05,08, 05,09
+
+	; Jetman stands in place.
+	DB js.SDB_STAND,	js.SDB_STAND - js.SDB_SUB,		46, 5
+											DB 03,17, 03,18, 04,19, 04,18, 05,17, 05,19, 03,17, 03,18, 04,19, 04,17
+											DB 05,19, 05,18, 00,19, 00,18, 01,17, 01,18, 02,17, 02,19, 03,18, 03,18
+											DB 04,19, 05,17, 05,18
+
+	; Jetman stands on the ground for a very short time.
+	DB js.SDB_JSTAND,	js.SDB_STAND - js.SDB_SUB, 		02, 3
+											DB 03,11
+
+	; Jetman got hit.
+	DB js.SDB_RIP,		js.SDB_RIP - js.SDB_SUB,		08, 5 
+											DB 00,27, 01,28, 02,15, 03,29
+
+	; Transition: walking -> flaying.
+	DB js.SDB_T_WF,		js.SDB_FLY - js.SDB_SUB, 		08, 5
+											DB 03,26, 04,25, 05,24, 03,23
+
+	; Transition: flaying -> standing.
+	DB js.SDB_T_FS, 	js.SDB_STAND - js.SDB_SUB,		08, 5
+											DB 03,23, 04,24, 05,25, 03,26
+
+	; Transition: flaying -> walking.
+	DB js.SDB_T_FW, 	js.SDB_WALK - js.SDB_SUB,		08, 5
+											DB 03,23, 04,24, 05,25, 03,26
+
+	; Transition: kinking -> flying.
+	DB js.SDB_T_KF,		js.SDB_FLY - js.SDB_SUB, 		10, 5
+											DB 03,15, 04,16, 05,27, 03,28, 04,29
+
+;----------------------------------------------------------;
+;                 Rocket Sprite Data                       ;
+;----------------------------------------------------------;
+
+rocketEl
+; rocket element
+	ro.RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _RO_DOWN_SPR_ID_D50/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}	; bottom element
+	ro.RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/,  56/*SPRITE_REF*/, 0/*Y*/}	; middle element
+	ro.RO {140/*DROP_X*/, 227/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/,  52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
+; fuel tank
+	ro.RO {030/*DROP_X*/, 099/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {070/*DROP_X*/, 227/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {250/*DROP_X*/, 227/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	
+; Three explode DBs for three rocket elements.
+rocketExplodeDB1		DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33	; bottom element
+rocketExplodeDB2		DB 56,56,56,56, 30,31,32,31, 30,31,32,31, 32,30,32,31, 30,31,32,33	; middle element
+rocketExplodeDB3		DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,32,33	; top of the rocket
+
+rocketExhaustDB									; Sprite IDs for exhaust
+	DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
+
+rocketExplodeTankDB		DB 30, 31, 32, 33		; Sprite IDs for explosion.
+
+;----------------------------------------------------------;
+;                     Final Checks                         ;
+;----------------------------------------------------------;
+	ASSERT $$ == _EN_BANK_D69					; Data shold remain in the same bank
+	ASSERT $$enemiesBankStart == _EN_BANK_D69 	; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

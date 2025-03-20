@@ -11,7 +11,7 @@ GameLoop
 	CALL _GameLoop000
 	CALL _GameLoop002
 	CALL _GameLoop002
-	CALL _GameLoop004	
+	CALL _GameLoop004
 	CALL _GameLoop006
 	CALL _GameLoop008
 	CALL _GameLoop010
@@ -54,8 +54,9 @@ _GameLoop000
 	CALL _GameLoop000OnActiveJetman
 	
 	; ##########################################
-	LD IX, ed.sprite01
-	LD A, (ed.spritesSize)
+	CALL ut.SetupSpriteDataBank
+	LD IX, spd.sprite01
+	LD A, (spd.spritesSize)
 	LD B, A 	
 	CALL ep.MoveEnemies
 
@@ -82,14 +83,15 @@ _GameLoop000OnActiveJetman
 	CALL jco.JetmanEnemiesCollision
 
 	; ##########################################
-	LD IX, ed.sprite01
-	LD A, (ed.singleSpritesSize)
+	CALL ut.SetupSpriteDataBank
+	LD IX, spd.sprite01
+	LD A, (spd.singleSpritesSize)
 	LD B, A	
-	;CALL ep.RespawnNextEnemy
+	CALL ep.RespawnNextEnemy
 	
 	; ##########################################
-	LD IY, ed.formation
-	;CALL ef.RespawnFormation	
+	LD IY, spd.formation
+	CALL ef.RespawnFormation	
 
 	RET											; ## END of the function ##
 
@@ -252,8 +254,9 @@ _GameLoop008
 	CALL jw.AnimateShots
 	
 	; Animate enemies
-	LD IX, ed.sprite01	
-	LD A, (ed.spritesSize)
+	CALL ut.SetupSpriteDataBank
+	LD IX, spd.sprite01	
+	LD A, (spd.spritesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
 
@@ -307,16 +310,18 @@ _GameLoop010nFlyingRocket
 	JR Z, .flip
 
 	; ##########################################
-	LD IX, ed.sprite01
-	LD A, (ed.singleSpritesSize)
+	CALL ut.SetupSpriteDataBank
+	LD IX, spd.sprite01
+	LD A, (spd.singleSpritesSize)
 	LD B, A
 	CALL sr.KillOneSprite
 
 	JR .afterFilpFlop
 .flip
 	; ##########################################
-	LD IX, ed.spriteEf01
-	LD A, (ed.formation.SPRITES)
+	CALL ut.SetupSpriteDataBank
+	LD IX, spd.spriteEf01
+	LD A, (spd.formation.SPRITES)
 	LD B, A
 	CALL sr.KillOneSprite
 

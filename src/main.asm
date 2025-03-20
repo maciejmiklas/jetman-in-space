@@ -58,7 +58,6 @@ mainLoop
 	INCLUDE "jm_jet_move.asm"
 	INCLUDE "ep_enemy_pattern.asm"
 	INCLUDE "ef_enemy_formation.asm"
-	INCLUDE "ed_data_enemy.asm"
 	INCLUDE "jw_jet_weapon.asm"
 	INCLUDE "ro_rocket.asm"
 	INCLUDE "ros_rocket_stars.asm"
@@ -68,7 +67,8 @@ mainLoop
 
 	; LAST import due to bank offset!
 	INCLUDE "db_data_bin.asm"
-	INCLUDE "da_data_arrays.asm"
+	INCLUDE "sd_star_data.asm"
+	INCLUDE "spd_sprite_data.asm"
 	
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;

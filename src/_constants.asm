@@ -402,12 +402,12 @@ _ENP_MARG_VERT_LOW_D15	= 15
 _ENP_MARG_VERT_KICK_D25	= 25
 
 ; ##############################################
-; Jetman invincibility .
+; Jetman invincibility.
 _INVINCIBLE_D400 		= 400					; Number of loops to keep Jetman invincible.
 _INVINCIBLE_BLINK_D100	= 100
 
 ; ##############################################
-; Start times to change animations
+; Start times to change animations.
 _HOVER_START_D250		= 250
 _STAND_START_D30		= 30
 _JSTAND_START_D100		= 100
@@ -467,7 +467,7 @@ _GSC_Y_MAX_D232			= 232
 _GSC_JET_GND_D217		= 217					; Ground level from Jetman's sprite perspective.
 
 ; ##############################################
-; Screen 
+; Screen.
 _SC_SYNC_SL_D192		= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
 _SC_SHAKE_BY_D2			= 2						; Number of pixels to move the screen by shaking.
 
@@ -483,7 +483,11 @@ _SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17.
 _PL_HIT_MARGIN_D5		= 5	
 
 ; ##############################################
-; Tilemap
+; Enemies.
+_EN_BANK_D69			= 69					; Bank for enemies, slot 6
+
+; ##############################################
+; Tilemap.
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3. 
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
 _TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
@@ -518,7 +522,7 @@ _TI_CLIP_FULLY2_D255	= _SC_RESY1_D255
 _TI_CLIP_ROCKETY2_D247	= _SC_RESY1_D255 - _TI_PIXELS_D8
 
 ; ##############################################
-; Tile definition (sprite file)
+; Tile definition (sprite file).
 _TID_START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite file).
 	ASSERT _TID_START_H6500 >= _RAM_SLOT2_START_H4000
 	ASSERT _TID_START_H6500 <= _RAM_SLOT3_END_H7FFF
@@ -527,33 +531,32 @@ _TID_START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (spr
 _TID_OFFSET	= (_TID_START_H6500 - _RAM_SLOT2_START_H4000) >> 8
 
 ; ##############################################
-; Tile stars map
-
+; Tile stars map.
 _TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=40*32*4*2 bytes, 3 screens.
 _TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
 _ITS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.
 
 ; ##############################################
-; Text
+; Text.
 _TX_ASCII_OFFSET_D34	= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
 _TX_PALETTE_D0			= 0						; Palette byte for tile characters.
 
 ; ##############################################
-; Game Bar
+; Game Bar.
 _C_GB_TILES_D13			= 320 / 8 * 3
 
 ; ##############################################
-; Jet RiP
+; Jet RiP.
 _RIP_MOVE_R_D3			= 3
 _RIP_MOVE_L_D3			= 3
 _RIP_MOVE_Y_D4			= 4
 
 ; ##############################################
-; Util
+; Util.
 _UT_PAUSE_TIME_D10		= 10
 
 ; ##############################################
-; Bitmap Manipulation
+; Bitmap Manipulation.
 _BM_16KBANK_D9			= 9						; 16K bank 9 = 8k bank 18.
 
 _BM_XRES_D320			= 320
@@ -588,7 +591,7 @@ _GB_MOVE_SLOW_D1		= 1
 _GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
 
 ; ##############################################
-; In game stars
+; In game stars.
 
 _ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
 
@@ -600,8 +603,12 @@ _ST_PAL_TRANSP_D0		= 0						; Index of transparent color.
 _ST_PAL_L1_SIZE			= 25					; Number of colors for stars on layer 1.
 _ST_PAL_L2_SIZE			= 10					; Number of colors for stars on layer 2.
 
+_ST_L1_SIZE				= 27					; Number stars on layer 1.
+_ST_L2_SIZE				= 17					; Number stars on layer 2.
+_ST_BANK_D68			= 68					; Bank for stars, slot 6
+
 ; ##############################################
-; Binary Data Loader
+; Binary Data Loader.
 _BN_SPRITE_BYT_D16384	= 16384
 _BN_SPRITE_BANK1_D40	= 40					; Sprites on bank 40, 41.
 _BN_SPRITE_BANK2_D41	= 41
@@ -634,12 +641,12 @@ _BN_BG_L2_EN_BANK_D67	= _BN_BG_L2_ST_BANK_D58+_BM_BANKS_D10-1
 	ASSERT _BN_BG_L2_EN_BANK_D67 == 67
 
 ; ##############################################
-; Respawn location
+; Respawn location.
 _JET_RESPAWN_X_D100		= 100
 _JET_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 ; ##############################################
-; Game Counters
+; Game Counters.
 _GC_FLIP_ON_D1			= 1
 _GC_FLIP_OFF_D0			= 0
 
@@ -652,10 +659,5 @@ _TOD_DIR_DAY_NIGHT		= 1						; Environment changes from day to night.
 _TOD_DIR_NIGHT_DAY		= 2						; Environment changes from night to day.
 _TOD_DIR_FULL_DAY		= 3						; It's a full day.
 
-_TOD_STEP_DURATION		= 10					; Duration of a single time of day, except for a full day.
-_TOD_DAY_DURATION		= 50					; Duration of the full day
-
-; ##############################################
-; Structures and Arrays
-_ARR_BANK1_D68			= 68					; First bank for arrays, slot 6
-_ARR_BANK2_D69			= 69					; Second bank for arrays, slot 6
+_TOD_STEP_DURATION		= 20					; Duration of a single time of day, except for a full day.
+_TOD_DAY_DURATION		= 10					; Duration of the full day

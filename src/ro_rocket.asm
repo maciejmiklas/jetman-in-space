@@ -39,24 +39,10 @@ SPRITE_REF				BYTE					; Sprite pattern number from the sprite file.
 Y						BYTE					; Current Y position.
 	ENDS
 
-rocketEl
-; rocket element
-	RO {050/*DROP_X*/, 100/*DROP_LAND_Y*/, 227/*ASSEMBLY_Y*/, _RO_DOWN_SPR_ID_D50/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}	; bottom element
-	RO {072/*DROP_X*/, 227/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/, 	56/*SPRITE_REF*/, 0/*Y*/}	; middle element
-	RO {140/*DROP_X*/, 227/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/, 	52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
-; fuel tank
-	RO {030/*DROP_X*/, 099/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	RO {070/*DROP_X*/, 227/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	RO {250/*DROP_X*/, 227/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-
 rocketAssemblyX			BYTE 170
 
-explodeTankDB 			DB 30, 31, 32, 33		; Sprite IDs for explosion.
-explodeTankCnt			BYTE 0					; Current position in #explodeTankDB.
+explodeTankCnt			BYTE 0					; Current position in #rocketExplodeTankDB.
 EXPLODE_TANK_MAX		= 4						; The amount of explosion sprites.
-
-rocketExhaustDB									; Sprite IDs for exhaust
-	DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
 
 rocketExhaustCnt		BYTE 0					; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
 RO_EXHAUST_MAX			= 18
@@ -67,14 +53,8 @@ rocketDelayDistance		BYTE 0					; Counts from 0 to _RO_FLY_DELAY_DIST_D5, increm
 rocketFlyDelay			BYTE _RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
 rocketFlyDelayCnt		BYTE _RO_FLY_DELAY_D8	; Counts from _RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
 
-; Three explode DBs for three rocket elements.
-rocketExplodeDB1		DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33	; bottom element
-rocketExplodeDB2		DB 56,56,56,56, 30,31,32,31, 30,31,32,31, 32,30,32,31, 30,31,32,33	; middle element
-rocketExplodeDB3		DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,32,33	; top of the rocket
-
 rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeDB[1-3].
-
 
 ;----------------------------------------------------------;
 ;               #AssemblyRocketForDebug                    ;
@@ -354,10 +334,10 @@ AnimateTankExplode
 	LD A, (IX + RO.SPRITE_ID)
 	NEXTREG _SPR_REG_NR_H34, A
 	
-	; Move #explodeTankDB by #explodeTankCnt, so that A points to current explosion frame.
+	; Move #rocketExplodeTankDB by #explodeTankCnt, so that A points to current explosion frame.
 	LD A, (explodeTankCnt)
 	LD B, A
-	LD A, (explodeTankDB)
+	LD A, (rocketExplodeTankDB)
 	ADD B
 
 	; Set sprite pattern.
