@@ -28,7 +28,7 @@
 ;   - 42-44: fire	
 ;   - 45-47: Flying enemy 1
 ;   - 48-50: Flying enemy 2
-spritesBin INCBIN "assets/l01_sprites.spr", 0, _BN_SPRITE_BYT_D16384
+spritesBin INCBIN "assets/sprites.spr", 0, _BN_SPRITE_BYT_D16384
 spritesBinLength = $ - spritesBin
 	ASSERT $$ == _BN_SPRITE_BANK2_D41
 counter002FliFLop

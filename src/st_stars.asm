@@ -205,7 +205,7 @@ starsDataMaxY			WORD 0
 ;----------------------------------------------------------;
 LoadStarsPalette
 
-	; Do not load the stars palette if the image has too many colors and no more free space.
+	; Do not load the stars palette if the layer 2 image has too many colors and no more free space in the palette.
 	; Add an amount of colors in the image to the colors required by the stars, and return if the carry flag is set.
 	LD A, _ST_PAL_L1_SIZE + _ST_PAL_L2_SIZE
 	LD B, A
