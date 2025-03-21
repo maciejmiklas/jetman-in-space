@@ -3,13 +3,14 @@
 ;----------------------------------------------------------;
 	MODULE spd
 
+; Before using it call #SetupSpriteDataBank
+	MMU _RAM_SLOT7, _EN_BANK_D149
+	ORG _RAM_SLOT7_START_HE000
+spritesBankStart
+
 ;----------------------------------------------------------;
 ;                       Enemy Data                         ;
 ;----------------------------------------------------------;
-; Before using it call #SetupSpriteDataBank
-	MMU _RAM_SLOT7, _EN_BANK_D69
-	ORG _RAM_SLOT7_START_HE000
-enemiesBankStart
 
 ; Horizontal movemment
 movePattern01
@@ -87,7 +88,7 @@ spriteEx14
 spriteEx15
 	ep.ENP {%000000'0'0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 020/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 220/*RESPAWN_Y*/, movePattern02/*MOVE_PAT_POINTER*/, ep.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 
-; Enemies reserved for formation
+; Enemies reserved for enemyFormation
 spriteExEf01
 	ep.ENP {%000000'1'0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 000/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 200/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, ep.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteExEf02
@@ -135,7 +136,7 @@ sprite14
 sprite15
 	sr.SPR {34/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx15/*EXT_DATA_POINTER*/}
 
-; Formation sprites used by formation enemies (#spriteExEfXX)
+; Formation sprites used by enemyFormation enemies (#spriteExEfXX)
 spriteEf01
 	sr.SPR {35/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf01/*EXT_DATA_POINTER*/}
 spriteEf02
@@ -151,10 +152,10 @@ spriteEf06
 spriteEf07
 	sr.SPR {41/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}
 
-spritesSize					BYTE 15+7			; The total amount of visible sprites - including single enemies (15) and formation (7)
-singleSpritesSize			BYTE 15				; Amount of sprites that can respawn as a single enemy
+enemiesSize					BYTE 15+7			; The total amount of visible sprites - including single enemies (15) and enemyFormation (7)
+singleEnemiesSize			BYTE 15				; Amount of sprites that can respawn as a single enemy
 
-formation ef.EF{spriteEf01/*SPRITE_POINTER*/, 200/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 7/*SPRITES*/, 0/*SPRITES_CNT*/}
+enemyFormation ef.EF{spriteEf01/*SPRITE_POINTER*/, 200/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 7/*SPRITES*/, 0/*SPRITES_CNT*/}
 
 ;----------------------------------------------------------;
 ;                 Jetman Sprite Data                       ;
@@ -257,8 +258,8 @@ rocketExplodeTankDB		DB 30, 31, 32, 33		; Sprite IDs for explosion.
 ;----------------------------------------------------------;
 ;                     Final Checks                         ;
 ;----------------------------------------------------------;
-	ASSERT $$ == _EN_BANK_D69					; Data shold remain in the same bank
-	ASSERT $$enemiesBankStart == _EN_BANK_D69 	; Make sure that we have configured the right bank.
+	ASSERT $$ == _EN_BANK_D149					; Data shold remain in the same bank
+	ASSERT $$spritesBankStart == _EN_BANK_D149 	; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

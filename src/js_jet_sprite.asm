@@ -40,6 +40,8 @@ sprState			BYTE SPR_STATE_SHOW
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation
 
+	CALL bs.SetupSpriteDataBank
+
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B).
 	LD BC, (jpo.jetX)
 
@@ -74,7 +76,7 @@ UpdateJetSpritePositionRotation
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW		; Set the ID of the Jetman's sprite for the following commands.
 	NEXTREG _SPR_REG_ATR2_H37, A
 
-	; Move Jetman sprite to current Y postion, 8-bit value is easy.
+	; Move Jetman sprite to current Y postion, 8-bit value is simple.
 	LD A, (jpo.jetY)		
 	
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands.
@@ -93,7 +95,6 @@ UpdateJetSpritePositionRotation
 ; Input:
 ;   - A: ID for #jesSprites, to siwtch to the next animation record.
 ChangeJetSpritePattern
-	CALL ut.SetupSpriteDataBank
 
 	; Do not change the animation if the same animation is already playing, it will restart it.
 	LD B, A
@@ -119,7 +120,7 @@ ChangeJetSpritePattern
 ; Update sprite pattern for the next animation frame.
 AnimateJetSprite
 
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 
 	; Delay animation.
 	LD A, (sprDBDelay)
@@ -216,6 +217,8 @@ AnimateJetSprite
 ; - A:	Flip Flop counter, ie: #counter002FliFLop.
 BlinkJetSprite
 
+	CALL bs.SetupSpriteDataBank
+
 	CP _GC_FLIP_ON_D1
 	JR NZ, .flipOff
 	
@@ -263,7 +266,7 @@ HideJetSprite
 ;                #ChangeJetSpriteOnFlyDown                 ;
 ;----------------------------------------------------------;
 ChangeJetSpriteOnFlyDown
-
+	
 	; Change animation only if Jetman is flying.
 	LD A, (jt.jetAir)
 	CP jt.AIR_FLY
@@ -303,7 +306,7 @@ ChangeJetSpriteOnFlyUp
 ; Input:
 ;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE.
 _ShowOrHideJetSprite
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 	
 	LD HL, (sprDBIdx)							; Load current sprite pattern.
 	ADD HL, -SDB_FRAME_SIZE						; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record.

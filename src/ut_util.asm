@@ -4,24 +4,6 @@
 	MODULE ut
 
 ;----------------------------------------------------------;
-;                  #SetupStarDataBank                      ;
-;----------------------------------------------------------;
-SetupStarDataBank
-
-	NEXTREG _MMU_REG_SLOT7_H57, _ST_BANK_D68	; Assign bank to slot 7
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #SetupSpriteDataBank                     ;
-;----------------------------------------------------------;
-SetupSpriteDataBank
-
-	NEXTREG _MMU_REG_SLOT7_H57, _EN_BANK_D69	; Assign bank to slot 7
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                          CdivD                           ;
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12

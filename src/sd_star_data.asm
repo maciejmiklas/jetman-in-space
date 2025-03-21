@@ -3,9 +3,9 @@
 ;----------------------------------------------------------;
 	module sd
 
-; Before using it call #ut.SetupStarDataBank
+; Before using it call #bs.SetupStarDataBank
 
-	MMU _RAM_SLOT7, _ST_BANK_D68
+	MMU _RAM_SLOT7, _ST_BANK_D148
 	ORG _RAM_SLOT7_START_HE000
 starsBankStart
 
@@ -160,8 +160,8 @@ starsPalL2
 	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
 	; ##########################################
-	ASSERT $$ == _ST_BANK_D68					; Data shold remain in the same bank
-	ASSERT $$starsBankStart == _ST_BANK_D68 	; Make sure that we have configured the right bank.
+	ASSERT $$ == _ST_BANK_D148					; Data shold remain in the same bank
+	ASSERT $$starsBankStart == _ST_BANK_D148 	; Make sure that we have configured the right bank.
 	
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -54,9 +54,9 @@ _GameLoop000
 	CALL _GameLoop000OnActiveJetman
 	
 	; ##########################################
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 	LD IX, spd.sprite01
-	LD A, (spd.spritesSize)
+	LD A, (spd.enemiesSize)
 	LD B, A 	
 	CALL ep.MoveEnemies
 
@@ -83,14 +83,15 @@ _GameLoop000OnActiveJetman
 	CALL jco.JetmanEnemiesCollision
 
 	; ##########################################
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 	LD IX, spd.sprite01
-	LD A, (spd.singleSpritesSize)
+	LD A, (spd.singleEnemiesSize)
 	LD B, A	
 	CALL ep.RespawnNextEnemy
 	
 	; ##########################################
-	LD IY, spd.formation
+	CALL bs.SetupSpriteDataBank
+	LD IY, spd.enemyFormation
 	CALL ef.RespawnFormation	
 
 	RET											; ## END of the function ##
@@ -195,7 +196,6 @@ _GameLoop004
 	; CALL functions that need to be updated every xx-th loop.
 	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AnimateRocketExplosion
-	CALL st.BlinkStarsL2
 
 	RET											; ## END of the function ##
 
@@ -223,8 +223,7 @@ _GameLoop006
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL st.BlinkStarsL1
-
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -254,9 +253,9 @@ _GameLoop008
 	CALL jw.AnimateShots
 	
 	; Animate enemies
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 	LD IX, spd.sprite01	
-	LD A, (spd.spritesSize)
+	LD A, (spd.enemiesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
 
@@ -264,6 +263,7 @@ _GameLoop008
 	CALL ro.AnimateTankExplode
 	CALL ro.AnimateRocketExhaust
 	CALL ro.BlinkRocketReady
+	CALL st.BlinkStarsL1
 	
 	RET											; ## END of the function ##
 
@@ -293,6 +293,7 @@ _GameLoop010
 	; CALL functions that need to be updated every xx-th loop.
 	
 	CALL _GameLoop010nFlyingRocket
+	CALL st.BlinkStarsL2
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -310,18 +311,18 @@ _GameLoop010nFlyingRocket
 	JR Z, .flip
 
 	; ##########################################
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 	LD IX, spd.sprite01
-	LD A, (spd.singleSpritesSize)
+	LD A, (spd.singleEnemiesSize)
 	LD B, A
 	CALL sr.KillOneSprite
 
 	JR .afterFilpFlop
 .flip
 	; ##########################################
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 	LD IX, spd.spriteEf01
-	LD A, (spd.formation.SPRITES)
+	LD A, (spd.enemyFormation.SPRITES)
 	LD B, A
 	CALL sr.KillOneSprite
 

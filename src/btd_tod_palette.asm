@@ -3,7 +3,6 @@
 ;----------------------------------------------------------;
 	MODULE btd
 	
-; TOD - Time of Day
 palBytes				WORD 0					; Size in bytes of background palette, max 512.
 palColors				BYTE 0					; Amount of colors in background palette, max 255.
 palAdr					WORD 0					; Address of the original palette data.
@@ -70,10 +69,10 @@ LoadCurrentTodPalette
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevelPalette                       ;
+;                 #CreateTodPalettes                       ;
 ;----------------------------------------------------------;
 ; Method called after setting: #palBytes and #palAdr
-LoadLevelPalette
+CreateTodPalettes
 
 	CALL _VariablesSet							; Palette global variables are set.
 	CALL _LoadTodPalette						; Load original palette into hardware.
@@ -85,7 +84,7 @@ LoadLevelPalette
 ;----------------------------------------------------------;
 ResetPaletteArrd
 
-	CALL bp.SetupPaletteBank
+	CALL bs.SetupPaletteBank
 	
 	; Set the palette address to the beginning of the bank holding it.
 	LD DE, db.todL2Palettes
@@ -103,7 +102,7 @@ ResetPaletteArrd
 ;                 #_CreateTodPalettes                      ;
 ;----------------------------------------------------------;
 ; This function creates up to 6 palettes for the transition from day to night from the palette given by HL.
-; Palettes are stored in #todL2Palettes; each one has 512 bytes. #todPalAddr points to the first palette.
+; Palettes are stored in #todL2Palettes; each one has up to 512 bytes. #todPalAddr points to the first palette.
 ; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000
 _CreateTodPalettes
 
@@ -112,16 +111,19 @@ _CreateTodPalettes
 	; ##########################################
 	; Copy the original palette into the address given by #todPalAddr, creating the first palette to be modified by the loop below.
 
-	; Set the palette address to the beginning of the bank holding it, and copy initial palette.
+	; Set the palette address to the beginning of the bank holding it
+	CALL ResetPaletteArrd
+	
+	; Copy initial palette. HL (source) and BC (amount), DE (destination)
 	LD HL, (palAdr)
-	LD BC, (palColors)
-	CALL ResetPaletteArrd						; Sets bank and DE as destination for LDIR
-	LDIR										; HL (source) and BC (amount) are method params
+	LD DE, (todPalAddr)
+	LD BC, (palBytes)
+	LDIR
 
 	; ##########################################
 	; Copy remaining palettes.
 
-	LD B, _TOD_STEPS_D4							
+	LD B, _TOD_STEPS_D4
 .copyLoop
 	PUSH BC
 
@@ -148,6 +150,7 @@ _VariablesSet
 	CALL bp.BytesToColors
 	LD A, B
 	LD (palColors), A
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

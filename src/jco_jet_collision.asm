@@ -21,9 +21,9 @@ invincibleCnt			WORD 0					; Makes Jetman invincible when > 0.
 ;----------------------------------------------------------;
 JetmanEnemiesCollision
 
-	CALL ut.SetupSpriteDataBank
+	CALL bs.SetupSpriteDataBank
 	LD IX, spd.sprite01
-	LD A, (spd.spritesSize)
+	LD A, (spd.enemiesSize)
 	LD B, A
 	CALL _EnemiesCollision
 

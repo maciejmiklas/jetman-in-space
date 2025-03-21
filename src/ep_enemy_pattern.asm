@@ -175,7 +175,7 @@ RespawnNextEnemy
 	; Move IX to the beginning of the next #shotsXX.
 	LD DE, sr.SPR
 	ADD IX, DE
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #singleSpritesSize).
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = #singleEnemiesSize).
 
 	RET											; ## END of the function ##.
 

@@ -24,6 +24,76 @@ LoadLevel2
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #LoadLevel3                         ;
+;----------------------------------------------------------;
+LoadLevel3
+
+	CALL ti.ResetTilemapOffset
+	CALL ll.LoadLevel3Data
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #LoadLevel4                         ;
+;----------------------------------------------------------;
+LoadLevel4
+
+	CALL ti.ResetTilemapOffset
+	CALL ll.LoadLevel4Data
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #LoadLevel5                         ;
+;----------------------------------------------------------;
+LoadLevel5
+
+	CALL ti.ResetTilemapOffset
+	CALL ll.LoadLevel5Data
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #LoadLevel6                         ;
+;----------------------------------------------------------;
+LoadLevel6
+
+	CALL ti.ResetTilemapOffset
+	CALL ll.LoadLevel6Data
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #LoadLevel7                         ;
+;----------------------------------------------------------;
+LoadLevel7
+
+	CALL ti.ResetTilemapOffset
+	CALL ll.LoadLevel7Data
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #LoadLevel8                         ;
+;----------------------------------------------------------;
+LoadLevel8
+
+	CALL ti.ResetTilemapOffset
+	CALL ll.LoadLevel8Data
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #LoadLevel9                         ;
+;----------------------------------------------------------;
+LoadLevel9
+
+	CALL ti.ResetTilemapOffset
+	CALL ll.LoadLevel9Data
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;              #BackgroundPaletteLoaded                    ;
 ;----------------------------------------------------------;
 BackgroundPaletteLoaded

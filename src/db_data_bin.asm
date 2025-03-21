@@ -86,19 +86,71 @@ starsBinSize = $ - starsBin
 	MMU _RAM_SLOT6, _BN_PAL2_BANK_D46
 	ORG _RAM_SLOT6_START_HC000
 
+ ; #############################################
 bgrL1PaletteAdr
 	INCBIN  "assets/l01_background.nxp"
 
 bgrL1PaletteBytes = $ - bgrL1PaletteAdr
 	ASSERT bgrL1PaletteBytes <= _BM_PAL2_BYTES_D512
 
+ ; #############################################
 bgrL2PaletteAdr
 	INCBIN  "assets/l02_background.nxp"
 
 bgrL2PaletteBytes = $ - bgrL2PaletteAdr
 	ASSERT bgrL2PaletteBytes <= _BM_PAL2_BYTES_D512
 
-	ASSERT $$ == _BN_PAL2_BANK_D46
+ ; #############################################
+bgrL3PaletteAdr
+	INCBIN  "assets/l03_background.nxp"
+
+bgrL3PaletteBytes = $ - bgrL3PaletteAdr
+	ASSERT bgrL3PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL4PaletteAdr
+	INCBIN  "assets/l04_background.nxp"
+
+bgrL4PaletteBytes = $ - bgrL4PaletteAdr
+	ASSERT bgrL4PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL5PaletteAdr
+	INCBIN  "assets/l05_background.nxp"
+
+bgrL5PaletteBytes = $ - bgrL5PaletteAdr
+	ASSERT bgrL5PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL6PaletteAdr
+	INCBIN  "assets/l06_background.nxp"
+
+bgrL6PaletteBytes = $ - bgrL6PaletteAdr
+	ASSERT bgrL6PaletteBytes <= _BM_PAL2_BYTES_D512
+	
+ ; #############################################
+bgrL7PaletteAdr
+	INCBIN  "assets/l07_background.nxp"
+
+bgrL7PaletteBytes = $ - bgrL7PaletteAdr
+	ASSERT bgrL7PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL8PaletteAdr
+	INCBIN  "assets/l08_background.nxp"
+
+bgrL8PaletteBytes = $ - bgrL8PaletteAdr
+	ASSERT bgrL8PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL9PaletteAdr
+	INCBIN  "assets/l09_background.nxp"
+
+bgrL9PaletteBytes = $ - bgrL9PaletteAdr
+	ASSERT bgrL9PaletteBytes <= _BM_PAL2_BYTES_D512		
+	
+ ; #############################################
+	ASSERT $$ == _BN_PAL2_BANK_D46	
 
 ;----------------------------------------------------------;
 ;          Layer 2 Brightness Palettes (Bank 47)           ;
@@ -121,9 +173,10 @@ todL2Palettes									; Pallete will be generated during runtime.
 bgrL1Img	
 	INCBIN "assets/l01_background.nxi", 0, _BM_BYTES_D81920
 
+	ASSERT $$bgrL1Img == _BN_BG_L1_ST_BANK_D48
+
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L1_EN_BANK_D57+1		; Image has 81920 bytes, 10 banks.
-	ASSERT $$bgrL1Img == _BN_BG_L1_ST_BANK_D48
 
 ;----------------------------------------------------------;
 ;         Game Background for Level 2 (Bank 58...67)       ;
@@ -133,16 +186,112 @@ bgrL1Img
 bgrL2Img	
 	INCBIN "assets/l02_background.nxi", 0, _BM_BYTES_D81920
 
-	; MMU should be in the next slot because the last slot has been filed.
-	ASSERT $$ == _BN_BG_L2_EN_BANK_D67+1		; Image has 81920 bytes, 10 banks.
 	ASSERT $$bgrL2Img == _BN_BG_L2_ST_BANK_D58  ; Make sure that we have configured the right bank.
 
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L2_EN_BANK_D67+1		; Image has 81920 bytes, 10 banks
+
 ;----------------------------------------------------------;
-;         Star Data (Bank 68) - st_star_data.asm           ;
+;         Game Background for Level 3 (Bank 68...77)       ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L3_ST_BANK_D68
+	ORG _RAM_SLOT6_START_HC000
+bgrL3Img	
+	INCBIN "assets/l03_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL3Img == _BN_BG_L3_ST_BANK_D68  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L3_EN_BANK_D77+1		; Image has 81920 bytes, 10 banks.
+
+;----------------------------------------------------------;
+;         Game Background for Level 4 (Bank 78...87)       ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L4_ST_BANK_D78
+	ORG _RAM_SLOT6_START_HC000
+bgrL4Img	
+	INCBIN "assets/l04_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL4Img == _BN_BG_L4_ST_BANK_D78  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L4_EN_BANK_D87+1		; Image has 81920 bytes, 10 banks.
+
+;----------------------------------------------------------;
+;         Game Background for Level 5 (Bank 88...97)       ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L5_ST_BANK_D88
+	ORG _RAM_SLOT6_START_HC000
+bgrL5Img	
+	INCBIN "assets/l05_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL5Img == _BN_BG_L5_ST_BANK_D88  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L5_EN_BANK_D97+1		; Image has 81920 bytes, 10 banks.	
+
+;----------------------------------------------------------;
+;        Game Background for Level 6 (Bank 98...107)       ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L6_ST_BANK_D98
+	ORG _RAM_SLOT6_START_HC000
+bgrL6Img	
+	INCBIN "assets/l06_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL6Img == _BN_BG_L6_ST_BANK_D98  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L6_EN_BANK_D107+1		; Image has 81920 bytes, 10 banks.
+
+;----------------------------------------------------------;
+;       Game Background for Level 7 (Bank 108...117)       ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L7_ST_BANK_D108
+	ORG _RAM_SLOT6_START_HC000
+bgrL7Img	
+	INCBIN "assets/l07_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL7Img == _BN_BG_L7_ST_BANK_D108  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L7_EN_BANK_D117+1		; Image has 81920 bytes, 10 banks.
+
+;----------------------------------------------------------;
+;       Game Background for Level 8 (Bank 118...127)       ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L8_ST_BANK_D118
+	ORG _RAM_SLOT6_START_HC000
+bgrL8Img	
+	INCBIN "assets/l08_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL8Img == _BN_BG_L8_ST_BANK_D118  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L8_EN_BANK_D127+1		; Image has 81920 bytes, 10 banks.
+
+;----------------------------------------------------------;
+;       Game Background for Level 9 (Bank 128...137)       ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L9_ST_BANK_D128
+	ORG _RAM_SLOT6_START_HC000
+bgrL9Img	
+	INCBIN "assets/l09_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL9Img == _BN_BG_L9_ST_BANK_D128  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L9_EN_BANK_D137+1		; Image has 81920 bytes, 10 banks.
+
+;----------------------------------------------------------;
+;      Game Background for Level 10 (Bank 138...147)       ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;         Enemy Data (Bank 69) - ed_enemy_data.asm         ;
+;        Star Data (Bank 148) - st_star_data.asm           ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;        Enemy Data (Bank 149) - ed_enemy_data.asm         ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;

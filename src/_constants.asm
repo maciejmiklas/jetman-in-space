@@ -484,7 +484,7 @@ _PL_HIT_MARGIN_D5		= 5
 
 ; ##############################################
 ; Enemies.
-_EN_BANK_D69			= 69					; Bank for enemies, slot 6
+_EN_BANK_D149			= 149					; Bank for enemies, slot 6
 
 ; ##############################################
 ; Tilemap.
@@ -605,7 +605,7 @@ _ST_PAL_L2_SIZE			= 10					; Number of colors for stars on layer 2.
 
 _ST_L1_SIZE				= 27					; Number stars on layer 1.
 _ST_L2_SIZE				= 17					; Number stars on layer 2.
-_ST_BANK_D68			= 68					; Bank for stars, slot 6
+_ST_BANK_D148			= 148					; Bank for stars, slot 6
 
 ; ##############################################
 ; Binary Data Loader.
@@ -628,17 +628,73 @@ _BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 _BN_PAL2_BANK_D46		= 46					; Layer 2 pallettes
 _BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for pallettes from _BN_PAL2_BANK_D46.
 
-; Image for Level 1 (all values inclusive).
+; Image for Level 1 (all values inclusive). Bank 48...57
 _BN_BG_L1_ST_BANK_D48	= 48
 _BN_BG_L1_EN_BANK_D57 = _BN_BG_L1_ST_BANK_D48+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _BN_BG_L1_EN_BANK_D57 == 57
 
-; Image for Level 2 (all values inclusive).
+; Image for Level 2 (all values inclusive). Bank 58...67
 _BN_BG_L2_ST_BANK_D58	= _BN_BG_L1_EN_BANK_D57+1
 	ASSERT _BN_BG_L2_ST_BANK_D58 == 58
 
-_BN_BG_L2_EN_BANK_D67	= _BN_BG_L2_ST_BANK_D58+_BM_BANKS_D10-1
+_BN_BG_L2_EN_BANK_D67	= _BN_BG_L2_ST_BANK_D58+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _BN_BG_L2_EN_BANK_D67 == 67
+
+; Image for Level 3 (all values inclusive). Bank 68...77
+_BN_BG_L3_ST_BANK_D68	= _BN_BG_L2_EN_BANK_D67+1
+	ASSERT _BN_BG_L3_ST_BANK_D68 == 68
+
+_BN_BG_L3_EN_BANK_D77	= _BN_BG_L3_ST_BANK_D68+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L3_EN_BANK_D77 == 77
+
+; Image for Level 4 (all values inclusive). Bank 78...87
+_BN_BG_L4_ST_BANK_D78	= _BN_BG_L3_EN_BANK_D77+1
+	ASSERT _BN_BG_L4_ST_BANK_D78 == 78
+
+_BN_BG_L4_EN_BANK_D87	= _BN_BG_L4_ST_BANK_D78+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L4_EN_BANK_D87 == 87
+
+; Image for Level 5 (all values inclusive). Bank 88...97
+_BN_BG_L5_ST_BANK_D88	= _BN_BG_L4_EN_BANK_D87+1
+	ASSERT _BN_BG_L5_ST_BANK_D88 == 88
+
+_BN_BG_L5_EN_BANK_D97	= _BN_BG_L5_ST_BANK_D88+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L5_EN_BANK_D97 == 97
+
+; Image for Level 6 (all values inclusive). Bank 98...107
+_BN_BG_L6_ST_BANK_D98	= _BN_BG_L5_EN_BANK_D97+1
+	ASSERT _BN_BG_L6_ST_BANK_D98 == 98
+
+_BN_BG_L6_EN_BANK_D107	= _BN_BG_L6_ST_BANK_D98+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L6_EN_BANK_D107 == 107
+
+; Image for Level 7 (all values inclusive). Bank 108...117
+_BN_BG_L7_ST_BANK_D108	= _BN_BG_L6_EN_BANK_D107+1
+	ASSERT _BN_BG_L7_ST_BANK_D108 == 108
+
+_BN_BG_L7_EN_BANK_D117	= _BN_BG_L7_ST_BANK_D108+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L7_EN_BANK_D117 == 117
+
+; Image for Level 8 (all values inclusive). Bank 118...127
+_BN_BG_L8_ST_BANK_D118	= _BN_BG_L7_EN_BANK_D117+1
+	ASSERT _BN_BG_L8_ST_BANK_D118 == 118
+
+_BN_BG_L8_EN_BANK_D127	= _BN_BG_L8_ST_BANK_D118+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L8_EN_BANK_D127 == 127
+
+; Image for Level 9 (all values inclusive). Bank 128...137
+_BN_BG_L9_ST_BANK_D128	= _BN_BG_L8_EN_BANK_D127+1
+	ASSERT _BN_BG_L9_ST_BANK_D128 == 128
+
+_BN_BG_L9_EN_BANK_D137	= _BN_BG_L9_ST_BANK_D128+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L9_EN_BANK_D137 == 137
+
+; Image for Level 10 (all values inclusive). Bank 138...147
+_BN_BG_L10_ST_BANK_D138	= _BN_BG_L9_EN_BANK_D137+1
+	ASSERT _BN_BG_L10_ST_BANK_D138 == 138
+
+_BN_BG_L10_EN_BANK_D147	= _BN_BG_L10_ST_BANK_D138+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_L10_EN_BANK_D147 == 147
 
 ; ##############################################
 ; Respawn location.

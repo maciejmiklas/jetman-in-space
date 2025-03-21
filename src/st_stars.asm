@@ -63,7 +63,7 @@ LoadStarsPalette
 	
 	; ##########################################
 	; Load colors for the stars on layer 1.
-	CALL ut.SetupStarDataBank
+	CALL bs.SetupStarDataBank
 	LD HL, sd.starsPalL1
 	LD A, _ST_PAL_L1_SIZE
 	LD B, A
@@ -71,7 +71,7 @@ LoadStarsPalette
 
 	; ##########################################
 	; Load colors for the stars on layer 2.
-	CALL ut.SetupStarDataBank
+	CALL bs.SetupStarDataBank
 	LD HL, sd.starsPalL2
 	LD A, _ST_PAL_L2_SIZE
 	LD B, A
@@ -337,7 +337,7 @@ _SetupLayer2
 ;----------------------------------------------------------;
 _NextStarsColor
 
-	CALL ut.SetupStarDataBank
+	CALL bs.SetupStarDataBank
 	LD HL, (starsData)
 	LD A, (starsDataSize)
 	LD B, A
@@ -400,7 +400,7 @@ _NextStarsColor
 ;----------------------------------------------------------;
 _RenderStars
 
-	CALL ut.SetupStarDataBank
+	CALL bs.SetupStarDataBank
 	LD A, (starsDataSize)
 	LD B, A
 	LD HL, (starsData)
