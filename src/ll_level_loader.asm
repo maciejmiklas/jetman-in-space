@@ -247,6 +247,33 @@ LoadLevel9Data
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  #LoadLevel10Data                        ;
+;----------------------------------------------------------;
+LoadLevel10Data
+
+	; Load palettes
+	CALL bs.SetupPaletteBank
+
+	; Load palette size into a global variable.
+	LD HL, db.bgrL10PaletteBytes
+	LD (btd.palBytes), HL
+
+	; Load the address of the original palette into a global variable.
+	LD HL, db.bgrL10PaletteAdr
+	LD (btd.palAdr), HL
+
+	CALL btd.CreateTodPalettes
+
+	; ##########################################
+	; Load background image
+
+	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
+	LD A, $$db.bgrL10Img
+	LD (bm.imageBank), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
 	ENDMODULE

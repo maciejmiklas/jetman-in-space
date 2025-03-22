@@ -120,7 +120,40 @@ KeyboardInput
 	PUSH AF										; Keep A on the stack to avoid rereading the same input.
 	BIT 4, A									; T
 	CALL Z, _Key_T
-	POP AF		
+	POP AF
+
+	; ##########################################
+	; Handle row Y...P
+	LD A, _KB_P_TO_Y_HDF
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 0, A									; P
+	CALL Z, _Key_P
+	POP AF
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 1, A									; O
+	CALL Z, _Key_O
+	POP AF
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 2, A									; I
+	CALL Z, _Key_I
+	POP AF
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 3, A									; U
+	CALL Z, _Key_U
+	POP AF
+
+	; ##########################################
+	PUSH AF										; Keep A on the stack to avoid rereading the same input.
+	BIT 4, A									; Y
+	CALL Z, _Key_Y
+	POP AF	
 
 	RET											; ## END of the function ##
 
@@ -153,12 +186,16 @@ _Key_W
 ;----------------------------------------------------------;
 _Key_E
 
+	CALL gc.LoadLevel3
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                        _Key_R                            ;
 ;----------------------------------------------------------;
 _Key_R
+
+	CALL gc.LoadLevel4
 
 	RET											; ## END of the function ##
 
@@ -167,12 +204,16 @@ _Key_R
 ;----------------------------------------------------------;
 _Key_T
 
+	CALL gc.LoadLevel5
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                        _Key_Y                            ;
 ;----------------------------------------------------------;
 _Key_Y
+
+	CALL gc.LoadLevel6
 
 	RET											; ## END of the function ##
 
@@ -181,12 +222,16 @@ _Key_Y
 ;----------------------------------------------------------;
 _Key_U
 
+	CALL gc.LoadLevel7
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                        _Key_I                            ;
 ;----------------------------------------------------------;
 _Key_I
+
+	CALL gc.LoadLevel8
 
 	RET											; ## END of the function ##
 
@@ -195,12 +240,16 @@ _Key_I
 ;----------------------------------------------------------;
 _Key_O
 
+	CALL gc.LoadLevel9
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                        _Key_P                            ;
 ;----------------------------------------------------------;
 _Key_P
+
+	CALL gc.LoadLevel10
 
 	RET											; ## END of the function ##
 

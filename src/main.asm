@@ -13,16 +13,15 @@ start
 	INCLUDE "dl_data_load.asm"
 	
 	CALL sc.SetupScreen
-	CALL gc.LoadLevel9
-	CALL gm.GameInit
+	CALL gc.LoadLevel1
 
 	;CALL ro.AssemblyRocketForDebug
 
 ;----------------------------------------------------------;
-;                      Game Loop                           ;
+;                      Main Loop                           ;
 ;----------------------------------------------------------;
 mainLoop
-	CALL gm.GameLoop
+	CALL gc.GameLoopCmd
 	JR mainLoop
 
 ;----------------------------------------------------------;
@@ -38,14 +37,13 @@ mainLoop
 	INCLUDE "gld_game_loop_data.asm"
 	INCLUDE "gl_game_loop.asm"
 
-	INCLUDE "gm_game.asm"
+	INCLUDE "gc_game_cmd.asm"
 
 	INCLUDE "bs_bank_setup.asm"
 	INCLUDE "ll_level_loader.asm"
 	INCLUDE "bm_bitmap.asm"
 	INCLUDE "bp_bitmap_palette.asm"
 	INCLUDE "btd_tod_palette.asm"
-	INCLUDE "gc_game_cmd.asm"
 	INCLUDE "gb_game_bar.asm"
 	INCLUDE "sc_screen.asm"
 	INCLUDE "sr_simple_sprite.asm"

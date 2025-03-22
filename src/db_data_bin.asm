@@ -147,7 +147,14 @@ bgrL9PaletteAdr
 	INCBIN  "assets/l09_background.nxp"
 
 bgrL9PaletteBytes = $ - bgrL9PaletteAdr
-	ASSERT bgrL9PaletteBytes <= _BM_PAL2_BYTES_D512		
+	ASSERT bgrL9PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL10PaletteAdr
+	INCBIN  "assets/l10_background.nxp"
+
+bgrL10PaletteBytes = $ - bgrL10PaletteAdr
+	ASSERT bgrL10PaletteBytes <= _BM_PAL2_BYTES_D512
 	
  ; #############################################
 	ASSERT $$ == _BN_PAL2_BANK_D46	
@@ -165,8 +172,8 @@ todL2Palettes									; Pallete will be generated during runtime.
 ; into the first bank. Once it has reached $FFFF, it will switch to the following bank, set the address to $E000,
 ; and load the next 8KiB chunk, repeating the whole process.
 ;
-; BMP 320x256 with 8bit palette (Image -> Mode -> Indexed)
-; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\l02_background.bmp
+; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
+; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\l01_background.bmp
 
 	MMU _RAM_SLOT6 n, _BN_BG_L1_ST_BANK_D48
 	ORG _RAM_SLOT6_START_HC000
@@ -285,6 +292,15 @@ bgrL9Img
 ;----------------------------------------------------------;
 ;      Game Background for Level 10 (Bank 138...147)       ;
 ;----------------------------------------------------------;
+	MMU _RAM_SLOT6 n, _BN_BG_L10_ST_BANK_D138
+	ORG _RAM_SLOT6_START_HC000
+bgrL10Img	
+	INCBIN "assets/l10_background.nxi", 0, _BM_BYTES_D81920
+
+	ASSERT $$bgrL10Img == _BN_BG_L10_ST_BANK_D138  ; Make sure that we have configured the right bank.
+
+	; MMU should be in the next slot because the last slot has been filed.
+	ASSERT $$ == _BN_BG_L10_EN_BANK_D147+1		; Image has 81920 bytes, 10 banks.
 
 ;----------------------------------------------------------;
 ;        Star Data (Bank 148) - st_star_data.asm           ;

@@ -4,13 +4,35 @@
 	MODULE gc
 
 ;----------------------------------------------------------;
+;                   #GameLoopCmd                           ;
+;----------------------------------------------------------;
+	//DEFINE  PERFORMANCE_BORDER 
+GameLoopCmd
+
+	IFDEF PERFORMANCE_BORDER
+		LD	A, _COL_GREEN_D4
+		OUT (_BORDER_IO_HFE), A
+	ENDIF
+
+	CALL sc.WaitForScanline
+
+	IFDEF PERFORMANCE_BORDER
+		LD	A, _COL_RED_D2
+		OUT (_BORDER_IO_HFE), A
+	ENDIF	
+
+	CALL gl.GameLoop
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      #LoadLevel1                         ;
 ;----------------------------------------------------------;
 LoadLevel1
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel1Data
-
+	CALL _InitLevel
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -18,9 +40,9 @@ LoadLevel1
 ;----------------------------------------------------------;
 LoadLevel2
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel2Data
-
+	CALL _InitLevel
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -28,8 +50,8 @@ LoadLevel2
 ;----------------------------------------------------------;
 LoadLevel3
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel3Data
+	CALL _InitLevel
 
 	RET											; ## END of the function ##
 
@@ -38,8 +60,8 @@ LoadLevel3
 ;----------------------------------------------------------;
 LoadLevel4
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel4Data
+	CALL _InitLevel
 
 	RET											; ## END of the function ##
 
@@ -48,8 +70,8 @@ LoadLevel4
 ;----------------------------------------------------------;
 LoadLevel5
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel5Data
+	CALL _InitLevel
 
 	RET											; ## END of the function ##
 
@@ -58,8 +80,8 @@ LoadLevel5
 ;----------------------------------------------------------;
 LoadLevel6
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel6Data
+	CALL _InitLevel
 
 	RET											; ## END of the function ##
 
@@ -68,8 +90,8 @@ LoadLevel6
 ;----------------------------------------------------------;
 LoadLevel7
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel7Data
+	CALL _InitLevel
 
 	RET											; ## END of the function ##
 
@@ -78,8 +100,8 @@ LoadLevel7
 ;----------------------------------------------------------;
 LoadLevel8
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel8Data
+	CALL _InitLevel
 
 	RET											; ## END of the function ##
 
@@ -88,9 +110,19 @@ LoadLevel8
 ;----------------------------------------------------------;
 LoadLevel9
 
-	CALL ti.ResetTilemapOffset
 	CALL ll.LoadLevel9Data
+	CALL _InitLevel
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #LoadLevel10                         ;
+;----------------------------------------------------------;
+LoadLevel10
+
+	CALL ll.LoadLevel10Data
+	CALL _InitLevel
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -388,7 +420,25 @@ ChangeToFullDay
 	CALL btd.ResetPaletteArrd
 	CALL btd.LoadCurrentTodPalette
 
-	RET											; ## END of the function ##	
+	RET											; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     #_InitLevel                          ;
+;----------------------------------------------------------;
+_InitLevel
+
+	CALL gc.RespawnJet
+	CALL ro.StartRocketAssembly
+	CALL ti.ResetTilemapOffset
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
