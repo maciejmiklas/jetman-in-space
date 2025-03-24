@@ -60,7 +60,7 @@ RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeD
 ;               #AssemblyRocketForDebug                    ;
 ;----------------------------------------------------------;
 AssemblyRocketForDebug
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	LD A, _RO_EL_TANK3_D6
 	LD (rocketElementCnt), A
@@ -69,19 +69,19 @@ AssemblyRocketForDebug
 	LD (rocketState), A
 
 	LD A, 1
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	CALL _MoveIXtoGivenRocketElement
 	LD A, 233
 	LD (IX + RO.Y), A
 
 	LD A, 2
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	CALL _MoveIXtoGivenRocketElement
 	LD A, 217
 	LD (IX + RO.Y), A
 
 	LD A, 3
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	CALL _MoveIXtoGivenRocketElement
 	LD A, 217
 	LD (IX + RO.Y), 201
@@ -92,7 +92,7 @@ AssemblyRocketForDebug
 ;                  #StartRocketAssembly                    ;
 ;----------------------------------------------------------;
 StartRocketAssembly
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	CALL ResetAndDisableRocket
 
@@ -105,7 +105,7 @@ StartRocketAssembly
 ;                #ResetAndDisableRocket                    ;
 ;----------------------------------------------------------;
 ResetAndDisableRocket
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	XOR A
 	LD (rocketState), A
@@ -126,7 +126,7 @@ ResetAndDisableRocket
 	LD B, _RO_EL_TANK3_D6
 .rocketElLoop
 	LD A, B
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	CALL _MoveIXtoGivenRocketElement
 
 	XOR A
@@ -140,7 +140,7 @@ ResetAndDisableRocket
 ;             #UpdateRocketOnJetmanMove                    ;
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	CALL _PickupRocketElement
 	CALL _CarryRocketElement
@@ -152,10 +152,10 @@ UpdateRocketOnJetmanMove
 ;                     #HideRocket                          ;
 ;----------------------------------------------------------;
 HideRocket
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Hide the top rockets element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	LD A, _RO_EL_TOP_D3
 	CALL _MoveIXtoGivenRocketElement
 
@@ -164,7 +164,7 @@ HideRocket
 
 	; ##########################################
 	; Hide the middle rockets element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	LD A, _RO_EL_MID_D2
 	CALL _MoveIXtoGivenRocketElement
 
@@ -173,7 +173,7 @@ HideRocket
 
 	; ##########################################
 	; Hide the bottom rockets element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	LD A, _RO_EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
@@ -186,7 +186,7 @@ HideRocket
 ;              #AnimateRocketExplosion                    ;
 ;----------------------------------------------------------;
 AnimateRocketExplosion
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Is rocket exploding ?
 	LD A, (rocketState)
@@ -202,14 +202,14 @@ AnimateRocketExplosion
 
 	; ##########################################
 	; Animation for the top rockets element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	LD A, _RO_EL_TOP_D3
 	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame.
 	LD DE, (rocketExplodeCnt)
 	LD D, 0										; Reset D, we have an 8-bit counter here.
-	LD HL, spd.rocketExplodeDB3
+	LD HL, db.rocketExplodeDB3
 	DEC DE										; Counter starts at 1.
 	ADD HL, DE
 	LD D, (HL)
@@ -217,14 +217,14 @@ AnimateRocketExplosion
 
 	; ##########################################
 	; Animation for the middle rockets element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	LD A, _RO_EL_MID_D2
 	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame.
 	LD DE, (rocketExplodeCnt)
 	LD D, 0										; Reset D, we have an 8-bit counter here.
-	LD HL, spd.rocketExplodeDB2
+	LD HL, db.rocketExplodeDB2
 	DEC DE										; Counter starts at 1.
 	ADD HL, DE
 	LD D, (HL)
@@ -232,14 +232,14 @@ AnimateRocketExplosion
 
 	; ##########################################
 	; Animation for the bottom rockets element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	LD A, _RO_EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame
 	LD DE, (rocketExplodeCnt)
 	LD D, 0										; Reset D, we have an 8-bit counter here.
-	LD HL, spd.rocketExplodeDB1
+	LD HL, db.rocketExplodeDB1
 	DEC DE										; Counter starts at 1.
 	ADD HL, DE
 	LD D, (HL)
@@ -263,7 +263,7 @@ AnimateRocketExplosion
 ;----------------------------------------------------------;
 ; Checks falling tank for collision with leaser beam.
 CheckHitTank
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Is the thank out there?
 	LD A, (rocketElementCnt)
@@ -315,7 +315,7 @@ CheckHitTank
 ;                  #AnimateTankExplode                     ;
 ;----------------------------------------------------------;
 AnimateTankExplode
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if tank is not exploding.
 	LD A, (rocketState)
@@ -345,7 +345,7 @@ AnimateTankExplode
 	; Move #rocketExplodeTankDB by #explodeTankCnt, so that A points to current explosion frame.
 	LD A, (explodeTankCnt)
 	LD B, A
-	LD A, (spd.rocketExplodeTankDB)
+	LD A, (db.rocketExplodeTankDB)
 	ADD B
 
 	; Set sprite pattern.
@@ -363,7 +363,7 @@ AnimateTankExplode
 ;                 #AnimateRocketExhaust                    ;
 ;----------------------------------------------------------;
 AnimateRocketExhaust
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if rocket is not flying.
 	LD A, (rocketState)
@@ -385,7 +385,7 @@ AnimateRocketExhaust
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Load spirte pattern to A.
-	LD HL, spd.rocketExhaustDB
+	LD HL, db.rocketExhaustDB
 	LD A, (rocketExhaustCnt)
 	ADD HL, A
 	LD A, (HL)
@@ -400,7 +400,7 @@ AnimateRocketExhaust
 ;                   #BlinkRocketReady                      ;
 ;----------------------------------------------------------;
 BlinkRocketReady
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if rocket is not flying.
 	LD A, (rocketState)
@@ -429,7 +429,7 @@ BlinkRocketReady
 ;----------------------------------------------------------;
 FlyRocket
 
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if rocket is not flying.
 	LD A, (rocketState)
@@ -451,7 +451,7 @@ FlyRocket
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Sprite Y coordinate.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	LD A, (IX + RO.Y)							; Lowest rocket element + 16px.
 	ADD A, _RO_FLAME_OFFSET_D16
 	NEXTREG _SPR_REG_Y_H36, A
@@ -467,7 +467,7 @@ FlyRocket
 ;  - IX:	Current #RO pointer.
 ;  - D:		sprite pattern.
 UpdateSpritePattern
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Set the ID of the sprite for the following commands.
 	LD A, (IX + RO.SPRITE_ID)
@@ -485,7 +485,7 @@ UpdateSpritePattern
 ;              #ResetCarryingRocketElement                 ;
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if the state does not match carry.
 	LD A, (rocketState)
@@ -500,7 +500,7 @@ ResetCarryingRocketElement
 ;              #RocketElementFallsForPickup                ;
 ;----------------------------------------------------------;
 RocketElementFallsForPickup
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if there is no fall.
 	LD A, (rocketState)
@@ -534,7 +534,7 @@ RocketElementFallsForPickup
 ;                  #AnimateRocketReady                     ;
 ;----------------------------------------------------------;
 AnimateRocketReady
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if rocket is not ready.
 	LD A, (rocketState)
@@ -563,7 +563,7 @@ AnimateRocketReady
 ;             #RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Return if there is no assembly.
 	LD A, (rocketState)
@@ -626,7 +626,7 @@ RocketElementFallsForAssembly
 ;                 #DropNextRocketElement                   ;
 ;----------------------------------------------------------;
 DropNextRocketElement
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 	
 	; Check state.
 	LD A, (rocketState)
@@ -688,7 +688,7 @@ DropNextRocketElement
 _SetIXtoCurrentRocketElement
 
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 
     ; Now, move IX so that it points to the #RO given by the deploy counter. First, load the counter into A (value 1-6).
 	; Afterward, load A indo D and the size of the #RO into E, and multiply D by E.
@@ -705,7 +705,7 @@ _SetIXtoCurrentRocketElement
 _MoveIXtoGivenRocketElement
 
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 	
 	SUB 1										; A contains 0-2.
 	LD D, A
@@ -945,7 +945,7 @@ _UpdateElementPosition
 ;                 #_MoveFlyingRocket                       ;
 ;----------------------------------------------------------;
 _MoveFlyingRocket
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 
 	; Slow down rocket movement speed while taking off. 
 	; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
@@ -1013,7 +1013,7 @@ _MoveFlyingRocket
 	; The current position of rocket elements is stored in #rocketAssemblyX and #RO.Y 
 	; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 	
-	LD IX, spd.rocketEl								; Load the pointer to #rocket into IX
+	LD IX, db.rocketEl								; Load the pointer to #rocket into IX
 
 	; ##########################################
 	; Did the rocket reach the middle of the screen, and should it stop moving?
@@ -1089,7 +1089,7 @@ _StartRocketExplosion
 ;                    #_BoardRocket                         ;
 ;----------------------------------------------------------;
 _BoardRocket
-	CALL bs.SetupSpriteDataBank
+	CALL bs.SetupArraysDataBank
 	
 	; Return if rocket is not ready for boarding.
 	LD A, (rocketState)
@@ -1098,7 +1098,7 @@ _BoardRocket
 	
 	; ##########################################
 	; Jetman collision with first (lowest) rocket element triggers take off.
-	LD IX, spd.rocketEl
+	LD IX, db.rocketEl
 
 	LD BC, (rocketAssemblyX)					; X of the element.
 	LD B, 0

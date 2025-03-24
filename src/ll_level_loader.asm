@@ -22,12 +22,28 @@ LoadLevel1Data
 	CALL btd.CreateTodPalettes
 
 	; ##########################################
-	; Load background image
+	; Load background image.
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD A, $$db.bgrImgL1
 	LD (bm.imageBank), A
 
+	; ##########################################
+	; Load tile map.
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L1_3_BANK_D150
+	LD HL, db.tilesL1
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL1
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL1)
+	LD (pl.platformsSize), A
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -49,11 +65,27 @@ LoadLevel2Data
 	CALL btd.CreateTodPalettes
 
 	; ##########################################
-	; Load background image
+	; Load background image.
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD A, $$db.bgrImgL2
 	LD (bm.imageBank), A
+
+	; ##########################################
+	; Load tile map.
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L1_3_BANK_D150
+	LD HL, db.tilesL2
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL2
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL2)
+	LD (pl.platformsSize), A
 
 	RET											; ## END of the function ##
 
@@ -76,12 +108,28 @@ LoadLevel3Data
 	CALL btd.CreateTodPalettes
 
 	; ##########################################
-	; Load background image
+	; Load background image.
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD A, $$db.bgrImgL3
 	LD (bm.imageBank), A
 	
+	; ##########################################
+	; Load tile map.
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L1_3_BANK_D150
+	LD HL, db.tilesL3
+	CALL ti.LoadTiles
+	
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL3
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL3)
+	LD (pl.platformsSize), A	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -103,11 +151,27 @@ LoadLevel4Data
 	CALL btd.CreateTodPalettes
 
 	; ##########################################
-	; Load background image
+	; Load background image.
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD A, $$db.bgrImgL4
 	LD (bm.imageBank), A
+
+	; ##########################################
+	; Load tile map.
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L4_6_BANK_D151
+	LD HL, db.tilesL4
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL4
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL4)
+	LD (pl.platformsSize), A
 
 	RET											; ## END of the function ##
 
@@ -136,6 +200,22 @@ LoadLevel5Data
 	LD A, $$db.bgrImgL5
 	LD (bm.imageBank), A
 
+	; ##########################################
+	; Load tile map
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L4_6_BANK_D151
+	LD HL, db.tilesL5
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL5
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL5)
+	LD (pl.platformsSize), A
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -162,6 +242,22 @@ LoadLevel6Data
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD A, $$db.bgrImgL6
 	LD (bm.imageBank), A
+
+	; ##########################################
+	; Load tile map
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L4_6_BANK_D151
+	LD HL, db.tilesL6
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL6
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL6)
+	LD (pl.platformsSize), A	
 
 	RET											; ## END of the function ##
 
@@ -190,6 +286,22 @@ LoadLevel7Data
 	LD A, $$db.bgrImgL7
 	LD (bm.imageBank), A
 
+	; ##########################################
+	; Load tile map
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L7_9_BANK_D152
+	LD HL, db.tilesL7
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL7
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL7)
+	LD (pl.platformsSize), A	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -217,6 +329,22 @@ LoadLevel8Data
 	LD A, $$db.bgrImgL8
 	LD (bm.imageBank), A
 
+	; ##########################################
+	; Load tile map
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L7_9_BANK_D152
+	LD HL, db.tilesL8
+	CALL ti.LoadTiles
+
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL8
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL8)
+	LD (pl.platformsSize), A
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -244,6 +372,22 @@ LoadLevel9Data
 	LD A, $$db.bgrImgL9
 	LD (bm.imageBank), A
 
+	; ##########################################
+	; Load tile map
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L7_9_BANK_D152
+	LD HL, db.tilesL9
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL9
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL9)
+	LD (pl.platformsSize), A
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -270,6 +414,22 @@ LoadLevel10Data
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD A, $$db.bgrImgL10
 	LD (bm.imageBank), A
+
+	; ##########################################
+	; Load tile map
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L10_BANK_D42
+	LD HL, db.tilesL10
+	CALL ti.LoadTiles
+
+	; ##########################################
+	; Load platforms map.
+
+	CALL bs.SetupArraysDataBank
+	LD HL, db.platformsL10
+	LD (pl.platforms), HL
+
+	LD A, (db.platformsSizeL10)
+	LD (pl.platformsSize), A	
 
 	RET											; ## END of the function ##
 

@@ -63,16 +63,16 @@ LoadStarsPalette
 	
 	; ##########################################
 	; Load colors for the stars on layer 1.
-	CALL bs.SetupStarDataBank
-	LD HL, sd.starsPalL1
+	CALL bs.SetupStarsDataBank
+	LD HL, db.starsPalL1
 	LD A, _ST_PAL_L1_SIZE
 	LD B, A
 	CALL bp.WriteColors
 
 	; ##########################################
 	; Load colors for the stars on layer 2.
-	CALL bs.SetupStarDataBank
-	LD HL, sd.starsPalL2
+	CALL bs.SetupStarsDataBank
+	LD HL, db.starsPalL2
 	LD A, _ST_PAL_L2_SIZE
 	LD B, A
 	CALL bp.WriteColors
@@ -281,7 +281,7 @@ _MoveStarsL2Up
 _SetupLayer1
 
 	; Palette
-	LD DE, sd.starsPalL1
+	LD DE, db.starsPalL1
 	LD (starsPal), DE
 
 	LD A, _ST_PAL_L1_SIZE
@@ -293,13 +293,12 @@ _SetupLayer1
 
 	; ##########################################
 	; Data
-	LD DE, sd.starsDataL1
+	LD DE, db.starsDataL1
 	LD (starsData), DE
-
 	LD A, _ST_L1_SIZE
 	LD (starsDataSize), A
 
-	LD DE, sd.starsDataL1MaxY
+	LD DE, db.starsDataL1MaxY
 	LD (starsDataMaxY), DE
 
 	RET											; ## END of the function ##
@@ -310,7 +309,7 @@ _SetupLayer1
 _SetupLayer2
 
 	; Palette
-	LD DE, sd.starsPalL2
+	LD DE, db.starsPalL2
 	LD (starsPal), DE
 	
 	LD A, _ST_PAL_L2_SIZE
@@ -322,12 +321,12 @@ _SetupLayer2
 
 	; ##########################################
 	; Data
-	LD DE, sd.starsDataL2
+	LD DE, db.starsDataL2
 	LD (starsData), DE
 	LD A, _ST_L2_SIZE
 	LD (starsDataSize), A
 
-	LD DE, sd.starsDataL2MaxY
+	LD DE, db.starsDataL2MaxY
 	LD (starsDataMaxY), DE	
 
 	RET											; ## END of the function ##
@@ -337,7 +336,7 @@ _SetupLayer2
 ;----------------------------------------------------------;
 _NextStarsColor
 
-	CALL bs.SetupStarDataBank
+	CALL bs.SetupStarsDataBank
 	LD HL, (starsData)
 	LD A, (starsDataSize)
 	LD B, A
@@ -400,7 +399,7 @@ _NextStarsColor
 ;----------------------------------------------------------;
 _RenderStars
 
-	CALL bs.SetupStarDataBank
+	CALL bs.SetupStarsDataBank
 	LD A, (starsDataSize)
 	LD B, A
 	LD HL, (starsData)

@@ -40,9 +40,9 @@ STATE_SHOT_DIR_BIT		= 5						; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - 
 ;----------------------------------------------------------;
 WeaponHitEnemies
 
-	CALL bs.SetupSpriteDataBank
-	LD IX, spd.sprite01
-	LD A, (spd.enemiesSize)
+	CALL bs.SetupArraysDataBank
+	LD IX, db.sprite01
+	LD A, (db.enemiesSize)
 	LD B, A
 	CALL _CheckHitEnemies
 

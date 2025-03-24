@@ -10,9 +10,7 @@ start
 	DI											; Disable Interrupts, use wait_for_scanline instead.
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz.
 			
-	INCLUDE "dl_data_load.asm"
-	
-	CALL sc.SetupScreen
+	CALL gc.SetupGame
 	CALL gc.LoadLevel1
 
 	;CALL ro.AssemblyRocketForDebug
@@ -66,8 +64,6 @@ mainLoop
 
 	; LAST import due to bank offset!
 	INCLUDE "db_data_bin.asm"
-	INCLUDE "sd_star_data.asm"
-	INCLUDE "spd_sprite_data.asm"
 	
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;

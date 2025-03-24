@@ -434,7 +434,7 @@ _FIRE_ADJUST_Y_D4		= 4
 _FIRE_THICKNESS_D10		= 10
 
 ; ##############################################
-; Rocket
+; Rocket.
 _RO_DROP_NEXT_D5		= 10
 _RO_DROP_H_D200			= 160					; Jetman has to be above the rocket to drop the element.
 _RO_FLAME_OFFSET_D16	= 16
@@ -459,14 +459,6 @@ _RO_FLY_DELAY_DIST_D5	= 5
 _RO_EXHAUST_SPRID_D43	= 43					; Sprite ID for exhaust.
 
 ; ##############################################
-; Game screen 
-_GSC_X_MIN_D0			= 0
-_GSC_X_MAX_D315			= 315
-_GSC_Y_MIN_D15			= 15
-_GSC_Y_MAX_D232			= 232
-_GSC_JET_GND_D217		= 217					; Ground level from Jetman's sprite perspective.
-
-; ##############################################
 ; Screen.
 _SC_SYNC_SL_D192		= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
 _SC_SHAKE_BY_D2			= 2						; Number of pixels to move the screen by shaking.
@@ -483,10 +475,6 @@ _SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17.
 _PL_HIT_MARGIN_D5		= 5	
 
 ; ##############################################
-; Enemies.
-_EN_BANK_D149			= 149					; Bank for enemies, slot 6
-
-; ##############################################
 ; Tilemap.
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
@@ -498,7 +486,7 @@ _TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
 _TI_OFFSET	= (_TI_START_H5B00 - _RAM_SLOT2_START_H4000) >> 8
 
 _TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
-_TI_GND_D16				= 16					; The thickness of the ground (tilemap).
+_TI_GND_D8				= 8						; The thickness of the ground (tilemap).
 _TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
@@ -520,6 +508,16 @@ _TI_CLIP_X2_D159		= 159
 _TI_CLIP_Y1_D0			= 0
 _TI_CLIP_FULLY2_D255	= _SC_RESY1_D255
 _TI_CLIP_ROCKETY2_D247	= _SC_RESY1_D255 - _TI_PIXELS_D8
+
+; ##############################################
+; Game screen 
+_GSC_X_MIN_D0			= 0
+_GSC_X_MAX_D315			= 315
+_GSC_Y_MIN_D15			= 15
+_GSC_Y_MAX_D232			= 232
+
+; Ground level from Jetman's sprite perspective.
+_GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8
 
 ; ##############################################
 ; Tile definition (sprite file).
@@ -587,8 +585,8 @@ _BM_PAL2_B_MASK			= %0000000'1
 ; ##############################################
 ; In game background on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GB_MOVE_SLOW_D1		= 1
-_GB_OFFSET_D14 			= _TI_GND_D16-2			; 16-2 = 14
+_GB_MOVE_SLOW_D1		= 1						; 
+_GB_OFFSET_D6 			= _TI_GND_D8-2
 
 ; ##############################################
 ; In game stars.
@@ -618,8 +616,9 @@ _BN_TILES_BANK2_D43		= 43
 
 _BN_STARTS_BANK1_D44	= 44
 _BN_STARTS_BANK2_D45	= 45
+_BN_SPR_BANK_D149		= 149					; Bank for enemies, slot 6
 
-; Each background image has 80KiB (320x256), taking 10 banks + 1 bank for the palette.
+; Each background image has 80KiB (320x256), taking 10 banks.
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
 _BN_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
@@ -698,6 +697,8 @@ _BN_BG_L10_EN_BANK_D147	= _BN_BG_L10_ST_BANK_D138+_BM_BANKS_D10-1; -1 because in
 
 _BN_TI_L1_3_BANK_D150	= 150					; Tiles for Levels 1 - 3
 _BN_TI_L4_6_BANK_D151	= 151					; Tiles for Levels 4 - 6
+_BN_TI_L7_9_BANK_D152	= 152					; Tiles for Levels 7 - 9
+_BN_TI_L10_BANK_D42		= 42					; Tiles for Level 10
 
 ; ##############################################
 ; Respawn location.

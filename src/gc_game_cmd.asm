@@ -26,9 +26,21 @@ GameLoopCmd
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #SetupGame                          ;
+;----------------------------------------------------------;
+SetupGame
+	CALL sc.SetupScreen
+	CALL ti.SetupTiles
+	CALL sp.LoadSpritesFPGA
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      #LoadLevel1                         ;
 ;----------------------------------------------------------;
 LoadLevel1
+
+
 
 	CALL ll.LoadLevel1Data
 	CALL _InitLevel

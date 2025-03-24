@@ -4,7 +4,7 @@
 	MODULE ti
 
 
-; Timemap for single screen at 320x200 requires 2650 bytes:
+; Time map for single screen at 320x200 requires 2650 bytes:
 ; - 320 = 8*40 - 40 horizontal tiles,
 ; - 256 = 8*32 - 32 vertical tiles.
 ; Each tile occupies 2 bytes (tile offset and palette offset): 40*32*2 = 2560 bytes.
@@ -100,11 +100,30 @@ CleanTiles
 
 	RET											; ## END of the function ##
 
+
 ;----------------------------------------------------------;
-;                         #LoadTiles                       ;
+;                        #LoadTiles                        ;
 ;----------------------------------------------------------;
+; Input: 
+; HL:  - Tiles address.
 LoadTiles
 
+	; Copy tilemap to expected memory.
+	LD DE, _TI_START_H5B00
+	LD BC, _TI_MAP_BYTES_D2560
+	LDIR
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        #SetupTiles                       ;
+;----------------------------------------------------------;
+SetupTiles
+
+	NEXTREG _MMU_REG_SLOT6_H56, _BN_TILES_BANK1_D42	; Assign bank 42 to slot 6 (see di_data_bin.asm).
+	NEXTREG _MMU_REG_SLOT7_H57, _BN_TILES_BANK2_D43	; Assign bank 43 to slot 7 (see di_data_bin.asm).
+
+	; ##########################################	
 	; Enable tilemap mode.
 	NEXTREG _TI_MAP_CONTROL_H6B, %10000001		; 40x32, 8-pixel tiles = 320x256.
 	NEXTREG _TI_ATTRIBUTE_H6C, %00000000		; Palette offset, visuals.
@@ -123,13 +142,6 @@ LoadTiles
 	LD HL, db.tilePaletteBin					; Address of palette data in memory.
 	LD B, db.tilePaletteBinLength				; Number of colors to copy.
 	CALL LoadTilemapPalette
-
-	; ##########################################
-	; Copy tilemap to expected memory.
-	LD DE, _TI_START_H5B00
-	LD HL, db.tilemapBin						; Address of tilemap in memory.
-	LD BC, db.tilemapBinLength	
-	LDIR
 
 	; ##########################################
 	; Copy tile definitions to expected memory.

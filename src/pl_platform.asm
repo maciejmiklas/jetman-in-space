@@ -30,13 +30,8 @@ Y_BOTTOM				BYTE					; Y end of the platform.
 	ENDS
 
 ; [amount of platforms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels.
-platforms
-	PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  14*8/*Y_TOP*/, 14*8+8/*Y_BOTTOM*/}
-platform2
-	PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 20*8/*Y_TOP*/, 20*8+8/*Y_BOTTOM*/}
-platform3
-	PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 9*8/*Y_TOP*/,  9*8+8/*Y_BOTTOM*/}
-platformsSize 			BYTE 3
+platforms				WORD 0					; Pointer value to platforms.
+platformsSize 			BYTE 0
 
 ; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK.
 PLATFORM_WALK_INACTIVE	= $FF					; Not on any platform.
@@ -50,6 +45,9 @@ joyOffBump				BYTE _PL_BUMP_JOY_D15; The amount of pixels to bump off the platfo
 ;----------------------------------------------------------;
 JetPlatformHitOnJoyMove
 
+	CALL bs.SetupArraysDataBank
+
+	; ##########################################
 	; Check whether a collision with a platform is possible.
 	LD A, (jt.jetAir)
 	CP jt.AIR_FLY
@@ -61,7 +59,7 @@ JetPlatformHitOnJoyMove
 	; Params for _PlatformHit.
 	LD HL, jpo.jetX
 
-	LD IY, platforms
+	LD IY, (platforms)
 
 	LD A, (platformsSize)
 	LD B, A
@@ -203,6 +201,8 @@ JetPlatformHitOnJoyMove
 ;----------------------------------------------------------;
 ResetJoyOffBump
 	
+	CALL bs.SetupArraysDataBank
+
 	; Do not reset if already done.
 	LD A, (joyOffBump)
 	CP _PL_BUMP_JOY_D15
@@ -218,7 +218,7 @@ ResetJoyOffBump
 	; Call _PlatformHit to check whether Jetman is close to the platform. now, we will load the params for this method.
 	LD HL, jpo.jetX
 
-	LD IY, platforms
+	LD IY, (platforms)
 
 	LD A, (platformsSize)
 	LD B, A
@@ -422,6 +422,7 @@ MoveJetOnPlatformSideHit
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls.
 JetFallingFromPlatform
+	CALL bs.SetupArraysDataBank
 
 	; Does Jetman walk on any platform?
 	LD A, (platformWalkNumber)
@@ -430,7 +431,7 @@ JetFallingFromPlatform
 
 	; #platform contains a list of all platforms, each with a size of #PLA. #platformWalkNumber contains offset to current platform.
 	; Now, we have to set IX so that it points to the platform on which the Jetman walks: IX = #platform + #PLA * #platformWalkNumber.
-	LD IX, platforms
+	LD IX, (platforms)
 	LD A, (platformWalkNumber)					; Jetman is walking on this platform.
 	LD D, A
 	LD E, PLA
@@ -696,7 +697,7 @@ _PlatformDirectionHit
 .afterHitBottom
 
 	; ##########################################
-	; Lopp over platforms
+	; Loop over platforms
 	LD DE, PLA
 	ADD IY, DE
 	DJNZ .loopOverPlatforms							; decrement B until all platforms have been evaluated.
@@ -1046,7 +1047,8 @@ _CheckPlatformHitVertical
 ; Output:
 ;  - A: 	#PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 _PlatformSpriteHit
-
+	CALL bs.SetupArraysDataBank
+	
 	; Exit if sprite is not alive.
 	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)	
 	JR NZ, .alive								; Jump if sprite is alive.
@@ -1062,7 +1064,7 @@ _PlatformSpriteHit
 	ADD	HL, sr.SPR.X
 
 	LD IX, IY
-	LD IY, platforms
+	LD IY, (platforms)
 
 	LD A, (platformsSize)
 	LD B, A
