@@ -343,7 +343,7 @@ tilesL3Bytes = $ - tilesL3
 ;----------------------------------------------------------;
 ;            Game Tiles L4 to L6 (Bank 151)                ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6, _BN_TI_L4_7_BANK_D151 			; Assign slots 6,7 to banks 42,43.
+	MMU _RAM_SLOT6, _BN_TI_L4_6_BANK_D151 			; Assign slots 6,7 to banks 42,43.
 	ORG _RAM_SLOT6_START_HC000						; Set memory pointer to start of the slot 6.
 
 	; Level 4
@@ -361,7 +361,7 @@ tilesL6 INCBIN "assets/l05_tiles.map"
 tilesL6Bytes = $ - tilesL6
 	ASSERT tilesL6Bytes == _TI_MAP_BYTES_D2560	
 
-	ASSERT $$ == _BN_TI_L4_7_BANK_D151
+	ASSERT $$ == _BN_TI_L4_6_BANK_D151
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
