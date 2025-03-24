@@ -38,7 +38,7 @@ platform3
 	PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 9*8/*Y_TOP*/,  9*8+8/*Y_BOTTOM*/}
 platformsSize 			BYTE 3
 
-; A number of the platform that hetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK.
+; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK.
 PLATFORM_WALK_INACTIVE	= $FF					; Not on any platform.
 
 platformWalkNumber		BYTE PLATFORM_WALK_INACTIVE

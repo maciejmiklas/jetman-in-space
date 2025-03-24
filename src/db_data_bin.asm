@@ -2,11 +2,6 @@
 ;                    Binary Data Loader                    ;
 ;----------------------------------------------------------;
 	module db
-
-;----------------------------------------------------------;
-;                            Temps                         ;
-;----------------------------------------------------------;
-
 ;----------------------------------------------------------;
 ;                Game Sprites (Bank 40...41)               ;
 ;----------------------------------------------------------;
@@ -54,12 +49,18 @@ tileDefBinLength = $ - tileDefBin
   Values for Remy's editor (see also assets/tiles.txt):
   $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
   $1C7    $8   $40   $41   $40   $21   $2D   $2F   $1B   $1D   $35   $37   $3B   $18   $3D   $80
-  $1C7   $80   $18   $41   $A8   $10   $40   $60    $0  $1C1   $80  $1C1  $1C1  $1C1  $1C1   $DF
+  $1C7   $80   $18   $41   $A8   $10   $40   $60    $0   $1C1  $80   $1C1  $1C1  $1C1  $1C1   $DF
+  $1C7   $1BB  $1B3  $1AB  $1A3  $19B  $193  $18B  $183  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+  $1C7   $1F8  $1F0  $1E8  $1E0  $1D8  $1D0  $1C8  $1C0  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+  $1C7   $85   $7D   $75   $6D   $65   $5D   $55   $4D   $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
 */
 tilePaletteBin									; RGB332, 8 bit
-	DB $E3, $0, $2, $13, $17, $37, $5B, $9F, $8, $9, $A, $B, $C, $D, $E, $F
-	DB $E3, $4, $20, $20, $20, $10, $16, $17, $D, $E, $1A, $1B, $1D, $C, $1E, $40
-	DB $E3, $40, $C, $20, $54, $8, $20, $30, $0, $E0, $40, $E0, $E0, $E0, $E0, $6F
+	DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
+	DB $E3, $04, $20, $20, $20, $10, $16, $17, $0D, $0E, $1A, $1B, $1D, $0C, $1E, $40
+	DB $E3, $40, $0C, $20, $54, $08, $20, $30, $00, $E0, $40, $E0, $E0, $E0, $E0, $6F
+	DB $E3, $DD, $D9, $D5, $D1, $CD, $C9, $C5, $C1, $E3, $E3, $E3, $E3, $E3, $E3, $E3
+	DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E3, $E3, $E3, $E3, $E3, $E3, $E3
+	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $E3, $E3, $E3, $E3, $E3, $E3, $E3
 tilePaletteBinLength = $ - tilePaletteBin
 	
 	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
@@ -67,7 +68,7 @@ tilePaletteBinLength = $ - tilePaletteBin
 	ASSERT $$ <= _BN_TILES_BANK2_D43 			; All data should fit into bank 43.
 
 ;----------------------------------------------------------;
-;                   Star Tiles (Bank 44)                  ;
+;                   Star Tiles (Bank 44)                   ;
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 _RAM_SLOT7, _BN_STARTS_BANK1_D44 ; Assign slots 6,7 to banks 44,45.
 	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6.
@@ -177,10 +178,10 @@ todL2Palettes									; Pallete will be generated during runtime.
 
 	MMU _RAM_SLOT6 n, _BN_BG_L1_ST_BANK_D48
 	ORG _RAM_SLOT6_START_HC000
-bgrL1Img	
+bgrImgL1	
 	INCBIN "assets/l01_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL1Img == _BN_BG_L1_ST_BANK_D48
+	ASSERT $$bgrImgL1 == _BN_BG_L1_ST_BANK_D48
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L1_EN_BANK_D57+1		; Image has 81920 bytes, 10 banks.
@@ -190,10 +191,10 @@ bgrL1Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L2_ST_BANK_D58
 	ORG _RAM_SLOT6_START_HC000
-bgrL2Img	
+bgrImgL2	
 	INCBIN "assets/l02_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL2Img == _BN_BG_L2_ST_BANK_D58  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL2 == _BN_BG_L2_ST_BANK_D58  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L2_EN_BANK_D67+1		; Image has 81920 bytes, 10 banks
@@ -203,10 +204,10 @@ bgrL2Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L3_ST_BANK_D68
 	ORG _RAM_SLOT6_START_HC000
-bgrL3Img	
+bgrImgL3	
 	INCBIN "assets/l03_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL3Img == _BN_BG_L3_ST_BANK_D68  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL3 == _BN_BG_L3_ST_BANK_D68  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L3_EN_BANK_D77+1		; Image has 81920 bytes, 10 banks.
@@ -216,10 +217,10 @@ bgrL3Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L4_ST_BANK_D78
 	ORG _RAM_SLOT6_START_HC000
-bgrL4Img	
+bgrImgL4	
 	INCBIN "assets/l04_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL4Img == _BN_BG_L4_ST_BANK_D78  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL4 == _BN_BG_L4_ST_BANK_D78  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L4_EN_BANK_D87+1		; Image has 81920 bytes, 10 banks.
@@ -229,10 +230,10 @@ bgrL4Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L5_ST_BANK_D88
 	ORG _RAM_SLOT6_START_HC000
-bgrL5Img	
+bgrImgL5	
 	INCBIN "assets/l05_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL5Img == _BN_BG_L5_ST_BANK_D88  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL5 == _BN_BG_L5_ST_BANK_D88  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L5_EN_BANK_D97+1		; Image has 81920 bytes, 10 banks.	
@@ -242,10 +243,10 @@ bgrL5Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L6_ST_BANK_D98
 	ORG _RAM_SLOT6_START_HC000
-bgrL6Img	
+bgrImgL6	
 	INCBIN "assets/l06_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL6Img == _BN_BG_L6_ST_BANK_D98  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL6 == _BN_BG_L6_ST_BANK_D98  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L6_EN_BANK_D107+1		; Image has 81920 bytes, 10 banks.
@@ -255,10 +256,10 @@ bgrL6Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L7_ST_BANK_D108
 	ORG _RAM_SLOT6_START_HC000
-bgrL7Img	
+bgrImgL7	
 	INCBIN "assets/l07_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL7Img == _BN_BG_L7_ST_BANK_D108  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL7 == _BN_BG_L7_ST_BANK_D108  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L7_EN_BANK_D117+1		; Image has 81920 bytes, 10 banks.
@@ -268,10 +269,10 @@ bgrL7Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L8_ST_BANK_D118
 	ORG _RAM_SLOT6_START_HC000
-bgrL8Img	
+bgrImgL8	
 	INCBIN "assets/l08_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL8Img == _BN_BG_L8_ST_BANK_D118  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL8 == _BN_BG_L8_ST_BANK_D118  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L8_EN_BANK_D127+1		; Image has 81920 bytes, 10 banks.
@@ -281,10 +282,10 @@ bgrL8Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L9_ST_BANK_D128
 	ORG _RAM_SLOT6_START_HC000
-bgrL9Img	
+bgrImgL9	
 	INCBIN "assets/l09_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL9Img == _BN_BG_L9_ST_BANK_D128  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL9 == _BN_BG_L9_ST_BANK_D128  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L9_EN_BANK_D137+1		; Image has 81920 bytes, 10 banks.
@@ -294,10 +295,10 @@ bgrL9Img
 ;----------------------------------------------------------;
 	MMU _RAM_SLOT6 n, _BN_BG_L10_ST_BANK_D138
 	ORG _RAM_SLOT6_START_HC000
-bgrL10Img	
+bgrImgL10	
 	INCBIN "assets/l10_background.nxi", 0, _BM_BYTES_D81920
 
-	ASSERT $$bgrL10Img == _BN_BG_L10_ST_BANK_D138  ; Make sure that we have configured the right bank.
+	ASSERT $$bgrImgL10 == _BN_BG_L10_ST_BANK_D138  ; Make sure that we have configured the right bank.
 
 	; MMU should be in the next slot because the last slot has been filed.
 	ASSERT $$ == _BN_BG_L10_EN_BANK_D147+1		; Image has 81920 bytes, 10 banks.
@@ -309,6 +310,58 @@ bgrL10Img
 ;----------------------------------------------------------;
 ;        Enemy Data (Bank 149) - ed_enemy_data.asm         ;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;            Game Tiles L1 to L3 (Bank 150)                ;
+;----------------------------------------------------------;
+	; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
+
+	MMU _RAM_SLOT6, _BN_TI_L1_3_BANK_D150 			; Assign slots 6,7 to banks 42,43.
+	ORG _RAM_SLOT6_START_HC000						; Set memory pointer to start of the slot 6.
+
+	; Level 1
+tilesL1 INCBIN "assets/l01_tiles.map"
+tilesL1Bytes = $ - tilesL1
+	ASSERT tilesL1Bytes == _TI_MAP_BYTES_D2560
+
+	ASSERT $$ == _BN_TI_L1_3_BANK_D150
+
+	; Level 2
+tilesL2 INCBIN "assets/l02_tiles.map"
+tilesL2Bytes = $ - tilesL2
+	ASSERT tilesL2Bytes == _TI_MAP_BYTES_D2560
+
+	ASSERT $$ == _BN_TI_L1_3_BANK_D150
+
+	; Level 3
+tilesL3 INCBIN "assets/l03_tiles.map"
+tilesL3Bytes = $ - tilesL3
+	ASSERT tilesL3Bytes == _TI_MAP_BYTES_D2560
+
+	ASSERT $$ == _BN_TI_L1_3_BANK_D150
+
+;----------------------------------------------------------;
+;            Game Tiles L4 to L6 (Bank 151)                ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6, _BN_TI_L4_7_BANK_D151 			; Assign slots 6,7 to banks 42,43.
+	ORG _RAM_SLOT6_START_HC000						; Set memory pointer to start of the slot 6.
+
+	; Level 4
+tilesL4 INCBIN "assets/l04_tiles.map"
+tilesL4Bytes = $ - tilesL4
+	ASSERT tilesL4Bytes == _TI_MAP_BYTES_D2560
+
+	; Level 5
+tilesL5 INCBIN "assets/l05_tiles.map"
+tilesL5Bytes = $ - tilesL5
+	ASSERT tilesL5Bytes == _TI_MAP_BYTES_D2560
+
+	; Level 6
+tilesL6 INCBIN "assets/l05_tiles.map"
+tilesL6Bytes = $ - tilesL6
+	ASSERT tilesL6Bytes == _TI_MAP_BYTES_D2560	
+
+	ASSERT $$ == _BN_TI_L4_7_BANK_D151
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -25,7 +25,7 @@ LoadLevel1Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL1Img
+	LD A, $$db.bgrImgL1
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -52,7 +52,7 @@ LoadLevel2Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL2Img
+	LD A, $$db.bgrImgL2
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -79,7 +79,7 @@ LoadLevel3Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL3Img
+	LD A, $$db.bgrImgL3
 	LD (bm.imageBank), A
 	
 	RET											; ## END of the function ##
@@ -106,7 +106,7 @@ LoadLevel4Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL4Img
+	LD A, $$db.bgrImgL4
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -133,7 +133,7 @@ LoadLevel5Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL5Img
+	LD A, $$db.bgrImgL5
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -160,7 +160,7 @@ LoadLevel6Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL6Img
+	LD A, $$db.bgrImgL6
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -187,7 +187,7 @@ LoadLevel7Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL7Img
+	LD A, $$db.bgrImgL7
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -214,7 +214,7 @@ LoadLevel8Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL8Img
+	LD A, $$db.bgrImgL8
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -241,7 +241,7 @@ LoadLevel9Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL9Img
+	LD A, $$db.bgrImgL9
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##
@@ -268,7 +268,7 @@ LoadLevel10Data
 	; Load background image
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrL10Img
+	LD A, $$db.bgrImgL10
 	LD (bm.imageBank), A
 
 	RET											; ## END of the function ##

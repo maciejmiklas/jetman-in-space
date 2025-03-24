@@ -488,7 +488,7 @@ _EN_BANK_D149			= 149					; Bank for enemies, slot 6
 
 ; ##############################################
 ; Tilemap.
-; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3. 
+; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
 _TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
 	ASSERT _TI_START_H5B00 >= _RAM_SLOT2_START_H4000
@@ -695,6 +695,9 @@ _BN_BG_L10_ST_BANK_D138	= _BN_BG_L9_EN_BANK_D137+1
 
 _BN_BG_L10_EN_BANK_D147	= _BN_BG_L10_ST_BANK_D138+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _BN_BG_L10_EN_BANK_D147 == 147
+
+_BN_TI_L1_3_BANK_D150	= 150					; Tiles for Levels 1 - 3
+_BN_TI_L4_6_BANK_D151	= 151					; Tiles for Levels 4 - 6
 
 ; ##############################################
 ; Respawn location.

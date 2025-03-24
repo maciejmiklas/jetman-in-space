@@ -253,7 +253,7 @@ _RipMove
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_CheckCollision                       ;
+;                    #_CheckCollision                      ;
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
 ; Input:
