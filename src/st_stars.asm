@@ -48,6 +48,8 @@ starsDataSize			BYTE 27
 starsData				WORD 0				; Before using: CALL ut.SetupDataArraysBank
 starsDataMaxY			WORD 0				; Before using: CALL ut.SetupDataArraysBank
 
+_ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
+
 ;----------------------------------------------------------;
 ;                   #LoadStarsPalette                      ;
 ;----------------------------------------------------------;

@@ -16,6 +16,14 @@
 ; - $5B00 - $6500 - Tilemap, 2560 bytes,
 ; - $6501 - $7FFF - Tile definitions/sprites. We can store up to 215 sprites: $7FFF - $6501 = 6910. 6910/32 = 215.
 
+; Tile definition (sprite file).
+START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite file).
+	ASSERT START_H6500 >= _RAM_SLOT2_START_H4000
+	ASSERT START_H6500 <= _RAM_SLOT3_END_H7FFF
+	
+; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
+OFFSET	= (START_H6500 - _RAM_SLOT2_START_H4000) >> 8
+
 ;----------------------------------------------------------;
 ;                     #ShakeTilemap                        ;
 ;----------------------------------------------------------;
@@ -135,7 +143,7 @@ SetupTiles
 	; ##########################################
 	; Tell hardware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
 	NEXTREG _TI_MAP_ADR_H6E, _TI_OFFSET			; MSB of tilemap in bank 5.
-	NEXTREG _TI_DEF_ADR_H6F, _TID_OFFSET		; MSB of tilemap definitions (sprites).
+	NEXTREG _TI_DEF_ADR_H6F, OFFSET		; MSB of tilemap definitions (sprites).
 
 	; ##########################################
 	; Setup palette
@@ -145,7 +153,7 @@ SetupTiles
 
 	; ##########################################
 	; Copy tile definitions to expected memory.
-	LD DE, _TID_START_H6500
+	LD DE, START_H6500
 	LD HL, db.tileDefBin						; Address of tiles in memory.
 	LD BC, db.tileDefBinLength					; Number of bytes to copy.
 	LDIR

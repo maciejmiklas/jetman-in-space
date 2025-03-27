@@ -23,10 +23,9 @@ LoadLevel1Data
 
 	; ##########################################
 	; Load background image.
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL1
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "1"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map.
@@ -66,10 +65,9 @@ LoadLevel2Data
 
 	; ##########################################
 	; Load background image.
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL2
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "2"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map.
@@ -109,10 +107,9 @@ LoadLevel3Data
 
 	; ##########################################
 	; Load background image.
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL3
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "3"
+	CALL bg.LoadBgImage
 	
 	; ##########################################
 	; Load tile map.
@@ -154,8 +151,9 @@ LoadLevel4Data
 	; Load background image.
 
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL4
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "4"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map.
@@ -195,10 +193,9 @@ LoadLevel5Data
 
 	; ##########################################
 	; Load background image
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL5
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "5"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map
@@ -238,10 +235,9 @@ LoadLevel6Data
 
 	; ##########################################
 	; Load background image
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL6
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "6"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map
@@ -281,10 +277,9 @@ LoadLevel7Data
 
 	; ##########################################
 	; Load background image
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL7
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "7"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map
@@ -324,10 +319,9 @@ LoadLevel8Data
 
 	; ##########################################
 	; Load background image
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL8
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "8"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map
@@ -367,10 +361,9 @@ LoadLevel9Data
 
 	; ##########################################
 	; Load background image
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL9
-	LD (bm.imageBank), A
+	LD D, "0"
+	LD E, "9"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map
@@ -410,10 +403,9 @@ LoadLevel10Data
 
 	; ##########################################
 	; Load background image
-
-	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
-	LD A, $$db.bgrImgL10
-	LD (bm.imageBank), A
+	LD D, "1"
+	LD E, "0"
+	CALL bg.LoadBgImage
 
 	; ##########################################
 	; Load tile map

@@ -17,8 +17,7 @@ imageBank				BYTE 0					; Bank containing the image.
 LoadImage
 	
 	; Load into D the start bank containing background image source
-	LD A, (imageBank)
-	LD D, A
+	LD D, _BN_BG_ST_BANK_D48
 
 	; Copy image data from temp RAM into screen memory
 	NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default).
@@ -101,7 +100,7 @@ ReplaceImageLine
 	; Setup banks. The source image will be stored in bank 6, destination image in bank 7. We will copy line from 6 to 7.
 
 	; Setup slot 6 with source.
-	LD A, (imageBank)
+	LD A, _BN_BG_ST_BANK_D48
 	ADD B										; A points to current bank from the source image.
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Slot 6 contains source of the image.
 	

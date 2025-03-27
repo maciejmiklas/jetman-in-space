@@ -258,7 +258,7 @@ _JoyCntEnabled
 	; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
 
 	LD A, (pl.joyOffBump)
-	CP _C_PL_BUMP_JOY_DEC_D1+1
+	CP _PL_BUMP_JOY_DEC_D1+1
 	JR C, .joyEnabled
 
 	LD A, _RET_OFF_D0

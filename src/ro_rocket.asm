@@ -6,7 +6,7 @@
 ; Number of _GameLoop040 cycles to drop next rocket module.
 dropNextDelay			BYTE 0
 
-rocketElementCnt		BYTE 0 					; Counts from _RO_EL_LOW_D1 to _RO_EL_TANK3_D6, both inclusive.
+rocketElementCnt		BYTE 0 					; Counts from EL_LOW_D1 to EL_TANK3_D6, both inclusive.
 
 rocketState				BYTE RO_ST_WAIT_DROP
 
@@ -56,13 +56,30 @@ rocketFlyDelayCnt		BYTE _RO_FLY_DELAY_D8	; Counts from _RO_FLY_DELAY_D8 to 0, de
 rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
+FLAME_OFFSET_D16		= 16
+SPR_PAT_READY1_D60		= 60					; Once the rocket is ready, it will start blinking using #SPR_PAT_READY1_D60 and #SPR_PAT_READY2_D61.
+SPR_PAT_READY2_D61		= 61
+EL_LOW_D1				= 1
+EL_MID_D2				= 2
+EL_TOP_D3				= 3
+EL_TANK1_D4				= 4
+EL_TANK2_D5				= 5
+EL_TANK3_D6				= 6
+
+PICK_MARGX_D8			= 8
+PICK_MARGY_D16			= 16
+CARRY_ADJUSTY_D10		= 10
+EXPLODE_Y_HI_H4			= 4						; HI byte from #starsDistance to explode rocket,1150 = $47E.
+EXPLODE_Y_LO_H7E		= $7E					; LO byte from #starsDistance to explode rocket.
+EXHAUST_SPRID_D43		= 43					; Sprite ID for exhaust.
+
 ;----------------------------------------------------------;
 ;               #AssemblyRocketForDebug                    ;
 ;----------------------------------------------------------;
 AssemblyRocketForDebug
 	CALL bs.SetupArraysDataBank
 
-	LD A, _RO_EL_TANK3_D6
+	LD A, EL_TANK3_D6
 	LD (rocketElementCnt), A
 
 	LD A, RO_ST_READY
@@ -123,7 +140,7 @@ ResetAndDisableRocket
 
 	; ##########################################
 	; Reset rocket elements
-	LD B, _RO_EL_TANK3_D6
+	LD B, EL_TANK3_D6
 .rocketElLoop
 	LD A, B
 	LD IX, db.rocketEl
@@ -156,7 +173,7 @@ HideRocket
 
 	; Hide the top rockets element.
 	LD IX, db.rocketEl
-	LD A, _RO_EL_TOP_D3
+	LD A, EL_TOP_D3
 	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.SPRITE_ID)
@@ -165,7 +182,7 @@ HideRocket
 	; ##########################################
 	; Hide the middle rockets element.
 	LD IX, db.rocketEl
-	LD A, _RO_EL_MID_D2
+	LD A, EL_MID_D2
 	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.SPRITE_ID)
@@ -174,7 +191,7 @@ HideRocket
 	; ##########################################
 	; Hide the bottom rockets element.
 	LD IX, db.rocketEl
-	LD A, _RO_EL_LOW_D1
+	LD A, EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.SPRITE_ID)
@@ -203,7 +220,7 @@ AnimateRocketExplosion
 	; ##########################################
 	; Animation for the top rockets element.
 	LD IX, db.rocketEl
-	LD A, _RO_EL_TOP_D3
+	LD A, EL_TOP_D3
 	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame.
@@ -218,7 +235,7 @@ AnimateRocketExplosion
 	; ##########################################
 	; Animation for the middle rockets element.
 	LD IX, db.rocketEl
-	LD A, _RO_EL_MID_D2
+	LD A, EL_MID_D2
 	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame.
@@ -233,7 +250,7 @@ AnimateRocketExplosion
 	; ##########################################
 	; Animation for the bottom rockets element.
 	LD IX, db.rocketEl
-	LD A, _RO_EL_LOW_D1
+	LD A, EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
 	; Move HL to current frame
@@ -267,7 +284,7 @@ CheckHitTank
 
 	; Is the thank out there?
 	LD A, (rocketElementCnt)
-	CP _RO_EL_TANK1_D4
+	CP EL_TANK1_D4
 	RET C										; Return if counter is < 4 (still assembling rocket).
 
 	; Is tank already exploding?
@@ -381,7 +398,7 @@ AnimateRocketExhaust
 	LD (rocketExhaustCnt), A					; Store current counter (increment or reset).
 
 	; Set the ID of the sprite for the following commands.
-	LD A, _RO_EXHAUST_SPRID_D43
+	LD A, EXHAUST_SPRID_D43
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Load spirte pattern to A.
@@ -407,17 +424,17 @@ BlinkRocketReady
 	CP RO_ST_FLY
 	RET NZ
 		
-	LD A, _RO_EL_LOW_D1
+	LD A, EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink.
 	LD A, (gld.counter008FliFLop)
 	CP _GC_FLIP_ON_D1
 	JR Z, .flip
-	LD A, _RO_SPR_PAT_READY1_D60
+	LD A, SPR_PAT_READY1_D60
 	JR .afterSet
 .flip	
-	LD A, _RO_SPR_PAT_READY2_D61
+	LD A, SPR_PAT_READY2_D61
 .afterSet
 	
 	LD (IX + RO.SPRITE_REF), A
@@ -440,7 +457,7 @@ FlyRocket
 
 	; ##########################################
 	; Flames coming out of the exhaust.
-	LD A, _RO_EXHAUST_SPRID_D43
+	LD A, EXHAUST_SPRID_D43
 	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands.
 
 	; Sprite X coordinate from assembly location.
@@ -453,7 +470,7 @@ FlyRocket
 	; Sprite Y coordinate.
 	LD IX, db.rocketEl
 	LD A, (IX + RO.Y)							; Lowest rocket element + 16px.
-	ADD A, _RO_FLAME_OFFSET_D16
+	ADD A, FLAME_OFFSET_D16
 	NEXTREG _SPR_REG_Y_H36, A
 
 	CALL js.HideJetSprite						; Keep hiding Jetman sprite, just in case other procedure would show it.
@@ -549,10 +566,10 @@ AnimateRocketReady
 	LD A, (gld.counter008FliFLop)
 	CP _GC_FLIP_ON_D1
 	JR Z, .flip
-	LD A, _RO_SPR_PAT_READY1_D60
+	LD A, SPR_PAT_READY1_D60
 	JR .afterSet
 .flip	
-	LD A, _RO_SPR_PAT_READY2_D61
+	LD A, SPR_PAT_READY2_D61
 .afterSet
 	OR _SPR_PATTERN_SHOW						; Set visibility bit.
 	NEXTREG _SPR_REG_ATR3_H38, A
@@ -612,7 +629,7 @@ RocketElementFallsForAssembly
 	; ##########################################
 	; Hide the fuel tank sprite if we drop fuel, and change rocket sprite showing fuel level.
 	LD A, (rocketElementCnt)
-	CP _RO_EL_TANK1_D4
+	CP EL_TANK1_D4
 	JR C, .notFuel								; Jump if counter is < 4 (still assembling rocket).
 
 	; We are dropping fuel already, hHide the fuel sprite as it has reached the rocket.
@@ -647,7 +664,7 @@ DropNextRocketElement
 
 	; Check whether rocket element counter has already reached max value.
 	LD A, (rocketElementCnt)
-	CP _RO_EL_TANK3_D6
+	CP EL_TANK3_D6
 	JR NZ, .dropNext							; Jump if the counter did not reach max value.
 
 	; The rocket is assembled and fueled.
@@ -743,7 +760,7 @@ _JetmanElementCollision
 	RET		
 .keepCheckingHorizontal	
 	LD A, L
-	LD B, _RO_PICK_MARGX_D8
+	LD B, PICK_MARGX_D8
 	CP B
 	JR C, .checkVertical						; Jump if there is horizontal collision, check vertical.
 	LD A, COLLISION_NO							; L >= D (Horizontal thickness of the enemy) -> no collision.
@@ -753,13 +770,13 @@ _JetmanElementCollision
 	; We are here because Jetman's horizontal position matches that of the element, now check vertical.
 	LD A, (jpo.jetY)								; Y of the Jetman.
 
-	; Subtracts B from A and check whether the result is less than or equal to #_RO_PICK_MARGY_D16.
+	; Subtracts B from A and check whether the result is less than or equal to #PICK_MARGY_D16.
 	SUB D										; D is method param (Y postion of rocket element).
 	CALL ut.AbsA
 	LD B, A
-	LD A, _RO_PICK_MARGY_D16
+	LD A, PICK_MARGY_D16
 	CP B
-	JR NC, .collision							; Jump if A(#_RO_PICK_MARGY_D16) >= B
+	JR NC, .collision							; Jump if A(#PICK_MARGY_D16) >= B
 
 .noCollision
 	LD A, COLLISION_NO
@@ -834,7 +851,7 @@ _MoveWithJetman
 	; ##########################################
 	; Set Y coordinate
 	LD A, (jpo.jetY)
-	ADD _RO_CARRY_ADJUSTY_D10
+	ADD CARRY_ADJUSTY_D10
 	NEXTREG _SPR_REG_Y_H36, A					; Set Y position.
 
 	RET											; ## END of the function ##
@@ -844,11 +861,11 @@ _MoveWithJetman
 ;----------------------------------------------------------;
 _JetmanDropsRocketElement
 
-	; Is Jetman over the drop location (+/- #_RO_PICK_MARGX_D8)?
+	; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
 	LD BC, (jpo.jetX)
 	LD A, (rocketAssemblyX)
 	SUB C										; Ignore B because X < 255.
-	CP _RO_PICK_MARGX_D8
+	CP PICK_MARGX_D8
 	RET NC
 
 	; ##########################################
@@ -998,11 +1015,11 @@ _MoveFlyingRocket
 	; ##########################################
 	; Has the rocket reached the asteroid, and should the explosion sequence begin?
 	LD A, H
-	CP _RO_EXPLODE_Y_HI_H4
+	CP EXPLODE_Y_HI_H4
 	JR NZ, .notAtAsteroid
 
 	LD A, L
-	CP _RO_EXPLODE_Y_LO_H7E
+	CP EXPLODE_Y_LO_H7E
 	JR C, .notAtAsteroid
 
 	CALL _StartRocketExplosion
@@ -1040,7 +1057,7 @@ _MoveFlyingRocket
 
 	; ##########################################
 	; Move middle rocket element.
-	LD A, _RO_EL_MID_D2
+	LD A, EL_MID_D2
 	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.Y)
@@ -1052,7 +1069,7 @@ _MoveFlyingRocket
 
 	; ##########################################
 	; Move top rocket element.
-	LD A, _RO_EL_TOP_D3
+	LD A, EL_TOP_D3
 	CALL _MoveIXtoGivenRocketElement
 
 	LD A, (IX + RO.Y)
@@ -1075,7 +1092,7 @@ _StartRocketExplosion
 
 	; ##########################################
 	; Hide exhaust
-	LD A, _RO_EXHAUST_SPRID_D43					; Hide sprite on display.
+	LD A, EXHAUST_SPRID_D43					; Hide sprite on display.
 	CALL sp.SetIdAndHideSprite
 
 	; ##########################################

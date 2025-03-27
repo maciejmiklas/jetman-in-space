@@ -94,7 +94,7 @@ _DC_REG_LA2_PAL_VAL_H41	= $41
 ;  - 3: Select Sprites palette (0 = first palette, 1 = second palette),
 ;  - 2 Select Layer 2 palette (0 = first palette, 1 = second palette),
 ;  - 1: Select ULA palette (0 = first palette, 1 = second palette),
-;  - 0: Enabe ULANext mode if 1. (0 after a reset).
+;  - 0: Enable ULANext mode if 1. (0 after a reset).
 _DC_REG_LA2_PAL_CTR_H43	= $43
 
 ; Palette Value (9 bit color)
@@ -395,13 +395,6 @@ _BANK_BYTES_D8192		= 8*1024
 _PL_JOY_DELAY			= 1						; Probe joystick every few loops, 1 for each loop, 0 is not supported.
 
 ; ##############################################
-; Margins for collision Jetman - enemy.
-_ENP_MARG_HOR_D12		= 12
-_ENP_MARG_VERT_UP_D18	= 18
-_ENP_MARG_VERT_LOW_D15	= 15
-_ENP_MARG_VERT_KICK_D25	= 25
-
-; ##############################################
 ; Jetman invincibility.
 _INVINCIBLE_D400 		= 400					; Number of loops to keep Jetman invincible.
 _INVINCIBLE_BLINK_D100	= 100
@@ -415,48 +408,21 @@ _JSTAND_START_D100		= 100
 ; ##############################################
 ; Platform.
 _PL_FALL_JOY_OFF_D10	= 10					; Disable the joystick for a few frames because Jetman is falling from the platform.
-_PL_FALL_Y_D4			= 4						; Amount of pixels to move Jetman down when falling from the platform.
-_PL_FALL_X_D2			= 2
 
 _PL_BUMP_JOY_D15		= 15					; Disable the joystick for a few frames because Jetman is bumping into the platform.
-_C_PL_BUMP_JOY_DEC_D1	= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value.
+_PL_BUMP_JOY_DEC_D1		= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value.
 _PL_BUMP_Y_D4			= 4						; Amount of pixels to move Jetman down when hitting platform from below.
 _PL_BUMP_X_D4			= 4
 
-; Compensation for height of Jetman's sprite to fall from the platform.
-_PL_FALL_LX_D8			= 8
-_C_PL_FALL_RX_N1		= -1
-
-; ##############################################
-; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
-_FIRE_ADJUST_X_D10		= 10			
-_FIRE_ADJUST_Y_D4		= 4
-_FIRE_THICKNESS_D10		= 10
-
 ; ##############################################
 ; Rocket.
-_RO_DROP_NEXT_D5		= 10
+_RO_DROP_NEXT_D5		= 10					; Drop next element delay
 _RO_DROP_H_D200			= 160					; Jetman has to be above the rocket to drop the element.
-_RO_FLAME_OFFSET_D16	= 16
 _RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
-_RO_SPR_PAT_READY1_D60	= 60					; Once the rocket is ready, it will start blinking using #_RO_SPR_PAT_READY1_D60 and #_RO_SPR_PAT_READY2_D61.
-_RO_SPR_PAT_READY2_D61	= 61
-_RO_EL_LOW_D1			= 1
-_RO_EL_MID_D2			= 2
-_RO_EL_TOP_D3			= 3
-_RO_EL_TANK1_D4			= 4
-_RO_EL_TANK2_D5			= 5
-_RO_EL_TANK3_D6			= 6
-
-_RO_PICK_MARGX_D8		= 8
-_RO_PICK_MARGY_D16		= 16
-_RO_CARRY_ADJUSTY_D10	= 10
-_RO_EXPLODE_Y_HI_H4		= 4						; HI byte from #starsDistance to explode rocket,1150 = $47E.
-_RO_EXPLODE_Y_LO_H7E	= $7E					; LO byte from #starsDistance to explode rocket.
 _RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 _RO_FLY_DELAY_D8		= 8
 _RO_FLY_DELAY_DIST_D5	= 5
-_RO_EXHAUST_SPRID_D43	= 43					; Sprite ID for exhaust.
+
 
 ; ##############################################
 ; Screen.
@@ -470,9 +436,6 @@ _SC_RESY_D256			= 256
 _SC_RESY1_D255			= _SC_RESY_D256 -1
 
 _SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17.
-
-; Platform 
-_PL_HIT_MARGIN_D5		= 5	
 
 ; ##############################################
 ; Tilemap.
@@ -520,15 +483,6 @@ _GSC_Y_MAX_D232			= 232
 _GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8
 
 ; ##############################################
-; Tile definition (sprite file).
-_TID_START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite file).
-	ASSERT _TID_START_H6500 >= _RAM_SLOT2_START_H4000
-	ASSERT _TID_START_H6500 <= _RAM_SLOT3_END_H7FFF
-	
-; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-_TID_OFFSET	= (_TID_START_H6500 - _RAM_SLOT2_START_H4000) >> 8
-
-; ##############################################
 ; Tile stars map.
 _TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=40*32*4*2 bytes, 3 screens.
 _TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
@@ -564,34 +518,15 @@ _BM_BYTES_D81920		= _BM_XRES_D320*_BM_YRES_D256
 	ASSERT _BM_BYTES_D81920 == 81920
 
 _BM_PAL2_BYTES_D512		= 512
-_BM_PAL2_COLORS_D255	= 255
 _BM_BANKS_D10			= 10
 
-_BM_PAL2_MIN			= 0
-_BM_PAL2_MAX			= 7
-_BM_PAL2_RRR_MASK		= %111'000'00 			; Mask red color.
-_BM_PAL2_RRR_MASKN		= %000'111'11 			; Mask all but red color.
-_BM_PAL2_RRR_INC		= %001'000'00 			; Increment/decrement red color.
-
-_BM_PAL2_GGG_MASK		= %000'111'00 			; Mask green color.
-_BM_PAL2_GGG_MASKN		= %111'000'11 			; Mask all but green color.
-_BM_PAL2_GGG_INC		= %000'001'00 			; Increment/decrement green color.
-
-_BM_PAL2_BB_MASK		= %000'000'11
-_BM_PAL2_BB_MASKN		= %111'111'00
-
-_BM_PAL2_B_MASK			= %0000000'1 
-
 ; ##############################################
-; In game background on Layer 2.
+; In game background image on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GB_MOVE_SLOW_D1		= 1						; 
-_GB_OFFSET_D6 			= _TI_GND_D8-2
+_GB_MOVE_SLOW_D1		= 1						; Slows down background movement (when Jetman moves).
 
 ; ##############################################
 ; In game stars.
-
-_ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
 
 _ST_L1_MOVE_DEL_D4		= 4						; Stars move delay.
 _ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
@@ -628,72 +563,9 @@ _BN_PAL2_BANK_D46		= 46					; Layer 2 pallettes
 _BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for pallettes from _BN_PAL2_BANK_D46.
 
 ; Image for Level 1 (all values inclusive). Bank 48...57
-_BN_BG_L1_ST_BANK_D48	= 48
-_BN_BG_L1_EN_BANK_D57 = _BN_BG_L1_ST_BANK_D48+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L1_EN_BANK_D57 == 57
-
-; Image for Level 2 (all values inclusive). Bank 58...67
-_BN_BG_L2_ST_BANK_D58	= _BN_BG_L1_EN_BANK_D57+1
-	ASSERT _BN_BG_L2_ST_BANK_D58 == 58
-
-_BN_BG_L2_EN_BANK_D67	= _BN_BG_L2_ST_BANK_D58+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L2_EN_BANK_D67 == 67
-
-; Image for Level 3 (all values inclusive). Bank 68...77
-_BN_BG_L3_ST_BANK_D68	= _BN_BG_L2_EN_BANK_D67+1
-	ASSERT _BN_BG_L3_ST_BANK_D68 == 68
-
-_BN_BG_L3_EN_BANK_D77	= _BN_BG_L3_ST_BANK_D68+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L3_EN_BANK_D77 == 77
-
-; Image for Level 4 (all values inclusive). Bank 78...87
-_BN_BG_L4_ST_BANK_D78	= _BN_BG_L3_EN_BANK_D77+1
-	ASSERT _BN_BG_L4_ST_BANK_D78 == 78
-
-_BN_BG_L4_EN_BANK_D87	= _BN_BG_L4_ST_BANK_D78+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L4_EN_BANK_D87 == 87
-
-; Image for Level 5 (all values inclusive). Bank 88...97
-_BN_BG_L5_ST_BANK_D88	= _BN_BG_L4_EN_BANK_D87+1
-	ASSERT _BN_BG_L5_ST_BANK_D88 == 88
-
-_BN_BG_L5_EN_BANK_D97	= _BN_BG_L5_ST_BANK_D88+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L5_EN_BANK_D97 == 97
-
-; Image for Level 6 (all values inclusive). Bank 98...107
-_BN_BG_L6_ST_BANK_D98	= _BN_BG_L5_EN_BANK_D97+1
-	ASSERT _BN_BG_L6_ST_BANK_D98 == 98
-
-_BN_BG_L6_EN_BANK_D107	= _BN_BG_L6_ST_BANK_D98+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L6_EN_BANK_D107 == 107
-
-; Image for Level 7 (all values inclusive). Bank 108...117
-_BN_BG_L7_ST_BANK_D108	= _BN_BG_L6_EN_BANK_D107+1
-	ASSERT _BN_BG_L7_ST_BANK_D108 == 108
-
-_BN_BG_L7_EN_BANK_D117	= _BN_BG_L7_ST_BANK_D108+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L7_EN_BANK_D117 == 117
-
-; Image for Level 8 (all values inclusive). Bank 118...127
-_BN_BG_L8_ST_BANK_D118	= _BN_BG_L7_EN_BANK_D117+1
-	ASSERT _BN_BG_L8_ST_BANK_D118 == 118
-
-_BN_BG_L8_EN_BANK_D127	= _BN_BG_L8_ST_BANK_D118+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L8_EN_BANK_D127 == 127
-
-; Image for Level 9 (all values inclusive). Bank 128...137
-_BN_BG_L9_ST_BANK_D128	= _BN_BG_L8_EN_BANK_D127+1
-	ASSERT _BN_BG_L9_ST_BANK_D128 == 128
-
-_BN_BG_L9_EN_BANK_D137	= _BN_BG_L9_ST_BANK_D128+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L9_EN_BANK_D137 == 137
-
-; Image for Level 10 (all values inclusive). Bank 138...147
-_BN_BG_L10_ST_BANK_D138	= _BN_BG_L9_EN_BANK_D137+1
-	ASSERT _BN_BG_L10_ST_BANK_D138 == 138
-
-_BN_BG_L10_EN_BANK_D147	= _BN_BG_L10_ST_BANK_D138+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_L10_EN_BANK_D147 == 147
+_BN_BG_ST_BANK_D48	= 48
+_BN_BG_EN_BANK_D57 = _BN_BG_ST_BANK_D48+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _BN_BG_EN_BANK_D57 == 57
 
 _BN_TI_L1_3_BANK_D150	= 150					; Tiles for Levels 1 - 3
 _BN_TI_L4_6_BANK_D151	= 151					; Tiles for Levels 4 - 6
@@ -714,10 +586,7 @@ _GC_FLIP_OFF_D0			= 0
 ; Times of Day.
 _TOD_STEPS_D4			= 4						; Total number of steps (times of the day) from day to night.
 
-; State for #stepDir indicating the direction of the change: from day to night, night to day, or full day.
-_TOD_DIR_DAY_NIGHT		= 1						; Environment changes from day to night.
-_TOD_DIR_NIGHT_DAY		= 2						; Environment changes from night to day.
-_TOD_DIR_FULL_DAY		= 3						; It's a full day.
+
 
 _TOD_STEP_DURATION		= 20					; Duration of a single time of day, except for a full day.
 _TOD_DAY_DURATION		= 10					; Duration of the full day

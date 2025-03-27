@@ -9,7 +9,7 @@ STACK_SIZE				= 100
 start
 	DI											; Disable Interrupts, use wait_for_scanline instead.
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz.
-			
+	
 	CALL gc.SetupGame
 	CALL gc.LoadLevel1
 
@@ -37,6 +37,7 @@ mainLoop
 
 	INCLUDE "gc_game_cmd.asm"
 
+	INCLUDE "fi_file_io.asm"
 	INCLUDE "bs_bank_setup.asm"
 	INCLUDE "ll_level_loader.asm"
 	INCLUDE "bm_bitmap.asm"

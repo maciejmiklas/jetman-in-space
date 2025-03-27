@@ -3,6 +3,21 @@
 ;----------------------------------------------------------;
 	MODULE bp
 
+_BM_PAL2_MIN			= 0
+_BM_PAL2_MAX			= 7
+_BM_PAL2_RRR_MASK		= %111'000'00 			; Mask red color.
+_BM_PAL2_RRR_MASKN		= %000'111'11 			; Mask all but red color.
+_BM_PAL2_RRR_INC		= %001'000'00 			; Increment/decrement red color.
+
+_BM_PAL2_GGG_MASK		= %000'111'00 			; Mask green color.
+_BM_PAL2_GGG_MASKN		= %111'000'11 			; Mask all but green color.
+_BM_PAL2_GGG_INC		= %000'001'00 			; Increment/decrement green color.
+
+_BM_PAL2_BB_MASK		= %000'000'11
+_BM_PAL2_BB_MASKN		= %111'111'00
+
+_BM_PAL2_B_MASK			= %0000000'1 
+
 ;----------------------------------------------------------;
 ;                     #BytesToColors                       ;
 ;----------------------------------------------------------;
