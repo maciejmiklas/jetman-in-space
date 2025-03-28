@@ -62,6 +62,23 @@ F_CMD					= $08
 ASCII_O					= $30
 
 ;----------------------------------------------------------;
+;                      #LoadTilemap                        ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: File name.
+LoadTilemap
+
+	; Open file.
+	CALL _FileOpen
+
+	; Read file.
+	LD IX, _TI_START_H5B00
+	LD BC, _TI_MAP_BYTES_D2560
+	CALL _FileRead
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       #LoadImage                         ;
 ;----------------------------------------------------------;
 ; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
@@ -87,7 +104,7 @@ LoadImage
 
 	; ##########################################
 	; Load file into RAM
-	LD A, _BN_BG_ST_BANK_D48					; Set bank number.
+	LD A, _DB_BG_ST_BANK_D47					; Set bank number.
 	ADD B
 	NEXTREG _MMU_REG_SLOT6_H56, A
 

@@ -40,7 +40,7 @@ sprState			BYTE SPR_STATE_SHOW
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B).
 	LD BC, (jpo.jetX)
@@ -120,7 +120,7 @@ ChangeJetSpritePattern
 ; Update sprite pattern for the next animation frame.
 AnimateJetSprite
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 
 	; Delay animation.
 	LD A, (sprDBDelay)
@@ -217,7 +217,7 @@ AnimateJetSprite
 ; - A:	Flip Flop counter, ie: #counter002FliFLop.
 BlinkJetSprite
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 
 	CP _GC_FLIP_ON_D1
 	JR NZ, .flipOff
@@ -306,7 +306,7 @@ ChangeJetSpriteOnFlyUp
 ; Input:
 ;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE.
 _ShowOrHideJetSprite
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	
 	LD HL, (sprDBIdx)							; Load current sprite pattern.
 	ADD HL, -SDB_FRAME_SIZE						; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record.

@@ -78,7 +78,7 @@ WriteColors
 ;----------------------------------------------------------;
 SetupPaletteLoad
 
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Setup palette that is going to be written, bits:
 	;  - 0:   0 = Disable ULANext mode

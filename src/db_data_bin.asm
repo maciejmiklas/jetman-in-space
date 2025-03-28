@@ -7,7 +7,7 @@
 ;                Game Sprites (Bank 40...41)               ;
 ;----------------------------------------------------------;
 ; Load sprites (16KB) into bank 40,41 mapping it to slot 6,7.
-	MMU _RAM_SLOT6 _RAM_SLOT7, _BN_SPRITE_BANK1_D40
+	MMU _RAM_SLOT6 _RAM_SLOT7, _DB_SPRITE_BANK1_D40
 	ORG _RAM_SLOT6_START_HC000
 
 ; Sprites:
@@ -24,29 +24,15 @@
 ;   - 42-44: fire	
 ;   - 45-47: Flying enemy 1
 ;   - 48-50: Flying enemy 2
-spritesBin INCBIN "assets/sprites.spr", 0, _BN_SPRITE_BYT_D16384
+spritesBin INCBIN "assets/sprites.spr", 0, _DB_SPRITE_BYT_D16384
 spritesBinLength = $ - spritesBin
-	ASSERT $$ == _BN_SPRITE_BANK2_D41
+	ASSERT $$ == _DB_SPRITE_BANK2_D41
 
 ;----------------------------------------------------------;
-;               Game Tiles (Bank 42...43)                  ;
+;         Game Tile Sprites and Palette (Bank 42)          ;
 ;----------------------------------------------------------;
-; Load tiles and palette into 8K bank 42,42 mapping it to slot 6,7.
-; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
-
-;Tiles:
-;  - 00 - 56: Font, palette 0
-;  - 59     : Empty, each palette
-;  - 60 - 67: Ground 1, palette 1
-;  - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
-;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
-
-	MMU _RAM_SLOT6 _RAM_SLOT7, _BN_TILES_BANK1_D42 ; Assign slots 6,7 to banks 42,43.
-	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6.
-
-tilesL10 INCBIN "assets/l05_tiles.map"			; Tiles for level 1-10 are below
-tilesL10Bytes = $ - tilesL10
-	ASSERT tilesL10Bytes == _TI_MAP_BYTES_D2560
+	MMU _RAM_SLOT7, _DB_TI_SPR_BANK_D42 		; Assign slots 7 to bank 42.
+	ORG _RAM_SLOT7_START_HE000					; Set memory pointer to start of the slot 6.
 
 ; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
 ; Sprites
@@ -56,9 +42,9 @@ tilesL10Bytes = $ - tilesL10
 ;  - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
 ;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
 
-tileDefBin INCBIN "assets/tiles.spr"
-tileDefBinLength = $ - tileDefBin
-	ASSERT tileDefBinLength <= TI_DEF_MAX_D6910
+tileSprBin INCBIN "assets/tiles.spr"
+tileSprBinLength = $ - tileSprBin
+	ASSERT tileSprBinLength <= TI_DEF_MAX_D6910
 
 
 ; Palettes:
@@ -87,26 +73,26 @@ tilePaletteBinLength = $ - tilePaletteBin
 	
 	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ <= _BN_TILES_BANK2_D43 			; All data should fit into bank 43.
+	ASSERT $$ <= _DB_TI_SPR_BANK_D42 			; All data should fit into bank 43.
 
 ;----------------------------------------------------------;
-;                   Star Tiles (Bank 44)                   ;
+;                Star Tiles (Bank 43, 44)                  ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6 _RAM_SLOT7, _BN_STARTS_BANK1_D44 ; Assign slots 6,7 to banks 44,45.
-	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6.
+	MMU _RAM_SLOT6 _RAM_SLOT7, _DB_STARTS_BANK1_D43
+	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6,7.
 
 starsBin INCBIN "assets/stars.map"
 starsBinSize = $ - starsBin
 
 	ASSERT starsBinSize == _TIS_BYTES_D10240
-	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
+	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ == _BN_STARTS_BANK2_D45 			; All data should fit into bank 43.
+	ASSERT $$ == _DB_STARTS_BANK2_D44 			; All data should fit into bank 43.
 
 ;----------------------------------------------------------;
-;                Layer 2 Palettes (Bank 46)                ;
+;                Layer 2 Palettes (Bank 45)                ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6, _BN_PAL2_BANK_D46
+	MMU _RAM_SLOT6, _DB_PAL2_BANK_D45
 	ORG _RAM_SLOT6_START_HC000
 
  ; #############################################
@@ -180,28 +166,28 @@ bgrL10PaletteBytes = $ - bgrL10PaletteAdr
 	ASSERT bgrL10PaletteBytes <= _BM_PAL2_BYTES_D512
 	
  ; #############################################
-	ASSERT $$ == _BN_PAL2_BANK_D46	
+	ASSERT $$ == _DB_PAL2_BANK_D45	
 
 ;----------------------------------------------------------;
-;          Layer 2 Brightness Palettes (Bank 47)           ;
+;          Layer 2 Brightness Palettes (Bank 46)           ;
 ;----------------------------------------------------------;
 todL2Palettes									; Palette will be generated during runtime.
 
 ;----------------------------------------------------------;
-;              Game Background (Bank 48...57)              ;
+;              Game Background (Bank 47...56)              ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB) -> 10 8KB banks.
 
 ;----------------------------------------------------------;
-;                  Star Data (Bank 148)                    ;
+;                  Star Data (Bank 57)                     ;
 ;----------------------------------------------------------;
-; Before using it call #bs.SetupStarsDataBank
+; Before using it call #dbs.SetupStarsDataBank
 
-	MMU _RAM_SLOT7, _ST_BANK_D148
+	MMU _RAM_SLOT7, _DB_ST_BANK_D57
 	ORG _RAM_SLOT7_START_HE000
 starsBankStart
 
-starsDataL1
+starsData1
 	st.SC {0/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}	; X=2
 	DB 12,1, 15,4, 70,5, 94,15, 160,8, 250,19
 
@@ -217,7 +203,7 @@ starsDataL1
 	st.SC {1/*BANK*/, 15/*X_OFFSET*/, 5/*SIZE*/}	; X=47
 	DB 10,1, 115,4, 130,9, 155,2, 230,15
 
-	st.SC {1/*BANK*/, 19/*X_OFFSET*/, 6/*SIZE*/}	; X=51
+	st.SC {1/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}	; X=55
 	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,16
 
 	st.SC {2/*BANK*/, 04/*X_OFFSET*/, 5/*SIZE*/}	; X=68
@@ -238,7 +224,7 @@ starsDataL1
 	st.SC {3/*BANK*/, 28/*X_OFFSET*/, 4/*SIZE*/}	; X=124
 	DB 86,11, 123,7, 158,1, 233,19
 
-	st.SC {4/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}	; X=130
+	st.SC {4/*BANK*/, 05/*X_OFFSET*/, 6/*SIZE*/}	; X=133
 	DB 21,19, 55,11, 80,8, 144,3, 148,13, 243,2
 
 	st.SC {4/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}	; X=143
@@ -283,8 +269,8 @@ starsDataL1
 	st.SC {9/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}	; X=318
 	DB 5,3, 102,6, 142,9, 240,12
 
-starsDataL2
-	st.SC {0/*BANK*/, 10/*X_OFFSET*/, 4/*SIZE*/}	; X=10
+starsData2
+	st.SC {0/*BANK*/, 15/*X_OFFSET*/, 4/*SIZE*/}	; X=15
 	DB 4,4, 42,8, 133,1, 245,9
 
 	st.SC {1/*BANK*/, 10/*X_OFFSET*/, 6/*SIZE*/}	; X=42
@@ -293,7 +279,7 @@ starsDataL2
 	st.SC {1/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=52
 	DB 14,2, 52,4, 113,6, 189,8, 241,1
 
-	st.SC {2/*BANK*/, 02/*X_OFFSET*/, 5/*SIZE*/}	; X=66
+	st.SC {2/*BANK*/, 06/*X_OFFSET*/, 5/*SIZE*/}	; X=70
 	DB 10,1, 115,4, 130,9, 155,2, 230,4
 
 	st.SC {2/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}	; X=82
@@ -308,14 +294,11 @@ starsDataL2
 	st.SC {4/*BANK*/, 1/*X_OFFSET*/, 5/*SIZE*/}		; X=129
 	DB 10,4, 104,5, 145,6, 190,8, 249,3
 
-	st.SC {4/*BANK*/, 25/*X_OFFSET*/, 4/*SIZE*/}	; X=153
+	st.SC {4/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}	; X=158
 	DB 21,1, 92,6, 158,9, 221,6
 
 	st.SC {5/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}	; X=175
 	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,7
-
-	st.SC {5/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=180
-	DB 24,2, 44,9, 126,3, 160,7, 243,9
 
 	st.SC {6/*BANK*/, 04/*X_OFFSET*/, 6/*SIZE*/}	; X=194
 	DB 12,1, 15,4, 70,5, 94,3, 160,8, 250,2
@@ -336,14 +319,85 @@ starsDataL2
 	DB 5,3, 84,5, 98,9, 142,1, 168,4, 201,5
 
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
-starsDataL1MaxY
-	DB 143/*X=002*/, 154/*X=008*/, 159/*X=020*/, 196/*X=037*/, 195/*X=047*/, 195/*X=051*/, 140/*X=068*/, 134/*X=075*/, 106/*X=084*/, 192/*X=097*/
-	DB 049/*X=116*/, 039/*X=124*/, 023/*X=130*/, 019/*X=143*/, 023/*X=151*/, 123/*X=171*/, 062/*X=180*/, 082/*X=197*/, 104/*X=212*/, 187/*X=227*/
-	DB 187/*X=236*/, 187/*X=254*/, 128/*X=264*/, 119/*X=272*/, 102/*X=287*/, 221/*X=308*/, 230/*X=318*/
+starsData1MaxYL1
+	DB 143/*X=002*/, 154/*X=008*/, 159/*X=020*/, 196/*X=037*/, 195/*X=047*/, 196/*X=055*/, 140/*X=068*/, 134/*X=075*/, 106/*X=084*/
+	DB 192/*X=097*/, 049/*X=116*/, 039/*X=124*/, 022/*X=133*/, 019/*X=143*/, 023/*X=151*/, 123/*X=171*/, 062/*X=180*/, 082/*X=197*/
+	DB 104/*X=212*/, 187/*X=227*/, 187/*X=236*/, 187/*X=254*/, 128/*X=264*/, 119/*X=272*/, 102/*X=287*/, 221/*X=308*/, 230/*X=318*/
+starsData2MaxYL1
+	DB 154/*X=015*/, 196/*X=042*/, 195/*X=052*/, 139/*X=070*/, 106/*X=082*/, 086/*X=108*/, 082/*X=114*/, 037/*X=129*/, 168/*X=158*/
+	DB 121/*X=175*/, 080/*X=194*/, 087/*X=202*/, 187/*X=235*/, 123/*X=268*/, 106/*X=281*/, 222/*X=301*/
 
-starsDataL2MaxY
-	DB 153/*X=010*/, 196/*X=042*/, 195/*X=052*/, 142/*X=066*/, 106/*X=082*/, 086/*X=108*/, 082/*X=114*/, 037/*X=129*/, 024/*X=153*/
-	DB 121/*X=175*/, 063/*X=180*/, 080/*X=194*/, 087/*X=202*/, 187/*X=235*/, 123/*X=268*/, 106/*X=281*/, 222/*X=301*/
+starsData1MaxYL2
+	DB 084/*X=002*/, 082/*X=008*/, 085/*X=020*/, 087/*X=037*/, 089/*X=047*/, 089/*X=055*/, 093/*X=068*/, 094/*X=075*/, 096/*X=084*/
+	DB 099/*X=097*/, 100/*X=116*/, 102/*X=124*/, 104/*X=133*/, 106/*X=143*/, 108/*X=151*/, 103/*X=171*/, 101/*X=180*/, 096/*X=197*/
+	DB 095/*X=212*/, 096/*X=227*/, 092/*X=236*/, 088/*X=254*/, 086/*X=264*/, 089/*X=272*/, 088/*X=287*/, 084/*X=308*/, 083/*X=318*/
+starsData2MaxYL2
+	DB 082/*X=015*/, 088/*X=042*/, 088/*X=052*/, 092/*X=070*/, 095/*X=082*/, 101/*X=108*/, 101/*X=114*/, 103/*X=129*/, 107/*X=158*/
+	DB 103/*X=175*/, 097/*X=194*/, 096/*X=202*/, 095/*X=235*/, 087/*X=268*/, 088/*X=281*/, 087/*X=301*/
+
+starsData1MaxYL3
+	DB 173/*X=002*/, 173/*X=008*/, 193/*X=020*/, 193/*X=037*/, 116/*X=047*/, 107/*X=055*/, 199/*X=068*/, 098/*X=075*/, 065/*X=084*/
+	DB 146/*X=097*/, 101/*X=116*/, 179/*X=124*/, 018/*X=133*/, 020/*X=143*/, 001/*X=151*/, 001/*X=171*/, 175/*X=180*/, 065/*X=197*/
+	DB 068/*X=212*/, 088/*X=227*/, 148/*X=236*/, 073/*X=254*/, 099/*X=264*/, 097/*X=272*/, 193/*X=287*/, 188/*X=308*/, 188/*X=318*/
+starsData2MaxYL3
+	DB 175/*X=015*/, 193/*X=042*/, 107/*X=052*/, 199/*X=070*/, 088/*X=082*/, 104/*X=108*/, 079/*X=114*/, 056/*X=129*/, 001/*X=158*/
+	DB 002/*X=175*/, 089/*X=194*/, 069/*X=202*/, 148/*X=235*/, 193/*X=268*/, 190/*X=281*/, 176/*X=301*/
+
+starsData1MaxYL4
+	DB 003/*X=002*/, 043/*X=008*/, 077/*X=020*/, 109/*X=037*/, 098/*X=047*/, 045/*X=055*/, 141/*X=068*/, 144/*X=075*/, 133/*X=084*/
+	DB 085/*X=097*/, 114/*X=116*/, 135/*X=124*/, 131/*X=133*/, 110/*X=143*/, 129/*X=151*/, 055/*X=171*/, 108/*X=180*/, 116/*X=197*/
+	DB 118/*X=212*/, 073/*X=227*/, 095/*X=236*/, 142/*X=254*/, 010/*X=264*/, 058/*X=272*/, 135/*X=287*/, 093/*X=308*/, 072/*X=318*/
+starsData2MaxYL4
+	DB 088/*X=015*/, 079/*X=042*/, 050/*X=052*/, 141/*X=070*/, 120/*X=082*/, 090/*X=108*/, 102/*X=114*/, 135/*X=129*/, 116/*X=158*/
+	DB 052/*X=175*/, 136/*X=194*/, 111/*X=202*/, 096/*X=235*/, 016/*X=268*/, 133/*X=281*/, 102/*X=301*/
+
+starsData1MaxYL5
+	DB 004/*X=002*/, 010/*X=008*/, 020/*X=020*/, 028/*X=037*/, 028/*X=047*/, 033/*X=055*/, 064/*X=068*/, 064/*X=075*/, 062/*X=084*/
+	DB 056/*X=097*/, 059/*X=116*/, 063/*X=124*/, 087/*X=133*/, 106/*X=143*/, 117/*X=151*/, 210/*X=171*/, 217/*X=180*/, 221/*X=197*/
+	DB 217/*X=212*/, 224/*X=227*/, 229/*X=236*/, 074/*X=254*/, 053/*X=264*/, 051/*X=272*/, 037/*X=287*/, 023/*X=308*/, 025/*X=318*/
+starsData2MaxYL5
+	DB 016/*X=015*/, 028/*X=042*/, 030/*X=052*/, 045/*X=070*/, 062/*X=082*/, 051/*X=108*/, 105/*X=114*/, 075/*X=129*/, 127/*X=158*/
+	DB 214/*X=175*/, 221/*X=194*/, 221/*X=202*/, 229/*X=235*/, 052/*X=268*/, 042/*X=281*/, 024/*X=301*/
+
+starsData1MaxYL6
+	DB 115/*X=002*/, 109/*X=008*/, 114/*X=020*/, 126/*X=037*/, 129/*X=047*/, 135/*X=055*/, 136/*X=068*/, 135/*X=075*/, 142/*X=084*/
+	DB 154/*X=097*/, 166/*X=116*/, 166/*X=124*/, 166/*X=133*/, 163/*X=143*/, 157/*X=151*/, 144/*X=171*/, 140/*X=180*/, 133/*X=197*/
+	DB 018/*X=212*/, 003/*X=227*/, 017/*X=236*/, 167/*X=254*/, 157/*X=264*/, 155/*X=272*/, 148/*X=287*/, 013/*X=308*/, 134/*X=318*/
+starsData2MaxYL6
+	DB 109/*X=015*/, 126/*X=042*/, 133/*X=052*/, 136/*X=070*/, 137/*X=082*/, 163/*X=108*/, 166/*X=114*/, 166/*X=129*/, 155/*X=158*/
+	DB 142/*X=175*/, 132/*X=194*/, 062/*X=202*/, 016/*X=235*/, 161/*X=268*/, 152/*X=281*/, 134/*X=301*/
+
+starsData1MaxYL7
+	DB 000/*X=002*/, 000/*X=008*/, 000/*X=020*/, 000/*X=037*/, 000/*X=047*/, 000/*X=055*/, 000/*X=068*/, 000/*X=075*/, 000/*X=084*/
+	DB 000/*X=097*/, 000/*X=116*/, 000/*X=124*/, 000/*X=133*/, 000/*X=143*/, 000/*X=151*/, 000/*X=171*/, 000/*X=180*/, 000/*X=197*/
+	DB 000/*X=212*/, 000/*X=227*/, 000/*X=236*/, 000/*X=254*/, 000/*X=264*/, 000/*X=272*/, 000/*X=287*/, 000/*X=308*/, 000/*X=318*/
+starsData2MaxYL7
+	DB 000/*X=015*/, 000/*X=042*/, 000/*X=052*/, 000/*X=070*/, 000/*X=082*/, 000/*X=108*/, 000/*X=114*/, 000/*X=129*/, 000/*X=158*/
+	DB 000/*X=175*/, 000/*X=194*/, 000/*X=202*/, 000/*X=235*/, 000/*X=268*/, 000/*X=281*/, 000/*X=301*/
+
+starsData1MaxYL8
+	DB 081/*X=002*/, 082/*X=008*/, 082/*X=020*/, 083/*X=037*/, 083/*X=047*/, 084/*X=055*/, 084/*X=068*/, 084/*X=075*/, 084/*X=084*/
+	DB 084/*X=097*/, 084/*X=116*/, 084/*X=124*/, 084/*X=133*/, 082/*X=143*/, 026/*X=151*/, 025/*X=171*/, 035/*X=180*/, 081/*X=197*/
+	DB 080/*X=212*/, 078/*X=227*/, 077/*X=236*/, 079/*X=254*/, 079/*X=264*/, 079/*X=272*/, 079/*X=287*/, 078/*X=308*/, 078/*X=318*/
+starsData2MaxYL8
+	DB 082/*X=015*/, 083/*X=042*/, 083/*X=052*/, 084/*X=070*/, 084/*X=082*/, 084/*X=108*/, 084/*X=114*/, 084/*X=129*/, 022/*X=158*/
+	DB 028/*X=175*/, 082/*X=194*/, 081/*X=202*/, 077/*X=235*/, 079/*X=268*/, 079/*X=281*/, 078/*X=301*/
+
+starsData1MaxYL9
+	DB 003/*X=002*/, 001/*X=008*/, 002/*X=020*/, 009/*X=037*/, 011/*X=047*/, 016/*X=055*/, 019/*X=068*/, 025/*X=075*/, 032/*X=084*/
+	DB 061/*X=097*/, 060/*X=116*/, 059/*X=124*/, 058/*X=133*/, 058/*X=143*/, 059/*X=151*/, 058/*X=171*/, 058/*X=180*/, 057/*X=197*/
+	DB 058/*X=212*/, 059/*X=227*/, 061/*X=236*/, 058/*X=254*/, 058/*X=264*/, 059/*X=272*/, 054/*X=287*/, 047/*X=308*/, 046/*X=318*/
+starsData2MaxYL9
+	DB 001/*X=015*/, 008/*X=042*/, 013/*X=052*/, 020/*X=070*/, 032/*X=082*/, 061/*X=108*/, 060/*X=114*/, 058/*X=129*/, 059/*X=158*/
+	DB 057/*X=175*/, 057/*X=194*/, 056/*X=202*/, 061/*X=235*/, 058/*X=268*/, 059/*X=281*/, 050/*X=301*/
+
+starsData1MaxYL10
+	DB 217/*X=002*/, 166/*X=008*/, 162/*X=020*/, 163/*X=037*/, 116/*X=047*/, 081/*X=055*/, 103/*X=068*/, 107/*X=075*/, 048/*X=084*/
+	DB 044/*X=097*/, 199/*X=116*/, 199/*X=124*/, 001/*X=133*/, 001/*X=143*/, 001/*X=151*/, 001/*X=171*/, 001/*X=180*/, 163/*X=197*/
+	DB 188/*X=212*/, 072/*X=227*/, 072/*X=236*/, 072/*X=254*/, 071/*X=264*/, 080/*X=272*/, 141/*X=287*/, 142/*X=308*/, 198/*X=318*/
+starsData2MaxYL10
+	DB 163/*X=015*/, 120/*X=042*/, 113/*X=052*/, 106/*X=070*/, 062/*X=082*/, 114/*X=108*/, 199/*X=114*/, 001/*X=129*/, 001/*X=158*/
+	DB 001/*X=175*/, 001/*X=194*/, 195/*X=202*/, 068/*X=235*/, 072/*X=268*/, 102/*X=281*/, 128/*X=301*/
 
 starsPalL1
 	DW $1FF, $1FF, $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
@@ -352,14 +406,14 @@ starsPalL2
 	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
 	; ##########################################
-	ASSERT $$ == _ST_BANK_D148					; Data should remain in the same bank
-	ASSERT $$starsBankStart == _ST_BANK_D148 	; Make sure that we have configured the right bank.
+	ASSERT $$ == _DB_ST_BANK_D57					; Data should remain in the same bank
+	ASSERT $$starsBankStart == _DB_ST_BANK_D57 		; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
-;                  Arrays (Bank 149)                       ;
+;                    Arrays (Bank 58)                      ;
 ;----------------------------------------------------------;
 ; Before using it call #SetupArraysDataBank
-	MMU _RAM_SLOT7, _BN_SPR_BANK_D149
+	MMU _RAM_SLOT7, _DB_ARR_BANK_D58
 	ORG _RAM_SLOT7_START_HE000
 spritesBankStart
 
@@ -684,81 +738,8 @@ platformsSizeL10 		BYTE 3
 ; ##############################################
 ; Final Checks.
 
-	ASSERT $$ == _BN_SPR_BANK_D149					; Data should remain in the same bank
-	ASSERT $$spritesBankStart == _BN_SPR_BANK_D149 	; Make sure that we have configured the right bank.
-
-;----------------------------------------------------------;
-;            Game Tiles L1 to L3 (Bank 150)                ;
-;----------------------------------------------------------;
-	; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
-
-	MMU _RAM_SLOT6, _BN_TI_L1_3_BANK_D150
-	ORG _RAM_SLOT6_START_HC000
-
-	; Level 1
-tilesL1 INCBIN "assets/l01_tiles.map"
-tilesL1Bytes = $ - tilesL1
-	ASSERT tilesL1Bytes == _TI_MAP_BYTES_D2560
-
-	ASSERT $$ == _BN_TI_L1_3_BANK_D150
-
-	; Level 2
-tilesL2 INCBIN "assets/l02_tiles.map"
-tilesL2Bytes = $ - tilesL2
-	ASSERT tilesL2Bytes == _TI_MAP_BYTES_D2560
-
-	ASSERT $$ == _BN_TI_L1_3_BANK_D150
-
-	; Level 3
-tilesL3 INCBIN "assets/l03_tiles.map"
-tilesL3Bytes = $ - tilesL3
-	ASSERT tilesL3Bytes == _TI_MAP_BYTES_D2560
-
-	ASSERT $$ == _BN_TI_L1_3_BANK_D150
-
-;----------------------------------------------------------;
-;            Game Tiles L4 to L6 (Bank 151)                ;
-;----------------------------------------------------------;
-	MMU _RAM_SLOT6, _BN_TI_L4_6_BANK_D151
-	ORG _RAM_SLOT6_START_HC000
-
-	; Level 4
-tilesL4 INCBIN "assets/l04_tiles.map"
-tilesL4Bytes = $ - tilesL4
-	ASSERT tilesL4Bytes == _TI_MAP_BYTES_D2560
-
-	; Level 5
-tilesL5 INCBIN "assets/l05_tiles.map"
-tilesL5Bytes = $ - tilesL5
-	ASSERT tilesL5Bytes == _TI_MAP_BYTES_D2560
-
-	; Level 6
-tilesL6 INCBIN "assets/l05_tiles.map"
-tilesL6Bytes = $ - tilesL6
-	ASSERT tilesL6Bytes == _TI_MAP_BYTES_D2560
-
-	ASSERT $$ == _BN_TI_L4_6_BANK_D151
-
-;----------------------------------------------------------;
-;            Game Tiles L7 to L9 (Bank 152)                ;
-;----------------------------------------------------------;
-	MMU _RAM_SLOT6, _BN_TI_L7_9_BANK_D152
-	ORG _RAM_SLOT6_START_HC000
-
-	; Level 7
-tilesL7 INCBIN "assets/l05_tiles.map"
-tilesL7Bytes = $ - tilesL7
-	ASSERT tilesL7Bytes == _TI_MAP_BYTES_D2560
-
-	; Level 8
-tilesL8 INCBIN "assets/l05_tiles.map"
-tilesL8Bytes = $ - tilesL8
-	ASSERT tilesL8Bytes == _TI_MAP_BYTES_D2560
-
-	; Level 9
-tilesL9 INCBIN "assets/l05_tiles.map"
-tilesL9Bytes = $ - tilesL9
-	ASSERT tilesL9Bytes == _TI_MAP_BYTES_D2560
+	ASSERT $$ == _DB_ARR_BANK_D58					; Data should remain in the same bank
+	ASSERT $$spritesBankStart == _DB_ARR_BANK_D58 	; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

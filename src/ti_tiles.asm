@@ -3,7 +3,8 @@
 ;----------------------------------------------------------;
 	MODULE ti
 
-
+; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
+;
 ; Time map for single screen at 320x200 requires 2650 bytes:
 ; - 320 = 8*40 - 40 horizontal tiles,
 ; - 256 = 8*32 - 32 vertical tiles.
@@ -23,6 +24,28 @@ START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite f
 	
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
 OFFSET	= (START_H6500 - _RAM_SLOT2_START_H4000) >> 8
+
+gameFileName 		DB "assets/l00/tiles.map",0
+FILE_LEVEL_POS		= 8						; Position of a level number (00-99) in the file name of the background image.
+
+;----------------------------------------------------------;
+;                   #LoadGameTilemap                       ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadGameTilemap
+
+	; Set the level number in the file name, DE="35" will give: "assets/l00/tiles.map" -> "assets/l35/tiles.map"
+	LD HL, gameFileName
+	LD IX, HL									; Param for #LoadImage
+	ADD HL, FILE_LEVEL_POS						; Move HL to "assets/l"
+	LD (HL), D									; Set first number.
+	INC HL
+	LD (HL), E									; Set second number.
+
+	CALL fi.LoadTilemap
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                     #ShakeTilemap                        ;
@@ -108,28 +131,12 @@ CleanTiles
 
 	RET											; ## END of the function ##
 
-
-;----------------------------------------------------------;
-;                        #LoadTiles                        ;
-;----------------------------------------------------------;
-; Input: 
-; HL:  - Tiles address.
-LoadTiles
-
-	; Copy tilemap to expected memory.
-	LD DE, _TI_START_H5B00
-	LD BC, _TI_MAP_BYTES_D2560
-	LDIR
-
-	RET											; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                        #SetupTiles                       ;
 ;----------------------------------------------------------;
 SetupTiles
 
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TILES_BANK1_D42	; Assign bank 42 to slot 6 (see di_data_bin.asm).
-	NEXTREG _MMU_REG_SLOT7_H57, _BN_TILES_BANK2_D43	; Assign bank 43 to slot 7 (see di_data_bin.asm).
+	NEXTREG _MMU_REG_SLOT7_H57, _DB_TI_SPR_BANK_D42	; Assign bank 43 to slot 7 (see di_data_bin.asm).
 
 	; ##########################################	
 	; Enable tilemap mode.
@@ -154,8 +161,8 @@ SetupTiles
 	; ##########################################
 	; Copy tile definitions to expected memory.
 	LD DE, START_H6500
-	LD HL, db.tileDefBin						; Address of tiles in memory.
-	LD BC, db.tileDefBinLength					; Number of bytes to copy.
+	LD HL, db.tileSprBin						; Address of tiles in memory.
+	LD BC, db.tileSprBinLength					; Number of bytes to copy.
 	LDIR
 
 	RET											; ## END of the function ##

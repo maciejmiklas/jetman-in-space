@@ -537,40 +537,33 @@ _ST_PAL_L1_SIZE			= 25					; Number of colors for stars on layer 1.
 _ST_PAL_L2_SIZE			= 10					; Number of colors for stars on layer 2.
 
 _ST_L1_SIZE				= 27					; Number stars on layer 1.
-_ST_L2_SIZE				= 17					; Number stars on layer 2.
-_ST_BANK_D148			= 148					; Bank for stars, slot 6
+_ST_L2_SIZE				= 16					; Number stars on layer 2.
 
 ; ##############################################
 ; Binary Data Loader.
-_BN_SPRITE_BYT_D16384	= 16384
-_BN_SPRITE_BANK1_D40	= 40					; Sprites on bank 40, 41.
-_BN_SPRITE_BANK2_D41	= 41
-
-_BN_TILES_BANK1_D42		= 42
-_BN_TILES_BANK2_D43		= 43
-
-_BN_STARTS_BANK1_D44	= 44
-_BN_STARTS_BANK2_D45	= 45
-_BN_SPR_BANK_D149		= 149					; Bank for enemies, slot 6
+_DB_SPRITE_BYT_D16384	= 16384
+_DB_SPRITE_BANK1_D40	= 40					; Sprites on bank 40, 41.
+_DB_SPRITE_BANK2_D41	= 41
+_DB_TI_SPR_BANK_D42		= 42
+_DB_STARTS_BANK1_D43	= 43
+_DB_STARTS_BANK2_D44	= 44
 
 ; Each background image has 80KiB (320x256), taking 10 banks.
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
-_BN_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
-_BN_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
+_DB_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
+_DB_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 
-_BN_PAL2_BANK_D46		= 46					; Layer 2 pallettes
-_BN_PAL2_BR_BANK_D47	= 47					; Layer 2 brightness change for pallettes from _BN_PAL2_BANK_D46.
+_DB_PAL2_BANK_D45		= 45					; Layer 2 pallettes
+_DB_PAL2_BR_BANK_D46	= 46					; Layer 2 brightness change for pallettes from _DB_PAL2_BANK_D45.
 
-; Image for Level 1 (all values inclusive). Bank 48...57
-_BN_BG_ST_BANK_D48	= 48
-_BN_BG_EN_BANK_D57 = _BN_BG_ST_BANK_D48+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _BN_BG_EN_BANK_D57 == 57
+; Background image (all values inclusive). Bank 48...57
+_DB_BG_ST_BANK_D47		= 47
+_DB_BG_EN_BANK_D56 		= _DB_BG_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _DB_BG_EN_BANK_D56 == 56
 
-_BN_TI_L1_3_BANK_D150	= 150					; Tiles for Levels 1 - 3
-_BN_TI_L4_6_BANK_D151	= 151					; Tiles for Levels 4 - 6
-_BN_TI_L7_9_BANK_D152	= 152					; Tiles for Levels 7 - 9
-_BN_TI_L10_BANK_D42		= 42					; Tiles for Level 10
+_DB_ST_BANK_D57			= 57					; Bank for stars, slot 6
+_DB_ARR_BANK_D58		= 58					; Bank for arrays, slot 6
 
 ; ##############################################
 ; Respawn location.
@@ -585,8 +578,5 @@ _GC_FLIP_OFF_D0			= 0
 ; ##############################################
 ; Times of Day.
 _TOD_STEPS_D4			= 4						; Total number of steps (times of the day) from day to night.
-
-
-
 _TOD_STEP_DURATION		= 20					; Duration of a single time of day, except for a full day.
 _TOD_DAY_DURATION		= 10					; Duration of the full day

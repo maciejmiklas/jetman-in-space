@@ -38,7 +38,7 @@ mainLoop
 	INCLUDE "gc_game_cmd.asm"
 
 	INCLUDE "fi_file_io.asm"
-	INCLUDE "bs_bank_setup.asm"
+	INCLUDE "dbs_bank_setup.asm"
 	INCLUDE "ll_level_loader.asm"
 	INCLUDE "bm_bitmap.asm"
 	INCLUDE "bp_bitmap_palette.asm"
@@ -80,7 +80,7 @@ mainLoop
 	SAVENEX CORE 3,0,0
 
 	; SAVENEX CFG <border 0..7>[,<fileHandle 0/1/$4000+>[,<PreserveNextRegs 0/1>[,<2MbRamReq 0/1>]]].
-	SAVENEX CFG 0,0,0,1
+	SAVENEX CFG 0,0,0,0
 
 	; Generate the Nex file automatically based on which pages you use.
 	SAVENEX AUTO

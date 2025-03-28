@@ -48,6 +48,9 @@ starsDataSize			BYTE 27
 starsData				WORD 0				; Before using: CALL ut.SetupDataArraysBank
 starsDataMaxY			WORD 0				; Before using: CALL ut.SetupDataArraysBank
 
+starsData1MaxY			WORD 0
+starsData2MaxY			WORD 0
+
 _ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
 
 ;----------------------------------------------------------;
@@ -65,7 +68,7 @@ LoadStarsPalette
 	
 	; ##########################################
 	; Load colors for the stars on layer 1.
-	CALL bs.SetupStarsDataBank
+	CALL dbs.SetupStarsDataBank
 	LD HL, db.starsPalL1
 	LD A, _ST_PAL_L1_SIZE
 	LD B, A
@@ -73,7 +76,7 @@ LoadStarsPalette
 
 	; ##########################################
 	; Load colors for the stars on layer 2.
-	CALL bs.SetupStarsDataBank
+	CALL dbs.SetupStarsDataBank
 	LD HL, db.starsPalL2
 	LD A, _ST_PAL_L2_SIZE
 	LD B, A
@@ -295,12 +298,12 @@ _SetupLayer1
 
 	; ##########################################
 	; Data
-	LD DE, db.starsDataL1
+	LD DE, db.starsData1
 	LD (starsData), DE
 	LD A, _ST_L1_SIZE
 	LD (starsDataSize), A
 
-	LD DE, db.starsDataL1MaxY
+	LD DE, (starsData1MaxY)
 	LD (starsDataMaxY), DE
 
 	RET											; ## END of the function ##
@@ -323,13 +326,13 @@ _SetupLayer2
 
 	; ##########################################
 	; Data
-	LD DE, db.starsDataL2
+	LD DE, db.starsData2
 	LD (starsData), DE
 	LD A, _ST_L2_SIZE
 	LD (starsDataSize), A
 
-	LD DE, db.starsDataL2MaxY
-	LD (starsDataMaxY), DE	
+	LD DE, (starsData2MaxY)
+	LD (starsDataMaxY), DE
 
 	RET											; ## END of the function ##
 
@@ -338,7 +341,7 @@ _SetupLayer2
 ;----------------------------------------------------------;
 _NextStarsColor
 
-	CALL bs.SetupStarsDataBank
+	CALL dbs.SetupStarsDataBank
 	LD HL, (starsData)
 	LD A, (starsDataSize)
 	LD B, A
@@ -401,7 +404,7 @@ _NextStarsColor
 ;----------------------------------------------------------;
 _RenderStars
 
-	CALL bs.SetupStarsDataBank
+	CALL dbs.SetupStarsDataBank
 	LD A, (starsDataSize)
 	LD B, A
 	LD HL, (starsData)
@@ -439,7 +442,7 @@ _RenderStarColumn
 	; Assign image bank that will be modified to slot 6.
 	LD A, (IX + SC.BANK)
 	LD B, A
-	LD A, _BN_BG_ST_BANK_D18					; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
+	LD A, _DB_BG_ST_BANK_D18					; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
 	ADD A, B
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Assign image bank to slot 6
 

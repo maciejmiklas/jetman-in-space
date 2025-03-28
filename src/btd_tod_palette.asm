@@ -84,7 +84,7 @@ CreateTodPalettes
 ;----------------------------------------------------------;
 ResetPaletteArrd
 
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 	
 	; Set the palette address to the beginning of the bank holding it.
 	LD DE, db.todL2Palettes

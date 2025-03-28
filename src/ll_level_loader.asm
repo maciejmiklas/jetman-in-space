@@ -9,7 +9,7 @@
 LoadLevel1Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 	
 	; Load palette size into a global variable.
 	LD HL, db.bgrL1PaletteBytes
@@ -25,23 +25,32 @@ LoadLevel1Data
 	; Load background image.
 	LD D, "0"
 	LD E, "1"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
 	; Load tile map.
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L1_3_BANK_D150
-	LD HL, db.tilesL1
-	CALL ti.LoadTiles
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL1
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL1)
 	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL1
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL1
+	LD (st.starsData2MaxY), HL
 	
 	RET											; ## END of the function ##
 
@@ -51,7 +60,7 @@ LoadLevel1Data
 LoadLevel2Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL2PaletteBytes
@@ -67,23 +76,32 @@ LoadLevel2Data
 	; Load background image.
 	LD D, "0"
 	LD E, "2"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
 	; Load tile map.
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L1_3_BANK_D150
-	LD HL, db.tilesL2
-	CALL ti.LoadTiles
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL2
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL2)
 	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL2
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL2
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
@@ -93,7 +111,7 @@ LoadLevel2Data
 LoadLevel3Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL3PaletteBytes
@@ -109,23 +127,32 @@ LoadLevel3Data
 	; Load background image.
 	LD D, "0"
 	LD E, "3"
+	PUSH DE
 	CALL bg.LoadBgImage
-	
+	POP DE
+
 	; ##########################################
 	; Load tile map.
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L1_3_BANK_D150
-	LD HL, db.tilesL3
-	CALL ti.LoadTiles
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 	
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL3
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL3)
-	LD (pl.platformsSize), A	
+	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL3
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL3
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
@@ -135,7 +162,7 @@ LoadLevel3Data
 LoadLevel4Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL4PaletteBytes
@@ -153,23 +180,32 @@ LoadLevel4Data
 	; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
 	LD D, "0"
 	LD E, "4"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
 	; Load tile map.
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L4_6_BANK_D151
-	LD HL, db.tilesL4
-	CALL ti.LoadTiles
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL4
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL4)
 	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL4
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL4
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
@@ -179,7 +215,7 @@ LoadLevel4Data
 LoadLevel5Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL5PaletteBytes
@@ -195,23 +231,32 @@ LoadLevel5Data
 	; Load background image
 	LD D, "0"
 	LD E, "5"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
-	; Load tile map
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L4_6_BANK_D151
-	LD HL, db.tilesL5
-	CALL ti.LoadTiles
+	; Load tile map.
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL5
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL5)
 	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL5
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL5
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
@@ -221,7 +266,7 @@ LoadLevel5Data
 LoadLevel6Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL6PaletteBytes
@@ -237,23 +282,32 @@ LoadLevel6Data
 	; Load background image
 	LD D, "0"
 	LD E, "6"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
-	; Load tile map
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L4_6_BANK_D151
-	LD HL, db.tilesL6
-	CALL ti.LoadTiles
+	; Load tile map.
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL6
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL6)
-	LD (pl.platformsSize), A	
+	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL6
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL6
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
@@ -263,7 +317,7 @@ LoadLevel6Data
 LoadLevel7Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL7PaletteBytes
@@ -279,23 +333,32 @@ LoadLevel7Data
 	; Load background image
 	LD D, "0"
 	LD E, "7"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
-	; Load tile map
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L7_9_BANK_D152
-	LD HL, db.tilesL7
-	CALL ti.LoadTiles
+	; Load tile map.
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL7
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL7)
-	LD (pl.platformsSize), A	
+	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL7
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL7
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
@@ -305,7 +368,7 @@ LoadLevel7Data
 LoadLevel8Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 	
 	; Load palette size into a global variable.
 	LD HL, db.bgrL8PaletteBytes
@@ -321,24 +384,33 @@ LoadLevel8Data
 	; Load background image
 	LD D, "0"
 	LD E, "8"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
-	; Load tile map
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L7_9_BANK_D152
-	LD HL, db.tilesL8
-	CALL ti.LoadTiles
-
+	; Load tile map.
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL8
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL8)
 	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL8
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL8
+	LD (st.starsData2MaxY), HL
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -347,7 +419,7 @@ LoadLevel8Data
 LoadLevel9Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL9PaletteBytes
@@ -363,23 +435,32 @@ LoadLevel9Data
 	; Load background image
 	LD D, "0"
 	LD E, "9"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
-	; Load tile map
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L7_9_BANK_D152
-	LD HL, db.tilesL9
-	CALL ti.LoadTiles
+	; Load tile map.
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL9
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL9)
 	LD (pl.platformsSize), A
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL9
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL9
+	LD (st.starsData2MaxY), HL	
 
 	RET											; ## END of the function ##
 
@@ -389,7 +470,7 @@ LoadLevel9Data
 LoadLevel10Data
 
 	; Load palettes
-	CALL bs.SetupPaletteBank
+	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
 	LD HL, db.bgrL10PaletteBytes
@@ -405,23 +486,32 @@ LoadLevel10Data
 	; Load background image
 	LD D, "1"
 	LD E, "0"
+	PUSH DE
 	CALL bg.LoadBgImage
+	POP DE
 
 	; ##########################################
-	; Load tile map
-	NEXTREG _MMU_REG_SLOT6_H56, _BN_TI_L10_BANK_D42
-	LD HL, db.tilesL10
-	CALL ti.LoadTiles
+	; Load tile map.
+	; DE is set to level number above
+	CALL ti.LoadGameTilemap
 
 	; ##########################################
 	; Load platforms map.
 
-	CALL bs.SetupArraysDataBank
+	CALL dbs.SetupArraysDataBank
 	LD HL, db.platformsL10
 	LD (pl.platforms), HL
 
 	LD A, (db.platformsSizeL10)
 	LD (pl.platformsSize), A	
+
+	; ##########################################
+	; Load stars.
+	LD HL, db.starsData1MaxYL10
+	LD (st.starsData1MaxY), HL
+
+	LD HL, db.starsData2MaxYL10
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
