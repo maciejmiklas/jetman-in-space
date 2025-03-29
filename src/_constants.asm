@@ -542,28 +542,26 @@ _ST_L2_SIZE				= 16					; Number stars on layer 2.
 ; ##############################################
 ; Binary Data Loader.
 _DB_SPRITE_BYT_D16384	= 16384
-_DB_SPRITE_BANK1_D40	= 40					; Sprites on bank 40, 41.
-_DB_SPRITE_BANK2_D41	= 41
-_DB_TI_SPR_BANK_D42		= 42
-_DB_RO_STAR_BANK1_D43	= 43
-_DB_RO_STAR_BANK2_D44	= 44
-
-; Each background image has 80KiB (320x256), taking 10 banks.
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
 _DB_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
 _DB_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
-
-_DB_PAL2_BANK_D45		= 45					; Layer 2 pallettes
-_DB_PAL2_BR_BANK_D46	= 46					; Layer 2 brightness change for pallettes from _DB_PAL2_BANK_D45.
+_DB_SPRITE_BANK1_D28	= 28					; Sprites on bank 40, 41.
+_DB_SPRITE_BANK2_D29	= 29
+_DB_TI_SPR_BANK_D30		= 30
+_DB_RO_STAR_BANK1_D31	= 31
+_DB_RO_STAR_BANK2_D32	= 32
+_DB_PAL2_BANK_D33		= 33					; Layer 2 pallettes
+_DB_PAL2_BR_BANK_D34	= 34					; Layer 2 brightness change for pallettes from _DB_PAL2_BANK_D33.
 
 ; Background image (all values inclusive). Bank 48...57
-_DB_BG_ST_BANK_D47		= 47
-_DB_BG_EN_BANK_D56 		= _DB_BG_ST_BANK_D47+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _DB_BG_EN_BANK_D56 == 56
+; Each background image has 80KiB (320x256), taking 10 banks.
+_DB_BG_ST_BANK_D35		= 35
+_DB_BG_EN_BANK_D44 		= _DB_BG_ST_BANK_D35+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _DB_BG_EN_BANK_D44 == 44
 
-_DB_ST_BANK_D57			= 57					; Bank for stars, slot 6
-_DB_ARR_BANK_D58		= 58					; Bank for arrays, slot 6
+_DB_ST_BANK_D45			= 45					; Bank for stars, slot 6
+_DB_ARR_BANK_D46		= 46					; Bank for arrays, slot 6
 
 ; ##############################################
 ; Respawn location.

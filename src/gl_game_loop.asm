@@ -87,12 +87,12 @@ _GameLoop000OnActiveJetman
 	LD IX, db.sprite01
 	LD A, (db.singleEnemiesSize)
 	LD B, A	
-	;CALL ep.RespawnNextEnemy
+	CALL ep.RespawnNextEnemy
 	
 	; ##########################################
 	CALL dbs.SetupArraysBank
 	LD IY, db.enemyFormation
-	;CALL ef.RespawnFormation	
+	CALL ef.RespawnFormation	
 
 	RET											; ## END of the function ##
 
