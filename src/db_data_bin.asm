@@ -97,70 +97,70 @@ starsBinSize = $ - starsBin
 
  ; #############################################
 bgrL1PaletteAdr
-	INCBIN  "assets/l01_background.nxp"
+	INCBIN  "assets/l01/bg.nxp"
 
 bgrL1PaletteBytes = $ - bgrL1PaletteAdr
 	ASSERT bgrL1PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL2PaletteAdr
-	INCBIN  "assets/l02_background.nxp"
+	INCBIN  "assets/l02/bg.nxp"
 
 bgrL2PaletteBytes = $ - bgrL2PaletteAdr
 	ASSERT bgrL2PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL3PaletteAdr
-	INCBIN  "assets/l03_background.nxp"
+	INCBIN  "assets/l03/bg.nxp"
 
 bgrL3PaletteBytes = $ - bgrL3PaletteAdr
 	ASSERT bgrL3PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL4PaletteAdr
-	INCBIN  "assets/l04_background.nxp"
+	INCBIN  "assets/l04/bg.nxp"
 
 bgrL4PaletteBytes = $ - bgrL4PaletteAdr
 	ASSERT bgrL4PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL5PaletteAdr
-	INCBIN  "assets/l05_background.nxp"
+	INCBIN  "assets/l05/bg.nxp"
 
 bgrL5PaletteBytes = $ - bgrL5PaletteAdr
 	ASSERT bgrL5PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL6PaletteAdr
-	INCBIN  "assets/l06_background.nxp"
+	INCBIN  "assets/l06/bg.nxp"
 
 bgrL6PaletteBytes = $ - bgrL6PaletteAdr
 	ASSERT bgrL6PaletteBytes <= _BM_PAL2_BYTES_D512
 	
  ; #############################################
 bgrL7PaletteAdr
-	INCBIN  "assets/l07_background.nxp"
+	INCBIN  "assets/l07/bg.nxp"
 
 bgrL7PaletteBytes = $ - bgrL7PaletteAdr
 	ASSERT bgrL7PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL8PaletteAdr
-	INCBIN  "assets/l08_background.nxp"
+	INCBIN  "assets/l08/bg.nxp"
 
 bgrL8PaletteBytes = $ - bgrL8PaletteAdr
 	ASSERT bgrL8PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL9PaletteAdr
-	INCBIN  "assets/l09_background.nxp"
+	INCBIN  "assets/l09/bg.nxp"
 
 bgrL9PaletteBytes = $ - bgrL9PaletteAdr
 	ASSERT bgrL9PaletteBytes <= _BM_PAL2_BYTES_D512
 
  ; #############################################
 bgrL10PaletteAdr
-	INCBIN  "assets/l10_background.nxp"
+	INCBIN  "assets/l10/bg.nxp"
 
 bgrL10PaletteBytes = $ - bgrL10PaletteAdr
 	ASSERT bgrL10PaletteBytes <= _BM_PAL2_BYTES_D512
@@ -368,12 +368,12 @@ starsData2MaxYL6
 	DB 142/*X=175*/, 132/*X=194*/, 062/*X=202*/, 016/*X=235*/, 161/*X=268*/, 152/*X=281*/, 134/*X=301*/
 
 starsData1MaxYL7
-	DB 000/*X=002*/, 000/*X=008*/, 000/*X=020*/, 000/*X=037*/, 000/*X=047*/, 000/*X=055*/, 000/*X=068*/, 000/*X=075*/, 000/*X=084*/
-	DB 000/*X=097*/, 000/*X=116*/, 000/*X=124*/, 000/*X=133*/, 000/*X=143*/, 000/*X=151*/, 000/*X=171*/, 000/*X=180*/, 000/*X=197*/
-	DB 000/*X=212*/, 000/*X=227*/, 000/*X=236*/, 000/*X=254*/, 000/*X=264*/, 000/*X=272*/, 000/*X=287*/, 000/*X=308*/, 000/*X=318*/
+	DB 056/*X=002*/, 056/*X=008*/, 056/*X=020*/, 055/*X=037*/, 056/*X=047*/, 055/*X=055*/, 056/*X=068*/, 056/*X=075*/, 058/*X=084*/
+	DB 058/*X=097*/, 058/*X=116*/, 053/*X=124*/, 039/*X=133*/, 041/*X=143*/, 034/*X=151*/, 029/*X=171*/, 039/*X=180*/, 036/*X=197*/
+	DB 028/*X=212*/, 021/*X=227*/, 018/*X=236*/, 007/*X=254*/, 004/*X=264*/, 004/*X=272*/, 006/*X=287*/, 005/*X=308*/, 001/*X=318*/
 starsData2MaxYL7
-	DB 000/*X=015*/, 000/*X=042*/, 000/*X=052*/, 000/*X=070*/, 000/*X=082*/, 000/*X=108*/, 000/*X=114*/, 000/*X=129*/, 000/*X=158*/
-	DB 000/*X=175*/, 000/*X=194*/, 000/*X=202*/, 000/*X=235*/, 000/*X=268*/, 000/*X=281*/, 000/*X=301*/
+	DB 056/*X=015*/, 055/*X=042*/, 056/*X=052*/, 056/*X=070*/, 058/*X=082*/, 058/*X=108*/, 051/*X=114*/, 039/*X=129*/, 037/*X=158*/
+	DB 034/*X=175*/, 038/*X=194*/, 034/*X=202*/, 018/*X=235*/, 005/*X=268*/, 004/*X=281*/, 004/*X=301*/
 
 starsData1MaxYL8
 	DB 081/*X=002*/, 082/*X=008*/, 082/*X=020*/, 083/*X=037*/, 083/*X=047*/, 084/*X=055*/, 084/*X=068*/, 084/*X=075*/, 084/*X=084*/
