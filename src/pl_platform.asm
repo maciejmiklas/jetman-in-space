@@ -52,7 +52,7 @@ joyOffBump				BYTE _PL_BUMP_JOY_D15; The amount of pixels to bump off the platfo
 ;----------------------------------------------------------;
 JetPlatformHitOnJoyMove
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 
 	; ##########################################
 	; Check whether a collision with a platform is possible.
@@ -208,7 +208,7 @@ JetPlatformHitOnJoyMove
 ;----------------------------------------------------------;
 ResetJoyOffBump
 	
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 
 	; Do not reset if already done.
 	LD A, (joyOffBump)
@@ -429,7 +429,7 @@ MoveJetOnPlatformSideHit
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls.
 JetFallingFromPlatform
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 
 	; Does Jetman walk on any platform?
 	LD A, (platformWalkNumber)
@@ -1054,7 +1054,7 @@ _CheckPlatformHitVertical
 ; Output:
 ;  - A: 	#PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 _PlatformSpriteHit
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	
 	; Exit if sprite is not alive.
 	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)	

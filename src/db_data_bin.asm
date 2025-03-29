@@ -78,7 +78,7 @@ tilePaletteBinLength = $ - tilePaletteBin
 ;----------------------------------------------------------;
 ;                Star Tiles (Bank 43, 44)                  ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6 _RAM_SLOT7, _DB_STARTS_BANK1_D43
+	MMU _RAM_SLOT6 _RAM_SLOT7, _DB_RO_STAR_BANK1_D43
 	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6,7.
 
 starsBin INCBIN "assets/stars.map"
@@ -87,7 +87,7 @@ starsBinSize = $ - starsBin
 	ASSERT starsBinSize == _TIS_BYTES_D10240
 	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ == _DB_STARTS_BANK2_D44 			; All data should fit into bank 43.
+	ASSERT $$ == _DB_RO_STAR_BANK2_D44 			; All data should fit into bank 43.
 
 ;----------------------------------------------------------;
 ;                Layer 2 Palettes (Bank 45)                ;
@@ -181,7 +181,7 @@ todL2Palettes									; Palette will be generated during runtime.
 ;----------------------------------------------------------;
 ;                  Star Data (Bank 57)                     ;
 ;----------------------------------------------------------;
-; Before using it call #dbs.SetupStarsDataBank
+; Before using it call #dbs.SetupStarsBank
 
 	MMU _RAM_SLOT7, _DB_ST_BANK_D57
 	ORG _RAM_SLOT7_START_HE000
@@ -412,7 +412,7 @@ starsPalL2
 ;----------------------------------------------------------;
 ;                    Arrays (Bank 58)                      ;
 ;----------------------------------------------------------;
-; Before using it call #SetupArraysDataBank
+; Before using it call #SetupArraysBank
 	MMU _RAM_SLOT7, _DB_ARR_BANK_D58
 	ORG _RAM_SLOT7_START_HE000
 spritesBankStart

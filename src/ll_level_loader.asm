@@ -37,7 +37,7 @@ LoadLevel1Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL1
 	LD (pl.platforms), HL
 
@@ -88,7 +88,7 @@ LoadLevel2Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL2
 	LD (pl.platforms), HL
 
@@ -139,7 +139,7 @@ LoadLevel3Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL3
 	LD (pl.platforms), HL
 
@@ -192,7 +192,7 @@ LoadLevel4Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL4
 	LD (pl.platforms), HL
 
@@ -243,7 +243,7 @@ LoadLevel5Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL5
 	LD (pl.platforms), HL
 
@@ -294,7 +294,7 @@ LoadLevel6Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL6
 	LD (pl.platforms), HL
 
@@ -345,7 +345,7 @@ LoadLevel7Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL7
 	LD (pl.platforms), HL
 
@@ -396,7 +396,7 @@ LoadLevel8Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL8
 	LD (pl.platforms), HL
 
@@ -447,7 +447,7 @@ LoadLevel9Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL9
 	LD (pl.platforms), HL
 
@@ -498,7 +498,7 @@ LoadLevel10Data
 	; ##########################################
 	; Load platforms map.
 
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL10
 	LD (pl.platforms), HL
 

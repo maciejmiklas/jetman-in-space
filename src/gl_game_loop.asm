@@ -54,7 +54,7 @@ _GameLoop000
 	CALL _GameLoop000OnActiveJetman
 	
 	; ##########################################
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD IX, db.sprite01
 	LD A, (db.enemiesSize)
 	LD B, A 	
@@ -83,14 +83,14 @@ _GameLoop000OnActiveJetman
 	CALL jco.JetmanEnemiesCollision
 
 	; ##########################################
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD IX, db.sprite01
 	LD A, (db.singleEnemiesSize)
 	LD B, A	
 	;CALL ep.RespawnNextEnemy
 	
 	; ##########################################
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD IY, db.enemyFormation
 	;CALL ef.RespawnFormation	
 
@@ -253,7 +253,7 @@ _GameLoop008
 	CALL jw.AnimateShots
 	
 	; Animate enemies
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD IX, db.sprite01	
 	LD A, (db.enemiesSize)
 	LD B, A	
@@ -311,7 +311,7 @@ _GameLoop010nFlyingRocket
 	JR Z, .flip
 
 	; ##########################################
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD IX, db.sprite01
 	LD A, (db.singleEnemiesSize)
 	LD B, A
@@ -320,7 +320,7 @@ _GameLoop010nFlyingRocket
 	JR .afterFilpFlop
 .flip
 	; ##########################################
-	CALL dbs.SetupArraysDataBank
+	CALL dbs.SetupArraysBank
 	LD IX, db.spriteEf01
 	LD A, (db.enemyFormation.SPRITES)
 	LD B, A

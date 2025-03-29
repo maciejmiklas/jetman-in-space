@@ -136,7 +136,7 @@ CleanTiles
 ;----------------------------------------------------------;
 SetupTiles
 
-	NEXTREG _MMU_REG_SLOT7_H57, _DB_TI_SPR_BANK_D42	; Assign bank 43 to slot 7 (see di_data_bin.asm).
+	CALL dbs.SetupTilesBank
 
 	; ##########################################	
 	; Enable tilemap mode.
