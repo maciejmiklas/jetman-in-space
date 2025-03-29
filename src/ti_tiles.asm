@@ -176,7 +176,7 @@ SetupTiles
 LoadTilemapPalette
 
 	; Black for tilemap transparency.
-	NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_TRANSPARENT_D0
+	NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
 
 	; Bits
 	;  - 0: 1 = Enable ULANext mode,

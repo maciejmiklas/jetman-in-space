@@ -19,7 +19,7 @@ SetupScreen
 
 	NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000	; Enable Layer 2
 	
-	NEXTREG _GL_REG_TRANP_COL_H14, _COL_TRANSPARENT_D0 ; Global transparency.
+	NEXTREG _GL_REG_TRANP_COL_H14, _COL_BLACK_D0 ; Global transparency.
 
 	NEXTREG _DC_REG_LA2_H70, %00'01'0000		; Layer 2 320x256x8bpp, palette offset at 0.
 

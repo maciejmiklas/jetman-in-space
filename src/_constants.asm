@@ -344,7 +344,7 @@ _COL_GREEN_D4			= 4
 _COL_CYAN_D5			= 5
 _COL_YELLOW_D6			= 6
 _COL_WHITE_D7			= 7
-_COL_TRANSPARENT_D0		= 0
+_COL_BLACK_D0		= 0
 
 ;----------------------------------------------------------;
 ;                     Input processing                     ;
@@ -523,7 +523,7 @@ _BM_BANKS_D10			= 10
 ; ##############################################
 ; In game background image on Layer 2.
 _GB_MOVE_ROCKET_D100	= 100					; Start moving background when the rocket reaches the given height.
-_GB_MOVE_SLOW_D1		= 1						; Slows down background movement (when Jetman moves).
+_GB_MOVE_SLOW_D2		= 2						; Slows down background movement (when Jetman moves).
 
 ; ##############################################
 ; In game stars.

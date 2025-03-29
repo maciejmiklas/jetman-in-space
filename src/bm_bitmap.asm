@@ -47,9 +47,55 @@ LoadImage
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                        #HideImage                        ;
+;----------------------------------------------------------;
+HideImage
+
+	LD C, 0
+.bankLoop										; Loop from 10 (_BM_BANKS_D10) to 0.
+
+	; ##########################################
+	; Setup image bank.
+	LD A, _DB_BG_ST_BANK_D18
+	ADD C
+	NEXTREG _MMU_REG_SLOT6_H56, A				; Use slot 7 to modify displayed image.
+
+	; ##########################################
+	; Horizontal line within bank loop. The bank has 8192 bytes, the picture has 256 lines, 
+	; and each horozontal line in the single bank has 32 pixels (8192/256 = 32).
+	LD B, _BM_YRES_D256-1
+.linesLoop										; 255 to 0
+	PUSH BC
+
+	; Move HL to a pixel corresponding to this loop's horizontal line.
+	LD HL, _RAM_SLOT6_START_HC000
+	LD A, B
+	ADD HL, A
+
+	; ##########################################
+	LD B, _BANK_BYTES_D8192/_BM_YRES_D256		; 32 to 0
+.pixelsLoop
+	LD (HL), _COL_BLACK_D0
+	ADD HL, _BM_YRES_D256						; Move HL to the next pixel to the right by adding 256 pixels.
+	DJNZ .pixelsLoop
+
+	POP BC
+	DJNZ .linesLoop
+
+	; ##########################################
+	INC C
+	LD A, C
+	CP _BM_BANKS_D10
+	JR NZ, .bankLoop
+
+	CALL ut.Pause
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     #HideImageLine                       ;
 ;----------------------------------------------------------;
-; Replaces line of the image with transparent color.
+; Replaces horizontal line of the image with transparent color.
 ; Input:
 ;  - E:  Line number
 HideImageLine
@@ -63,8 +109,8 @@ HideImageLine
 	SUB B
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify displayed image.
 
-	; Each bank contains lines, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the picture),
-	; we have to start at byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
+	; Each bank contains columns, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the 
+	; picture), we have to start at byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
 	LD HL, _RAM_SLOT7_START_HE000
 	LD D, 0										; E contains the line number, reset only D to use DE for 16-bit math.
 	ADD HL, DE									; HL points at line that will be replaced.
@@ -75,8 +121,8 @@ HideImageLine
 
 	LD B, _BANK_BYTES_D8192/_BM_YRES_D256		; 8*1024/256=32
 .linesLoop
-	LD (HL), _COL_TRANSPARENT_D0
-	ADD HL, _BM_YRES_D256						; Move DE to the next pixel to the right by adding 256 pixels.
+	LD (HL), _COL_BLACK_D0
+	ADD HL, _BM_YRES_D256						; Move HL to the next pixel to the right by adding 256 pixels.
 
 	DJNZ .linesLoop
 	POP BC
