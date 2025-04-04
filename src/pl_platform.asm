@@ -3,10 +3,9 @@
 ;----------------------------------------------------------;
 	MODULE pl
 
-Y_OFFSET				= 2
-FALL_Y_D4				= 4						; Amount of pixels to move Jetman down when falling from the platform.
-FALL_X_D2				= 2
-HIT_MARGIN_D5		= 5	
+Y_SPR_RAMOFFSET			= 2
+
+HIT_MARGIN_D5			= 5	
 
 ; Compensation for height of Jetman's sprite to fall from the platform.
 FALL_LX_D8				= 8
@@ -20,9 +19,9 @@ Y_TOP					BYTE
 Y_BOTTOM				BYTE
 	ENDS
 
-enemyHitMargin	PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
-shotHitMargin	PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, -8/*Y_BOTTOM*/}
-jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 22/*Y_TOP*/, 02/*Y_BOTTOM*/}
+enemyHitMargin	PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 07/*Y_TOP*/, 08/*Y_BOTTOM*/}
+shotHitMargin	PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
+jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 22/*Y_TOP*/, 10/*Y_BOTTOM*/}
 
 ; Be careful - Jetman bumps into a platform and gets pushed away, which counts as movement. When Jetman gets pushed too far,
 ; it exceeds the margin defined here, resetting #joyOffBump.
@@ -284,10 +283,10 @@ MoveJetOnFallingFromPlatform
 	JR NZ, .afterFallingRight
 
 	; Yes, Jetman is falling from the platform.
-	LD B, FALL_X_D2
+	LD B, _PL_FALL_X_D2
 	CALL jpo.IncJetXbyB
 
-	LD B, FALL_Y_D4
+	LD B, _PL_FALL_Y_D4
 	CALL jpo.IncJetYbyB
 
 	RET											; Do not check falling left  because Jetman is already falling.
@@ -302,7 +301,7 @@ MoveJetOnFallingFromPlatform
 	CALL jpo.DecJetX
 	CALL jpo.DecJetX
 	
-	LD B, FALL_Y_D4
+	LD B, _PL_FALL_Y_D4
 	CALL jpo.IncJetYbyB
 
 	RET											; ## END of the function ##
@@ -569,7 +568,7 @@ _PlatformHit
 	; Check platform's top level.
 	; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of WORD.
 	LD DE, HL
-	ADD DE, Y_OFFSET
+	ADD DE, Y_SPR_RAMOFFSET
 	LD A, (DE)
 	LD C, A										; C holds current sprite Y position.
 
@@ -726,7 +725,7 @@ _PlatformDirectionHit
 _LoadSpriteYtoA
 
 	LD DE, HL
-	ADD DE, Y_OFFSET
+	ADD DE, Y_SPR_RAMOFFSET
 	LD A, (DE)									; A holds current sprite Y position.
 
 	RET											; ## END of the function ##

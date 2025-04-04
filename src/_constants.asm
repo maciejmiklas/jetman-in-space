@@ -408,11 +408,12 @@ _JSTAND_START_D100		= 100
 ; ##############################################
 ; Platform.
 _PL_FALL_JOY_OFF_D10	= 10					; Disable the joystick for a few frames because Jetman is falling from the platform.
-
 _PL_BUMP_JOY_D15		= 15					; Disable the joystick for a few frames because Jetman is bumping into the platform.
 _PL_BUMP_JOY_DEC_D1		= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value.
 _PL_BUMP_Y_D4			= 4						; Amount of pixels to move Jetman down when hitting platform from below.
 _PL_BUMP_X_D4			= 4
+_PL_FALL_Y_D4				= 4						; Amount of pixels to move Jetman down when falling from the platform.
+_PL_FALL_X_D2				= 2
 
 ; ##############################################
 ; Rocket.

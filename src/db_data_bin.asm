@@ -10,20 +10,6 @@
 	MMU _RAM_SLOT6 _RAM_SLOT7, _DB_SPRITE_BANK1_D28
 	ORG _RAM_SLOT6_START_HC000
 
-; Sprites:
-;   - 00-02: top, breathe
-;   - 03-05: top, no breathe
-;   - 06-11: low, walk
-;   - 12-17: low, fly
-;   - 18-21: low, hover
-;   - 22-25: low, walk -> fly
-;   - 26-29: low, fly -> walk
-;   - 30-33: low, walk -> fall
-;   - 34-37: low, stand
-;   - 38-41: explosion
-;   - 42-44: fire	
-;   - 45-47: Flying enemy 1
-;   - 48-50: Flying enemy 2
 spritesBin INCBIN "assets/sprites.spr", 0, _DB_SPRITE_BYT_D16384
 spritesBinLength = $ - spritesBin
 	ASSERT $$ == _DB_SPRITE_BANK2_D29
@@ -56,18 +42,18 @@ tileSprBinLength = $ - tileSprBin
 /*
   $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
   $1C7    $8   $40   $41   $40   $21   $2D   $2F   $1B   $1D   $35   $37   $3B   $18   $3D   $80
-  $1C7   $80   $18   $41   $A8   $10   $40   $60    $0   $1C1  $80   $1C1  $1C1  $1C1  $1C1   $DF
-  $1C7   $1BB  $1B3  $1AB  $1A3  $19B  $193  $18B  $183  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
-  $1C7   $1F8  $1F0  $1E8  $1E0  $1D8  $1D0  $1C8  $1C0  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
-  $1C7   $85   $7D   $75   $6D   $65   $5D   $55   $4D   $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+  $1C7   $80   $18   $41   $A8   $10   $40   $60    $0  $1C1   $80  $1C1  $1C1  $1C1  $1C1   $DF
+  $1C7  $1BB  $1B3  $1AB  $1A3  $19B  $193  $18B  $183  $1C0  $128  $1FB   $4D   $55  $178  $1C7
+  $1C7  $1F8  $1F0  $1E8  $1E0  $1D8  $1D0  $1C8  $1C0  $1C0  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+  $1C7   $85   $7D   $75   $6D   $65   $5D   $55   $4D  $5  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
 */
 tilePaletteBin									; RGB332, 8 bit
 	DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
 	DB $E3, $04, $20, $20, $20, $10, $16, $17, $0D, $0E, $1A, $1B, $1D, $0C, $1E, $40
 	DB $E3, $40, $0C, $20, $54, $08, $20, $30, $00, $E0, $40, $E0, $E0, $E0, $E0, $6F
-	DB $E3, $DD, $D9, $D5, $D1, $CD, $C9, $C5, $C1, $E3, $E3, $E3, $E3, $E3, $E3, $E3
-	DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E3, $E3, $E3, $E3, $E3, $E3, $E3
-	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $E3, $E3, $E3, $E3, $E3, $E3, $E3
+	DB $E3, $DD, $D9, $D5, $D1, $CD, $C9, $C5, $C1, $E0, $94, $FD, $26, $2A, $BC, $E3
+	DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E0, $E3, $E3, $E3, $E3, $E3, $E3
+	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $02, $E3, $E3, $E3, $E3, $E3, $E3
 tilePaletteBinLength = $ - tilePaletteBin
 	
 	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
@@ -609,9 +595,9 @@ jetSpriteDB
 
 	; Jetman stands in place.
 	DB js.SDB_STAND,	js.SDB_STAND - js.SDB_SUB,		46, 5
-											DB 03,17, 03,18, 04,19, 04,18, 05,17, 05,19, 03,17, 03,18, 04,19, 04,17
-											DB 05,19, 05,18, 00,19, 00,18, 01,17, 01,18, 02,17, 02,19, 03,18, 03,18
-											DB 04,19, 05,17, 05,18
+											DB 03,06, 03,18, 04,19, 04,18, 05,06, 05,19, 03,06, 03,18, 04,19, 04,06
+											DB 05,19, 05,18, 00,19, 00,18, 01,06, 01,18, 02,06, 02,19, 03,18, 03,18
+											DB 04,19, 05,06, 05,18
 
 	; Jetman stands on the ground for a very short time.
 	DB js.SDB_JSTAND,	js.SDB_STAND - js.SDB_SUB, 		02, 3
@@ -646,9 +632,9 @@ rocketEl
 	ro.RO {072/*DROP_X*/, 235/*DROP_LAND_Y*/, 211/*ASSEMBLY_Y*/,                 51/*SPRITE_ID*/,  56/*SPRITE_REF*/, 0/*Y*/}	; middle element
 	ro.RO {140/*DROP_X*/, 235/*DROP_LAND_Y*/, 195/*ASSEMBLY_Y*/,                 52/*SPRITE_ID*/,  52/*SPRITE_REF*/, 0/*Y*/}	; top of the rocket
 ; Fuel tank.
-	ro.RO {030/*DROP_X*/, 107/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {250/*DROP_X*/, 235/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 51/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {030/*DROP_X*/, 107/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 17/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {070/*DROP_X*/, 235/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 17/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {250/*DROP_X*/, 235/*DROP_LAND_Y*/, 226/*ASSEMBLY_Y*/, 43/*SPRITE_ID*/, 17/*SPRITE_REF*/, 0/*Y*/}
 	
 ; Three explode DBs for three rocket elements.
 rocketExplodeDB1		DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33	; bottom element
@@ -666,73 +652,100 @@ rocketExplodeTankDB		DB 30, 31, 32, 33		; Sprite IDs for explosion.
 
 ; Level 1
 platformsL1
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
+	pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 10*8/*Y_BOTTOM*/}
 platformsSizeL1 		BYTE 3
 
 ; Level 2
 platformsL2
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL2 		BYTE 3
+	pl.PLA {02*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {27*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+	pl.PLA {26*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+platformsSizeL2 		BYTE 4
 
 ; Level 3
 platformsL3
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL3 		BYTE 3
+	pl.PLA {09*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+platformsSizeL3 		BYTE 1
 
 ; Level 4
 platformsL4
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL4 		BYTE 3
+	pl.PLA {04*8/*X_LEFT*/, 11*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+	pl.PLA {24*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
+	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
+	pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
+platformsSizeL4 		BYTE 4
 
 ; Level 5
 platformsL5
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL5 		BYTE 3
+	pl.PLA {09*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+	pl.PLA {22*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL5 		BYTE 6
 
 ; Level 6
 platformsL6
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL6 		BYTE 3
+	pl.PLA {08*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 04*8/*Y_BOTTOM*/}
+	pl.PLA {11*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+	pl.PLA {14*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 10*8/*Y_BOTTOM*/}
+	pl.PLA {19*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+	pl.PLA {22*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {26*8/*X_LEFT*/, 28*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
+	pl.PLA {29*8/*X_LEFT*/, 31*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+	pl.PLA {32*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL6 		BYTE 9
 
 ; Level 7
 platformsL7
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
+	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+	pl.PLA {10*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 platformsSizeL7 		BYTE 3
 
 ; Level 8
 platformsL8
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL8 		BYTE 3
+	pl.PLA {00*8/*X_LEFT*/, 00*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+	pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+	pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+	pl.PLA {17*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+	pl.PLA {15*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
+	pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+	pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 26*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+	pl.PLA {26*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+	pl.PLA {31*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+	pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
+	pl.PLA {34*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+	pl.PLA {33*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 29*8/*Y_BOTTOM*/}
+	pl.PLA {39*8/*X_LEFT*/, 29*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+platformsSizeL8 		BYTE 15
 
 ; Level 9
 platformsL9
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL9 		BYTE 3
+	pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+	pl.PLA {12*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
+	pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+
+	pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 23*8/*Y_BOTTOM*/}
+	pl.PLA {00*8/*X_LEFT*/, 00*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 00*8/*Y_BOTTOM*/}
+platformsSizeL9 		BYTE 5
 
 ; Level 10
 platformsL10
-	pl.PLA {3*8/*X_LEFT*/,  8*8/*X_RIGHT*/,  15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-platformsSizeL10 		BYTE 3
+	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+	pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
+	pl.PLA {13*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 18*8/*Y_BOTTOM*/}
+	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+
+	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+platformsSizeL10 		BYTE 7
 
 ; ##############################################
 ; Final Checks.
