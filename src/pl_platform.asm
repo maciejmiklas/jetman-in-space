@@ -21,11 +21,11 @@ Y_BOTTOM				BYTE
 
 enemyHitMargin	PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 07/*Y_TOP*/, 08/*Y_BOTTOM*/}
 shotHitMargin	PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
-jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 22/*Y_TOP*/, 10/*Y_BOTTOM*/}
+jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
 
 ; Be careful - Jetman bumps into a platform and gets pushed away, which counts as movement. When Jetman gets pushed too far,
 ; it exceeds the margin defined here, resetting #joyOffBump.
-jetAwayMargin	PLAM { 30/*X_LEFT*/, 20/*X_RIGHT*/, 30/*Y_TOP*/, 10/*Y_BOTTOM*/}
+jetAwayMargin	PLAM { 30/*X_LEFT*/, 20/*X_RIGHT*/, 30/*Y_TOP*/, 20/*Y_BOTTOM*/}
 
 ; Coordinates for a platform
 	STRUCT PLA
@@ -631,13 +631,13 @@ _PlatformDirectionHit
 	CALL _CheckPlatformHitLeft
 	POP BC
 
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitLeft
 
 	; We have a hit from the left side, now check whether Jetman is within the vertical bounds of the platform.
 	CALL _CheckPlatformHitVertical
 
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitLeft
 
 	LD A, PL_DHIT_RET_A_LEFT
@@ -651,13 +651,13 @@ _PlatformDirectionHit
 	CALL _CheckPlatformHitRight
 	POP BC
 
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitRight
 
 	; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
 	CALL _CheckPlatformHitVertical
 
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitRight
 
 	LD A, PL_DHIT_RET_A_RIGHT
@@ -668,7 +668,7 @@ _PlatformDirectionHit
 	; Check the collision from the top side of the platform.
 
 	CALL _CheckPlatformHitTop
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitTop
 
 	; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
@@ -676,7 +676,7 @@ _PlatformDirectionHit
 	CALL _CheckPlatformHitHorizontal
 	POP BC
 
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitTop
 
 	LD A, PL_DHIT_RET_A_TOP
@@ -687,7 +687,7 @@ _PlatformDirectionHit
 	; Check the collision from the bottom side of the platform.
 
 	CALL _CheckPlatformHitBottom
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitBottom
 
 	; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
@@ -695,7 +695,7 @@ _PlatformDirectionHit
 	CALL _CheckPlatformHitHorizontal
 	POP BC
 
-	CP PL_COL_RET_A_YES
+	CP _RET_YES_D1
 	JR NZ, .afterHitBottom
 
 	LD A, PL_DHIT_RET_A_BOTTOM
@@ -740,11 +740,8 @@ _LoadSpriteYtoA
 ;  - IX:	Pointer to #PLAM.
 ;  - IY:	Pointer to #PLA.
 ; Output:
-;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
+;  - A: 	#_RET_NO_D0/#_RET_YES_D1
 ; Modifies: C
-PL_COL_RET_A_NO			= 0						; No collision
-PL_COL_RET_A_YES		= 1						; Collision
-
 _CheckPlatformHitTop
 
 	; ##########################################
@@ -758,9 +755,10 @@ _CheckPlatformHitTop
 	CALL _LoadSpriteYtoA						; A holds current sprite Y position.
 
 	CP C
+	JR Z, .keepChecking							; Jump if A (sprite Y) == C.
 	JR C, .keepChecking							; Jump if A (sprite Y) < C.
 	
-	LD A, PL_COL_RET_A_NO						;  A (sprite Y) > C -> no collision.
+	LD A, _RET_NO_D0							;  A (sprite Y) > C -> no collision.
 	RET
 	
 .keepChecking
@@ -777,10 +775,10 @@ _CheckPlatformHitTop
 	CP C
 	JR NC, .hit									; Jump if A (sprite Y) >= C.
 	
-	LD A, PL_COL_RET_A_NO
+	LD A, _RET_NO_D0
 	RET
 .hit
-	LD A, PL_COL_RET_A_YES
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 
@@ -794,7 +792,7 @@ _CheckPlatformHitTop
 ;  - IX:	Pointer to #PLAM.
 ;  - IY:	Pointer to #PLA.
 ; Output:
-;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
+;  - A: 	#_RET_NO_D0/#_RET_YES_D1
 ; Modifies: C
 _CheckPlatformHitBottom
 	
@@ -808,7 +806,7 @@ _CheckPlatformHitBottom
 	CP C
 	JR C, .keepChecking							; Jump if A (sprite Y) < C.
 	
-	LD A, PL_COL_RET_A_NO						;  A (sprite Y) > C -> no collision.
+	LD A, _RET_NO_D0						;  A (sprite Y) > C -> no collision.
 	RET	
 .keepChecking
 
@@ -825,10 +823,10 @@ _CheckPlatformHitBottom
 	CP C
 	JR NC, .hit									; Jump if A (sprite Y) >= C.
 	
-	LD A, PL_COL_RET_A_NO
+	LD A, _RET_NO_D0
 	RET
 .hit
-	LD A, PL_COL_RET_A_YES
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 
@@ -842,7 +840,7 @@ _CheckPlatformHitBottom
 ;  - IX:	Pointer to #PLAM.
 ;  - IY:	Pointer to #PLA.
 ; Output:
-;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
+;  - A: 	#_RET_NO_D0/#_RET_YES_D1
 ; Modifies: BC, DE
 _CheckPlatformHitLeft
 
@@ -863,7 +861,7 @@ _CheckPlatformHitLeft
 	POP HL
 	JP M, .keepChecking
 	
-	LD A, PL_COL_RET_A_NO						; HL(sprite X) - DE > 0 -> No collision.
+	LD A, _RET_NO_D0						; HL(sprite X) - DE > 0 -> No collision.
 	RET
 .keepChecking
 
@@ -881,10 +879,10 @@ _CheckPlatformHitLeft
 	POP HL
 	JP M, .hit
 
-	LD A, PL_COL_RET_A_NO
+	LD A, _RET_NO_D0
 	RET
 .hit	
-	LD A, PL_COL_RET_A_YES
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 
@@ -898,7 +896,7 @@ _CheckPlatformHitLeft
 ;  - IX:	Pointer to #PLAM.
 ;  - IY:	Pointer to #PLA.
 ; Output:
-;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
+;  - A: 	#_RET_NO_D0/#_RET_YES_D1
 ; Modifies: BC, DE
 _CheckPlatformHitRight
 
@@ -916,7 +914,7 @@ _CheckPlatformHitRight
 	POP HL
 	JP M, .keepChecking
 	
-	LD A, PL_COL_RET_A_NO						; HL(sprite X) - DE > 0 -> No collision.
+	LD A, _RET_NO_D0						; HL(sprite X) - DE > 0 -> No collision.
 	RET
 .keepChecking
 
@@ -936,10 +934,10 @@ _CheckPlatformHitRight
 	POP HL
 	JP M, .hit
 
-	LD A, PL_COL_RET_A_NO
+	LD A, _RET_NO_D0
 	RET
 .hit
-	LD A, PL_COL_RET_A_YES
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 
@@ -953,7 +951,7 @@ _CheckPlatformHitRight
 ;  - IX:	Pointer to #PLAM.
 ;  - IY:	Pointer to #PLA.
 ; Output:
-;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
+;  - A: 	#_RET_NO_D0/#_RET_YES_D1
 ; Modifies: BC, DE
 _CheckPlatformHitHorizontal
 
@@ -971,7 +969,7 @@ _CheckPlatformHitHorizontal
 	POP HL
 	JP M, .keepChecking
 	
-	LD A, PL_COL_RET_A_NO						; HL(sprite X) - DE > 0 -> No collision.
+	LD A, _RET_NO_D0						; HL(sprite X) - DE > 0 -> No collision.
 	RET
 .keepChecking
 
@@ -989,10 +987,10 @@ _CheckPlatformHitHorizontal
 	POP HL
 	JP M, .hit
 
-	LD A, PL_COL_RET_A_NO
+	LD A, _RET_NO_D0
 	RET
 .hit
-	LD A, PL_COL_RET_A_YES
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 
@@ -1006,7 +1004,7 @@ _CheckPlatformHitHorizontal
 ;  - IX:	Pointer to #PLAM.
 ;  - IY:	Pointer to #PLA.
 ; Output:
-;  - A: 	#PL_COL_RET_A_NO/#PL_COL_RET_A_YES
+;  - A: 	#_RET_NO_D0/#_RET_YES_D1
 _CheckPlatformHitVertical
 
 	; Check [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM] > [sprite Y] > [sprite Y].
@@ -1019,7 +1017,7 @@ _CheckPlatformHitVertical
 	CP C
 	JR C, .keepChecking							; Jump if A (sprite Y) < C.
 	
-	LD A, PL_COL_RET_A_NO						;  A (sprite Y) > C -> no collision.
+	LD A, _RET_NO_D0						;  A (sprite Y) > C -> no collision.
 	RET
 	
 .keepChecking
@@ -1036,10 +1034,10 @@ _CheckPlatformHitVertical
 	CP C
 	JR NC, .hit									; Jump if A (sprite Y) >= C.
 	
-	LD A, PL_COL_RET_A_NO
+	LD A, _RET_NO_D0
 	RET
 .hit
-	LD A, PL_COL_RET_A_YES
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 

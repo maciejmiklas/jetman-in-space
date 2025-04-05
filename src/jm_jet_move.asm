@@ -14,7 +14,7 @@ jetInactivityCnt		BYTE 0
 JoyMoveUp
 
 	CALL _CanJetMove
-	CP _RET_ON_D1
+	CP _RET_YES_D1
 	RET NZ										; Do not process input on disabled joystick.
 
 .afterJoyCntEnabled
@@ -56,7 +56,7 @@ JoyMoveUp
 JoyMoveRight
 
 	CALL _CanJetMove
-	CP _RET_ON_D1
+	CP _RET_YES_D1
 	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
@@ -91,7 +91,7 @@ JoyMoveRight
 JoyMoveLeft
 
 	CALL _CanJetMove
-	CP _RET_ON_D1
+	CP _RET_YES_D1
 	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
@@ -125,7 +125,7 @@ JoyMoveLeft
 JoyMoveDown
 
 	CALL _CanJetMove
-	CP _RET_ON_D1
+	CP _RET_YES_D1
 	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
@@ -187,7 +187,7 @@ JoyMoveDownRelease
 JoystickInputProcessed
 
 	CALL jm._CanJetMove
-	CP _RET_ON_D1
+	CP _RET_YES_D1
 	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
@@ -227,8 +227,8 @@ JoystickInputProcessed
 ; Disable joystick and, therefore, control over the Jetman.
 ; Output:
 ;	A containing one of the values:
-;     - _RET_ON_D1:		Process joystick input.
-;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
+;     - _RET_YES_D1:		Process joystick input.
+;     - _RET_NO_D0:	Disable joystick input processing for this loop.
 _JoyCntEnabled
 
 	LD A, (gid.joyOffCnt)
@@ -261,11 +261,11 @@ _JoyCntEnabled
 	CP _PL_BUMP_JOY_DEC_D1+1
 	JR C, .joyEnabled
 
-	LD A, _RET_OFF_D0
+	LD A, _RET_NO_D0
 	RET											; Do not process input, as the joystick is disabled.
 
 .joyEnabled										; Process input.
-	LD A, _RET_ON_D1
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 
@@ -275,8 +275,8 @@ _JoyCntEnabled
 ; Slow down joystick input and, therefore, speed of Jetman movement.
 ; Output:
 ;	A containing one of the values:
-;     - _RET_ON_D1:		Process joystick input.
-;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
+;     - _RET_YES_D1:		Process joystick input.
+;     - _RET_NO_D0:	Disable joystick input processing for this loop.
 _JoySlowdown
 	LD A, (gid.joyDelayCnt)
 	INC A
@@ -285,14 +285,14 @@ _JoySlowdown
 	CP _PL_JOY_DELAY
 	JR Z, .delayReached
 
-	LD A, _RET_OFF_D0							; Return because #joyDelayCnt !=  #_PL_JOY_DELAY.
+	LD A, _RET_NO_D0							; Return because #joyDelayCnt !=  #_PL_JOY_DELAY.
 	RET
 .delayReached									; Delay counter has been reached.
 
 	XOR A										; Set A to 0.
 	LD (gid.joyDelayCnt), A						; Reset delay counter.
 
-	LD A, _RET_ON_D1							; Process input, because counter has been reached.
+	LD A, _RET_YES_D1							; Process input, because counter has been reached.
 
 	RET											; ## END of the function ##
 
@@ -301,12 +301,12 @@ _JoySlowdown
 ;----------------------------------------------------------;
 ; Output:
 ;	A containing one of the values:
-;     - _RET_ON_D1:		Process joystick input.
-;     - _RET_OFF_D0:	Disable joystick input processing for this loop.
+;     - _RET_YES_D1:		Process joystick input.
+;     - _RET_NO_D0:	Disable joystick input processing for this loop.
 _CanJetMove
 
 	CALL _JoyCntEnabled
-	CP _RET_OFF_D0
+	CP _RET_NO_D0
 	RET Z
 
 	; ##########################################
@@ -316,13 +316,13 @@ _CanJetMove
 	JR NZ, .jetActive
 
 	; Do not process input.
-	LD A, _RET_OFF_D0
+	LD A, _RET_NO_D0
 	RET
 .jetActive	
 
 	; ##########################################
 	CALL _JoySlowdown
-	CP _RET_OFF_D0
+	CP _RET_NO_D0
 	RET Z
 
 	; ##########################################
@@ -331,14 +331,14 @@ _CanJetMove
 	JR NZ, .afterRip							; Do not process input if Jetman is dying.
 
 	; Do not process input, Jet is dying.
-	LD A, _RET_OFF_D0
+	LD A, _RET_NO_D0
 	RET
 .afterRip
 
 	; ##########################################
 	; Process input
 
-	LD A, _RET_ON_D1
+	LD A, _RET_YES_D1
 
 	RET											; ## END of the function ##
 

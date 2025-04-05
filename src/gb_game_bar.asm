@@ -44,67 +44,16 @@ PrintDebug
 	LD A, (gamebarState)
 	CP GB_ST_VISIBLE
 	RET NZ
+
 /*
 	; ##########################################
-	LD B, 0
-	LD HL, (jpo.jetX)
-	CALL ut.PrintNumHLDebug
-
-	; ##########################################
-	LD B, 6
-	LD H, 0
-	LD A, (jpo.jetY)
-	LD L, A
-	CALL ut.PrintNumHLDebug
-
-	; ##########################################
-	LD A, (refreshCnt)
-	INC A
-	LD (refreshCnt), A
-
-	LD B, 12
-	LD H, 0
-	LD L, A
-	CALL ut.PrintNumHLDebug
-*/
-	; ##########################################
-	; ##########################################
-	; ##########################################
-	/*
 	LD B, 40
 	LD H, 0
-	LD A, (st.tmp)
-	LD L, A
-	CALL ut.PrintNumHLDebug
-
-	; ##########################################
-	LD B, 46
-	LD H, 0
-	LD A, (st.randColor)
-	LD L, A
-	CALL ut.PrintNumHLDebug
-
-	; ##########################################
-	LD B, 52
-	LD H, 0
-	LD A,  (st.tmp2)
-	LD L, A
-	CALL ut.PrintNumHLDebug
-
-	; ##########################################
-	LD B, 58
-	LD H, 0
-	LD A, (st.tmp3)
-	LD L, A
-	CALL ut.PrintNumHLDebug
-
-	; ##########################################
-	LD B, 64
-	LD H, 0
-	LD A, (st.tmp4)
-	LD L, A
+	LD A, (pl.joyOffBump)
+	LD L, A	
 	CALL ut.PrintNumHLDebug
 */
+
 
 	RET											; ## END of the function ##
 

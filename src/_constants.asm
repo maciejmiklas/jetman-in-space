@@ -386,8 +386,8 @@ _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800.
 
 ; ##############################################
 ; Common return types.
-_RET_ON_D1				= 1
-_RET_OFF_D0				= 2
+_RET_YES_D1				= 1
+_RET_NO_D0				= 2
 _BANK_BYTES_D8192		= 8*1024
 
 ; ##############################################
@@ -412,8 +412,8 @@ _PL_BUMP_JOY_D15		= 15					; Disable the joystick for a few frames because Jetma
 _PL_BUMP_JOY_DEC_D1		= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value.
 _PL_BUMP_Y_D4			= 4						; Amount of pixels to move Jetman down when hitting platform from below.
 _PL_BUMP_X_D4			= 4
-_PL_FALL_Y_D4				= 4						; Amount of pixels to move Jetman down when falling from the platform.
-_PL_FALL_X_D2				= 2
+_PL_FALL_Y_D4			= 4						; Amount of pixels to move Jetman down when falling from the platform.
+_PL_FALL_X_D2			= 2
 
 ; ##############################################
 ; Rocket.
@@ -481,7 +481,7 @@ _GSC_Y_MIN_D15			= 15
 _GSC_Y_MAX_D232			= 232
 
 ; Ground level from Jetman's sprite perspective.
-_GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8
+_GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
 ; ##############################################
 ; Tile stars map.
