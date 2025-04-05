@@ -8,12 +8,28 @@ DIR_DAY_NIGHT			= 1						; Environment changes from day to night.
 DIR_NIGHT_DAY			= 2						; Environment changes from night to day.
 DIR_FULL_DAY			= 3						; It's a full day.
 
-step 					BYTE _TOD_STEPS_D4			; Counts from _TOD_STEPS_D4 (inclusive) to 0 (exclusive)
+step 					BYTE _TOD_STEPS_D4		; Counts from _TOD_STEPS_D4 (inclusive) to 0 (exclusive)
 stepDuration			BYTE _TOD_DAY_DURATION	; Counts toward 0, when reached, the next #step executes.
-stepDir					BYTE DIR_DAY_NIGHT	; DIR_DAY_NIGHT or DIR_NIGHT_DAY
+stepDir					BYTE DIR_DAY_NIGHT		; DIR_DAY_NIGHT or DIR_NIGHT_DAY
 
 ;----------------------------------------------------------;
-;               #NextTimeOfDayTrigger                      ;
+;                    #ResetTimeOfDay                       ;
+;----------------------------------------------------------;
+ResetTimeOfDay
+
+	LD A, _TOD_STEPS_D4
+	LD (step), A
+
+	LD A, _TOD_DAY_DURATION
+	LD (stepDuration), A
+
+	LD A, DIR_DAY_NIGHT
+	LD (stepDir), A
+	
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #NextTimeOfDayTrigger                    ;
 ;----------------------------------------------------------;
 NextTimeOfDayTrigger
 

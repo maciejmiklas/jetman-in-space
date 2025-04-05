@@ -141,6 +141,7 @@ HlEqualB
 ;----------------------------------------------------------;
 PauseShort
 
+	LD BC, 65000
 	CALL CountdownBC
 	
 	RET											; ## END of the function ##
@@ -154,6 +155,8 @@ Pause
 
 	LD A, _UT_PAUSE_TIME_D10
 .loop:
+
+	LD BC, 65000
 	CALL CountdownBC
 
 	DEC A
@@ -167,11 +170,12 @@ Pause
 ;----------------------------------------------------------;
 ;                       #CountdownBC                       ;
 ;----------------------------------------------------------;
+; Input: 
+;  - BC: Loop amount.
 CountdownBC
 
 	PUSH AF, BC, DE, HL, IX, IY
 
-	LD BC, 65000
 .loop:
 	DEC BC										; DEC BC from 65000 to 0
 	LD A, B

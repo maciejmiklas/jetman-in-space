@@ -8,9 +8,6 @@
 ;----------------------------------------------------------;
 LoadLevel1Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 	
@@ -62,9 +59,6 @@ LoadLevel1Data
 ;----------------------------------------------------------;
 LoadLevel2Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 
@@ -116,9 +110,6 @@ LoadLevel2Data
 ;----------------------------------------------------------;
 LoadLevel3Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 
@@ -170,9 +161,6 @@ LoadLevel3Data
 ;----------------------------------------------------------;
 LoadLevel4Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 
@@ -226,9 +214,6 @@ LoadLevel4Data
 ;----------------------------------------------------------;
 LoadLevel5Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 
@@ -280,9 +265,6 @@ LoadLevel5Data
 ;----------------------------------------------------------;
 LoadLevel6Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 
@@ -334,9 +316,6 @@ LoadLevel6Data
 ;----------------------------------------------------------;
 LoadLevel7Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 
@@ -388,9 +367,6 @@ LoadLevel7Data
 ;----------------------------------------------------------;
 LoadLevel8Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 	
@@ -442,9 +418,6 @@ LoadLevel8Data
 ;----------------------------------------------------------;
 LoadLevel9Data
 
-	CALL bm.HideImage
-
-	; ##########################################
 	; Load palettes
 	CALL dbs.SetupPaletteBank
 
@@ -487,7 +460,7 @@ LoadLevel9Data
 	LD (st.starsData1MaxY), HL
 
 	LD HL, db.starsData2MaxYL9
-	LD (st.starsData2MaxY), HL	
+	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
 
@@ -496,10 +469,6 @@ LoadLevel9Data
 ;----------------------------------------------------------;
 LoadLevel10Data
 
-	CALL bm.HideImage
-
-	; ##########################################
-	; Load palettes
 	CALL dbs.SetupPaletteBank
 
 	; Load palette size into a global variable.
@@ -544,6 +513,12 @@ LoadLevel10Data
 	LD (st.starsData2MaxY), HL
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

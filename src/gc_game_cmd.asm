@@ -40,10 +40,9 @@ SetupGame
 ;----------------------------------------------------------;
 LoadLevel1
 
-
-
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel1Data
-	CALL _InitLevel
+	CALL _StartLevel
 	
 	RET											; ## END of the function ##
 
@@ -52,8 +51,9 @@ LoadLevel1
 ;----------------------------------------------------------;
 LoadLevel2
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel2Data
-	CALL _InitLevel
+	CALL _StartLevel
 	
 	RET											; ## END of the function ##
 
@@ -62,8 +62,9 @@ LoadLevel2
 ;----------------------------------------------------------;
 LoadLevel3
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel3Data
-	CALL _InitLevel
+	CALL _StartLevel
 
 	RET											; ## END of the function ##
 
@@ -72,8 +73,9 @@ LoadLevel3
 ;----------------------------------------------------------;
 LoadLevel4
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel4Data
-	CALL _InitLevel
+	CALL _StartLevel
 
 	RET											; ## END of the function ##
 
@@ -82,8 +84,9 @@ LoadLevel4
 ;----------------------------------------------------------;
 LoadLevel5
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel5Data
-	CALL _InitLevel
+	CALL _StartLevel
 
 	RET											; ## END of the function ##
 
@@ -92,8 +95,9 @@ LoadLevel5
 ;----------------------------------------------------------;
 LoadLevel6
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel6Data
-	CALL _InitLevel
+	CALL _StartLevel
 
 	RET											; ## END of the function ##
 
@@ -102,8 +106,9 @@ LoadLevel6
 ;----------------------------------------------------------;
 LoadLevel7
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel7Data
-	CALL _InitLevel
+	CALL _StartLevel
 
 	RET											; ## END of the function ##
 
@@ -112,8 +117,9 @@ LoadLevel7
 ;----------------------------------------------------------;
 LoadLevel8
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel8Data
-	CALL _InitLevel
+	CALL _StartLevel
 
 	RET											; ## END of the function ##
 
@@ -122,8 +128,9 @@ LoadLevel8
 ;----------------------------------------------------------;
 LoadLevel9
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel9Data
-	CALL _InitLevel
+	CALL _StartLevel
 
 	RET											; ## END of the function ##
 
@@ -132,8 +139,9 @@ LoadLevel9
 ;----------------------------------------------------------;
 LoadLevel10
 
+	CALL _InitLevelLoad
 	CALL ll.LoadLevel10Data
-	CALL _InitLevel
+	CALL _StartLevel
 	
 	RET											; ## END of the function ##
 
@@ -441,13 +449,26 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_InitLevel                          ;
+;                     #_StartLevel                         ;
 ;----------------------------------------------------------;
-_InitLevel
+_StartLevel
 
 	CALL gc.RespawnJet
 	CALL ro.StartRocketAssembly
 	CALL ti.ResetTilemapOffset
+
+	RET											; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                   #_InitLevelLoad                        ;
+;----------------------------------------------------------;
+_InitLevelLoad
+
+	CALL jt.SetJetStateInactive
+	CALL js.HideJetSprite
+	CALL bm.HideImage
+	CALL td.ResetTimeOfDay
 
 	RET											; ## END of the function ##
 
