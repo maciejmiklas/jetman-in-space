@@ -45,14 +45,20 @@ PrintDebug
 	CP GB_ST_VISIBLE
 	RET NZ
 
-/*
+
 	; ##########################################
 	LD B, 40
 	LD H, 0
-	LD A, (pl.joyOffBump)
+	LD A, (jpo.jetX)
 	LD L, A	
 	CALL ut.PrintNumHLDebug
-*/
+
+	; ##########################################
+	LD B, 46
+	LD H, 0
+	LD A, (jpo.jetY)
+	LD L, A	
+	CALL ut.PrintNumHLDebug
 
 
 	RET											; ## END of the function ##

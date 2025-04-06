@@ -417,13 +417,12 @@ _PL_FALL_X_D2			= 2
 
 ; ##############################################
 ; Rocket.
-_RO_DROP_NEXT_D5		= 10					; Drop next element delay
+_RO_DROP_NEXT_D5		= 1	;10					; Drop next element delay
 _RO_DROP_H_D200			= 160					; Jetman has to be above the rocket to drop the element.
 _RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 _RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 _RO_FLY_DELAY_D8		= 8
 _RO_FLY_DELAY_DIST_D5	= 5
-
 
 ; ##############################################
 ; Screen.

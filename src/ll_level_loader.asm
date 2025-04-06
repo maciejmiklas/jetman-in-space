@@ -51,6 +51,14 @@ LoadLevel1Data
 
 	LD HL, db.starsData2MaxYL1
 	LD (st.starsData2MaxY), HL
+
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL1
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL1)
+	LD (ro.rocketAssemblyX), A	
 	
 	RET											; ## END of the function ##
 
@@ -103,6 +111,14 @@ LoadLevel2Data
 	LD HL, db.starsData2MaxYL2
 	LD (st.starsData2MaxY), HL
 
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL2
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL2)
+	LD (ro.rocketAssemblyX), A	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -153,6 +169,14 @@ LoadLevel3Data
 
 	LD HL, db.starsData2MaxYL3
 	LD (st.starsData2MaxY), HL
+
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL3
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL3)
+	LD (ro.rocketAssemblyX), A
 
 	RET											; ## END of the function ##
 
@@ -207,6 +231,14 @@ LoadLevel4Data
 	LD HL, db.starsData2MaxYL4
 	LD (st.starsData2MaxY), HL
 
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL4
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL4)
+	LD (ro.rocketAssemblyX), A	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -257,6 +289,14 @@ LoadLevel5Data
 
 	LD HL, db.starsData2MaxYL5
 	LD (st.starsData2MaxY), HL
+
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL5
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL5)
+	LD (ro.rocketAssemblyX), A	
 
 	RET											; ## END of the function ##
 
@@ -309,6 +349,14 @@ LoadLevel6Data
 	LD HL, db.starsData2MaxYL6
 	LD (st.starsData2MaxY), HL
 
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL6
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL6)
+	LD (ro.rocketAssemblyX), A	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -359,6 +407,14 @@ LoadLevel7Data
 
 	LD HL, db.starsData2MaxYL7
 	LD (st.starsData2MaxY), HL
+
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL7
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL7)
+	LD (ro.rocketAssemblyX), A	
 
 	RET											; ## END of the function ##
 
@@ -411,6 +467,14 @@ LoadLevel8Data
 	LD HL, db.starsData2MaxYL8
 	LD (st.starsData2MaxY), HL
 
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL8
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL8)
+	LD (ro.rocketAssemblyX), A	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -462,6 +526,14 @@ LoadLevel9Data
 	LD HL, db.starsData2MaxYL9
 	LD (st.starsData2MaxY), HL
 
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL9
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL9)
+	LD (ro.rocketAssemblyX), A
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -511,6 +583,14 @@ LoadLevel10Data
 
 	LD HL, db.starsData2MaxYL10
 	LD (st.starsData2MaxY), HL
+
+	; ##########################################
+	; Load rocket.
+	LD HL, db.rocketElL10
+	LD (ro.rocketEl), HL
+
+	LD A, (db.rocketAssemblyXL10)
+	LD (ro.rocketAssemblyX), A	
 
 	RET											; ## END of the function ##
 

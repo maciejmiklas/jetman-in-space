@@ -3,5 +3,10 @@
     "editor.insertSpaces": false,
     "editor.fontSize": 13, 
 	"editor.rulers": [140],
-	"z80-macroasm.format.uppercaseKeywords": true
+	"z80-macroasm.format.uppercaseKeywords": true,
+	"cSpell.words": [
+		"AGND",
+		"TASM",
+		"TSRE"
+	]
 }

@@ -23,6 +23,8 @@ RO_ST_READY				= 100					; Rocket is ready to start and waits only for Jetman.
 RO_ST_FLY				= 101					; The rocket is flying towards an unknown planet.
 RO_ST_EXPLODE			= 102					; Rocket explodes after hitting something.
 
+DROP_LAND_Y_ADJ			= -5
+
 ; The single rocket element or fuel tank.
 ; The X coordinate of the rocket element is stored in two locations: 
 ;  1) #RO.DROP_X: when elements drop for pickup by Jetman,
@@ -63,8 +65,7 @@ EL_LOW_D1				= 1
 EL_MID_D2				= 2
 EL_TOP_D3				= 3
 EL_TANK1_D4				= 4
-EL_TANK2_D5				= 5
-EL_TANK3_D6				= 6
+EL_TANK6_D9				= 9
 
 PICK_MARGX_D8			= 8
 PICK_MARGY_D16			= 16
@@ -73,32 +74,34 @@ EXPLODE_Y_HI_H4			= 4						; HI byte from #starsDistance to explode rocket,1150 
 EXPLODE_Y_LO_H7E		= $7E					; LO byte from #starsDistance to explode rocket.
 EXHAUST_SPRID_D43		= 43					; Sprite ID for exhaust.
 
+rocketEl				WORD 0					; Pointer to 9x ro.RO
+
 ;----------------------------------------------------------;
 ;               #AssemblyRocketForDebug                    ;
 ;----------------------------------------------------------;
 AssemblyRocketForDebug
 	CALL dbs.SetupArraysBank
 
-	LD A, EL_TANK3_D6
+	LD A, EL_TANK6_D9
 	LD (rocketElementCnt), A
 
 	LD A, RO_ST_READY
 	LD (rocketState), A
 
 	LD A, 1
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	CALL _MoveIXtoGivenRocketElement
 	LD A, 233
 	LD (IX + RO.Y), A
 
 	LD A, 2
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	CALL _MoveIXtoGivenRocketElement
 	LD A, 217
 	LD (IX + RO.Y), A
 
 	LD A, 3
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	CALL _MoveIXtoGivenRocketElement
 	LD A, 217
 	LD (IX + RO.Y), 201
@@ -140,10 +143,10 @@ ResetAndDisableRocket
 
 	; ##########################################
 	; Reset rocket elements
-	LD B, EL_TANK3_D6
+	LD B, EL_TANK6_D9
 .rocketElLoop
 	LD A, B
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	CALL _MoveIXtoGivenRocketElement
 
 	XOR A
@@ -172,7 +175,7 @@ HideRocket
 	CALL dbs.SetupArraysBank
 
 	; Hide the top rockets element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	LD A, EL_TOP_D3
 	CALL _MoveIXtoGivenRocketElement
 
@@ -181,7 +184,7 @@ HideRocket
 
 	; ##########################################
 	; Hide the middle rockets element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	LD A, EL_MID_D2
 	CALL _MoveIXtoGivenRocketElement
 
@@ -190,7 +193,7 @@ HideRocket
 
 	; ##########################################
 	; Hide the bottom rockets element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	LD A, EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
@@ -219,7 +222,7 @@ AnimateRocketExplosion
 
 	; ##########################################
 	; Animation for the top rockets element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	LD A, EL_TOP_D3
 	CALL _MoveIXtoGivenRocketElement
 
@@ -234,7 +237,7 @@ AnimateRocketExplosion
 
 	; ##########################################
 	; Animation for the middle rockets element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	LD A, EL_MID_D2
 	CALL _MoveIXtoGivenRocketElement
 
@@ -249,7 +252,7 @@ AnimateRocketExplosion
 
 	; ##########################################
 	; Animation for the bottom rockets element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	LD A, EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
@@ -468,7 +471,7 @@ FlyRocket
 	NEXTREG _SPR_REG_ATR2_H37, A
 
 	; Sprite Y coordinate.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	LD A, (IX + RO.Y)							; Lowest rocket element + 16px.
 	ADD A, FLAME_OFFSET_D16
 	NEXTREG _SPR_REG_Y_H36, A
@@ -537,7 +540,10 @@ RocketElementFallsForPickup
 
 	; Has the horizontal destination been reached?
 	LD B, A
+	LD A, DROP_LAND_Y_ADJ
+	LD C, A
 	LD A, (IX + RO.DROP_LAND_Y)
+	ADD C										; A = #DROP_LAND_Y + #DROP_LAND_Y_ADJ
 	CP B
 	RET NZ										; No, keep falling down.
 	
@@ -664,7 +670,7 @@ DropNextRocketElement
 
 	; Check whether rocket element counter has already reached max value.
 	LD A, (rocketElementCnt)
-	CP EL_TANK3_D6
+	CP EL_TANK6_D9
 	JR NZ, .dropNext							; Jump if the counter did not reach max value.
 
 	; The rocket is assembled and fueled.
@@ -705,7 +711,7 @@ DropNextRocketElement
 _SetIXtoCurrentRocketElement
 
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 
     ; Now, move IX so that it points to the #RO given by the deploy counter. First, load the counter into A (value 1-6).
 	; Afterward, load A info D and the size of the #RO into E, and multiply D by E.
@@ -722,7 +728,7 @@ _SetIXtoCurrentRocketElement
 _MoveIXtoGivenRocketElement
 
 	; Load the pointer to #rocket into IX and move the pointer to the actual rocket element.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 	
 	SUB 1										; A contains 0-2.
 	LD D, A
@@ -1030,7 +1036,7 @@ _MoveFlyingRocket
 	; The current position of rocket elements is stored in #rocketAssemblyX and #RO.Y 
 	; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 	
-	LD IX, db.rocketEl								; Load the pointer to #rocket into IX
+	LD IX, (rocketEl)								; Load the pointer to #rocket into IX
 
 	; ##########################################
 	; Did the rocket reach the middle of the screen, and should it stop moving?
@@ -1115,7 +1121,7 @@ _BoardRocket
 	
 	; ##########################################
 	; Jetman collision with first (lowest) rocket element triggers take off.
-	LD IX, db.rocketEl
+	LD IX, (rocketEl)
 
 	LD BC, (rocketAssemblyX)					; X of the element.
 	LD B, 0
