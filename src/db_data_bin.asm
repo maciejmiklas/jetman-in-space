@@ -670,21 +670,38 @@ platformsL3
 	pl.PLA {09*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
 platformsSizeL3 		BYTE 1
 
-; Level 4
+; Level 9
 platformsL4
 	pl.PLA {04*8/*X_LEFT*/, 11*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
 	pl.PLA {24*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
-	pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
-platformsSizeL4 		BYTE 4
+
+	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 18*8/*Y_BOTTOM*/}
+	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
+	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
+
+	pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 18*8/*Y_BOTTOM*/}
+	pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
+	pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
+platformsSizeL4 		BYTE 9
 
 ; Level 5
 platformsL5
 	pl.PLA {09*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
 	pl.PLA {22*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL5 		BYTE 6
+
+	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
+	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+
+	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
+	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL5 		BYTE 11
+
 
 ; Level 6
 platformsL6
@@ -701,14 +718,23 @@ platformsSizeL6 		BYTE 9
 
 ; Level 7
 platformsL7
-	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
 	pl.PLA {10*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
-platformsSizeL7 		BYTE 3
+
+	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
+	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 16*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 29*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+
+	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
+	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 16*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+platformsSizeL7 		BYTE 10
 
 ; Level 8
 platformsL8
-	pl.PLA {00*8/*X_LEFT*/, 00*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
+	pl.PLA {01*8/*X_LEFT*/, 01*8/*X_RIGHT*/, 01*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
 	pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
 	pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
 	pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
@@ -737,15 +763,39 @@ platformsSizeL9 		BYTE 5
 
 ; Level 10
 platformsL10
-	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
-	pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
+	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+
+	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+
 	pl.PLA {13*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 18*8/*Y_BOTTOM*/}
+	pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 26*8/*Y_BOTTOM*/}
 	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
 
-	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
-	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 30*8/*Y_BOTTOM*/}
-platformsSizeL10 		BYTE 7
+	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+
+	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+	pl.PLA {35*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+
+platformsSizeL10 		BYTE 27
 
 ; ##############################################
 ; Final Checks.
