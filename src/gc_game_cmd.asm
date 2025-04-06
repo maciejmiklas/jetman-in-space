@@ -469,6 +469,8 @@ _InitLevelLoad
 	CALL js.HideJetSprite
 	CALL bm.HideImage
 	CALL td.ResetTimeOfDay
+	CALL st.HideStars
+	CALL jw.HideShots
 
 	RET											; ## END of the function ##
 

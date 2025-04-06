@@ -108,7 +108,6 @@ HideSprite
 ;                 #SetIdAndHideSprite                      ;
 ;----------------------------------------------------------;
 SetIdAndHideSprite
-
 ; Input:
 ;  - A: Sprite ID
 

@@ -31,14 +31,42 @@ shots9
 shots10
 	sr.SPR {19/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
-SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
-FIRE_DELAY				= 15
-; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #FIRE_DELAY.
+; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #_JW_FIRE_DELAY.
 shotsDelayCnt
 	DB 0
 
 STATE_SHOT_DIR_BIT		= 5						; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
+
+;----------------------------------------------------------;
+;                       #HideShots                         ;
+;----------------------------------------------------------;
+HideShots
+
+	XOR A
+	LD (shotsDelayCnt), A
+
+	; Loop ever all shots# skipping hidden shots.
+	LD IX, shots								; IX points to the shot.
+	LD B, _JW_SHOTS_SIZE 
+.shotsLoop
+
+	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands.
+	CALL sp.HideSprite
+
+	XOR A
+	LD (IX + sr.SPR.SDB_POINTER), A
+	LD (IX + sr.SPR.STATE), A
+	LD (IX + sr.SPR.NEXT), A
+	LD (IX + sr.SPR.REMAINING), A
+
+	; ##########################################
+	; Move IX to the beginning of the next #shotsXX.
+	LD DE, sr.SPR
+	ADD IX, DE
+	DJNZ .shotsLoop								; Jump if B > 0 (loop starts with B = #SPR).
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   #WeaponHitEnemies                      ;
@@ -54,7 +82,7 @@ WeaponHitEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #ShotsCollision                        ;
+;                      #ShotsCollision                     ;
 ;----------------------------------------------------------;
 ; The method checks whether any active laser beam has hit the sprite given by X/Y.
 ; Input:
@@ -70,16 +98,16 @@ ShotsCollision
 
 	; Loop ever all shots# skipping hidden shots.
 	LD IX, shots								; IX points to the shot.
-	LD B, SHOTS_SIZE 
+	LD B, _JW_SHOTS_SIZE 
 .shotsLoop
 	PUSH BC, DE
 	LD A, (IX + sr.SPR.STATE)
 
-	; Skipp hidden laser shoots for collision detection.
+	; Skip hidden laser shoots for collision detection.
 	BIT sr.SPRITE_ST_VISIBLE_BIT, A
 	JR Z, .continueShotsLoop
 
-	; Skipp inactive laser shoots for collision detection.
+	; Skip inactive laser shoots for collision detection.
 	BIT sr.SPRITE_ST_ACTIVE_BIT, A
 	JR Z, .continueShotsLoop
 
@@ -140,12 +168,12 @@ MoveShots
 
 	; Loop ever all shots# skipping hidden sprites.
 	LD IX, shots	
-	LD B, SHOTS_SIZE 
+	LD B, _JW_SHOTS_SIZE 
 
 .loop
 	PUSH BC										; Preserve B for loop counter.
 
-	; Skipp hidden laser shoots.
+	; Skip hidden laser shoots.
 	BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
 	JR Z, .continue
 
@@ -196,7 +224,7 @@ FireDelayCounter
 	
 	; Increment shot counter.
 	LD A, (shotsDelayCnt)
-	CP FIRE_DELAY
+	CP _JW_FIRE_DELAY
 	RET Z										; Do increment the delay counter when it has reached the required value.
 
 	INC A
@@ -205,12 +233,12 @@ FireDelayCounter
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #AnimateShots                         ;
+;                      #AnimateShots                       ;
 ;----------------------------------------------------------;
 AnimateShots
 
 	LD IX, shots	
-	LD B, SHOTS_SIZE 
+	LD B, _JW_SHOTS_SIZE 
 	CALL sr.AnimateSprites
 
 	RET											; ## END of the function ##
@@ -222,7 +250,7 @@ Fire
 
 	; Check delay to limit fire speed.
 	LD A, (shotsDelayCnt)
-	CP FIRE_DELAY
+	CP _JW_FIRE_DELAY
 	RET NZ										; Return if the delay counter did not reach the defined value.
 
 	; We can fire, reset counter.
@@ -232,7 +260,7 @@ Fire
 	; Find the first inactive (sprite hidden) shot.
 	LD IX, shots
 	LD DE, sr.SPR
-	LD B, SHOTS_SIZE 
+	LD B, _JW_SHOTS_SIZE 
 .findLoop
 
 	; Check whether the current #shotsX is not visible and can be reused.

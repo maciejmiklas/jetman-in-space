@@ -25,7 +25,7 @@ ResetTimeOfDay
 
 	LD A, DIR_DAY_NIGHT
 	LD (stepDir), A
-	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -57,12 +57,12 @@ NextTimeOfDayTrigger
 	; It's not a full day, so it must be day->night or night->day
 
 	CP DIR_DAY_NIGHT
-	JR Z, .transtionDayToNight
+	JR Z, .transitionDayToNight
 
 	CALL _NextStepNightToDay
 	RET
 
-.transtionDayToNight	
+.transitionDayToNight
 	CALL _NextStepDayToNight
 
 	RET											; ## END of the function ##

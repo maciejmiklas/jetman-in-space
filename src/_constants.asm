@@ -579,3 +579,8 @@ _GC_FLIP_OFF_D0			= 0
 _TOD_STEPS_D4			= 4						; Total number of steps (times of the day) from day to night.
 _TOD_STEP_DURATION		= 20					; Duration of a single time of day, except for a full day.
 _TOD_DAY_DURATION		= 10					; Duration of the full day
+
+; ##############################################
+; Jetman weapon
+_JW_SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
+_JW_FIRE_DELAY				= 15
