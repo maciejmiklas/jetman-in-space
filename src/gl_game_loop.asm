@@ -31,12 +31,6 @@ GameLoop
 ;----------------------------------------------------------;
 _GameLoop000
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; 1 -> 0 and 0 -> 1
 	LD A, (gld.counter000FliFLop)
 	XOR 1
@@ -46,29 +40,10 @@ _GameLoop000
 	; CALL functions that need to be updated every loop.
 	; First update graphics, logic follows afterwards!
 
-	CALL jw.MoveShots
-	CALL jw.WeaponHitEnemies
-
-	CALL jco.JetRip
 	CALL gb.PrintDebug
-
-	CALL ro.CheckHitTank
 	CALL ro.FlyRocket
-
-	CALL _GameLoop000OnDisabledJoy
-	CALL _GameLoop000OnRocketTakingOff
 	CALL _GameLoop000OnActiveJetman
-	
-	; ##########################################
-	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.enemiesSize)
-	LD B, A 	
-	CALL ep.MoveEnemies
-
-	; ##########################################
-	CALL gi.JoystickInput
-	CALL gi.KeyboardInput
+	CALL _GameLoop000OnRocketTakingOff
 
 	RET											; ## END of the function ##
 
@@ -77,11 +52,23 @@ _GameLoop000
 ;----------------------------------------------------------;
 _GameLoop000OnActiveJetman
 
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
 	; ##########################################
+	CALL _GameLoop000OnDisabledJoy
+	CALL ro.CheckHitTank
+	CALL jco.JetRip
+	CALL jw.MoveShots
+	CALL jw.WeaponHitEnemies	
 	CALL js.AnimateJetSprite
 	CALL js.UpdateJetSpritePositionRotation
 	CALL jw.FireDelayCounter
 	CALL jco.JetmanEnemiesCollision
+	CALL gi.JoystickInput
+	CALL gi.KeyboardInput
 
 	; ##########################################
 	CALL dbs.SetupArraysBank
@@ -94,6 +81,13 @@ _GameLoop000OnActiveJetman
 	CALL dbs.SetupArraysBank
 	LD IY, db.enemyFormation
 	;CALL ef.RespawnFormation	
+
+	; ##########################################
+	CALL dbs.SetupArraysBank
+	LD IX, db.sprite01
+	LD A, (db.enemiesSize)
+	LD B, A 	
+	CALL ep.MoveEnemies
 
 	RET											; ## END of the function ##
 
@@ -171,10 +165,24 @@ _GameLoop002
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL jco.JetInvincible
+	CALL _GameLoop002OnActiveJetman
 	CALL ros.AnimateStarsOnFlyRocket
-	CALL ro.RocketElementFallsForPickup
 	
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_GameLoop002OnActiveJetman                ;
+;----------------------------------------------------------;
+_GameLoop002OnActiveJetman
+
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
+	CALL jco.JetInvincible
+	CALL ro.RocketElementFallsForPickup
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -207,8 +215,23 @@ _GameLoop004
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL ro.RocketElementFallsForAssembly
 	CALL ro.AnimateRocketExplosion
+	CALL _GameLoop004OnActiveJetman
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_GameLoop004OnActiveJetman                ;
+;----------------------------------------------------------;
+_GameLoop004OnActiveJetman
+
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
+	CALL ro.RocketElementFallsForAssembly
 
 	RET											; ## END of the function ##
 
@@ -242,7 +265,22 @@ _GameLoop006
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	
+	CALL _GameLoop006OnActiveJetman
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_GameLoop006OnActiveJetman                ;
+;----------------------------------------------------------;
+_GameLoop006OnActiveJetman
+
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -275,8 +313,29 @@ _GameLoop008
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
+	CALL _GameLoop008OnActiveJetman
+	CALL ro.AnimateRocketExhaust
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_GameLoop008OnActiveJetman                ;
+;----------------------------------------------------------;
+_GameLoop008OnActiveJetman
+
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
 	CALL jw.AnimateShots
-	
+	CALL ro.AnimateRocketReady
+	CALL ro.AnimateTankExplode
+	CALL ro.BlinkRocketReady
+	CALL st.BlinkStarsL1
+
+	; ##########################################
 	; Animate enemies
 	CALL dbs.SetupArraysBank
 	LD IX, db.sprite01	
@@ -284,12 +343,6 @@ _GameLoop008
 	LD B, A	
 	CALL sr.AnimateSprites
 
-	CALL ro.AnimateRocketReady
-	CALL ro.AnimateTankExplode
-	CALL ro.AnimateRocketExhaust
-	CALL ro.BlinkRocketReady
-	CALL st.BlinkStarsL1
-	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -322,9 +375,24 @@ _GameLoop010
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	
 	CALL _GameLoop010nFlyingRocket
+	CALL _GameLoop010OnActiveJetman
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_GameLoop010OnActiveJetman                ;
+;----------------------------------------------------------;
+_GameLoop010OnActiveJetman
+
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
 	CALL st.BlinkStarsL2
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -371,6 +439,7 @@ _GameLoop040
 	RET Z
 
 	; ##########################################
+	
 	; Increment the counter.
 	LD A, (gld.counter040)
 	INC A
@@ -385,6 +454,21 @@ _GameLoop040
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
+	CALL _GameLoop040OnActiveJetman
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_GameLoop040OnActiveJetman                ;
+;----------------------------------------------------------;
+_GameLoop040OnActiveJetman
+
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
 	CALL ro.DropNextRocketElement
 	CALL td.NextTimeOfDayTrigger
 
@@ -415,10 +499,23 @@ _GameLoop080
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-
+	CALL _GameLoop080OnActiveJetman
 
 	RET											; ## END of the function ##
 
+;----------------------------------------------------------;
+;               #_GameLoop080OnActiveJetman                ;
+;----------------------------------------------------------;
+_GameLoop080OnActiveJetman
+
+	; Return if Jetman is inactive (game paused/loading).
+	LD A, (jt.jetState)
+	CP jt.STATE_INACTIVE
+	RET Z
+
+	; ##########################################
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

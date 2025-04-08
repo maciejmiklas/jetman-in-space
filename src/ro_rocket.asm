@@ -306,7 +306,7 @@ CheckHitTank
 	CP RO_ST_FALL_ASSEMBLY
 	JR Z, .assembly
 	
-	; Dropping rocket element for pickup.
+	; Falling rocket element for pickup.
 	LD DE, (IX + RO.DROP_X)						; X param for #ShotsCollision.
 	JR .afterAssembly
 .assembly
@@ -875,10 +875,13 @@ _JetmanDropsRocketElement
 	RET NC
 
 	; ##########################################
-	; Is Jetman's horizontal position within bounds to drop?
+	; To drop rocket element Jetman's height has to be within bounds: _RO_DROP_Y_MIN_D100 < jpo.jetY < _RO_DROP_Y_MAX_D170
 	LD A, (jpo.jetY)
-	CP _RO_DROP_H_D200
+	CP _RO_DROP_Y_MAX_D180
 	RET NC
+
+	CP _RO_DROP_Y_MIN_D130
+	RET C
 
 	; ##########################################
 	; Jetman drops rocket element.
