@@ -160,6 +160,7 @@ BackgroundPaletteLoaded
 RocketTakesOff
 	CALL jt.SetJetStateInactive
 	CALL js.HideJetSprite
+
 	CALL gb.HideGameBar
 	CALL ti.SetTilesClipRocket
 
@@ -453,6 +454,7 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 _StartLevel
 
+	CALL gb.ShowGameBar
 	CALL gc.RespawnJet
 	CALL ro.StartRocketAssembly
 	CALL ti.ResetTilemapOffset

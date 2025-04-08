@@ -70,8 +70,8 @@ EL_TANK6_D9				= 9
 PICK_MARGX_D8			= 8
 PICK_MARGY_D16			= 16
 CARRY_ADJUSTY_D10		= 10
-EXPLODE_Y_HI_H4			= 4						; HI byte from #starsDistance to explode rocket,1150 = $47E.
-EXPLODE_Y_LO_H7E		= $7E					; LO byte from #starsDistance to explode rocket.
+EXPLODE_Y_HI_H4			= 4						; HI byte from #starsDistance to explode rocket,1170 = $492.
+EXPLODE_Y_LO_H7E		= $92					; LO byte from #starsDistance to explode rocket.
 EXHAUST_SPRID_D43		= 43					; Sprite ID for exhaust.
 
 rocketEl				WORD 0					; Pointer to 9x ro.RO
@@ -90,6 +90,7 @@ AssemblyRocketForDebug
 
 	LD A, 1
 	LD IX, (rocketEl)
+	
 	CALL _MoveIXtoGivenRocketElement
 	LD A, 233
 	LD (IX + RO.Y), A
@@ -119,6 +120,17 @@ StartRocketAssembly
 	LD A, RO_ST_WAIT_DROP
 	LD (rocketState), A
 
+	XOR A
+	LD (rocketDelayDistance), A
+	LD (rocketExplodeCnt), A
+	LD (rocketDistance), A
+	LD (rocketExhaustCnt), A
+	LD (explodeTankCnt), A
+
+	LD A, _RO_FLY_DELAY_D8
+	LD (rocketFlyDelay), A
+	LD (rocketFlyDelayCnt), A
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -157,7 +169,7 @@ ResetAndDisableRocket
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #UpdateRocketOnJetmanMove                    ;
+;                #UpdateRocketOnJetmanMove                 ;
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
 	CALL dbs.SetupArraysBank
@@ -233,7 +245,7 @@ AnimateRocketExplosion
 	DEC DE										; Counter starts at 1.
 	ADD HL, DE
 	LD D, (HL)
-	CALL UpdateSpritePattern
+	CALL _UpdateRocketSpritePattern
 
 	; ##########################################
 	; Animation for the middle rockets element.
@@ -248,7 +260,7 @@ AnimateRocketExplosion
 	DEC DE										; Counter starts at 1.
 	ADD HL, DE
 	LD D, (HL)
-	CALL UpdateSpritePattern
+	CALL _UpdateRocketSpritePattern
 
 	; ##########################################
 	; Animation for the bottom rockets element.
@@ -263,7 +275,7 @@ AnimateRocketExplosion
 	DEC DE										; Counter starts at 1.
 	ADD HL, DE
 	LD D, (HL)
-	CALL UpdateSpritePattern
+	CALL _UpdateRocketSpritePattern
 
 	; ##########################################
 	; Update explosion frame counter.
@@ -456,6 +468,7 @@ FlyRocket
 	CP RO_ST_FLY
 	RET NZ
 
+	CALL _ShakeTilemapOnFlyingRocket
 	CALL _MoveFlyingRocket
 
 	; ##########################################
@@ -472,32 +485,12 @@ FlyRocket
 
 	; Sprite Y coordinate.
 	LD IX, (rocketEl)
+		
 	LD A, (IX + RO.Y)							; Lowest rocket element + 16px.
 	ADD A, FLAME_OFFSET_D16
 	NEXTREG _SPR_REG_Y_H36, A
 
 	CALL js.HideJetSprite						; Keep hiding Jetman sprite, just in case other procedure would show it.
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #UpdateSpritePattern                    ;
-;----------------------------------------------------------;
-; Input:
-;  - IX:	Current #RO pointer.
-;  - D:		sprite pattern.
-UpdateSpritePattern
-	CALL dbs.SetupArraysBank
-
-	; Set the ID of the sprite for the following commands.
-	LD A, (IX + RO.SPRITE_ID)
-	NEXTREG _SPR_REG_NR_H34, A
-
-	; ##########################################
-	; Set sprite pattern	
-	LD A, D
-	OR _SPR_PATTERN_SHOW						; Set show bit.
-	NEXTREG _SPR_REG_ATR3_H38, A
 
 	RET											; ## END of the function ##
 
@@ -950,7 +943,7 @@ _UpdateElementPosition
 	LD B, A										; Backup A.
 
 	LD D, (IX + RO.SPRITE_REF)
-	CALL UpdateSpritePattern
+	CALL _UpdateRocketSpritePattern
 
 	; ##########################################
 	; Sprite X coordinate from A param
@@ -973,7 +966,7 @@ _UpdateElementPosition
 _MoveFlyingRocket
 	CALL dbs.SetupArraysBank
 
-	; Slow down rocket movement speed while taking off. 
+	; Slow down rocket movement speed while taking off.
 	; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
 	; with a given delay. When the current section ends, the following section begins, but with decrement delay. During each section, 
 	; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
@@ -1014,7 +1007,8 @@ _MoveFlyingRocket
 .afterDelay
 
 	CALL gc.RocketFlying
-	
+	CALL dbs.SetupArraysBank
+
 	; ##########################################
 	; Increment total distance.
 	LD HL, (rocketDistance)
@@ -1038,7 +1032,8 @@ _MoveFlyingRocket
 	; ##########################################
 	; The current position of rocket elements is stored in #rocketAssemblyX and #RO.Y 
 	; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
-	
+
+	CALL dbs.SetupArraysBank
 	LD IX, (rocketEl)								; Load the pointer to #rocket into IX
 
 	; ##########################################
@@ -1139,6 +1134,46 @@ _BoardRocket
 	LD (rocketState), A
 
 	CALL gc.RocketTakesOff
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_ShakeTilemapOnFlyingRocket               ;
+;----------------------------------------------------------;
+_ShakeTilemapOnFlyingRocket
+
+	; Execute function until the rocket has reached its destination, where it stops and only stars are moving.
+	LD HL, (rocketDistance)
+	LD A, H										; H is always 0, because distance < 255.
+	CP 0
+	RET NZ
+
+	LD A, L
+	CP _RO_MOVE_STOP_D120
+	RET NC
+
+	; ##########################################
+	CALL ti.ShakeTilemap
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_UpdateRocketSpritePattern                ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:	Current #RO pointer.
+;  - D:		sprite pattern.
+_UpdateRocketSpritePattern
+
+	; Set the ID of the sprite for the following commands.
+	LD A, (IX + RO.SPRITE_ID)
+	NEXTREG _SPR_REG_NR_H34, A
+	
+	; ##########################################
+	; Set sprite pattern	
+	LD A, D
+	OR _SPR_PATTERN_SHOW						; Set show bit.
+	NEXTREG _SPR_REG_ATR3_H38, A
 
 	RET											; ## END of the function ##
 

@@ -58,7 +58,7 @@ SDB_ENEMY2				= 204					; Enemy 2
 SDB_ENEMY3				= 205					; Enemy 3
 SDB_HIDE				= 255					; Hides Sprite
 
-SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX).
+SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX).
 
 ; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
 ; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
@@ -202,13 +202,14 @@ UpdateSpritePosition
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #HideSprite                          ;
+;                   #HideSimpleSprite                      ;
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX
 ; Input
 ;  - IX:	Pointer to #SPR.
 ; Modifies: A
-HideSprite
+HideSimpleSprite
+	CALL sr.SetSpriteId
 
 	LD A, (IX + SPR.STATE)
 	RES SPRITE_ST_ACTIVE, A
@@ -269,7 +270,7 @@ UpdateSpritePattern
 	; The next animation record can have value #SDB_HIDE which means: hide it.
 	CP SDB_HIDE
 	JR NZ, .afterHide
-	CALL HideSprite
+	CALL HideSimpleSprite
 	RET
 .afterHide
 
@@ -320,12 +321,13 @@ MoveX
 	AND MVX_IN_D_MASK_CNT
 	LD B, A
 
-	; Moving left - decrement X coordinate.
-	LD HL, (IX + SPR.X)
+	LD HL, (IX + SPR.X)							; Pointer to X
 
 	BIT MVX_IN_D_DIR_BIT, D
 	JR NZ, .moveRight
 
+	; ##########################################
+	; Move left.
 .moveLeftLoop
 	DEC HL
 
@@ -336,8 +338,8 @@ MoveX
 
 	; H is 0, check whether L has reached #_GSC_X_MIN_D0.
 	LD A, L
-	CP _GSC_X_MIN_D0
-	JR NZ, .continueLeftLoop
+	CP _GSC_X_MIN_D0+1
+	JR NC, .continueLeftLoop					; Jump if A >= 1
 
 	; HL == #_GSC_X_MIN_D0
 	BIT MVX_IN_D_HIDE_BIT, D					; Hide sprite or roll over?
@@ -351,9 +353,12 @@ MoveX
 	JR .afterMoving
 
 .hideSpriteL
- 	CALL HideSprite								; Hide sprite.
+
+ 	CALL HideSimpleSprite						; Hide sprite.
 	JR .afterMoving
 
+	; ##########################################
+	; Move right.
 .moveRight
 	; Moving right - increment X coordinate.
 	LD HL, (IX + SPR.X)	
@@ -384,7 +389,7 @@ MoveX
 	JR .afterMoving
 
 .hideSpriteR
- 	CALL HideSprite								; Hide sprite.
+ 	CALL HideSimpleSprite						; Hide sprite.
 
 .afterMoving
 	LD (IX + SPR.X), HL							; Update new X position.
@@ -414,11 +419,11 @@ MoveY
 	LD A, (IX + SPR.Y)	
 	INC A
 
-	; Check whether a enemy hits ground.
+	; Check whether a sprite hits ground.
 	CP _GSC_Y_MAX_D232
-	JR C, .afterMoving							; Jump if the enemy is above ground (A < _GSC_Y_MAX_D232).
+	JR C, .afterMoving							; Jump if the sprite is above ground (A < _GSC_Y_MAX_D232).
 
-	; Enemy hits the ground.
+	; Sprite hits the ground.
 	LD A, MOVE_RET_HIDDEN
 	CALL SpriteHit
 	RET
@@ -428,12 +433,12 @@ MoveY
 	LD A, (IX + SPR.Y)	
 	DEC A
 
-	; check if sprite is above screen.
+	; Check if sprite is above screen.
 	CP _GSC_Y_MIN_D15
 	JR NC, .afterMoving							; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15).
 
 	; Sprite is above screen -> hide it.
-	CALL HideSprite
+	CALL HideSimpleSprite
 	LD A, MOVE_RET_HIDDEN
 		
 	RET

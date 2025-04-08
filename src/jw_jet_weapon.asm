@@ -30,6 +30,7 @@ shots9
 	sr.SPR {18/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 shots10
 	sr.SPR {19/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #_JW_FIRE_DELAY.
@@ -48,7 +49,7 @@ HideShots
 
 	; Loop ever all shots# skipping hidden shots.
 	LD IX, shots								; IX points to the shot.
-	LD B, _JW_SHOTS_SIZE 
+	LD B, SHOTS_SIZE 
 .shotsLoop
 
 	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands.
@@ -98,7 +99,7 @@ ShotsCollision
 
 	; Loop ever all shots# skipping hidden shots.
 	LD IX, shots								; IX points to the shot.
-	LD B, _JW_SHOTS_SIZE 
+	LD B, SHOTS_SIZE 
 .shotsLoop
 	PUSH BC, DE
 	LD A, (IX + sr.SPR.STATE)
@@ -140,8 +141,7 @@ ShotsCollision
 	JR C, .continueShotsLoop					; Jump if A(#FIRE_THICKNESS_D10) < D.
 
 	; We have hit! Hide shot and return.
-	CALL sr.SetSpriteId
-	CALL sr.HideSprite
+	CALL sr.HideSimpleSprite
 
 	LD A, SHOT_HIT
 	POP DE, BC
@@ -168,9 +168,9 @@ MoveShots
 
 	; Loop ever all shots# skipping hidden sprites.
 	LD IX, shots	
-	LD B, _JW_SHOTS_SIZE 
+	LD B, SHOTS_SIZE 
 
-.loop
+.shootsLoop
 	PUSH BC										; Preserve B for loop counter.
 
 	; Skip hidden laser shoots.
@@ -188,13 +188,13 @@ MoveShots
 	
 	; Shot moves right.
 	SET sr.MVX_IN_D_DIR_BIT, D
-	JR .afterShotDir	
+	JR .afterShotDir
 .shotDirLeft	
 	; Shot moves left.
 	RES sr.MVX_IN_D_DIR_BIT, D
-.afterShotDir	
+.afterShotDir
 	
-	CALL sr.MoveX	
+	CALL sr.MoveX
 	CALL sr.UpdateSpritePosition
 
 	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
@@ -213,7 +213,7 @@ MoveShots
 	LD DE, sr.SPR
 	ADD IX, DE
 	POP BC
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #SPR).
+	DJNZ .shootsLoop							; Jump if B > 0 (loop starts with B = #SPR).
 
 	RET											; ## END of the function ##
 
@@ -238,7 +238,7 @@ FireDelayCounter
 AnimateShots
 
 	LD IX, shots	
-	LD B, _JW_SHOTS_SIZE 
+	LD B, SHOTS_SIZE 
 	CALL sr.AnimateSprites
 
 	RET											; ## END of the function ##
@@ -260,7 +260,7 @@ Fire
 	; Find the first inactive (sprite hidden) shot.
 	LD IX, shots
 	LD DE, sr.SPR
-	LD B, _JW_SHOTS_SIZE 
+	LD B, SHOTS_SIZE 
 .findLoop
 
 	; Check whether the current #shotsX is not visible and can be reused.

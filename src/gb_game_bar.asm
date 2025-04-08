@@ -12,7 +12,7 @@ refreshCnt 				BYTE 0
 ;                    #HideGameBar                          ;
 ;----------------------------------------------------------;
 HideGameBar
-	RET ; TODO
+
 	; Update state
 	LD A, GB_ST_HIDDEN
 	LD (gamebarState), A
@@ -25,7 +25,7 @@ HideGameBar
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #HideGameBar                          ;
+;                    #ShowGameBar                          ;
 ;----------------------------------------------------------;
 ShowGameBar
 
@@ -49,16 +49,18 @@ PrintDebug
 	; ##########################################
 	LD B, 40
 	LD H, 0
-	LD A, (jpo.jetX)
+	LD A, (ro.rocketFlyDelayCnt)
 	LD L, A	
 	CALL ut.PrintNumHLDebug
 
 	; ##########################################
 	LD B, 46
 	LD H, 0
-	LD A, (jpo.jetY)
+	LD A, (ro.rocketFlyDelay)
 	LD L, A	
 	CALL ut.PrintNumHLDebug
+
+
 
 
 	RET											; ## END of the function ##

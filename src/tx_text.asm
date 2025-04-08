@@ -31,7 +31,7 @@ PrintNumHL
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #Num16ToString                     ;
+;                     #Num16ToString                       ;
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros.
 ; Input:

@@ -582,5 +582,4 @@ _TOD_DAY_DURATION		= 10					; Duration of the full day
 
 ; ##############################################
 ; Jetman weapon
-_JW_SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 _JW_FIRE_DELAY				= 15

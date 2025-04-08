@@ -43,7 +43,6 @@ _GameLoop000
 	CALL gb.PrintDebug
 	CALL ro.FlyRocket
 	CALL _GameLoop000OnActiveJetman
-	CALL _GameLoop000OnRocketTakingOff
 
 	RET											; ## END of the function ##
 
@@ -62,7 +61,7 @@ _GameLoop000OnActiveJetman
 	CALL ro.CheckHitTank
 	CALL jco.JetRip
 	CALL jw.MoveShots
-	CALL jw.WeaponHitEnemies	
+	CALL jw.WeaponHitEnemies
 	CALL js.AnimateJetSprite
 	CALL js.UpdateJetSpritePositionRotation
 	CALL jw.FireDelayCounter
@@ -80,7 +79,7 @@ _GameLoop000OnActiveJetman
 	; ##########################################
 	CALL dbs.SetupArraysBank
 	LD IY, db.enemyFormation
-	;CALL ef.RespawnFormation	
+	;CALL ef.RespawnFormation
 
 	; ##########################################
 	CALL dbs.SetupArraysBank
@@ -110,42 +109,10 @@ _GameLoop000OnDisabledJoy
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;           #_GameLoop000OnRocketTakingOff                 ;
-;----------------------------------------------------------;
-_GameLoop000OnRocketTakingOff
-
-	; Return if rocket is not flying
-	LD A, (ro.rocketState)
-	CP ro.RO_ST_FLY
-	RET NZ
-
-	; ##########################################
-	; Execute function until the rocket has reached its destination, where it stops and only stars are moving.
-	LD HL, (ro.rocketDistance)
-	LD A, H										; H is always 0, because distance < 255.
-	CP 0
-	RET NZ
-
-	LD A, L
-	CP _RO_MOVE_STOP_D120
-	RET NC
-
-	; ##########################################
-	CALL ti.ShakeTilemap
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                       #_GameLoop002                      ;
 ;----------------------------------------------------------;
 _GameLoop002
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; Increment the counter.
 	LD A, (gld.counter002)
 	INC A
@@ -183,6 +150,7 @@ _GameLoop002OnActiveJetman
 	; ##########################################
 	CALL jco.JetInvincible
 	CALL ro.RocketElementFallsForPickup
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -190,12 +158,6 @@ _GameLoop002OnActiveJetman
 ;----------------------------------------------------------;
 _GameLoop004
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; Increment the counter.
 	LD A, (gld.counter004)
 	INC A
@@ -240,12 +202,6 @@ _GameLoop004OnActiveJetman
 ;----------------------------------------------------------;
 _GameLoop006
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; Increment the counter.
 	LD A, (gld.counter006)
 	INC A
@@ -288,12 +244,6 @@ _GameLoop006OnActiveJetman
 ;----------------------------------------------------------;
 _GameLoop008
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; Increment the counter.
 	LD A, (gld.counter008)
 	INC A
@@ -350,12 +300,6 @@ _GameLoop008OnActiveJetman
 ;----------------------------------------------------------;
 _GameLoop010
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; Increment the counter.
 	LD A, (gld.counter010)
 	INC A
@@ -433,13 +377,6 @@ _GameLoop010nFlyingRocket
 ;----------------------------------------------------------;
 _GameLoop040
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
-	
 	; Increment the counter.
 	LD A, (gld.counter040)
 	INC A
@@ -479,12 +416,6 @@ _GameLoop040OnActiveJetman
 ;----------------------------------------------------------;
 _GameLoop080
 
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 	; Increment the counter.
 	LD A, (gld.counter080)
 	INC A

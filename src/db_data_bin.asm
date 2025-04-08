@@ -715,17 +715,17 @@ rocketElL5
 rocketAssemblyXL6		BYTE 02*8
 rocketElL6
 ; Rocket element.
-	ro.RO {20*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 50/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+	ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 50/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
 	ro.RO {12*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 51/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
 	ro.RO {16*8/*DROP_X*/, 09*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 52/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
 	
 ; Fuel tank.
-	ro.RO {20*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {21*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 	ro.RO {24*8/*DROP_X*/, 18*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 	ro.RO {27*8/*DROP_X*/, 21*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 	ro.RO {30*8/*DROP_X*/, 24*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {20*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {20*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {21*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+	ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 7
 rocketAssemblyXL7		BYTE 18*8

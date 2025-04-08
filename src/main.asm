@@ -13,7 +13,7 @@ start
 	CALL gc.SetupGame
 	CALL gc.LoadLevel1
 
-	;CALL ro.AssemblyRocketForDebug
+	CALL ro.AssemblyRocketForDebug
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;
