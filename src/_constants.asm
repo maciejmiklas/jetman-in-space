@@ -498,7 +498,7 @@ _GB_MOVE_SLOW_D2		= 2						; Slows down background movement (when Jetman moves).
 
 ; ##############################################
 ; In game stars.
-ST_L1_MOVE_DEL_D4		= 4						; Stars move delay.
+ST_L1_MOVE_DEL_D4		= 2						; Stars move delay.
 ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
 
 ; ##############################################

@@ -33,6 +33,7 @@ GameLoopCmd
 ;                      #SetupGame                          ;
 ;----------------------------------------------------------;
 SetupGame
+	CALL bm.HideImage
 	CALL sc.SetupScreen
 	CALL ti.SetupTiles
 	CALL sp.LoadSpritesFPGA
@@ -175,12 +176,6 @@ RocketTakesOff
 ;----------------------------------------------------------;
 LoadNextLevel
 
-	CALL ti.ResetTilemapOffset
-	CALL ro.HideRocket
-	CALL ro.ResetAndDisableRocket
-	CALL ti.SetTilesClipFull
-
-	; ##########################################
 	; Load level into A and eventually reset it (10 -> 1).
 	LD A, (level)
 	INC A
@@ -193,8 +188,6 @@ LoadNextLevel
 	LD (level),A
 .afterResetLevel
 
-	nextreg 2,8
-	
 	; ##########################################
 	; A contains level number, load corresponding level.
 
@@ -535,6 +528,24 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                   #_InitLevelLoad                        ;
+;----------------------------------------------------------;
+_InitLevelLoad
+
+	CALL bm.HideImage
+	CALL ti.ResetTilemapOffset
+	CALL ro.HideRocket
+	CALL ro.ResetAndDisableRocket
+	CALL jt.SetJetStateInactive
+	CALL js.HideJetSprite
+	CALL td.ResetTimeOfDay
+	CALL st.HideStars
+	CALL jw.HideShots
+	CALL ros.ResetRocketStarsRow
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     #_StartLevel                         ;
 ;----------------------------------------------------------;
 _StartLevel
@@ -542,25 +553,9 @@ _StartLevel
 	CALL gb.ShowGameBar
 	CALL gc.RespawnJet
 	CALL ro.StartRocketAssembly
-	CALL ti.ResetTilemapOffset
-
+	CALL ti.SetTilesClipFull
 	RET											; ## END of the function ##
 
-
-;----------------------------------------------------------;
-;                   #_InitLevelLoad                        ;
-;----------------------------------------------------------;
-_InitLevelLoad
-
-	CALL jt.SetJetStateInactive
-	CALL js.HideJetSprite
-	CALL bm.HideImage
-	CALL td.ResetTimeOfDay
-	CALL st.HideStars
-	CALL jw.HideShots
-	CALL ros.ResetRocketStarsRow
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

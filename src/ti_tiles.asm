@@ -172,7 +172,7 @@ SetupTiles
 	; ##########################################
 	; Tell hardware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
 	NEXTREG _TI_MAP_ADR_H6E, TI_OFFSET			; MSB of tilemap in bank 5.
-	NEXTREG _TI_DEF_ADR_H6F, OFFSET		; MSB of tilemap definitions (sprites).
+	NEXTREG _TI_DEF_ADR_H6F, OFFSET				; MSB of tilemap definitions (sprites).
 
 	; ##########################################
 	; Setup palette
@@ -180,8 +180,10 @@ SetupTiles
 	LD B, db.tilePaletteBinLength				; Number of colors to copy.
 	CALL LoadTilemapPalette
 
+	CALL SetTilesClipOff
+
 	; ##########################################
-	; Copy tile definitions to expected memory.
+	; Copy tile definitions (sprite file) to expected memory.
 	LD DE, START_H6500
 	LD HL, db.tileSprBin						; Address of tiles in memory.
 	LD BC, db.tileSprBinLength					; Number of bytes to copy.
@@ -217,6 +219,18 @@ LoadTilemapPalette
 
 	RET											; ## END of the function ##
 	
+;----------------------------------------------------------;
+;                    #SetTilesClipOff                      ;
+;----------------------------------------------------------;
+SetTilesClipOff
+
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
+
+	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                   #SetTilesClipFull                      ;
 ;----------------------------------------------------------;

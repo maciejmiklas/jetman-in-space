@@ -432,34 +432,6 @@ AnimateRocketExhaust
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #BlinkRocketReady                      ;
-;----------------------------------------------------------;
-BlinkRocketReady
-	CALL dbs.SetupArraysBank
-
-	; Return if rocket is not flying.
-	LD A, (rocketState)
-	CP ROST_FLY
-	RET NZ
-		
-	LD A, EL_LOW_D1
-	CALL _MoveIXtoGivenRocketElement
-
-	; Set sprite pattern - one for flip, one for flop -> rocket will blink.
-	LD A, (gld.counter008FliFLop)
-	CP _GC_FLIP_ON_D1
-	JR Z, .flip
-	LD A, SPR_PAT_READY1_D60
-	JR .afterSet
-.flip	
-	LD A, SPR_PAT_READY2_D61
-.afterSet
-	
-	LD (IX + RO.SPRITE_REF), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                       #FlyRocket                         ;
 ;----------------------------------------------------------;
 FlyRocket
@@ -550,9 +522,37 @@ RocketElementFallsForPickup
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #AnimateRocketReady                     ;
+;                   #BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
-AnimateRocketReady
+BlinkFlyingRocket
+	CALL dbs.SetupArraysBank
+
+	; Return if rocket is not flying.
+	LD A, (rocketState)
+	CP ROST_FLY
+	RET NZ
+		
+	LD A, EL_LOW_D1
+	CALL _MoveIXtoGivenRocketElement
+
+	; Set sprite pattern - one for flip, one for flop -> rocket will blink.
+	LD A, (gld.counter008FliFLop)
+	CP _GC_FLIP_ON_D1
+	JR Z, .flip
+	LD A, SPR_PAT_READY1_D60
+	JR .afterSet
+.flip	
+	LD A, SPR_PAT_READY2_D61
+.afterSet
+	
+	LD (IX + RO.SPRITE_REF), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #BlinkRocketReady                      ;
+;----------------------------------------------------------;
+BlinkRocketReady
 	CALL dbs.SetupArraysBank
 
 	; Return if rocket is not ready.
@@ -1053,7 +1053,7 @@ _MoveFlyingRocket
 	; Keep moving
 
 	; ##########################################
-	; Move bottom rocket element (nr.1).
+	; Move bottom rocket element.
 	LD A, (IX + RO.Y)
 
 	DEC A

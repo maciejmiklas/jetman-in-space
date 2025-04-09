@@ -265,6 +265,7 @@ _GameLoop008
 	; CALL functions that need to be updated every xx-th loop.
 	CALL _GameLoop008OnActiveJetman
 	CALL ro.AnimateRocketExhaust
+	CALL ro.BlinkFlyingRocket
 
 	RET											; ## END of the function ##
 
@@ -280,9 +281,8 @@ _GameLoop008OnActiveJetman
 
 	; ##########################################
 	CALL jw.AnimateShots
-	CALL ro.AnimateRocketReady
-	CALL ro.AnimateTankExplode
 	CALL ro.BlinkRocketReady
+	CALL ro.AnimateTankExplode
 	CALL st.BlinkStarsL1
 
 	; ##########################################
