@@ -3,6 +3,10 @@
 ;----------------------------------------------------------;
 	MODULE gc
 
+LEVEL_MIN				= 1
+LEVEL_MAX				= 10
+level					BYTE LEVEL_MIN
+
 ;----------------------------------------------------------;
 ;                   #GameLoopCmd                           ;
 ;----------------------------------------------------------;
@@ -162,26 +166,105 @@ RocketTakesOff
 	CALL js.HideJetSprite
 
 	CALL gb.HideGameBar
-	CALL ti.SetTilesClipRocket
+	;CALL ti.SetTilesClipBottom
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #RocketExplosionOver                    ;
+;                     #LoadNextLevel                       ;
 ;----------------------------------------------------------;
-RocketExplosionOver
+LoadNextLevel
 
 	CALL ti.ResetTilemapOffset
 	CALL ro.HideRocket
 	CALL ro.ResetAndDisableRocket
 	CALL ti.SetTilesClipFull
 
-	RET											; ## END of the function ##
+	; ##########################################
+	; Load level into A and eventually reset it (10 -> 1).
+	LD A, (level)
+	INC A
+	CP LEVEL_MAX+1
+	JR NZ, .afterResetLevel
+	LD A, (LEVEL_MIN)
+	LD (level),A
+.afterResetLevel
 
-;----------------------------------------------------------;
-;                   #RocketFlyingEnd                       ;
-;----------------------------------------------------------;
-RocketFlyingEnd
+	LD A, (ros.starsRow)
+	nextreg 2,8
+	
+	; ##########################################
+	; A contains level number, load corresponding level.
+
+	; Load level 1
+	CP 1
+	JR NZ, .afterLevel1
+	CALL LoadLevel1
+	RET
+.afterLevel1
+
+	; Load level 2
+	CP 2
+	JR NZ, .afterLevel2
+	CALL LoadLevel2
+	RET
+.afterLevel2
+
+	; Load level 3
+	CP 3
+	JR NZ, .afterLevel3
+	CALL LoadLevel3
+	RET
+.afterLevel3
+
+	; Load level 4
+	CP 4
+	JR NZ, .afterLevel4
+	CALL LoadLevel4
+	RET
+.afterLevel4
+
+	; Load level 5
+	CP 5
+	JR NZ, .afterLevel5
+	CALL LoadLevel5
+	RET
+.afterLevel5
+
+	; Load level 6
+	CP 6
+	JR NZ, .afterLevel6
+	CALL LoadLevel6
+	RET
+.afterLevel6
+
+	; Load level 7
+	CP 7
+	JR NZ, .afterLevel7
+	CALL LoadLevel7
+	RET
+.afterLevel7
+
+	; Load level 8
+	CP 8
+	JR NZ, .afterLevel8
+	CALL LoadLevel8
+	RET
+.afterLevel8
+
+	; Load level 9
+	CP 9
+	JR NZ, .afterLevel9
+	CALL LoadLevel9
+	RET
+.afterLevel9
+
+	; Load level 10
+	CP 10
+	JR NZ, .afterLevel10
+	CALL LoadLevel10
+	RET
+.afterLevel10
 
 	RET											; ## END of the function ##
 
@@ -473,6 +556,7 @@ _InitLevelLoad
 	CALL td.ResetTimeOfDay
 	CALL st.HideStars
 	CALL jw.HideShots
+	CALL ros.ResetRocketStarsRow
 
 	RET											; ## END of the function ##
 

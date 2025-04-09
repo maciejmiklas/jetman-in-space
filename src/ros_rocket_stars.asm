@@ -1,24 +1,40 @@
 ;----------------------------------------------------------;
-;                           Stars                          ;
+;                     Rocket Stars                         ;
 ;----------------------------------------------------------;
 	MODULE ros
 
-TILES_ROW_RESET			= _TI_VTILES_D32-1
-
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
-tilesRow				BYTE TILES_ROW_RESET	; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
+tilesRow				BYTE _TI_VTILES_D32		; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
 starsRow				BYTE _TIS_ROWS_D128		; Current start row, runs from from _TIS_ROWS_D128 to 0.
 
 tileOffset				BYTE _SC_RESY1_D255		; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt			BYTE 0					; Runs from 0 to 7.
+tilePixelCnt			BYTE _TI_PIXELS_D8		; Runs from 0 to 7 (_TI_PIXELS_D8-1).
 
 ;----------------------------------------------------------;
-;                       #NextStarsRow                      ;
+;                 #ResetRocketStarsRow                     ;
+;----------------------------------------------------------;
+ResetRocketStarsRow
+	LD A, _TI_VTILES_D32
+	LD (tilesRow), A
+
+	LD A, _TIS_ROWS_D128
+	LD (starsRow), A
+
+	LD A, _SC_RESY1_D255
+	LD (tileOffset), A
+
+	XOR A
+	LD (tilePixelCnt), A
+	
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #NextRocketStarsRow                     ;
 ;----------------------------------------------------------;
 ; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#starsRow).
-NextStarsRow
+NextRocketStarsRow
 	CALL dbs.SetupRocketStarsBank
 
 	; ##########################################
@@ -73,7 +89,7 @@ NextStarsRow
 	JR NZ, .afterResetTilesRow					; Jump if #tilesRow > 0.
 
 	; Reset tiles counter.
-	LD A, TILES_ROW_RESET + 1
+	LD A, _TI_VTILES_D32
 	LD (tilesRow), A
 .afterResetTilesRow
 
@@ -114,7 +130,7 @@ AnimateStarsOnFlyRocket
 	XOR A
 	LD (tilePixelCnt), A
 
-	CALL NextStarsRow
+	CALL NextRocketStarsRow
 .afterNextTile
 
 	; ##########################################
@@ -132,23 +148,6 @@ AnimateStarsOnFlyRocket
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
-;----------------------------------------------------------;
-;                      #_ResetStars                        ;
-;----------------------------------------------------------;
-_ResetStars
-	LD A, TILES_ROW_RESET
-	LD (tilesRow), A
-
-	LD A, _TIS_ROWS_D128
-	LD (starsRow), A
-
-	LD A, _SC_RESY1_D255
-	LD (tileOffset), A
-
-	XOR A
-	LD (tilePixelCnt), A
-	
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

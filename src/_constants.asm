@@ -457,6 +457,8 @@ _TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
 _TI_H_BYTES_D80			= _TI_HTILES_D40 * 2
 
 _TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
+	ASSERT _TI_VTILES_D32 =  32
+
 _TI_VBYTES_D64			= _TI_VTILES_D32 * 2	; 64 bytes pro row.
 _TI_EMPTY_D57			= 57					; Empty tile.
 _TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
@@ -471,7 +473,7 @@ _TI_CLIP_X1_D0			= 0
 _TI_CLIP_X2_D159		= 159
 _TI_CLIP_Y1_D0			= 0
 _TI_CLIP_FULLY2_D255	= _SC_RESY1_D255
-_TI_CLIP_ROCKETY2_D247	= _SC_RESY1_D255 - _TI_PIXELS_D8
+_TI_CLIP_BOTTOM_D247	= _SC_RESY1_D255 - _TI_PIXELS_D8
 
 ; ##############################################
 ; Game screen 
@@ -484,9 +486,13 @@ _GSC_Y_MAX_D232			= 232
 _GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
 ; ##############################################
-; Tile stars map.
-_TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=40*32*4*2 bytes, 3 screens.
+; Rocket tile stars map.
+_TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
+	ASSERT _TIS_BYTES_D10240 =  10240
+
 _TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
+	ASSERT _TIS_ROWS_D128 =  128
+
 _ITS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.
 
 ; ##############################################
@@ -574,11 +580,6 @@ _JET_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on t
 _GC_FLIP_ON_D1			= 1
 _GC_FLIP_OFF_D0			= 0
 
-; ##############################################
-; Times of Day.
-_TOD_STEPS_D4			= 4						; Total number of steps (times of the day) from day to night.
-_TOD_STEP_DURATION		= 20					; Duration of a single time of day, except for a full day.
-_TOD_DAY_DURATION		= 10					; Duration of the full day
 
 ; ##############################################
 ; Jetman weapon

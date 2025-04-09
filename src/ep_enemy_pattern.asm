@@ -42,9 +42,9 @@ MOVE_DELAY_CNT_INC		= %0001'0000
 ;
 ; Bits of the single step:
 ; 0-2:	Number of pixels to move along X axis
-; 3:	#MOVE_PAT_X_DIR_BIT
+; 3:	#MOVE_PAT_X_TOD_DIR_BIT
 ; 4-6:	Number of pixels to move on Y axis
-; 7:	#MOVE_PAT_Y_DIR_BIT
+; 7:	#MOVE_PAT_Y_TOD_DIR_BIT
 ; 
 ; Example: for a move pattern: "%0'011'1'101, 10" the sprite will move 5 pixels on the X axis, 3 pixel on the Y axis, 
 ; and it will be repeated 10 times. In total sprite will travel: 5*10 pixels on X and 3*10 pixels on Y. 
@@ -63,16 +63,16 @@ MOVE_PAT_X_ADD			= %0'000'0'001
 ; 1 = sprite moves right, 0 = sprite moves left. However, this is the case if deployment occurs on the left side. For deployment on 
 ; the right side of the screen, all directions in the movement pattern get inverted. Just write all move patterns, assuming deployments 
 ; occur on the screen's left side. If it's being deployed right, the direction bits will be inverted.
-MOVE_PAT_X_DIR_BIT		= 3
-MOVE_PAT_X_DIR_MASK		= %0'000'1'000
+MOVE_PAT_X_TOD_DIR_BIT		= 3
+MOVE_PAT_X_TOD_DIR_MASK		= %0'000'1'000
 
 MOVE_PAT_Y_MASK			= %0'111'0'000
 MOVE_PAT_Y_ADD			= %0'001'0'000
 
-MOVE_PAT_Y_DIR_MASK		= %1'000'0'000
+MOVE_PAT_Y_TOD_DIR_MASK		= %1'000'0'000
 
 ; Determines whether Y should be decremented (0 - move up) or incremented (1 - move down) in each iteration.
-MOVE_PAT_Y_DIR_BIT		= 7
+MOVE_PAT_Y_TOD_DIR_BIT		= 7
 
 MOVE_PAT_XY_MASK		= %0'111'0'111
 MOVE_PAT_XY_MASK_RES	= %1'000'1'000
@@ -297,20 +297,20 @@ _MoveEnemyX
 	BIT ENP_SETUP_DEPLOY_BIT, (IY + ENP.SETUP)
 	JR NZ, .deployedLeft						; Jump if bit is 0 -> deploy left.
 
-	; Enemy was deployed on the right, invert #MOVE_PAT_X_DIR_BIT.
-	BIT MOVE_PAT_X_DIR_BIT, (HL)
+	; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_BIT.
+	BIT MOVE_PAT_X_TOD_DIR_BIT, (HL)
 	JR NZ, .moveLeft							; Jump if bit is set to 1 (right), invert right -> left.
 	JR .moveRight								; Bit is 0 -> move left.
 
 .deployedLeft
-	; Enemy was deployed on the left, do not invert #MOVE_PAT_X_DIR_BIT.
-	BIT MOVE_PAT_X_DIR_BIT, (HL)
+	; Enemy was deployed on the left, do not invert #MOVE_PAT_X_TOD_DIR_BIT.
+	BIT MOVE_PAT_X_TOD_DIR_BIT, (HL)
 	JR NZ, .moveRight							; Jump if bit is set to 1 (right).
 	JR .moveLeft								; Bit is 0 -> move left.
 
 .moveRight										; Move right.
 	LD D, sr.MVX_IN_D_1PX_ROL
-	SET sr.MVX_IN_D_DIR_BIT, D
+	SET sr.MVX_IN_D_TOD_DIR_BIT, D
 	PUSH HL
 	CALL sr.MoveX	
 	POP HL
@@ -318,7 +318,7 @@ _MoveEnemyX
 
 .moveLeft										; Move left.
 	LD D, sr.MVX_IN_D_1PX_ROL
-	RES sr.MVX_IN_D_DIR_BIT, D
+	RES sr.MVX_IN_D_TOD_DIR_BIT, D
 	PUSH HL
 	CALL sr.MoveX	
 	POP HL
@@ -401,7 +401,7 @@ _MoveEnemy
 
 	; Move on Y-axis one pixel up or down?
 	LD A, (HL)									; A contains current pattern.
-	BIT MOVE_PAT_Y_DIR_BIT, A
+	BIT MOVE_PAT_Y_TOD_DIR_BIT, A
 	JR Z, .moveUp								; Jump if sprite should move up.
 
 	; Move on pixel down.

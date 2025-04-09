@@ -208,14 +208,14 @@ SetTilesClipFull
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #SetTilesClipRocket                      ;
+;                 #SetTilesClipBottom                      ;
 ;----------------------------------------------------------;
-SetTilesClipRocket
+SetTilesClipBottom
 
 	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X1_D0
 	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X2_D159
 	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_Y1_D0
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_ROCKETY2_D247
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_BOTTOM_D247
 
 	RET											; ## END of the function ##	
 

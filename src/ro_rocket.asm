@@ -286,7 +286,7 @@ AnimateRocketExplosion
 	RET
 .explodingEnds
 	; sequence is over, load next level.
-	CALL gc.RocketExplosionOver
+	CALL gc.LoadNextLevel
 
 	RET											; ## END of the function ##
 

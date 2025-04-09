@@ -19,7 +19,7 @@ Y						BYTE					; Y position of the sprite.
 ;   - 2: 	Not used, but reserved for simple sprite (sr),
 ;   - 3:	#SPRITE_ST_MIRROR_X_BIT,
 ;	- 4:	Not used, but reserved for simple sprite (sr),
-;	- 5-8: 	Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_DIR_BIT.
+;	- 5-8: 	Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT.
 STATE					BYTE
 NEXT					BYTE					; ID in #ssSpriteDB for next animation record/state.
 REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record.
@@ -306,9 +306,9 @@ UpdateSpritePattern
 ;  - D: 	Configuration, bits:
 ;			- 0-2: Number of pixels to move sprite,
 ;			- 3:  #MVX_IN_D_HIDE_BIT,
-;			- 4:  #MVX_IN_D_DIR_BIT.
+;			- 4:  #MVX_IN_D_TOD_DIR_BIT.
 MVX_IN_D_HIDE_BIT 			= 3					; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen.
-MVX_IN_D_DIR_BIT			= 4					; 1 - to move right, 0 - to move left.
+MVX_IN_D_TOD_DIR_BIT			= 4					; 1 - to move right, 0 - to move left.
 MVX_IN_D_6PX_HIDE			= %0000'1'110		; Move the sprite by 6 pixels and hide on the screen end.
 MVX_IN_D_1PX_ROL			= %0000'0'001		; Move the sprite by 1 pixel and roll over sprite when off-screen.
 MVX_IN_D_2PX_ROL			= %0000'0'010		; Move the sprite by 2 pixels and roll over sprite when off-screen.
@@ -323,7 +323,7 @@ MoveX
 
 	LD HL, (IX + SPR.X)							; Pointer to X
 
-	BIT MVX_IN_D_DIR_BIT, D
+	BIT MVX_IN_D_TOD_DIR_BIT, D
 	JR NZ, .moveRight
 
 	; ##########################################

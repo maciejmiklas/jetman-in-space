@@ -37,7 +37,7 @@ SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max i
 shotsDelayCnt
 	DB 0
 
-STATE_SHOT_DIR_BIT		= 5						; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
+STATE_SHOT_TOD_DIR_BIT		= 5						; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
 
 ;----------------------------------------------------------;
 ;                       #HideShots                         ;
@@ -183,15 +183,15 @@ MoveShots
 	LD D, sr.MVX_IN_D_6PX_HIDE
 
 	; Setup move direction for shot.
-	BIT STATE_SHOT_DIR_BIT, (IX + sr.SPR.STATE)
+	BIT STATE_SHOT_TOD_DIR_BIT, (IX + sr.SPR.STATE)
 	JR Z, .shotDirLeft	
 	
 	; Shot moves right.
-	SET sr.MVX_IN_D_DIR_BIT, D
+	SET sr.MVX_IN_D_TOD_DIR_BIT, D
 	JR .afterShotDir
 .shotDirLeft	
 	; Shot moves left.
-	RES sr.MVX_IN_D_DIR_BIT, D
+	RES sr.MVX_IN_D_TOD_DIR_BIT, D
 .afterShotDir
 	
 	CALL sr.MoveX
@@ -282,7 +282,7 @@ Fire
 	
 	XOR A										; A will hold sr.SPR.STATE.
 	; Jetman is moving right, shot will move right also.
-	SET STATE_SHOT_DIR_BIT, A					; Store shot direction in state.
+	SET STATE_SHOT_TOD_DIR_BIT, A					; Store shot direction in state.
 
 	; Set X coordinate for laser beam.
 	LD HL, (jpo.jetX)
@@ -294,7 +294,7 @@ Fire
 
 	XOR A										; A will hold sr.SPR.STATE.
 	; Jetman is moving left.
-	RES STATE_SHOT_DIR_BIT, A					; Store shot direction in state.
+	RES STATE_SHOT_TOD_DIR_BIT, A					; Store shot direction in state.
 
 	; Set X coordinate for laser beam.
 	LD HL, (jpo.jetX)

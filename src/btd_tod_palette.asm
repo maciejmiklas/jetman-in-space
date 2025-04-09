@@ -123,7 +123,7 @@ _CreateTodPalettes
 	; ##########################################
 	; Copy remaining palettes.
 
-	LD B, _TOD_STEPS_D4
+	LD B, td.TOD_STEPS_D4
 .copyLoop
 	PUSH BC
 
