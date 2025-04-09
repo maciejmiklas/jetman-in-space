@@ -506,9 +506,9 @@ _DB_BGST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 2
 _DB_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 _DB_SPRITE_BANK1_D28	= 28					; Sprites on bank 40, 41.
 _DB_SPRITE_BANK2_D29	= 29
-_DB_TI_SPR_BANK_D30		= 30
-_DB_RO_STAR_BANK1_D31	= 31
-_DB_RO_STAR_BANK2_D32	= 32
+_DB_ST_BANK_D30			= 30					; Bank for stars, slot 6
+_DB_ARR_BANK_D31		= 31					; Bank for arrays, slot 6
+_DB_TI_SPR_BANK_D32		= 32
 _DB_PAL2_BANK_D33		= 33					; Layer 2 pallettes
 _DB_PAL2_BR_BANK_D34	= 34					; Layer 2 brightness change for pallettes from _DB_PAL2_BANK_D33.
 
@@ -518,8 +518,8 @@ _DB_BGST_BANK_D35		= 35
 _DB_BG_EN_BANK_D44 		= _DB_BGST_BANK_D35+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _DB_BG_EN_BANK_D44 == 44
 
-_DBST_BANK_D45			= 45					; Bank for stars, slot 6
-_DB_ARR_BANK_D46		= 46					; Bank for arrays, slot 6
+_DB_RO_STAR_BANK1_D45	= 46
+_DB_RO_STAR_BANK2_D46	= 47
 
 ; ##############################################
 ; Respawn location.

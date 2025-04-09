@@ -4,6 +4,10 @@
 	module db
 
 ;----------------------------------------------------------;
+;         Game Background Image (Bank 18...27)             ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                Game Sprites (Bank 28...29)               ;
 ;----------------------------------------------------------;
 ; Load sprites (16KB) into bank 20,29 mapping it to slot 6,7.
@@ -15,150 +19,11 @@ spritesBinLength = $ - spritesBin
 	ASSERT $$ == _DB_SPRITE_BANK2_D29
 
 ;----------------------------------------------------------;
-;         Game Tile Sprites and Palette (Bank 30)          ;
-;----------------------------------------------------------;
-	MMU _RAM_SLOT7, _DB_TI_SPR_BANK_D30 		; Assign slots 7 to bank 30.
-	ORG _RAM_SLOT7_START_HE000					; Set memory pointer to start of the slot 6.
-
-; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
-; Sprites
-;  - 00 - 56: Font, palette 0
-;  - 59     : Empty, each palette
-;  - 60 - 67: Ground 1, palette 1
-;  - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
-;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
-
-tileSprBin INCBIN "assets/tiles.spr"
-tileSprBinLength = $ - tileSprBin
-	ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
-
-; Palettes:
-;	1: Text
-;	2: Ground
-;	3: Trees
-;   4-6: Platforms
-
-;  Values for Remy's editor:
-/*
-  $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
-  $1C7    $8   $40   $41   $40   $21   $2D   $2F   $1B   $1D   $35   $37   $3B   $18   $3D   $80
-  $1C7   $80   $18   $41   $A8   $10   $40   $60    $0  $1C1   $80  $1C1  $1C1  $1C1  $1C1   $DF
-  $1C7  $1BB  $1B3  $1AB  $1A3  $19B  $193  $18B  $183  $1C0  $128  $1FB   $4D   $55  $178  $1C7
-  $1C7  $1F8  $1F0  $1E8  $1E0  $1D8  $1D0  $1C8  $1C0  $1C0  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
-  $1C7   $85   $7D   $75   $6D   $65   $5D   $55   $4D  $5  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
-*/
-tilePaletteBin									; RGB332, 8 bit
-	DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
-	DB $E3, $04, $20, $20, $20, $10, $16, $17, $0D, $0E, $1A, $1B, $1D, $0C, $1E, $40
-	DB $E3, $40, $0C, $20, $54, $08, $20, $30, $00, $E0, $40, $E0, $E0, $E0, $E0, $6F
-	DB $E3, $DD, $D9, $D5, $D1, $CD, $C9, $C5, $C1, $E0, $94, $FD, $26, $2A, $BC, $E3
-	DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E0, $E3, $E3, $E3, $E3, $E3, $E3
-	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $02, $E3, $E3, $E3, $E3, $E3, $E3
-tilePaletteBinLength = $ - tilePaletteBin
-	
-	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
-	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ <= _DB_TI_SPR_BANK_D30 			; All data should fit into bank 30.
-
-;----------------------------------------------------------;
-;                Star Tiles (Bank 31, 32)                  ;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                Layer 2 Palettes (Bank 33)                ;
-;----------------------------------------------------------;
-	MMU _RAM_SLOT6, _DB_PAL2_BANK_D33
-	ORG _RAM_SLOT6_START_HC000
-
- ; #############################################
-bgrL1PaletteAdr
-	INCBIN  "assets/l01/bg.nxp"
-
-bgrL1PaletteBytes = $ - bgrL1PaletteAdr
-	ASSERT bgrL1PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL2PaletteAdr
-	INCBIN  "assets/l02/bg.nxp"
-
-bgrL2PaletteBytes = $ - bgrL2PaletteAdr
-	ASSERT bgrL2PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL3PaletteAdr
-	INCBIN  "assets/l03/bg.nxp"
-
-bgrL3PaletteBytes = $ - bgrL3PaletteAdr
-	ASSERT bgrL3PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL4PaletteAdr
-	INCBIN  "assets/l04/bg.nxp"
-
-bgrL4PaletteBytes = $ - bgrL4PaletteAdr
-	ASSERT bgrL4PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL5PaletteAdr
-	INCBIN  "assets/l05/bg.nxp"
-
-bgrL5PaletteBytes = $ - bgrL5PaletteAdr
-	ASSERT bgrL5PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL6PaletteAdr
-	INCBIN  "assets/l06/bg.nxp"
-
-bgrL6PaletteBytes = $ - bgrL6PaletteAdr
-	ASSERT bgrL6PaletteBytes <= _BM_PAL2_BYTES_D512
-	
- ; #############################################
-bgrL7PaletteAdr
-	INCBIN  "assets/l07/bg.nxp"
-
-bgrL7PaletteBytes = $ - bgrL7PaletteAdr
-	ASSERT bgrL7PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL8PaletteAdr
-	INCBIN  "assets/l08/bg.nxp"
-
-bgrL8PaletteBytes = $ - bgrL8PaletteAdr
-	ASSERT bgrL8PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL9PaletteAdr
-	INCBIN  "assets/l09/bg.nxp"
-
-bgrL9PaletteBytes = $ - bgrL9PaletteAdr
-	ASSERT bgrL9PaletteBytes <= _BM_PAL2_BYTES_D512
-
- ; #############################################
-bgrL10PaletteAdr
-	INCBIN  "assets/l10/bg.nxp"
-
-bgrL10PaletteBytes = $ - bgrL10PaletteAdr
-	ASSERT bgrL10PaletteBytes <= _BM_PAL2_BYTES_D512
-	
- ; #############################################
-	ASSERT $$ == _DB_PAL2_BANK_D33	
-
-;----------------------------------------------------------;
-;          Layer 2 Brightness Palettes (Bank 34)           ;
-;----------------------------------------------------------;
-todL2Palettes									; Palette will be generated during runtime.
-
-;----------------------------------------------------------;
-;              Game Background (Bank 35...44)              ;
-;----------------------------------------------------------;
-; The screen size is 320x256 (81920 bytes, 80KiB) -> 10 8KB banks.
-
-;----------------------------------------------------------;
-;                  Star Data (Bank 45)                     ;
+;                  Star Data (Bank 30)                     ;
 ;----------------------------------------------------------;
 ; Before using it call #dbs.SetupStarsBank
 
-	MMU _RAM_SLOT7, _DBST_BANK_D45
+	MMU _RAM_SLOT7, _DB_ST_BANK_D30
 	ORG _RAM_SLOT7_START_HE000
 starsBankStart
 
@@ -381,14 +246,14 @@ starsPalL2
 	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
 	; ##########################################
-	ASSERT $$ == _DBST_BANK_D45						; Data should remain in the same bank
-	ASSERT $$starsBankStart == _DBST_BANK_D45 		; Make sure that we have configured the right bank.
+	ASSERT $$ == _DB_ST_BANK_D30						; Data should remain in the same bank
+	ASSERT $$starsBankStart == _DB_ST_BANK_D30 		; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
-;                    Arrays (Bank 46)                      ;
+;                    Arrays (Bank 31)                      ;
 ;----------------------------------------------------------;
 ; Before using it call #SetupArraysBank
-	MMU _RAM_SLOT7, _DB_ARR_BANK_D46
+	MMU _RAM_SLOT7, _DB_ARR_BANK_D31
 	ORG _RAM_SLOT7_START_HE000
 spritesBankStart
 
@@ -946,8 +811,147 @@ platformsSizeL10 		BYTE 30
 ; ##############################################
 ; Final Checks.
 
-	ASSERT $$ == _DB_ARR_BANK_D46					; Data should remain in the same bank
-	ASSERT $$spritesBankStart == _DB_ARR_BANK_D46 	; Make sure that we have configured the right bank.
+	ASSERT $$ == _DB_ARR_BANK_D31					; Data should remain in the same bank
+	ASSERT $$spritesBankStart == _DB_ARR_BANK_D31 	; Make sure that we have configured the right bank.
+	
+;----------------------------------------------------------;
+;         Game Tile Sprites and Palette (Bank 32)          ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT7, _DB_TI_SPR_BANK_D32 		; Assign slots 7 to bank 30.
+	ORG _RAM_SLOT7_START_HE000					; Set memory pointer to start of the slot 6.
+
+; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
+; Sprites
+;  - 00 - 56: Font, palette 0
+;  - 59     : Empty, each palette
+;  - 60 - 67: Ground 1, palette 1
+;  - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
+;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
+
+tileSprBin INCBIN "assets/tiles.spr"
+tileSprBinLength = $ - tileSprBin
+	ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
+
+; Palettes:
+;	1: Text
+;	2: Ground
+;	3: Trees
+;   4-6: Platforms
+
+;  Values for Remy's editor:
+/*
+  $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
+  $1C7    $8   $40   $41   $40   $21   $2D   $2F   $1B   $1D   $35   $37   $3B   $18   $3D   $80
+  $1C7   $80   $18   $41   $A8   $10   $40   $60    $0  $1C1   $80  $1C1  $1C1  $1C1  $1C1   $DF
+  $1C7  $1BB  $1B3  $1AB  $1A3  $19B  $193  $18B  $183  $1C0  $128  $1FB   $4D   $55  $178  $1C7
+  $1C7  $1F8  $1F0  $1E8  $1E0  $1D8  $1D0  $1C8  $1C0  $1C0  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+  $1C7   $85   $7D   $75   $6D   $65   $5D   $55   $4D  $5  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+*/
+tilePaletteBin									; RGB332, 8 bit
+	DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
+	DB $E3, $04, $20, $20, $20, $10, $16, $17, $0D, $0E, $1A, $1B, $1D, $0C, $1E, $40
+	DB $E3, $40, $0C, $20, $54, $08, $20, $30, $00, $E0, $40, $E0, $E0, $E0, $E0, $6F
+	DB $E3, $DD, $D9, $D5, $D1, $CD, $C9, $C5, $C1, $E0, $94, $FD, $26, $2A, $BC, $E3
+	DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E0, $E3, $E3, $E3, $E3, $E3, $E3
+	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $02, $E3, $E3, $E3, $E3, $E3, $E3
+tilePaletteBinLength = $ - tilePaletteBin
+	
+	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
+	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
+	ASSERT $$ <= _DB_TI_SPR_BANK_D32 			; All data should fit into bank 45.
+
+;----------------------------------------------------------;
+;                Layer 2 Palettes (Bank 33)                ;
+;----------------------------------------------------------;
+	MMU _RAM_SLOT6, _DB_PAL2_BANK_D33
+	ORG _RAM_SLOT6_START_HC000
+
+ ; #############################################
+bgrL1PaletteAdr
+	INCBIN  "assets/l01/bg.nxp"
+
+bgrL1PaletteBytes = $ - bgrL1PaletteAdr
+	ASSERT bgrL1PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL2PaletteAdr
+	INCBIN  "assets/l02/bg.nxp"
+
+bgrL2PaletteBytes = $ - bgrL2PaletteAdr
+	ASSERT bgrL2PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL3PaletteAdr
+	INCBIN  "assets/l03/bg.nxp"
+
+bgrL3PaletteBytes = $ - bgrL3PaletteAdr
+	ASSERT bgrL3PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL4PaletteAdr
+	INCBIN  "assets/l04/bg.nxp"
+
+bgrL4PaletteBytes = $ - bgrL4PaletteAdr
+	ASSERT bgrL4PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL5PaletteAdr
+	INCBIN  "assets/l05/bg.nxp"
+
+bgrL5PaletteBytes = $ - bgrL5PaletteAdr
+	ASSERT bgrL5PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL6PaletteAdr
+	INCBIN  "assets/l06/bg.nxp"
+
+bgrL6PaletteBytes = $ - bgrL6PaletteAdr
+	ASSERT bgrL6PaletteBytes <= _BM_PAL2_BYTES_D512
+	
+ ; #############################################
+bgrL7PaletteAdr
+	INCBIN  "assets/l07/bg.nxp"
+
+bgrL7PaletteBytes = $ - bgrL7PaletteAdr
+	ASSERT bgrL7PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL8PaletteAdr
+	INCBIN  "assets/l08/bg.nxp"
+
+bgrL8PaletteBytes = $ - bgrL8PaletteAdr
+	ASSERT bgrL8PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL9PaletteAdr
+	INCBIN  "assets/l09/bg.nxp"
+
+bgrL9PaletteBytes = $ - bgrL9PaletteAdr
+	ASSERT bgrL9PaletteBytes <= _BM_PAL2_BYTES_D512
+
+ ; #############################################
+bgrL10PaletteAdr
+	INCBIN  "assets/l10/bg.nxp"
+
+bgrL10PaletteBytes = $ - bgrL10PaletteAdr
+	ASSERT bgrL10PaletteBytes <= _BM_PAL2_BYTES_D512
+	
+ ; #############################################
+	ASSERT $$ == _DB_PAL2_BANK_D33
+
+;----------------------------------------------------------;
+;          Layer 2 Brightness Palettes (Bank 34)           ;
+;----------------------------------------------------------;
+todL2Palettes									; Palette will be generated during runtime.
+
+;----------------------------------------------------------;
+;              Game Background (Bank 35...44)              ;
+;----------------------------------------------------------;
+; The screen size is 320x256 (81920 bytes, 80KiB) -> 10 8KB banks.
+
+;----------------------------------------------------------;
+;                Star Tiles (Bank 45, 46)                  ;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
