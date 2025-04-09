@@ -30,12 +30,17 @@ LoadLevel1Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL1
@@ -89,12 +94,17 @@ LoadLevel2Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL2
@@ -148,12 +158,17 @@ LoadLevel3Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
 	
 	; ##########################################
-	; Load platforms map.
+	; Load platforms coordinates.
 
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL3
@@ -209,12 +224,17 @@ LoadLevel4Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL4
@@ -268,12 +288,17 @@ LoadLevel5Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL5
@@ -327,12 +352,17 @@ LoadLevel6Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL6
@@ -386,13 +416,17 @@ LoadLevel7Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
-
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL7
 	LD (pl.platforms), HL
@@ -445,13 +479,17 @@ LoadLevel8Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
-
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL8
 	LD (pl.platforms), HL
@@ -504,12 +542,17 @@ LoadLevel9Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL9
@@ -562,13 +605,17 @@ LoadLevel10Data
 	POP DE
 
 	; ##########################################
-	; Load tile map.
-	; DE is set to level number above
-	CALL ti.LoadGameTilemap
+	; Load tile map. DE is set to level number.
+	PUSH DE
+	CALL fi.LoadPlatformsTilemap 
+	POP DE
 
 	; ##########################################
-	; Load platforms map.
-
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadRocketStarsTilemap
+	
+	; ##########################################
+	; Load platforms coordinates.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL10
 	LD (pl.platforms), HL

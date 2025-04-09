@@ -437,7 +437,7 @@ _SC_RESY1_D255			= _SC_RESY_D256 -1
 _SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17.
 
 ; ##############################################
-; Tilemap.
+; Tilemap for in game platforms.
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
 _TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
@@ -446,17 +446,13 @@ _TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
 
 _TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
 _TI_GND_D8				= 8						; The thickness of the ground (tilemap).
-_TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
 
-; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
-_TI_H_BYTES_D80			= _TI_HTILES_D40 * 2
 
 _TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
 	ASSERT _TI_VTILES_D32 =  32
 
 _TI_EMPTY_D57			= 57					; Empty tile.
 _TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
-
 
 ; ##############################################
 ; Game screen 

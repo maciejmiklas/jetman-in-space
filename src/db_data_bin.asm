@@ -63,16 +63,6 @@ tilePaletteBinLength = $ - tilePaletteBin
 ;----------------------------------------------------------;
 ;                Star Tiles (Bank 31, 32)                  ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6 _RAM_SLOT7, _DB_RO_STAR_BANK1_D31
-	ORG _RAM_SLOT6_START_HC000					; Set memory pointer to start of the slot 6,7.
-
-starsBin INCBIN "assets/stars.map"
-starsBinSize = $ - starsBin
-
-	ASSERT starsBinSize == ros.TIS_BYTES_D10240
-	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6.
-	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ == _DB_RO_STAR_BANK2_D32 			; All data should fit into bank 32.
 
 ;----------------------------------------------------------;
 ;                Layer 2 Palettes (Bank 33)                ;
@@ -391,7 +381,7 @@ starsPalL2
 	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
 	; ##########################################
-	ASSERT $$ == _DBST_BANK_D45					; Data should remain in the same bank
+	ASSERT $$ == _DBST_BANK_D45						; Data should remain in the same bank
 	ASSERT $$starsBankStart == _DBST_BANK_D45 		; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;

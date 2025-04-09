@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE fi
 
-fileHandle				defb 0
+fileHandle				DEFB 0
 
 _
 ; Open a file.
@@ -61,12 +61,34 @@ F_READ					= $9D
 F_CMD					= $08
 ASCII_O					= $30
 
+TIS_FILE1_BYT_D8192		= _BANK_BYTES_D8192
+TIS_FILE2_BYT_D2048		= 2048
+
+TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
+	ASSERT TIS_BYTES_D10240 =  10240
+	ASSERT TIS_FILE1_BYT_D8192+TIS_FILE2_BYT_D2048 = TIS_BYTES_D10240
+
+plTileFileName 			DB "assets/l00/tiles.map",0
+PL_FILE_LEVEL_POS		= 8							; Position of a level number (00-99) in the file name of the background image.
+
+stTileFileName 			DB "assets/l00/stars_0.map",0
+ST_FILE_LEVEL_POS		= 8	
+ST_FILE_NR_POS			= 8
+
 ;----------------------------------------------------------;
-;                      #LoadTilemap                        ;
+;               #LoadPlatformsTilemap                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: File name.
-LoadTilemap
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadPlatformsTilemap
+
+	; Set the level number in the file name, DE="35" will give: "assets/l00/tiles.map" -> "assets/l35/tiles.map"
+	LD HL, plTileFileName
+	LD IX, HL									; Param for _FileOpen
+	ADD HL, PL_FILE_LEVEL_POS					; Move HL to "assets/l"
+	LD (HL), D									; Set first number.
+	INC HL
+	LD (HL), E									; Set second number.
 
 	; Open file.
 	CALL _FileOpen
@@ -79,13 +101,50 @@ LoadTilemap
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                 #LoadRocketStarsTilemap                  ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadRocketStarsTilemap
+
+	; Load first file
+	PUSH DE
+	
+	CALL dbs.SetupRocketStarsBank
+
+	LD A, "0"
+	CALL _PrepareFileOpenForStars
+	CALL _FileOpen
+
+	; Read file.
+	LD IX, _RAM_SLOT6_START_HC000
+	LD BC, TIS_FILE1_BYT_D8192
+	CALL _FileRead
+
+	POP DE
+
+	; ##########################################
+	; Load second file.
+
+	LD A, "1"
+	CALL _PrepareFileOpenForStars
+	CALL _FileOpen
+
+	; Read file.
+	LD IX, _RAM_SLOT7_START_HE000
+	LD BC, TIS_FILE2_BYT_D2048
+	CALL _FileRead
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       #LoadImage                         ;
 ;----------------------------------------------------------;
 ; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
 ; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\l01_background.bmp
 ; Input:
 ;  - IX: File name.
-;  - C: Position of the bank number is in the image's file name.
+;  - C:  Position of a image part number (0-9) in the file name of the background image.
 LoadImage
 
 	; Iterate over banks, loading one after another, form 0 to 9 inclusive.
@@ -131,6 +190,29 @@ LoadImage
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;             #_PrepareFileOpenForStars                    ;
+;----------------------------------------------------------;
+; Input:
+;  - A: Stars file number 0 for stars0.map, and 1 for stars1.map.
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+; Output:
+;  - #stTileFileName with correct name.
+_PrepareFileOpenForStars
+
+	; Set the level number in the file name, DE="35" will give: "assets/l00/stars0.map" -> "assets/l35/stars0.map"
+	LD HL, stTileFileName
+	LD IX, HL									; Param for _FileOpen
+	ADD HL, ST_FILE_LEVEL_POS					; Move HL to "assets/l"
+	LD (HL), D									; Set first number.
+	INC HL
+	LD (HL), E									; Set second number.
+
+	ADD HL, ST_FILE_NR_POS						; Move HL to "assets/l35/stars"
+	LD (HL), A
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      #_FileRead                          ;

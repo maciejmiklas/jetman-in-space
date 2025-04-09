@@ -47,28 +47,6 @@ START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite f
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
 OFFSET	= (START_H6500 - _RAM_SLOT2_START_H4000) >> 8
 
-gameFileName 		DB "assets/l00/tiles.map",0
-FILE_LEVEL_POS		= 8							; Position of a level number (00-99) in the file name of the background image.
-
-;----------------------------------------------------------;
-;                   #LoadGameTilemap                       ;
-;----------------------------------------------------------;
-; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadGameTilemap
-
-	; Set the level number in the file name, DE="35" will give: "assets/l00/tiles.map" -> "assets/l35/tiles.map"
-	LD HL, gameFileName
-	LD IX, HL									; Param for #LoadImage
-	ADD HL, FILE_LEVEL_POS						; Move HL to "assets/l"
-	LD (HL), D									; Set first number.
-	INC HL
-	LD (HL), E									; Set second number.
-
-	CALL fi.LoadTilemap
-
-	RET											; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                     #ShakeTilemap                        ;
 ;----------------------------------------------------------;

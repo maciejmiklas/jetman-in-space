@@ -3,13 +3,18 @@
 ;----------------------------------------------------------;
 	MODULE ros
 
-TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
-	ASSERT TIS_BYTES_D10240 =  10240
 
 TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
 	ASSERT TIS_ROWS_D128 =  128
 
-_ITS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.	
+TIS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.	
+
+TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
+
+; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
+TI_H_BYTES_D80			= TI_HTILES_D40 * 2
+
+TI_RAM_ADDR				= _RAM_SLOT6_START_HC000
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow				BYTE _TI_VTILES_D32		; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
@@ -58,25 +63,25 @@ NextRocketStarsRow
 	; ##########################################
 	; Prepare tile copy fom temp RAM to screen RAM.
 
-	; Load the memory address of the starts row to be copied into HL. HL = db.starsBin + starsRow * _TI_H_BYTES_D80.
+	; Load the memory address of the starts row to be copied into HL. HL = TI_RAM_ADDR + starsRow * TI_H_BYTES_D80.
 	LD D, A
-	LD E, _TI_H_BYTES_D80
+	LD E, TI_H_BYTES_D80
 	MUL D, E									; DE contains byte offset to current row.
-	LD HL, db.starsBin
+	LD HL, TI_RAM_ADDR
 	ADD HL, DE									; Move RAM pointer to current row.
 
 	; Load the memory address of in-game tiles into DE. This row will be replaced with stars. DE = _TI_START_H5B00 + tilesRow * _TI_H_BYTES_D8.0
 	LD A, (tilesRow)
 	LD D, A
-	LD E, _TI_H_BYTES_D80
-	MUL D, E									; DE contains #tilesRow * _TI_H_BYTES_D80.
+	LD E, TI_H_BYTES_D80
+	MUL D, E									; DE contains #tilesRow * TI_H_BYTES_D80.
 	PUSH HL
 	LD HL, _TI_START_H5B00						; HL contains memory offset to tiles.
 	ADD HL, DE
 	LD DE, HL
 	POP HL
 
-	LD BC, _TI_H_BYTES_D80						; Number of bytes to copy, it's one row.
+	LD BC, TI_H_BYTES_D80						; Number of bytes to copy, it's one row.
 	LDIR	
 
 	; ##########################################
@@ -117,11 +122,11 @@ AnimateStarsOnFlyRocket
 	; Start animation when the rocket reaches given height.
 	LD HL, (ro.rocketDistance)
 	LD A, H
-	CP 0										; If H > 0 then distance is definitely > _ITS_MOVE_FROM_D50.
+	CP 0										; If H > 0 then distance is definitely > TIS_MOVE_FROM_D50.
 	JR NZ, .afterAnimationStart
 
 	LD A, L
-	CP _ITS_MOVE_FROM_D50
+	CP TIS_MOVE_FROM_D50
 	RET C
 .afterAnimationStart
 
