@@ -166,7 +166,7 @@ RocketTakesOff
 	CALL js.HideJetSprite
 
 	CALL gb.HideGameBar
-	;CALL ti.SetTilesClipBottom
+	CALL ti.SetTilesClipVertical
 
 	RET											; ## END of the function ##
 
@@ -184,13 +184,15 @@ LoadNextLevel
 	; Load level into A and eventually reset it (10 -> 1).
 	LD A, (level)
 	INC A
+	LD (level),A
+
+	; Restart level.
 	CP LEVEL_MAX+1
 	JR NZ, .afterResetLevel
 	LD A, (LEVEL_MIN)
 	LD (level),A
 .afterResetLevel
 
-	LD A, (ros.starsRow)
 	nextreg 2,8
 	
 	; ##########################################
@@ -304,12 +306,12 @@ EnemyHitsJet
 	; ##########################################
 	; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy.
 	LD A, (jt.jetState)							
-	CP jt.JET_ST_RIP
+	CP jt.JETST_RIP
 	RET Z										; Exit if RIP.
 
 	; ##########################################
 	; Is Jetman invincible? If so, just kill the enemy.
-	CP jt.JET_ST_INV
+	CP jt.JETST_INV
 	RET Z										; Exit if invincible.
 
 	; ##########################################

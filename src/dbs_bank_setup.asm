@@ -37,7 +37,7 @@ SetupSpritesBank
 ;----------------------------------------------------------;
 SetupStarsBank
 
-	NEXTREG _MMU_REG_SLOT7_H57, _DB_ST_BANK_D45
+	NEXTREG _MMU_REG_SLOT7_H57, _DBST_BANK_D45
 
 	RET											; ## END of the function ##
 

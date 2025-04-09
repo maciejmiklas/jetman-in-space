@@ -6,6 +6,9 @@
 	"z80-macroasm.format.uppercaseKeywords": true,
 	"cSpell.words": [
 		"AGND",
+		"BGST",
+		"DBST",
+		"JETST",
 		"TASM",
 		"TSRE"
 	]

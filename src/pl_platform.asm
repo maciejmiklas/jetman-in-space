@@ -1054,7 +1054,7 @@ _PlatformSpriteHit
 	CALL dbs.SetupArraysBank
 	
 	; Exit if sprite is not alive.
-	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)	
+	BIT sr.SPRITEST_ACTIVE_BIT, (IX + sr.SPR.STATE)	
 	JR NZ, .alive								; Jump if sprite is alive.
 
 	LD A, PL_HIT_RET_A_NO

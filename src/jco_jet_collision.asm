@@ -41,7 +41,7 @@ JetmanEnemiesCollision
 JetRip
 
 	LD A, (jt.jetState)
-	CP jt.JET_ST_RIP
+	CP jt.JETST_RIP
 	RET NZ										; Exit if not RiP.
 
 	CALL _RipMove
@@ -66,7 +66,7 @@ MakeJetInvincible
 	LD (invincibleCnt), HL						; Store invincibility duration.
 	
 	; Update state
-	LD A, jt.JET_ST_INV
+	LD A, jt.JETST_INV
 	CALL jt.SetJetState
 
 	RET											; ## END of the function ##
@@ -77,7 +77,7 @@ MakeJetInvincible
 JetInvincible
 
 	LD A, (jt.jetState)
-	CP jt.JET_ST_INV
+	CP jt.JETST_INV
 	RET NZ
 
 	; ##########################################
@@ -123,7 +123,7 @@ JetInvincible
 .lastIteration	
 	; ##########################################
 	; It is the last iteration, remove invincibility.
-	LD A, jt.JET_ST_NORMAL
+	LD A, jt.JETST_NORMAL
 	CALL jt.SetJetState
 
 	CALL js.ShowJetSprite
@@ -145,7 +145,7 @@ JetInvincible
 _EnemyCollision
 
 	; Exit if enemy is not alive.
-	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+	BIT sr.SPRITEST_ACTIVE_BIT, (IX + sr.SPR.STATE)
 	RET Z
 
 	; ################################

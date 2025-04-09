@@ -105,11 +105,11 @@ ShotsCollision
 	LD A, (IX + sr.SPR.STATE)
 
 	; Skip hidden laser shoots for collision detection.
-	BIT sr.SPRITE_ST_VISIBLE_BIT, A
+	BIT sr.SPRITEST_VISIBLE_BIT, A
 	JR Z, .continueShotsLoop
 
 	; Skip inactive laser shoots for collision detection.
-	BIT sr.SPRITE_ST_ACTIVE_BIT, A
+	BIT sr.SPRITEST_ACTIVE_BIT, A
 	JR Z, .continueShotsLoop
 
 	; Compare X coordinate of the sprite and the shot, HL holds X of the sprite.
@@ -174,7 +174,7 @@ MoveShots
 	PUSH BC										; Preserve B for loop counter.
 
 	; Skip hidden laser shoots.
-	BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+	BIT sr.SPRITEST_VISIBLE_BIT, (IX + sr.SPR.STATE)
 	JR Z, .continue
 
 	; Shot is visible, move it and update postion.
@@ -198,7 +198,7 @@ MoveShots
 	CALL sr.UpdateSpritePosition
 
 	; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
-	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+	BIT sr.SPRITEST_ACTIVE_BIT, (IX + sr.SPR.STATE)
 	JR Z, .afterPlatformCollision				; Exit if sprite is not alive.
 
 	; Check the collision with the platform.
@@ -264,7 +264,7 @@ Fire
 .findLoop
 
 	; Check whether the current #shotsX is not visible and can be reused.
-	BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+	BIT sr.SPRITEST_VISIBLE_BIT, (IX + sr.SPR.STATE)
 	JR Z, .afterFound							; Jump if visibility is not set -> hidden, can be reused.
 
 	; Move HL to the beginning of the next #shotsX (see "LD DE, SPR" above).
@@ -334,11 +334,11 @@ _CheckHitEnemies
 .loop											; Loop over every enemy.
 	PUSH BC										; Preserve B for loop counter.
 	LD A, (IX + sr.SPR.STATE)
-	BIT sr.SPRITE_ST_VISIBLE_BIT, A
+	BIT sr.SPRITEST_VISIBLE_BIT, A
 	JR Z, .continue								; Jump if enemy is hidden.
 
 	; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
-	BIT sr.SPRITE_ST_ACTIVE_BIT, A
+	BIT sr.SPRITEST_ACTIVE_BIT, A
 	JR Z, .continue	
 	
 	; Enemy is visible, check collision with leaser beam.

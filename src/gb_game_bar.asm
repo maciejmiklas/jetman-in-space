@@ -3,10 +3,11 @@
 ;----------------------------------------------------------;
 	MODULE gb 
 
-GB_ST_VISIBLE			= 1
-GB_ST_HIDDEN			= 0
+GB_VISIBLE				= 1
+GB_HIDDEN				= 0
+GB_TILES_D13			= 320 / 8 * 3
 
-gamebarState			BYTE GB_ST_VISIBLE
+gamebarState			BYTE GB_VISIBLE
 refreshCnt 				BYTE 0
 ;----------------------------------------------------------;
 ;                    #HideGameBar                          ;
@@ -14,12 +15,12 @@ refreshCnt 				BYTE 0
 HideGameBar
 
 	; Update state
-	LD A, GB_ST_HIDDEN
+	LD A, GB_HIDDEN
 	LD (gamebarState), A
 
 	; ##########################################
 	; Remove gamebar from screen.
-	LD B, _C_GB_TILES_D13
+	LD B, GB_TILES_D13
 	CALL ti.CleanTiles
 
 	RET											; ## END of the function ##
@@ -30,7 +31,7 @@ HideGameBar
 ShowGameBar
 
 	; Update state
-	LD A, GB_ST_VISIBLE
+	LD A, GB_VISIBLE
 	LD (gamebarState),A
 
 	RET											; ## END of the function ##
@@ -42,7 +43,7 @@ PrintDebug
 	
 	; Return if gamebar is hidden.
 	LD A, (gamebarState)
-	CP GB_ST_VISIBLE
+	CP GB_VISIBLE
 	RET NZ
 
 

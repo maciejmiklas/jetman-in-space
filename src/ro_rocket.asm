@@ -3,25 +3,28 @@
 ;----------------------------------------------------------;
 	MODULE ro
 
+RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
+RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
+
 ; Number of _GameLoop040 cycles to drop next rocket module.
 dropNextDelay			BYTE 0
 
 rocketElementCnt		BYTE 0 					; Counts from EL_LOW_D1 to EL_TANK3_D6, both inclusive.
 
-rocketState				BYTE RO_ST_WAIT_DROP
+rocketState				BYTE ROST_WAIT_DROP
 
-RO_ST_INACTIVE			= 0
-RO_ST_WAIT_DROP			= 1						; Rocket element (or fuel tank) is waiting for drop from the sky. This is initial state.
+ROST_INACTIVE			= 0
+ROST_WAIT_DROP			= 1						; Rocket element (or fuel tank) is waiting for drop from the sky. This is initial state.
 
-RO_ST_FALL_PICKUP		= 10					; Rocket element (or fuel tank) is falling down for pickup.
-RO_ST_FALL_ASSEMBLY		= 11					; The rocket element (or fuel tank) falls towards the rocket for assembly.
-RO_ST_WAIT_PICKUP		= 12					; Rocket element (or fuel tank) is waiting for pickup.
-RO_ST_CARRY				= 13					; Jetman carries rocket element (or fuel tank).
-RO_ST_TANK_EXPLODE		= 14
+ROST_FALL_PICKUP		= 10					; Rocket element (or fuel tank) is falling down for pickup.
+ROST_FALL_ASSEMBLY		= 11					; The rocket element (or fuel tank) falls towards the rocket for assembly.
+ROST_WAIT_PICKUP		= 12					; Rocket element (or fuel tank) is waiting for pickup.
+ROST_CARRY				= 13					; Jetman carries rocket element (or fuel tank).
+ROST_TANK_EXPLODE		= 14
 
-RO_ST_READY				= 100					; Rocket is ready to start and waits only for Jetman.
-RO_ST_FLY				= 101					; The rocket is flying towards an unknown planet.
-RO_ST_EXPLODE			= 102					; Rocket explodes after hitting something.
+ROST_READY				= 100					; Rocket is ready to start and waits only for Jetman.
+ROST_FLY				= 101					; The rocket is flying towards an unknown planet.
+ROST_EXPLODE			= 102					; Rocket explodes after hitting something.
 
 DROP_LAND_Y_ADJ			= -5
 
@@ -70,8 +73,8 @@ EL_TANK6_D9				= 9
 PICK_MARGX_D8			= 8
 PICK_MARGY_D16			= 16
 CARRY_ADJUSTY_D10		= 10
-EXPLODE_Y_HI_H4			= 4						; HI byte from #starsDistance to explode rocket,1170 = $492.
-EXPLODE_Y_LO_H7E		= $92					; LO byte from #starsDistance to explode rocket.
+EXPLODE_Y_HI_H4			= 4						; HI byte from #starsDistance to explode rocket,1070 = $42E.
+EXPLODE_Y_LO_H7E		= $2E					; LO byte from #starsDistance to explode rocket.
 EXHAUST_SPRID_D43		= 43					; Sprite ID for exhaust.
 
 rocketEl				WORD 0					; Pointer to 9x ro.RO
@@ -85,7 +88,7 @@ AssemblyRocketForDebug
 	LD A, EL_TANK6_D9
 	LD (rocketElementCnt), A
 
-	LD A, RO_ST_READY
+	LD A, ROST_READY
 	LD (rocketState), A
 
 	LD A, 1
@@ -117,7 +120,7 @@ StartRocketAssembly
 
 	CALL ResetAndDisableRocket
 
-	LD A, RO_ST_WAIT_DROP
+	LD A, ROST_WAIT_DROP
 	LD (rocketState), A
 
 	XOR A
@@ -222,7 +225,7 @@ AnimateRocketExplosion
 
 	; Is rocket exploding ?
 	LD A, (rocketState)
-	CP RO_ST_EXPLODE
+	CP ROST_EXPLODE
 	RET NZ
 	
 	; ##########################################
@@ -304,7 +307,7 @@ CheckHitTank
 
 	; Is tank already exploding?
 	LD A, (rocketState)
-	CP RO_ST_TANK_EXPLODE
+	CP ROST_TANK_EXPLODE
 	RET Z										; Return if tank is already exploding.
 
 	; ##########################################
@@ -315,7 +318,7 @@ CheckHitTank
 	;  1) #RO.DROP_X: when elements drop for pickup by Jetman,
 	;  2) #rocketAssemblyX when building the rocket
 	LD A, (rocketState)
-	CP RO_ST_FALL_ASSEMBLY
+	CP ROST_FALL_ASSEMBLY
 	JR Z, .assembly
 	
 	; Falling rocket element for pickup.
@@ -338,7 +341,7 @@ CheckHitTank
 	XOR A
 	LD (explodeTankCnt), A
 
-	LD A, RO_ST_TANK_EXPLODE
+	LD A, ROST_TANK_EXPLODE
 	LD (rocketState), A
 
 	RET											; ## END of the function ##
@@ -351,7 +354,7 @@ AnimateTankExplode
 
 	; Return if tank is not exploding.
 	LD A, (rocketState)
-	CP RO_ST_TANK_EXPLODE
+	CP ROST_TANK_EXPLODE
 	RET NZ
 
 	; Is explosion over?
@@ -360,7 +363,7 @@ AnimateTankExplode
 	JR NZ, .keepExploding
 
 	; Explosion is over.
-	LD A, RO_ST_WAIT_DROP
+	LD A, ROST_WAIT_DROP
 	LD (rocketState), A
 
 	CALL _ResetRocketElement
@@ -399,7 +402,7 @@ AnimateRocketExhaust
 
 	; Return if rocket is not flying.
 	LD A, (rocketState)
-	CP RO_ST_FLY
+	CP ROST_FLY
 	RET NZ
 
 	; Increment sprite pattern counter.
@@ -436,7 +439,7 @@ BlinkRocketReady
 
 	; Return if rocket is not flying.
 	LD A, (rocketState)
-	CP RO_ST_FLY
+	CP ROST_FLY
 	RET NZ
 		
 	LD A, EL_LOW_D1
@@ -465,7 +468,7 @@ FlyRocket
 
 	; Return if rocket is not flying.
 	LD A, (rocketState)
-	CP RO_ST_FLY
+	CP ROST_FLY
 	RET NZ
 
 	CALL _ShakeTilemapOnFlyingRocket
@@ -502,7 +505,7 @@ ResetCarryingRocketElement
 
 	; Return if the state does not match carry.
 	LD A, (rocketState)
-	CP RO_ST_CARRY
+	CP ROST_CARRY
 	RET NZ
 
 	CALL _ResetRocketElement
@@ -517,7 +520,7 @@ RocketElementFallsForPickup
 
 	; Return if there is no fall.
 	LD A, (rocketState)
-	CP RO_ST_FALL_PICKUP
+	CP ROST_FALL_PICKUP
 	RET NZ										; Return if falling bit is not set.
 
 	CALL _SetIXtoCurrentRocketElement			; Set IX to current #rocket postion.
@@ -541,7 +544,7 @@ RocketElementFallsForPickup
 	RET NZ										; No, keep falling down.
 	
 	; Yes, element has reached landing postion.
-	LD A, RO_ST_WAIT_PICKUP
+	LD A, ROST_WAIT_PICKUP
 	LD (rocketState), A
 
 	RET											; ## END of the function ##
@@ -554,11 +557,11 @@ AnimateRocketReady
 
 	; Return if rocket is not ready.
 	LD A, (rocketState)
-	CP RO_ST_READY
+	CP ROST_READY
 	RET NZ	
 
 	; Set the ID of the sprite for the following commands.
-	LD A, _RO_DOWN_SPR_ID_D50
+	LD A, RO_DOWN_SPR_ID_D50
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman.
@@ -583,7 +586,7 @@ RocketElementFallsForAssembly
 
 	; Return if there is no assembly.
 	LD A, (rocketState)
-	CP RO_ST_FALL_ASSEMBLY
+	CP ROST_FALL_ASSEMBLY
 	RET NZ										; Return if assembly bit is not set
 
 	; ##########################################
@@ -622,7 +625,7 @@ RocketElementFallsForAssembly
 	
 	; ##########################################
 	; Yes, element has reached landing postion, set state for next drop.
-	LD A, RO_ST_WAIT_DROP
+	LD A, ROST_WAIT_DROP
 	LD (rocketState), A
 
 	; ##########################################
@@ -646,7 +649,7 @@ DropNextRocketElement
 	
 	; Check state.
 	LD A, (rocketState)
-	CP RO_ST_WAIT_DROP
+	CP ROST_WAIT_DROP
 	RET NZ
 
 	; ##########################################
@@ -667,7 +670,7 @@ DropNextRocketElement
 	JR NZ, .dropNext							; Jump if the counter did not reach max value.
 
 	; The rocket is assembled and fueled.
-	LD A, RO_ST_READY
+	LD A, ROST_READY
 	LD (rocketState), A
 	RET
 
@@ -679,7 +682,7 @@ DropNextRocketElement
 	LD (rocketElementCnt), A
 
 	; We are going to drop the next element -> set falling state.
-	LD A, RO_ST_FALL_PICKUP
+	LD A, ROST_FALL_PICKUP
 	LD (rocketState), A
 
 	; Drop next rocket element/tank, first set IX to current #rocket postion.
@@ -790,12 +793,12 @@ _JetmanElementCollision
 ;----------------------------------------------------------;
 _PickupRocketElement
 
-	; Return if there is no element/tank to pick up. Status must be #RO_ST_WAIT_PICKUP or #RO_ST_FALL_PICKUP.
+	; Return if there is no element/tank to pick up. Status must be #ROST_WAIT_PICKUP or #ROST_FALL_PICKUP.
 	LD A, (rocketState)
-	CP RO_ST_WAIT_PICKUP
+	CP ROST_WAIT_PICKUP
 	JR Z, .afterStatusCheck
 
-	CP RO_ST_FALL_PICKUP
+	CP ROST_FALL_PICKUP
 	RET NZ
 	
 .afterStatusCheck
@@ -803,7 +806,7 @@ _PickupRocketElement
 	; ##########################################
 	;  Exit if RiP.
 	LD A, (jt.jetState)
-	CP jt.JET_ST_RIP
+	CP jt.JETST_RIP
 	RET Z
 
 	; ##########################################
@@ -821,7 +824,7 @@ _PickupRocketElement
 
 	; ##########################################
 	; Jetman picks up element/tank. Update state to reflect it and return.
-	LD A, RO_ST_CARRY
+	LD A, ROST_CARRY
 	LD (rocketState), A
 
 	RET											; ## END of the function ##
@@ -878,7 +881,7 @@ _JetmanDropsRocketElement
 
 	; ##########################################
 	; Jetman drops rocket element.
-	LD A, RO_ST_FALL_ASSEMBLY
+	LD A, ROST_FALL_ASSEMBLY
 	LD (rocketState), A
 
 	; ##########################################
@@ -896,7 +899,7 @@ _CarryRocketElement
 
 	; Return if the state does not match.
 	LD A, (rocketState)
-	CP RO_ST_CARRY
+	CP ROST_CARRY
 	RET NZ
 
 	CALL _SetIXtoCurrentRocketElement
@@ -923,7 +926,7 @@ _ResetRocketElement
 	LD (rocketElementCnt), A
 
 	; Change state.
-	LD A, RO_ST_WAIT_DROP
+	LD A, ROST_WAIT_DROP
 	LD (rocketState), A
 
 	; Reset drop delay.
@@ -1039,7 +1042,7 @@ _MoveFlyingRocket
 	; ##########################################
 	; Did the rocket reach the middle of the screen, and should it stop moving?
 	LD A, (IX + RO.Y)
-	CP _RO_MOVE_STOP_D120
+	CP RO_MOVE_STOP_D120
 	JR NC, .keepMoving
 
 	; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
@@ -1101,7 +1104,7 @@ _StartRocketExplosion
 
 	; ##########################################
 	; Update state
-	LD A, RO_ST_EXPLODE
+	LD A, ROST_EXPLODE
 	LD (rocketState), A
 
 	RET											; ## END of the function ##
@@ -1114,7 +1117,7 @@ _BoardRocket
 	
 	; Return if rocket is not ready for boarding.
 	LD A, (rocketState)
-	CP RO_ST_READY
+	CP ROST_READY
 	RET NZ
 	
 	; ##########################################
@@ -1130,7 +1133,7 @@ _BoardRocket
 
 	; ##########################################
 	; Jetman boards the rocket!
-	LD A, RO_ST_FLY
+	LD A, ROST_FLY
 	LD (rocketState), A
 
 	CALL gc.RocketTakesOff
@@ -1149,7 +1152,7 @@ _ShakeTilemapOnFlyingRocket
 	RET NZ
 
 	LD A, L
-	CP _RO_MOVE_STOP_D120
+	CP RO_MOVE_STOP_D120
 	RET NC
 
 	; ##########################################

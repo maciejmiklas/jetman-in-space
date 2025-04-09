@@ -3,9 +3,17 @@
 ;----------------------------------------------------------;
 	MODULE ros
 
+TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
+	ASSERT TIS_BYTES_D10240 =  10240
+
+TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
+	ASSERT TIS_ROWS_D128 =  128
+
+_ITS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.	
+
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow				BYTE _TI_VTILES_D32		; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
-starsRow				BYTE _TIS_ROWS_D128		; Current start row, runs from from _TIS_ROWS_D128 to 0.
+starsRow				BYTE TIS_ROWS_D128		; Current start row, runs from from TIS_ROWS_D128 to 0.
 
 tileOffset				BYTE _SC_RESY1_D255		; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tilePixelCnt			BYTE _TI_PIXELS_D8		; Runs from 0 to 7 (_TI_PIXELS_D8-1).
@@ -17,7 +25,7 @@ ResetRocketStarsRow
 	LD A, _TI_VTILES_D32
 	LD (tilesRow), A
 
-	LD A, _TIS_ROWS_D128
+	LD A, TIS_ROWS_D128
 	LD (starsRow), A
 
 	LD A, _SC_RESY1_D255
@@ -78,7 +86,7 @@ NextRocketStarsRow
 	JR NZ, .afterResetStarsRow					; Jump if #starsLine > 0.
 
 	; Reset stars counter.
-	LD A, _TIS_ROWS_D128
+	LD A, TIS_ROWS_D128
 	LD (starsRow), A
 .afterResetStarsRow
 
@@ -102,7 +110,7 @@ AnimateStarsOnFlyRocket
 
 	; Return if rocket is not flying.
 	LD A, (ro.rocketState)
-	CP ro.RO_ST_FLY
+	CP ro.ROST_FLY
 	RET NZ
 
 	; ##########################################

@@ -25,10 +25,10 @@ GND_STAND				= 53					; Jetman stands on the ground.
 jetGnd					BYTE GND_STAND
 
 ; Jetman states
-JET_ST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != STATE_INACTIVE) or walking (#jetGnd != STATE_INACTIVE).
-JET_ST_INV				= 102					; Jetman is invincible.
-JET_ST_RIP				= 110					; Jetman got hit by enemy.
-jetState				BYTE JET_ST_NORMAL		; Game start, Jetman in the air.
+JETST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != STATE_INACTIVE) or walking (#jetGnd != STATE_INACTIVE).
+JETST_INV				= 102					; Jetman is invincible.
+JETST_RIP				= 110					; Jetman got hit by enemy.
+jetState				BYTE JETST_NORMAL		; Game start, Jetman in the air.
 
 ;----------------------------------------------------------;
 ;              #UpdateStateOnJoyWillEnable                 ;
@@ -84,7 +84,7 @@ SetJetStateRip
 	LD (jetAir), A
 	LD (jetGnd), A
 
-	LD A, JET_ST_RIP
+	LD A, JETST_RIP
 	LD (jetState), A
 
 	RET											; ## END of the function ##
@@ -100,7 +100,7 @@ SetJetStateRespawn
 	LD A, AIR_HOOVER
 	LD (jetAir), A
 	
-	LD A, JET_ST_NORMAL
+	LD A, JETST_NORMAL
 	LD (jetState), A
 	
 	RET											; ## END of the function ##
@@ -121,7 +121,7 @@ SetJetStateInactive
 ;                      #SetJetState                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:											; Air State: #JET_ST_XXX.
+;  - A:											; Air State: #JETST_XXX.
 SetJetState
 	LD (jetState), A
 	

@@ -16,6 +16,16 @@
 ; Each column rolls from the bottom to the top when its position byte overflows. Each column also has a maximal horizontal position (#SC.Y_MAX),
 ; after which the starts will not be painted to avoid overlapping with the background image.
 
+ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
+
+ST_PAL_TRANSP_D0		= 0						; Index of transparent color.
+
+ST_PAL_L1_SIZE			= 25					; Number of colors for stars on layer 1.
+ST_PAL_L2_SIZE			= 10					; Number of colors for stars on layer 2.
+
+ST_L1_SIZE				= 27					; Number stars on layer 1.
+ST_L2_SIZE				= 16					; Number stars on layer 2.
+
 	STRUCT SC									; Stars column.
 BANK					BYTE					; Bank number from 0 to 9.
 X_OFFSET				BYTE					; X offset from the beginning of the bank, max 32 (32=8192/256)
@@ -32,8 +42,8 @@ ST_MOVE_DOWN			= 4
 
 starsState				BYTE ST_SHOW
 
-starsMoveL1Delay		BYTE _ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
-starsMoveL2Delay		BYTE _ST_L2_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+starsMoveL1Delay		BYTE ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+starsMoveL2Delay		BYTE ST_L2_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 
 randColor				BYTE 0					; Rand value from the previous call.
 
@@ -51,7 +61,7 @@ starsDataMaxY			WORD 0				; Before using: CALL ut.SetupDataArraysBank
 starsData1MaxY			WORD 0
 starsData2MaxY			WORD 0
 
-_ST_PAL_FIRST_D1 		= 1						; Offset for the first color used to blink star.
+
 
 ;----------------------------------------------------------;
 ;                   #LoadStarsPalette                      ;
@@ -60,7 +70,7 @@ LoadStarsPalette
 
 	; Do not load the stars palette if the layer 2 image has too many colors and no more free space in the palette.
 	; Add an amount of colors in the image to the colors required by the stars, and return if the carry flag is set.
-	LD A, _ST_PAL_L1_SIZE + _ST_PAL_L2_SIZE
+	LD A, ST_PAL_L1_SIZE + ST_PAL_L2_SIZE
 	LD B, A
 	LD A, (btd.palColors)
 	ADD B
@@ -70,7 +80,7 @@ LoadStarsPalette
 	; Load colors for the stars on layer 1.
 	CALL dbs.SetupStarsBank
 	LD HL, db.starsPalL1
-	LD A, _ST_PAL_L1_SIZE
+	LD A, ST_PAL_L1_SIZE
 	LD B, A
 	CALL bp.WriteColors
 
@@ -78,7 +88,7 @@ LoadStarsPalette
 	; Load colors for the stars on layer 2.
 	CALL dbs.SetupStarsBank
 	LD HL, db.starsPalL2
-	LD A, _ST_PAL_L2_SIZE
+	LD A, ST_PAL_L2_SIZE
 	LD B, A
 	CALL bp.WriteColors
 
@@ -199,7 +209,7 @@ _MoveStarsL1Down
 	RET NZ										; Do not move yet, wait for 0.
 	
 	; Reset delay
-	LD A, _ST_L1_MOVE_DEL_D4
+	LD A, ST_L1_MOVE_DEL_D4
 	LD (starsMoveL1Delay), A
 
 
@@ -223,7 +233,7 @@ _MoveStarsL2Down
 	RET NZ										; Do not move yet, wait for 0.
 	
 	; Reset delay
-	LD A, _ST_L2_MOVE_DEL_D4
+	LD A, ST_L2_MOVE_DEL_D4
 	LD (starsMoveL2Delay), A
 
 
@@ -247,7 +257,7 @@ _MoveStarsL1Up
 	RET NZ										; Do not move yet, wait for 0.
 	
 	; Reset delay
-	LD A, _ST_L1_MOVE_DEL_D4
+	LD A, ST_L1_MOVE_DEL_D4
 	LD (starsMoveL1Delay), A
 
 	;###########################################
@@ -270,7 +280,7 @@ _MoveStarsL2Up
 	RET NZ										; Do not move yet, wait for 0.
 	
 	; Reset delay
-	LD A, _ST_L2_MOVE_DEL_D4
+	LD A, ST_L2_MOVE_DEL_D4
 	LD (starsMoveL2Delay), A
 
 	;###########################################
@@ -289,7 +299,7 @@ _SetupLayer1
 	LD DE, db.starsPalL1
 	LD (starsPal), DE
 
-	LD A, _ST_PAL_L1_SIZE
+	LD A, ST_PAL_L1_SIZE
 	LD (starsPalSize), A
 
 	; The colors for the first layer do not have offset; they are directly after the palette for the image.
@@ -300,7 +310,7 @@ _SetupLayer1
 	; Data
 	LD DE, db.starsData1
 	LD (starsData), DE
-	LD A, _ST_L1_SIZE
+	LD A, ST_L1_SIZE
 	LD (starsDataSize), A
 
 	LD DE, (starsData1MaxY)
@@ -317,18 +327,18 @@ _SetupLayer2
 	LD DE, db.starsPalL2
 	LD (starsPal), DE
 	
-	LD A, _ST_PAL_L2_SIZE
+	LD A, ST_PAL_L2_SIZE
 	LD (starsPalSize), A
 
 	; The colors for stars on layer 2 are stored after those for layer 1.
-	LD A, _ST_PAL_L1_SIZE
+	LD A, ST_PAL_L1_SIZE
 	LD (starsPalOffset), A
 
 	; ##########################################
 	; Data
 	LD DE, db.starsData2
 	LD (starsData), DE
-	LD A, _ST_L2_SIZE
+	LD A, ST_L2_SIZE
 	LD (starsDataSize), A
 
 	LD DE, (starsData2MaxY)
@@ -383,7 +393,7 @@ _NextStarsColor
 	JR NZ, .nextStarPixel
 
 	; Reset color
-	LD A, _ST_PAL_FIRST_D1
+	LD A, ST_PAL_FIRST_D1
 	LD (HL), A
 .nextStarPixel
 	INC HL										; Move HL to next star postion.
@@ -442,7 +452,7 @@ _RenderStarColumn
 	; Assign image bank that will be modified to slot 6.
 	LD A, (IX + SC.BANK)
 	LD B, A
-	LD A, _DB_BG_ST_BANK_D18					; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
+	LD A, _DB_BGST_BANK_D18					; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
 	ADD A, B
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Assign image bank to slot 6
 
@@ -522,7 +532,7 @@ _RenderStarColumn
 	PUSH DE										; Keep DE to point to the top of the column on the destination image.
 	LD A, B										; B contains the position of the star that needs to be hidden.
 	ADD DE, A									; DE contains a byte offset to a current column in the destination image, plus A will give the final star position.
-	LD A, _ST_PAL_TRANSP_D0
+	LD A, ST_PAL_TRANSP_D0
 	LD (DE), A
 	POP DE
 

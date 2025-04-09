@@ -420,8 +420,6 @@ _PL_FALL_X_D2			= 2
 _RO_DROP_NEXT_D5		= 1	;10					; Drop next element delay
 _RO_DROP_Y_MAX_D180		= 180					; Jetman has to be above the rocket to drop the element.
 _RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rocket element.
-_RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
-_RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 _RO_FLY_DELAY_D8		= 8
 _RO_FLY_DELAY_DIST_D5	= 5
 
@@ -446,9 +444,6 @@ _TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
 	ASSERT _TI_START_H5B00 >= _RAM_SLOT2_START_H4000
 	ASSERT _TI_START_H5B00 <= _RAM_SLOT3_END_H7FFF
 
-; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-_TI_OFFSET	= (_TI_START_H5B00 - _RAM_SLOT2_START_H4000) >> 8
-
 _TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
 _TI_GND_D8				= 8						; The thickness of the ground (tilemap).
 _TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
@@ -459,21 +454,9 @@ _TI_H_BYTES_D80			= _TI_HTILES_D40 * 2
 _TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
 	ASSERT _TI_VTILES_D32 =  32
 
-_TI_VBYTES_D64			= _TI_VTILES_D32 * 2	; 64 bytes pro row.
 _TI_EMPTY_D57			= 57					; Empty tile.
 _TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 
-; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
-; each taking 4x32 bytes = 128bytes. We can assign to the whole tile sprites file 6910 bytes, 6910/128 = 53.
-; The editor stores 4 sprites (4x4) in a single row. 53/4 = 13 rows. The editor can contain at most 4x13 large sprites.
-;   6910                 =           $7FFF      -    $5B00     -     2560
-TI_DEF_MAX_D6910		 = _RAM_SLOT3_END_H7FFF - _TI_START_H5B00 - _TI_MAP_BYTES_D2560
-
-_TI_CLIP_X1_D0			= 0 
-_TI_CLIP_X2_D159		= 159
-_TI_CLIP_Y1_D0			= 0
-_TI_CLIP_FULLY2_D255	= _SC_RESY1_D255
-_TI_CLIP_BOTTOM_D247	= _SC_RESY1_D255 - _TI_PIXELS_D8
 
 ; ##############################################
 ; Game screen 
@@ -484,25 +467,6 @@ _GSC_Y_MAX_D232			= 232
 
 ; Ground level from Jetman's sprite perspective.
 _GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
-
-; ##############################################
-; Rocket tile stars map.
-_TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
-	ASSERT _TIS_BYTES_D10240 =  10240
-
-_TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
-	ASSERT _TIS_ROWS_D128 =  128
-
-_ITS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.
-
-; ##############################################
-; Text.
-_TX_ASCII_OFFSET_D34	= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
-_TX_PALETTE_D0			= 0						; Palette byte for tile characters.
-
-; ##############################################
-; Game Bar.
-_C_GB_TILES_D13			= 320 / 8 * 3
 
 ; ##############################################
 ; Jet RiP.
@@ -534,24 +498,15 @@ _GB_MOVE_SLOW_D2		= 2						; Slows down background movement (when Jetman moves).
 
 ; ##############################################
 ; In game stars.
-
-_ST_L1_MOVE_DEL_D4		= 4						; Stars move delay.
-_ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
-
-_ST_PAL_TRANSP_D0		= 0						; Index of transparent color.
-
-_ST_PAL_L1_SIZE			= 25					; Number of colors for stars on layer 1.
-_ST_PAL_L2_SIZE			= 10					; Number of colors for stars on layer 2.
-
-_ST_L1_SIZE				= 27					; Number stars on layer 1.
-_ST_L2_SIZE				= 16					; Number stars on layer 2.
+ST_L1_MOVE_DEL_D4		= 4						; Stars move delay.
+ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
 
 ; ##############################################
 ; Binary Data Loader.
 _DB_SPRITE_BYT_D16384	= 16384
 
 ; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
-_DB_BG_ST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
+_DB_BGST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
 _DB_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
 _DB_SPRITE_BANK1_D28	= 28					; Sprites on bank 40, 41.
 _DB_SPRITE_BANK2_D29	= 29
@@ -563,11 +518,11 @@ _DB_PAL2_BR_BANK_D34	= 34					; Layer 2 brightness change for pallettes from _DB
 
 ; Background image (all values inclusive). Bank 48...57
 ; Each background image has 80KiB (320x256), taking 10 banks.
-_DB_BG_ST_BANK_D35		= 35
-_DB_BG_EN_BANK_D44 		= _DB_BG_ST_BANK_D35+_BM_BANKS_D10-1; -1 because inclusive.
+_DB_BGST_BANK_D35		= 35
+_DB_BG_EN_BANK_D44 		= _DB_BGST_BANK_D35+_BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT _DB_BG_EN_BANK_D44 == 44
 
-_DB_ST_BANK_D45			= 45					; Bank for stars, slot 6
+_DBST_BANK_D45			= 45					; Bank for stars, slot 6
 _DB_ARR_BANK_D46		= 46					; Bank for arrays, slot 6
 
 ; ##############################################
@@ -579,7 +534,6 @@ _JET_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on t
 ; Game Counters.
 _GC_FLIP_ON_D1			= 1
 _GC_FLIP_OFF_D0			= 0
-
 
 ; ##############################################
 ; Jetman weapon

@@ -30,7 +30,7 @@ spritesBinLength = $ - spritesBin
 
 tileSprBin INCBIN "assets/tiles.spr"
 tileSprBinLength = $ - tileSprBin
-	ASSERT tileSprBinLength <= TI_DEF_MAX_D6910
+	ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
 
 ; Palettes:
 ;	1: Text
@@ -69,7 +69,7 @@ tilePaletteBinLength = $ - tilePaletteBin
 starsBin INCBIN "assets/stars.map"
 starsBinSize = $ - starsBin
 
-	ASSERT starsBinSize == _TIS_BYTES_D10240
+	ASSERT starsBinSize == ros.TIS_BYTES_D10240
 	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
 	ASSERT $$ == _DB_RO_STAR_BANK2_D32 			; All data should fit into bank 32.
@@ -168,7 +168,7 @@ todL2Palettes									; Palette will be generated during runtime.
 ;----------------------------------------------------------;
 ; Before using it call #dbs.SetupStarsBank
 
-	MMU _RAM_SLOT7, _DB_ST_BANK_D45
+	MMU _RAM_SLOT7, _DBST_BANK_D45
 	ORG _RAM_SLOT7_START_HE000
 starsBankStart
 
@@ -391,8 +391,8 @@ starsPalL2
 	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
 	; ##########################################
-	ASSERT $$ == _DB_ST_BANK_D45					; Data should remain in the same bank
-	ASSERT $$starsBankStart == _DB_ST_BANK_D45 		; Make sure that we have configured the right bank.
+	ASSERT $$ == _DBST_BANK_D45					; Data should remain in the same bank
+	ASSERT $$starsBankStart == _DBST_BANK_D45 		; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                    Arrays (Bank 46)                      ;

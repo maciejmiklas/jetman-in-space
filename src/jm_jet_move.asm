@@ -327,7 +327,7 @@ _CanJetMove
 
 	; ##########################################
 	LD A, (jt.jetState)
-	CP jt.JET_ST_RIP
+	CP jt.JETST_RIP
 	JR NZ, .afterRip							; Do not process input if Jetman is dying.
 
 	; Do not process input, Jet is dying.

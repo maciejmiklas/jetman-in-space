@@ -3,6 +3,28 @@
 ;----------------------------------------------------------;
 	MODULE ti
 
+
+; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
+TI_OFFSET	= (_TI_START_H5B00 - _RAM_SLOT2_START_H4000) >> 8
+
+; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
+; each taking 4x32 bytes = 128bytes. We can assign to the whole tile sprites file 6910 bytes, 6910/128 = 53.
+; The editor stores 4 sprites (4x4) in a single row. 53/4 = 13 rows. The editor can contain at most 4x13 large sprites.
+;   6910                 =           $7FFF      -    $5B00     -     2560
+TI_DEF_MAX_D6910		 = _RAM_SLOT3_END_H7FFF - _TI_START_H5B00 - _TI_MAP_BYTES_D2560
+
+TI_CLIP_X1_D0			= 0
+TI_CLIP_X2_D159			= 159
+TI_CLIP_Y1_D0			= 0
+TI_CLIP_FULLY2_D255		= _SC_RESY1_D255
+
+TI_CLIP_TOP_D8			= _TI_PIXELS_D8
+TI_CLIP_BOTTOM_D247		= _SC_RESY1_D255 - _TI_PIXELS_D8
+
+TX_ASCII_OFFSET_D34		= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
+TX_PALETTE_D0			= 0						; Palette byte for tile characters.
+
+
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
 ; Time map for single screen at 320x200 requires 2650 bytes:
@@ -26,7 +48,7 @@ START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite f
 OFFSET	= (START_H6500 - _RAM_SLOT2_START_H4000) >> 8
 
 gameFileName 		DB "assets/l00/tiles.map",0
-FILE_LEVEL_POS		= 8						; Position of a level number (00-99) in the file name of the background image.
+FILE_LEVEL_POS		= 8							; Position of a level number (00-99) in the file name of the background image.
 
 ;----------------------------------------------------------;
 ;                   #LoadGameTilemap                       ;
@@ -98,9 +120,9 @@ PrintText
 .loop
 	LD A, (DE)									; Load current char.
 	INC DE										; Move to the next char .
-	ADD A, -_TX_ASCII_OFFSET_D34				; Remove ASCII offset as tiles begin with 0.
+	ADD A, -TX_ASCII_OFFSET_D34				; Remove ASCII offset as tiles begin with 0.
 
-	LD (HL), _TX_PALETTE_D0						; Set palette for tile.
+	LD (HL), TX_PALETTE_D0						; Set palette for tile.
 	INC HL
 	LD (HL), A									; Set character for tile.
 	INC HL
@@ -121,7 +143,7 @@ CleanTiles
 	LD A, _TI_EMPTY_D57
 .loop
 	
-	LD (HL), _TX_PALETTE_D0						; Set palette for tile.
+	LD (HL), TX_PALETTE_D0						; Set palette for tile.
 	INC HL
 	
 	LD (HL), A									; Set tile gid.
@@ -149,7 +171,7 @@ SetupTiles
 
 	; ##########################################
 	; Tell hardware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
-	NEXTREG _TI_MAP_ADR_H6E, _TI_OFFSET			; MSB of tilemap in bank 5.
+	NEXTREG _TI_MAP_ADR_H6E, TI_OFFSET			; MSB of tilemap in bank 5.
 	NEXTREG _TI_DEF_ADR_H6F, OFFSET		; MSB of tilemap definitions (sprites).
 
 	; ##########################################
@@ -200,24 +222,25 @@ LoadTilemapPalette
 ;----------------------------------------------------------;
 SetTilesClipFull
 
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X1_D0
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X2_D159
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_Y1_D0
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_FULLY2_D255
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X1_D0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X2_D159
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_Y1_D0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_FULLY2_D255
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #SetTilesClipBottom                      ;
+;                 #SetTilesClipVertical                    ;
 ;----------------------------------------------------------;
-SetTilesClipBottom
+; 8px clip from top and 8px clip from the bottom.
+SetTilesClipVertical
 
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X1_D0
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_X2_D159
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_Y1_D0
-	NEXTREG _C_TI_CLIP_WINDOW_H1B, _TI_CLIP_BOTTOM_D247
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X1_D0
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X2_D159
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_TOP_D8
+	NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_BOTTOM_D247
 
-	RET											; ## END of the function ##	
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
