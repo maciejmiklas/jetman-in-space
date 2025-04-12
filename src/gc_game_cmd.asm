@@ -36,7 +36,6 @@ SetupGame
 	CALL bm.HideImage
 	CALL sc.SetupScreen
 	CALL ti.SetupTiles
-	CALL sp.LoadSpritesFPGA
 
 	RET											; ## END of the function ##
 
@@ -322,10 +321,10 @@ EnemyHitsJet
 RespawnJet
 
 	; Set respawn coordinates.
-	LD BC, _JET_RESPAWN_X_D100
+	LD BC, _JM_RESPAWN_X_D100
 	LD (jpo.jetX), BC
 
-	LD A, _JET_RESPAWN_Y_D217
+	LD A, _JM_RESPAWN_Y_D217
 	LD (jpo.jetY), A
 
 	; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
@@ -333,7 +332,7 @@ RespawnJet
 
 	CALL jt.SetJetStateRespawn
 
-	LD HL, _INVINCIBLE_D400
+	LD HL, _JM_INV_D400
 	CALL jco.MakeJetInvincible
 
 	CALL bg.UpdateBackgroundOnJetmanMove
@@ -434,7 +433,7 @@ MovementInactivity
 	CP _STAND_START_D30
 	JR NZ, .afterStand							; Jump if Jetman stands for too short to trigger standing.
 	
-	; Transtion from walking to standing.
+	; Transition from walking to standing.
 	LD A, jt.GND_STAND
 	CALL jt.SetJetStateGnd
 
@@ -550,6 +549,7 @@ _InitLevelLoad
 ;----------------------------------------------------------;
 _StartLevel
 
+	CALL sp.LoadSpritesFPGA
 	CALL gb.ShowGameBar
 	CALL gc.RespawnJet
 	CALL ro.StartRocketAssembly

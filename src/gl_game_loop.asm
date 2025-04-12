@@ -408,7 +408,8 @@ _GameLoop040OnActiveJetman
 	; ##########################################
 	CALL ro.DropNextRocketElement
 	CALL td.NextTimeOfDayTrigger
-
+	CALL jo.UpdateJetpackOverheating
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -446,6 +447,7 @@ _GameLoop080OnActiveJetman
 
 	; ##########################################
 
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

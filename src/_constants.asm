@@ -154,28 +154,28 @@ _PR_ENTER_H0D			= $0D
 ;----------------------------------------------------------;
 ;                     RAM 8K Slots                         ;
 ;----------------------------------------------------------;
-_RAM_SLOT0_START_H0000	= $0000
+_RAM_SLOT0_STA_H0000	= $0000
 _RAM_SLOT0_END_H1FFF	= $1FFF
 
-_RAM_SLOT1_START_H2000	= $2000
+_RAM_SLOT1_STA_H2000	= $2000
 _RAM_SLOT1_END_H3FFF	= $3FFF
 
-_RAM_SLOT2_START_H4000	= $4000
+_RAM_SLOT2_STA_H4000	= $4000
 _RAM_SLOT2_END_H5FFF	= $5FFF
 
-_RAM_SLOT3_START_H6000	= $6000
+_RAM_SLOT3_STA_H6000	= $6000
 _RAM_SLOT3_END_H7FFF	= $7FFF
 
-_RAM_SLOT4_START_H8000	= $8000
+_RAM_SLOT4_STA_H8000	= $8000
 _RAM_SLOT4_END_H9FFF	= $9FFF
 
-_RAM_SLOT5_START_HA000	= $A000
+_RAM_SLOT5_STA_HA000	= $A000
 _RAM_SLOT5_END_HBFFF	= $BFFF
 
-_RAM_SLOT6_START_HC000	= $C000
+_RAM_SLOT6_STA_HC000	= $C000
 _RAM_SLOT6_END_HDFFF	= $DFFF
 
-_RAM_SLOT7_START_HE000	= $E000
+_RAM_SLOT7_STA_HE000	= $E000
 _RAM_SLOT7_END_HFFFF	= $FFFF
 
 _RAM_SLOT0				= 0
@@ -344,7 +344,7 @@ _COL_GREEN_D4			= 4
 _COL_CYAN_D5			= 5
 _COL_YELLOW_D6			= 6
 _COL_WHITE_D7			= 7
-_COL_BLACK_D0		= 0
+_COL_BLACK_D0			= 0
 
 ;----------------------------------------------------------;
 ;                     Input processing                     ;
@@ -391,13 +391,8 @@ _RET_NO_D0				= 2
 _BANK_BYTES_D8192		= 8*1024
 
 ; ##############################################
-; Joystick.
+; Joystick
 _PL_JOY_DELAY			= 1						; Probe joystick every few loops, 1 for each loop, 0 is not supported.
-
-; ##############################################
-; Jetman invincibility.
-_INVINCIBLE_D400 		= 400					; Number of loops to keep Jetman invincible.
-_INVINCIBLE_BLINK_D100	= 100
 
 ; ##############################################
 ; Start times to change animations.
@@ -416,15 +411,15 @@ _PL_FALL_Y_D4			= 4						; Amount of pixels to move Jetman down when falling fro
 _PL_FALL_X_D2			= 2
 
 ; ##############################################
-; Rocket.
-_RO_DROP_NEXT_D5		= 1	;10					; Drop next element delay
+; Rocket
+_RO_DROP_NEXT_D5		= 1	;10	TODO			; Drop next element delay
 _RO_DROP_Y_MAX_D180		= 180					; Jetman has to be above the rocket to drop the element.
 _RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rocket element.
 _RO_FLY_DELAY_D8		= 8
 _RO_FLY_DELAY_DIST_D5	= 5
 
 ; ##############################################
-; Screen.
+; Screen
 _SC_SYNC_SL_D192		= 192					; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
 _SC_SHAKE_BY_D2			= 2						; Number of pixels to move the screen by shaking.
 
@@ -438,15 +433,8 @@ _SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17.
 
 ; ##############################################
 ; Tilemap for in game platforms.
-; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
-; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
-_TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
-	ASSERT _TI_START_H5B00 >= _RAM_SLOT2_START_H4000
-	ASSERT _TI_START_H5B00 <= _RAM_SLOT3_END_H7FFF
-
 _TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
 _TI_GND_D8				= 8						; The thickness of the ground (tilemap).
-
 
 _TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
 	ASSERT _TI_VTILES_D32 =  32
@@ -455,7 +443,7 @@ _TI_EMPTY_D57			= 57					; Empty tile.
 _TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 
 ; ##############################################
-; Game screen 
+; Game screen
 _GSC_X_MIN_D0			= 0
 _GSC_X_MAX_D315			= 315
 _GSC_Y_MIN_D15			= 15
@@ -465,17 +453,11 @@ _GSC_Y_MAX_D232			= 232
 _GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
 ; ##############################################
-; Jet RiP.
-_RIP_MOVE_R_D3			= 3
-_RIP_MOVE_L_D3			= 3
-_RIP_MOVE_Y_D4			= 4
-
-; ##############################################
-; Util.
+; Util
 _UT_PAUSE_TIME_D10		= 10
 
 ; ##############################################
-; Bitmap Manipulation.
+; Bitmap Manipulation
 _BM_16KBANK_D9			= 9						; 16K bank 9 = 8k bank 18.
 
 _BM_XRES_D320			= 320
@@ -499,32 +481,36 @@ ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
 
 ; ##############################################
 ; Binary Data Loader.
-_DB_SPRITE_BYT_D16384	= 16384
 
-; Image for current background. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
-_DB_BGST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
-_DB_BG_END_BANK_D27		= 27					; Last background bank (inclusive).
-_DB_SPRITE_BANK1_D28	= 28					; Sprites on bank 40, 41.
-_DB_SPRITE_BANK2_D29	= 29
-_DB_ST_BANK_D30			= 30					; Bank for stars, slot 6
-_DB_ARR_BANK_D31		= 31					; Bank for arrays, slot 6
-_DB_TI_SPR_BANK_D32		= 32
-_DB_PAL2_BANK_D33		= 33					; Layer 2 pallettes
-_DB_PAL2_BR_BANK_D34	= 34					; Layer 2 brightness change for pallettes from _DB_PAL2_BANK_D33.
+; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
+; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
+_DB_TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
+	ASSERT _DB_TI_START_H5B00 >= _RAM_SLOT2_STA_H4000
+	ASSERT _DB_TI_START_H5B00 <= _RAM_SLOT3_END_H7FFF
 
-; Background image (all values inclusive). Bank 48...57
-; Each background image has 80KiB (320x256), taking 10 banks.
-_DB_BGST_BANK_D35		= 35
-_DB_BG_EN_BANK_D44 		= _DB_BGST_BANK_D35+_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _DB_BG_EN_BANK_D44 == 44
-
-_DB_RO_STAR_BANK1_D45	= 46
-_DB_RO_STAR_BANK2_D46	= 47
+_DB_SPR_BYT_D16384		= 16384
+_DBS_SP_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
+_DBS_RS_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for tilemap with stars for flying rocket.
 
 ; ##############################################
-; Respawn location.
-_JET_RESPAWN_X_D100		= 100
-_JET_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+; Banks
+_DBS_BGST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
+_DBS_BG_END_BANK_D27	= 27					; Last background bank (inclusive).
+_DBS_ST_BANK_D28		= 28					; Bank for stars, slot 6
+_DBS_ARR_BANK_D29		= 29					; Bank for arrays, slot 6
+_DBS_TI_SPR_BANK_D30	= 30
+_DBS_PAL2_BANK_D31		= 31					; Layer 2 pallettes
+_DBS_PAL2_BR_BANK_D32	= 32					; Layer 2 brightness change for pallettes from _DBS_PAL2_BANK_D31.
+_DBS_SPR_BANK1_D33		= 33
+_DBS_SPR_BANK2_D34		= 34
+
+; Background image (all values inclusive). Each background image has 80KiB (320x256), taking 10 banks.
+_DBS_BGST_BANK_D35		= 35
+_DBS_BG_EN_BANK_D44 	= _DBS_BGST_BANK_D35+_BM_BANKS_D10-1; -1 because inclusive.
+	ASSERT _DBS_BG_EN_BANK_D44 == 44
+
+_DBS_RO_STAR_BANK1_D45	= 46
+_DBS_RO_STAR_BANK2_D46	= 47
 
 ; ##############################################
 ; Game Counters.
@@ -532,5 +518,24 @@ _GC_FLIP_ON_D1			= 1
 _GC_FLIP_OFF_D0			= 0
 
 ; ##############################################
+; Jetman
+
+; Invincibility
+_JM_INV_D400 			= 400					; Number of loops to keep Jetman invincible.
+_JM_INV_BLINK_D100		= 100
+
+; RIP movement.
+_JM_RIP_MOVE_R_D3		= 3
+_JM_RIP_MOVE_L_D3		= 3
+_JM_RIP_MOVE_Y_D4		= 4
+
+; Respawn location.
+_JM_RESPAWN_X_D100		= 100
+_JM_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+
+; The Jetpack heating up / cooling down thresholds.
+_JM_HEAT_CNT			= 3
+_JM_COOL_CNT			= 2
+
 ; Jetman weapon
-_JW_FIRE_DELAY				= 15
+_JM_FIRE_DELAY			= 15

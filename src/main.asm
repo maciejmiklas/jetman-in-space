@@ -4,7 +4,7 @@
 STACK_SIZE				= 100
 
 	DEVICE ZXSPECTRUMNEXT						; Allow the Next paging and instructions.
-	ORG _RAM_SLOT4_START_H8000 + STACK_SIZE		; Stack starts at 8000.
+	ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE		; Stack starts at 8000.
 
 start
 	DI											; Disable Interrupts, use wait_for_scanline instead.
@@ -13,7 +13,7 @@ start
 	CALL gc.SetupGame
 	CALL gc.LoadLevel1
 
-	CALL ro.AssemblyRocketForDebug
+	;CALL ro.AssemblyRocketForDebug
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;
@@ -62,6 +62,7 @@ mainLoop
 	INCLUDE "lo_lobby.asm"
 	INCLUDE "td_times_of_day.asm"
 	INCLUDE "st_stars.asm"
+	INCLUDE "jo_jetpack_overheat.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "db_data_bin.asm"
@@ -74,7 +75,7 @@ mainLoop
 	CSPECTMAP "jetman.map"						; Generate a map file for use with Cspect.
 
 	; This sets the name of the project, the start address, and the initial stack pointer.
-	SAVENEX OPEN "jetman.nex", start, _RAM_SLOT4_START_H8000
+	SAVENEX OPEN "jetman.nex", start, _RAM_SLOT4_STA_H8000
 
 	; This asserts the minimum core version.
 	SAVENEX CORE 3,0,0

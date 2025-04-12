@@ -37,7 +37,13 @@ LoadLevel1Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -101,7 +107,13 @@ LoadLevel2Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -165,7 +177,13 @@ LoadLevel3Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -231,7 +249,13 @@ LoadLevel4Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -295,7 +319,13 @@ LoadLevel5Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -359,7 +389,13 @@ LoadLevel6Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -423,7 +459,13 @@ LoadLevel7Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -486,7 +528,13 @@ LoadLevel8Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -549,7 +597,13 @@ LoadLevel9Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.
@@ -612,7 +666,13 @@ LoadLevel10Data
 
 	; ##########################################
 	; Load tile map. DE is set to level number.
+	PUSH DE
 	CALL fi.LoadRocketStarsTilemap
+	POP DE
+
+	; ##########################################
+	; Load tile map. DE is set to level number.
+	CALL fi.LoadSprites
 	
 	; ##########################################
 	; Load platforms coordinates.

@@ -5,13 +5,13 @@
 
 
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-TI_OFFSET	= (_TI_START_H5B00 - _RAM_SLOT2_START_H4000) >> 8
+TI_OFFSET	= (_DB_TI_START_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
 
 ; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
 ; each taking 4x32 bytes = 128bytes. We can assign to the whole tile sprites file 6910 bytes, 6910/128 = 53.
 ; The editor stores 4 sprites (4x4) in a single row. 53/4 = 13 rows. The editor can contain at most 4x13 large sprites.
 ;   6910                 =           $7FFF      -    $5B00     -     2560
-TI_DEF_MAX_D6910		 = _RAM_SLOT3_END_H7FFF - _TI_START_H5B00 - _TI_MAP_BYTES_D2560
+TI_DEF_MAX_D6910		 = _RAM_SLOT3_END_H7FFF - _DB_TI_START_H5B00 - _TI_MAP_BYTES_D2560
 
 TI_CLIP_X1_D0			= 0
 TI_CLIP_X2_D159			= 159
@@ -40,12 +40,12 @@ TX_PALETTE_D0			= 0						; Palette byte for tile characters.
 ; - $6501 - $7FFF - Tile definitions/sprites. We can store up to 215 sprites: $7FFF - $6501 = 6910. 6910/32 = 215.
 
 ; Tile definition (sprite file).
-START_H6500	= _TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite file).
-	ASSERT START_H6500 >= _RAM_SLOT2_START_H4000
+START_H6500	= _DB_TI_START_H5B00 + _TI_MAP_BYTES_D2560 ; Tile definitions (sprite file).
+	ASSERT START_H6500 >= _RAM_SLOT2_STA_H4000
 	ASSERT START_H6500 <= _RAM_SLOT3_END_H7FFF
 	
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-OFFSET	= (START_H6500 - _RAM_SLOT2_START_H4000) >> 8
+OFFSET	= (START_H6500 - _RAM_SLOT2_STA_H4000) >> 8
 
 ;----------------------------------------------------------;
 ;                     #ShakeTilemap                        ;
@@ -84,8 +84,8 @@ ResetTilemapOffset
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first character starts in second line.
 PrintText
 
-	LD HL, _TI_START_H5B00						; HL points to screen memory containing tilemap.
-	DEC HL										; TODO why (verify _TI_START_H5B00)?
+	LD HL, _DB_TI_START_H5B00						; HL points to screen memory containing tilemap.
+	DEC HL										; TODO why (verify _DB_TI_START_H5B00)?
 	
 	; HL will point to the memory location containing the data of the first character (tile).
 	PUSH DE
@@ -114,8 +114,8 @@ PrintText
 ;----------------------------------------------------------;
 ;  - B:		Amount of tiles to clean 
 CleanTiles
-	LD HL, _TI_START_H5B00						; HL points to screen memory containing tilemap.
-	DEC HL										; TODO why (verify _TI_START_H5B00)?
+	LD HL, _DB_TI_START_H5B00						; HL points to screen memory containing tilemap.
+	DEC HL										; TODO why (verify _DB_TI_START_H5B00)?
 
 	; ##########################################
 	LD A, _TI_EMPTY_D57

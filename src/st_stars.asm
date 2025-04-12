@@ -452,7 +452,7 @@ _RenderStarColumn
 	; Assign image bank that will be modified to slot 6.
 	LD A, (IX + SC.BANK)
 	LD B, A
-	LD A, _DB_BGST_BANK_D18					; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
+	LD A, _DBS_BGST_BANK_D18					; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9".
 	ADD A, B
 	NEXTREG _MMU_REG_SLOT6_H56, A				; Assign image bank to slot 6
 
@@ -464,7 +464,7 @@ _RenderStarColumn
 	LD A, (IX + SC.X_OFFSET)
 	ADD DE, A
 
-	LD HL, _RAM_SLOT6_START_HC000				; Beginning of the image
+	LD HL, _RAM_SLOT6_STA_HC000				; Beginning of the image
 	ADD DE, HL									; DE points to the byte in the image representing the column where we will inject stars.
 
 	; ##########################################

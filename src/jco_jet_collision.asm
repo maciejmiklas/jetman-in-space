@@ -107,10 +107,10 @@ JetInvincible
 	JR NZ, .blinkFast							; #invincibleCnt > 255 (H != 0) -> blink fast.
 
 	LD A, L
-	CP _INVINCIBLE_BLINK_D100
-	JR NC, .blinkFast							; #invincibleCnt > #_INVINCIBLE_BLINK_D100 -> blink fast.
+	CP _JM_INV_BLINK_D100
+	JR NC, .blinkFast							; #invincibleCnt > #_JM_INV_BLINK_D100 -> blink fast.
 
-	;  #invincibleCnt < #_INVINCIBLE_BLINK_D100 -> blink slow (invincibility is almost over).
+	;  #invincibleCnt < #_JM_INV_BLINK_D100 -> blink slow (invincibility is almost over).
 	LD A, (gld.counter004FliFLop)
 	JR .afterBlinkSet
 .blinkFast	
@@ -222,17 +222,17 @@ _RipMove
 	JR Z, .moveLeft
 
 	; Move right.
-	LD B, _RIP_MOVE_L_D3
+	LD B, _JM_RIP_MOVE_L_D3
 	CALL jpo.DecJetXbyB
 	JR .afterMove
 
 .moveLeft
 	; Move left.
-	LD B, _RIP_MOVE_R_D3
+	LD B, _JM_RIP_MOVE_R_D3
 	CALL jpo.IncJetXbyB
 .afterMove
 
-	LD B, _RIP_MOVE_Y_D4						; Going up.
+	LD B, _JM_RIP_MOVE_Y_D4						; Going up.
 	CALL jpo.DecJetYbyB
 
 	; Decrement move counter.

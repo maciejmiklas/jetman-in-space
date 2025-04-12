@@ -7,24 +7,15 @@
 ;         Game Background Image (Bank 18...27)             ;
 ;----------------------------------------------------------;
 
-;----------------------------------------------------------;
-;                Game Sprites (Bank 28...29)               ;
-;----------------------------------------------------------;
-; Load sprites (16KB) into bank 20,29 mapping it to slot 6,7.
-	MMU _RAM_SLOT6 _RAM_SLOT7, _DB_SPRITE_BANK1_D28
-	ORG _RAM_SLOT6_START_HC000
 
-spritesBin INCBIN "assets/sprites.spr", 0, _DB_SPRITE_BYT_D16384
-spritesBinLength = $ - spritesBin
-	ASSERT $$ == _DB_SPRITE_BANK2_D29
 
 ;----------------------------------------------------------;
-;                  Star Data (Bank 30)                     ;
+;                  Star Data (Bank 28)                     ;
 ;----------------------------------------------------------;
 ; Before using it call #dbs.SetupStarsBank
 
-	MMU _RAM_SLOT7, _DB_ST_BANK_D30
-	ORG _RAM_SLOT7_START_HE000
+	MMU _RAM_SLOT7, _DBS_ST_BANK_D28
+	ORG _RAM_SLOT7_STA_HE000
 starsBankStart
 
 starsData1
@@ -246,15 +237,15 @@ starsPalL2
 	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
 	; ##########################################
-	ASSERT $$ == _DB_ST_BANK_D30						; Data should remain in the same bank
-	ASSERT $$starsBankStart == _DB_ST_BANK_D30 		; Make sure that we have configured the right bank.
+	ASSERT $$ == _DBS_ST_BANK_D28						; Data should remain in the same bank
+	ASSERT $$starsBankStart == _DBS_ST_BANK_D28 		; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
-;                    Arrays (Bank 31)                      ;
+;                    Arrays (Bank 29)                      ;
 ;----------------------------------------------------------;
 ; Before using it call #SetupArraysBank
-	MMU _RAM_SLOT7, _DB_ARR_BANK_D31
-	ORG _RAM_SLOT7_START_HE000
+	MMU _RAM_SLOT7, _DBS_ARR_BANK_D29
+	ORG _RAM_SLOT7_STA_HE000
 spritesBankStart
 
 ; ##############################################
@@ -811,14 +802,14 @@ platformsSizeL10 		BYTE 30
 ; ##############################################
 ; Final Checks.
 
-	ASSERT $$ == _DB_ARR_BANK_D31					; Data should remain in the same bank
-	ASSERT $$spritesBankStart == _DB_ARR_BANK_D31 	; Make sure that we have configured the right bank.
+	ASSERT $$ == _DBS_ARR_BANK_D29					; Data should remain in the same bank
+	ASSERT $$spritesBankStart == _DBS_ARR_BANK_D29 	; Make sure that we have configured the right bank.
 	
 ;----------------------------------------------------------;
-;         Game Tile Sprites and Palette (Bank 32)          ;
+;         Game Tile Sprites and Palette (Bank 30)          ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT7, _DB_TI_SPR_BANK_D32 		; Assign slots 7 to bank 30.
-	ORG _RAM_SLOT7_START_HE000					; Set memory pointer to start of the slot 6.
+	MMU _RAM_SLOT7, _DBS_TI_SPR_BANK_D30 		; Assign slots 7 to bank 30.
+	ORG _RAM_SLOT7_STA_HE000					; Set memory pointer to start of the slot 6.
 
 ; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
 ; Sprites
@@ -856,15 +847,15 @@ tilePaletteBin									; RGB332, 8 bit
 	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $02, $E3, $E3, $E3, $E3, $E3, $E3
 tilePaletteBinLength = $ - tilePaletteBin
 	
-	ASSERT $ > _RAM_SLOT6_START_HC000			; All data should fit into slot 6,7.
+	ASSERT $ > _RAM_SLOT6_STA_HC000			; All data should fit into slot 6,7.
 	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ <= _DB_TI_SPR_BANK_D32 			; All data should fit into bank 45.
+	ASSERT $$ <= _DBS_TI_SPR_BANK_D30 			; All data should fit into bank 45.
 
 ;----------------------------------------------------------;
-;                Layer 2 Palettes (Bank 33)                ;
+;                Layer 2 Palettes (Bank 31)                ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6, _DB_PAL2_BANK_D33
-	ORG _RAM_SLOT6_START_HC000
+	MMU _RAM_SLOT6, _DBS_PAL2_BANK_D31
+	ORG _RAM_SLOT6_STA_HC000
 
  ; #############################################
 bgrL1PaletteAdr
@@ -937,7 +928,12 @@ bgrL10PaletteBytes = $ - bgrL10PaletteAdr
 	ASSERT bgrL10PaletteBytes <= _BM_PAL2_BYTES_D512
 	
  ; #############################################
-	ASSERT $$ == _DB_PAL2_BANK_D33
+	ASSERT $$ == _DBS_PAL2_BANK_D31
+
+;----------------------------------------------------------;
+;                Game Sprites (Bank 32...33)               ;
+;----------------------------------------------------------;
+; Load sprites (16KB) into 2 banks mapping it to slot 6,7.
 
 ;----------------------------------------------------------;
 ;          Layer 2 Brightness Palettes (Bank 34)           ;

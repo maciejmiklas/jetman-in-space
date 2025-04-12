@@ -15,7 +15,7 @@ AIR_BUMP_LEFT			= 15					; Jetman bumps into a platform from the left, he faces/
 AIR_BUMP_BOTTOM			= 16					; Jetman bumps into a platform from the bottom.
 AIR_ENEMY_KICK			= 17					; Jetman flies above the enemy and kicks.
 
-jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _JET_RESPAWN_Y_D217)
+jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _JM_RESPAWN_Y_D217)
 
 ; States for Jetman on the platform/ground
 GND_WALK				= 51					; Jetman walks on the ground.
@@ -27,7 +27,8 @@ jetGnd					BYTE GND_STAND
 ; Jetman states
 JETST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != STATE_INACTIVE) or walking (#jetGnd != STATE_INACTIVE).
 JETST_INV				= 102					; Jetman is invincible.
-JETST_RIP				= 110					; Jetman got hit by enemy.
+JETST_RIP				= 103					; Jetman got hit by enemy.
+JETST_OVERHEAT			= 104					; Jetpack is overheating, and Jetman flays slowly.
 jetState				BYTE JETST_NORMAL		; Game start, Jetman in the air.
 
 ;----------------------------------------------------------;

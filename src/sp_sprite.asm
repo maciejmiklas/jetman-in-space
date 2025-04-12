@@ -19,8 +19,8 @@ LoadSpritesFPGA
 
 	CALL dbs.SetupSpritesBank
 
-	LD HL, db.spritesBin						; RAM address containing sprite binary data.
-	LD BC, db.spritesBinLength					; Copy 63 sprites, each 16x16 pixels.
+	LD HL, _DBS_SP_ADDR_HC000				; RAM address containing sprite binary data.
+	LD BC, _DB_SPR_BYT_D16384				; Copy 63 sprites, each 16x16 pixels.
 	
 	; ##########################################
 	; Store dynamic values into DMA program.

@@ -14,8 +14,6 @@ TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
 TI_H_BYTES_D80			= TI_HTILES_D40 * 2
 
-TI_RAM_ADDR				= _RAM_SLOT6_START_HC000
-
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow				BYTE _TI_VTILES_D32		; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
 starsRow				BYTE TIS_ROWS_D128		; Current start row, runs from from TIS_ROWS_D128 to 0.
@@ -67,16 +65,16 @@ NextRocketStarsRow
 	LD D, A
 	LD E, TI_H_BYTES_D80
 	MUL D, E									; DE contains byte offset to current row.
-	LD HL, TI_RAM_ADDR
+	LD HL, _DBS_RS_ADDR_HC000
 	ADD HL, DE									; Move RAM pointer to current row.
 
-	; Load the memory address of in-game tiles into DE. This row will be replaced with stars. DE = _TI_START_H5B00 + tilesRow * _TI_H_BYTES_D8.0
+	; Load the memory address of in-game tiles into DE. This row will be replaced with stars. DE = _DB_TI_START_H5B00 + tilesRow * _TI_H_BYTES_D8.0
 	LD A, (tilesRow)
 	LD D, A
 	LD E, TI_H_BYTES_D80
 	MUL D, E									; DE contains #tilesRow * TI_H_BYTES_D80.
 	PUSH HL
-	LD HL, _TI_START_H5B00						; HL contains memory offset to tiles.
+	LD HL, _DB_TI_START_H5B00						; HL contains memory offset to tiles.
 	ADD HL, DE
 	LD DE, HL
 	POP HL

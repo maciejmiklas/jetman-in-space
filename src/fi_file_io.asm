@@ -61,19 +61,26 @@ F_READ					= $9D
 F_CMD					= $08
 ASCII_O					= $30
 
-TIS_FILE1_BYT_D8192		= _BANK_BYTES_D8192
-TIS_FILE2_BYT_D2048		= 2048
-
-TIS_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
-	ASSERT TIS_BYTES_D10240 =  10240
-	ASSERT TIS_FILE1_BYT_D8192+TIS_FILE2_BYT_D2048 = TIS_BYTES_D10240
-
-plTileFileName 			DB "assets/l00/tiles.map",0
-PL_FILE_LEVEL_POS		= 8							; Position of a level number (00-99) in the file name of the background image.
+; Tiles for stars when rocket flaying.
+ST_FILE1_BYT_D8192		= _BANK_BYTES_D8192
+ST_FILE2_BYT_D2048		= 2048
+ST_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
+	ASSERT ST_BYTES_D10240 =  10240
+	ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
 stTileFileName 			DB "assets/l00/stars_0.map",0
 ST_FILE_LEVEL_POS		= 8	
 ST_FILE_NR_POS			= 8
+ 
+; Tiles for in-game platforms.
+plTileFileName 			DB "assets/l00/tiles.map",0
+PL_FILE_LEVEL_POS		= 8							; Position of a level number (00-99) in the file name of the background image.
+
+; Sprite file.
+sprTileFileName 		DB "assets/l00/sprites_0.spr",0
+SPR_FILE_LEVEL_POS		= 8
+SPR_FILE_NR_POS			= 10
+SPR_FILE_BYT_D8192		= _BANK_BYTES_D8192
 
 ;----------------------------------------------------------;
 ;               #LoadPlatformsTilemap                      ;
@@ -94,8 +101,45 @@ LoadPlatformsTilemap
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, _TI_START_H5B00
+	LD IX, _DB_TI_START_H5B00
 	LD BC, _TI_MAP_BYTES_D2560
+	CALL _FileRead
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        #LoadSprites                      ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadSprites
+	
+	; Load first file
+	PUSH DE
+	
+	CALL dbs.SetupSpritesBank
+
+	LD A, "0"
+	CALL _PrepareFileOpenForSprites
+	CALL _FileOpen
+
+	; Read file.
+	LD IX, _DBS_SP_ADDR_HC000
+	LD BC, SPR_FILE_BYT_D8192
+	CALL _FileRead
+
+	POP DE
+	
+	; ##########################################
+	; Load second file.
+
+	LD A, "1"
+	CALL _PrepareFileOpenForSprites
+	CALL _FileOpen
+
+	; Read file.
+	LD IX, _RAM_SLOT7_STA_HE000
+	LD BC, SPR_FILE_BYT_D8192
 	CALL _FileRead
 
 	RET											; ## END of the function ##
@@ -117,8 +161,8 @@ LoadRocketStarsTilemap
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, _RAM_SLOT6_START_HC000
-	LD BC, TIS_FILE1_BYT_D8192
+	LD IX, _DBS_RS_ADDR_HC000
+	LD BC, ST_FILE1_BYT_D8192
 	CALL _FileRead
 
 	POP DE
@@ -131,8 +175,8 @@ LoadRocketStarsTilemap
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, _RAM_SLOT7_START_HE000
-	LD BC, TIS_FILE2_BYT_D2048
+	LD IX, _RAM_SLOT7_STA_HE000
+	LD BC, ST_FILE2_BYT_D2048
 	CALL _FileRead
 
 	RET											; ## END of the function ##
@@ -163,7 +207,7 @@ LoadImage
 
 	; ##########################################
 	; Load file into RAM
-	LD A, _DB_BGST_BANK_D35					; Set bank number.
+	LD A, _DBS_BGST_BANK_D35					; Set bank number.
 	ADD B
 	NEXTREG _MMU_REG_SLOT6_H56, A
 
@@ -171,7 +215,7 @@ LoadImage
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, _RAM_SLOT6_START_HC000
+	LD IX, _RAM_SLOT6_STA_HC000
 	LD BC, _BANK_BYTES_D8192
 	CALL _FileRead
 
@@ -201,7 +245,7 @@ LoadImage
 ;  - #stTileFileName with correct name.
 _PrepareFileOpenForStars
 
-	; Set the level number in the file name, DE="35" will give: "assets/l00/stars0.map" -> "assets/l35/stars0.map"
+	; Set the level number in the file name, DE="35" will give: "assets/l00/stars_0.map" -> "assets/l35/stars_0.map"
 	LD HL, stTileFileName
 	LD IX, HL									; Param for _FileOpen
 	ADD HL, ST_FILE_LEVEL_POS					; Move HL to "assets/l"
@@ -209,9 +253,32 @@ _PrepareFileOpenForStars
 	INC HL
 	LD (HL), E									; Set second number.
 
-	ADD HL, ST_FILE_NR_POS						; Move HL to "assets/l35/stars"
+	ADD HL, ST_FILE_NR_POS						; Move HL to "assets/l35/stars_"
 	LD (HL), A
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;             #_PrepareFileOpenForSprites                  ;
+;----------------------------------------------------------;
+; Input:
+;  - A: Sprites file number 0 for sprites0.spr, and 1 for sprites1.spr.
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+; Output:
+;  - #sprTileFileName with correct name.
+_PrepareFileOpenForSprites
+
+	; Set the level number in the file name, DE="35" will give: "assets/l00/sprites_0.map" -> "assets/l35/sprites_0.map"
+	LD HL, sprTileFileName
+	LD IX, HL									; Param for _FileOpen
+	ADD HL, SPR_FILE_LEVEL_POS					; Move HL to "assets/l"
+	LD (HL), D									; Set first number.
+	INC HL
+	LD (HL), E									; Set second number.
+
+	ADD HL, SPR_FILE_NR_POS						; Move HL to "assets/l35/sprites_"
+	LD (HL), A
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
