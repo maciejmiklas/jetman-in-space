@@ -441,7 +441,7 @@ _TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
 
 _TI_EMPTY_D57			= 57					; Empty tile.
 _TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
-
+	
 ; ##############################################
 ; Game screen
 _GSC_X_MIN_D0			= 0

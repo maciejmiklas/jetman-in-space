@@ -84,7 +84,7 @@ ResetTilemapOffset
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first character starts in second line.
 PrintText
 
-	LD HL, _DB_TI_START_H5B00						; HL points to screen memory containing tilemap.
+	LD HL, _DB_TI_START_H5B00					; HL points to screen memory containing tilemap.
 	DEC HL										; TODO why (verify _DB_TI_START_H5B00)?
 	
 	; HL will point to the memory location containing the data of the first character (tile).
@@ -98,7 +98,7 @@ PrintText
 .loop
 	LD A, (DE)									; Load current char.
 	INC DE										; Move to the next char .
-	ADD A, -TX_ASCII_OFFSET_D34				; Remove ASCII offset as tiles begin with 0.
+	ADD A, -TX_ASCII_OFFSET_D34					; Remove ASCII offset as tiles begin with 0.
 
 	LD (HL), TX_PALETTE_D0						; Set palette for tile.
 	INC HL
@@ -115,7 +115,7 @@ PrintText
 ;  - B:		Amount of tiles to clean 
 CleanTiles
 	LD HL, _DB_TI_START_H5B00						; HL points to screen memory containing tilemap.
-	DEC HL										; TODO why (verify _DB_TI_START_H5B00)?
+	DEC HL
 
 	; ##########################################
 	LD A, _TI_EMPTY_D57
@@ -124,7 +124,7 @@ CleanTiles
 	LD (HL), TX_PALETTE_D0						; Set palette for tile.
 	INC HL
 	
-	LD (HL), A									; Set tile gid.
+	LD (HL), A									; Set tile id.
 	INC HL	
 
 	DJNZ .loop									; Loop until B == 0.

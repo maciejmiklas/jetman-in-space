@@ -29,7 +29,7 @@ ResetJetpackOverheating
 	LD (jetHeatCnt), A
 	LD (jetCoolCnt), A
 	LD (jetTempLevel), A
-	CALL _UpdateUiTempBar
+	CALL _UpdateUiHeatBar
 
 	RET											; ## END of the function ##
 
@@ -102,7 +102,7 @@ _JetpackTempUp
 	LD (jt.jetState), A
 .afterTempCheck	
 
-	CALL _UpdateUiTempBar
+	CALL _UpdateUiHeatBar
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -142,15 +142,40 @@ _JetpackTempDown
 	LD (jt.jetState), A
 .afterTempCheck	
 
-	CALL _UpdateUiTempBar
+	CALL _UpdateUiHeatBar
 	RET											; ## END of the function ##
 
-;----------------------------------------------------------;
-;                 #_UpdateUiTempBar                        ;
-;----------------------------------------------------------;
-_UpdateUiTempBar
+BAR_TILE_START			= 29*2					; *2 because each tile takes 2 bytes
+BAR_TILE_PAL			= $30
+BAR_TILES				= 6
+BAR_FULL_SPR			= 176
+BAR_EMPTY_SPR			= 182
 
-	RET											; ## END of the function ##	
+;----------------------------------------------------------;
+;                 #_UpdateUiHeatBar                        ;
+;----------------------------------------------------------;
+_UpdateUiHeatBar
+
+	LD B, 0
+	LD D, BAR_FULL_SPR
+	LD HL, _DB_TI_START_H5B00 + BAR_TILE_START -1	; HL points to screen memory containing tilemap. ; // TODO why -1?
+.tilesLoop
+
+	LD (HL), BAR_TILE_PAL						; Set palette for tile.
+	INC HL
+	
+	LD (HL), D									; Set tile id.
+	INC HL	
+
+	INC D
+	; ##########################################
+	; Loop
+	INC B
+	LD A, B
+	CP BAR_TILES
+	JR NZ, .tilesLoop
+
+	RET											; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

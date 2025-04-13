@@ -51,21 +51,21 @@ PrintDebug
 	LD H, 0
 	LD A, (jt.jetState)
 	LD L, A	
-	CALL ut.PrintNumHLDebug
+	CALL ut.PrintDebugNum
 
 	; ##########################################
 	LD B, 46
 	LD H, 0
 	LD A, (jo.jetHeatCnt)
 	LD L, A	
-	CALL ut.PrintNumHLDebug
+	CALL ut.PrintDebugNum
 
 	; ##########################################
 	LD B, 52
 	LD H, 0
 	LD A, (jo.jetCoolCnt)
 	LD L, A	
-	CALL ut.PrintNumHLDebug	
+	CALL ut.PrintDebugNum	
 
 
 	; ##########################################
@@ -73,7 +73,7 @@ PrintDebug
 	LD H, 0
 	LD A, (jo.jetTempLevel)
 	LD L, A	
-	CALL ut.PrintNumHLDebug	
+	CALL ut.PrintDebugNum	
 
 
 	RET											; ## END of the function ##
