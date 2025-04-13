@@ -336,7 +336,8 @@ _GameLoop010OnActiveJetman
 
 	; ##########################################
 	CALL st.BlinkStarsL2
-
+	CALL jo.UpdateJetpackOverheating
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -408,7 +409,6 @@ _GameLoop040OnActiveJetman
 	; ##########################################
 	CALL ro.DropNextRocketElement
 	CALL td.NextTimeOfDayTrigger
-	CALL jo.UpdateJetpackOverheating
 	
 	RET											; ## END of the function ##
 

@@ -534,8 +534,9 @@ _JM_RESPAWN_X_D100		= 100
 _JM_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 ; The Jetpack heating up / cooling down thresholds.
-_JM_HEAT_CNT			= 3
-_JM_COOL_CNT			= 2
+_JM_HEAT_RED_CNT		= 40
+_JM_HEAT_CNT			= 20
+_JM_COOL_CNT			= 5
 
 ; Jetman weapon
 _JM_FIRE_DELAY			= 15

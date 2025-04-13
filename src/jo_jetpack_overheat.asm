@@ -12,14 +12,21 @@
 ; until it reaches #TEMP_NORM. At this point, the Jetman state changes to #JETST_NORMAL, and Jetman can fly at a full speed.
 
 ; Jetpack heats up/cools down during the flight.
-jetHeatCnt			BYTE 0						; Runs from 0 to _JM_HEAT_CNT
-jetCoolCnt			BYTE 0						; Runs from 0 to _JM_COOL_CNT
+jetHeatCnt				BYTE 0					; Runs from 0 to _JM_HEAT_CNT
+jetCoolCnt				BYTE 0					; Runs from 0 to _JM_COOL_CNT
 
-jetTempLevel		BYTE 0
+jetTempLevel			BYTE 0
 
-TEMP_MAX			= 9
-TEMP_NORM			= 4
-TEMP_MIN			= 0
+TEMP_MAX				= 9
+TEMP_NORM				= 4
+TEMP_RED				= 7
+TEMP_MIN				= 0
+
+BAR_TILE_START			= 31*2					; *2 because each tile takes 2 bytes
+BAR_TILE_PAL			= $30
+BAR_TILES				= 6
+BAR_FULL_SPR			= 176
+BAR_EMPTY_SPR			= 182
 
 ;----------------------------------------------------------;
 ;                 #ResetJetpackOverheating                 ;
@@ -81,8 +88,25 @@ _JetpackTempUp
 	INC A
 	LD (jetHeatCnt),A
 
+	; Heat increase speed slows down when #jetTempLevel is over _JM_HEAT_RED_CNT.
+	; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with _JM_HEAT_CNT
+	; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with _JM_HEAT_RED_CNT
+	LD A, (jetTempLevel)
+	CP _JM_HEAT_CNT
+	JR NC, .increaseFast
+
+	; Slow down hating.
+	LD A, (jetHeatCnt)
+	CP _JM_HEAT_RED_CNT
+	RET NZ										; The counter did not reach the required value to increase jeptack's temp.
+	JR .afterIncrease
+.increaseFast
+
+	; Fast heat increase.
+	LD A, (jetHeatCnt)
 	CP _JM_HEAT_CNT
 	RET NZ										; The counter did not reach the required value to increase jeptack's temp.
+.afterIncrease
 
 	; Heat up counter has reached max value, reset it.
 	XOR A
@@ -145,29 +169,33 @@ _JetpackTempDown
 	CALL _UpdateUiHeatBar
 	RET											; ## END of the function ##
 
-BAR_TILE_START			= 29*2					; *2 because each tile takes 2 bytes
-BAR_TILE_PAL			= $30
-BAR_TILES				= 6
-BAR_FULL_SPR			= 176
-BAR_EMPTY_SPR			= 182
-
 ;----------------------------------------------------------;
 ;                 #_UpdateUiHeatBar                        ;
 ;----------------------------------------------------------;
 _UpdateUiHeatBar
 
 	LD B, 0
-	LD D, BAR_FULL_SPR
 	LD HL, _DB_TI_START_H5B00 + BAR_TILE_START -1	; HL points to screen memory containing tilemap. ; // TODO why -1?
 .tilesLoop
 
+	; ##########################################
+	; Load heat progress bar.
+	LD A, (jetTempLevel)
+	CP B
+	JR NC, .emptyBar							; Jump if B >= #jetTempLevel
+	LD A, BAR_EMPTY_SPR
+	JR .afterBar
+.emptyBar
+	LD A, BAR_FULL_SPR
+.afterBar
+	ADD B
+	
 	LD (HL), BAR_TILE_PAL						; Set palette for tile.
 	INC HL
 	
-	LD (HL), D									; Set tile id.
+	LD (HL), A									; Set tile id.
 	INC HL	
 
-	INC D
 	; ##########################################
 	; Loop
 	INC B

@@ -368,7 +368,7 @@ JetPlatformTakesOff
 ;----------------------------------------------------------;
 JetLanding
 	
-	; Ignore landing if jetman is already on the ground.
+	; Ignore landing if Jetman is already on the ground.
 	LD A, (jt.jetGnd)
 	CP jt.STATE_INACTIVE
 	RET NZ

@@ -554,6 +554,8 @@ _StartLevel
 	CALL gc.RespawnJet
 	CALL ro.StartRocketAssembly
 	CALL ti.SetTilesClipFull
+	CALL jo.ResetJetpackOverheating
+
 	RET											; ## END of the function ##
 
 
