@@ -69,8 +69,19 @@ LoadLevel1Data
 	LD (ro.rocketEl), HL
 
 	LD A, (db.rocketAssemblyXL1)
-	LD (ro.rocketAssemblyX), A	
-	
+	LD (ro.rocketAssemblyX), A
+
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL1
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	;LD IX, db.enemyFormationL1
+	;CALL ef.SetupEnemyFormation
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -139,7 +150,18 @@ LoadLevel2Data
 	LD (ro.rocketEl), HL
 
 	LD A, (db.rocketAssemblyXL2)
-	LD (ro.rocketAssemblyX), A	
+	LD (ro.rocketAssemblyX), A
+
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL2
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL2
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -211,6 +233,17 @@ LoadLevel3Data
 	LD A, (db.rocketAssemblyXL3)
 	LD (ro.rocketAssemblyX), A
 
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL3
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL3
+	CALL ef.SetupEnemyFormation
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -281,7 +314,18 @@ LoadLevel4Data
 	LD (ro.rocketEl), HL
 
 	LD A, (db.rocketAssemblyXL4)
-	LD (ro.rocketAssemblyX), A	
+	LD (ro.rocketAssemblyX), A
+
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL4
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL4
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -353,6 +397,17 @@ LoadLevel5Data
 	LD A, (db.rocketAssemblyXL5)
 	LD (ro.rocketAssemblyX), A	
 
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL5
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL5
+	CALL ef.SetupEnemyFormation
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -421,7 +476,18 @@ LoadLevel6Data
 	LD (ro.rocketEl), HL
 
 	LD A, (db.rocketAssemblyXL6)
-	LD (ro.rocketAssemblyX), A	
+	LD (ro.rocketAssemblyX), A
+
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL6
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL6
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -490,7 +556,18 @@ LoadLevel7Data
 	LD (ro.rocketEl), HL
 
 	LD A, (db.rocketAssemblyXL7)
-	LD (ro.rocketAssemblyX), A	
+	LD (ro.rocketAssemblyX), A
+
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL7
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL7
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -559,7 +636,18 @@ LoadLevel8Data
 	LD (ro.rocketEl), HL
 
 	LD A, (db.rocketAssemblyXL8)
-	LD (ro.rocketAssemblyX), A	
+	LD (ro.rocketAssemblyX), A
+
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL8
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL8
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -631,6 +719,17 @@ LoadLevel9Data
 	LD A, (db.rocketAssemblyXL9)
 	LD (ro.rocketAssemblyX), A
 
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL9
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL9
+	CALL ef.SetupEnemyFormation
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -697,7 +796,18 @@ LoadLevel10Data
 	LD (ro.rocketEl), HL
 
 	LD A, (db.rocketAssemblyXL10)
-	LD (ro.rocketAssemblyX), A	
+	LD (ro.rocketAssemblyX), A
+
+	; ##########################################
+	; Load single enemies.
+	LD IX, db.singleEnemiesL10
+	LD IY, db.spriteEx01
+	CALL ep.SetupSingleEnemies
+
+	; ##########################################
+	; Load formation.
+	LD IX, db.enemyFormationL10
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 

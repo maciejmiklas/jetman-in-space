@@ -75,8 +75,9 @@ HideShots
 WeaponHitEnemies
 
 	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.enemiesSize)
+	
+	LD IX, db.enemySprites
+	LD A, (ep.enemiesSize)
 	LD B, A
 	CALL _CheckHitEnemies
 

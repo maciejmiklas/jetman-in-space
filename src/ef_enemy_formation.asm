@@ -15,6 +15,8 @@ SPRITES				BYTE						; Number of sprites used in this enemyFormation, starting f
 SPRITES_CNT			BYTE						; Counter for SPRITES
 	ENDS
 
+efPointer			WORD 0
+
 ;----------------------------------------------------------;
 ;                   #ResetEnemyFormation                   ;
 ;----------------------------------------------------------;
@@ -23,12 +25,20 @@ ResetEnemyFormation
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   #SetupEnemyFormation                   ;
+;----------------------------------------------------------;
+SetupEnemyFormation
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                   #RespawnFormation                      ;
 ;----------------------------------------------------------;
-RespawnFormation	
-
+RespawnFormation
+	RET
+	
 	CALL dbs.SetupArraysBank
-	LD IY, db.enemyFormation
+	LD IY, (efPointer)
 
 	; Check whether it's time to start a new enemyFormation deployment.
 	LD BC, (IY + EF.RESPAWN_DELAY)
@@ -88,4 +98,4 @@ RespawnFormation
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE	
+	ENDMODULE

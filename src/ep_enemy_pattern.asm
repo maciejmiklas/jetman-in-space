@@ -10,8 +10,8 @@ respawnDelay 			DB 20					; Amount of game loops to respawn single enemy.
 ; Extends #SPR by additional params.
 	STRUCT ENP
 ; Bits:
-;	- 0:	#ENP_SETUP_ALONG_BIT
-;	- 1:	#ENP_SETUP_DEPLOY_BIT
+;	- 0:	#ENP_ALONG_BIT
+;	- 1:	#ENP_DEPLOY_BIT
 SETUP					BYTE	
 MOVE_DELAY_CNT			BYTE					; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
 RESPAWN_DELAY			BYTE					; Number of game loops delaying respawn.
@@ -22,21 +22,36 @@ MOVE_PAT_POS			BYTE					; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_S
 MOVE_PAT_STEP 			BYTE					; Counters X,Y from current move pattern.
 MOVE_PAT_STEP_RCNT		BYTE					; Counter for repetition of single move pattern step. Counts towards 0.
 	ENDS
-; Bits 4-7 on sr.STATE will be used here:
 
-ENP_SETUP_ALONG_BIT		= 0						; 1 - avoid platforms by flying along them, 0 - hit platform.
-ENP_SETUP_DEPLOY_BIT	= 1						; 1 - deploy enemy on the left, 0 - on the right.
+; Bits 4-7 on sr.SPR.STATE will be used here:
+ENP_ALONG_BIT			= 0						; 1 - avoid platforms by flying along them, 0 - hit platform.
+ENP_DEPLOY_BIT			= 1						; 1 - deploy enemy on the left, 0 - on the right.
 
+ENPS_RIGHT_AVOID		= %000000'0'1
+ENPS_RIGHT_HIT			= %000000'0'0
+ENPS_LEFT_AVOID			= %000000'1'1
+ENPS_LEFT_HIT			= %000000'1'0
 
 MOVE_DELAY_CNT_INC		= %0001'0000
 
-; The move pattern is stored as a byte array. The first byte in this array holds the byte, indicating the number of patterns it contains. 
-; This single byte is followed by move patterns, where each pattern consists of two bytes: first for the pattern itself (pattern step) and 
-; the second holding the movement delay (bits 8-5) and the number of times it should be repeated (bits 4-0).
+; Setup values loaded for each level for #SPR.
+	STRUCT ENPS
+RESPAWN_Y				BYTE
+RESPAWN_DELAY			BYTE
+MOVE_PAT_POINTER		WORD
+SETUP					BYTE
+	ENDS
+
+; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
+; Each pattern step takes 2 bytes so that the size will be 24 for movement consisting of 12 patterns.
+; The byte indicating size is being followed by move patterns, each of which consists of two bytes: the first for the pattern itself 
+; (pattern step) and the second for the movement delay (bits 8-5) and the number of times it should be repeated (bits 4-0).
+
 ; To illustrate, if the first byte is set to 5,  the move pattern will span a total of 11 bytes: 11 = 1 + 5 * 2, or:
 ; [number of patterns],[[step],[delay/repetition],[[step],[delay/repetition],...,[[step],[delay/repetition]].
 ;
-; Each pattern step contains the number of pixels to move along the X axis (left or right) and the number of pixels to move along Y axis (up or down).
+; Each pattern step contains the number of pixels to move along the X axis (left or right) and the number of pixels to move along Y axis 
+; (up or down).
 ;
 ; The sprite travels only one pixel in each direction during each animation loop. If possible, it travels in both directions 
 ; (increasing X and Y by one). If the number of pixels in a particular direction has been reached, it will continue vertically or horizontally. 
@@ -61,19 +76,18 @@ MOVE_DELAY_CNT_INC		= %0001'0000
 MOVE_PAT_X_MASK			= %0'000'0'111
 MOVE_PAT_X_ADD			= %0'000'0'001
 
-; 1 = sprite moves right, 0 = sprite moves left. However, this is the case if deployment occurs on the left side. For deployment on 
-; the right side of the screen, all directions in the movement pattern get inverted. Just write all move patterns, assuming deployments 
-; occur on the screen's left side. If it's being deployed right, the direction bits will be inverted.
-MOVE_PAT_X_TOD_DIR_BIT		= 3
-MOVE_PAT_X_TOD_DIR_MASK		= %0'000'1'000
+; Determines whether X should be incremented (1 - move right) or decremented (0 - move left) in each iteration. It's under the assumption,
+; that deployment takes place on the left side of the screen. Values will be automatically inverted if it's on the right side of the screen.
+MOVE_PAT_X_TOD_DIR_BIT	= 3
+MOVE_PAT_X_TOD_DIR_MASK	= %0'000'1'000
 
 MOVE_PAT_Y_MASK			= %0'111'0'000
 MOVE_PAT_Y_ADD			= %0'001'0'000
 
-MOVE_PAT_Y_TOD_DIR_MASK		= %1'000'0'000
+MOVE_PAT_Y_TOD_DIR_MASK	= %1'000'0'000
 
 ; Determines whether Y should be decremented (0 - move up) or incremented (1 - move down) in each iteration.
-MOVE_PAT_Y_TOD_DIR_BIT		= 7
+MOVE_PAT_Y_TOD_DIR_BIT	= 7
 
 MOVE_PAT_XY_MASK		= %0'111'0'111
 MOVE_PAT_XY_MASK_RES	= %1'000'1'000
@@ -86,50 +100,70 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
+; The total amount of visible sprites - including single enemies (15) and enemyFormation (7)
+enemiesSize				BYTE _EN_SINGLE_SIZE+_EN_FORM_SIZE
+
+enpAddr					WORD 0 					; Pointer to #ENP array containing _EN_SINGLE_SIZE entries.
+
 ;----------------------------------------------------------;
-;                   #ResetSingleEnemies                    ;
+;                  #SetupSingleEnemies                     ;
 ;----------------------------------------------------------;
-ResetSingleEnemies
+; Setups single enemies and loads given #ENPS array into #ENP. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
+; Input:
+;   - IX: Pointer to #ENPS array.
+;   - IY: Pointer to #ENP array.
+SetupSingleEnemies
 
 	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.enemiesSize)
-	LD B, A 
 
-.enemyLoop
-	; Load extra data for this sprite to IY.
-	LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
-	LD IY, BC
+	LD (enpAddr), IY
 
-	XOR A
-	LD (IX + sr.SPR.SDB_POINTER), A
-	LD (IX + sr.SPR.X), A
-	LD (IX + sr.SPR.Y), A
-	LD (IX + sr.SPR.STATE), A
-	LD (IX + sr.SPR.NEXT), A
-	LD (IX + sr.SPR.REMAINING), A
+	PUSH IX, IY
+	CALL _ResetSingleEnemies
+	POP  IY, IX
+	
+	LD A, _EN_SINGLE_SIZE						; Single enemies size (number of #ENPS/#ENP arrays).
+	LD B, A
+.loop
+	LD A, (IY +  ENP.MOVE_DELAY_CNT)
 
-	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
-	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
+	LD A, (IX + ENPS.RESPAWN_Y)
+	LD (IY + ENP.RESPAWN_Y), A
 
-	LD A, ep.MOVE_PAT_STEP_OFFSET
-	LD (IY + ep.ENP.MOVE_PAT_POS), A
+	LD A, (IX + ENPS.SETUP)
+	LD (IY + ENP.SETUP), A
 
-	DJNZ .enemyLoop
+	LD A, (IX + ENPS.RESPAWN_DELAY)
+	LD (IY + ENP.RESPAWN_DELAY), A
+
+	LD DE, (IX + ENPS.MOVE_PAT_POINTER)
+	LD (IY + ENP.MOVE_PAT_POINTER), DE
+
+	; Move IX to next array postion.
+	LD DE, IX
+	ADD DE, ENPS
+	LD IX, DE
+
+	; Move IY to next array postion.
+	LD DE, IY
+	ADD DE, ENP
+	LD IY, DE
+	
+	DJNZ .loop
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       #MoveEnemies                       ;
 ;----------------------------------------------------------;
+; Moves single enemies and those in formation.
 ; Modifies: ALL
 MoveEnemies
 
 	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.enemiesSize)
+
+	LD IX, db.enemySprites
+	LD A, (ep.enemiesSize)
 	LD B, A 
 
 	; Loop ever all enemies skipping hidden 
@@ -180,14 +214,12 @@ MoveEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #RespawnNextEnemy                       ;
+;                #RespawnNextSingleEnemy                   ;
 ;----------------------------------------------------------;
-RespawnNextEnemy
+; Respawns next single enemy. To respawn next from formation use ef.RespawnFormation
+RespawnNextSingleEnemy
 
 	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.singleEnemiesSize)
-	LD B, A
 
 	; ##########################################	
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy.
@@ -206,6 +238,10 @@ RespawnNextEnemy
 
 	; ##########################################
 	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
+	LD IX, db.enemySprites
+	LD A, _EN_SINGLE_SIZE
+	LD B, A
+
 .loop
 	PUSH BC										; Preserve B for loop counter.
 	CALL RespawnEnemy
@@ -217,7 +253,7 @@ RespawnNextEnemy
 	; Move IX to the beginning of the next #shotsXX.
 	LD DE, sr.SPR
 	ADD IX, DE
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #singleEnemiesSize).
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE).
 
 	RET											; ## END of the function ##.
 
@@ -248,18 +284,20 @@ RespawnEnemy
 	; There are two respawn delay timers. The first is global (#respawnDelayCnt) and ensures that multiple enemies do not respawn at the same time.
 	; The second timer can be configured for a single enemy, which further delays its comeback. 
 	LD A, (IY + ENP.RESPAWN_DELAY)
+
 	CP 0
 	JR Z, .afterEnemyRespawnDelay				; Jump if there is no extra delay for this enemy.
 		
-	LD B, A	
+	LD B, A
 	LD A, (IY + ENP.RESPAWN_DELAY_CNT)
+
 	INC A
 	CP B
 	JR Z, .afterEnemyRespawnDelay				; Jump if the timer reaches respawn delay.
 
 	LD (IY + ENP.RESPAWN_DELAY_CNT), A			; The delay timer for the enemy is still ticking.
 
-	LD A, RES_SE_OUT_NO	
+	LD A, RES_SE_OUT_NO
 	RET
 .afterEnemyRespawnDelay
 
@@ -281,7 +319,7 @@ RespawnEnemy
 	LD (IX + sr.SPR.Y), A
 	
 	; Set X to left or right side of the screen.
-	BIT ENP_SETUP_DEPLOY_BIT, (IY + ENP.SETUP)
+	BIT ENP_DEPLOY_BIT, (IY + ENP.SETUP)
 	JR NZ, .deployLeft							; Jump if bit is 0 -> deploy left.
 
 	; Deploy right.
@@ -336,7 +374,7 @@ _LoadMoveDelayCounter
 _MoveEnemyX
 
 	LD D, MOVEX_SETUP							; D contains configuration for MoveX.
-	BIT ENP_SETUP_DEPLOY_BIT, (IY + ENP.SETUP)
+	BIT ENP_DEPLOY_BIT, (IY + ENP.SETUP)
 	JR NZ, .deployedLeft						; Jump if bit is 0 -> deploy left.
 
 	; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_BIT.
@@ -399,7 +437,7 @@ _MoveEnemy
 .afterAliveCheck
 
 	; Should the enemy move along the platform to avoid collision?
-	BIT ENP_SETUP_ALONG_BIT, (IY + ENP.SETUP)
+	BIT ENP_ALONG_BIT, (IY + ENP.SETUP)
 	JR Z, .afterMoveAlong						; Jump if move along is not set.
 	
 	; Check the collision with the platform.
@@ -596,6 +634,40 @@ _RestartMovePattern
 	LD A, B
 	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits.
 	LD (IY + ENP.MOVE_DELAY_CNT), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #_ResetSingleEnemies                    ;
+;----------------------------------------------------------;
+_ResetSingleEnemies
+
+	LD IX, (enpAddr)
+	LD A, _EN_SINGLE_SIZE
+	LD B, A 
+
+.enemyLoop
+	; Load extra data for this sprite to IY.
+	LD DE, (IX + sr.SPR.EXT_DATA_POINTER)
+	LD IY, DE
+
+	XOR A
+	LD (IX + sr.SPR.SDB_POINTER), A
+	LD (IX + sr.SPR.X), A
+	LD (IX + sr.SPR.Y), A
+	LD (IX + sr.SPR.STATE), A
+	LD (IX + sr.SPR.NEXT), A
+	LD (IX + sr.SPR.REMAINING), A
+
+	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
+	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
+
+	LD A, ep.MOVE_PAT_STEP_OFFSET
+	LD (IY + ep.ENP.MOVE_PAT_POS), A
+
+	DJNZ .enemyLoop
 
 	RET											; ## END of the function ##
 

@@ -70,8 +70,8 @@ _GameLoop000OnActiveJetman
 	CALL gi.JoystickInput
 	CALL gi.KeyboardInput
 	CALL ep.MoveEnemies
-	//CALL ep.RespawnNextEnemy
-	//CALL ef.RespawnFormation
+	CALL ep.RespawnNextSingleEnemy
+;CALL ef.RespawnFormation
 	
 	RET											; ## END of the function ##
 
@@ -274,8 +274,9 @@ _GameLoop008OnActiveJetman
 	; ##########################################
 	; Animate enemies
 	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01	
-	LD A, (db.enemiesSize)
+
+	LD IX, db.enemySprites
+	LD A, (ep.enemiesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
 
@@ -341,18 +342,17 @@ _GameLoop010nFlyingRocket
 
 	; ##########################################
 	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.singleEnemiesSize)
-	LD B, A
+	
+	LD IX, (ep.enpAddr)
+	LD B, _EN_SINGLE_SIZE
 	CALL sr.KillOneSprite
 
 	JR .afterFilpFlop
 .flip
 	; ##########################################
 	CALL dbs.SetupArraysBank
-	LD IX, db.spriteEf01
-	LD A, (db.enemyFormation.SPRITES)
-	LD B, A
+	LD IX, (ef.efPointer)
+	LD B, _EN_FORM_SIZE
 	CALL sr.KillOneSprite
 
 .afterFilpFlop
