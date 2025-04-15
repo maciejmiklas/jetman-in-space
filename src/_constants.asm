@@ -391,10 +391,6 @@ _RET_NO_D0				= 2
 _BANK_BYTES_D8192		= 8*1024
 
 ; ##############################################
-; Joystick
-_PL_JOY_DELAY			= 1						; Probe joystick every few loops, 1 for each loop, 0 is not supported.
-
-; ##############################################
 ; Start times to change animations.
 _HOVER_START_D250		= 250
 _STAND_START_D30		= 30
@@ -534,9 +530,14 @@ _JM_RESPAWN_X_D100		= 100
 _JM_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 ; The Jetpack heating up / cooling down thresholds.
-_JM_HEAT_RED_CNT		= 40
-_JM_HEAT_CNT			= 20
-_JM_COOL_CNT			= 5
+_JM_HEAT_RED_CNT		= 80
+_JM_HEAT_CNT			= 40
+_JM_COOL_CNT			= 20
 
 ; Jetman weapon
 _JM_FIRE_DELAY			= 15
+
+; ##############################################
+; Enemy
+_EN_SINGLE_SIZE			= 15
+_EN_FORM_SIZE			= 7

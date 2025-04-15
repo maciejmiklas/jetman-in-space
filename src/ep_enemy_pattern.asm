@@ -27,6 +27,7 @@ MOVE_PAT_STEP_RCNT		BYTE					; Counter for repetition of single move pattern ste
 ENP_SETUP_ALONG_BIT		= 0						; 1 - avoid platforms by flying along them, 0 - hit platform.
 ENP_SETUP_DEPLOY_BIT	= 1						; 1 - deploy enemy on the left, 0 - on the right.
 
+
 MOVE_DELAY_CNT_INC		= %0001'0000
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the byte, indicating the number of patterns it contains. 
@@ -86,20 +87,58 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
 ;----------------------------------------------------------;
+;                   #ResetSingleEnemies                    ;
+;----------------------------------------------------------;
+ResetSingleEnemies
+
+	CALL dbs.SetupArraysBank
+	LD IX, db.sprite01
+	LD A, (db.enemiesSize)
+	LD B, A 
+
+.enemyLoop
+	; Load extra data for this sprite to IY.
+	LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
+	LD IY, BC
+
+	XOR A
+	LD (IX + sr.SPR.SDB_POINTER), A
+	LD (IX + sr.SPR.X), A
+	LD (IX + sr.SPR.Y), A
+	LD (IX + sr.SPR.STATE), A
+	LD (IX + sr.SPR.NEXT), A
+	LD (IX + sr.SPR.REMAINING), A
+
+	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
+	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
+
+	LD A, ep.MOVE_PAT_STEP_OFFSET
+	LD (IY + ep.ENP.MOVE_PAT_POS), A
+
+	DJNZ .enemyLoop
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       #MoveEnemies                       ;
 ;----------------------------------------------------------;
-;  - IX:	Pointer to #SPR.
-;  - B:		Sprites size.
 ; Modifies: ALL
 MoveEnemies
 
+	CALL dbs.SetupArraysBank
+	LD IX, db.sprite01
+	LD A, (db.enemiesSize)
+	LD B, A 
+
 	; Loop ever all enemies skipping hidden 
-.loop
+.enemyLoop
 	PUSH BC										; Preserve B for loop counter.
 
 	; Ignore this sprite if it's hidden.
 	LD A, (IX + sr.SPR.STATE)
-	AND sr.SPRITEST_VISIBLE					; Reset all bits but visibility.
+	AND sr.SPRITEST_VISIBLE						; Reset all bits but visibility.
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden).
 
@@ -136,32 +175,36 @@ MoveEnemies
 
 	; ##########################################
 	POP BC
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = #SPR).
+	DJNZ .enemyLoop
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                  #RespawnNextEnemy                       ;
 ;----------------------------------------------------------;
-; Input:
-;  - IX:	Pointer to #SPR
-;  - B:		Sprites size
 RespawnNextEnemy
 
+	CALL dbs.SetupArraysBank
+	LD IX, db.sprite01
+	LD A, (db.singleEnemiesSize)
+	LD B, A
+
+	; ##########################################	
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy.
 	LD A, (respawnDelay)
 	LD D, A
 	LD A, (respawnDelayCnt)
 	INC A
 	CP D
-	JR Z, .startRespown							; Jump if the timer reaches respawn delay.
+	JR Z, .startRespawn							; Jump if the timer reaches respawn delay.
 	LD (respawnDelayCnt), A
 
 	RET
-.startRespown	
+.startRespawn	
 	XOR A										; Set A to 0.
 	LD (respawnDelayCnt), A						; Reset delay timer.
 
+	; ##########################################
 	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
 .loop
 	PUSH BC										; Preserve B for loop counter.
@@ -171,7 +214,6 @@ RespawnNextEnemy
 	CP A, RES_SE_OUT_YES
 	RET Z										; Exit after respawning first enemy.
 										
-.continue
 	; Move IX to the beginning of the next #shotsXX.
 	LD DE, sr.SPR
 	ADD IX, DE
@@ -378,7 +420,7 @@ _MoveEnemy
 	LD A, (IY + ENP.MOVE_PAT_STEP)				; A contains current X,Y counters.
 	AND MOVE_PAT_X_MASK							; Reset all but X.
 	CP 0
-	JR Z, .aftetrMoveLR							; Jump if the counter for X has reached 0.
+	JR Z, .afterMoveLR							; Jump if the counter for X has reached 0.
 	
 	; Decrement X counter
 	LD A, (IY + ENP.MOVE_PAT_STEP)				; A contains current X,Y counters.
@@ -386,7 +428,7 @@ _MoveEnemy
 	LD (IY + ENP.MOVE_PAT_STEP), A
 
 	CALL _MoveEnemyX	
-.aftetrMoveLR
+.afterMoveLR
 
 	; Check if counter for Y has already reached 0, or is set to 0.
 	LD A, (IY + ENP.MOVE_PAT_STEP)				; A contains current X,Y counters.

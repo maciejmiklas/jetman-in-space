@@ -12,15 +12,23 @@ SPRITE_POINTER		WORD						; Pointer to the first sprite (#SPR).
 RESPAWN_DELAY		WORD						; Number of game loops delaying respawn.
 RESPAWN_DELAY_CNT	WORD						; Respawn delay counter.
 SPRITES				BYTE						; Number of sprites used in this enemyFormation, starting from #SPRITE_POINTER inclusive.
-SPRITES_CNT			BYTE						; Current respawn position.
+SPRITES_CNT			BYTE						; Counter for SPRITES
 	ENDS
+
+;----------------------------------------------------------;
+;                   #ResetEnemyFormation                   ;
+;----------------------------------------------------------;
+ResetEnemyFormation
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   #RespawnFormation                      ;
 ;----------------------------------------------------------;
-; Input:
-;  - IY:	Pointer to #EF.
 RespawnFormation	
+
+	CALL dbs.SetupArraysBank
+	LD IY, db.enemyFormation
 
 	; Check whether it's time to start a new enemyFormation deployment.
 	LD BC, (IY + EF.RESPAWN_DELAY)
@@ -47,15 +55,15 @@ RespawnFormation
 	; Check if deployment is over -> the last sprite has been deployed.
 	LD A, (IY + EF.SPRITES_CNT)
 	CP (IY + EF.SPRITES)
-	JR C, .deplyNextEnemy						; Jump if  EF.SPRITES_CNT < EF.SPRITES -> There are still enemies that need to be deployed.
+	JR C, .deployNextEnemy						; Jump if  EF.SPRITES_CNT < EF.SPRITES -> There are still enemies that need to be deployed.
 	
-	; Deplyment is over
+	; Deployment is over.
 	LD DE, 0									; Reset enemyFormation counters.
 	LD (IY + EF.SPRITES_CNT), E
 	LD (IY + EF.RESPAWN_DELAY_CNT), DE
 
 	RET
-.deplyNextEnemy	
+.deployNextEnemy	
 
 	; Deploy next enemy!
 	LD HL, (IY + EF.SPRITE_POINTER)

@@ -58,6 +58,7 @@ _GameLoop000OnActiveJetman
 
 	; ##########################################
 	CALL _GameLoop000OnDisabledJoy
+
 	CALL ro.CheckHitTank
 	CALL jco.JetRip
 	CALL jw.MoveShots
@@ -68,26 +69,10 @@ _GameLoop000OnActiveJetman
 	CALL jco.JetmanEnemiesCollision
 	CALL gi.JoystickInput
 	CALL gi.KeyboardInput
-
-	; ##########################################
-	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.singleEnemiesSize)
-	LD B, A	
-	;CALL ep.RespawnNextEnemy
-	
-	; ##########################################
-	CALL dbs.SetupArraysBank
-	LD IY, db.enemyFormation
-	;CALL ef.RespawnFormation
-
-	; ##########################################
-	CALL dbs.SetupArraysBank
-	LD IX, db.sprite01
-	LD A, (db.enemiesSize)
-	LD B, A 	
 	CALL ep.MoveEnemies
-
+	//CALL ep.RespawnNextEnemy
+	//CALL ef.RespawnFormation
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -194,7 +179,8 @@ _GameLoop004OnActiveJetman
 
 	; ##########################################
 	CALL ro.RocketElementFallsForAssembly
-
+	CALL jo.UpdateJetpackOverheating
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -336,8 +322,7 @@ _GameLoop010OnActiveJetman
 
 	; ##########################################
 	CALL st.BlinkStarsL2
-	CALL jo.UpdateJetpackOverheating
-	
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

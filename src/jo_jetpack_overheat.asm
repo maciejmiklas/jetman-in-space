@@ -17,9 +17,9 @@ jetCoolCnt				BYTE 0					; Runs from 0 to _JM_COOL_CNT
 
 jetTempLevel			BYTE 0
 
-TEMP_MAX				= 9
-TEMP_NORM				= 4
-TEMP_RED				= 7
+TEMP_MAX				= 6
+TEMP_NORM				= 2
+TEMP_RED				= 4
 TEMP_MIN				= 0
 
 BAR_TILE_START			= 31*2					; *2 because each tile takes 2 bytes
@@ -92,19 +92,19 @@ _JetpackTempUp
 	; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with _JM_HEAT_CNT
 	; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with _JM_HEAT_RED_CNT
 	LD A, (jetTempLevel)
-	CP _JM_HEAT_CNT
-	JR NC, .increaseFast
-
-	; Slow down hating.
-	LD A, (jetHeatCnt)
-	CP _JM_HEAT_RED_CNT
-	RET NZ										; The counter did not reach the required value to increase jeptack's temp.
-	JR .afterIncrease
-.increaseFast
+	CP TEMP_RED
+	JR NC, .increaseSlow
 
 	; Fast heat increase.
 	LD A, (jetHeatCnt)
 	CP _JM_HEAT_CNT
+	RET NZ										; The counter did not reach the required value to increase jeptack's temp.
+	JR .afterIncrease
+
+.increaseSlow
+	; Slow down hating.
+	LD A, (jetHeatCnt)
+	CP _JM_HEAT_RED_CNT
 	RET NZ										; The counter did not reach the required value to increase jeptack's temp.
 .afterIncrease
 
@@ -159,12 +159,12 @@ _JetpackTempDown
 	LD (jetTempLevel),A
 
 	CP TEMP_NORM
-	JR NZ, .afterTempCheck
+	JR NZ, .afterNormTempCheck
 
 	; Jetpack is coll again.
 	LD A, jt.JETST_NORMAL
 	LD (jt.jetState), A
-.afterTempCheck	
+.afterNormTempCheck
 
 	CALL _UpdateUiHeatBar
 	RET											; ## END of the function ##

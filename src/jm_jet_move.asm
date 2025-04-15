@@ -17,19 +17,6 @@ JoyMoveUp
 	CP _RET_YES_D1
 	RET NZ										; Do not process input on disabled joystick.
 
-.afterJoyCntEnabled
-
-	; ##########################################
-	CALL _JoystickMoves
-
-	; ##########################################
-	; Decrement Y position
-	LD A, (jpo.jetY)	
-	CP _GSC_Y_MIN_D15 							; Do not decrement if Jetman has reached the top of the screen.
-	JR Z, .afterDec
-	CALL jpo.DecJetY
-.afterDec	
-
 	; ##########################################
 	; Direction change: down -> up.
 	LD A, (gid.jetDirection)
@@ -44,7 +31,23 @@ JoyMoveUp
 	LD (gid.jetDirection), A
 .afterDirectionChange
 
-	; ##########################################	
+	; ##########################################
+	CALL _JoyJetpackOverheatSlowdown
+	CP _RET_NO_D0
+	RET Z
+
+	; ##########################################
+	CALL _JoystickMoves
+
+	; ##########################################
+	; Decrement Y position.
+	LD A, (jpo.jetY)	
+	CP _GSC_Y_MIN_D15 							; Do not decrement if Jetman has reached the top of the screen.
+	JR Z, .afterDec
+	CALL jpo.DecJetY
+.afterDec
+
+	; ##########################################
 	CALL pl.JetPlatformTakesOff					; Transition from walking to flaying.
 	CALL js.ChangeJetSpriteOnFlyUp	
 
@@ -60,11 +63,6 @@ JoyMoveRight
 	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
-	CALL _JoystickMoves
-	CALL _StandToWalk
-	CALL jpo.IncJetX
-
-	; ##########################################
 	; Direction change: left -> right
 	LD A, (gid.jetDirection)
 	AND gid.MOVE_RIGHT_MASK						; Are we moving right already?
@@ -76,8 +74,17 @@ JoyMoveRight
 	RES gid.MOVE_LEFT_BIT, A
 	SET gid.MOVE_RIGHT_BIT, A
 	LD (gid.jetDirection), A
-	
 .afterDirectionChange
+
+	; ##########################################
+	CALL _JoyJetpackOverheatSlowdown
+	CP _RET_NO_D0
+	RET Z
+
+	; ##########################################
+	CALL _JoystickMoves
+	CALL _StandToWalk
+	CALL jpo.IncJetX
 
 	; ##########################################
 	; Fall from the platform?
@@ -95,11 +102,6 @@ JoyMoveLeft
 	RET NZ										; Do not process input on disabled joystick.
 
 	; ##########################################
-	CALL _JoystickMoves	
-	CALL _StandToWalk
-	CALL jpo.DecJetX
-
-	; ##########################################
 	; Direction change: right -> left.
 	LD A, (gid.jetDirection)
 	AND gid.MOVE_LEFT_MASK						; Are we moving left already?
@@ -112,6 +114,16 @@ JoyMoveLeft
 	SET gid.MOVE_LEFT_BIT, A
 	LD (gid.jetDirection), A
 .afterDirectionChange
+
+	; ##########################################
+	CALL _JoyJetpackOverheatSlowdown
+	CP _RET_NO_D0
+	RET Z
+
+	; ##########################################
+	CALL _JoystickMoves	
+	CALL _StandToWalk
+	CALL jpo.DecJetX
 
 	; ##########################################
 	; Fall from the platform?
@@ -135,24 +147,6 @@ JoyMoveDown
 	RET NZ
 
 	; ##########################################
-	CALL _JoystickMoves
-
-	; ##########################################
-	; Increment Y position
-	LD A, (jpo.jetY)
-	CP _GSC_JET_GND_D217						; Do not increment if Jetman has reached the ground.
-	JR Z, .afterInc						
-
-	CALL jpo.IncJetY							; Move Jetman 1px down.
-.afterInc	
-
-	; ##########################################
-	; Landing on the ground
-	LD A, (jpo.jetY)
-	CP _GSC_JET_GND_D217
-	CALL Z, pl.JetLanding						; Execute landing on the ground if Jetman has reached the ground.
-
-	; ##########################################
 	; Direction change? 
 	LD A, (gid.jetDirection)
 	AND gid.MOVE_DOWN_MASK						; Are we moving down already?
@@ -165,10 +159,30 @@ JoyMoveDown
 	SET gid.MOVE_DOWN_BIT, A	
 	LD (gid.jetDirection), A
 	
-	; ##########################################
 	CALL js.ChangeJetSpriteOnFlyDown
-
 .afterDirectionChange
+
+	; ##########################################
+	CALL _JoyJetpackOverheatSlowdown
+	CP _RET_NO_D0
+	RET Z
+	
+	; ##########################################
+	CALL _JoystickMoves
+
+	; ##########################################
+	; Increment Y position
+	LD A, (jpo.jetY)
+	CP _GSC_JET_GND_D217						; Do not increment if Jetman has reached the ground.
+	JR Z, .afterInc						
+	CALL jpo.IncJetY							; Move Jetman 1px down.
+.afterInc	
+
+	; ##########################################
+	; Landing on the ground
+	LD A, (jpo.jetY)
+	CP _GSC_JET_GND_D217
+	CALL Z, pl.JetLanding						; Execute landing on the ground if Jetman has reached the ground.
 
 	RET											; ## END of the function ##
 
@@ -270,19 +284,24 @@ _JoyCntEnabled
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_JoySlowdown                       ;
+;             #_JoyJetpackOverheatSlowdown                 ;
 ;----------------------------------------------------------;
-; Slow down joystick input and, therefore, speed of Jetman movement.
+; Slow down joystick input and, therefore, the speed of Jetman's movement when jetpack has overheated.
 ; Output:
 ;	A containing one of the values:
 ;     - _RET_YES_D1:		Process joystick input.
 ;     - _RET_NO_D0:	Disable joystick input processing for this loop.
-_JoySlowdown
-	LD A, (gid.joyDelayCnt)
-	INC A
-	LD (gid.joyDelayCnt), A
+_JoyJetpackOverheatSlowdown
+	LD A, (jt.jetState)
+	CP jt.JETST_OVERHEAT
+	RET NZ
 
-	CP _PL_JOY_DELAY
+	LD A, (jt.jetGnd)
+	CP jt.STATE_INACTIVE
+	RET NZ
+	
+	LD A, (gld.counter000FliFLop)
+	CP _GC_FLIP_ON_D1
 	JR Z, .delayReached
 
 	LD A, _RET_NO_D0							; Return because #joyDelayCnt !=  #_PL_JOY_DELAY.
@@ -290,7 +309,7 @@ _JoySlowdown
 .delayReached									; Delay counter has been reached.
 
 	XOR A										; Set A to 0.
-	LD (gid.joyDelayCnt), A						; Reset delay counter.
+	LD (gid.joyOverheatDelayCnt), A				; Reset delay counter.
 
 	LD A, _RET_YES_D1							; Process input, because counter has been reached.
 
@@ -310,7 +329,7 @@ _CanJetMove
 	RET Z
 
 	; ##########################################
-	; Joystic disabled if Jetman is inactive.
+	; Joystick disabled if Jetman is inactive.
 	LD A, (jt.jetState)
 	CP jt.STATE_INACTIVE
 	JR NZ, .jetActive
@@ -319,11 +338,6 @@ _CanJetMove
 	LD A, _RET_NO_D0
 	RET
 .jetActive	
-
-	; ##########################################
-	CALL _JoySlowdown
-	CP _RET_NO_D0
-	RET Z
 
 	; ##########################################
 	LD A, (jt.jetState)

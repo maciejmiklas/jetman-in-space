@@ -29,6 +29,7 @@ JETST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != STATE_IN
 JETST_INV				= 102					; Jetman is invincible.
 JETST_RIP				= 103					; Jetman got hit by enemy.
 JETST_OVERHEAT			= 104					; Jetpack is overheating, and Jetman flays slowly.
+
 jetState				BYTE JETST_NORMAL		; Game start, Jetman in the air.
 
 ;----------------------------------------------------------;

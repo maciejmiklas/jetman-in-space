@@ -37,7 +37,7 @@ joyDirection			BYTE MOVE_INACTIVE
 ; Holds #joyDirection from previous loop
 joyPrevDirection		BYTE MOVE_INACTIVE
 
-joyDelayCnt				BYTE 0				; The delay counter for joystick input and Jetman movement speed.
+joyOverheatDelayCnt		BYTE 0				; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

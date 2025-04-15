@@ -558,6 +558,27 @@ _StartLevel
 
 	RET											; ## END of the function ##
 
+;----------------------------------------------------------;
+;                  #_SetupEnemiesSize                      ;
+;----------------------------------------------------------;
+; Input:
+;  - B:  Number of single enemies.
+;  - C:  Number of enemies in formation.
+_SetupEnemiesSize
+
+	LD A, B
+	LD (db.singleEnemiesSize), A
+
+	LD IX, (db.enemyFormation)
+	LD A, C
+	LD (IX + ef.EF.SPRITES), A
+
+	LD A, B
+	ADD C
+	LD (db.enemiesSize), A
+	
+	RET											; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
