@@ -538,9 +538,13 @@ _JM_COOL_CNT			= 20
 _JM_FIRE_DELAY			= 15
 
 ; ##############################################
-; Enemy
-_EN_FORM_SIZE			= 7
+; Enemy Formation
+_EF_FORM_SIZE			= 7
 
+; ##############################################
 ; Single enemy
-_ES_NEXT_RESP_DEL		= 20					; Amount of game loops to respawn single enemy. Each single enemy has also  delay (RESPAWN_DELAY_CNT).
 
+; Each enemy has a dedicated respawn delay (EF.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
+; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
+; the respawn of the next enemy from the enemies list. 
+_ES_NEXT_RESP_DEL		= 20

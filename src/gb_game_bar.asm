@@ -45,7 +45,7 @@ PrintDebug
 	LD A, (gamebarState)
 	CP GB_VISIBLE
 	RET NZ
-
+/*
 	; ##########################################
 	LD B, 40
 	LD H, 0
@@ -108,7 +108,7 @@ PrintDebug
 	LD A, (ep.tmp)
 	LD L, A	
 	CALL ut.PrintDebugNum
-
+*/
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

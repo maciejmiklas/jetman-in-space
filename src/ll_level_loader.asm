@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                       Level Data                         ;
+;                      Level Loader                        ;
 ;----------------------------------------------------------;
 	MODULE ll
 
@@ -159,13 +159,19 @@ LoadLevel2Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL2
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL2
+	;LD IX, db.enemyFormationL1
 	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 
@@ -239,13 +245,19 @@ LoadLevel3Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL3
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL3
+	;LD IX, db.enemyFormationL1
 	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 
@@ -321,14 +333,19 @@ LoadLevel4Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL4
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL4
+	;LD IX, db.enemyFormationL1
 	;CALL ef.SetupEnemyFormation
 
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -401,13 +418,19 @@ LoadLevel5Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL5
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL5
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL1
+	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 
@@ -481,13 +504,19 @@ LoadLevel6Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL6
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL6
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL1
+	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 
@@ -560,13 +589,19 @@ LoadLevel7Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL7
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL7
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL1
+	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 
@@ -636,16 +671,22 @@ LoadLevel8Data
 
 	LD A, (db.rocketAssemblyXL8)
 	LD (ro.rocketAssemblyX), A
-
+	
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL8
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL8
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL1
+	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 
@@ -719,14 +760,19 @@ LoadLevel9Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL9
-	LD IY, db.spriteEx01
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL9
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL1
+	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 
@@ -798,14 +844,19 @@ LoadLevel10Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL10
 	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL10
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL1
+	;CALL ef.SetupEnemyFormation
 
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

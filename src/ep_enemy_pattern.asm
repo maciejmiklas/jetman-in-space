@@ -28,14 +28,15 @@ ENPS_RIGHT_HIT			= %000000'0'0
 ENPS_LEFT_ALONG			= %000000'1'1
 ENPS_LEFT_HIT			= %000000'1'0
 
-MOVE_DELAY_CNT_INC		= %0001'0000
+MOVE_DELAY_CNT_INC		= %0001'0000 
 
 ; Setup values loaded for each level for #SPR.
 	STRUCT ENPS
-RESPAWN_Y				BYTE
-RESPAWN_DELAY			BYTE
-MOVE_PAT_POINTER		WORD
-SETUP					BYTE
+RESPAWN_Y				BYTE					; Value for: ENP.RESPAWN_Y
+RESPAWN_DELAY			BYTE					; Value for: ENP.RESPAWN_DELAY
+MOVE_PAT_POINTER		WORD					; Value for: ENP.MOVE_PAT_POINTER
+;SDB_INIT				BYTE					; Value for: sr.SPR.SDB_INIT
+SETUP					BYTE					; Value for: ENP.SETUP
 	ENDS
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
@@ -98,7 +99,6 @@ MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pi
 
 ; The total amount of visible sprites - including single enemies and formations.
 enemiesSize				BYTE 0
-
 
 ;----------------------------------------------------------;
 ;                   #SetupEnemyPatern                      ;

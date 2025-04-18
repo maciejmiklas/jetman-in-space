@@ -34,12 +34,12 @@ SPRITEST_ACTIVE			= %00000010
 
 ; Visible flag, 1 = visible (enabled for collision detection only if active bit is set), 0 = hidden (can be reused).
 SPRITEST_VISIBLE_BIT		= 0
-SPRITEST_VISIBLE			= %00000001
+SPRITEST_VISIBLE		= %00000001
 
-SPRITEST_ALIVE				= %00000011			; Alive and visible.
+SPRITEST_ALIVE			= %00000011			; Alive and visible.
 
 ; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37.
-SPRITEST_MIRROR_X_BIT		= 3
+SPRITEST_MIRROR_X_BIT	= 3
 
 ;----------------------------------------------------------;
 ;                         Sprite DB                        ;
@@ -133,7 +133,7 @@ SpriteHit
 ;  - B:		Number of sprites.
 ; Modifies: A, BC, HL
 AnimateSprites
-	
+
 .loop
 	PUSH BC										; Preserve B for loop counter.
 
@@ -209,6 +209,7 @@ UpdateSpritePosition
 ;  - IX:	Pointer to #SPR.
 ; Modifies: A
 HideSimpleSprite
+
 	CALL sr.SetSpriteId
 
 	LD A, (IX + SPR.STATE)

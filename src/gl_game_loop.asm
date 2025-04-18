@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                   Global Counters                        ;
+;                       Game Loop                          ;
 ;----------------------------------------------------------;
 	MODULE gl 
 
@@ -336,6 +336,7 @@ _GameLoop010nFlyingRocket
 	CP ro.ROST_FLY
 	RET NZ
 
+/*
 	LD A, (gld.counter008FliFLop)
 	CP _GC_FLIP_ON_D1
 	JR Z, .flip
@@ -343,19 +344,19 @@ _GameLoop010nFlyingRocket
 	; ##########################################
 	CALL dbs.SetupArraysBank
 	
-	;LD IX, (????)
-	;LD B, ???
-	;CALL sr.KillOneSprite
+	LD IX, (????)
+	LD B, ???
+	CALL sr.KillOneSprite
 
 	JR .afterFilpFlop
 .flip
 	; ##########################################
 	CALL dbs.SetupArraysBank
 	LD IX, (ef.efPointer)
-	LD B, _EN_FORM_SIZE
+	LD B, _EF_FORM_SIZE
 	CALL sr.KillOneSprite
-
 .afterFilpFlop
+*/
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
