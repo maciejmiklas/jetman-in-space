@@ -469,15 +469,11 @@ ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
 ; ##############################################
 ; Binary Data Loader.
 
-; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
-; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
-_DB_TI_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
-	ASSERT _DB_TI_START_H5B00 >= _RAM_SLOT2_STA_H4000
-	ASSERT _DB_TI_START_H5B00 <= _RAM_SLOT3_END_H7FFF
 
-_DB_SPR_BYT_D16384		= 16384
-_DBS_SP_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
-_DBS_RS_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for tilemap with stars for flying rocket.
+
+
+dbs.SP_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
+dbs.RS_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for tilemap with stars for flying rocket.
 
 
 ; ##############################################

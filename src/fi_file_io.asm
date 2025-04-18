@@ -101,7 +101,7 @@ LoadPlatformsTilemap
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, _DB_TI_START_H5B00
+	LD IX, ti.RAM_START_H5B00
 	LD BC, _TI_MAP_BYTES_D2560
 	CALL _FileRead
 
@@ -124,7 +124,7 @@ LoadSprites
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, _DBS_SP_ADDR_HC000
+	LD IX, dbs.SP_ADDR_HC000
 	LD BC, SPR_FILE_BYT_D8192
 	CALL _FileRead
 
@@ -161,7 +161,7 @@ LoadRocketStarsTilemap
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, _DBS_RS_ADDR_HC000
+	LD IX, dbs.RS_ADDR_HC000
 	LD BC, ST_FILE1_BYT_D8192
 	CALL _FileRead
 
@@ -207,7 +207,7 @@ LoadImage
 
 	; ##########################################
 	; Load file into RAM
-	LD A, _DBS_BGST_BANK_D35					; Set bank number.
+	LD A, dbs.BGST_BANK_D35					; Set bank number.
 	ADD B
 	NEXTREG _MMU_REG_SLOT6_H56, A
 
@@ -224,7 +224,7 @@ LoadImage
 	POP BC, IX
 	INC B
 	LD A, B
-	CP _DBS_BM_BANKS_D10
+	CP dbs.BM_BANKS_D10
 	JR NZ, .bankLoop
 
 	RET											; ## END of the function ##

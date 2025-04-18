@@ -175,7 +175,7 @@ _JetpackTempDown
 _UpdateUiHeatBar
 
 	LD B, 0
-	LD HL, _DB_TI_START_H5B00 + BAR_TILE_START -1	; HL points to screen memory containing tilemap. ; // TODO why -1?
+	LD HL, ti.RAM_START_H5B00 + BAR_TILE_START -1	; HL points to screen memory containing tilemap. ; // TODO why -1?
 .tilesLoop
 
 	; ##########################################
