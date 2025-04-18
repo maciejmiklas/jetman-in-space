@@ -344,7 +344,7 @@ _GameLoop010nFlyingRocket
 	CALL dbs.SetupArraysBank
 	
 	;LD IX, (????)
-	;LD B, _EN_SINGLE_SIZE
+	;LD B, ???
 	;CALL sr.KillOneSprite
 
 	JR .afterFilpFlop

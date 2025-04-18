@@ -539,7 +539,6 @@ _JM_FIRE_DELAY			= 15
 
 ; ##############################################
 ; Enemy
-_EN_SINGLE_SIZE			= 15
 _EN_FORM_SIZE			= 7
 
 ; Single enemy

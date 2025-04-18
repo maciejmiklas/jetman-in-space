@@ -73,6 +73,7 @@ LoadLevel1Data
 
 	; ##########################################
 	; Load single enemies.
+	LD A, 10									; Number of single enemies (size of #ENPS)
 	LD IX, db.singleEnemiesL1
 	CALL es.SetupSingleEnemies
 
@@ -80,6 +81,11 @@ LoadLevel1Data
 	; Load formation.
 	;LD IX, db.enemyFormationL1
 	;CALL ef.SetupEnemyFormation
+
+	; ##########################################
+	; Setup total enemies.
+	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
+	CALL ep.SetupEnemyPatern
 
 	RET											; ## END of the function ##
 

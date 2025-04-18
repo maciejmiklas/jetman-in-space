@@ -27,6 +27,7 @@ ResetEnemyFormation
 ;----------------------------------------------------------;
 ;                   #SetupEnemyFormation                   ;
 ;----------------------------------------------------------;
+
 SetupEnemyFormation
 
 	RET											; ## END of the function ##

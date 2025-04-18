@@ -96,8 +96,20 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
-; The total amount of visible sprites - including single enemies (15) and enemyFormation (7)
-enemiesSize				BYTE _EN_SINGLE_SIZE+_EN_FORM_SIZE
+; The total amount of visible sprites - including single enemies and formations.
+enemiesSize				BYTE 0
+
+
+;----------------------------------------------------------;
+;                   #SetupEnemyPatern                      ;
+;----------------------------------------------------------;
+; Input:
+;  - A: The total amount of visible sprites - including single enemies and formations.
+SetupEnemyPatern
+
+	LD (enemiesSize), A
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      #HideEnemies                        ;

@@ -4,24 +4,27 @@
 	MODULE es
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
-respawnDelayCnt 		DB 0
+singleRespDelayCnt 		BYTE 0
+singleCount				BYTE 0
 
 ;----------------------------------------------------------;
 ;                  #SetupSingleEnemies                     ;
 ;----------------------------------------------------------;
 ; Resets single enemies and loads given #ENPS array into #ep.ENP. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
 ; Input:
+;   - A:  Number of single enemies (size of #ENPS)
 ;   - IX: Pointer to #ENPS array.
 SetupSingleEnemies
-
 	CALL dbs.SetupArraysBank
+
+	LD (singleCount), A
 
 	PUSH IX
 	CALL _ResetSingleEnemies
 	POP IX
 
 	LD IY, db.spriteEx01						; Pointer to #ENP array.
-	LD A, _EN_SINGLE_SIZE						; Single enemies size (number of #ENPS/#ENP arrays).
+	LD A, (singleCount)							; Single enemies size (number of #ENPS/#ENP arrays).
 	LD B, A
 .loop
 	LD A, (IY +  ep.ENP.MOVE_DELAY_CNT)
@@ -64,21 +67,21 @@ RespawnNextSingleEnemy
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy.
 	LD A, _ES_NEXT_RESP_DEL
 	LD D, A
-	LD A, (respawnDelayCnt)
+	LD A, (singleRespDelayCnt)
 	INC A
 	CP D
 	JR Z, .startRespawn							; Jump if the timer reaches respawn delay.
-	LD (respawnDelayCnt), A
+	LD (singleRespDelayCnt), A
 
 	RET
 .startRespawn	
 	XOR A										; Set A to 0.
-	LD (respawnDelayCnt), A						; Reset delay timer.
+	LD (singleRespDelayCnt), A						; Reset delay timer.
 
 	; ##########################################
 	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
 	LD IX, db.enemySprites
-	LD A, _EN_SINGLE_SIZE
+	LD A, (singleCount)
 	LD B, A
 
 .loop
@@ -105,10 +108,11 @@ RespawnNextSingleEnemy
 ;----------------------------------------------------------;
 ;                  #_ResetSingleEnemies                    ;
 ;----------------------------------------------------------;
+; Input:
+;   - A:  Number of single enemies (size of #ENPS)
 ; Modifies: A, DE, IX, IY
 _ResetSingleEnemies
 
-	LD A, _EN_SINGLE_SIZE
 	LD B, A
 .enemyLoop
 	LD IX, db.enemySprites
