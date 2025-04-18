@@ -35,7 +35,7 @@ MOVE_DELAY_CNT_INC		= %0001'0000
 RESPAWN_Y				BYTE					; Value for: ENP.RESPAWN_Y
 RESPAWN_DELAY			BYTE					; Value for: ENP.RESPAWN_DELAY
 MOVE_PAT_POINTER		WORD					; Value for: ENP.MOVE_PAT_POINTER
-;SDB_INIT				BYTE					; Value for: sr.SPR.SDB_INIT
+SDB_INIT				BYTE					; Value for: sr.SPR.SDB_INIT
 SETUP					BYTE					; Value for: ENP.SETUP
 	ENDS
 
@@ -98,7 +98,7 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
 ; The total amount of visible sprites - including single enemies and formations.
-enemiesSize				BYTE 0
+enemiesSize				BYTE 5
 
 ;----------------------------------------------------------;
 ;                   #SetupEnemyPatern                      ;
@@ -143,7 +143,7 @@ HideEnemies
 ; Moves single enemies and those in formation.
 ; Modifies: ALL
 MoveEnemies
-
+	
 	CALL dbs.SetupArraysBank
 
 	LD IX, db.enemySprites

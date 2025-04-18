@@ -479,27 +479,6 @@ _DB_SPR_BYT_D16384		= 16384
 _DBS_SP_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
 _DBS_RS_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for tilemap with stars for flying rocket.
 
-; ##############################################
-; Banks
-_DBS_BM_BANKS_D10		= 10
-
-_DBS_BGST_BANK_D18		= 18					; Background image occupies 10 8K banks from 18 to 27 (starts on 16K bank 9, uses 5 16K banks).
-_DBS_BG_END_BANK_D27	= 27					; Last background bank (inclusive).
-_DBS_ST_BANK_D28		= 28					; Bank for stars, slot 6
-_DBS_ARR_BANK_D29		= 29					; Bank for arrays, slot 6
-_DBS_TI_SPR_BANK_D30	= 30
-_DBS_PAL2_BANK_D31		= 31					; Layer 2 pallettes
-_DBS_PAL2_BR_BANK_D32	= 32					; Layer 2 brightness change for pallettes from _DBS_PAL2_BANK_D31.
-_DBS_SPR_BANK1_D33		= 33
-_DBS_SPR_BANK2_D34		= 34
-
-; Background image (all values inclusive). Each background image has 80KiB (320x256), taking 10 banks.
-_DBS_BGST_BANK_D35		= 35
-_DBS_BG_EN_BANK_D44 	= _DBS_BGST_BANK_D35+_DBS_BM_BANKS_D10-1; -1 because inclusive.
-	ASSERT _DBS_BG_EN_BANK_D44 == 44
-
-_DBS_RO_STAR_BANK1_D45	= 46
-_DBS_RO_STAR_BANK2_D46	= 47
 
 ; ##############################################
 ; Game Counters.
