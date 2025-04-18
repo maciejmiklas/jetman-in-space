@@ -423,7 +423,7 @@ _TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
 	ASSERT _TI_VTILES_D32 =  32
 
 
-_TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
+
 	
 
 

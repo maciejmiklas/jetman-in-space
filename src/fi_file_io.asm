@@ -64,7 +64,7 @@ ASCII_O					= $30
 ; Tiles for stars when rocket flaying.
 ST_FILE1_BYT_D8192		= _BANK_BYTES_D8192
 ST_FILE2_BYT_D2048		= 2048
-ST_BYTES_D10240		= _TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
+ST_BYTES_D10240			= ti.TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
 	ASSERT ST_BYTES_D10240 =  10240
 	ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
@@ -102,7 +102,7 @@ LoadPlatformsTilemap
 
 	; Read file.
 	LD IX, ti.RAM_START_H5B00
-	LD BC, _TI_MAP_BYTES_D2560
+	LD BC, ti.TI_MAP_BYTES_D2560
 	CALL _FileRead
 
 	RET											; ## END of the function ##
