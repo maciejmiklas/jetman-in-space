@@ -408,7 +408,7 @@ _PL_FALL_X_D2			= 2
 
 ; ##############################################
 ; Rocket
-_RO_DROP_NEXT_D5		= 1	;10	TODO			; Drop next element delay
+_RO_DROP_NEXT_D5		= 10	;10	TODO			; Drop next element delay
 _RO_DROP_Y_MAX_D180		= 180					; Jetman has to be above the rocket to drop the element.
 _RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rocket element.
 _RO_FLY_DELAY_D8		= 8
@@ -541,4 +541,7 @@ _JM_FIRE_DELAY			= 15
 ; Enemy
 _EN_SINGLE_SIZE			= 15
 _EN_FORM_SIZE			= 7
+
+; Single enemy
+_ES_NEXT_RESP_DEL		= 20					; Amount of game loops to respawn single enemy. Each single enemy has also  delay (RESPAWN_DELAY_CNT).
 

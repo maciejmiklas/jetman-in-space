@@ -88,6 +88,26 @@ PrintDebug
 	LD L, A	
 	CALL ut.PrintDebugNum
 
+	; ##########################################
+	LD B, 104
+	LD H, 0
+	LD A, (jm.tmp)
+	LD L, A	
+	CALL ut.PrintDebugNum
+
+	; ##########################################
+	LD B, 110
+	LD H, 0
+	LD A, (jm.tmp2)
+	LD L, A	
+	CALL ut.PrintDebugNum
+
+	; ##########################################
+	LD B, 120
+	LD H, 0
+	LD A, (ep.tmp)
+	LD L, A	
+	CALL ut.PrintDebugNum
 
 	RET											; ## END of the function ##
 

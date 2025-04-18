@@ -3,10 +3,6 @@
 ;----------------------------------------------------------;
 	MODULE ep
 
-; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
-respawnDelayCnt 		DB 0
-respawnDelay 			DB 20					; Amount of game loops to respawn single enemy.
-
 ; Extends #SPR by additional params.
 	STRUCT ENP
 ; Bits:
@@ -27,9 +23,9 @@ MOVE_PAT_STEP_RCNT		BYTE					; Counter for repetition of single move pattern ste
 ENP_ALONG_BIT			= 0						; 1 - avoid platforms by flying along them, 0 - hit platform.
 ENP_DEPLOY_BIT			= 1						; 1 - deploy enemy on the left, 0 - on the right.
 
-ENPS_RIGHT_AVOID		= %000000'0'1
+ENPS_RIGHT_ALONG		= %000000'0'1
 ENPS_RIGHT_HIT			= %000000'0'0
-ENPS_LEFT_AVOID			= %000000'1'1
+ENPS_LEFT_ALONG			= %000000'1'1
 ENPS_LEFT_HIT			= %000000'1'0
 
 MOVE_DELAY_CNT_INC		= %0001'0000
@@ -103,53 +99,29 @@ MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pi
 ; The total amount of visible sprites - including single enemies (15) and enemyFormation (7)
 enemiesSize				BYTE _EN_SINGLE_SIZE+_EN_FORM_SIZE
 
-enpAddr					WORD 0 					; Pointer to #ENP array containing _EN_SINGLE_SIZE entries.
-
 ;----------------------------------------------------------;
-;                  #SetupSingleEnemies                     ;
+;                      #HideEnemies                        ;
 ;----------------------------------------------------------;
-; Setups single enemies and loads given #ENPS array into #ENP. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
-; Input:
-;   - IX: Pointer to #ENPS array.
-;   - IY: Pointer to #ENP array.
-SetupSingleEnemies
+HideEnemies
 
 	CALL dbs.SetupArraysBank
 
-	LD (enpAddr), IY
-
-	PUSH IX, IY
-	CALL _ResetSingleEnemies
-	POP  IY, IX
-	
-	LD A, _EN_SINGLE_SIZE						; Single enemies size (number of #ENPS/#ENP arrays).
+	LD IX, db.enemySprites
+	LD A, (ep.enemiesSize)
 	LD B, A
-.loop
-	LD A, (IY +  ENP.MOVE_DELAY_CNT)
 
-	LD A, (IX + ENPS.RESPAWN_Y)
-	LD (IY + ENP.RESPAWN_Y), A
+	; Loop ever all enemies skipping hidden 
+.enemyLoop
 
-	LD A, (IX + ENPS.SETUP)
-	LD (IY + ENP.SETUP), A
+	CALL sr.HideSimpleSprite
 
-	LD A, (IX + ENPS.RESPAWN_DELAY)
-	LD (IY + ENP.RESPAWN_DELAY), A
+	; ##########################################
+	; Move IX to the beginning of the next #SPR.
+	LD DE, sr.SPR
+	ADD IX, DE
 
-	LD DE, (IX + ENPS.MOVE_PAT_POINTER)
-	LD (IY + ENP.MOVE_PAT_POINTER), DE
-
-	; Move IX to next array postion.
-	LD DE, IX
-	ADD DE, ENPS
-	LD IX, DE
-
-	; Move IY to next array postion.
-	LD DE, IY
-	ADD DE, ENP
-	LD IY, DE
-	
-	DJNZ .loop
+	; ##########################################
+	DJNZ .enemyLoop
 
 	RET											; ## END of the function ##
 
@@ -212,50 +184,6 @@ MoveEnemies
 	DJNZ .enemyLoop
 
 	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                #RespawnNextSingleEnemy                   ;
-;----------------------------------------------------------;
-; Respawns next single enemy. To respawn next from formation use ef.RespawnFormation
-RespawnNextSingleEnemy
-
-	CALL dbs.SetupArraysBank
-
-	; ##########################################	
-	; Increment respawn timer and exit function if it's not time to respawn a new enemy.
-	LD A, (respawnDelay)
-	LD D, A
-	LD A, (respawnDelayCnt)
-	INC A
-	CP D
-	JR Z, .startRespawn							; Jump if the timer reaches respawn delay.
-	LD (respawnDelayCnt), A
-
-	RET
-.startRespawn	
-	XOR A										; Set A to 0.
-	LD (respawnDelayCnt), A						; Reset delay timer.
-
-	; ##########################################
-	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
-	LD IX, db.enemySprites
-	LD A, _EN_SINGLE_SIZE
-	LD B, A
-
-.loop
-	PUSH BC										; Preserve B for loop counter.
-	CALL RespawnEnemy
-	POP BC
-
-	CP A, RES_SE_OUT_YES
-	RET Z										; Exit after respawning first enemy.
-										
-	; Move IX to the beginning of the next #shotsXX.
-	LD DE, sr.SPR
-	ADD IX, DE
-	DJNZ .loop									; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE).
-
-	RET											; ## END of the function ##.
 
 ;----------------------------------------------------------;
 ;                    #RespawnEnemy                         ;
@@ -405,6 +333,7 @@ _MoveEnemyX
 
 	RET											; ## END of the function ##
 
+tmp byte 0
 ;----------------------------------------------------------;
 ;                      #_MoveEnemy                         ;
 ;----------------------------------------------------------;
@@ -439,10 +368,14 @@ _MoveEnemy
 	; Should the enemy move along the platform to avoid collision?
 	BIT ENP_ALONG_BIT, (IY + ENP.SETUP)
 	JR Z, .afterMoveAlong						; Jump if move along is not set.
-	
+
+	ld a, (tmp)
+	inc a
+	ld (tmp),a
+
 	; Check the collision with the platform.
 	PUSH IY, HL
-	CALL pl.PlatformEnemyHit
+	CALL pl.PlatformSpriteClose
 	POP HL, IY
 
 	CP A, pl.PL_HIT_RET_A_NO
@@ -465,7 +398,7 @@ _MoveEnemy
 	SUB MOVE_PAT_X_ADD							; Decrement X counter by 1.
 	LD (IY + ENP.MOVE_PAT_STEP), A
 
-	CALL _MoveEnemyX	
+	CALL _MoveEnemyX
 .afterMoveLR
 
 	; Check if counter for Y has already reached 0, or is set to 0.
@@ -573,10 +506,9 @@ _MoveEnemy
 ; the platform where it's impossible to avoid a collision, such as a front hit.
 .checkPlatformHit
 
-	CALL pl.PlatformEnemyHit
+	CALL pl.PlatformSpriteHit
 	CP A, pl.PL_HIT_RET_A_NO
 	RET Z										; Return if there is no collision.
-
 	CALL sr.SpriteHit							; Explode!
 	
 	RET											; ## END of the function ##
@@ -634,40 +566,6 @@ _RestartMovePattern
 	LD A, B
 	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits.
 	LD (IY + ENP.MOVE_DELAY_CNT), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #_ResetSingleEnemies                    ;
-;----------------------------------------------------------;
-_ResetSingleEnemies
-
-	LD IX, (enpAddr)
-	LD A, _EN_SINGLE_SIZE
-	LD B, A 
-
-.enemyLoop
-	; Load extra data for this sprite to IY.
-	LD DE, (IX + sr.SPR.EXT_DATA_POINTER)
-	LD IY, DE
-
-	XOR A
-	LD (IX + sr.SPR.SDB_POINTER), A
-	LD (IX + sr.SPR.X), A
-	LD (IX + sr.SPR.Y), A
-	LD (IX + sr.SPR.STATE), A
-	LD (IX + sr.SPR.NEXT), A
-	LD (IX + sr.SPR.REMAINING), A
-
-	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
-	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
-
-	LD A, ep.MOVE_PAT_STEP_OFFSET
-	LD (IY + ep.ENP.MOVE_PAT_POS), A
-
-	DJNZ .enemyLoop
 
 	RET											; ## END of the function ##
 

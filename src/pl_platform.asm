@@ -19,7 +19,13 @@ Y_TOP					BYTE
 Y_BOTTOM				BYTE
 	ENDS
 
-enemyHitMargin	PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 07/*Y_TOP*/, 08/*Y_BOTTOM*/}
+; The "close margin" has to be smaller on the left/right than the "hit margin" and larger on the top/bottom than the "hit margin".
+; We will first recognize whether an enemy should fly along the platform and, after that, whether it is a hit. If the "close margin" 
+; on the left were larger than the hit margin, the enemy would never hit the platform from the left, it would fly through it. The same is 
+; true for "top margin". Here, the "close margin" has to be larger so that the enemy first starts flying along the platform and does not 
+; hit it first.
+closeMargin 	PLAM { 14/*X_LEFT*/, 11/*X_RIGHT*/, 18/*Y_TOP*/, 09/*Y_BOTTOM*/}
+spriteHitMargin	PLAM { 15/*X_LEFT*/, 10/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
 shotHitMargin	PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
 jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
 
@@ -243,19 +249,35 @@ ResetJoyOffBump
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #PlatformEnemyHit                       ;
+;                  #PlatformSpriteHit                       ;
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
 ;  - IX: 	Pointer to sr.SPR, single sprite to check cloison for.
 ; Output:
 ;  - A: 	#PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
-PlatformEnemyHit
+PlatformSpriteHit
 
-	LD IY, enemyHitMargin
+	LD IY, spriteHitMargin
 	CALL _PlatformSpriteHit
 
 	RET											; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                  #PlatformSpriteClose                    ;
+;----------------------------------------------------------;
+; Check whether the sprite (#SPR) given by IX gets close the platforms.
+; Input:
+;  - IX: 	Pointer to sr.SPR, single sprite to check cloison for.
+; Output:
+;  - A: 	#PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
+PlatformSpriteClose
+
+	LD IY, closeMargin
+	CALL _PlatformSpriteHit
+	
+	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
 ;                 #PlatformWeaponHit                       ;

@@ -1,0 +1,143 @@
+;----------------------------------------------------------;
+;             Single 16x16 Flying Enemy                    ;
+;----------------------------------------------------------;
+	MODULE es
+
+; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
+respawnDelayCnt 		DB 0
+
+;----------------------------------------------------------;
+;                  #SetupSingleEnemies                     ;
+;----------------------------------------------------------;
+; Resets single enemies and loads given #ENPS array into #ep.ENP. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
+; Input:
+;   - IX: Pointer to #ENPS array.
+SetupSingleEnemies
+
+	CALL dbs.SetupArraysBank
+
+	PUSH IX
+	CALL _ResetSingleEnemies
+	POP IX
+
+	LD IY, db.spriteEx01						; Pointer to #ENP array.
+	LD A, _EN_SINGLE_SIZE						; Single enemies size (number of #ENPS/#ENP arrays).
+	LD B, A
+.loop
+	LD A, (IY +  ep.ENP.MOVE_DELAY_CNT)
+
+	LD A, (IX + ep.ENPS.RESPAWN_Y)
+	LD (IY + ep.ENP.RESPAWN_Y), A
+
+	LD A, (IX + ep.ENPS.SETUP)
+	LD (IY + ep.ENP.SETUP), A
+
+	LD A, (IX + ep.ENPS.RESPAWN_DELAY)
+	LD (IY + ep.ENP.RESPAWN_DELAY), A
+
+	LD DE, (IX + ep.ENPS.MOVE_PAT_POINTER)
+	LD (IY + ep.ENP.MOVE_PAT_POINTER), DE
+
+	; Move IX to next array postion.
+	LD DE, IX
+	ADD DE, ep.ENPS
+	LD IX, DE
+
+	; Move IY to next array postion.
+	LD DE, IY
+	ADD DE, ep.ENP
+	LD IY, DE
+	
+	DJNZ .loop
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #RespawnNextSingleEnemy                   ;
+;----------------------------------------------------------;
+; Respawns next single enemy. To respawn next from formation use ef.RespawnFormation
+RespawnNextSingleEnemy
+
+	CALL dbs.SetupArraysBank
+
+	; ##########################################	
+	; Increment respawn timer and exit function if it's not time to respawn a new enemy.
+	LD A, _ES_NEXT_RESP_DEL
+	LD D, A
+	LD A, (respawnDelayCnt)
+	INC A
+	CP D
+	JR Z, .startRespawn							; Jump if the timer reaches respawn delay.
+	LD (respawnDelayCnt), A
+
+	RET
+.startRespawn	
+	XOR A										; Set A to 0.
+	LD (respawnDelayCnt), A						; Reset delay timer.
+
+	; ##########################################
+	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
+	LD IX, db.enemySprites
+	LD A, _EN_SINGLE_SIZE
+	LD B, A
+
+.loop
+	PUSH BC										; Preserve B for loop counter.
+	CALL ep.RespawnEnemy
+	POP BC
+
+	CP A, ep.RES_SE_OUT_YES
+	RET Z										; Exit after respawning first enemy.
+										
+	; Move IX to the beginning of the next #shotsXX.
+	LD DE, sr.SPR
+	ADD IX, DE
+	DJNZ .loop									; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE).
+
+	RET											; ## END of the function ##.
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  #_ResetSingleEnemies                    ;
+;----------------------------------------------------------;
+; Modifies: A, DE, IX, IY
+_ResetSingleEnemies
+
+	LD A, _EN_SINGLE_SIZE
+	LD B, A
+.enemyLoop
+	LD IX, db.enemySprites
+
+	XOR A
+	LD (IX + sr.SPR.SDB_POINTER), A
+	LD (IX + sr.SPR.X), A
+	LD (IX + sr.SPR.Y), A
+	LD (IX + sr.SPR.STATE), A
+	LD (IX + sr.SPR.NEXT), A
+	LD (IX + sr.SPR.REMAINING), A
+
+	; Load extra data for this sprite to IY.
+	LD DE, (IX + sr.SPR.EXT_DATA_POINTER)
+	LD IY, DE
+
+	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
+	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
+
+	LD A, ep.MOVE_PAT_STEP_OFFSET
+	LD (IY + ep.ENP.MOVE_PAT_POS), A
+
+	DJNZ .enemyLoop
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       ENDMODULE                          ;
+;----------------------------------------------------------;
+	ENDMODULE

@@ -70,7 +70,7 @@ _GameLoop000OnActiveJetman
 	CALL gi.JoystickInput
 	CALL gi.KeyboardInput
 	CALL ep.MoveEnemies
-	CALL ep.RespawnNextSingleEnemy
+	CALL es.RespawnNextSingleEnemy
 ;CALL ef.RespawnFormation
 	
 	RET											; ## END of the function ##
@@ -343,9 +343,9 @@ _GameLoop010nFlyingRocket
 	; ##########################################
 	CALL dbs.SetupArraysBank
 	
-	LD IX, (ep.enpAddr)
-	LD B, _EN_SINGLE_SIZE
-	CALL sr.KillOneSprite
+	;LD IX, (????)
+	;LD B, _EN_SINGLE_SIZE
+	;CALL sr.KillOneSprite
 
 	JR .afterFilpFlop
 .flip

@@ -74,8 +74,7 @@ LoadLevel1Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL1
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
@@ -155,13 +154,12 @@ LoadLevel2Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL2
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL2
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL2
+	;CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -236,13 +234,12 @@ LoadLevel3Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL3
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL3
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL3
+	;CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -319,13 +316,12 @@ LoadLevel4Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL4
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL4
-	CALL ef.SetupEnemyFormation
+	;LD IX, db.enemyFormationL4
+	;CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -400,8 +396,7 @@ LoadLevel5Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL5
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
@@ -481,8 +476,7 @@ LoadLevel6Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL6
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
@@ -561,8 +555,7 @@ LoadLevel7Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL7
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
@@ -641,8 +634,7 @@ LoadLevel8Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL8
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
@@ -723,7 +715,7 @@ LoadLevel9Data
 	; Load single enemies.
 	LD IX, db.singleEnemiesL9
 	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
@@ -801,8 +793,7 @@ LoadLevel10Data
 	; ##########################################
 	; Load single enemies.
 	LD IX, db.singleEnemiesL10
-	LD IY, db.spriteEx01
-	CALL ep.SetupSingleEnemies
+	CALL es.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.

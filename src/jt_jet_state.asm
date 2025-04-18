@@ -50,7 +50,7 @@ UpdateStateOnJoyWillEnable
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #SetJetStateAir                        ;
+;                     #SetJetStateAir                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:											; Air State: #AIR_XXX.
@@ -96,10 +96,10 @@ SetJetStateRip
 ;----------------------------------------------------------;
 SetJetStateRespawn
 
-	XOR A
+	LD A, GND_STAND
 	LD (jetGnd), A
 
-	LD A, AIR_HOOVER
+	XOR A
 	LD (jetAir), A
 	
 	LD A, JETST_NORMAL

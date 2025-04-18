@@ -533,14 +533,16 @@ ChangeToFullDay
 _InitLevelLoad
 
 	CALL bm.HideImage
-	CALL ti.ResetTilemapOffset
-	CALL ro.HideRocket
-	CALL ro.ResetAndDisableRocket
-	CALL jt.SetJetStateInactive
 	CALL js.HideJetSprite
-	CALL td.ResetTimeOfDay
+	CALL ro.HideRocket
 	CALL st.HideStars
 	CALL jw.HideShots
+	CALL ep.HideEnemies
+	
+	CALL ti.ResetTilemapOffset
+	CALL ro.ResetAndDisableRocket
+	CALL jt.SetJetStateInactive
+	CALL td.ResetTimeOfDay
 	CALL ros.ResetRocketStarsRow
 
 	RET											; ## END of the function ##

@@ -56,6 +56,7 @@ mainLoop
 	INCLUDE "jm_jet_move.asm"
 	INCLUDE "ep_enemy_pattern.asm"
 	INCLUDE "ef_enemy_formation.asm"
+	INCLUDE "es_enemy_single.asm"
 	INCLUDE "jw_jet_weapon.asm"
 	INCLUDE "ro_rocket.asm"
 	INCLUDE "ros_rocket_stars.asm"
