@@ -3,9 +3,16 @@
 ;----------------------------------------------------------;
 	MODULE gc
 
+; Invincibility
+JM_INV_D400 			= 400					; Number of loops to keep Jetman invincible.
+
 LEVEL_MIN				= 1
 LEVEL_MAX				= 10
 level					BYTE LEVEL_MIN
+
+; Respawn location.
+JM_RESPAWN_X_D100		= 100
+JM_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 ;----------------------------------------------------------;
 ;                   #GameLoopCmd                           ;
@@ -322,10 +329,10 @@ EnemyHitsJet
 RespawnJet
 
 	; Set respawn coordinates.
-	LD BC, _JM_RESPAWN_X_D100
+	LD BC, JM_RESPAWN_X_D100
 	LD (jpo.jetX), BC
 
-	LD A, _JM_RESPAWN_Y_D217
+	LD A, JM_RESPAWN_Y_D217
 	LD (jpo.jetY), A
 
 	; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
@@ -333,7 +340,7 @@ RespawnJet
 
 	CALL jt.SetJetStateRespawn
 
-	LD HL, _JM_INV_D400
+	LD HL, JM_INV_D400
 	CALL jco.MakeJetInvincible
 
 	CALL bg.UpdateBackgroundOnJetmanMove

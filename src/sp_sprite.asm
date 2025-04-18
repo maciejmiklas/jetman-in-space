@@ -4,6 +4,8 @@
 	MODULE sp
 
 SPR_BYT_D16384			= 16384
+SP_ADDR_HC000			= _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
+RS_ADDR_HC000			= _RAM_SLOT6_STA_HC000 ; RAM start address for tilemap with stars for flying rocket.
 
 ;----------------------------------------------------------;
 ;                   Reserved Sprite IDs                    ;
@@ -21,7 +23,7 @@ LoadSpritesFPGA
 
 	CALL dbs.SetupSpritesBank
 
-	LD HL, dbs.SP_ADDR_HC000				; RAM address containing sprite binary data.
+	LD HL, sp.SP_ADDR_HC000				; RAM address containing sprite binary data.
 	LD BC, SPR_BYT_D16384				; Copy 63 sprites, each 16x16 pixels.
 	
 	; ##########################################

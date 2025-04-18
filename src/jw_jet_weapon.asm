@@ -9,6 +9,8 @@ FIRE_ADJUST_X_D10		= 10
 FIRE_ADJUST_Y_D4		= 4
 FIRE_THICKNESS_D10		= 10
 
+JM_FIRE_DELAY			= 15
+
 ; Sprites for single shots (#shots), based on #SPR.
 shots
 	sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
@@ -33,7 +35,7 @@ shots10
 SHOTS_SIZE				= 10					; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 
-; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #_JM_FIRE_DELAY.
+; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JM_FIRE_DELAY.
 shotsDelayCnt
 	DB 0
 
@@ -225,7 +227,7 @@ FireDelayCounter
 	
 	; Increment shot counter.
 	LD A, (shotsDelayCnt)
-	CP _JM_FIRE_DELAY
+	CP JM_FIRE_DELAY
 	RET Z										; Do increment the delay counter when it has reached the required value.
 
 	INC A
@@ -251,7 +253,7 @@ Fire
 
 	; Check delay to limit fire speed.
 	LD A, (shotsDelayCnt)
-	CP _JM_FIRE_DELAY
+	CP JM_FIRE_DELAY
 	RET NZ										; Return if the delay counter did not reach the defined value.
 
 	; We can fire, reset counter.

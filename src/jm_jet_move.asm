@@ -272,7 +272,7 @@ _JoyCntEnabled
 	; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
 
 	LD A, (pl.joyOffBump)
-	CP _PL_BUMP_JOY_DEC_D1+1
+	CP pl.PL_BUMP_JOY_DEC_D1+1
 	JR C, .joyEnabled
 
 	LD A, _RET_NO_D0
@@ -305,7 +305,7 @@ _JoyJetpackOverheatSlowdown
 	CP _GC_FLIP_ON_D1
 	JR Z, .delayReached
 
-	LD A, _RET_NO_D0							; Return because #joyDelayCnt !=  #_PL_JOY_DELAY.
+	LD A, _RET_NO_D0							; Return because #joyDelayCnt !=  #pl.PL_JOY_DELAY.
 	RET
 .delayReached									; Delay counter has been reached.
 

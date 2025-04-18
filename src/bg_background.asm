@@ -6,9 +6,11 @@
 bgOffset				BYTE 0					; Offset of the background image.
 GB_OFFSET_D6 			= _TI_GND_D8-2
 
-fileName 			DB "assets/l00/bg_0.nxi",0
-FILE_LEVEL_POS		= 8						; Position of a level number (00-99) in the file name of the background image.
-FILE_IMG_POS		= 14					; Position of a image part number (0-9) in the file name of the background image.
+fileName 				DB "assets/l00/bg_0.nxi",0
+FILE_LEVEL_POS			= 8						; Position of a level number (00-99) in the file name of the background image.
+FILE_IMG_POS			= 14					; Position of a image part number (0-9) in the file name of the background image.
+
+GB_MOVE_SLOW_D2			= 2						; Slows down background movement (when Jetman moves).
 
 ;----------------------------------------------------------;
 ;                      #LoadBgImage                        ;
@@ -40,15 +42,15 @@ LoadBgImage
 ; It starts with 16 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
 UpdateBackgroundOnJetmanMove
 
-	; Divide the Jetman's position by _GB_MOVE_SLOW_D2 to slow down the movement of the background.
+	; Divide the Jetman's position by GB_MOVE_SLOW_D2 to slow down the movement of the background.
 	LD A, (jpo.jetY)
 	LD C, A
-	LD D, _GB_MOVE_SLOW_D2
+	LD D, GB_MOVE_SLOW_D2
 	CALL ut.CdivD
-	LD B, C										; B contains #jetY/_GB_MOVE_SLOW_D2.
+	LD B, C										; B contains #jetY/GB_MOVE_SLOW_D2.
 
 	; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0.
-	LD A, _GSC_JET_GND_D217/_GB_MOVE_SLOW_D2
+	LD A, _GSC_JET_GND_D217/GB_MOVE_SLOW_D2
 	SUB B										; A contains _GSC_JET_GND_D217 - #jetY. It's 0 when Jetman stands on the ground.
 	LD B, A
 	LD (bgOffset), A

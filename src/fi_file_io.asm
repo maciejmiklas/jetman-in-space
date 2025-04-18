@@ -124,7 +124,7 @@ LoadSprites
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, dbs.SP_ADDR_HC000
+	LD IX, sp.SP_ADDR_HC000
 	LD BC, SPR_FILE_BYT_D8192
 	CALL _FileRead
 
@@ -161,7 +161,7 @@ LoadRocketStarsTilemap
 	CALL _FileOpen
 
 	; Read file.
-	LD IX, dbs.RS_ADDR_HC000
+	LD IX, sp.RS_ADDR_HC000
 	LD BC, ST_FILE1_BYT_D8192
 	CALL _FileRead
 

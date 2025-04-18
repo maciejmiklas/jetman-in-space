@@ -3,6 +3,14 @@
 ;----------------------------------------------------------;
 	MODULE pl
 
+PL_FALL_JOY_OFF_D10		= 10					; Disable the joystick for a few frames because Jetman is falling from the platform.
+PL_BUMP_JOY_D15			= 15					; Disable the joystick for a few frames because Jetman is bumping into the platform.
+PL_BUMP_JOY_DEC_D1		= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value.
+PL_BUMP_Y_D4			= 4						; Amount of pixels to move Jetman down when hitting platform from below.
+PL_BUMP_X_D4			= 4
+PL_FALL_Y_D4			= 4						; Amount of pixels to move Jetman down when falling from the platform.
+PL_FALL_X_D2			= 2
+
 Y_SPR_RAMOFFSET			= 2
 
 HIT_MARGIN_D5			= 5	
@@ -50,7 +58,7 @@ PLATFORM_WALK_INACTIVE	= $FF					; Not on any platform.
 
 platformWalkNumber		BYTE PLATFORM_WALK_INACTIVE
 
-joyOffBump				BYTE _PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
+joyOffBump				BYTE PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
 
 ;----------------------------------------------------------;
 ;                #JetPlatformHitOnJoyMove                  ;
@@ -131,10 +139,10 @@ JetPlatformHitOnJoyMove
 	; When Jetman bumps away from the platform, he has to move left at least one pixel to compensate for Joystick's movement,
 	; or a few pixels to really bump off.
 	LD A, (joyOffBump)
-	CP _PL_BUMP_JOY_DEC_D1+1
+	CP PL_BUMP_JOY_DEC_D1+1
 	JR C, .bumpLeftOnPixel
 
-	LD B, _PL_BUMP_X_D4
+	LD B, PL_BUMP_X_D4
 	CALL jpo.DecJetXbyB
 	RET
 .bumpLeftOnPixel
@@ -162,10 +170,10 @@ JetPlatformHitOnJoyMove
 
 	; When Jetman bumps away from the platform, he has to move right at least one pixel to compensate for Joystick's movement or a few pixels to really bump off.
 	LD A, (joyOffBump)
-	CP _PL_BUMP_JOY_DEC_D1+1
+	CP PL_BUMP_JOY_DEC_D1+1
 	JR C, .bumpRightOnPixel
 
-	LD B, _PL_BUMP_X_D4
+	LD B, PL_BUMP_X_D4
 	CALL jpo.IncJetXbyB
 	RET
 .bumpRightOnPixel
@@ -193,10 +201,10 @@ JetPlatformHitOnJoyMove
 
 	; When Jetman bumps away from the platform, he has to move down at least one pixel to compensate for Joystick's movement or a few pixels to really bump off.
 	LD A, (joyOffBump)
-	CP _PL_BUMP_JOY_DEC_D1+1
+	CP PL_BUMP_JOY_DEC_D1+1
 	JR C, .bumpDonwOnPixel
 
-	LD B, _PL_BUMP_Y_D4
+	LD B, PL_BUMP_Y_D4
 	CALL jpo.IncJetYbyB
 	RET
 
@@ -217,7 +225,7 @@ ResetJoyOffBump
 
 	; Do not reset if already done.
 	LD A, (joyOffBump)
-	CP _PL_BUMP_JOY_D15
+	CP PL_BUMP_JOY_D15
 	RET Z
 
 	; Reset the joystick bump only if Jetman is away from the platform,  or it walks on it.
@@ -243,7 +251,7 @@ ResetJoyOffBump
 
 .reset
 	; Jetman far from the platform - reset.
-	LD A, _PL_BUMP_JOY_D15
+	LD A, PL_BUMP_JOY_D15
 	LD (joyOffBump), A
 	
 	RET											; ## END of the function ##
@@ -305,10 +313,10 @@ MoveJetOnFallingFromPlatform
 	JR NZ, .afterFallingRight
 
 	; Yes, Jetman is falling from the platform.
-	LD B, _PL_FALL_X_D2
+	LD B, PL_FALL_X_D2
 	CALL jpo.IncJetXbyB
 
-	LD B, _PL_FALL_Y_D4
+	LD B, PL_FALL_Y_D4
 	CALL jpo.IncJetYbyB
 
 	RET											; Do not check falling left  because Jetman is already falling.
@@ -323,7 +331,7 @@ MoveJetOnFallingFromPlatform
 	CALL jpo.DecJetX
 	CALL jpo.DecJetX
 	
-	LD B, _PL_FALL_Y_D4
+	LD B, PL_FALL_Y_D4
 	CALL jpo.IncJetYbyB
 
 	RET											; ## END of the function ##
@@ -501,8 +509,8 @@ JetFallingFromPlatform
 	LD A, js.SDB_T_KF
 	CALL js.ChangeJetSpritePattern
 
-	; Disable joystick, because Jetman loses control for #_PL_FALL_JOY_OFF_D10 frames.
-	LD A, _PL_FALL_JOY_OFF_D10
+	; Disable joystick, because Jetman loses control for #PL_FALL_JOY_OFF_D10 frames.
+	LD A, PL_FALL_JOY_OFF_D10
 	LD (gid.joyOffCnt), A
 
 .afterFalling
@@ -1116,10 +1124,10 @@ _JetHitsPlatform
 	; ##########################################
 	; Decrement joystick off time with every bump.
 	
-	CP _PL_BUMP_JOY_DEC_D1+1
+	CP PL_BUMP_JOY_DEC_D1+1
 	RET C										; Do not allow #joyOffBump to reach 0, otherwise Jetman will go trough the obstacle.
 	
-	SUB _PL_BUMP_JOY_DEC_D1
+	SUB PL_BUMP_JOY_DEC_D1
 	LD (joyOffBump), A
 
 	RET											; ## END of the function ##

@@ -6,14 +6,14 @@
 ; the Jetman needs to land.
 
 ; Jetpack temperature and the temp bar in UI increase in two steps. First, when Jetman is flying, the #jetHeatCnt will increase.
-; When it reaches _JM_HEAT_CNT, the jetpack temperature will increase (#jetTempLevel) until it reaches MAX_TEMP. Then, it will update Jetman
+; When it reaches JM_HEAT_CNT, the jetpack temperature will increase (#jetTempLevel) until it reaches MAX_TEMP. Then, it will update Jetman
 ; state to #JETST_OVERHEAT and slow flying down. 
-; When Jetman lands, the #jetCoolCnt decreases. When it reaches _JM_COOL_CNT, the jetpack temperature decreases,
+; When Jetman lands, the #jetCoolCnt decreases. When it reaches JM_COOL_CNT, the jetpack temperature decreases,
 ; until it reaches #TEMP_NORM. At this point, the Jetman state changes to #JETST_NORMAL, and Jetman can fly at a full speed.
 
 ; Jetpack heats up/cools down during the flight.
-jetHeatCnt				BYTE 0					; Runs from 0 to _JM_HEAT_CNT
-jetCoolCnt				BYTE 0					; Runs from 0 to _JM_COOL_CNT
+jetHeatCnt				BYTE 0					; Runs from 0 to JM_HEAT_CNT
+jetCoolCnt				BYTE 0					; Runs from 0 to JM_COOL_CNT
 
 jetTempLevel			BYTE 0
 
@@ -27,6 +27,12 @@ BAR_TILE_PAL			= $30
 BAR_TILES				= 6
 BAR_FULL_SPR			= 176
 BAR_EMPTY_SPR			= 182
+
+
+; The Jetpack heating up / cooling down thresholds.
+JM_HEAT_RED_CNT			= 80
+JM_HEAT_CNT				= 40
+JM_COOL_CNT				= 20
 
 ;----------------------------------------------------------;
 ;                 #ResetJetpackOverheating                 ;
@@ -88,23 +94,23 @@ _JetpackTempUp
 	INC A
 	LD (jetHeatCnt),A
 
-	; Heat increase speed slows down when #jetTempLevel is over _JM_HEAT_RED_CNT.
-	; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with _JM_HEAT_CNT
-	; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with _JM_HEAT_RED_CNT
+	; Heat increase speed slows down when #jetTempLevel is over JM_HEAT_RED_CNT.
+	; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with JM_HEAT_CNT
+	; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with JM_HEAT_RED_CNT
 	LD A, (jetTempLevel)
 	CP TEMP_RED
 	JR NC, .increaseSlow
 
 	; Fast heat increase.
 	LD A, (jetHeatCnt)
-	CP _JM_HEAT_CNT
+	CP JM_HEAT_CNT
 	RET NZ										; The counter did not reach the required value to increase jeptack's temp.
 	JR .afterIncrease
 
 .increaseSlow
 	; Slow down hating.
 	LD A, (jetHeatCnt)
-	CP _JM_HEAT_RED_CNT
+	CP JM_HEAT_RED_CNT
 	RET NZ										; The counter did not reach the required value to increase jeptack's temp.
 .afterIncrease
 
@@ -145,7 +151,7 @@ _JetpackTempDown
 	INC A
 	LD (jetCoolCnt),A
 
-	CP _JM_COOL_CNT
+	CP JM_COOL_CNT
 	RET NZ										; The counter did not reach the required value to decrease jeptack temp.
 
 	; Cool down counter has reached max value, reset it.

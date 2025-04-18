@@ -65,7 +65,7 @@ NextRocketStarsRow
 	LD D, A
 	LD E, TI_H_BYTES_D80
 	MUL D, E									; DE contains byte offset to current row.
-	LD HL, dbs.RS_ADDR_HC000
+	LD HL, sp.RS_ADDR_HC000
 	ADD HL, DE									; Move RAM pointer to current row.
 
 	; Load the memory address of in-game tiles into DE. This row will be replaced with stars. DE = ti.RAM_START_H5B00 + tilesRow * _TI_H_BYTES_D8.0

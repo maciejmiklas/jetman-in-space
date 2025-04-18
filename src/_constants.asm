@@ -396,15 +396,6 @@ _HOVER_START_D250		= 250
 _STAND_START_D30		= 30
 _JSTAND_START_D100		= 100
 
-; ##############################################
-; Platform.
-_PL_FALL_JOY_OFF_D10	= 10					; Disable the joystick for a few frames because Jetman is falling from the platform.
-_PL_BUMP_JOY_D15		= 15					; Disable the joystick for a few frames because Jetman is bumping into the platform.
-_PL_BUMP_JOY_DEC_D1		= 1						; With each bump into the platform, the period to turn off the joystick decrements by this value.
-_PL_BUMP_Y_D4			= 4						; Amount of pixels to move Jetman down when hitting platform from below.
-_PL_BUMP_X_D4			= 4
-_PL_FALL_Y_D4			= 4						; Amount of pixels to move Jetman down when falling from the platform.
-_PL_FALL_X_D2			= 2
 
 ; ##############################################
 ; Rocket
@@ -444,75 +435,15 @@ _GSC_X_MIN_D0			= 0
 _GSC_X_MAX_D315			= 315
 _GSC_Y_MIN_D15			= 15
 _GSC_Y_MAX_D232			= 232
-
-; Ground level from Jetman's sprite perspective.
-_GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
-
-; ##############################################
-; Util
-_UT_PAUSE_TIME_D10		= 10
-
-; ##############################################
-; Bitmap Manipulation
 _BM_XRES_D320			= 320
 _BM_YRES_D256			= 256
 
-; ##############################################
-; In game background image on Layer 2.
-_GB_MOVE_SLOW_D2		= 2						; Slows down background movement (when Jetman moves).
-
-; ##############################################
-; In game stars.
-ST_L1_MOVE_DEL_D4		= 2						; Stars move delay.
-ST_L2_MOVE_DEL_D4		= 8						; Stars move delay.
-
-; ##############################################
-; Binary Data Loader.
-
-
-
-
-dbs.SP_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
-dbs.RS_ADDR_HC000		= _RAM_SLOT6_STA_HC000 ; RAM start address for tilemap with stars for flying rocket.
-
+; Ground level from Jetman's sprite perspective.
+_GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
 ; ##############################################
 ; Game Counters.
 _GC_FLIP_ON_D1			= 1
 _GC_FLIP_OFF_D0			= 0
 
-; ##############################################
-; Jetman
 
-; Invincibility
-_JM_INV_D400 			= 400					; Number of loops to keep Jetman invincible.
-_JM_INV_BLINK_D100		= 100
-
-; RIP movement.
-_JM_RIP_MOVE_R_D3		= 3
-_JM_RIP_MOVE_L_D3		= 3
-_JM_RIP_MOVE_Y_D4		= 4
-
-; Respawn location.
-_JM_RESPAWN_X_D100		= 100
-_JM_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
-
-; The Jetpack heating up / cooling down thresholds.
-_JM_HEAT_RED_CNT		= 80
-_JM_HEAT_CNT			= 40
-_JM_COOL_CNT			= 20
-
-; Jetman weapon
-_JM_FIRE_DELAY			= 15
-
-; ##############################################
-; Enemy Formation
-_EF_FORM_SIZE			= 7
-
-; ##############################################
-; Single enemy
-
-; Each enemy has a dedicated respawn delay (EF.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
-; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
-; the respawn of the next enemy from the enemies list. 
-_ES_NEXT_RESP_DEL		= 20

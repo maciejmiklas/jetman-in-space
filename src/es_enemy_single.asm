@@ -7,6 +7,11 @@
 singleRespDelayCnt 		BYTE 0
 singleCount				BYTE 0
 
+; Each enemy has a dedicated respawn delay (EF.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
+; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
+; the respawn of the next enemy from the enemies list. 
+NEXT_RESP_DEL			= 20
+
 ;----------------------------------------------------------;
 ;                  #SetupSingleEnemies                     ;
 ;----------------------------------------------------------;
@@ -65,7 +70,7 @@ RespawnNextSingleEnemy
 
 	; ##########################################	
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy.
-	LD A, _ES_NEXT_RESP_DEL
+	LD A, NEXT_RESP_DEL
 	LD D, A
 	LD A, (singleRespDelayCnt)
 	INC A

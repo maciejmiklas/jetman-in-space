@@ -83,7 +83,7 @@ _GameLoop000OnDisabledJoy
 	; ##########################################
 	; Return if the joystick is about to enable
 	LD A, (gid.joyOffCnt)
-	CP _PL_BUMP_JOY_DEC_D1+1
+	CP pl.PL_BUMP_JOY_DEC_D1+1
 	RET C										; Return on the last off loop - this one is used to reset status and not to animate.
 
 	; ##########################################
