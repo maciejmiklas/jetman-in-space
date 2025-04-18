@@ -8,6 +8,8 @@ palColors				BYTE 0					; Amount of colors in background palette, max 255.
 palAdr					WORD 0					; Address of the original palette data.
 todPalAddr 				WORD 0					; Pointer to current brightness palette.
 
+PAL2_BYTES_D512		= 512
+
 ;----------------------------------------------------------;
 ;                     #NextTodPalette                      ;
 ;----------------------------------------------------------;
@@ -22,7 +24,7 @@ NextTodPalette
 	POP HL
 
 	; Moves #todPalAddr to the next palette
-	ADD HL, _BM_PAL2_BYTES_D512
+	ADD HL, PAL2_BYTES_D512
 	LD (todPalAddr), HL
 	
 	RET											; ## END of the function ##
@@ -49,7 +51,7 @@ PrevTodPaletteAddr
 	
 	; Moves #todPalAddr to the previous palette
 	LD HL, (todPalAddr)	
-	ADD HL, -_BM_PAL2_BYTES_D512
+	ADD HL, -PAL2_BYTES_D512
 	LD (todPalAddr), HL
 
 	RET											; ## END of the function ##
@@ -163,7 +165,7 @@ _NextBrightnessPalette
 	; Moves #todPalAddr to the next palette 
 	LD HL, (todPalAddr)							; Use HL for LDIR below.
 	LD DE, HL
-	ADD DE, _BM_PAL2_BYTES_D512					; Move DE to the next (destination) palette.
+	ADD DE, PAL2_BYTES_D512					; Move DE to the next (destination) palette.
 	LD (todPalAddr), DE							; Move palette pointer to copied palette.
 
 	; ##########################################

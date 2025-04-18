@@ -9,6 +9,9 @@
 
 imageBank				BYTE 0					; Bank containing the image.
 
+BM_16KBANK_D9			= 9						; 16K bank 9 = 8k bank 18.
+
+
 ;----------------------------------------------------------;
 ;                     #LoadImage                           ;
 ;----------------------------------------------------------;
@@ -20,9 +23,9 @@ LoadImage
 	LD D, _DBS_BGST_BANK_D35
 
 	; Copy image data from temp RAM into screen memory
-	NEXTREG _DC_REG_L2_BANK_H12, _BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default).
+	NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default).
 	LD E, _DBS_BGST_BANK_D18					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ....".
-	LD B, _BM_BANKS_D10							; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4.
+	LD B, _DBS_BM_BANKS_D10						; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4.
 .slotLoop										; Each loop copies single bank, there are 10 iterations.
 	PUSH BC
 	LD A, D
@@ -52,7 +55,7 @@ LoadImage
 HideImage
 
 	LD C, 0
-.bankLoop										; Loop from 10 (_BM_BANKS_D10) to 0.
+.bankLoop										; Loop from 10 (_DBS_BM_BANKS_D10) to 0.
 
 	; ##########################################
 	; Setup image bank.
@@ -85,7 +88,7 @@ HideImage
 	; ##########################################
 	INC C
 	LD A, C
-	CP _BM_BANKS_D10
+	CP _DBS_BM_BANKS_D10
 	JR NZ, .bankLoop
 
 	CALL ut.Pause
@@ -100,12 +103,12 @@ HideImage
 ;  - E:  Line number
 HideImageLine
 
-	LD B, _BM_BANKS_D10
-.bankLoop										; Loop from 10 (_BM_BANKS_D10) to 0.
+	LD B, _DBS_BM_BANKS_D10
+.bankLoop										; Loop from 10 (_DBS_BM_BANKS_D10) to 0.
 
 	; We will iterate over 10 banks ascending from _DBS_BGST_BANK_D18 to _DBS_BG_END_BANK_D27.
 	; However, the loop starts at 10 (inclusive) and goes to 0 (exclusive)
-	LD A, _DBS_BG_END_BANK_D27 + 1				; 27 + 1 - 10 = 18 -> _DBS_BG_END_BANK_D27 + 1 - _BM_BANKS_D10 = _DBS_BGST_BANK_D18
+	LD A, _DBS_BG_END_BANK_D27 + 1				; 27 + 1 - 10 = 18 -> _DBS_BG_END_BANK_D27 + 1 - _DBS_BM_BANKS_D10 = _DBS_BGST_BANK_D18
 	SUB B
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Use slot 7 to modify displayed image.
 
@@ -140,7 +143,7 @@ HideImageLine
 ReplaceImageLine
 
 	LD B, 0
-.bankLoop										; Loop from 0 to _BM_BANKS_D10 - 1.
+.bankLoop										; Loop from 0 to _DBS_BM_BANKS_D10 - 1.
 	
 	; ##########################################
 	; Setup banks. The source image will be stored in bank 6, destination image in bank 7. We will copy line from 6 to 7.
@@ -179,11 +182,11 @@ ReplaceImageLine
 	POP BC
 	
 	; ##########################################
-	; Loop from 0 to _BM_BANKS_D10 - 1.
+	; Loop from 0 to _DBS_BM_BANKS_D10 - 1.
 	LD A, B
 	INC A
 	LD B, A
-	CP _BM_BANKS_D10
+	CP _DBS_BM_BANKS_D10
 	JR NZ, .bankLoop
 
 	RET											; ## END of the function ##

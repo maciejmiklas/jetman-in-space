@@ -1067,70 +1067,70 @@ bgrL1PaletteAdr
 	INCBIN  "assets/l01/bg.nxp"
 
 bgrL1PaletteBytes = $ - bgrL1PaletteAdr
-	ASSERT bgrL1PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL1PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL2PaletteAdr
 	INCBIN  "assets/l02/bg.nxp"
 
 bgrL2PaletteBytes = $ - bgrL2PaletteAdr
-	ASSERT bgrL2PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL2PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL3PaletteAdr
 	INCBIN  "assets/l03/bg.nxp"
 
 bgrL3PaletteBytes = $ - bgrL3PaletteAdr
-	ASSERT bgrL3PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL3PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL4PaletteAdr
 	INCBIN  "assets/l04/bg.nxp"
 
 bgrL4PaletteBytes = $ - bgrL4PaletteAdr
-	ASSERT bgrL4PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL4PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL5PaletteAdr
 	INCBIN  "assets/l05/bg.nxp"
 
 bgrL5PaletteBytes = $ - bgrL5PaletteAdr
-	ASSERT bgrL5PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL5PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL6PaletteAdr
 	INCBIN  "assets/l06/bg.nxp"
 
 bgrL6PaletteBytes = $ - bgrL6PaletteAdr
-	ASSERT bgrL6PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL6PaletteBytes <= btd.PAL2_BYTES_D512
 	
  ; #############################################
 bgrL7PaletteAdr
 	INCBIN  "assets/l07/bg.nxp"
 
 bgrL7PaletteBytes = $ - bgrL7PaletteAdr
-	ASSERT bgrL7PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL7PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL8PaletteAdr
 	INCBIN  "assets/l08/bg.nxp"
 
 bgrL8PaletteBytes = $ - bgrL8PaletteAdr
-	ASSERT bgrL8PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL8PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL9PaletteAdr
 	INCBIN  "assets/l09/bg.nxp"
 
 bgrL9PaletteBytes = $ - bgrL9PaletteAdr
-	ASSERT bgrL9PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL9PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL10PaletteAdr
 	INCBIN  "assets/l10/bg.nxp"
 
 bgrL10PaletteBytes = $ - bgrL10PaletteAdr
-	ASSERT bgrL10PaletteBytes <= _BM_PAL2_BYTES_D512
+	ASSERT bgrL10PaletteBytes <= btd.PAL2_BYTES_D512
 	
  ; #############################################
 	ASSERT $$ == _DBS_PAL2_BANK_D31

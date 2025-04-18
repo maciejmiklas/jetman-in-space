@@ -224,7 +224,7 @@ LoadImage
 	POP BC, IX
 	INC B
 	LD A, B
-	CP _BM_BANKS_D10
+	CP _DBS_BM_BANKS_D10
 	JR NZ, .bankLoop
 
 	RET											; ## END of the function ##
