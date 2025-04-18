@@ -381,7 +381,7 @@ _ULA_COLOR_END_H5AFF	= $5AFF					; End of Display Color RAM.
 _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800.
 
 ;----------------------------------------------------------;
-;                Configuration Values                      ;
+;                    Common Values                         ;
 ;----------------------------------------------------------;
 
 ; ##############################################
@@ -410,17 +410,14 @@ _GSC_X_MIN_D0			= 0
 _GSC_X_MAX_D315			= 315
 _GSC_Y_MIN_D15			= 15
 _GSC_Y_MAX_D232			= 232
+
 _BM_XRES_D320			= 320
 _BM_YRES_D256			= 256
 
 _TI_GND_D8				= 8						; The thickness of the ground (tilemap).
 _GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
-; ##############################################
-; Tilemap for in game platforms.
 
-_TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
-	ASSERT _TI_VTILES_D32 =  32
 
 
 

@@ -46,14 +46,11 @@ LoadLevel1Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
-
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL1
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL1)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -132,14 +129,11 @@ LoadLevel2Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
-
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL2
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL2)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -218,14 +212,11 @@ LoadLevel3Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
-
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL3
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL3)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -306,14 +297,11 @@ LoadLevel4Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
-
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL4
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL4)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -391,14 +379,11 @@ LoadLevel5Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
-
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL5
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL5)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -477,14 +462,11 @@ LoadLevel6Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
-
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL6
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL6)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -564,12 +546,11 @@ LoadLevel7Data
 	
 	; ##########################################
 	; Load platforms coordinates.
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL7
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL7)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -648,13 +629,11 @@ LoadLevel8Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL8
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL8)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -733,14 +712,11 @@ LoadLevel9Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
-
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL9
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL9)
-	LD (pl.platformsSize), A
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.
@@ -818,13 +794,11 @@ LoadLevel10Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
+	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL10
-	LD (pl.platforms), HL
-
 	LD A, (db.platformsSizeL10)
-	LD (pl.platformsSize), A	
+	CALL pl.SetupPlatforms
 
 	; ##########################################
 	; Load stars.

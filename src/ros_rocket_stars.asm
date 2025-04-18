@@ -3,10 +3,13 @@
 ;----------------------------------------------------------;
 	MODULE ros
 
+TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
+	ASSERT TI_VTILES_D32 =  32
+
 TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
 
 ; Tile stars
-TI_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
+TI_ROWS_D128			= TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
 	ASSERT TI_ROWS_D128 =  128
 
 TI_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.	
@@ -15,7 +18,7 @@ TI_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the give
 TI_H_BYTES_D80			= 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
-tilesRow				BYTE _TI_VTILES_D32		; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
+tilesRow				BYTE TI_VTILES_D32		; Current tiles row, runs from TI_VTILES_D32-1 to 0.
 starsRow				BYTE TI_ROWS_D128		; Current start row, runs from from TI_ROWS_D128 to 0.
 
 tileOffset				BYTE _SC_RESY1_D255		; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
@@ -25,7 +28,7 @@ tilePixelCnt			BYTE TI_PIXELS_D8		; Runs from 0 to 7 (TI_PIXELS_D8-1).
 ;                 #ResetRocketStarsRow                     ;
 ;----------------------------------------------------------;
 ResetRocketStarsRow
-	LD A, _TI_VTILES_D32
+	LD A, TI_VTILES_D32
 	LD (tilesRow), A
 
 	LD A, TI_ROWS_D128
@@ -100,7 +103,7 @@ NextRocketStarsRow
 	JR NZ, .afterResetTilesRow					; Jump if #tilesRow > 0.
 
 	; Reset tiles counter.
-	LD A, _TI_VTILES_D32
+	LD A, TI_VTILES_D32
 	LD (tilesRow), A
 .afterResetTilesRow
 

@@ -61,6 +61,18 @@ platformWalkNumber		BYTE PLATFORM_WALK_INACTIVE
 joyOffBump				BYTE PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
 
 ;----------------------------------------------------------;
+;                    #SetupPlatforms                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A:  Platforms size
+;  - HL: Pointer to #PLA array containing A elements.
+SetupPlatforms
+
+	LD (platformsSize), A
+	LD (platforms), HL
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                #JetPlatformHitOnJoyMove                  ;
 ;----------------------------------------------------------;
 JetPlatformHitOnJoyMove
