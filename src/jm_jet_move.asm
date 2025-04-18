@@ -5,7 +5,7 @@
 
 ; Hovering/Standing
 ; The counter increments with each frame when no up/down is pressed.
-; When it reaches #_HOVER_START_D250, Jetman will start hovering.
+; When it reaches #HOVER_START_D250, Jetman will start hovering.
 jetInactivityCnt		BYTE 0
 
 ;----------------------------------------------------------;

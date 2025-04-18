@@ -3,6 +3,8 @@
 ;----------------------------------------------------------;
 	MODULE ti
 
+TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
+
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
 RAM_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
@@ -24,12 +26,12 @@ TI_CLIP_X2_D159			= 159
 TI_CLIP_Y1_D0			= 0
 TI_CLIP_FULLY2_D255		= _SC_RESY1_D255
 
-TI_CLIP_TOP_D8			= _TI_PIXELS_D8
-TI_CLIP_BOTTOM_D247		= _SC_RESY1_D255 - _TI_PIXELS_D8
+TI_CLIP_TOP_D8			= TI_PIXELS_D8
+TI_CLIP_BOTTOM_D247		= _SC_RESY1_D255 - TI_PIXELS_D8
 
 TX_ASCII_OFFSET_D34		= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
 TX_PALETTE_D0			= 0						; Palette byte for tile characters.
-
+TI_EMPTY_D57			= 57					; Empty tile.
 
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
@@ -124,7 +126,7 @@ CleanTiles
 	DEC HL
 
 	; ##########################################
-	LD A, _TI_EMPTY_D57
+	LD A, TI_EMPTY_D57
 .loop
 	
 	LD (HL), TX_PALETTE_D0						; Set palette for tile.

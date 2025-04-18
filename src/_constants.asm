@@ -389,21 +389,8 @@ _ULA_COL_SIZE			= 768					; Size of color RAM: $5AFF - $5800.
 _RET_YES_D1				= 1
 _RET_NO_D0				= 2
 _BANK_BYTES_D8192		= 8*1024
-
-; ##############################################
-; Start times to change animations.
-_HOVER_START_D250		= 250
-_STAND_START_D30		= 30
-_JSTAND_START_D100		= 100
-
-
-; ##############################################
-; Rocket
-_RO_DROP_NEXT_D5		= 10	;10	TODO			; Drop next element delay
-_RO_DROP_Y_MAX_D180		= 180					; Jetman has to be above the rocket to drop the element.
-_RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rocket element.
-_RO_FLY_DELAY_D8		= 8
-_RO_FLY_DELAY_DIST_D5	= 5
+_GC_FLIP_ON_D1			= 1
+_GC_FLIP_OFF_D0			= 0
 
 ; ##############################################
 ; Screen
@@ -418,19 +405,7 @@ _SC_RESY1_D255			= _SC_RESY_D256 -1
 
 _SC_L2_MAX_OFFSET_D191	= 191					; Max value for _DC_REG_L2_OFFSET_Y_H17.
 
-; ##############################################
-; Tilemap for in game platforms.
-_TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
-_TI_GND_D8				= 8						; The thickness of the ground (tilemap).
-
-_TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
-	ASSERT _TI_VTILES_D32 =  32
-
-_TI_EMPTY_D57			= 57					; Empty tile.
-_TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
-	
-; ##############################################
-; Game screen
+; Ground level from Jetman's sprite perspective.
 _GSC_X_MIN_D0			= 0
 _GSC_X_MAX_D315			= 315
 _GSC_Y_MIN_D15			= 15
@@ -438,12 +413,18 @@ _GSC_Y_MAX_D232			= 232
 _BM_XRES_D320			= 320
 _BM_YRES_D256			= 256
 
-; Ground level from Jetman's sprite perspective.
+_TI_GND_D8				= 8						; The thickness of the ground (tilemap).
 _GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
 ; ##############################################
-; Game Counters.
-_GC_FLIP_ON_D1			= 1
-_GC_FLIP_OFF_D0			= 0
+; Tilemap for in game platforms.
+
+_TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
+	ASSERT _TI_VTILES_D32 =  32
+
+
+_TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
+	
+
 
 

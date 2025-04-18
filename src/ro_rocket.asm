@@ -3,6 +3,12 @@
 ;----------------------------------------------------------;
 	MODULE ro
 
+RO_DROP_NEXT_D5			= 10					; Drop next element delay
+RO_DROP_Y_MAX_D180		= 180					; Jetman has to be above the rocket to drop the element.
+RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rocket element.
+RO_FLY_DELAY_D8			= 8
+RO_FLY_DELAY_DIST_D5	= 5
+
 RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 
@@ -54,9 +60,9 @@ RO_EXHAUST_MAX			= 18
 
 rocketDistance			WORD 0					; Increments with every rocket move when the rocket is flying towards the next planet.
 
-rocketDelayDistance		BYTE 0					; Counts from 0 to _RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets).
-rocketFlyDelay			BYTE _RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
-rocketFlyDelayCnt		BYTE _RO_FLY_DELAY_D8	; Counts from _RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
+rocketDelayDistance		BYTE 0					; Counts from 0 to RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets).
+rocketFlyDelay			BYTE RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
+rocketFlyDelayCnt		BYTE RO_FLY_DELAY_D8	; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
 
 rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeDB[1-3].
@@ -130,7 +136,7 @@ StartRocketAssembly
 	LD (rocketExhaustCnt), A
 	LD (explodeTankCnt), A
 
-	LD A, _RO_FLY_DELAY_D8
+	LD A, RO_FLY_DELAY_D8
 	LD (rocketFlyDelay), A
 	LD (rocketFlyDelayCnt), A
 	
@@ -152,7 +158,7 @@ ResetAndDisableRocket
 	LD (rocketDistance), HL
 	
 	; ##########################################
-	LD A, _RO_FLY_DELAY_D8
+	LD A, RO_FLY_DELAY_D8
 	LD (rocketFlyDelay), A
 	LD (rocketFlyDelayCnt), A
 
@@ -657,7 +663,7 @@ DropNextRocketElement
 	LD A, (dropNextDelay)
 	INC A
 	LD (dropNextDelay), A
-	CP _RO_DROP_NEXT_D5
+	CP RO_DROP_NEXT_D5
 	RET NZ										; Jump if #nextCnt !=  #DROP_NEXT_MAX.
 
 	; The counter has reached the required value, reset it first.
@@ -871,12 +877,12 @@ _JetmanDropsRocketElement
 	RET NC
 
 	; ##########################################
-	; To drop rocket element Jetman's height has to be within bounds: _RO_DROP_Y_MIN_D100 < jpo.jetY < _RO_DROP_Y_MAX_D170
+	; To drop rocket element Jetman's height has to be within bounds: RO_DROP_Y_MIN_D100 < jpo.jetY < RO_DROP_Y_MAX_D170
 	LD A, (jpo.jetY)
-	CP _RO_DROP_Y_MAX_D180
+	CP RO_DROP_Y_MAX_D180
 	RET NC
 
-	CP _RO_DROP_Y_MIN_D130
+	CP RO_DROP_Y_MIN_D130
 	RET C
 
 	; ##########################################
@@ -996,7 +1002,7 @@ _MoveFlyingRocket
 	LD (rocketDelayDistance), A
 
 	; Has the traveled distance of the rocket with the current delay been reached?
-	CP _RO_FLY_DELAY_DIST_D5
+	CP RO_FLY_DELAY_DIST_D5
 	JR NZ, .afterDelay							; Jump if rocket should still move with current delay.
 
 	; The rocket traveled far enough, decrement the delay for the next section.

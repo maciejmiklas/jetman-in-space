@@ -3,6 +3,11 @@
 ;----------------------------------------------------------;
 	MODULE gc
 
+; Start times to change animations.
+HOVER_START_D250		= 250
+STAND_START_D30			= 30
+JSTAND_START_D100		= 100
+
 ; Invincibility
 JM_INV_D400 			= 400					; Number of loops to keep Jetman invincible.
 
@@ -413,7 +418,7 @@ MovementInactivity
 
 	; Jetman is in the air, not hovering, but is he not moving long enough?
 	LD A, (jm.jetInactivityCnt)
-	CP _HOVER_START_D250
+	CP HOVER_START_D250
 	JR NZ, .afterHoover							; Jetman is not moving, by sill not long enough to start hovering.
 
 	; Jetman starts to hover!
@@ -438,7 +443,7 @@ MovementInactivity
 	; ##########################################
 	; Jetman is on the ground and does not move, but is he not moving long enough?
 	LD A, (jm.jetInactivityCnt)
-	CP _STAND_START_D30
+	CP STAND_START_D30
 	JR NZ, .afterStand							; Jump if Jetman stands for too short to trigger standing.
 	
 	; Transition from walking to standing.
@@ -450,7 +455,7 @@ MovementInactivity
 	RET
 .afterStand
 
-	; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < _STAND_START_D30 
+	; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
 	; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
 	LD A, (jt.jetGnd)
 	CP jt.GND_WALK
@@ -460,7 +465,7 @@ MovementInactivity
 	RET Z										; Jump already j-standing (just standing - for a short time).
 
 	LD A, (jm.jetInactivityCnt)
-	CP _JSTAND_START_D100
+	CP JSTAND_START_D100
 	RET NZ										; Jump if Jetman stands for too short to trigger j-standing.
 
 	LD A, jt.GND_JSTAND

@@ -3,23 +3,23 @@
 ;----------------------------------------------------------;
 	MODULE ros
 
+TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
 
-TIS_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
-	ASSERT TIS_ROWS_D128 =  128
+; Tile stars
+TI_ROWS_D128			= _TI_VTILES_D32*4		; 128 rows (4*32), tile starts takes two horizontal screens.
+	ASSERT TI_ROWS_D128 =  128
 
-TIS_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.	
-
-TI_HTILES_D40			= 320/8					; 40 horizontal tiles.
+TI_MOVE_FROM_D50		= 50					; Start moving stats when the rocket reaches the given height.	
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
-TI_H_BYTES_D80			= TI_HTILES_D40 * 2
+TI_H_BYTES_D80			= 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow				BYTE _TI_VTILES_D32		; Current tiles row, runs from _TI_VTILES_D32-1 to 0.
-starsRow				BYTE TIS_ROWS_D128		; Current start row, runs from from TIS_ROWS_D128 to 0.
+starsRow				BYTE TI_ROWS_D128		; Current start row, runs from from TI_ROWS_D128 to 0.
 
 tileOffset				BYTE _SC_RESY1_D255		; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt			BYTE _TI_PIXELS_D8		; Runs from 0 to 7 (_TI_PIXELS_D8-1).
+tilePixelCnt			BYTE TI_PIXELS_D8		; Runs from 0 to 7 (TI_PIXELS_D8-1).
 
 ;----------------------------------------------------------;
 ;                 #ResetRocketStarsRow                     ;
@@ -28,7 +28,7 @@ ResetRocketStarsRow
 	LD A, _TI_VTILES_D32
 	LD (tilesRow), A
 
-	LD A, TIS_ROWS_D128
+	LD A, TI_ROWS_D128
 	LD (starsRow), A
 
 	LD A, _SC_RESY1_D255
@@ -89,7 +89,7 @@ NextRocketStarsRow
 	JR NZ, .afterResetStarsRow					; Jump if #starsLine > 0.
 
 	; Reset stars counter.
-	LD A, TIS_ROWS_D128
+	LD A, TI_ROWS_D128
 	LD (starsRow), A
 .afterResetStarsRow
 
@@ -120,11 +120,11 @@ AnimateStarsOnFlyRocket
 	; Start animation when the rocket reaches given height.
 	LD HL, (ro.rocketDistance)
 	LD A, H
-	CP 0										; If H > 0 then distance is definitely > TIS_MOVE_FROM_D50.
+	CP 0										; If H > 0 then distance is definitely > TI_MOVE_FROM_D50.
 	JR NZ, .afterAnimationStart
 
 	LD A, L
-	CP TIS_MOVE_FROM_D50
+	CP TI_MOVE_FROM_D50
 	RET C
 .afterAnimationStart
 
@@ -134,7 +134,7 @@ AnimateStarsOnFlyRocket
 	INC A
 	LD (tilePixelCnt), A
 
-	CP _TI_PIXELS_D8
+	CP TI_PIXELS_D8
 	JR NZ, .afterNextTile
 	
 	; Reset the counter and fetch the next tile row.
