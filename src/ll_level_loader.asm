@@ -54,19 +54,17 @@ LoadLevel1Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL1
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL1
 	LD HL, db.starsData2MaxYL1
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL1
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL1)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -137,19 +135,17 @@ LoadLevel2Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL2
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL2
 	LD HL, db.starsData2MaxYL2
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL2
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL2)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -220,19 +216,17 @@ LoadLevel3Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL3
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL3
 	LD HL, db.starsData2MaxYL3
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
-	LD HL, db.rocketElL3
-	LD (ro.rocketEl), HL
-
-	LD A, (db.rocketAssemblyXL3)
-	LD (ro.rocketAssemblyX), A
+	CALL dbs.SetupArraysBank
+	LD HL, db.rocketElL2
+	LD A, (db.rocketAssemblyXL2)
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -305,19 +299,17 @@ LoadLevel4Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL4
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL4
 	LD HL, db.starsData2MaxYL4
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL4
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL4)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -387,19 +379,17 @@ LoadLevel5Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL5
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL5
 	LD HL, db.starsData2MaxYL5
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL5
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL5)
-	LD (ro.rocketAssemblyX), A	
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -470,19 +460,17 @@ LoadLevel6Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL6
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL6
 	LD HL, db.starsData2MaxYL6
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL6
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL6)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -545,7 +533,6 @@ LoadLevel7Data
 	CALL fi.LoadSprites
 	
 	; ##########################################
-	; Load platforms coordinates.
 	; Setup Platforms.
 	CALL dbs.SetupArraysBank
 	LD HL, db.platformsL7
@@ -554,19 +541,17 @@ LoadLevel7Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL7
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL7
 	LD HL, db.starsData2MaxYL7
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL7
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL7)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -637,19 +622,17 @@ LoadLevel8Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL8
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL8
 	LD HL, db.starsData2MaxYL8
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL8
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL8)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 	
 	; ##########################################
 	; Load single enemies.
@@ -720,19 +703,17 @@ LoadLevel9Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL9
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL9
 	LD HL, db.starsData2MaxYL9
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL9
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL9)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.
@@ -802,19 +783,17 @@ LoadLevel10Data
 
 	; ##########################################
 	; Load stars.
-	LD HL, db.starsData1MaxYL10
-	LD (st.starsData1MaxY), HL
-
+	CALL dbs.SetupArraysBank
+	LD DE, db.starsData1MaxYL10
 	LD HL, db.starsData2MaxYL10
-	LD (st.starsData2MaxY), HL
+	CALL st.SetupStars
 
 	; ##########################################
 	; Load rocket.
+	CALL dbs.SetupArraysBank
 	LD HL, db.rocketElL10
-	LD (ro.rocketEl), HL
-
 	LD A, (db.rocketAssemblyXL10)
-	LD (ro.rocketAssemblyX), A
+	CALL ro.SetupRocket
 
 	; ##########################################
 	; Load single enemies.

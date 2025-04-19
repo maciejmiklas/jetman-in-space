@@ -86,6 +86,19 @@ EXHAUST_SPRID_D43		= 43					; Sprite ID for exhaust.
 rocketEl				WORD 0					; Pointer to 9x ro.RO
 
 ;----------------------------------------------------------;
+;                       #SetupRocket                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A: X coordinate for rocket assembly.
+;  - HL: Array containing 9 #RO elements.
+SetupRocket
+
+	LD (rocketAssemblyX), A
+	LD (rocketEl), HL
+	
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;               #AssemblyRocketForDebug                    ;
 ;----------------------------------------------------------;
 AssemblyRocketForDebug

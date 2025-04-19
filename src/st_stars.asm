@@ -65,6 +65,17 @@ starsData1MaxY			WORD 0
 starsData2MaxY			WORD 0
 
 
+;----------------------------------------------------------;
+;                      #SetupStars                         ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Max horizontal star position for each column (#SC) for Level 1
+;  - HL: Max horizontal star position for each column (#SC) for Level 2
+SetupStars
+	LD (st.starsData1MaxY), DE
+	LD (st.starsData2MaxY), HL
+	
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   #LoadStarsPalette                      ;
