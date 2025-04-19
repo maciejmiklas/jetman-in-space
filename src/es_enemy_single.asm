@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                        Single  Enemy                     ;
+;                    Single  Enemy                         ;
 ;----------------------------------------------------------;
 	MODULE es
 
@@ -10,7 +10,7 @@ singleCount				BYTE 10
 ; Each enemy has a dedicated respawn delay (EF.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
 ; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
 ; the respawn of the next enemy from the enemies list. 
-NEXT_RESP_DEL			= 20
+NEXT_RESP_DEL			= 10
 
 ;----------------------------------------------------------;
 ;                  #SetupSingleEnemies                     ;

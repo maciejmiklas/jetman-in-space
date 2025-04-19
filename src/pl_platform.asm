@@ -32,8 +32,8 @@ Y_BOTTOM				BYTE
 ; on the left were larger than the hit margin, the enemy would never hit the platform from the left, it would fly through it. The same is 
 ; true for "top margin". Here, the "close margin" has to be larger so that the enemy first starts flying along the platform and does not 
 ; hit it first.
-closeMargin 	PLAM { 14/*X_LEFT*/, 11/*X_RIGHT*/, 18/*Y_TOP*/, 09/*Y_BOTTOM*/}
-spriteHitMargin	PLAM { 15/*X_LEFT*/, 10/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
+closeMargin 	PLAM { 14/*X_LEFT*/, 14/*X_RIGHT*/, 18/*Y_TOP*/, 09/*Y_BOTTOM*/}
+spriteHitMargin	PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
 shotHitMargin	PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
 jetHitMargin	PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
 

@@ -480,6 +480,7 @@ _MoveEnemy
 .nextMovePattern
 	; Setup next move pattern
 	LD A, (IY + ENP.MOVE_PAT_POS)				; A contains the current position in the move pattern.
+
 	ADD MOVE_STEP_SIZE							; Increment the position to the next pattern and store it.
 	LD (IY + ENP.MOVE_PAT_POS), A
 
@@ -556,7 +557,7 @@ _LoadCurrentMoveStep
 ;  - IY: 	Pointer to #ENP for current sprite.
 ; Modifies: A, IY, BC, HL
 _RestartMovePattern
-
+	
 	LD BC, (IX + sr.SPR.EXT_DATA_POINTER)		; Load #ENP for this sprite to IY.
 	LD IY, BC
 	LD HL, (IY + ENP.MOVE_PAT_POINTER)			; HL points to start of the #movePattern, that is the amount of elements in this pattern.
