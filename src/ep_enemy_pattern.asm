@@ -1,7 +1,11 @@
 ;----------------------------------------------------------;
-;             Single 16x16 Flying Enemy                    ;
+;       Single Enemy and Formation (Pattern Enemy)         ;
 ;----------------------------------------------------------;
 	MODULE ep
+; Enemies fly by a given hardcoded pattern. This file contains generic logic for such enemies. 
+; In general, there are two kinds of enemies: 
+; - single enemies that fly independently from each other (es_enemy_single.asm), and 
+; - pattern enemies that fly together (ep_enemy_pattern.asm).
 
 ; Extends #SPR by additional params.
 	STRUCT ENP
@@ -98,28 +102,28 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
 ; The total amount of visible sprites - including single enemies and formations.
-enemiesSize				BYTE 5
+allEnemiesSize			BYTE 5
 
 ;----------------------------------------------------------;
-;                   #SetupEnemyPatern                      ;
+;                  #SetupPatterEnemies                     ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: The total amount of visible sprites - including single enemies and formations.
-SetupEnemyPatern
+SetupPatterEnemies
 
-	LD (enemiesSize), A
+	LD (allEnemiesSize), A
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #HideEnemies                        ;
+;                 #HidePatternEnemies                      ;
 ;----------------------------------------------------------;
-HideEnemies
+HidePatternEnemies
 
 	CALL dbs.SetupArraysBank
 
 	LD IX, db.enemySprites
-	LD A, (ep.enemiesSize)
+	LD A, (allEnemiesSize)
 	LD B, A
 
 	; Loop ever all enemies skipping hidden 
@@ -138,16 +142,16 @@ HideEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #MoveEnemies                       ;
+;                 #MovePatternEnemies                      ;
 ;----------------------------------------------------------;
 ; Moves single enemies and those in formation.
 ; Modifies: ALL
-MoveEnemies
+MovePatternEnemies
 	
 	CALL dbs.SetupArraysBank
 
 	LD IX, db.enemySprites
-	LD A, (ep.enemiesSize)
+	LD A, (allEnemiesSize)
 	LD B, A 
 
 	; Loop ever all enemies skipping hidden 
@@ -200,6 +204,7 @@ MoveEnemies
 ;----------------------------------------------------------;
 ;                    #RespawnEnemy                         ;
 ;----------------------------------------------------------;
+; Respawn single or formation
 ; Input
 ;  - IX:	Pointer to #SPR holding data for single enemy.
 ; Output:

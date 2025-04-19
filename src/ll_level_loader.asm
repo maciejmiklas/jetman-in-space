@@ -80,7 +80,7 @@ LoadLevel1Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -161,7 +161,7 @@ LoadLevel2Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -242,7 +242,7 @@ LoadLevel3Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -325,7 +325,7 @@ LoadLevel4Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -405,7 +405,7 @@ LoadLevel5Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -486,7 +486,7 @@ LoadLevel6Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -567,7 +567,7 @@ LoadLevel7Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -648,7 +648,7 @@ LoadLevel8Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -729,7 +729,7 @@ LoadLevel9Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -809,7 +809,7 @@ LoadLevel10Data
 	; ##########################################
 	; Setup total enemies.
 	LD A, 10									; The total amount of visible sprites - including single enemies and formations.
-	CALL ep.SetupEnemyPatern
+	CALL ep.SetupPatterEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

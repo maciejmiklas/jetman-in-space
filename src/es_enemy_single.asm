@@ -1,11 +1,11 @@
 ;----------------------------------------------------------;
-;               Single 16x16 Flying Enemy                  ;
+;                        Single  Enemy                     ;
 ;----------------------------------------------------------;
 	MODULE es
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
 singleRespDelayCnt 		BYTE 0
-singleCount				BYTE 0
+singleCount				BYTE 10
 
 ; Each enemy has a dedicated respawn delay (EF.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
 ; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
@@ -15,7 +15,7 @@ NEXT_RESP_DEL			= 20
 ;----------------------------------------------------------;
 ;                  #SetupSingleEnemies                     ;
 ;----------------------------------------------------------;
-; Resets single enemies and loads given #ENPS array into #ep.ENP. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
+; Resets single enemies and loads given #ep.ENPS array into #ep.ENP and #sr.SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
 ; Input:
 ;   - A:  Number of single enemies (size of #ENPS)
 ;   - IX: Pointer to #ENPS array.
@@ -28,10 +28,13 @@ SetupSingleEnemies
 	CALL _ResetSingleEnemies
 	POP IX
 
+	PUSH IX
+	; ##########################################
+	; Load #ep.ENPS int #ep.ENP
 	LD IY, db.spriteEx01						; Pointer to #ENP array.
 	LD A, (singleCount)							; Single enemies size (number of #ENPS/#ENP arrays).
 	LD B, A
-.loop
+.enpLoop
 	LD A, (IY +  ep.ENP.MOVE_DELAY_CNT)
 
 	LD A, (IX + ep.ENPS.RESPAWN_Y)
@@ -46,6 +49,7 @@ SetupSingleEnemies
 	LD DE, (IX + ep.ENPS.MOVE_PAT_POINTER)
 	LD (IY + ep.ENP.MOVE_PAT_POINTER), DE
 
+	; ##########################################
 	; Move IX to next array postion.
 	LD DE, IX
 	ADD DE, ep.ENPS
@@ -56,8 +60,31 @@ SetupSingleEnemies
 	ADD DE, ep.ENP
 	LD IY, DE
 	
-	DJNZ .loop
+	DJNZ .enpLoop
+	POP IX
 
+	; ##########################################
+	; Load #ep.ENPS int #sr.SPR
+	LD IY, db.enemySprites						; Pointer to #SPR array.
+	LD A, (singleCount)							; Single enemies size (number of #ENPS/#ENP arrays).
+	LD B, A
+.sprLoop
+
+	LD A, (IX + ep.ENPS.SDB_INIT)
+	LD (IY + sr.SPR.SDB_INIT), A
+
+	; ##########################################
+	; Move IX to next array postion.
+	LD DE, IX
+	ADD DE, ep.ENPS
+	LD IX, DE
+
+	; Move IY to next array postion.
+	LD DE, IY
+	ADD DE, sr.SPR
+	LD IY, DE
+
+	DJNZ .sprLoop
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

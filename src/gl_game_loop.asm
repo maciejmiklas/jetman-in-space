@@ -69,7 +69,7 @@ _GameLoop000OnActiveJetman
 	CALL jco.JetmanEnemiesCollision
 	CALL gi.JoystickInput
 	CALL gi.KeyboardInput
-	CALL ep.MoveEnemies
+	CALL ep.MovePatternEnemies
 	CALL es.RespawnNextSingleEnemy
 ;CALL ef.RespawnFormation
 	
@@ -276,7 +276,7 @@ _GameLoop008OnActiveJetman
 	CALL dbs.SetupArraysBank
 
 	LD IX, db.enemySprites
-	LD A, (ep.enemiesSize)
+	LD A, (ep.allEnemiesSize)
 	LD B, A	
 	CALL sr.AnimateSprites
 

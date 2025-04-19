@@ -549,7 +549,7 @@ _InitLevelLoad
 	CALL ro.HideRocket
 	CALL st.HideStars
 	CALL jw.HideShots
-	CALL ep.HideEnemies
+	CALL ep.HidePatternEnemies
 	
 	CALL ti.ResetTilemapOffset
 	CALL ro.ResetAndDisableRocket

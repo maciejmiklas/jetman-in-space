@@ -36,7 +36,7 @@ JetmanEnemiesCollision
 
 	CALL dbs.SetupArraysBank
 	LD IX, db.enemySprites
-	LD A, (ep.enemiesSize)
+	LD A, (ep.allEnemiesSize)
 	LD B, A
 	CALL _EnemiesCollision
 
