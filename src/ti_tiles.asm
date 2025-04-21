@@ -15,7 +15,10 @@ RAM_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
 TI_OFFSET	= (ti.RAM_START_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
 
-TI_MAP_BYTES_D2560		= 40*32*2				; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
+TI_MAP_H				= 40
+TI_MAP_V				= 32
+TI_MAP_TILES			= TI_MAP_H*TI_MAP_V
+TI_MAP_BYTES_D2560		= TI_MAP_TILES*2		; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 
 ; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
 ; each taking 4x32 bytes = 128bytes. We can assign to the whole tile sprites file 6910 bytes, 6910/128 = 53.
@@ -116,6 +119,36 @@ PrintText
 	INC HL
 
 	DJNZ .loop									; Loop until B == 0
+
+	RET											; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                    #CleanAllTiles                        ;
+;----------------------------------------------------------;
+CleanAllTiles
+
+	LD HL, ti.RAM_START_H5B00					; HL points to screen memory containing tilemap.
+	DEC HL
+
+	; ##########################################
+	LD A, TI_EMPTY_D57
+	LD B, TI_MAP_H
+	; Number of loops: 40*32
+.loopH
+	PUSH BC
+	LD B, TI_MAP_V
+
+.loopV
+	LD (HL), TX_PALETTE_D0						; Set palette for tile.
+	INC HL
+	
+	LD (HL), A									; Set tile id.
+	INC HL	
+	DJNZ .loopV
+
+	POP BC
+	DJNZ .loopH
 
 	RET											; ## END of the function ##
 

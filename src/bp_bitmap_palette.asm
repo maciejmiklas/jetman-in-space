@@ -43,26 +43,26 @@ BytesToColors
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadColors                          ;
+;                     #LoadPalette                         ;
 ;----------------------------------------------------------;
 ; Load palette address, set bank, and finally load colors into hardware.
 ; Input:
 ;  - HL: Contains the current palette address.
 ;  - B:  Number of colors.
-LoadColors
+LoadPalette
 	
 	CALL bp.SetupPaletteLoad
-	CALL bp.WriteColors
+	CALL bp.WritePalette
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #WriteColors                       ;
+;                      #WritePalette                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: Address of the palette that will be copied
 ;  - B:  Number of colors.
-WriteColors
+WritePalette
 
 .loop
 	LD DE, (HL)

@@ -16,15 +16,13 @@ PAL2_BR_BANK_D32		= 32					; Layer 2 brightness change for pallettes from dbs.PA
 SPR_BANK1_D33			= 33
 SPR_BANK2_D34			= 34
 
-; Background image (all values inclusive). Each background image has 80KiB (320x256), taking 10 banks.
+; Background image (all values inclusive). Background image has 80KiB (320x256), taking 10 banks.
 BGST_BANK_D35			= 35
 BG_EN_BANK_D44 	= dbs.BGST_BANK_D35+dbs.BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT dbs.BG_EN_BANK_D44 == 44
 
 RO_STAR_BANK1_D45		= 46
 RO_STAR_BANK2_D46		= 47
-
-
 
 ;----------------------------------------------------------;
 ;                    #SetupTilesBank                       ;

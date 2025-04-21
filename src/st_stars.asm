@@ -72,6 +72,7 @@ starsData2MaxY			WORD 0
 ;  - DE: Max horizontal star position for each column (#SC) for Level 1
 ;  - HL: Max horizontal star position for each column (#SC) for Level 2
 SetupStars
+
 	LD (st.starsData1MaxY), DE
 	LD (st.starsData2MaxY), HL
 	
@@ -96,7 +97,7 @@ LoadStarsPalette
 	LD HL, db.starsPalL1
 	LD A, ST_PAL_L1_SIZE
 	LD B, A
-	CALL bp.WriteColors
+	CALL bp.WritePalette
 
 	; ##########################################
 	; Load colors for the stars on layer 2.
@@ -104,7 +105,7 @@ LoadStarsPalette
 	LD HL, db.starsPalL2
 	LD A, ST_PAL_L2_SIZE
 	LD B, A
-	CALL bp.WriteColors
+	CALL bp.WritePalette
 
 	RET											; ## END of the function ##
 
@@ -146,7 +147,7 @@ HideStars
 ;                      #MoveStarsUp                        ;
 ;----------------------------------------------------------;
 MoveStarsUp
-	
+
 	; Move stars only if enabled.
 	LD A, (starsState)
 	CP ST_C_HIDDEN

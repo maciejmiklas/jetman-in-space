@@ -186,6 +186,7 @@ LoadRocketStarsTilemap
 ;----------------------------------------------------------;
 ; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
 ; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\l01_background.bmp
+; This function loads the image into temp RAM, in order to show it call #bm.LoadImage
 ; Input:
 ;  - IX: File name.
 ;  - C:  Position of a image part number (0-9) in the file name of the background image.
@@ -207,7 +208,7 @@ LoadImage
 
 	; ##########################################
 	; Load file into RAM
-	LD A, dbs.BGST_BANK_D35					; Set bank number.
+	LD A, dbs.BGST_BANK_D35						; Set bank number.
 	ADD B
 	NEXTREG _MMU_REG_SLOT6_H56, A
 

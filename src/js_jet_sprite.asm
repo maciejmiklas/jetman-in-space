@@ -238,7 +238,7 @@ ShowJetSprite
 
 	; Return if Jetman is inactive.
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	LD A, SPR_STATE_SHOW

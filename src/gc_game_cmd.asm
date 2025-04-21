@@ -53,6 +53,19 @@ SetupGame
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     #LoadLobbyIntro                      ;
+;----------------------------------------------------------;
+LoadLobbyIntro
+
+	CALL _DisableGame
+	
+	CALL loi.LoadIntroBackground
+	CALL loi.LoadIntroTilemap
+	CALL los.SetLobbyStateIntro
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      #LoadLevel1                         ;
 ;----------------------------------------------------------;
 LoadLevel1
@@ -409,7 +422,7 @@ MovementInactivity
 	; ##########################################
 	; Should Jetman hover?
 	LD A, (jt.jetAir)
-	CP jt.STATE_INACTIVE						; Is Jetman in the air?
+	CP jt.JT_STATE_INACTIVE						; Is Jetman in the air?
 	JR Z, .afterHoover							; Jump if not flaying.
 
 	LD A, (jt.jetAir)
@@ -433,7 +446,7 @@ MovementInactivity
 	; ##########################################
 	; Jetman is not hovering, but should he stand?
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE						; Is Jetman on the ground already?
+	CP jt.JT_STATE_INACTIVE						; Is Jetman on the ground already?
 	RET Z										; Jump if not on the ground.
 
 	LD A, (jt.jetGnd)
@@ -540,9 +553,9 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   #_InitLevelLoad                        ;
+;                     #_DisableGame                        ;
 ;----------------------------------------------------------;
-_InitLevelLoad
+_DisableGame
 
 	CALL bm.HideImage
 	CALL js.HideJetSprite
@@ -550,10 +563,23 @@ _InitLevelLoad
 	CALL st.HideStars
 	CALL jw.HideShots
 	CALL ep.HidePatternEnemies
+	CALL jt.SetJetStateInactive
+	CALL ti.ResetTilemapOffset
+	CALL ti.CleanAllTiles
+
+	RET											; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                   #_InitLevelLoad                        ;
+;----------------------------------------------------------;
+_InitLevelLoad
+
+	CALL _DisableGame
 	
+	CALL los.SetLobbyStateInactive
 	CALL ti.ResetTilemapOffset
 	CALL ro.ResetAndDisableRocket
-	CALL jt.SetJetStateInactive
 	CALL td.ResetTimeOfDay
 	CALL ros.ResetRocketStarsRow
 

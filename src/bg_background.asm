@@ -13,12 +13,12 @@ FILE_IMG_POS			= 14					; Position of a image part number (0-9) in the file name
 GB_MOVE_SLOW_D2			= 2						; Slows down background movement (when Jetman moves).
 
 ;----------------------------------------------------------;
-;                      #LoadBgImage                        ;
+;                    #LoadLevelBgImage                     ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadBgImage
+LoadLevelBgImage
 
 	; Set the level number in the file name, DE="35" will give: "assets/l00_background_0.nxi" -> "assets/l35_background_0.nxi"
 	LD HL, fileName
@@ -36,10 +36,10 @@ LoadBgImage
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;
 ;----------------------------------------------------------;
-; The background starts at the bottom of the screen with offset 16. That is the height of the ground. The background should begin where
-; the ground ends (2 pixels overlap). From the bottom of the screen, there is ground, 16 pixels high, and the background follows after it.
+; The background starts at the bottom of the screen with offset 8. That is the height of the ground. The background should begin where
+; the ground ends (2 pixels overlap). From the bottom of the screen, there is ground, 8 pixels high, and the background follows after it.
 ; When Jetman moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset.
-; It starts with 16 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
+; It starts with 8 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
 UpdateBackgroundOnJetmanMove
 
 	; Divide the Jetman's position by GB_MOVE_SLOW_D2 to slow down the movement of the background.

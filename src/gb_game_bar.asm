@@ -20,7 +20,8 @@ HideGameBar
 
 	; ##########################################
 	; Remove gamebar from screen.
-	LD B, GB_TILES_D13
+	LD A, GB_TILES_D13
+	LD B, A
 	CALL ti.CleanTiles
 
 	RET											; ## END of the function ##

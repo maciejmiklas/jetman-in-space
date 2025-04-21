@@ -238,8 +238,8 @@ starsPalL2
 	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
 	; ##########################################
-	ASSERT $$ == dbs.ST_BANK_D28						; Data should remain in the same bank
-	ASSERT $$starsBankStart == dbs.ST_BANK_D28 		; Make sure that we have configured the right bank.
+	ASSERT $$ == dbs.ST_BANK_D28				; Data should remain in the same bank
+	ASSERT $$starsBankStart == dbs.ST_BANK_D28 	; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                    Arrays (Bank 29)                      ;
@@ -1089,6 +1089,13 @@ bgrL10PaletteAdr
 	INCBIN  "assets/l10/bg.nxp"
 
 bgrL10PaletteBytes = $ - bgrL10PaletteAdr
+	ASSERT bgrL10PaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
+gameIntroPaletteAdr
+	INCBIN  "assets/lobby/intro.nxp"
+
+gameIntroPaletteBytes = $ - gameIntroPaletteAdr
 	ASSERT bgrL10PaletteBytes <= btd.PAL2_BYTES_D512
 	
  ; #############################################

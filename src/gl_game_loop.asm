@@ -53,7 +53,7 @@ _GameLoop000OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################
@@ -129,7 +129,7 @@ _GameLoop002OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################
@@ -174,7 +174,7 @@ _GameLoop004OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################
@@ -218,7 +218,7 @@ _GameLoop006OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################
@@ -262,7 +262,7 @@ _GameLoop008OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################
@@ -318,7 +318,7 @@ _GameLoop010OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################
@@ -389,7 +389,7 @@ _GameLoop040OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################
@@ -428,7 +428,7 @@ _GameLoop080OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 
 	; ##########################################

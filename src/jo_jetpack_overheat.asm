@@ -53,7 +53,7 @@ UpdateJetpackOverheating
 
 	; Increase the overheating timer if Jetman is flying.
 	LD A, (jt.jetAir)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	JR Z, .afterFlaying
 	
 	; Jetman is flying.
@@ -64,7 +64,7 @@ UpdateJetpackOverheating
 	; ##########################################
 	; Increase the cool down timer if Jetman is walking.
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z
 	
 	; Jetman is walking.

@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE jt
 
-STATE_INACTIVE			= 0
+JT_STATE_INACTIVE			= 0
 
 ; States for Jetman in the air, 0 for not in the air.
 AIR_FLY					= 10					; Jetman is flaying.
@@ -15,7 +15,7 @@ AIR_BUMP_LEFT			= 15					; Jetman bumps into a platform from the left, he faces/
 AIR_BUMP_BOTTOM			= 16					; Jetman bumps into a platform from the bottom.
 AIR_ENEMY_KICK			= 17					; Jetman flies above the enemy and kicks.
 
-jetAir					BYTE STATE_INACTIVE		; Game start, Jetman standing on the ground (see _JM_RESPAWN_Y_D217)
+jetAir					BYTE JT_STATE_INACTIVE		; Game start, Jetman standing on the ground (see _JM_RESPAWN_Y_D217)
 
 ; States for Jetman on the platform/ground
 GND_WALK				= 51					; Jetman walks on the ground.
@@ -25,7 +25,7 @@ GND_STAND				= 53					; Jetman stands on the ground.
 jetGnd					BYTE GND_STAND
 
 ; Jetman states
-JETST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != STATE_INACTIVE) or walking (#jetGnd != STATE_INACTIVE).
+JETST_NORMAL			= 101					; Jetman is alive, could be flying (#jetAir != JT_STATE_INACTIVE) or walking (#jetGnd != JT_STATE_INACTIVE).
 JETST_INV				= 102					; Jetman is invincible.
 JETST_RIP				= 103					; Jetman got hit by enemy.
 JETST_OVERHEAT			= 104					; Jetpack is overheating, and Jetman flays slowly.
@@ -39,7 +39,7 @@ UpdateStateOnJoyWillEnable
 
 	; Reset #jetAir
 	LD A, (jetAir)
-	CP STATE_INACTIVE
+	CP JT_STATE_INACTIVE
 	JR Z, .afterResetAir						; Do not need to reset if #jetAir is inactive.
 
 	; Reset!

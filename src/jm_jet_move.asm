@@ -143,7 +143,7 @@ JoyMoveDown
 	; ##########################################
 	; Cannot move down when walking.
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET NZ
 
 	; ##########################################
@@ -207,7 +207,7 @@ JoystickInputProcessed
 	; ##########################################
 	; Ignore the situation when Jetman stands on the ground and only down is present. This does not count as movement.
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	JR Z, .afterDownOnGround
 
 	; Jetman is on the ground, but is only down key pressed (without left/right)?
@@ -298,7 +298,7 @@ _JoyJetpackOverheatSlowdown
 	RET NZ
 
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET NZ
 	
 	LD A, (gld.counter000FliFLop)
@@ -335,7 +335,7 @@ _CanJetMove
 	; ##########################################
 	; Joystick disabled if Jetman is inactive.
 	LD A, (jt.jetState)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	JR NZ, .jetActive
 
 	; Do not process input.
@@ -404,7 +404,7 @@ _JoystickMoves
 _StandToWalk
 
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET Z										; Exit if Jetman is not on the ground.
 
 	; Jetman is on the ground, is he already walking?

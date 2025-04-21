@@ -244,7 +244,7 @@ ResetJoyOffBump
 
 	; Does Jetman walk on the platform?
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	JR NZ, .reset								; Reset immediately if walking.
 	
 	; Call _PlatformHit to check whether Jetman is close to the platform. now, we will load the params for this method.
@@ -388,7 +388,7 @@ JetPlatformTakesOff
 
 	; Transition from walking to flaying.
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE						; Check if Jetman is on the ground/platform.
+	CP jt.JT_STATE_INACTIVE						; Check if Jetman is on the ground/platform.
 	RET Z
 
 	; Jetman is taking off.
@@ -412,7 +412,7 @@ JetLanding
 	
 	; Ignore landing if Jetman is already on the ground.
 	LD A, (jt.jetGnd)
-	CP jt.STATE_INACTIVE
+	CP jt.JT_STATE_INACTIVE
 	RET NZ
 
 	; Update state as we are walking.

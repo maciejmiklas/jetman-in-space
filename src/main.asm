@@ -11,8 +11,9 @@ start
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz.
 	
 	CALL gc.SetupGame
-	CALL gc.LoadLevel1
-
+	;CALL gc.LoadLevel1
+	CALL gc.LoadLobbyIntro
+	
 	;CALL ro.AssemblyRocketForDebug
 
 ;----------------------------------------------------------;
@@ -60,10 +61,11 @@ mainLoop
 	INCLUDE "jw_jet_weapon.asm"
 	INCLUDE "ro_rocket.asm"
 	INCLUDE "ros_rocket_stars.asm"
-	INCLUDE "lo_lobby.asm"
 	INCLUDE "td_times_of_day.asm"
 	INCLUDE "st_stars.asm"
 	INCLUDE "jo_jetpack_overheat.asm"
+	INCLUDE "los_lobby_state.asm"
+	INCLUDE "loi_lobby_intro.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "db_data_bin.asm"

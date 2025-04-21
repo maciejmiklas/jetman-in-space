@@ -19,7 +19,7 @@ NextTodPalette
 	LD A, (palColors)
 	LD B, A	
 	PUSH HL
-	CALL bp.LoadColors
+	CALL bp.LoadPalette
 	CALL gc.BackgroundPaletteLoaded
 	POP HL
 
@@ -37,7 +37,7 @@ PrevTodPalette
 	LD HL, (todPalAddr)
 	LD A, (palColors)
 	LD B, A
-	CALL bp.LoadColors
+	CALL bp.LoadPalette
 	CALL gc.BackgroundPaletteLoaded
 
 	CALL PrevTodPaletteAddr
@@ -66,7 +66,7 @@ LoadCurrentTodPalette
 	LD HL, (palAdr)
 	LD A, (palColors)
 	LD B, A	
-	CALL bp.WriteColors
+	CALL bp.WritePalette
 
 	RET											; ## END of the function ##
 
