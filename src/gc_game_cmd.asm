@@ -20,10 +20,10 @@ JM_RESPAWN_X_D100		= 100
 JM_RESPAWN_Y_D217		= _GSC_JET_GND_D217		; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 ;----------------------------------------------------------;
-;                   #GameLoopCmd                           ;
+;                   #MainLoopCmd                           ;
 ;----------------------------------------------------------;
 	//DEFINE  PERFORMANCE_BORDER 
-GameLoopCmd
+MainLoopCmd
 
 	IFDEF PERFORMANCE_BORDER
 		LD	A, _COL_GREEN_D4
@@ -37,7 +37,7 @@ GameLoopCmd
 		OUT (_BORDER_IO_HFE), A
 	ENDIF	
 
-	CALL gl.GameLoop
+	CALL ml.MainLoop
 
 	RET											; ## END of the function ##
 
@@ -53,15 +53,15 @@ SetupGame
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadLobbyIntro                      ;
+;                        #LoadLobby                        ;
 ;----------------------------------------------------------;
-LoadLobbyIntro
+LoadLobby
 
 	CALL _DisableGame
 	
 	CALL loi.LoadIntroBackground
 	CALL loi.LoadIntroTilemap
-	CALL los.SetLobbyStateIntro
+	CALL los.SetLobbyStateMainMenu
 
 	RET											; ## END of the function ##
 

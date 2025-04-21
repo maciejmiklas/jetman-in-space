@@ -154,7 +154,7 @@ LoadRocketStarsTilemap
 	; Load first file
 	PUSH DE
 	
-	CALL dbs.SetupRocketStarsBank
+	CALL dbs.SetupLongTilemapBank
 
 	LD A, "0"
 	CALL _PrepareFileOpenForStars

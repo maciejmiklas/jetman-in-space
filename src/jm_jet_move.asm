@@ -267,7 +267,7 @@ _JoyCntEnabled
 	; hitting the platform from below and pressing up + left (or right). 
 	; We can have the following situation: Jetman is below the platform and is not bumping off anymore because it's close long enough.
 	; The player still keeps pressing up and simultaneously, let's say, left. We want to allow movement to the left, but not up.
-	; Because #joyOffCnt > 0, the function #_GameLoop000OnDisabledJoy will be executed. It will move Jetman one pixel down, which is good
+	; Because #joyOffCnt > 0, the function #_MainLoop000OnDisabledJoy will be executed. It will move Jetman one pixel down, which is good
 	; because pressing up has moved him one pixel up. To allow movement left, we ignore #joyOffBump because it is so small that we know
 	; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
 

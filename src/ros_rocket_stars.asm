@@ -49,7 +49,7 @@ ResetRocketStarsRow
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#starsRow).
 NextRocketStarsRow
-	CALL dbs.SetupRocketStarsBank
+	CALL dbs.SetupLongTilemapBank
 
 	; ##########################################
 	; Decrement counters.

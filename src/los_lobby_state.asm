@@ -4,10 +4,9 @@
 	MODULE los
 
 LOBBY_INACTIVE			= 0
-LOBBY_INTRO				= 1
+MAIN_MENU				= 1
 
 lobbyState				BYTE LOBBY_INACTIVE
-
 
 ;----------------------------------------------------------;
 ;                #SetLobbyStateInactive                    ;
@@ -20,11 +19,11 @@ SetLobbyStateInactive
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #SetLobbyStateIntro                     ;
+;                #SetLobbyStateMainMenu                    ;
 ;----------------------------------------------------------;
-SetLobbyStateIntro
+SetLobbyStateMainMenu
 
-	LD A, LOBBY_INTRO
+	LD A, MAIN_MENU
 	LD (lobbyState), A
 
 	RET											; ## END of the function ##

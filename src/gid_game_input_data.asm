@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE gid
 
-; The counter turns off the joystick for a few iterations. Each call #JoystickInput decrements it by one
+; The counter turns off the joystick for a few iterations. Each call #GameJoystickInput decrements it by one
 ; It's used for effects like bumping from the platform's edge or falling.
 joyOffCnt			BYTE 0
 

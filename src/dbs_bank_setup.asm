@@ -21,8 +21,8 @@ BGST_BANK_D35			= 35
 BG_EN_BANK_D44 	= dbs.BGST_BANK_D35+dbs.BM_BANKS_D10-1; -1 because inclusive.
 	ASSERT dbs.BG_EN_BANK_D44 == 44
 
-RO_STAR_BANK1_D45		= 46
-RO_STAR_BANK2_D46		= 47
+LONG_TI_BANK1_D45		= 46
+LONG_TI_BANK2_D46		= 47
 
 ;----------------------------------------------------------;
 ;                    #SetupTilesBank                       ;
@@ -34,12 +34,12 @@ SetupTilesBank
 	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
-;               #SetupRocketStarsBank                      ;
+;               #SetupLongTilemapBank                      ;
 ;----------------------------------------------------------;
-SetupRocketStarsBank
+SetupLongTilemapBank
 
-	NEXTREG _MMU_REG_SLOT6_H56, dbs.RO_STAR_BANK1_D45 ; Assign bank 31 to slot 6 (see di_data_bin.asm).
-	NEXTREG _MMU_REG_SLOT7_H57, dbs.RO_STAR_BANK2_D46 ; Assign bank 32 to slot 7.
+	NEXTREG _MMU_REG_SLOT6_H56, dbs.LONG_TI_BANK1_D45 ; Assign bank 31 to slot 6 (see di_data_bin.asm).
+	NEXTREG _MMU_REG_SLOT7_H57, dbs.LONG_TI_BANK2_D46 ; Assign bank 32 to slot 7.
 
 	RET											; ## END of the function ##
 	

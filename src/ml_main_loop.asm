@@ -1,22 +1,22 @@
 ;----------------------------------------------------------;
-;                       Game Loop                          ;
+;                       Main Loop                          ;
 ;----------------------------------------------------------;
-	MODULE gl 
+	MODULE ml 
 
 ;----------------------------------------------------------;
-;                      #GameLoop                           ;
+;                      #MainLoop                           ;
 ;----------------------------------------------------------;
-GameLoop
+MainLoop
 
-	CALL _GameLoop000
-	CALL _GameLoop002
-	CALL _GameLoop002
-	CALL _GameLoop004
-	CALL _GameLoop006
-	CALL _GameLoop008
-	CALL _GameLoop010
-	CALL _GameLoop040
-	CALL _GameLoop080
+	CALL _MainLoop000
+	CALL _MainLoop002
+	CALL _MainLoop002
+	CALL _MainLoop004
+	CALL _MainLoop006
+	CALL _MainLoop008
+	CALL _MainLoop010
+	CALL _MainLoop040
+	CALL _MainLoop080
 
 	RET											; ## END of the function ##
 
@@ -27,9 +27,9 @@ GameLoop
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_GameLoop000                        ;
+;                     #_MainLoop000                        ;
 ;----------------------------------------------------------;
-_GameLoop000
+_MainLoop000
 
 	; 1 -> 0 and 0 -> 1
 	LD A, (gld.counter000FliFLop)
@@ -42,14 +42,15 @@ _GameLoop000
 
 	CALL gb.PrintDebug
 	CALL ro.FlyRocket
-	CALL _GameLoop000OnActiveJetman
+	CALL _MainLoop000OnActiveJetman
+	CALL _MainLoop000OnActiveLobby
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop000OnActiveJetman                ;
+;               #_MainLoop000OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop000OnActiveJetman
+_MainLoop000OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
@@ -57,7 +58,7 @@ _GameLoop000OnActiveJetman
 	RET Z
 
 	; ##########################################
-	CALL _GameLoop000OnDisabledJoy
+	CALL _MainLoop000OnDisabledJoy
 
 	CALL ro.CheckHitTank
 	CALL jco.JetRip
@@ -67,18 +68,34 @@ _GameLoop000OnActiveJetman
 	CALL js.UpdateJetSpritePositionRotation
 	CALL jw.FireDelayCounter
 	CALL jco.JetmanEnemiesCollision
-	CALL gi.JoystickInput
-	CALL gi.KeyboardInput
+	CALL gi.GameJoystickInput
+	CALL gi.GameKeyboardInput
 	CALL ep.MovePatternEnemies
 	CALL es.RespawnNextSingleEnemy
 ;CALL ef.RespawnFormation
 	
 	RET											; ## END of the function ##
 
+
 ;----------------------------------------------------------;
-;               #_GameLoop000OnDisabledJoy                 ;
+;               #_MainLoop000OnActiveLobby                 ;
 ;----------------------------------------------------------;
-_GameLoop000OnDisabledJoy
+_MainLoop000OnActiveLobby
+
+	; Return if Lobby is inactive
+	LD A, (los.lobbyState)
+	CP los.LOBBY_INACTIVE
+	RET Z
+
+	; ##########################################
+	CALL loi.MainMenuUserInput
+	
+	RET											; ## END of the function ##	
+
+;----------------------------------------------------------;
+;               #_MainLoop000OnDisabledJoy                 ;
+;----------------------------------------------------------;
+_MainLoop000OnDisabledJoy
 
 	; ##########################################
 	; Return if the joystick is about to enable
@@ -94,9 +111,9 @@ _GameLoop000OnDisabledJoy
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #_GameLoop002                      ;
+;                       #_MainLoop002                      ;
 ;----------------------------------------------------------;
-_GameLoop002
+_MainLoop002
 
 	; Increment the counter.
 	LD A, (gld.counter002)
@@ -117,15 +134,15 @@ _GameLoop002
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL _GameLoop002OnActiveJetman
+	CALL _MainLoop002OnActiveJetman
 	CALL ros.AnimateStarsOnFlyRocket
 	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop002OnActiveJetman                ;
+;               #_MainLoop002OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop002OnActiveJetman
+_MainLoop002OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
@@ -139,9 +156,9 @@ _GameLoop002OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_GameLoop004                        ;
+;                     #_MainLoop004                        ;
 ;----------------------------------------------------------;
-_GameLoop004
+_MainLoop004
 
 	; Increment the counter.
 	LD A, (gld.counter004)
@@ -163,14 +180,14 @@ _GameLoop004
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
 	CALL ro.AnimateRocketExplosion
-	CALL _GameLoop004OnActiveJetman
+	CALL _MainLoop004OnActiveJetman
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop004OnActiveJetman                ;
+;               #_MainLoop004OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop004OnActiveJetman
+_MainLoop004OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
@@ -184,9 +201,9 @@ _GameLoop004OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_GameLoop006                       ;
+;                      #_MainLoop006                       ;
 ;----------------------------------------------------------;
-_GameLoop006
+_MainLoop006
 
 	; Increment the counter.
 	LD A, (gld.counter006)
@@ -207,14 +224,14 @@ _GameLoop006
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL _GameLoop006OnActiveJetman
+	CALL _MainLoop006OnActiveJetman
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop006OnActiveJetman                ;
+;               #_MainLoop006OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop006OnActiveJetman
+_MainLoop006OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
@@ -226,9 +243,9 @@ _GameLoop006OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_GameLoop008                        ;
+;                     #_MainLoop008                        ;
 ;----------------------------------------------------------;
-_GameLoop008
+_MainLoop008
 
 	; Increment the counter.
 	LD A, (gld.counter008)
@@ -249,16 +266,16 @@ _GameLoop008
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL _GameLoop008OnActiveJetman
+	CALL _MainLoop008OnActiveJetman
 	CALL ro.AnimateRocketExhaust
 	CALL ro.BlinkFlyingRocket
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop008OnActiveJetman                ;
+;               #_MainLoop008OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop008OnActiveJetman
+_MainLoop008OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
@@ -283,9 +300,9 @@ _GameLoop008OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_GameLoop010                        ;
+;                     #_MainLoop010                        ;
 ;----------------------------------------------------------;
-_GameLoop010
+_MainLoop010
 
 	; Increment the counter.
 	LD A, (gld.counter010)
@@ -306,15 +323,15 @@ _GameLoop010
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL _GameLoop010nFlyingRocket
-	CALL _GameLoop010OnActiveJetman
+	CALL _MainLoop010nFlyingRocket
+	CALL _MainLoop010OnActiveJetman
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop010OnActiveJetman                ;
+;               #_MainLoop010OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop010OnActiveJetman
+_MainLoop010OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
@@ -327,9 +344,9 @@ _GameLoop010OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop010nFlyingRocket                 ;
+;               #_MainLoop010nFlyingRocket                 ;
 ;----------------------------------------------------------;
-_GameLoop010nFlyingRocket
+_MainLoop010nFlyingRocket
 
 	; Return if rocket is not flying.
 	LD A, (ro.rocketState)
@@ -360,9 +377,9 @@ _GameLoop010nFlyingRocket
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_GameLoop040                       ;
+;                      #_MainLoop040                       ;
 ;----------------------------------------------------------;
-_GameLoop040
+_MainLoop040
 
 	; Increment the counter.
 	LD A, (gld.counter040)
@@ -378,14 +395,14 @@ _GameLoop040
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-	CALL _GameLoop040OnActiveJetman
+	CALL _MainLoop040OnActiveJetman
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop040OnActiveJetman                ;
+;               #_MainLoop040OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop040OnActiveJetman
+_MainLoop040OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)
@@ -399,9 +416,9 @@ _GameLoop040OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_GameLoop080                       ;
+;                      #_MainLoop080                       ;
 ;----------------------------------------------------------;
-_GameLoop080
+_MainLoop080
 
 	; Increment the counter.
 	LD A, (gld.counter080)
@@ -417,14 +434,14 @@ _GameLoop080
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-	CALL _GameLoop080OnActiveJetman
+	CALL _MainLoop080OnActiveJetman
 
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_GameLoop080OnActiveJetman                ;
+;               #_MainLoop080OnActiveJetman                ;
 ;----------------------------------------------------------;
-_GameLoop080OnActiveJetman
+_MainLoop080OnActiveJetman
 
 	; Return if Jetman is inactive (game paused/loading).
 	LD A, (jt.jetState)

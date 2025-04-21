@@ -12,7 +12,7 @@ RO_FLY_DELAY_DIST_D5	= 5
 RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 
-; Number of _GameLoop040 cycles to drop next rocket module.
+; Number of _MainLoop040 cycles to drop next rocket module.
 dropNextDelay			BYTE 0
 
 rocketElementCnt		BYTE 0 					; Counts from EL_LOW_D1 to EL_TANK3_D6, both inclusive.

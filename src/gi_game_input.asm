@@ -4,9 +4,9 @@
 	MODULE gi
 
 ;----------------------------------------------------------;
-;                     #JoystickInput                       ;
+;                  #GameJoystickInput                      ;
 ;----------------------------------------------------------;
-JoystickInput
+GameJoystickInput
 
 	LD A, gid.MOVE_INACTIVE						; Update #jetState by resetting left/hover and setting right.
 	LD (gid.joyDirection), A
@@ -73,6 +73,20 @@ JoystickInput
 	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
 	BIT 1, A									; Bit 1 reset -> Z pressed.
 	CALL Z, _JoyFire
+
+	; ##########################################
+	; Key SPACE pressed ?
+	LD A, _KB_B_TO_SPC_H7F
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
+	BIT 0, A									; Bit 0 reset -> SPACE pressed.
+	CALL Z, _JoyFire
+
+	; ##########################################
+	; Key ENTER pressed ?
+	LD A, _KB_H_TO_ENT_HBF
+	IN A, (_KB_REG_HFE)							; Read keyboard input into A.
+	BIT 0, A									; Bit 0 reset -> SPACE pressed.
+	CALL Z, _JoyFire		
 	
 	; ##########################################
 	; Key Left pressed ?
@@ -86,9 +100,9 @@ JoystickInput
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #KeyboardInput                        ;
+;                   #GameKeyboardInput                     ;
 ;----------------------------------------------------------;
-KeyboardInput
+GameKeyboardInput
 
 	; Handle row T...Q
 	LD A, _KB_T_TO_Q_HFB

@@ -12,7 +12,7 @@ start
 	
 	CALL gc.SetupGame
 	;CALL gc.LoadLevel1
-	CALL gc.LoadLobbyIntro
+	CALL gc.LoadLobby
 	
 	;CALL ro.AssemblyRocketForDebug
 
@@ -20,7 +20,7 @@ start
 ;                      Main Loop                           ;
 ;----------------------------------------------------------;
 mainLoop
-	CALL gc.GameLoopCmd
+	CALL gc.MainLoopCmd
 	JR mainLoop
 
 ;----------------------------------------------------------;
@@ -34,7 +34,7 @@ mainLoop
 	INCLUDE "ti_tiles.asm"
 	INCLUDE "ut_util.asm"
 	INCLUDE "gld_game_loop_data.asm"
-	INCLUDE "gl_game_loop.asm"
+	INCLUDE "ml_main_loop.asm"
 
 	INCLUDE "gc_game_cmd.asm"
 
@@ -64,8 +64,9 @@ mainLoop
 	INCLUDE "td_times_of_day.asm"
 	INCLUDE "st_stars.asm"
 	INCLUDE "jo_jetpack_overheat.asm"
+	INCLUDE "loi_lobby_input.asm"
+	INCLUDE "lom_lobby_menu.asm"
 	INCLUDE "los_lobby_state.asm"
-	INCLUDE "loi_lobby_intro.asm"
 
 	; LAST import due to bank offset!
 	INCLUDE "db_data_bin.asm"
