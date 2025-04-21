@@ -53,14 +53,26 @@ SetupGame
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #LoadLobby                        ;
+;                       #LoadLobby                         ;
 ;----------------------------------------------------------;
 LoadLobby
 
 	CALL _DisableGame
+	CALL lom.LoadMainMenu
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #LoadLevel1Intro                      ;
+;----------------------------------------------------------;
+LoadLevel1Intro
+
+	CALL _DisableGame
 	CALL los.SetLobbyStateLevelIntro
 
-	LD DE, 2880
+	LD D, "0"
+	LD E, "1"
+	LD HL, 2880
 	CALL li.LoadLevelIntro
 
 	RET											; ## END of the function ##
@@ -213,8 +225,17 @@ LoadNextLevel
 	LD (level),A
 .afterResetLevel
 
-	; ##########################################
-	; A contains level number, load corresponding level.
+	CALL LoadCurrentLevel
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #LoadCurrentLevel                       ;
+;----------------------------------------------------------;
+LoadCurrentLevel
+
+	; Load level into A
+	LD A, (level)
 
 	; Load level 1
 	CP 1

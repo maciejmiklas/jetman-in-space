@@ -1093,10 +1093,17 @@ bgrL10PaletteBytes = $ - bgrL10PaletteAdr
 
  ; #############################################
 gameIntroPaletteAdr
-	INCBIN  "assets/lobby/intro.nxp"
+	INCBIN  "assets/l01/intro.nxp"
 
 gameIntroPaletteBytes = $ - gameIntroPaletteAdr
-	ASSERT bgrL10PaletteBytes <= btd.PAL2_BYTES_D512
+	ASSERT gameIntroPaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
+menuBgPaletteAdr
+	INCBIN  "assets/lobby/bg.nxp"
+
+menuBbPaletteBytes = $ - menuBgPaletteAdr
+	ASSERT menuBbPaletteBytes <= btd.PAL2_BYTES_D512	
 	
  ; #############################################
 	ASSERT $$ == dbs.PAL2_BANK_D31

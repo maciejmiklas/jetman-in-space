@@ -77,13 +77,65 @@ introSecondFileSize		WORD 0
 
 ; Tiles for in-game platforms.
 plTileFileName 			DB "assets/l00/tiles.map",0
-PL_FILE_LEVEL_POS		= 8							; Position of a level number (00-99) in the file name of the background image.
+PL_FILE_LEVEL_POS		= 8						; Position of a level number (00-99) in the file name of the background image.
 
 ; Sprite file.
 sprTileFileName 		DB "assets/l00/sprites_0.spr",0
 SPR_FILE_LEVEL_POS		= 8
 SPR_FILE_NR_POS			= 10
 SPR_FILE_BYT_D8192		= _BANK_BYTES_D8192
+
+; Level background file.
+lbFileName 				DB "assets/l00/bg_0.nxi",0
+LB_FILE_LEVEL_POS		= 8						; Position of a level number (00-99) in the file name of the background image.
+LB_FILE_IMG_POS			= 14					; Position of a image part number (0-9) in the file name of the background image.
+
+; Level intro file
+liFileName 				DB "assets/l00/intro_0.nxi",0
+LI_FILE_LEVEL_POS		= 8						; Position of a level number (00-99) in the file name of the background image.
+LI_FILE_IMG_POS			= 17					; Position of a image part number (0-9) in the file name of the background image.
+
+;----------------------------------------------------------;
+;                 #LoadLevelIntroImage                     ;
+;----------------------------------------------------------;
+; The screen size is 320x256 (81920 bytes, 80KiB).
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadLevelIntroImage
+
+	; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/..."
+	LD HL, liFileName
+	LD IX, HL									; Param for #LoadImage
+	ADD HL, LI_FILE_LEVEL_POS					; Move HL to "assets/l"
+	LD (HL), D									; Set first number.
+	INC HL
+	LD (HL), E									; Set second number.
+
+	LD C, LI_FILE_IMG_POS
+	CALL fi.LoadImage
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #LoadLevelBgImage                     ;
+;----------------------------------------------------------;
+; The screen size is 320x256 (81920 bytes, 80KiB).
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadLevelBgImage
+
+	; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/...."
+	LD HL, lbFileName
+	LD IX, HL									; Param for #LoadImage
+	ADD HL, LB_FILE_LEVEL_POS					; Move HL to "assets/l"
+	LD (HL), D									; Set first number.
+	INC HL
+	LD (HL), E									; Set second number.
+
+	LD C, LB_FILE_IMG_POS
+	CALL fi.LoadImage
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                 #LoadPlatformsTilemap                    ;

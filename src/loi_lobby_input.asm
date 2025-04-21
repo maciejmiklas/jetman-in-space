@@ -105,7 +105,7 @@ MainMenuUserInput
 ;----------------------------------------------------------;
 _JoyRight
 
-	CALL gc.LoadLevel1 
+	CALL _ExitMenu
 
 	RET											; ## END of the function ##
 
@@ -114,7 +114,7 @@ _JoyRight
 ;----------------------------------------------------------;
 _JoyLeft
 
-	CALL gc.LoadLevel1
+	CALL _ExitMenu
 
 	RET											; ## END of the function ##
 
@@ -123,7 +123,7 @@ _JoyLeft
 ;----------------------------------------------------------;
 _JoyUp
 
-	CALL gc.LoadLevel1
+	CALL _ExitMenu
 
 	RET											; ## END of the function ##
 
@@ -132,7 +132,7 @@ _JoyUp
 ;----------------------------------------------------------;
 _JoyDown
 
-	CALL gc.LoadLevel1
+	CALL _ExitMenu
 
 	RET											; ## END of the function ##
 
@@ -141,9 +141,32 @@ _JoyDown
 ;----------------------------------------------------------;
 _JoyFire
 
-	CALL gc.LoadLevel1
+	CALL _ExitMenu
 
 	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       _ExitMenu                          ;
+;----------------------------------------------------------;
+_ExitMenu
+
+	LD A, (los.lobbyState)
+	CP los.MAIN_MENU
+	JR NZ, .afterMainMenu
+
+	CALL gc.LoadLevel1Intro
+	RET
+.afterMainMenu
+
+	LD A, (los.lobbyState)
+	CP los.LEVEL_INTRO
+	JR NZ, .afterLevelIntro
+
+	CALL gc.LoadCurrentLevel
+	RET
+.afterLevelIntro
+
+	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

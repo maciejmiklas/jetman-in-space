@@ -6,32 +6,7 @@
 bgOffset				BYTE 0					; Offset of the background image.
 GB_OFFSET_D6 			= _TI_GND_D8-2
 
-fileName 				DB "assets/l00/bg_0.nxi",0
-FILE_LEVEL_POS			= 8						; Position of a level number (00-99) in the file name of the background image.
-FILE_IMG_POS			= 14					; Position of a image part number (0-9) in the file name of the background image.
-
 GB_MOVE_SLOW_D2			= 2						; Slows down background movement (when Jetman moves).
-
-;----------------------------------------------------------;
-;                    #LoadLevelBgImage                     ;
-;----------------------------------------------------------;
-; The screen size is 320x256 (81920 bytes, 80KiB).
-; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadLevelBgImage
-
-	; Set the level number in the file name, DE="35" will give: "assets/l00_background_0.nxi" -> "assets/l35_background_0.nxi"
-	LD HL, fileName
-	LD IX, HL									; Param for #LoadImage
-	ADD HL, FILE_LEVEL_POS						; Move HL to "assets/l"
-	LD (HL), D									; Set first number.
-	INC HL
-	LD (HL), E									; Set second number.
-
-	LD C, FILE_IMG_POS
-	CALL fi.LoadImage
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;

@@ -3,8 +3,6 @@
 ;----------------------------------------------------------;
 	MODULE li
 
-FILE_IMG_POS			= 19					; Position of a image part number (0-9) in the file name of the background image.
-introFileName 			DB "assets/lobby/intro_0.nxi",0
 
 TI_ROWS_MAX_D128		= 8192/80 + 2880/80
 
@@ -19,10 +17,12 @@ tilePixelCnt			BYTE 0					; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Size of second tiles file (first one has 8KiB).
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - HL: Size of second tiles file (first one has 8KiB).
 LoadLevelIntro
+	PUSH DE
 	CALL _ResetLevelIntro
-	LD (fi.introSecondFileSize), DE
+	LD (fi.introSecondFileSize), HL
 	CALL ti.SetTilesClipVertical
 
 	; ##########################################
@@ -34,9 +34,8 @@ LoadLevelIntro
 
 	; ##########################################
 	; Load background image
-	LD IX, introFileName
-	LD C, FILE_IMG_POS
-	CALL fi.LoadImage
+	POP DE
+	CALL fi.LoadLevelIntroImage
 	CALL bm.LoadImage
 
 	; ##########################################

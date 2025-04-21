@@ -7,7 +7,6 @@ LOBBY_INACTIVE			= 0
 LEVEL_INTRO				= 1
 MAIN_MENU				= 2
 
-
 lobbyState				BYTE LOBBY_INACTIVE
 
 ;----------------------------------------------------------;
