@@ -5,7 +5,6 @@
 
 SPR_BYT_D16384			= 16384
 SP_ADDR_HC000			= _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
-RS_ADDR_HC000			= _RAM_SLOT6_STA_HC000 ; RAM start address for tilemap with stars for flying rocket.
 
 ;----------------------------------------------------------;
 ;                   Reserved Sprite IDs                    ;

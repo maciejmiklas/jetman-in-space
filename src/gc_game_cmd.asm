@@ -58,10 +58,10 @@ SetupGame
 LoadLobby
 
 	CALL _DisableGame
-	
-	CALL loi.LoadIntroBackground
-	CALL loi.LoadIntroTilemap
-	CALL los.SetLobbyStateMainMenu
+	CALL los.SetLobbyStateLevelIntro
+
+	LD DE, 2880
+	CALL li.LoadLevelIntro
 
 	RET											; ## END of the function ##
 
@@ -581,7 +581,7 @@ _InitLevelLoad
 	CALL ti.ResetTilemapOffset
 	CALL ro.ResetAndDisableRocket
 	CALL td.ResetTimeOfDay
-	CALL ros.ResetRocketStarsRow
+	CALL ros.ResetRocketStars
 
 	RET											; ## END of the function ##
 

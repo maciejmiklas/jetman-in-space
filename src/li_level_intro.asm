@@ -1,0 +1,173 @@
+;----------------------------------------------------------;
+;                   Game Level Intro                       ;
+;----------------------------------------------------------;
+	MODULE li
+
+FILE_IMG_POS			= 19					; Position of a image part number (0-9) in the file name of the background image.
+introFileName 			DB "assets/lobby/intro_0.nxi",0
+
+TI_ROWS_MAX_D128		= 8192/80 + 2880/80
+
+; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
+screenTilesRow			BYTE 0					; Current tiles row on the screen, runs from 0 to TI_VTILES_D32-1.
+sourceTilesRow			BYTE 0					; Current tiles row in source file (RAM), runs from from 0 to TI_ROWS_MAX_D128-1.
+
+tileOffset				BYTE 0					; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
+tilePixelCnt			BYTE 0					; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
+	
+;----------------------------------------------------------;
+;                   #LoadLevelIntro                        ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Size of second tiles file (first one has 8KiB).
+LoadLevelIntro
+	CALL _ResetLevelIntro
+	LD (fi.introSecondFileSize), DE
+	CALL ti.SetTilesClipVertical
+
+	; ##########################################
+	; Load palette
+	LD HL, db.gameIntroPaletteAdr
+	LD A, (db.gameIntroPaletteBytes)
+	LD B, A
+	CALL bp.LoadPalette
+
+	; ##########################################
+	; Load background image
+	LD IX, introFileName
+	LD C, FILE_IMG_POS
+	CALL fi.LoadImage
+	CALL bm.LoadImage
+
+	; ##########################################
+	; Tilemap with story
+	LD D, "0"
+	LD E, "1"
+	CALL fi.LoadLevelIntroTilemap
+	CALL _NextTilesRow
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #AnimateLevelIntro                       ;
+;----------------------------------------------------------;
+AnimateLevelIntro
+	; Return if intro is not active
+	LD A, (los.lobbyState)
+	CP los.LEVEL_INTRO
+	RET NZ
+	
+	; ##########################################
+	; Increment the tile counter to determine whether we should load the next tile row.
+	LD A, (tilePixelCnt)
+	INC A
+	LD (tilePixelCnt), A
+
+	CP ti.TI_PIXELS_D8
+	JR NZ, .afterNextTile
+	
+	; Reset the counter and fetch the next tile row.
+	XOR A
+	LD (tilePixelCnt), A
+
+	CALL _NextTilesRow
+.afterNextTile
+
+	; ##########################################
+	; Move tiles.
+	LD A, (tileOffset)
+	INC A
+	LD (tileOffset), A
+	NEXTREG _DC_REG_TI_Y_H31, A					; Y tile offset.
+
+	RET											; ## END of the function ##
+	
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  #_ResetLevelIntro                       ;
+;----------------------------------------------------------;
+_ResetLevelIntro
+
+	LD A, ti.TI_VTILES_D32-1
+	LD (screenTilesRow), A
+
+	XOR A
+	LD (tileOffset), A
+	LD (sourceTilesRow), A
+	LD (tilePixelCnt), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #_NextTilesRow                         ;
+;----------------------------------------------------------;
+; This method is called when the on screen tilemap has moved by 8 pixels. It reads the next row from the source tilemap and places it on 
+; the bottom row on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to 
+; calculate the new position of the bottom row (#screenTilesRow). We also need to read the next row from the source tilemap (#sourceTilesRow).
+_NextTilesRow
+	CALL dbs.Setup16KTilemapBank
+
+	; ##########################################
+	; Prepare tile copy fom temp RAM to screen RAM.
+
+	; Load the memory address of the tiles row to be copied into HL. HL = RS_ADDR_HC000 + sourceTilesRow * ti.TI_H_BYTES_D80.
+	LD A, (sourceTilesRow)
+	LD D, A
+	LD E, ti.TI_H_BYTES_D80
+	MUL D, E									; DE contains byte offset to current row.
+	LD HL, _RAM_SLOT6_STA_HC000
+	ADD HL, DE									; Move RAM pointer to current row.
+
+	; Load the bottom line of tilemap screen memory into DE. This row will be replaced with new lite line. 
+	; DE = ti.RAM_START_H5B00 + screenTilesRow * ti.TI_H_BYTES_D80
+	LD A, (screenTilesRow)
+
+	LD D, A
+	LD E, ti.TI_H_BYTES_D80
+	MUL D, E									; DE contains #screenTilesRow * ti.TI_H_BYTES_D80.
+	PUSH HL										; Keep HL because it already contains proper source tiles address
+	LD HL, ti.RAM_START_H5B00					; Now HL contains memory offset to tiles.
+	ADD HL, DE
+	LD DE, HL
+	POP HL
+	LD BC, ti.TI_H_BYTES_D80					; Number of bytes to copy, it's one row.
+	LDIR
+
+	; ##########################################
+	; Increment and reset #sourceTilesRow counter.
+	LD A, (sourceTilesRow)
+	INC A
+	LD (sourceTilesRow), A
+
+	CP A, TI_ROWS_MAX_D128
+	JR NZ, .afterResetStarsRow					; Jump if #starsLine > 0.
+
+	; Reset counter.
+	XOR A
+	LD (sourceTilesRow), A
+.afterResetStarsRow
+
+	; ##########################################
+	; Increment and reset #screenTilesRow counter.
+	LD A, (screenTilesRow)
+	INC A
+	LD (screenTilesRow), A
+
+	CP A, ti.TI_VTILES_D32
+	JR NZ, .afterResetTilesRow					; Jump if #screenTilesRow > 0.
+
+	; Reset tiles counter.
+	XOR A
+	LD (screenTilesRow), A
+.afterResetTilesRow
+
+	RET											; ## END of the function ##
+;----------------------------------------------------------;
+;                       ENDMODULE                          ;
+;----------------------------------------------------------;
+	ENDMODULE

@@ -68,10 +68,13 @@ ST_BYTES_D10240			= ti.TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens
 	ASSERT ST_BYTES_D10240 =  10240
 	ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
-stTileFileName 			DB "assets/l00/stars_0.map",0
-ST_FILE_LEVEL_POS		= 8	
-ST_FILE_NR_POS			= 8
- 
+introTilesFileName 		DB "assets/l00/intro_0.map",0
+stTilesFileName 		DB "assets/l00/stars_0.map",0
+TI16K_FILE_LEVEL_POS	= 8	
+TI16K_FILE_NR_POS		= 8
+
+introSecondFileSize		WORD 0
+
 ; Tiles for in-game platforms.
 plTileFileName 			DB "assets/l00/tiles.map",0
 PL_FILE_LEVEL_POS		= 8							; Position of a level number (00-99) in the file name of the background image.
@@ -83,7 +86,7 @@ SPR_FILE_NR_POS			= 10
 SPR_FILE_BYT_D8192		= _BANK_BYTES_D8192
 
 ;----------------------------------------------------------;
-;               #LoadPlatformsTilemap                      ;
+;                 #LoadPlatformsTilemap                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
@@ -127,7 +130,6 @@ LoadSprites
 	LD IX, sp.SP_ADDR_HC000
 	LD BC, SPR_FILE_BYT_D8192
 	CALL _FileRead
-
 	POP DE
 	
 	; ##########################################
@@ -145,39 +147,30 @@ LoadSprites
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #LoadRocketStarsTilemap                  ;
+;               #LoadRocketStarsTilemap                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadRocketStarsTilemap
 
-	; Load first file
-	PUSH DE
-	
-	CALL dbs.SetupLongTilemapBank
-
-	LD A, "0"
-	CALL _PrepareFileOpenForStars
-	CALL _FileOpen
-
-	; Read file.
-	LD IX, sp.RS_ADDR_HC000
-	LD BC, ST_FILE1_BYT_D8192
-	CALL _FileRead
-
-	POP DE
-
-	; ##########################################
-	; Load second file.
-
-	LD A, "1"
-	CALL _PrepareFileOpenForStars
-	CALL _FileOpen
-
-	; Read file.
-	LD IX, _RAM_SLOT7_STA_HE000
+	LD HL, stTilesFileName
+	LD IX, HL
 	LD BC, ST_FILE2_BYT_D2048
-	CALL _FileRead
+	CALL _Load16KTilemap
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #LoadLevelIntroTilemap                    ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadLevelIntroTilemap
+
+	LD HL, introTilesFileName
+	LD IX, HL
+	LD BC, (introSecondFileSize)
+	CALL _Load16KTilemap
 
 	RET											; ## END of the function ##
 
@@ -237,24 +230,65 @@ LoadImage
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;             #_PrepareFileOpenForStars                    ;
+;                 #_Load16KTilemap                         ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
+;  - BC: Size in bytes of second tilemap 8K file
+_Load16KTilemap
+
+	CALL dbs.Setup16KTilemapBank
+
+	; ##########################################
+	; Load first file
+	PUSH DE, IX, BC
+
+	; Read file.
+	LD A, "0"
+	CALL _Prepare16KTilemapFile
+	CALL _FileOpen
+	
+	LD IX, _RAM_SLOT6_STA_HC000
+	LD BC, ST_FILE1_BYT_D8192
+	CALL _FileRead
+
+	POP BC, IX, DE
+
+	; ##########################################
+	; Load second file.
+	PUSH BC
+
+	; Read file.
+	LD A, "1"
+	CALL _Prepare16KTilemapFile
+	CALL _FileOpen
+
+	LD IX, _RAM_SLOT7_STA_HE000
+	POP BC
+	CALL _FileRead
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_Prepare16KTilemapFile                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: Stars file number 0 for stars0.map, and 1 for stars1.map.
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
 ; Output:
-;  - #stTileFileName with correct name.
-_PrepareFileOpenForStars
+;  - #stTilesFileName with correct name.
+_Prepare16KTilemapFile
 
 	; Set the level number in the file name, DE="35" will give: "assets/l00/stars_0.map" -> "assets/l35/stars_0.map"
-	LD HL, stTileFileName
-	LD IX, HL									; Param for _FileOpen
-	ADD HL, ST_FILE_LEVEL_POS					; Move HL to "assets/l"
+	LD HL, IX
+	ADD HL, TI16K_FILE_LEVEL_POS				; Move HL to "assets/l"
 	LD (HL), D									; Set first number.
 	INC HL
 	LD (HL), E									; Set second number.
 
-	ADD HL, ST_FILE_NR_POS						; Move HL to "assets/l35/stars_"
+	ADD HL, TI16K_FILE_NR_POS					; Move HL to "assets/l35/stars_"
 	LD (HL), A
 
 	RET											; ## END of the function ##

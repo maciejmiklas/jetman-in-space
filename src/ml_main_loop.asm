@@ -72,10 +72,9 @@ _MainLoop000OnActiveJetman
 	CALL gi.GameKeyboardInput
 	CALL ep.MovePatternEnemies
 	CALL es.RespawnNextSingleEnemy
-;CALL ef.RespawnFormation
+	;CALL ef.RespawnFormation
 	
 	RET											; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;               #_MainLoop000OnActiveLobby                 ;
@@ -136,7 +135,8 @@ _MainLoop002
 	; CALL functions that need to be updated every xx-th loop.
 	CALL _MainLoop002OnActiveJetman
 	CALL ros.AnimateStarsOnFlyRocket
-	
+	CALL _MainLoop002OnActiveLobby
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -153,6 +153,21 @@ _MainLoop002OnActiveJetman
 	CALL jco.JetInvincible
 	CALL ro.RocketElementFallsForPickup
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_MainLoop002OnActiveLobby                 ;
+;----------------------------------------------------------;
+_MainLoop002OnActiveLobby
+	
+	; Return if Lobby is inactive
+	LD A, (los.lobbyState)
+	CP los.LOBBY_INACTIVE
+	RET Z
+
+	; ##########################################
+	CALL li.AnimateLevelIntro
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -269,7 +284,7 @@ _MainLoop008
 	CALL _MainLoop008OnActiveJetman
 	CALL ro.AnimateRocketExhaust
 	CALL ro.BlinkFlyingRocket
-
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

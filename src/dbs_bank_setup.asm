@@ -34,9 +34,9 @@ SetupTilesBank
 	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
-;               #SetupLongTilemapBank                      ;
+;               #Setup16KTilemapBank                      ;
 ;----------------------------------------------------------;
-SetupLongTilemapBank
+Setup16KTilemapBank
 
 	NEXTREG _MMU_REG_SLOT6_H56, dbs.LONG_TI_BANK1_D45 ; Assign bank 31 to slot 6 (see di_data_bin.asm).
 	NEXTREG _MMU_REG_SLOT7_H57, dbs.LONG_TI_BANK2_D46 ; Assign bank 32 to slot 7.

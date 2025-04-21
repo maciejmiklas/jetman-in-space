@@ -65,7 +65,7 @@ mainLoop
 	INCLUDE "st_stars.asm"
 	INCLUDE "jo_jetpack_overheat.asm"
 	INCLUDE "loi_lobby_input.asm"
-	INCLUDE "lom_lobby_menu.asm"
+	INCLUDE "li_level_intro.asm"
 	INCLUDE "los_lobby_state.asm"
 
 	; LAST import due to bank offset!

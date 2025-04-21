@@ -5,12 +5,19 @@
 
 TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
 
+; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
+TI_H_BYTES_D80			= 320/8 * 2	
+
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
 RAM_START_H5B00	= _ULA_COLOR_END_H5AFF + 1	; Start of tilemap.
-	ASSERT ti.RAM_START_H5B00 >= _RAM_SLOT2_STA_H4000
-	ASSERT ti.RAM_START_H5B00 <= _RAM_SLOT3_END_H7FFF
+	ASSERT RAM_START_H5B00 <= $5B00
 
+RAM_END_H6500	=	RAM_START_H5B00 + 40*32*2
+	ASSERT RAM_END_H6500 =  $6500
+
+RAM_LAST_ROW_H64B0		= RAM_END_H6500 - TI_H_BYTES_D80 
+	ASSERT RAM_LAST_ROW_H64B0 =  $64B0
 
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
 TI_OFFSET	= (ti.RAM_START_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
@@ -37,6 +44,12 @@ TI_CLIP_BOTTOM_D247		= _SC_RESY1_D255 - TI_PIXELS_D8
 TX_ASCII_OFFSET_D34		= 34					; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
 TX_PALETTE_D0			= 0						; Palette byte for tile characters.
 TI_EMPTY_D57			= 57					; Empty tile.
+
+TI_PIXELS_D8			= 8						; Size of a single tile in pixels.
+TI_VTILES_D32			= 256/8					; 256/8 = 32 rows (256 - vertical screen size).
+	ASSERT TI_VTILES_D32 =  32
+
+
 
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
