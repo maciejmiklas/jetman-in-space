@@ -1,1 +1,1 @@
-<img src="/img/cover.jpg" width="800px"/>
+<img src="/templates/cover.jpg" width="800px"/>

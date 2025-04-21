@@ -3,23 +3,27 @@
 ;----------------------------------------------------------;
 	MODULE li
 
-
-TI_ROWS_MAX_D128		= 8192/80 + 2880/80
-
-; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
-screenTilesRow			BYTE 0					; Current tiles row on the screen, runs from 0 to TI_VTILES_D32-1.
-sourceTilesRow			BYTE 0					; Current tiles row in source file (RAM), runs from from 0 to TI_ROWS_MAX_D128-1.
+; The on-screen tilemap has 40x32 tiles, and into-tiles take a few horizontal screens (i.e., 40x120). Therefore, there are two different counters.
+screenTilesRow			BYTE 0					; Current tiles row on the screen, runs from 0 to #ti.TI_VTILES_D32-1.
+sourceTilesRow			BYTE 0					; Current tiles row in source file (RAM), runs from from 0 to sourceTilesRowMax.
+sourceTilesRowMax		BYTE 0
 
 tileOffset				BYTE 0					; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt			BYTE 0					; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
-	
+tilePixelCnt			BYTE 0					; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
+
+animateDelayCnt			BYTE 0
+ANIMATE_DELAY			= 40
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
 ; Input:
+;  - A:  Number of horizontal lines in source tilemap (40xA).
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 ;  - HL: Size of second tiles file (first one has 8KiB).
 LoadLevelIntro
+
+	LD (sourceTilesRowMax), A
+
 	PUSH DE
 	CALL _ResetLevelIntro
 	LD (fi.introSecondFileSize), HL
@@ -48,14 +52,30 @@ LoadLevelIntro
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #AnimateLevelIntro                       ;
+;             #AnimateLevelIntroTextScroll                 ;
 ;----------------------------------------------------------;
-AnimateLevelIntro
+AnimateLevelIntroTextScroll
 	; Return if intro is not active
+
+	/* TODO use it when menu is ready.
 	LD A, (los.lobbyState)
-	CP los.LEVEL_INTRO
-	RET NZ
+	CP los.LEVEL_INTRO							
+	RET NZ */
+	LD A, (los.lobbyState)
+	CP los.LOBBY_INACTIVE
+	RET Z
 	
+	; ##########################################
+	; Delay animation (text scrolling) until the counter has reached ANIMATE_DELAY. When this happens, the animation runs at full speed 
+	; until the delay counter has been reset. It occurs when the next text line from Tilemap is being loaded.
+	LD A, (animateDelayCnt)
+	CP ANIMATE_DELAY
+	JR Z, .afterAnimateDelay
+	INC A
+	LD (animateDelayCnt), A
+	RET
+.afterAnimateDelay
+
 	; ##########################################
 	; Increment the tile counter to determine whether we should load the next tile row.
 	LD A, (tilePixelCnt)
@@ -68,7 +88,7 @@ AnimateLevelIntro
 	; Reset the counter and fetch the next tile row.
 	XOR A
 	LD (tilePixelCnt), A
-
+	LD (animateDelayCnt), A
 	CALL _NextTilesRow
 .afterNextTile
 
@@ -142,9 +162,10 @@ _NextTilesRow
 	LD A, (sourceTilesRow)
 	INC A
 	LD (sourceTilesRow), A
-
-	CP A, TI_ROWS_MAX_D128
-	JR NZ, .afterResetStarsRow					; Jump if #starsLine > 0.
+	LD B, A
+	LD A, (sourceTilesRowMax)
+	CP B
+	JR NZ, .afterResetStarsRow					; Jump if #sourceTilesRow != #sourceTilesRowMax.
 
 	; Reset counter.
 	XOR A
@@ -158,7 +179,7 @@ _NextTilesRow
 	LD (screenTilesRow), A
 
 	CP A, ti.TI_VTILES_D32
-	JR NZ, .afterResetTilesRow					; Jump if #screenTilesRow > 0.
+	JR NZ, .afterResetTilesRow					; Jump if #screenTilesRow != #ti.TI_VTILES_D32
 
 	; Reset tiles counter.
 	XOR A

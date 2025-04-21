@@ -166,7 +166,7 @@ _MainLoop002OnActiveLobby
 	RET Z
 
 	; ##########################################
-	CALL li.AnimateLevelIntro
+	CALL li.AnimateLevelIntroTextScroll
 	
 	RET											; ## END of the function ##
 

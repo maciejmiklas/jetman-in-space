@@ -60,6 +60,16 @@ LoadLobby
 	CALL _DisableGame
 	CALL lom.LoadMainMenu
 
+	; TODO remove it when menu is ready, also remove assets/l00
+	XOR A
+	LD (fi.introSecondFileSize), A
+	LD D, "0"
+	LD E, "0"
+	LD A, 4800/80								; Total number of lines in intro_0.map and intro_1.map
+	CALL fi.LoadLevelIntroTilemap
+	CALL li._ResetLevelIntro
+	CALL ti.SetTilesClipVertical
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -72,7 +82,8 @@ LoadLevel1Intro
 
 	LD D, "0"
 	LD E, "1"
-	LD HL, 2880
+	LD HL, 5248									; Size of intro_1.map
+	LD A, 8192/80 + 5248/80						; Total number of lines in intro_0.map and intro_1.map
 	CALL li.LoadLevelIntro
 
 	RET											; ## END of the function ##

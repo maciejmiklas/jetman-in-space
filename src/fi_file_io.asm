@@ -68,11 +68,11 @@ ST_BYTES_D10240			= ti.TI_MAP_BYTES_D2560*4	; 10240=(40*32*2)*4 bytes, 4 screens
 	ASSERT ST_BYTES_D10240 =  10240
 	ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
+; Tiles for level intro.
 introTilesFileName 		DB "assets/l00/intro_0.map",0
 stTilesFileName 		DB "assets/l00/stars_0.map",0
 TI16K_FILE_LEVEL_POS	= 8	
 TI16K_FILE_NR_POS		= 8
-
 introSecondFileSize		WORD 0
 
 ; Tiles for in-game platforms.
@@ -311,6 +311,19 @@ _Load16KTilemap
 	; Load second file.
 	PUSH BC
 
+	; Should we load second file?
+	LD A, B
+	CP 0
+	JR NZ, .loadSecond
+
+	LD A, C
+	CP 0
+	JR NZ, .loadSecond
+	
+	POP BC
+	RET 										; B and C are 0, do not load second file.
+
+.loadSecond
 	; Read file.
 	LD A, "1"
 	CALL _Prepare16KTilemapFile

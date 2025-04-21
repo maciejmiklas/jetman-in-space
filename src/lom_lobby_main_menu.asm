@@ -3,8 +3,8 @@
 ;----------------------------------------------------------;
 	MODULE lom
 
-FILE_IMG_POS			= 19					; Position of a image part number (0-9) in the file name of the background image.
-introFileName 			DB "assets/lobby/intro_0.nxi",0
+FILE_IMG_POS			= 16					; Position of a image part number (0-9) in the file name of the background image.
+introFileName 			DB "assets/lobby/bg_0.nxi",0
 
 ;----------------------------------------------------------;
 ;                     #LoadMainMenu                        ;
