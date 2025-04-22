@@ -12,7 +12,7 @@ tileOffset				BYTE 0					; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H3
 tilePixelCnt			BYTE 0					; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
 
 animateDelayCnt			BYTE 0
-ANIMATE_DELAY			= 40
+ANIMATE_DELAY			= 50
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;

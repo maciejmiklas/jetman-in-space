@@ -54,6 +54,7 @@ PrintDebug
 	LD L, A	
 	CALL ut.PrintDebugNum
 
+
 	; ##########################################
 	LD B, 46
 	LD H, 0
@@ -64,7 +65,7 @@ PrintDebug
 	; ##########################################
 	LD B, 80
 	LD H, 0
-	LD A, (jt.jetState)
+	LD A, (ro.rocketElementCnt)
 	LD L, A	
 	CALL ut.PrintDebugNum
 

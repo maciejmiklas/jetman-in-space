@@ -60,6 +60,7 @@ _MainLoop000OnActiveJetman
 	; ##########################################
 	CALL _MainLoop000OnDisabledJoy
 
+	CALL gi.GameJoystickInput
 	CALL ro.CheckHitTank
 	CALL jco.JetRip
 	CALL jw.MoveShots
@@ -68,7 +69,6 @@ _MainLoop000OnActiveJetman
 	CALL js.UpdateJetSpritePositionRotation
 	CALL jw.FireDelayCounter
 	CALL jco.JetmanEnemiesCollision
-	CALL gi.GameJoystickInput
 	CALL gi.GameKeyboardInput
 	CALL ep.MovePatternEnemies
 	CALL es.RespawnNextSingleEnemy
