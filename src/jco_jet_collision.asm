@@ -35,7 +35,7 @@ JM_INV_BLINK_D100		= 100
 JetmanEnemiesCollision
 
 	CALL dbs.SetupArraysBank
-	LD IX, db.enemySprites
+	LD IX, db.singleEnemySprites
 	LD A, (ep.allEnemiesSize)
 	LD B, A
 	CALL _EnemiesCollision
@@ -118,10 +118,10 @@ JetInvincible
 	JR NC, .blinkFast							; #invincibleCnt > #JM_INV_BLINK_D100 -> blink fast.
 
 	;  #invincibleCnt < #JM_INV_BLINK_D100 -> blink slow (invincibility is almost over).
-	LD A, (gld.counter004FliFLop)
+	LD A, (mld.counter004FliFLop)
 	JR .afterBlinkSet
 .blinkFast	
-	LD A, (gld.counter002FliFLop)
+	LD A, (mld.counter002FliFLop)
 .afterBlinkSet	
 
 	CALL js.BlinkJetSprite
@@ -152,7 +152,7 @@ JetInvincible
 _EnemyCollision
 
 	; Exit if enemy is not alive.
-	BIT sr.SPRITEST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
 	RET Z
 
 	; ################################

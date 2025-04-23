@@ -46,7 +46,7 @@ PrintDebug
 	LD A, (gamebarState)
 	CP GB_VISIBLE
 	RET NZ
-/*
+
 	; ##########################################
 	LD B, 40
 	LD H, 0
@@ -54,14 +54,13 @@ PrintDebug
 	LD L, A	
 	CALL ut.PrintDebugNum
 
-
 	; ##########################################
 	LD B, 46
 	LD H, 0
 	LD A, (jpo.jetY)
 	LD L, A	
 	CALL ut.PrintDebugNum
-
+/*
 	; ##########################################
 	LD B, 80
 	LD H, 0
@@ -72,45 +71,12 @@ PrintDebug
 	; ##########################################
 	LD B, 86
 	LD H, 0
-	LD A, (jo.jetHeatCnt)
-	LD L, A	
-	CALL ut.PrintDebugNum
-
-	; ##########################################
-	LD B, 92
-	LD H, 0
-	LD A, (jo.jetCoolCnt)
-	LD L, A	
-	CALL ut.PrintDebugNum	
-
-	; ##########################################
-	LD B, 98
-	LD H, 0
-	LD A, (jo.jetTempLevel)
-	LD L, A	
-	CALL ut.PrintDebugNum
-
-	; ##########################################
-	LD B, 104
-	LD H, 0
-	LD A, (jm.tmp)
-	LD L, A	
-	CALL ut.PrintDebugNum
-
-	; ##########################################
-	LD B, 110
-	LD H, 0
-	LD A, (jm.tmp2)
-	LD L, A	
-	CALL ut.PrintDebugNum
-
-	; ##########################################
-	LD B, 120
-	LD H, 0
-	LD A, (ep.tmp)
+	LD A, (ro.rocketState)
 	LD L, A	
 	CALL ut.PrintDebugNum
 */
+		
+
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

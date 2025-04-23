@@ -78,7 +78,7 @@ OFFSET	= (START_H6500 - _RAM_SLOT2_STA_H4000) >> 8
 ;----------------------------------------------------------;
 ShakeTilemap
 
-	LD A, (gld.counter002FliFLop)				; Oscillates between 1 and 0.
+	LD A, (mld.counter002FliFLop)				; Oscillates between 1 and 0.
 	LD D, A
 	LD E, _SC_SHAKE_BY_D2
 	MUL D, E

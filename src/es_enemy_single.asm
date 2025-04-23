@@ -65,7 +65,7 @@ SetupSingleEnemies
 
 	; ##########################################
 	; Load #ep.ENPS int #sr.SPR
-	LD IY, db.enemySprites						; Pointer to #SPR array.
+	LD IY, db.singleEnemySprites						; Pointer to #SPR array.
 	LD A, (singleCount)							; Single enemies size (number of #ENPS/#ENP arrays).
 	LD B, A
 .sprLoop
@@ -112,7 +112,7 @@ RespawnNextSingleEnemy
 
 	; ##########################################
 	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
-	LD IX, db.enemySprites
+	LD IX, db.singleEnemySprites
 	LD A, (singleCount)
 	LD B, A
 
@@ -147,7 +147,7 @@ _ResetSingleEnemies
 
 	LD B, A
 .enemyLoop
-	LD IX, db.enemySprites
+	LD IX, db.singleEnemySprites
 
 	XOR A
 	LD (IX + sr.SPR.SDB_POINTER), A

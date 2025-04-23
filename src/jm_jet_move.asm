@@ -301,7 +301,7 @@ _JoyJetpackOverheatSlowdown
 	CP jt.JT_STATE_INACTIVE
 	RET NZ
 	
-	LD A, (gld.counter000FliFLop)
+	LD A, (mld.counter000FliFLop)
 	CP _GC_FLIP_ON_D1
 	JR Z, .delayReached
 

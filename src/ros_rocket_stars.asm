@@ -42,12 +42,6 @@ ResetRocketStars
 ;----------------------------------------------------------;
 AnimateStarsOnFlyRocket
 
-	; Return if rocket is not flying.
-	LD A, (ro.rocketState)
-	CP ro.ROST_FLY
-	RET NZ
-
-	; ##########################################
 	; Start animation when the rocket reaches given height.
 	LD HL, (ro.rocketDistance)
 	LD A, H

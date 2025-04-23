@@ -601,7 +601,6 @@ _DisableGame
 
 	RET											; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                   #_InitLevelLoad                        ;
 ;----------------------------------------------------------;
@@ -614,7 +613,8 @@ _InitLevelLoad
 	CALL ro.ResetAndDisableRocket
 	CALL td.ResetTimeOfDay
 	CALL ros.ResetRocketStars
-
+	CALL ro.ResetAndDisableRocket
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -630,7 +630,6 @@ _StartLevel
 	CALL jo.ResetJetpackOverheating
 
 	RET											; ## END of the function ##
-	
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

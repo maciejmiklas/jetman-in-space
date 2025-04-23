@@ -33,7 +33,7 @@ mainLoop
 	INCLUDE "tx_text.asm"
 	INCLUDE "ti_tiles.asm"
 	INCLUDE "ut_util.asm"
-	INCLUDE "gld_game_loop_data.asm"
+	INCLUDE "mld_main_loop_data.asm"
 	INCLUDE "ml_main_loop.asm"
 
 	INCLUDE "gc_game_cmd.asm"

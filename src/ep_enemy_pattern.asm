@@ -116,30 +116,73 @@ SetupPatterEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                #AnimatePatterEnemies                     ;
+;----------------------------------------------------------;
+AnimatePatterEnemies
+	
+	CALL dbs.SetupArraysBank
+
+	; ##########################################
+	; Kill single enemy.
+	LD IX, db.singleEnemySprites
+	LD A, db.ENEMY_SINGLE_SIZE
+	LD B, A
+	CALL sr.AnimateSprites
+
+	; ##########################################
+	; Kill formation enemy.
+	LD IX, db.formationEnemySprites
+	LD A, db.ENEMY_FORMATION_SIZE
+	LD B, A	
+	CALL sr.AnimateSprites	
+
+	RET											; ## END of the function ##	
+;----------------------------------------------------------;
+;                 #KillOnePatternEnemy                     ;
+;----------------------------------------------------------;
+KillOnePatternEnemy
+
+	CALL dbs.SetupArraysBank
+
+	; ##########################################
+	; Kill single enemy.
+	LD IX, db.singleEnemySprites
+	LD A, db.ENEMY_SINGLE_SIZE
+	LD B, A
+	CALL sr.KillOneSprite
+
+	; ##########################################
+	; Kill formation enemy.
+	LD IX, db.formationEnemySprites
+	LD A, db.ENEMY_FORMATION_SIZE
+	LD B, A	
+	CALL sr.KillOneSprite	
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                 #HidePatternEnemies                      ;
 ;----------------------------------------------------------;
 HidePatternEnemies
 
 	CALL dbs.SetupArraysBank
 
-	LD IX, db.enemySprites
-	LD A, (allEnemiesSize)
-	LD B, A
-
-	; Loop ever all enemies skipping hidden 
-.enemyLoop
-
-	CALL sr.HideSimpleSprite
+	; ##########################################
+	; Hide single enemies.
+	LD IX, db.singleEnemySprites
+	LD A, db.ENEMY_SINGLE_SIZE
+	LD B, A	
+	CALL sr.HideAllSimpleSprites
 
 	; ##########################################
-	; Move IX to the beginning of the next #SPR.
-	LD DE, sr.SPR
-	ADD IX, DE
-
-	; ##########################################
-	DJNZ .enemyLoop
+	; Hide formation enemies.
+	LD IX, db.formationEnemySprites
+	LD A, db.ENEMY_FORMATION_SIZE
+	LD B, A	
+	CALL sr.HideAllSimpleSprites
 
 	RET											; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                 #MovePatternEnemies                      ;
@@ -150,7 +193,7 @@ MovePatternEnemies
 	
 	CALL dbs.SetupArraysBank
 
-	LD IX, db.enemySprites
+	LD IX, db.singleEnemySprites
 	LD A, (allEnemiesSize)
 	LD B, A 
 
@@ -160,7 +203,7 @@ MovePatternEnemies
 
 	; Ignore this sprite if it's hidden.
 	LD A, (IX + sr.SPR.STATE)
-	AND sr.SPRITEST_VISIBLE						; Reset all bits but visibility.
+	AND sr.SPRITE_ST_VISIBLE						; Reset all bits but visibility.
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden).
 
@@ -214,7 +257,7 @@ RES_SE_OUT_NO					= 0				; Enemy did not respawn.
 ; Modifies: all
 RespawnEnemy
 
-	BIT sr.SPRITEST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+	BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
 	JR Z, .afterVisibilityCheck					; Skip this sprite if it's already visible.
 	
 	LD A, RES_SE_OUT_NO
@@ -269,7 +312,7 @@ RespawnEnemy
 
 	; Deploy right.
 	LD BC, _GSC_X_MAX_D315
-	SET sr.SPRITEST_MIRROR_X_BIT, (IX + sr.SPR.STATE)	; Mirror sprite, because it deploys on the right and moves to the left side.
+	SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + sr.SPR.STATE)	; Mirror sprite, because it deploys on the right and moves to the left side.
 	JR .afterLR
 .deployLeft	
 	; Deploy left.
@@ -372,7 +415,7 @@ _MoveEnemy
 	;  - IY: pointer to #ENP for current sprite.
 	;  - HL: pointer to current position in #movePattern.
 
-	BIT sr.SPRITEST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
 	JR NZ, .afterAliveCheck						; Jump if sprite is alive.
 
 	; Sprite is not alive -> move it horizontally while it's exploding.

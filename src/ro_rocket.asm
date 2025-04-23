@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE ro
 
-RO_DROP_NEXT_D5			= 10					; Drop next element delay
+RO_DROP_NEXT_D5			= 1;10					; Drop next element delay
 RO_DROP_Y_MAX_D180		= 180					; Jetman has to be above the rocket to drop the element.
 RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rocket element.
 RO_FLY_DELAY_D8			= 8
@@ -17,7 +17,7 @@ dropNextDelay			BYTE 0
 
 rocketElementCnt		BYTE 0 					; Counts from EL_LOW_D1 to EL_TANK3_D6, both inclusive.
 
-rocketState				BYTE ROST_WAIT_DROP
+rocketState				BYTE ROST_INACTIVE
 
 ROST_INACTIVE			= 0
 ROST_WAIT_DROP			= 1						; Rocket element (or fuel tank) is waiting for drop from the sky. This is initial state.
@@ -50,7 +50,7 @@ SPRITE_REF				BYTE					; Sprite pattern number from the sprite file.
 Y						BYTE					; Current Y position.
 	ENDS
 
-rocketAssemblyX			BYTE 170
+rocketAssemblyX			BYTE 0
 
 explodeTankCnt			BYTE 0					; Current position in #rocketExplodeTankDB.
 EXPLODE_TANK_MAX		= 4						; The amount of explosion sprites.
@@ -65,7 +65,7 @@ rocketFlyDelay			BYTE RO_FLY_DELAY_D8	; Counts from #rocketFlyDelayCnt to 0, dec
 rocketFlyDelayCnt		BYTE RO_FLY_DELAY_D8	; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
 
 rocketExplodeCnt		BYTE 0					; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
-RO_EXPLODE_MAX			= 18					; Amount of explosion frames stored in #rocketExplodeDB[1-3].
+RO_EXPLODE_MAX			= 20					; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
 FLAME_OFFSET_D16		= 16
 SPR_PAT_READY1_D60		= 60					; Once the rocket is ready, it will start blinking using #SPR_PAT_READY1_D60 and #SPR_PAT_READY2_D61.
@@ -137,21 +137,8 @@ AssemblyRocketForDebug
 StartRocketAssembly
 	CALL dbs.SetupArraysBank
 
-	CALL ResetAndDisableRocket
-
 	LD A, ROST_WAIT_DROP
 	LD (rocketState), A
-
-	XOR A
-	LD (rocketDelayDistance), A
-	LD (rocketExplodeCnt), A
-	LD (rocketDistance), A
-	LD (rocketExhaustCnt), A
-	LD (explodeTankCnt), A
-
-	LD A, RO_FLY_DELAY_D8
-	LD (rocketFlyDelay), A
-	LD (rocketFlyDelayCnt), A
 	
 	RET											; ## END of the function ##
 
@@ -162,10 +149,14 @@ ResetAndDisableRocket
 	CALL dbs.SetupArraysBank
 
 	XOR A
+	LD (rocketAssemblyX), A
+	LD (dropNextDelay), A
 	LD (rocketState), A
 	LD (explodeTankCnt), A
 	LD (rocketExplodeCnt), A
 	LD (rocketElementCnt), A
+	LD (rocketDelayDistance), A
+	LD (rocketExhaustCnt), A
 
 	LD HL, 0
 	LD (rocketDistance), HL
@@ -189,6 +180,7 @@ ResetAndDisableRocket
 	DJNZ .rocketElLoop
 
 	RET											; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                #UpdateRocketOnJetmanMove                 ;
@@ -242,11 +234,6 @@ HideRocket
 AnimateRocketExplosion
 	CALL dbs.SetupArraysBank
 
-	; Is rocket exploding ?
-	LD A, (rocketState)
-	CP ROST_EXPLODE
-	RET NZ
-	
 	; ##########################################
 	; Is the exploding sequence over?
 	LD A, (rocketExplodeCnt)
@@ -419,11 +406,6 @@ AnimateTankExplode
 AnimateRocketExhaust
 	CALL dbs.SetupArraysBank
 
-	; Return if rocket is not flying.
-	LD A, (rocketState)
-	CP ROST_FLY
-	RET NZ
-
 	; Increment sprite pattern counter.
 	LD A, (rocketExhaustCnt)
 	INC A
@@ -456,11 +438,6 @@ AnimateRocketExhaust
 FlyRocket
 
 	CALL dbs.SetupArraysBank
-
-	; Return if rocket is not flying.
-	LD A, (rocketState)
-	CP ROST_FLY
-	RET NZ
 
 	CALL _ShakeTilemapOnFlyingRocket
 	CALL _MoveFlyingRocket
@@ -545,17 +522,12 @@ RocketElementFallsForPickup
 ;----------------------------------------------------------;
 BlinkFlyingRocket
 	CALL dbs.SetupArraysBank
-
-	; Return if rocket is not flying.
-	LD A, (rocketState)
-	CP ROST_FLY
-	RET NZ
 		
 	LD A, EL_LOW_D1
 	CALL _MoveIXtoGivenRocketElement
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink.
-	LD A, (gld.counter008FliFLop)
+	LD A, (mld.counter008FliFLop)
 	CP _GC_FLIP_ON_D1
 	JR Z, .flip
 	LD A, SPR_PAT_READY1_D60
@@ -584,7 +556,7 @@ BlinkRocketReady
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman.
-	LD A, (gld.counter008FliFLop)
+	LD A, (mld.counter008FliFLop)
 	CP _GC_FLIP_ON_D1
 	JR Z, .flip
 	LD A, SPR_PAT_READY1_D60

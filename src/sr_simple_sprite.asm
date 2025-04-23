@@ -14,10 +14,10 @@ X						WORD					; X position of the sprite.
 Y						BYTE					; Y position of the sprite.
 
 ; Bits:
-;	- 0: 	#SPRITEST_VISIBLE_BIT,
-;	- 1:	#SPRITEST_ACTIVE_BIT,
+;	- 0: 	#SPRITE_ST_VISIBLE_BIT,
+;	- 1:	#SPRITE_ST_ACTIVE_BIT,
 ;   - 2: 	Not used, but reserved for simple sprite (sr),
-;   - 3:	#SPRITEST_MIRROR_X_BIT,
+;   - 3:	#SPRITE_ST_MIRROR_X_BIT,
 ;	- 4:	Not used, but reserved for simple sprite (sr),
 ;	- 5-8: 	Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT.
 STATE					BYTE
@@ -26,20 +26,20 @@ REMAINING				BYTE					; Amount of animation frames (bytes) that still need to be
 EXT_DATA_POINTER		WORD					; Pointer to additional data structure for this sprite.
 	ENDS
 
-; When a weapon hits something, the sprite first gets status #SPRITEST_ACTIVE_BIT. After it stops exploding, it becomes status #SPRITEST_VISIBLE_BIT.
+; When a weapon hits something, the sprite first gets status #SPRITE_ST_ACTIVE_BIT. After it stops exploding, it becomes status #SPRITE_ST_VISIBLE_BIT.
 
 ; Active flag, 1 - sprite is alive/active, 0 - sprite is dying (not active), disabled for collision detection, but visible (exploding/dying).
-SPRITEST_ACTIVE_BIT		= 1
-SPRITEST_ACTIVE			= %00000010
+SPRITE_ST_ACTIVE_BIT	= 1
+SPRITE_ST_ACTIVE		= %00000010
 
 ; Visible flag, 1 = visible (enabled for collision detection only if active bit is set), 0 = hidden (can be reused).
-SPRITEST_VISIBLE_BIT		= 0
-SPRITEST_VISIBLE		= %00000001
+SPRITE_ST_VISIBLE_BIT	= 0
+SPRITE_ST_VISIBLE		= %00000001
 
-SPRITEST_ALIVE			= %00000011			; Alive and visible.
+SPRITE_ST_ALIVE			= %00000011			; Alive and visible.
 
 ; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37.
-SPRITEST_MIRROR_X_BIT	= 3
+SPRITE_ST_MIRROR_X_BIT	= 3
 
 ;----------------------------------------------------------;
 ;                         Sprite DB                        ;
@@ -90,12 +90,13 @@ KillOneSprite
 	; ##########################################
 	; Ignore this enemy if it's hidden/exploding.
 	LD A, (IX + sr.SPR.STATE)
-	AND sr.SPRITEST_ALIVE						; Reset all bits but hidden/exploding.
-	CP sr.SPRITEST_ALIVE
+	AND sr.SPRITE_ST_ALIVE						; Reset all bits but hidden/exploding.
+	CP sr.SPRITE_ST_ALIVE
 	JR NZ, .continue							; Jump if this enemy is already dead or exploding.
 
 	; ##########################################
-	CALL gc.EnemyHit
+	CALL SetSpriteId
+	CALL SpriteHit
 	RET
 
 .continue
@@ -117,7 +118,7 @@ KillOneSprite
 SpriteHit
 
 	LD A, (IX + SPR.STATE)						; Sprite is dying; turn off collision detection.
-	RES SPRITEST_ACTIVE_BIT, A
+	RES SPRITE_ST_ACTIVE_BIT, A
 	LD (IX + SPR.STATE), A
 
 	LD A, SDB_EXPLODE
@@ -137,7 +138,7 @@ AnimateSprites
 .loop
 	PUSH BC										; Preserve B for loop counter.
 
-	BIT SPRITEST_VISIBLE_BIT, (IX + SPR.STATE)
+	BIT SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
 	JR Z, .continue								; Jump if visibility is not set -> hidden, can be reused.
 
 	; Sprite is visible.
@@ -202,6 +203,26 @@ UpdateSpritePosition
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                #HideAllSimpleSprites                     ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:	Pointer to #SPR.
+;  - B:		Sprites size.
+HideAllSimpleSprites
+
+.spriteLoop
+
+	CALL HideSimpleSprite
+
+	; Move IX to the beginning of the next #SPR.
+	LD DE, sr.SPR
+	ADD IX, DE
+
+	DJNZ .spriteLoop
+
+	RET											; ## END of the function ##	
+
+;----------------------------------------------------------;
 ;                   #HideSimpleSprite                      ;
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX
@@ -210,11 +231,11 @@ UpdateSpritePosition
 ; Modifies: A
 HideSimpleSprite
 
-	CALL sr.SetSpriteId
+	CALL SetSpriteId
 
 	LD A, (IX + SPR.STATE)
-	RES SPRITEST_ACTIVE, A
-	RES SPRITEST_VISIBLE_BIT, A
+	RES SPRITE_ST_ACTIVE, A
+	RES SPRITE_ST_VISIBLE_BIT, A
 	LD (IX + SPR.STATE), A
 
 	CALL sp.HideSprite
@@ -245,8 +266,8 @@ ShowSprite
 ; Modifies: A
 SetStateVisible
 
-	SET SPRITEST_VISIBLE_BIT, A
-	SET SPRITEST_ACTIVE_BIT, A
+	SET SPRITE_ST_VISIBLE_BIT, A
+	SET SPRITE_ST_ACTIVE_BIT, A
 	LD (IX + SPR.STATE), A
 
 	RET											; ## END of the function ##
@@ -339,8 +360,8 @@ MoveX
 
 	; H is 0, check whether L has reached #_GSC_X_MIN_D0.
 	LD A, L
-	CP _GSC_X_MIN_D0+1
-	JR NC, .continueLeftLoop					; Jump if A >= 1
+	CP _GSC_X_MIN_D0+3
+	JR NC, .continueLeftLoop					; Jump if A >= 2
 
 	; HL == #_GSC_X_MIN_D0
 	BIT MVX_IN_D_HIDE_BIT, D					; Hide sprite or roll over?
@@ -367,16 +388,16 @@ MoveX
 .moveRightLoop	
 	INC HL
 
-	; If X >= 315 then hide sprite .
-	; X is 9-bit value: 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59.
+	; If X >= 317 then hide sprite .
+	; X is 9-bit value: 317 = 256 + 61 = %00000001 + %00111101 -> MSB: 1, LSB: 61.
 	LD A, H										; Load MSB from X into A.
 	CP 1										; 9-th bit set means X > 256.
 	JR NZ, .continueRightLoop
 	LD A, L										; Load MSB from X into A.
-	CP 59										; MSB > 59.
+	CP 61										; MSB > 61.
 	JR C, .continueRightLoop
 	
-	; Sprite is after 315.
+	; Sprite is after 317.
 	BIT MVX_IN_D_HIDE_BIT, D					; Hide sprite or roll over?
 	JR NZ, .hideSpriteR
 	

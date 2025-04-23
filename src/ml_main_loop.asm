@@ -15,6 +15,7 @@ MainLoop
 	CALL _MainLoop006
 	CALL _MainLoop008
 	CALL _MainLoop010
+	CALL _MainLoop020
 	CALL _MainLoop040
 	CALL _MainLoop080
 
@@ -32,19 +33,33 @@ MainLoop
 _MainLoop000
 
 	; 1 -> 0 and 0 -> 1
-	LD A, (gld.counter000FliFLop)
+	LD A, (mld.counter000FliFLop)
 	XOR 1
-	LD (gld.counter000FliFLop), A
+	LD (mld.counter000FliFLop), A
 
 	; ##########################################
 	; CALL functions that need to be updated every loop.
 	; First update graphics, logic follows afterwards!
 
 	CALL gb.PrintDebug
-	CALL ro.FlyRocket
+
 	CALL _MainLoop000OnActiveJetman
 	CALL _MainLoop000OnActiveLobby
+	CALL _MainLoop000OnFlayRocket
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_MainLoop000OnFlayRocket                  ;
+;----------------------------------------------------------;
+_MainLoop000OnFlayRocket
+	; Return if rocket is not flying.
+	LD A, (ro.rocketState)
+	CP ro.ROST_FLY
+	RET NZ
+
+	; ##########################################
+	CALL ro.FlyRocket
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -96,7 +111,6 @@ _MainLoop000OnActiveLobby
 ;----------------------------------------------------------;
 _MainLoop000OnDisabledJoy
 
-	; ##########################################
 	; Return if the joystick is about to enable
 	LD A, (gid.joyOffCnt)
 	CP pl.PL_BUMP_JOY_DEC_D1+1
@@ -115,28 +129,42 @@ _MainLoop000OnDisabledJoy
 _MainLoop002
 
 	; Increment the counter.
-	LD A, (gld.counter002)
+	LD A, (mld.counter002)
 	INC A
-	LD (gld.counter002), A
-	CP gld.COUNTER002_MAX
+	LD (mld.counter002), A
+	CP mld.COUNTER002_MAX
 	RET NZ
 
 	; Reset the counter.
 	XOR A										; Set A to 0.
-	LD (gld.counter002), A
+	LD (mld.counter002), A
 
 	; ##########################################
 	; 1 -> 0 and 0 -> 1
-	LD A, (gld.counter002FliFLop)
+	LD A, (mld.counter002FliFLop)
 	XOR 1
-	LD (gld.counter002FliFLop), A
+	LD (mld.counter002FliFLop), A
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
 	CALL _MainLoop002OnActiveJetman
-	CALL ros.AnimateStarsOnFlyRocket
 	CALL _MainLoop002OnActiveLobby
+	CALL _MainLoop002OnFlayRocket
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_MainLoop002OnFlayRocket                  ;
+;----------------------------------------------------------;
+_MainLoop002OnFlayRocket
+
+	; Return if rocket is not flying.
+	LD A, (ro.rocketState)
+	CP ro.ROST_FLY
+	RET NZ
+
+	; ##########################################
+	CALL ros.AnimateStarsOnFlyRocket
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -176,27 +204,40 @@ _MainLoop002OnActiveLobby
 _MainLoop004
 
 	; Increment the counter.
-	LD A, (gld.counter004)
+	LD A, (mld.counter004)
 	INC A
-	LD (gld.counter004), A
-	CP gld.COUNTER004_MAX
+	LD (mld.counter004), A
+	CP mld.COUNTER004_MAX
 	RET NZ
 	
 	; Reset the counter.
 	XOR A										; Set A to 0
-	LD (gld.counter004), A
+	LD (mld.counter004), A
 
 	; ##########################################
 	; 1 -> 0 and 0 -> 1
-	LD A, (gld.counter004FliFLop)
+	LD A, (mld.counter004FliFLop)
 	XOR 1
-	LD (gld.counter004FliFLop), A
+	LD (mld.counter004FliFLop), A
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL ro.AnimateRocketExplosion
+	CALL _MainLoop004OnRocketExplosion
 	CALL _MainLoop004OnActiveJetman
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;             #_MainLoop004OnRocketExplosion               ;
+;----------------------------------------------------------;
+_MainLoop004OnRocketExplosion
+	; Is rocket exploding ?
+	LD A, (ro.rocketState)
+	CP ro.ROST_EXPLODE
+	RET NZ
+
+	; ##########################################
+	CALL ro.AnimateRocketExplosion
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -221,39 +262,24 @@ _MainLoop004OnActiveJetman
 _MainLoop006
 
 	; Increment the counter.
-	LD A, (gld.counter006)
+	LD A, (mld.counter006)
 	INC A
-	LD (gld.counter006), A
-	CP gld.COUNTER006_MAX
+	LD (mld.counter006), A
+	CP mld.COUNTER006_MAX
 	RET NZ
 
 	; Reset the counter.
 	XOR A										; Set A to 0
-	LD (gld.counter006), A
+	LD (mld.counter006), A
 
 	; ##########################################
 	; 1 -> 0 and 0 -> 1
-	LD A, (gld.counter006FliFLop)
+	LD A, (mld.counter006FliFLop)
 	XOR 1
-	LD (gld.counter006FliFLop), A
+	LD (mld.counter006FliFLop), A
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL _MainLoop006OnActiveJetman
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;               #_MainLoop006OnActiveJetman                ;
-;----------------------------------------------------------;
-_MainLoop006OnActiveJetman
-
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.JT_STATE_INACTIVE
-	RET Z
-
-	; ##########################################
 
 	RET											; ## END of the function ##
 
@@ -263,30 +289,44 @@ _MainLoop006OnActiveJetman
 _MainLoop008
 
 	; Increment the counter.
-	LD A, (gld.counter008)
+	LD A, (mld.counter008)
 	INC A
-	LD (gld.counter008), A
-	CP gld.COUNTER008_MAX
+	LD (mld.counter008), A
+	CP mld.COUNTER008_MAX
 	RET NZ
 
 	; Reset the counter.
 	XOR A										; Set A to 0
-	LD (gld.counter008), A
+	LD (mld.counter008), A
 
 	; ##########################################
 	; 1 -> 0 and 0 -> 1
-	LD A, (gld.counter008FliFLop)
+	LD A, (mld.counter008FliFLop)
 	XOR 1
-	LD (gld.counter008FliFLop), A
+	LD (mld.counter008FliFLop), A
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
 	CALL _MainLoop008OnActiveJetman
-	CALL ro.AnimateRocketExhaust
-	CALL ro.BlinkFlyingRocket
-	
+	CALL _MainLoop008OnActiveJetmanOrFlyingRocket
+	CALL _MainLoop008OnFlayingRocket
+
 	RET											; ## END of the function ##
 
+;----------------------------------------------------------;
+;              #_MainLoop008OnFlayingRocket                ;
+;----------------------------------------------------------;
+_MainLoop008OnFlayingRocket
+	; Return if rocket is not flying.
+	LD A, (ro.rocketState)
+	CP ro.ROST_FLY
+	RET NZ
+
+	; ##########################################
+	CALL ro.AnimateRocketExhaust
+	CALL ro.BlinkFlyingRocket
+
+	RET											; ## END of the function ##
 ;----------------------------------------------------------;
 ;               #_MainLoop008OnActiveJetman                ;
 ;----------------------------------------------------------;
@@ -303,14 +343,27 @@ _MainLoop008OnActiveJetman
 	CALL ro.AnimateTankExplode
 	CALL st.BlinkStarsL1
 
-	; ##########################################
-	; Animate enemies
-	CALL dbs.SetupArraysBank
+	RET											; ## END of the function ##
 
-	LD IX, db.enemySprites
-	LD A, (ep.allEnemiesSize)
-	LD B, A	
-	CALL sr.AnimateSprites
+;----------------------------------------------------------;
+;         #_MainLoop008OnActiveJetmanOrFlyingRocket        ;
+;----------------------------------------------------------;
+_MainLoop008OnActiveJetmanOrFlyingRocket
+
+	; Is Jetman active?
+	LD A, (jt.jetState)
+	CP jt.JT_STATE_INACTIVE
+	JR Z, .jetInactive
+	JR .execute
+.jetInactive
+	; Jetman ist inactive, what about rocket?
+	LD A, (ro.rocketState)
+	CP ro.ROST_FLY
+	RET NZ											; Return if rocket is not flying.
+
+.execute
+	; ##########################################
+	CALL ep.AnimatePatterEnemies
 
 	RET											; ## END of the function ##
 
@@ -320,25 +373,24 @@ _MainLoop008OnActiveJetman
 _MainLoop010
 
 	; Increment the counter.
-	LD A, (gld.counter010)
+	LD A, (mld.counter010)
 	INC A
-	LD (gld.counter010), A
-	CP gld.COUNTER010_MAX
+	LD (mld.counter010), A
+	CP mld.COUNTER010_MAX
 	RET NZ
 
 	; Reset the counter.
 	XOR A										; Set A to 0
-	LD (gld.counter010), A
+	LD (mld.counter010), A
 
 	; ##########################################
 	; 1 -> 0 and 0 -> 1
-	LD A, (gld.counter010FliFLop)
+	LD A, (mld.counter010FliFLop)
 	XOR 1
-	LD (gld.counter010FliFLop), A
+	LD (mld.counter010FliFLop), A
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop.
-	CALL _MainLoop010nFlyingRocket
 	CALL _MainLoop010OnActiveJetman
 
 	RET											; ## END of the function ##
@@ -359,36 +411,41 @@ _MainLoop010OnActiveJetman
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop010nFlyingRocket                 ;
+;                      #_MainLoop020                       ;
 ;----------------------------------------------------------;
-_MainLoop010nFlyingRocket
+_MainLoop020
+
+	; Increment the counter.
+	LD A, (mld.counter020)
+	INC A
+	LD (mld.counter020), A
+	CP mld.COUNTER020_MAX
+	RET NZ
+
+	; ##########################################
+	; Reset the counter.
+	XOR A										; Set A to 0
+	LD (mld.counter020), A
+
+	; ##########################################
+	; CALL functions that need to be updated every xx-th loop
+	CALL _MainLoop020nFlyingRocket
+	
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_MainLoop020nFlyingRocket                 ;
+;----------------------------------------------------------;
+_MainLoop020nFlyingRocket
 
 	; Return if rocket is not flying.
 	LD A, (ro.rocketState)
 	CP ro.ROST_FLY
 	RET NZ
 
-/*
-	LD A, (gld.counter008FliFLop)
-	CP _GC_FLIP_ON_D1
-	JR Z, .flip
-
 	; ##########################################
-	CALL dbs.SetupArraysBank
-	
-	LD IX, (????)
-	LD B, ???
-	CALL sr.KillOneSprite
+	CALL ep.KillOnePatternEnemy
 
-	JR .afterFilpFlop
-.flip
-	; ##########################################
-	CALL dbs.SetupArraysBank
-	LD IX, (ef.efPointer)
-	LD B, _EF_FORM_SIZE
-	CALL sr.KillOneSprite
-.afterFilpFlop
-*/
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -397,16 +454,16 @@ _MainLoop010nFlyingRocket
 _MainLoop040
 
 	; Increment the counter.
-	LD A, (gld.counter040)
+	LD A, (mld.counter040)
 	INC A
-	LD (gld.counter040), A
-	CP gld.COUNTER040_MAX
+	LD (mld.counter040), A
+	CP mld.COUNTER040_MAX
 	RET NZ
 
 	; ##########################################
 	; Reset the counter.
 	XOR A										; Set A to 0
-	LD (gld.counter040), A
+	LD (mld.counter040), A
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
@@ -436,36 +493,20 @@ _MainLoop040OnActiveJetman
 _MainLoop080
 
 	; Increment the counter.
-	LD A, (gld.counter080)
+	LD A, (mld.counter080)
 	INC A
-	LD (gld.counter080), A
-	CP gld.COUNTER080_MAX
+	LD (mld.counter080), A
+	CP mld.COUNTER080_MAX
 	RET NZ
 
 	; ##########################################
 	; Reset the counter.
 	XOR A										; Set A to 0
-	LD (gld.counter080), A
+	LD (mld.counter080), A
 
 	; ##########################################
 	; CALL functions that need to be updated every xx-th loop
-	CALL _MainLoop080OnActiveJetman
 
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;               #_MainLoop080OnActiveJetman                ;
-;----------------------------------------------------------;
-_MainLoop080OnActiveJetman
-
-	; Return if Jetman is inactive (game paused/loading).
-	LD A, (jt.jetState)
-	CP jt.JT_STATE_INACTIVE
-	RET Z
-
-	; ##########################################
-
-	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

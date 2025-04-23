@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                    Game Counters                         ;
 ;----------------------------------------------------------;
-	MODULE gld 
+	MODULE mld 
 
 counter000FliFLop	BYTE 0						; Changes with every counter run from 1 to 0 and so on.
 
@@ -24,6 +24,10 @@ counter008FliFLop	BYTE 0						; Changes with every counter run from 1 to 0 and s
 COUNTER010_MAX		= 10
 counter010			BYTE 0
 counter010FliFLop	BYTE 0						; Changes with every counter run from 1 to 0 and so on.
+
+COUNTER020_MAX		= 20
+counter020			BYTE 0
+counter020FliFLop	BYTE 0						; Changes with every counter run from 1 to 0 and so on.
 
 COUNTER040_MAX		= 40
 counter040			BYTE 0
