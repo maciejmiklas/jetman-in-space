@@ -76,11 +76,18 @@ HideShots
 WeaponHitEnemies
 
 	CALL dbs.SetupArraysBank
-	
+
+	; ##########################################
 	LD IX, db.singleEnemySprites
-	LD A, (ep.allEnemiesSize)
+	LD A, (es.singleEnemySize)
 	LD B, A
 	CALL _CheckHitEnemies
+
+	; ##########################################
+	LD IX, db.formationEnemySprites
+	LD A, (ef.formationEnemySize)
+	LD B, A
+	CALL _CheckHitEnemies	
 
 	RET											; ## END of the function ##
 

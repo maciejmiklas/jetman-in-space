@@ -35,8 +35,16 @@ JM_INV_BLINK_D100		= 100
 JetmanEnemiesCollision
 
 	CALL dbs.SetupArraysBank
+
+	; ##########################################
 	LD IX, db.singleEnemySprites
-	LD A, (ep.allEnemiesSize)
+	LD A, (es.singleEnemySize)
+	LD B, A
+	CALL _EnemiesCollision
+
+	; ##########################################
+	LD IX, db.formationEnemySprites
+	LD A, (ef.formationEnemySize)
 	LD B, A
 	CALL _EnemiesCollision
 

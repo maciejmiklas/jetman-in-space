@@ -101,20 +101,6 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
-; The total amount of visible sprites - including single enemies and formations.
-allEnemiesSize			BYTE 5
-
-;----------------------------------------------------------;
-;                  #SetupPatterEnemies                     ;
-;----------------------------------------------------------;
-; Input:
-;  - A: The total amount of visible sprites - including single enemies and formations.
-SetupPatterEnemies
-
-	LD (allEnemiesSize), A
-
-	RET											; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                #AnimatePatterEnemies                     ;
 ;----------------------------------------------------------;
@@ -186,15 +172,14 @@ HidePatternEnemies
 ;----------------------------------------------------------;
 ;                 #MovePatternEnemies                      ;
 ;----------------------------------------------------------;
+; Input:
+;  - IX: Pointer to array #sr.SPR
+;  - B:  Number of elements in array given by IX. 
 ; Moves single enemies and those in formation.
 ; Modifies: ALL
 MovePatternEnemies
 	
 	CALL dbs.SetupArraysBank
-
-	LD IX, db.singleEnemySprites
-	LD A, (allEnemiesSize)
-	LD B, A 
 
 	; Loop ever all enemies skipping hidden 
 .enemyLoop

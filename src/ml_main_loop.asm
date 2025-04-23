@@ -85,7 +85,8 @@ _MainLoop000OnActiveJetman
 	CALL jw.FireDelayCounter
 	CALL jco.JetmanEnemiesCollision
 	CALL gi.GameKeyboardInput
-	CALL ep.MovePatternEnemies
+	CALL es.MoveSingleEnemies
+	CALL ef.MoveFormationEnemies
 	CALL es.RespawnNextSingleEnemy
 	;CALL ef.RespawnFormation
 	

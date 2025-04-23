@@ -8,14 +8,27 @@
 ; The #EF.RESPAWN_DELAY determines the respawn delay of the first sprite in the enemyFormation. The #ENP.RESPAWN_DELAY for the remaining sprites 
 ; determines the deploy delay for the following sprite in the enemyFormation. 
 	STRUCT EF
-SPRITE_POINTER		WORD						; Pointer to the first sprite (#SPR).
-RESPAWN_DELAY		WORD						; Number of game loops delaying respawn.
-RESPAWN_DELAY_CNT	WORD						; Respawn delay counter.
-SPRITES				BYTE						; Number of sprites used in this enemyFormation, starting from #SPRITE_POINTER inclusive.
-SPRITES_CNT			BYTE						; Counter for SPRITES
+SPRITE_POINTER			WORD					; Pointer to the first sprite (#SPR).
+RESPAWN_DELAY			WORD					; Number of game loops delaying respawn.
+RESPAWN_DELAY_CNT		WORD					; Respawn delay counter.
+SPRITES					BYTE					; Number of sprites used in this enemyFormation, starting from #SPRITE_POINTER inclusive.
+SPRITES_CNT				BYTE					; Counter for SPRITES
 	ENDS
 
-efPointer			WORD 0
+efPointer				WORD 0
+formationEnemySize		BYTE 10
+;----------------------------------------------------------;
+;                #MoveFormationEnemies                     ;
+;----------------------------------------------------------;
+MoveFormationEnemies
+/*
+	LD IX, db.singleEnemySprites
+	LD A, (singleSize)
+	LD B, A
+
+	CALL ep.MovePatternEnemies
+*/
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   #ResetEnemyFormation                   ;
@@ -27,7 +40,8 @@ ResetEnemyFormation
 ;----------------------------------------------------------;
 ;                   #SetupEnemyFormation                   ;
 ;----------------------------------------------------------;
-
+;Input:
+;  -IX: Pointer to formation enemies (#ef.EF)
 SetupEnemyFormation
 
 	RET											; ## END of the function ##

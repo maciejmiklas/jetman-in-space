@@ -5,12 +5,25 @@
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
 singleRespDelayCnt 		BYTE 0
-singleCount				BYTE 10
+singleEnemySize			BYTE 10
 
 ; Each enemy has a dedicated respawn delay (EF.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
 ; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
 ; the respawn of the next enemy from the enemies list. 
 NEXT_RESP_DEL			= 10
+
+;----------------------------------------------------------;
+;                  #MoveSingleEnemies                      ;
+;----------------------------------------------------------;
+MoveSingleEnemies
+
+	LD IX, db.singleEnemySprites
+	LD A, (singleEnemySize)
+	LD B, A
+
+	CALL ep.MovePatternEnemies
+
+	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                  #SetupSingleEnemies                     ;
@@ -22,7 +35,7 @@ NEXT_RESP_DEL			= 10
 SetupSingleEnemies
 	CALL dbs.SetupArraysBank
 
-	LD (singleCount), A
+	LD (singleEnemySize), A
 
 	PUSH IX
 	CALL _ResetSingleEnemies
@@ -32,7 +45,7 @@ SetupSingleEnemies
 	; ##########################################
 	; Load #ep.ENPS int #ep.ENP
 	LD IY, db.spriteEx01						; Pointer to #ENP array.
-	LD A, (singleCount)							; Single enemies size (number of #ENPS/#ENP arrays).
+	LD A, (singleEnemySize)							; Single enemies size (number of #ENPS/#ENP arrays).
 	LD B, A
 .enpLoop
 	LD A, (IY +  ep.ENP.MOVE_DELAY_CNT)
@@ -66,7 +79,7 @@ SetupSingleEnemies
 	; ##########################################
 	; Load #ep.ENPS int #sr.SPR
 	LD IY, db.singleEnemySprites						; Pointer to #SPR array.
-	LD A, (singleCount)							; Single enemies size (number of #ENPS/#ENP arrays).
+	LD A, (singleEnemySize)							; Single enemies size (number of #ENPS/#ENP arrays).
 	LD B, A
 .sprLoop
 
@@ -113,7 +126,7 @@ RespawnNextSingleEnemy
 	; ##########################################
 	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
 	LD IX, db.singleEnemySprites
-	LD A, (singleCount)
+	LD A, (singleEnemySize)
 	LD B, A
 
 .loop
