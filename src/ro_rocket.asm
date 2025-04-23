@@ -9,7 +9,7 @@ RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rock
 RO_FLY_DELAY_D8			= 8
 RO_FLY_DELAY_DIST_D5	= 5
 
-RO_DOWN_SPR_ID_D50		= 50					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
+RO_DOWN_SPR_ID_D80		= 80					; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 RO_MOVE_STOP_D120		= 120					; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 
 ; Number of _MainLoop040 cycles to drop next rocket module.
@@ -552,7 +552,7 @@ BlinkRocketReady
 	RET NZ	
 
 	; Set the ID of the sprite for the following commands.
-	LD A, RO_DOWN_SPR_ID_D50
+	LD A, RO_DOWN_SPR_ID_D80
 	NEXTREG _SPR_REG_NR_H34, A
 
 	; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman.
