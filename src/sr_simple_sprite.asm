@@ -134,9 +134,7 @@ KillOneSprite
 ;  - IX:	Pointer to #SPR.
 SpriteHit
 
-	LD A, (IX + SPR.STATE)						; Sprite is dying; turn off collision detection.
-	RES SPRITE_ST_ACTIVE_BIT, A
-	LD (IX + SPR.STATE), A
+	RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)	; Sprite is dying; turn off collision detection.
 
 	LD A, SDB_EXPLODE
 	CALL _LoadSpritePattern						; Enemy explodes.

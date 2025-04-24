@@ -14,7 +14,7 @@ start
 	CALL gc.LoadLevel1
 	;CALL gc.LoadLobby
 	
-	;CALL ro.AssemblyRocketForDebug
+	CALL ro.AssemblyRocketForDebug
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;

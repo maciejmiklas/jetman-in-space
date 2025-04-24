@@ -164,6 +164,7 @@ _MainLoop002OnFlayRocket
 
 	; ##########################################
 	CALL ros.AnimateStarsOnFlyRocket
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -237,6 +238,7 @@ _MainLoop004OnRocketExplosion
 
 	; ##########################################
 	CALL ro.AnimateRocketExplosion
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -46,7 +46,7 @@ JetmanEnemiesCollision
 	LD IX, db.formationEnemySprites
 	CALL ef.GetEnemyFormationSize
 	LD B, A
-	CALL _EnemiesCollision
+	;CALL _EnemiesCollision
 
 	RET											; ## END of the function ##
 
@@ -162,6 +162,10 @@ _EnemyCollision
 	; Exit if enemy is not alive.
 	BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
 	RET Z
+
+	; Exit if enemy is visible.
+	BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+	RET Z	
 
 	; ################################
 	; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman.

@@ -118,9 +118,12 @@ ResetPatternEnemies
 
 	XOR A
 	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
-	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
 	LD (IY + ep.ENP.MOVE_PAT_STEP), A
 	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
+
+	; This will randomize respawn time time.
+	LD A, R
+	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
 
 	LD A, ep.MOVE_PAT_STEP_OFFSET
 	LD (IY + ep.ENP.MOVE_PAT_POS), A
@@ -173,7 +176,7 @@ KillOnePatternEnemy
 	; ##########################################
 	; Kill formation enemy.
 	LD IX, db.formationEnemySprites
-	CALL ef.GetEnemyFormationSize
+	LD A, db.ENEMY_FORMATION_SIZE
 	LD B, A
 	CALL sr.KillOneSprite
 

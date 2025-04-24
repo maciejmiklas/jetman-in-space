@@ -676,7 +676,7 @@ jetSpriteDB
 
 AGND					= 30*8
 TASM					= 226
-TSID					= 43
+TSID					= ro.EXHAUST_SPRID_D83
 TSRE					= 17
 
 ; Level 1
@@ -846,6 +846,7 @@ rocketExplodeDB3		DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,3
 
 rocketExhaustDB									; Sprite IDs for exhaust
 	DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
+RO_EXHAUST_MAX			= 18
 
 rocketExplodeTankDB		DB 30, 31, 32, 33		; Sprite IDs for explosion.
 

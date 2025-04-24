@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE jt
 
-JT_STATE_INACTIVE			= 0
+JT_STATE_INACTIVE			= 0					; Must be 0, because we reset it with "XOR A"
 
 ; States for Jetman in the air, 0 for not in the air.
 AIR_FLY					= 10					; Jetman is flaying.

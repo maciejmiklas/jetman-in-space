@@ -56,7 +56,6 @@ explodeTankCnt			BYTE 0					; Current position in #rocketExplodeTankDB.
 EXPLODE_TANK_MAX		= 4						; The amount of explosion sprites.
 
 rocketExhaustCnt		BYTE 0					; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
-RO_EXHAUST_MAX			= 18
 
 rocketDistance			WORD 0					; Increments with every rocket move when the rocket is flying towards the next planet.
 
@@ -81,7 +80,7 @@ PICK_MARGY_D16			= 16
 CARRY_ADJUSTY_D10		= 10
 EXPLODE_Y_HI_H4			= 4						; HI byte from #starsDistance to explode rocket,1070 = $42E.
 EXPLODE_Y_LO_H7E		= $2E					; LO byte from #starsDistance to explode rocket.
-EXHAUST_SPRID_D43		= 43					; Sprite ID for exhaust.
+EXHAUST_SPRID_D83		= 83					; Sprite ID for exhaust.
 
 rocketEl				WORD 0					; Pointer to 9x ro.RO
 
@@ -198,77 +197,6 @@ UpdateRocketOnJetmanMove
 	CALL _BoardRocket
 
 	RET											; ## END of the function ##
-	
-;----------------------------------------------------------;
-;               #AnimateRocketExplosion                    ;
-;----------------------------------------------------------;
-AnimateRocketExplosion
-	CALL dbs.SetupArraysBank
-
-	; ##########################################
-	; Is the exploding sequence over?
-	LD A, (rocketExplodeCnt)
-	CP RO_EXPLODE_MAX
-	JR Z, .explodingEnds
-	; Nope, keep exploding
-
-	; ##########################################
-	; Animation for the top rockets element.
-	LD IX, (rocketEl)
-	LD A, EL_TOP_D3
-	CALL _MoveIXtoGivenRocketElement
-
-	; Move HL to current frame.
-	LD DE, (rocketExplodeCnt)
-	LD D, 0										; Reset D, we have an 8-bit counter here.
-	LD HL, db.rocketExplodeDB3
-	DEC DE										; Counter starts at 1.
-	ADD HL, DE
-	LD D, (HL)
-	CALL _UpdateRocketSpritePattern
-
-	; ##########################################
-	; Animation for the middle rockets element.
-	LD IX, (rocketEl)
-	LD A, EL_MID_D2
-	CALL _MoveIXtoGivenRocketElement
-
-	; Move HL to current frame.
-	LD DE, (rocketExplodeCnt)
-	LD D, 0										; Reset D, we have an 8-bit counter here.
-	LD HL, db.rocketExplodeDB2
-	DEC DE										; Counter starts at 1.
-	ADD HL, DE
-	LD D, (HL)
-	CALL _UpdateRocketSpritePattern
-
-	; ##########################################
-	; Animation for the bottom rockets element.
-	LD IX, (rocketEl)
-	LD A, EL_LOW_D1
-	CALL _MoveIXtoGivenRocketElement
-
-	; Move HL to current frame
-	LD DE, (rocketExplodeCnt)
-	LD D, 0										; Reset D, we have an 8-bit counter here.
-	LD HL, db.rocketExplodeDB1
-	DEC DE										; Counter starts at 1.
-	ADD HL, DE
-	LD D, (HL)
-	CALL _UpdateRocketSpritePattern
-
-	; ##########################################
-	; Update explosion frame counter.
-	LD A, (rocketExplodeCnt)
-	INC A
-	LD (rocketExplodeCnt), A
-
-	RET
-.explodingEnds
-	; sequence is over, load next level.
-	CALL gc.LoadNextLevel
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                     #CheckHitTank                        ;
@@ -369,72 +297,7 @@ AnimateTankExplode
 	INC A
 	LD (explodeTankCnt), A
 
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #AnimateRocketExhaust                    ;
-;----------------------------------------------------------;
-AnimateRocketExhaust
-	CALL dbs.SetupArraysBank
-
-	; Increment sprite pattern counter.
-	LD A, (rocketExhaustCnt)
-	INC A
-	CP RO_EXHAUST_MAX
-	JP NZ, .afterIncrement
-	XOR A										; Reset counter.
-.afterIncrement	
-
-	LD (rocketExhaustCnt), A					; Store current counter (increment or reset).
-
-	; Set the ID of the sprite for the following commands.
-	LD A, EXHAUST_SPRID_D43
-	NEXTREG _SPR_REG_NR_H34, A
-
-	; Load sprite pattern to A.
-	LD HL, db.rocketExhaustDB
-	LD A, (rocketExhaustCnt)
-	ADD HL, A
-	LD A, (HL)
-
-	; Set sprite pattern.
-	OR _SPR_PATTERN_SHOW						; Set show bit.
-	NEXTREG _SPR_REG_ATR3_H38, A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       #FlyRocket                         ;
-;----------------------------------------------------------;
-FlyRocket
-
-	CALL dbs.SetupArraysBank
-
-	CALL _ShakeTilemapOnFlyingRocket
-	CALL _MoveFlyingRocket
-
-	; ##########################################
-	; Flames coming out of the exhaust.
-	LD A, EXHAUST_SPRID_D43
-	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands.
-
-	; Sprite X coordinate from assembly location.
-	LD A, (rocketAssemblyX)
-	NEXTREG _SPR_REG_X_H35, A
-
-	LD A, _SPR_REG_ATR2_EMPTY
-	NEXTREG _SPR_REG_ATR2_H37, A
-
-	; Sprite Y coordinate.
-	LD IX, (rocketEl)
-		
-	LD A, (IX + RO.Y)							; Lowest rocket element + 16px.
-	ADD A, FLAME_OFFSET_D16
-	NEXTREG _SPR_REG_Y_H36, A
-
-	CALL js.HideJetSprite						; Keep hiding Jetman sprite, just in case other procedure would show it.
-
-	RET											; ## END of the function ##
+	RET											; ## END of the function ##	
 
 ;----------------------------------------------------------;
 ;              #ResetCarryingRocketElement                 ;
@@ -485,29 +348,6 @@ RocketElementFallsForPickup
 	; Yes, element has reached landing postion.
 	LD A, ROST_WAIT_PICKUP
 	LD (rocketState), A
-
-	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #BlinkFlyingRocket                     ;
-;----------------------------------------------------------;
-BlinkFlyingRocket
-	CALL dbs.SetupArraysBank
-		
-	LD A, EL_LOW_D1
-	CALL _MoveIXtoGivenRocketElement
-
-	; Set sprite pattern - one for flip, one for flop -> rocket will blink.
-	LD A, (mld.counter008FliFLop)
-	CP _GC_FLIP_ON_D1
-	JR Z, .flip
-	LD A, SPR_PAT_READY1_D60
-	JR .afterSet
-.flip	
-	LD A, SPR_PAT_READY2_D61
-.afterSet
-	
-	LD (IX + RO.SPRITE_REF), A
 
 	RET											; ## END of the function ##
 
@@ -657,6 +497,165 @@ DropNextRocketElement
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                       #FlyRocket                         ;
+;----------------------------------------------------------;
+FlyRocket
+
+	CALL dbs.SetupArraysBank
+
+	CALL _ShakeTilemapOnFlyingRocket
+	CALL _MoveFlyingRocket
+	
+	; ##########################################
+	; Set X/Y coordinates for flames coming out of the exhaust.
+	LD A, EXHAUST_SPRID_D83
+	NEXTREG _SPR_REG_NR_H34, A					; Set the ID of the sprite for the following commands.
+
+	; Sprite X coordinate from assembly location.
+	LD A, (rocketAssemblyX)
+	NEXTREG _SPR_REG_X_H35, A
+
+	LD A, _SPR_REG_ATR2_EMPTY
+	NEXTREG _SPR_REG_ATR2_H37, A
+
+	; Sprite Y coordinate.
+	LD IX, (rocketEl)
+		
+	LD A, (IX + RO.Y)							; Lowest rocket element + 16px.
+	ADD A, FLAME_OFFSET_D16
+	NEXTREG _SPR_REG_Y_H36, A
+
+	RET											; ## END of the function ##
+	
+;----------------------------------------------------------;
+;                   #BlinkFlyingRocket                     ;
+;----------------------------------------------------------;
+BlinkFlyingRocket
+	CALL dbs.SetupArraysBank
+		
+	LD A, EL_LOW_D1
+	CALL _MoveIXtoGivenRocketElement
+
+	; Set sprite pattern - one for flip, one for flop -> rocket will blink.
+	LD A, (mld.counter008FliFLop)
+	CP _GC_FLIP_ON_D1
+	JR Z, .flip
+	LD A, SPR_PAT_READY1_D60
+	JR .afterSet
+.flip	
+	LD A, SPR_PAT_READY2_D61
+.afterSet
+	
+	LD (IX + RO.SPRITE_REF), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #AnimateRocketExplosion                    ;
+;----------------------------------------------------------;
+AnimateRocketExplosion
+	CALL dbs.SetupArraysBank
+
+	; ##########################################
+	; Is the exploding sequence over?
+	LD A, (rocketExplodeCnt)
+	CP RO_EXPLODE_MAX
+	JR Z, .explodingEnds
+	; Nope, keep exploding
+	
+	; ##########################################
+	; Animation for the top rockets element.
+	LD IX, (rocketEl)
+	LD A, EL_TOP_D3
+	CALL _MoveIXtoGivenRocketElement
+
+	; Move HL to current frame.
+	LD DE, (rocketExplodeCnt)
+	LD D, 0										; Reset D, we have an 8-bit counter here.
+	LD HL, db.rocketExplodeDB3
+	DEC DE										; Counter starts at 1.
+	ADD HL, DE
+	LD D, (HL)
+	CALL _UpdateRocketSpritePattern
+
+	; ##########################################
+	; Animation for the middle rockets element.
+	LD IX, (rocketEl)
+	LD A, EL_MID_D2
+	CALL _MoveIXtoGivenRocketElement
+
+	; Move HL to current frame.
+	LD DE, (rocketExplodeCnt)
+	LD D, 0										; Reset D, we have an 8-bit counter here.
+	LD HL, db.rocketExplodeDB2
+	DEC DE										; Counter starts at 1.
+	ADD HL, DE
+	LD D, (HL)
+	CALL _UpdateRocketSpritePattern
+
+	; ##########################################
+	; Animation for the bottom rockets element.
+	LD IX, (rocketEl)
+	LD A, EL_LOW_D1
+	CALL _MoveIXtoGivenRocketElement
+
+	; Move HL to current frame
+	LD DE, (rocketExplodeCnt)
+	LD D, 0										; Reset D, we have an 8-bit counter here.
+	LD HL, db.rocketExplodeDB1
+	DEC DE										; Counter starts at 1.
+	ADD HL, DE
+	LD D, (HL)
+	CALL _UpdateRocketSpritePattern
+
+	; ##########################################
+	; Update explosion frame counter.
+	LD A, (rocketExplodeCnt)
+	INC A
+	LD (rocketExplodeCnt), A
+
+	RET
+.explodingEnds
+
+	; sequence is over, load next level.
+	CALL gc.LoadNextLevel
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #AnimateRocketExhaust                    ;
+;----------------------------------------------------------;
+AnimateRocketExhaust
+	
+	CALL dbs.SetupArraysBank
+
+	; Increment sprite pattern counter.
+	LD A, (rocketExhaustCnt)
+	INC A
+	CP db.RO_EXHAUST_MAX
+	JP NZ, .afterIncrement
+	XOR A										; Reset counter.
+.afterIncrement	
+
+	LD (rocketExhaustCnt), A					; Store current counter (increment or reset).
+
+	; Set the ID of the sprite for the following commands.
+	LD A, EXHAUST_SPRID_D83
+	NEXTREG _SPR_REG_NR_H34, A
+
+	; Load sprite pattern to A.
+	LD HL, db.rocketExhaustDB
+	LD A, (rocketExhaustCnt)
+	ADD HL, A
+	LD A, (HL)
+
+	; Set sprite pattern.
+	OR _SPR_PATTERN_SHOW						; Set show bit.
+	NEXTREG _SPR_REG_ATR3_H38, A
+
+	RET											; ## END of the function ##
+	
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
@@ -697,7 +696,7 @@ _MoveIXtoGivenRocketElement
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_JetmanElementCollision                   ;
+;                 #_JetmanElementPickup                    ;
 ;----------------------------------------------------------;
 ; Checks whether Jetman overlaps with rocket element/tank.
 ; Input:
@@ -708,7 +707,7 @@ _MoveIXtoGivenRocketElement
 COLLISION_NO			= 0
 COLLISION_YES			= 1
 
-_JetmanElementCollision
+_JetmanElementPickup
 
 	; Compare X coordinate of element and Jetman.
 	LD B, 0										; X is 8bit -> reset MSB.
@@ -780,7 +779,7 @@ _PickupRocketElement
 	LD BC, (IX + RO.DROP_X)						; X of the element.
 	LD B, 0
 	LD D, (IX + RO.Y)							; Y of the element.
-	CALL _JetmanElementCollision
+	CALL _JetmanElementPickup
 	CP COLLISION_NO
 	RET Z
 
@@ -972,7 +971,7 @@ _MoveFlyingRocket
 .afterDelay
 
 	CALL gc.RocketFlying
-	CALL dbs.SetupArraysBank
+	CALL dbs.SetupArraysBank					; gc-call can change bank!
 
 	; ##########################################
 	; Increment total distance.
@@ -998,7 +997,6 @@ _MoveFlyingRocket
 	; The current position of rocket elements is stored in #rocketAssemblyX and #RO.Y 
 	; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 
-	CALL dbs.SetupArraysBank
 	LD IX, (rocketEl)								; Load the pointer to #rocket into IX
 
 	; ##########################################
@@ -1010,10 +1008,11 @@ _MoveFlyingRocket
 	; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
 	LD A, (rocketAssemblyX)
 	CALL _UpdateElementPosition
+	
 	RET
 .keepMoving
 	; Keep moving
-
+	
 	; ##########################################
 	; Move bottom rocket element.
 	LD A, (IX + RO.Y)
@@ -1061,7 +1060,7 @@ _StartRocketExplosion
 
 	; ##########################################
 	; Hide exhaust
-	LD A, EXHAUST_SPRID_D43					; Hide sprite on display.
+	LD A, EXHAUST_SPRID_D83					; Hide sprite on display.
 	CALL sp.SetIdAndHideSprite
 
 	; ##########################################
@@ -1089,7 +1088,7 @@ _BoardRocket
 	LD BC, (rocketAssemblyX)					; X of the element.
 	LD B, 0
 	LD D, (IX + RO.Y)							; Y of the element.
-	CALL _JetmanElementCollision
+	CALL _JetmanElementPickup
 	CP COLLISION_NO
 	RET Z
 

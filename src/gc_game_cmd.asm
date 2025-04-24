@@ -211,9 +211,9 @@ BackgroundPaletteLoaded
 ;                    #RocketTakesOff                       ;
 ;----------------------------------------------------------;
 RocketTakesOff
+
 	CALL jt.SetJetStateInactive
 	CALL js.HideJetSprite
-
 	CALL gb.HideGameBar
 	CALL ti.SetTilesClipVertical
 
@@ -395,6 +395,8 @@ RespawnJet
 
 	CALL bg.UpdateBackgroundOnJetmanMove
 	CALL ro.ResetCarryingRocketElement
+	CALL jw.HideShots
+	CALL jo.ResetJetpackOverheating
 
 	; Show stars after loading the background image.
 	CALL st.ShowStars
