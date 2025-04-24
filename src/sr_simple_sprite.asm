@@ -77,6 +77,23 @@ srSpriteDB
 			DB 34, 35, 36			
 
 ;----------------------------------------------------------;
+;                       #ResetSprite                       ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:	Pointer to #SPR.
+ResetSprite
+
+	XOR A
+	LD (IX + sr.SPR.SDB_POINTER), A
+	LD (IX + sr.SPR.X), A
+	LD (IX + sr.SPR.Y), A
+	LD (IX + sr.SPR.STATE), A
+	LD (IX + sr.SPR.NEXT), A
+	LD (IX + sr.SPR.REMAINING), A
+	
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     #KillOneSprite                       ;
 ;----------------------------------------------------------;
 ; Input:

@@ -591,7 +591,7 @@ _DisableGame
 
 	CALL bm.HideImage
 	CALL js.HideJetSprite
-	CALL ro.HideRocket
+	CALL ro.ResetAndDisableRocket
 	CALL st.HideStars
 	CALL jw.HideShots
 	CALL ep.HidePatternEnemies
@@ -610,10 +610,8 @@ _InitLevelLoad
 	
 	CALL los.SetLobbyStateInactive
 	CALL ti.ResetTilemapOffset
-	CALL ro.ResetAndDisableRocket
 	CALL td.ResetTimeOfDay
 	CALL ros.ResetRocketStars
-	CALL ro.ResetAndDisableRocket
 	
 	RET											; ## END of the function ##
 
@@ -624,10 +622,12 @@ _StartLevel
 
 	CALL sp.LoadSpritesFPGA
 	CALL gb.ShowGameBar
-	CALL gc.RespawnJet
 	CALL ro.StartRocketAssembly
 	CALL ti.SetTilesClipFull
 	CALL jo.ResetJetpackOverheating
+
+	; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
+	CALL gc.RespawnJet
 
 	RET											; ## END of the function ##
 

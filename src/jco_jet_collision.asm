@@ -44,7 +44,7 @@ JetmanEnemiesCollision
 
 	; ##########################################
 	LD IX, db.formationEnemySprites
-	LD A, (ef.formationEnemySize)
+	CALL ef.GetEnemyFormationSize
 	LD B, A
 	CALL _EnemiesCollision
 

@@ -102,6 +102,39 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
 ;----------------------------------------------------------;
+;                  #ResetPatternEnemies                    ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:  Pointer to the #sr.SPR array
+;  - B:   Size of the #sr.SPR and #ep.ENP array (both will be modified)
+ResetPatternEnemies
+
+.enemyLoop
+	CALL sr.ResetSprite
+	
+	; Load extra data for this sprite to IY.
+	LD DE, (IX + sr.SPR.EXT_DATA_POINTER)
+	LD IY, DE
+
+	XOR A
+	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
+	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP), A
+	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
+
+	LD A, ep.MOVE_PAT_STEP_OFFSET
+	LD (IY + ep.ENP.MOVE_PAT_POS), A
+
+	; ##########################################
+	; Next sprite
+	LD DE, IX
+	ADD DE, sr.SPR
+	LD IX, DE
+	DJNZ .enemyLoop
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                #AnimatePatterEnemies                     ;
 ;----------------------------------------------------------;
 AnimatePatterEnemies
@@ -118,9 +151,9 @@ AnimatePatterEnemies
 	; ##########################################
 	; Kill formation enemy.
 	LD IX, db.formationEnemySprites
-	LD A, db.ENEMY_FORMATION_SIZE
-	LD B, A	
-	CALL sr.AnimateSprites	
+	CALL ef.GetEnemyFormationSize
+	LD B, A
+	;CALL sr.AnimateSprites
 
 	RET											; ## END of the function ##	
 ;----------------------------------------------------------;
@@ -140,9 +173,9 @@ KillOnePatternEnemy
 	; ##########################################
 	; Kill formation enemy.
 	LD IX, db.formationEnemySprites
-	LD A, db.ENEMY_FORMATION_SIZE
-	LD B, A	
-	CALL sr.KillOneSprite	
+	CALL ef.GetEnemyFormationSize
+	LD B, A
+	CALL sr.KillOneSprite
 
 	RET											; ## END of the function ##
 
@@ -164,7 +197,7 @@ HidePatternEnemies
 	; Hide formation enemies.
 	LD IX, db.formationEnemySprites
 	LD A, db.ENEMY_FORMATION_SIZE
-	LD B, A	
+	LD B, A
 	CALL sr.HideAllSimpleSprites
 
 	RET											; ## END of the function ##
@@ -268,7 +301,7 @@ RespawnEnemy
 	JR Z, .afterEnemyRespawnDelay				; Jump if the timer reaches respawn delay.
 
 	LD (IY + ENP.RESPAWN_DELAY_CNT), A			; The delay timer for the enemy is still ticking.
-
+	
 	LD A, RES_SE_OUT_NO
 	RET
 .afterEnemyRespawnDelay
@@ -280,6 +313,7 @@ RespawnEnemy
 	; Reset counters and move pattern.
 	XOR A										; Set A to 0
 	LD (IY + ENP.RESPAWN_DELAY_CNT), A
+
 
 	CALL _LoadMoveDelayCounter	
 	LD (IY + ENP.MOVE_DELAY_CNT), A
@@ -298,7 +332,8 @@ RespawnEnemy
 	LD BC, _GSC_X_MAX_D315
 	SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + sr.SPR.STATE)	; Mirror sprite, because it deploys on the right and moves to the left side.
 	JR .afterLR
-.deployLeft	
+.deployLeft
+	RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + sr.SPR.STATE)	; Do not mirror sprite (this could be set if in another level it was moving right).
 	; Deploy left.
 	LD BC, _GSC_X_MIN_D0
 
@@ -377,7 +412,6 @@ _MoveEnemyX
 
 	RET											; ## END of the function ##
 
-tmp byte 0
 ;----------------------------------------------------------;
 ;                      #_MoveEnemy                         ;
 ;----------------------------------------------------------;
@@ -409,13 +443,10 @@ _MoveEnemy
 	RET											; Return - sprite is exploding.
 .afterAliveCheck
 
+	; ##########################################
 	; Should the enemy move along the platform to avoid collision?
 	BIT ENP_ALONG_BIT, (IY + ENP.SETUP)
 	JR Z, .afterMoveAlong						; Jump if move along is not set.
-
-	ld a, (tmp)
-	inc a
-	ld (tmp),a
 
 	; Check the collision with the platform.
 	PUSH IY, HL
@@ -431,6 +462,7 @@ _MoveEnemy
 	RET											; Return, sprite moves along platform.
 .afterMoveAlong
 
+	; ##########################################
 	; Check if counter for X has already reached 0, or is set to 0.
 	LD A, (IY + ENP.MOVE_PAT_STEP)				; A contains current X,Y counters.
 	AND MOVE_PAT_X_MASK							; Reset all but X.
@@ -445,6 +477,7 @@ _MoveEnemy
 	CALL _MoveEnemyX
 .afterMoveLR
 
+	; ##########################################
 	; Check if counter for Y has already reached 0, or is set to 0.
 	LD A, (IY + ENP.MOVE_PAT_STEP)				; A contains current X,Y counters.
 	AND MOVE_PAT_Y_MASK							; Reset all but Y.
@@ -490,6 +523,7 @@ _MoveEnemy
 	JR .checkPlatformHit
 
 .resetXYCounters
+	; ##########################################
 	; X and Y have reached the max value. First, reset the X and Y counters, and afterward, decrement the repetition counter.
 	LD A, (HL)									; X, Y counters will be set to max value as we count down towards 0.
 	LD (IY + ENP.MOVE_PAT_STEP), A	
@@ -505,6 +539,7 @@ _MoveEnemy
 	JR .checkPlatformHit
 
 .nextMovePattern
+	; ##########################################
 	; Setup next move pattern
 	LD A, (IY + ENP.MOVE_PAT_POS)				; A contains the current position in the move pattern.
 

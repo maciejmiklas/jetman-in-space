@@ -283,7 +283,6 @@ _JoyCntEnabled
 
 	RET											; ## END of the function ##
 
-tmp byte 0
 ;----------------------------------------------------------;
 ;             #_JoyJetpackOverheatSlowdown                 ;
 ;----------------------------------------------------------;
@@ -311,10 +310,6 @@ _JoyJetpackOverheatSlowdown
 
 	XOR A										; Set A to 0.
 	LD (gid.joyOverheatDelayCnt), A				; Reset delay counter.
-
-	ld a, (tmp)
-	inc a 
-	ld (tmp),a
 	LD A, _RET_YES_D1							; Process input, because counter has been reached.
 
 	RET											; ## END of the function ##
@@ -360,16 +355,11 @@ _CanJetMove
 
 	RET											; ## END of the function ##
 
-tmp2 byte 0
 ;----------------------------------------------------------;
 ;                    #_JoystickMoves                       ;
 ;----------------------------------------------------------;
 ; Method gets called on any joystick movement (only real key press), but not fire pressed.
 _JoystickMoves
-
-	ld a, (tmp2)
-	inc a
-	ld (tmp2),a
 
 	CALL pl.ResetJoyOffBump
 	CALL ro.UpdateRocketOnJetmanMove

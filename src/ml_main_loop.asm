@@ -87,8 +87,6 @@ _MainLoop000OnActiveJetman
 	CALL gi.GameKeyboardInput
 	CALL es.MoveSingleEnemies
 	CALL ef.MoveFormationEnemies
-	CALL es.RespawnNextSingleEnemy
-	;CALL ef.RespawnFormation
 	
 	RET											; ## END of the function ##
 
@@ -254,7 +252,9 @@ _MainLoop004OnActiveJetman
 	; ##########################################
 	CALL ro.RocketElementFallsForAssembly
 	CALL jo.UpdateJetpackOverheating
-	
+	CALL es.RespawnNextSingleEnemy
+	CALL ef.RespawnFormation
+		
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -408,7 +408,6 @@ _MainLoop010OnActiveJetman
 
 	; ##########################################
 	CALL st.BlinkStarsL2
-
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

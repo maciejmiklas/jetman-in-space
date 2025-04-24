@@ -74,7 +74,7 @@ LoadLevel1Data
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL1
+	LD DE, db.enemyFormationL1
 	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
@@ -150,7 +150,7 @@ LoadLevel2Data
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL2
+	LD DE, db.enemyFormationL2
 	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
@@ -226,7 +226,7 @@ LoadLevel3Data
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL3
+	LD DE, db.enemyFormationL3
 	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
@@ -304,7 +304,7 @@ LoadLevel4Data
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL4
+	LD DE, db.enemyFormationL4
 	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
@@ -380,7 +380,7 @@ LoadLevel5Data
 
 	; ##########################################
 	; Load formation.
-	LD IX, db.enemyFormationL5
+	LD DE, db.enemyFormationL5
 	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
@@ -456,8 +456,8 @@ LoadLevel6Data
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL1
-	;CALL ef.SetupEnemyFormation
+	LD DE, db.enemyFormationL6
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -532,8 +532,8 @@ LoadLevel7Data
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL1
-	;CALL ef.SetupEnemyFormation
+	LD DE, db.enemyFormationL7
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -608,8 +608,8 @@ LoadLevel8Data
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL1
-	;CALL ef.SetupEnemyFormation
+	LD DE, db.enemyFormationL8
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -684,8 +684,8 @@ LoadLevel9Data
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL1
-	;CALL ef.SetupEnemyFormation
+	LD DE, db.enemyFormationL9
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -759,8 +759,8 @@ LoadLevel10Data
 
 	; ##########################################
 	; Load formation.
-	;LD IX, db.enemyFormationL1
-	;CALL ef.SetupEnemyFormation
+	LD DE, db.enemyFormationL10
+	CALL ef.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 

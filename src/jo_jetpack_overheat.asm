@@ -18,9 +18,10 @@ jetCoolCnt				BYTE 0					; Runs from 0 to JM_COOL_CNT
 jetTempLevel			BYTE 0
 
 TEMP_MAX				= 6
-TEMP_NORM				= 2
 TEMP_RED				= 4
 TEMP_MIN				= 0
+
+TEMP_NORM				= 4						; Jetman can move at full speed when Jetpack cools down, and this level is reached.
 
 BAR_TILE_START			= 31*2					; *2 because each tile takes 2 bytes
 BAR_TILE_PAL			= $30
@@ -94,7 +95,7 @@ _JetpackTempUp
 	INC A
 	LD (jetHeatCnt),A
 
-	; Heat increase speed slows down when #jetTempLevel is over JM_HEAT_RED_CNT.
+	; Temperature increase speed slows down hen #jetTempLevel is over TEMP_RED.
 	; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with JM_HEAT_CNT
 	; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with JM_HEAT_RED_CNT
 	LD A, (jetTempLevel)
@@ -146,7 +147,7 @@ _JetpackTempDown
 	RET Z
 
 	; ##########################################
-	; Increase the heat counter, and check whether it's necessary to decrease the heat level of the jetpack.
+	; Increase the cool down counter, and check whether it's necessary to decrease the heat level of the jetpack.
 	LD A, (jetCoolCnt)
 	INC A
 	LD (jetCoolCnt),A

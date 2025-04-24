@@ -65,7 +65,7 @@ HideImage
 
 	; ##########################################
 	; Horizontal line within bank loop. The bank has 8192 bytes, the picture has 256 lines, 
-	; and each horozontal line in the single bank has 32 pixels (8192/256 = 32).
+	; and each horizontal line in the single bank has 32 pixels (8192/256 = 32).
 	LD B, _BM_YRES_D256-1
 .linesLoop										; 255 to 0
 	PUSH BC

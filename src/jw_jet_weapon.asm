@@ -55,12 +55,7 @@ HideShots
 
 	CALL sr.SetSpriteId							; Set the ID of the sprite for the following commands.
 	CALL sp.HideSprite
-
-	XOR A
-	LD (IX + sr.SPR.SDB_POINTER), A
-	LD (IX + sr.SPR.STATE), A
-	LD (IX + sr.SPR.NEXT), A
-	LD (IX + sr.SPR.REMAINING), A
+	CALL sr.ResetSprite
 
 	; ##########################################
 	; Move IX to the beginning of the next #shotsXX.
@@ -85,9 +80,9 @@ WeaponHitEnemies
 
 	; ##########################################
 	LD IX, db.formationEnemySprites
-	LD A, (ef.formationEnemySize)
+	CALL ef.GetEnemyFormationSize
 	LD B, A
-	CALL _CheckHitEnemies	
+	;CALL _CheckHitEnemies
 
 	RET											; ## END of the function ##
 

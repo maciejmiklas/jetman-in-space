@@ -5,12 +5,12 @@
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
 singleRespDelayCnt 		BYTE 0
-singleEnemySize			BYTE 10
+singleEnemySize			BYTE db.ENEMY_SINGLE_SIZE
 
 ; Each enemy has a dedicated respawn delay (EF.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
 ; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
 ; the respawn of the next enemy from the enemies list. 
-NEXT_RESP_DEL			= 10
+NEXT_RESP_DEL			= 3
 
 ;----------------------------------------------------------;
 ;                  #MoveSingleEnemies                      ;
@@ -37,18 +37,20 @@ SetupSingleEnemies
 
 	LD (singleEnemySize), A
 
+	; ##########################################
 	PUSH IX
-	CALL _ResetSingleEnemies
+	LD B, db.ENEMY_SINGLE_SIZE
+	LD IX, db.singleEnemySprites
+	CALL ep.ResetPatternEnemies
 	POP IX
 
 	PUSH IX
 	; ##########################################
 	; Load #ep.ENPS int #ep.ENP
 	LD IY, db.spriteEx01						; Pointer to #ENP array.
-	LD A, (singleEnemySize)							; Single enemies size (number of #ENPS/#ENP arrays).
+	LD A, (singleEnemySize)						; Single enemies size (number of #ENPS/#ENP arrays).
 	LD B, A
 .enpLoop
-	LD A, (IY +  ep.ENP.MOVE_DELAY_CNT)
 
 	LD A, (IX + ep.ENPS.RESPAWN_Y)
 	LD (IY + ep.ENP.RESPAWN_Y), A
@@ -78,8 +80,8 @@ SetupSingleEnemies
 
 	; ##########################################
 	; Load #ep.ENPS int #sr.SPR
-	LD IY, db.singleEnemySprites						; Pointer to #SPR array.
-	LD A, (singleEnemySize)							; Single enemies size (number of #ENPS/#ENP arrays).
+	LD IY, db.singleEnemySprites				; Pointer to #SPR array.
+	LD A, (singleEnemySize)						; Single enemies size (number of #ENPS/#SPR arrays).
 	LD B, A
 .sprLoop
 
@@ -121,7 +123,7 @@ RespawnNextSingleEnemy
 	RET
 .startRespawn	
 	XOR A										; Set A to 0.
-	LD (singleRespDelayCnt), A						; Reset delay timer.
+	LD (singleRespDelayCnt), A					; Reset delay timer.
 
 	; ##########################################
 	; Iterate over all enemies to find the first hidden, respawn it, and exit function.
@@ -149,42 +151,6 @@ RespawnNextSingleEnemy
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                  #_ResetSingleEnemies                    ;
-;----------------------------------------------------------;
-; Input:
-;   - A:  Number of single enemies (size of #ENPS)
-; Modifies: A, DE, IX, IY
-_ResetSingleEnemies
-
-	LD B, A
-.enemyLoop
-	LD IX, db.singleEnemySprites
-
-	XOR A
-	LD (IX + sr.SPR.SDB_POINTER), A
-	LD (IX + sr.SPR.X), A
-	LD (IX + sr.SPR.Y), A
-	LD (IX + sr.SPR.STATE), A
-	LD (IX + sr.SPR.NEXT), A
-	LD (IX + sr.SPR.REMAINING), A
-
-	; Load extra data for this sprite to IY.
-	LD DE, (IX + sr.SPR.EXT_DATA_POINTER)
-	LD IY, DE
-
-	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
-	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
-
-	LD A, ep.MOVE_PAT_STEP_OFFSET
-	LD (IY + ep.ENP.MOVE_PAT_POS), A
-
-	DJNZ .enemyLoop
-
-	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

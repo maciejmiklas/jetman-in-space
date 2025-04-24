@@ -169,18 +169,23 @@ ResetAndDisableRocket
 	; ##########################################
 	; Reset rocket elements
 	LD B, EL_TANK6_D9
-.rocketElLoop
-	LD A, B
 	LD IX, (rocketEl)
-	CALL _MoveIXtoGivenRocketElement
-
+.rocketElLoop
+	
 	XOR A
 	LD (IX + RO.Y), A
+	
+	LD A, (IX + RO.SPRITE_ID)
+	CALL sp.SetIdAndHideSprite
 
+	; ##########################################
+	; Next rocket element
+	LD DE, IX
+	ADD DE, RO
+	LD IX, DE
 	DJNZ .rocketElLoop
 
 	RET											; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                #UpdateRocketOnJetmanMove                 ;
@@ -193,41 +198,7 @@ UpdateRocketOnJetmanMove
 	CALL _BoardRocket
 
 	RET											; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #HideRocket                          ;
-;----------------------------------------------------------;
-HideRocket
-	CALL dbs.SetupArraysBank
-
-	; Hide the top rockets element.
-	LD IX, (rocketEl)
-	LD A, EL_TOP_D3
-	CALL _MoveIXtoGivenRocketElement
-
-	LD A, (IX + RO.SPRITE_ID)
-	CALL sp.SetIdAndHideSprite
-
-	; ##########################################
-	; Hide the middle rockets element.
-	LD IX, (rocketEl)
-	LD A, EL_MID_D2
-	CALL _MoveIXtoGivenRocketElement
-
-	LD A, (IX + RO.SPRITE_ID)
-	CALL sp.SetIdAndHideSprite
-
-	; ##########################################
-	; Hide the bottom rockets element.
-	LD IX, (rocketEl)
-	LD A, EL_LOW_D1
-	CALL _MoveIXtoGivenRocketElement
-
-	LD A, (IX + RO.SPRITE_ID)
-	CALL sp.SetIdAndHideSprite
-
-	RET											; ## END of the function ##
-
+	
 ;----------------------------------------------------------;
 ;               #AnimateRocketExplosion                    ;
 ;----------------------------------------------------------;
