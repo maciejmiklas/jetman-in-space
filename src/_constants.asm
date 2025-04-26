@@ -417,23 +417,3 @@ _BM_YRES_D256			= 256
 _TI_GND_D8				= 8						; The thickness of the ground (tilemap).
 _GSC_JET_GND_D217		= _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
-
-
-
-
-	
-
-_TEST
-	CALL dbs.SetupArraysBank
-	PUSH IX,AF
-	LD IX, db.singleEnemiesL2
-	LD C, (IX + ep.ENPS.RESPAWN_Y)
-
-	LD A,C
-	CP $14
-	JR Z, .not
-	nextreg 2,8
-.not
-	POP AF,IX
-	RET
-

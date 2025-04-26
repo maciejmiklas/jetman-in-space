@@ -1,3 +1,4 @@
 *.lst
 *.nex
 .history
+/bin/* 

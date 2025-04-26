@@ -24,7 +24,7 @@ LoadImage
 
 	; Copy image data from temp RAM into screen memory
 	NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default).
-	LD E, dbs.BGST_BANK_D18					; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ....".
+	LD E, dbs.BGST_BANK_D18						; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ....".
 	LD B, dbs.BM_BANKS_D10						; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4.
 .slotLoop										; Each loop copies single bank, there are 10 iterations.
 	PUSH BC
@@ -35,8 +35,8 @@ LoadImage
 	NEXTREG _MMU_REG_SLOT7_H57, A				; Write to.
 
 	PUSH DE
-	LD HL, _RAM_SLOT6_STA_HC000				; Source
-	LD DE, _RAM_SLOT7_STA_HE000				; Destination
+	LD HL, _RAM_SLOT6_STA_HC000					; Source
+	LD DE, _RAM_SLOT7_STA_HE000					; Destination
 	LD BC, _BANK_BYTES_D8192
 	LDIR
 	POP DE

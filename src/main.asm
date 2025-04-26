@@ -11,8 +11,8 @@ start
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz.
 	
 	CALL gc.SetupGame
-	;CALL gc.LoadLevel1
-	CALL gc.LoadLobby
+	CALL gc.LoadLevel3
+	;CALL gc.LoadLobby
 	
 	;CALL ro.AssemblyRocketForDebug
 
@@ -38,6 +38,7 @@ mainLoop
 
 	INCLUDE "gc_game_cmd.asm"
 
+	INCLUDE "er_error.asm"
 	INCLUDE "fi_file_io.asm"
 	INCLUDE "dbs_bank_setup.asm"
 	INCLUDE "ll_level_loader.asm"

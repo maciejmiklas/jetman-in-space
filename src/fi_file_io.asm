@@ -421,10 +421,11 @@ _FileClose
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         #_IOError                         ;
+;                        #_IOError                         ;
 ;----------------------------------------------------------;
 _IOError
-	nextreg 2,8
+	LD A, er.ERR_002
+	CALL er.ReportError
 
 	RET											; ## END of the function ##
 

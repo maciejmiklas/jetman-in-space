@@ -60,6 +60,8 @@ SDB_HIDE				= 255					; Hides Sprite
 
 SDB_SUB					= 100					; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX).
 
+SDB_SEARCH_LIMIT		= 200
+
 ; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
 ; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
 ; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
@@ -74,8 +76,8 @@ srSpriteDB
 	SPR_REC {SDB_ENEMY2, SDB_ENEMY2 - SDB_SUB, 03}
 			DB 48, 49, 50
 	SPR_REC {SDB_ENEMY3, SDB_ENEMY3 - SDB_SUB, 03}
-			DB 34, 35, 36			
-
+			DB 34, 35, 36
+			
 ;----------------------------------------------------------;
 ;                       #ResetSprite                       ;
 ;----------------------------------------------------------;
@@ -84,12 +86,12 @@ srSpriteDB
 ResetSprite
 
 	XOR A
-	LD (IX + sr.SPR.SDB_POINTER), A
-	LD (IX + sr.SPR.X), A
-	LD (IX + sr.SPR.Y), A
-	LD (IX + sr.SPR.STATE), A
-	LD (IX + sr.SPR.NEXT), A
-	LD (IX + sr.SPR.REMAINING), A
+	LD (IX + SPR.SDB_POINTER), A
+	LD (IX + SPR.X), A
+	LD (IX + SPR.Y), A
+	LD (IX + SPR.STATE), A
+	LD (IX + SPR.NEXT), A
+	LD (IX + SPR.REMAINING), A
 	
 	RET											; ## END of the function ##
 
@@ -106,9 +108,9 @@ KillOneSprite
 
 	; ##########################################
 	; Ignore this enemy if it's hidden/exploding.
-	LD A, (IX + sr.SPR.STATE)
-	AND sr.SPRITE_ST_ALIVE						; Reset all bits but hidden/exploding.
-	CP sr.SPRITE_ST_ALIVE
+	LD A, (IX + SPR.STATE)
+	AND SPRITE_ST_ALIVE						; Reset all bits but hidden/exploding.
+	CP SPRITE_ST_ALIVE
 	JR NZ, .continue							; Jump if this enemy is already dead or exploding.
 
 	; ##########################################
@@ -119,7 +121,7 @@ KillOneSprite
 .continue
 	; ##########################################
 	; Move IX to the beginning of the next #SPR.
-	LD DE, sr.SPR
+	LD DE, SPR
 	ADD IX, DE
 
 	; ##########################################
@@ -230,7 +232,7 @@ HideAllSimpleSprites
 	CALL HideSimpleSprite
 
 	; Move IX to the beginning of the next #SPR.
-	LD DE, sr.SPR
+	LD DE, SPR
 	ADD IX, DE
 
 	DJNZ .spriteLoop
@@ -301,11 +303,10 @@ UpdateSpritePattern
 	CP 0
 	JR NZ, .afterRecordChange					; Jump if there are still bytes to be processed.
 
+	; ##########################################
 	; Find new DB record.
 	LD A, (IX + SPR.NEXT)
-
-	; The next animation record can have value #SDB_HIDE which means: hide it.
-	CP SDB_HIDE
+	CP SDB_HIDE									; The next animation record can have value #SDB_HIDE which means: hide it.
 	JR NZ, .afterHide
 	CALL HideSimpleSprite
 	RET
@@ -317,16 +318,19 @@ UpdateSpritePattern
 
 .afterRecordChange
 
+	; ##########################################
 	; #SPR has been fully updated to a current frame from #srSpriteDB.
 	; Update the remaining animation frames counter.
 	DEC (IX + SPR.REMAINING)
 
+	; ##########################################
 	; Set sprite pattern
 	LD HL, (IX + SPR.SDB_POINTER)				; HL points to a memory location holding a pointer to the current DB position with the next sprite pattern.
 	LD A, (HL)									; A holds the next sprite pattern.
 	OR _SPR_PATTERN_SHOW						; Store pattern number into Sprite Attribute.
 	NEXTREG _SPR_REG_ATR3_H38, A
 
+	; ##########################################
 	; Move #SPR.SDB_POINTER to the next sprite pattern.
 	LD HL, (IX + SPR.SDB_POINTER)
 	INC HL
@@ -503,10 +507,19 @@ MoveY
 _LoadSpritePattern
 
 	; Find DB record.
-	LD HL, srSpriteDB							; HL points to the beginning of the DB.
-	LD BC, 0									; Do not limit CPIR search.
+	LD HL, srSpriteDB						; HL points to the beginning of the DB.
+	LD BC, SDB_SEARCH_LIMIT						; Limit CPIR search.
 	CPIR										; CPIR will keep increasing HL until it finds a record ID from A.
 
+	; ##########################################
+	; Make sure that we've found a record
+	JR Z, .found
+	LD A, er.ERR_003
+	CALL er.ReportError
+	RET
+.found
+
+	; ##########################################
 	;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
 	LD A, (HL)	
 	ADD SDB_SUB									; Add 100 because DB value had  -100, to avoid collision with ID.
@@ -516,6 +529,16 @@ _LoadSpritePattern
 	LD A, (HL)									
 	LD (IX + SPR.REMAINING), A					; Update #SPR.REMAINING.
 
+	; ##########################################
+	; Ensure that #REMAINING is not 0, because it's counting down.
+	CP 0
+	JR NZ, .remainingNot0
+	LD (IX + SPR.REMAINING), 1					; Set it to something > 0.
+	LD A, er.ERR_001
+	CALL er.ReportError
+.remainingNot0
+
+	; ##########################################
 	INC HL										; HL points to [FRAME] in DB.
 	LD (IX + SPR.SDB_POINTER), HL				; Update #SPR.SDB_POINTER.
 

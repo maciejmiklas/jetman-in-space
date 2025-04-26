@@ -11,6 +11,7 @@ FIRE_THICKNESS_D10		= 10
 
 JM_FIRE_DELAY			= 15
 
+// TODO move do db
 ; Sprites for single shots (#shots), based on #SPR.
 shots
 	sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
@@ -80,9 +81,8 @@ WeaponHitEnemies
 
 	; ##########################################
 	LD IX, db.formationEnemySprites
-	CALL ef.GetEnemyFormationSize
-	LD B, A
-	;CALL _CheckHitEnemies
+	LD B, db.ENEMY_FORMATION_SIZE
+	CALL _CheckHitEnemies
 
 	RET											; ## END of the function ##
 
@@ -241,7 +241,7 @@ FireDelayCounter
 ;----------------------------------------------------------;
 AnimateShots
 
-	LD IX, shots	
+	LD IX, shots
 	LD B, SHOTS_SIZE 
 	CALL sr.AnimateSprites
 

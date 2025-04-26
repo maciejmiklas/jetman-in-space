@@ -52,17 +52,7 @@ SetupSingleEnemies
 	LD B, A
 .enpLoop
 
-	LD A, (IX + ep.ENPS.RESPAWN_Y)
-	LD (IY + ep.ENP.RESPAWN_Y), A
-
-	LD A, (IX + ep.ENPS.SETUP)
-	LD (IY + ep.ENP.SETUP), A
-
-	LD A, (IX + ep.ENPS.RESPAWN_DELAY)
-	LD (IY + ep.ENP.RESPAWN_DELAY), A
-
-	LD DE, (IX + ep.ENPS.MOVE_PAT_POINTER)
-	LD (IY + ep.ENP.MOVE_PAT_POINTER), DE
+	CALL ep.CopyEnpsToEnp
 
 	; ##########################################
 	; Move IX to next array postion.
@@ -100,8 +90,10 @@ SetupSingleEnemies
 	LD IY, DE
 
 	DJNZ .sprLoop
+
 	RET											; ## END of the function ##
 
+tmp byte 0
 ;----------------------------------------------------------;
 ;                #RespawnNextSingleEnemy                   ;
 ;----------------------------------------------------------;
@@ -122,6 +114,9 @@ RespawnNextSingleEnemy
 
 	RET
 .startRespawn	
+	ld a, (tmp)
+	inc a
+	ld (tmp),a
 	XOR A										; Set A to 0.
 	LD (singleRespDelayCnt), A					; Reset delay timer.
 
@@ -133,7 +128,7 @@ RespawnNextSingleEnemy
 
 .loop
 	PUSH BC										; Preserve B for loop counter.
-	CALL ep.RespawnEnemy
+	CALL ep.RespawnPatternEnemy
 	POP BC
 
 	CP A, ep.RES_SE_OUT_YES

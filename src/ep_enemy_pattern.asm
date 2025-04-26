@@ -20,17 +20,17 @@ RESPAWN_Y				BYTE					; Respawn Y position.
 MOVE_PAT_POINTER		WORD					; Pointer to the movement pattern (#movePatternXX).
 MOVE_PAT_POS			BYTE					; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX.size.
 MOVE_PAT_STEP 			BYTE					; Counters X,Y from current move pattern.
-MOVE_PAT_STEP_RCNT		BYTE					; Counter for repetition of single move pattern step. Counts towards 0.
+MOVE_PAT_STEP_RCNT		BYTE					; Counter for repetition of single move pattern st Counts towards 0.
 	ENDS
 
 ; Bits 4-7 on sr.SPR.STATE will be used here:
 ENP_ALONG_BIT			= 0						; 1 - avoid platforms by flying along them, 0 - hit platform.
 ENP_DEPLOY_BIT			= 1						; 1 - deploy enemy on the left, 0 - on the right.
 
-ENPS_RIGHT_ALONG		= %000000'0'1
-ENPS_RIGHT_HIT			= %000000'0'0
-ENPS_LEFT_ALONG			= %000000'1'1
-ENPS_LEFT_HIT			= %000000'1'0
+ENP_S_RIGHT_ALONG		= %000000'0'1
+ENP_S_RIGHT_HIT			= %000000'0'0
+ENP_S_LEFT_ALONG		= %000000'1'1
+ENP_S_LEFT_HIT			= %000000'1'0
 
 MOVE_DELAY_CNT_INC		= %0001'0000 
 
@@ -42,6 +42,8 @@ MOVE_PAT_POINTER		WORD					; Value for: ENP.MOVE_PAT_POINTER
 SDB_INIT				BYTE					; Value for: sr.SPR.SDB_INIT
 SETUP					BYTE					; Value for: ENP.SETUP
 	ENDS
+
+RESPAWN_OFF				= 255
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
 ; Each pattern step takes 2 bytes so that the size will be 24 for movement consisting of 12 patterns.
@@ -102,11 +104,55 @@ MOVE_PAT_DELAY_MASK		= %1111'0000
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
 ;----------------------------------------------------------;
-;                  #ResetPatternEnemies                    ;
+;                    #CopyEnpsToEnp                        ;
 ;----------------------------------------------------------;
 ; Input:
+;   - IX: Pointer to #ENPS array.
+;   - IY: Pointer to #ENP array.
+CopyEnpsToEnp
+
+	LD A, (IX + ENPS.RESPAWN_Y)
+	LD (IY + ENP.RESPAWN_Y), A
+
+	LD A, (IX + ENPS.SETUP)
+	LD (IY + ENP.SETUP), A
+
+	LD A, (IX + ENPS.RESPAWN_DELAY)
+	LD (IY + ENP.RESPAWN_DELAY), A
+
+	LD DE, (IX + ENPS.MOVE_PAT_POINTER)
+	LD (IY + ENP.MOVE_PAT_POINTER), DE
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #ResetEnp                           ;
+;----------------------------------------------------------;
+; Input:
+;   - IY: Pointer to #ENP array.
+ResetEnp
+
+	XOR A
+	LD (IY + ENP.MOVE_DELAY_CNT), A
+	LD (IY + ENP.MOVE_PAT_STEP), A
+	LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
+	LD (IY + ENP.RESPAWN_DELAY_CNT), A
+
+	LD A, RESPAWN_OFF
+	LD (IY + ENP.RESPAWN_DELAY), A
+
+	LD A, MOVE_PAT_STEP_OFFSET
+	LD (IY + ENP.MOVE_PAT_POS), A
+
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #ResetPatternEnemies                    ;
+;----------------------------------------------------------;
+; Resets #sr.SPR and linked #ENP
+; Input:
 ;  - IX:  Pointer to the #sr.SPR array
-;  - B:   Size of the #sr.SPR and #ep.ENP array (both will be modified)
+;  - B:   Size of the #sr.SPR and #ENP array (both will be modified)
 ResetPatternEnemies
 
 .enemyLoop
@@ -116,17 +162,10 @@ ResetPatternEnemies
 	LD DE, (IX + sr.SPR.EXT_DATA_POINTER)
 	LD IY, DE
 
-	XOR A
-	LD (IY + ep.ENP.MOVE_DELAY_CNT), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP), A
-	LD (IY + ep.ENP.MOVE_PAT_STEP_RCNT), A
+	CALL ResetEnp
 
-	; This will randomize respawn time time.
-	LD A, R
-	LD (IY + ep.ENP.RESPAWN_DELAY_CNT), A
-
-	LD A, ep.MOVE_PAT_STEP_OFFSET
-	LD (IY + ep.ENP.MOVE_PAT_POS), A
+	LD A, MOVE_PAT_STEP_OFFSET
+	LD (IY + ENP.MOVE_PAT_POS), A
 
 	; ##########################################
 	; Next sprite
@@ -138,25 +177,24 @@ ResetPatternEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #AnimatePatterEnemies                     ;
+;                #AnimatePatternEnemies                    ;
 ;----------------------------------------------------------;
-AnimatePatterEnemies
+AnimatePatternEnemies
 	
 	CALL dbs.SetupArraysBank
 
 	; ##########################################
-	; Kill single enemy.
+	; Animate single enemy.
 	LD IX, db.singleEnemySprites
 	LD A, db.ENEMY_SINGLE_SIZE
 	LD B, A
 	CALL sr.AnimateSprites
 
 	; ##########################################
-	; Kill formation enemy.
+	; Animate formation enemy.
 	LD IX, db.formationEnemySprites
-	CALL ef.GetEnemyFormationSize
-	LD B, A
-	;CALL sr.AnimateSprites
+	LD B, db.ENEMY_FORMATION_SIZE
+	CALL sr.AnimateSprites
 
 	RET											; ## END of the function ##	
 ;----------------------------------------------------------;
@@ -223,7 +261,7 @@ MovePatternEnemies
 
 	; Ignore this sprite if it's hidden.
 	LD A, (IX + sr.SPR.STATE)
-	AND sr.SPRITE_ST_VISIBLE						; Reset all bits but visibility.
+	AND sr.SPRITE_ST_VISIBLE					; Reset all bits but visibility.
 	CP 0
 	JR Z, .continue								; Jump if visibility is not set (sprite is hidden).
 
@@ -265,7 +303,7 @@ MovePatternEnemies
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #RespawnEnemy                         ;
+;                #RespawnPatternEnemy                      ;
 ;----------------------------------------------------------;
 ; Respawn single or formation
 ; Input
@@ -275,7 +313,7 @@ MovePatternEnemies
 RES_SE_OUT_YES					= 1				; Enemy did respawn.
 RES_SE_OUT_NO					= 0				; Enemy did not respawn.
 ; Modifies: all
-RespawnEnemy
+RespawnPatternEnemy
 
 	BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
 	JR Z, .afterVisibilityCheck					; Skip this sprite if it's already visible.
@@ -289,8 +327,9 @@ RespawnEnemy
 	LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
 	LD IY, BC
 	
-	; There are two respawn delay timers. The first is global (#respawnDelayCnt) and ensures that multiple enemies do not respawn at the same time.
-	; The second timer can be configured for a single enemy, which further delays its comeback. 
+	; There are two respawn delay timers. The first is global (#respawnDelayCnt) and ensures that multiple enemies do not respawn at the 
+	; same time. The second timer can be configured for a single enemy, which further delays its comeback. Keep in mind, that 
+	; #respawnDelayCnt applies only to single enemies and not to formation.
 	LD A, (IY + ENP.RESPAWN_DELAY)
 
 	CP 0
@@ -298,13 +337,12 @@ RespawnEnemy
 		
 	LD B, A
 	LD A, (IY + ENP.RESPAWN_DELAY_CNT)
-
 	INC A
 	CP B
 	JR Z, .afterEnemyRespawnDelay				; Jump if the timer reaches respawn delay.
 
 	LD (IY + ENP.RESPAWN_DELAY_CNT), A			; The delay timer for the enemy is still ticking.
-	
+
 	LD A, RES_SE_OUT_NO
 	RET
 .afterEnemyRespawnDelay
@@ -379,7 +417,7 @@ _LoadMoveDelayCounter
 ; Input
 ;  - IX:	Pointer to #SPR.
 ;  - IY:	Pointer to #ENP.
-;  - HL: 	Points to the current move pattern's step.
+;  - HL: 	Points to the current move pattern's st
 ; Modifies: A, BC
 _MoveEnemyX
 
@@ -599,11 +637,11 @@ _MoveEnemy
 ;----------------------------------------------------------;
 ;                 #_LoadCurrentMoveStep                    ;
 ;----------------------------------------------------------;
-; Load HL that points to the current move pattern's step.
+; Load HL that points to the current move pattern's st
 ; Input
 ;  - IY: 	Pointer to #ENP for current sprite.
 ; Output:
-;  - HL: 	Points to the current move pattern's step.
+;  - HL: 	Points to the current move pattern's st
 ; Modifies: A
 _LoadCurrentMoveStep
 

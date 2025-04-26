@@ -3,39 +3,25 @@
 ;----------------------------------------------------------;
 	MODULE ef
 
-; The move enemyFormation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #EF.SPRITES determines the amount. 
-; The #ENP.RESPAWN_DELAY for the remaining sprites determines the deploy delay for the following sprite in the enemy formation. 
-	STRUCT EF
-RESPAWN_DELAY			BYTE					; Number of game loops delaying respawn.
-RESPAWN_DELAY_CNT		BYTE					; Respawn delay counter.
-SPRITES					BYTE					; Number of sprites used in this enemyFormation, starting from #SPRITE_POINTER inclusive.
-	ENDS
+; The enemy formation consists of multiple sprites. #db.formationEnemySprites gives the first sprite, and #db.ENEMY_FORMATION_SIZE
+; determines the amount. The deployment starts when #respawnDelayCnt will reach #respawnDelay. 
+; There is also a delay in respawning each enemy in the formation (#ef.ENPS.RESPAWN_DELAY). It will define the distance between single 
+; enemies in the formation.
 
-efPointer				WORD db.enemyFormationL1; Value is a pointer to #ef.EF
-spritesCnt				BYTE 0					; Counter for #EF.SPRITES
-
-;----------------------------------------------------------;
-;                #GetEnemyFormationSize                    ;
-;----------------------------------------------------------;
-; Output:
-;  A - Size of sprites in formation.
-GetEnemyFormationSize
-
-	LD IX, (efPointer)
-	LD A, (IX + EF.SPRITES)
-
-	RET											; ## END of the function ##
+spritesCnt				BYTE 0					; Counter for #db.ENEMY_FORMATION_SIZE
+respawnDelay			BYTE 0					; Delay to respawn the whole formation. 
+respawnDelayCnt			BYTE 0					; Counter for #respawnDelay.
 
 ;----------------------------------------------------------;
 ;                #MoveFormationEnemies                     ;
 ;----------------------------------------------------------;
 MoveFormationEnemies
+	
 	CALL dbs.SetupArraysBank
 	
-	CALL GetEnemyFormationSize
 	LD IX, db.formationEnemySprites
-	LD B, A
-	;CALL ep.MovePatternEnemies
+	LD B, db.ENEMY_FORMATION_SIZE
+	CALL ep.MovePatternEnemies
 
 	RET											; ## END of the function ##
 
@@ -43,14 +29,53 @@ MoveFormationEnemies
 ;                   #SetupEnemyFormation                   ;
 ;----------------------------------------------------------;
 ;Input:
-;  -DE: Pointer to formation enemies (#ef.EF)
+;  - A:  Delay to respawn the whole formation.
+;  - IX: Pointer to setup (#ef.ENPS)
 SetupEnemyFormation
 
-	LD (efPointer), DE
+	CALL dbs.SetupArraysBank
+	LD (respawnDelay), A
 
+	; ##########################################
+	PUSH IX										; Keep method param
 	LD B, db.ENEMY_FORMATION_SIZE
 	LD IX, db.formationEnemySprites
 	CALL ep.ResetPatternEnemies
+	POP IX
+
+	; ##########################################
+	XOR A
+	LD (respawnDelayCnt), A
+	LD (spritesCnt), A
+
+	; ##########################################
+	; Copy one given #ENPS to all #ENP
+	LD IY, db.spriteExEf01						; Points to first #ENP
+	LD B, db.ENEMY_FORMATION_SIZE				; Enemies size (number of #ENP structs).
+.enpLoop
+	CALL ep.ResetEnp
+	CALL ep.CopyEnpsToEnp
+
+	; Move IY to next array position.
+	LD DE, IY
+	ADD DE, ep.ENP
+	LD IY, DE
+	DJNZ .enpLoop
+
+	; ##########################################
+	; Copy one given #ENPS to all #SPR 
+	LD IY, db.formationEnemySprites				; Pointer to #SPR array.
+	LD B, db.ENEMY_FORMATION_SIZE				; Enemies size (number of #SPR structs).
+.sprLoop
+	LD A, (IX + ep.ENPS.SDB_INIT)
+	LD (IY + sr.SPR.SDB_INIT), A
+
+	; Move IY to next array position.
+	LD DE, IY
+	ADD DE, sr.SPR
+	LD IY, DE
+	DJNZ .sprLoop
+
 
 	RET											; ## END of the function ##
 
@@ -58,60 +83,58 @@ SetupEnemyFormation
 ;                   #RespawnFormation                      ;
 ;----------------------------------------------------------;
 RespawnFormation
-	RET
+	
 	CALL dbs.SetupArraysBank
-	LD IY, (efPointer)
 
 	; ##########################################
 	; Check whether it's time to start a new enemyFormation deployment.
-	LD B, (IY + EF.RESPAWN_DELAY)
-	LD A, (IY + EF.RESPAWN_DELAY_CNT)
+	LD A, (respawnDelay)
+	LD B, A
+	LD A, (respawnDelayCnt)
 
 	; Compare timer
 	CP B
-	JR Z, .startRespawn							; Jump if #RESPAWN_DELAY == #RESPAWN_DELAY_CNT.
+	JR Z, .startRespawn							; Jump if #RESPAWN_DELAY == #respawnDelayCnt.
 	INC A										; Increment delay timer and return.
-	LD (IY + EF.RESPAWN_DELAY_CNT), A
+	LD (respawnDelayCnt), A
 	RET
-.startRespawn									; #RESPAWN_DELAY == #RESPAWN_DELAY_CNT -> deployment is active.
+.startRespawn									; #RESPAWN_DELAY == #respawnDelayCnt -> deployment is active.
 	
 	; ##########################################
 	; Formation deployment in progress.....
 
 	; Check if deployment is over -> the last sprite has been deployed.
 	LD A, (spritesCnt)
-	CP (IY + EF.SPRITES)
-	JR C, .deployNextEnemy						; Jump if  #spritesCnt < #EF.SPRITES -> There are still enemies that need to be deployed.
+	LD B, db.ENEMY_FORMATION_SIZE
+	CP B
+	JR C, .deployNextEnemy						; Jump if #spritesCnt < #EF.ENEMY_FORMATION_SIZE -> There are still enemies that need to be deployed.
 	
 	; Deployment is over, reset enemyFormation counters.
 	XOR A
 	LD (spritesCnt), A
-	LD (IY + EF.RESPAWN_DELAY_CNT), A
-
+	LD (respawnDelayCnt), A
 	RET
-.deployNextEnemy	
 
+.deployNextEnemy
 	; ##########################################
 	; Deploy next enemy!
 	LD HL, db.formationEnemySprites
-	LD IX, HL									; IX points for ENP for the first sprite in the enemyFormation.
+	LD IX, HL									; IX points to the #SPR with the first sprite in the enemy formation.
 
-	; Move IX to the current sprite in the enemyFormation.
+	; Move IX to the current sprite in the enemy formation.
 	LD A, (spritesCnt)
-	LD D, A										; IX = IX + spritesCnt * EF.
+	LD D, A										; IX = IX + spritesCnt * SPR.
 	LD E, sr.SPR
 	MUL D, E
-	ADD IX, DE
+	ADD IX, DE									; Now IX points to the current #SPR that should be deployed.
 
-	PUSH IY
-	CALL ep.RespawnEnemy
-	POP IY
-
+	CALL ep.RespawnPatternEnemy
 	CP ep.RES_SE_OUT_YES						; Has the enemy respawned?
-	RET NZ
-	LD A, (spritesCnt)
+	RET NZ										; Enemy did not respawn, probably still waiting for #ENP.RESPAWN_DELAY_CNT.
 
+	; ##########################################
 	; Move to the next enemy if this has respawned.
+	LD A, (spritesCnt)
 	INC A
 	LD (spritesCnt), A
 
