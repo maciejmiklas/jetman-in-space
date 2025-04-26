@@ -75,7 +75,7 @@ WeaponHitEnemies
 
 	; ##########################################
 	LD IX, db.singleEnemySprites
-	LD A, (es.singleEnemySize)
+	LD A, (ens.singleEnemySize)
 	LD B, A
 	CALL _CheckHitEnemies
 

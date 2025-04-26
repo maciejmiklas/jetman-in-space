@@ -85,8 +85,8 @@ _MainLoop000OnActiveJetman
 	CALL jw.FireDelayCounter
 	CALL jco.JetmanEnemiesCollision
 	CALL gi.GameKeyboardInput
-	CALL es.MoveSingleEnemies
-	CALL ef.MoveFormationEnemies
+	CALL ens.MoveSingleEnemies
+	CALL enf.MoveFormationEnemies
 
 	RET											; ## END of the function ##
 
@@ -364,7 +364,7 @@ _MainLoop008OnActiveJetmanOrFlyingRocket
 
 .execute
 	; ##########################################
-	CALL ep.AnimatePatternEnemies
+	CALL enp.AnimatePatternEnemies
 
 	RET											; ## END of the function ##
 
@@ -408,8 +408,8 @@ _MainLoop010OnActiveJetman
 
 	; ##########################################
 	CALL st.BlinkStarsL2
-	CALL es.RespawnNextSingleEnemy
-	CALL ef.RespawnFormation
+	CALL ens.RespawnNextSingleEnemy
+	CALL enf.RespawnFormation
 	
 	RET											; ## END of the function ##
 
@@ -447,7 +447,7 @@ _MainLoop020nFlyingRocket
 	RET NZ
 
 	; ##########################################
-	CALL ep.KillOnePatternEnemy
+	CALL enp.KillOnePatternEnemy
 
 	RET											; ## END of the function ##
 

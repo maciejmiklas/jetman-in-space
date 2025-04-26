@@ -3,7 +3,7 @@ BMP must have 320256 with 8bit palette (Image -> Mode -> Indexed)
 
 
 AI text for title:
-Headline text "Jetman in Space". Jetman flying from one planet to another. Carries backpack shooting down flames. Carries laser gun that shuts blue beam. Background contains space and planets, highly detailed retro graphics, dynamic movement across space
+Headline text "Jetman in Space". Jetman flying from one planet to another. Carries backpack shooting down flamens. Carries laser gun that shuts blue beam. Background contains space and planets, highly detailed retro graphics, dynamic movement across space
 
 AI text for planetes:
 retro planet, black background

@@ -70,13 +70,13 @@ LoadLevel1Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L1
 	LD IX, db.singleEnemiesL1
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0										; Disable formation.
 	LD IX, db.enemyFormationL1
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -147,13 +147,13 @@ LoadLevel2Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L2
 	LD IX, db.singleEnemiesL2
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0										; Disable formation.
 	LD IX, db.enemyFormationL2
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -224,13 +224,13 @@ LoadLevel3Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L3
 	LD IX, db.singleEnemiesL3
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 150
 	LD IX, db.enemyFormationL3
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -303,13 +303,13 @@ LoadLevel4Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L4
 	LD IX, db.singleEnemiesL4
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0
 	LD IX, db.enemyFormationL4
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -380,13 +380,13 @@ LoadLevel5Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L5
 	LD IX, db.singleEnemiesL5
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0
 	LD IX, db.enemyFormationL5
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -457,13 +457,13 @@ LoadLevel6Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L6
 	LD IX, db.singleEnemiesL6
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0
 	LD IX, db.enemyFormationL6
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -534,13 +534,13 @@ LoadLevel7Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L7
 	LD IX, db.singleEnemiesL7
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0
 	LD IX, db.enemyFormationL7
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -611,13 +611,13 @@ LoadLevel8Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L8
 	LD IX, db.singleEnemiesL8
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0
 	LD IX, db.enemyFormationL8
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -688,13 +688,13 @@ LoadLevel9Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L9
 	LD IX, db.singleEnemiesL9
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0
 	LD IX, db.enemyFormationL9
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 
@@ -764,13 +764,13 @@ LoadLevel10Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L10
 	LD IX, db.singleEnemiesL10
-	CALL es.SetupSingleEnemies
+	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
 	LD A, 0
 	LD IX, db.enemyFormationL10
-	CALL ef.SetupEnemyFormation
+	CALL enf.SetupEnemyFormation
 
 	RET											; ## END of the function ##
 

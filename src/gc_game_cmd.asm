@@ -596,7 +596,7 @@ _DisableGame
 	CALL ro.ResetAndDisableRocket
 	CALL st.HideStars
 	CALL jw.HideShots
-	CALL ep.HidePatternEnemies
+	CALL enp.HidePatternEnemies
 	CALL jt.SetJetStateInactive
 	CALL ti.ResetTilemapOffset
 	CALL ti.CleanAllTiles

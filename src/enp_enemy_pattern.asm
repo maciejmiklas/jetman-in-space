@@ -1,7 +1,8 @@
 ;----------------------------------------------------------;
 ;       Single Enemy and Formation (Pattern Enemy)         ;
 ;----------------------------------------------------------;
-	MODULE ep
+	MODULE enp
+
 ; Enemies fly by a given hardcoded pattern. This file contains generic logic for such enemies. 
 ; In general, there are two kinds of enemies: 
 ; - single enemies that fly independently from each other (es_enemy_single.asm), and 
@@ -332,6 +333,10 @@ RespawnPatternEnemy
 	; #respawnDelayCnt applies only to single enemies and not to formation.
 	LD A, (IY + ENP.RESPAWN_DELAY)
 
+	; Enemy disabled?
+	CP enp.RESPAWN_OFF
+	RET Z
+
 	CP 0
 	JR Z, .afterEnemyRespawnDelay				; Jump if there is no extra delay for this enemy.
 		
@@ -356,7 +361,7 @@ RespawnPatternEnemy
 	LD (IY + ENP.RESPAWN_DELAY_CNT), A
 
 
-	CALL _LoadMoveDelayCounter	
+	CALL _LoadMoveDelayCounter
 	LD (IY + ENP.MOVE_DELAY_CNT), A
 
 	CALL _RestartMovePattern
@@ -364,7 +369,7 @@ RespawnPatternEnemy
 	; Set Y (horizontal respawn).
 	LD A,  (IY + ENP.RESPAWN_Y)
 	LD (IX + sr.SPR.Y), A
-	
+
 	; Set X to left or right side of the screen.
 	BIT ENP_DEPLOY_BIT, (IY + ENP.SETUP)
 	JR NZ, .deployLeft							; Jump if bit is 0 -> deploy left.
@@ -557,7 +562,7 @@ _MoveEnemy
 
 	; Check if X and Y have reached 0
 	LD A, (IY + ENP.MOVE_PAT_STEP)				; A contains pattern counter.
-	AND MOVE_PAT_XY_MASK						; Reset all but max X,Y values.
+	AND MOVE_PAT_XY_MASK						; Reset all but max X,Y valuens.
 	CP 0
 	JR Z, .resetXYCounters						; Jump if X and Y counters has reached 0
 

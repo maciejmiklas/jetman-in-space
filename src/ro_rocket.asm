@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 	MODULE ro
 
-RO_DROP_NEXT_D5			= 1;10					; Drop next element delay
+RO_DROP_NEXT_D5			= 10;10					; Drop next element delay
 RO_DROP_Y_MAX_D180		= 180					; Jetman has to be above the rocket to drop the element.
 RO_DROP_Y_MIN_D130		= 130					; Maximal height above ground (min y) to drop rocket element.
 RO_FLY_DELAY_D8			= 8

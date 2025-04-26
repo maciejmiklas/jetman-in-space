@@ -91,8 +91,6 @@ HideImage
 	CP dbs.BM_BANKS_D10
 	JR NZ, .bankLoop
 
-	CALL ut.Pause
-
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

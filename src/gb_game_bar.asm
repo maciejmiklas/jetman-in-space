@@ -53,7 +53,7 @@ PrintDebug
 	LD H, 0
 
 	LD IX, db.spriteEx01
-	LD A, (IX + ep.ENP.RESPAWN_DELAY)
+f	LD A, (IX + enp.ENP.RESPAWN_DELAY)
 	LD L, A	
 	CALL ut.PrintDebugNum
 		*/

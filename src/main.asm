@@ -11,8 +11,8 @@ start
 	NEXTREG _GL_REG_TURBO_H07, %00000011		; Switch to 28MHz.
 	
 	CALL gc.SetupGame
-	CALL gc.LoadLevel3
-	;CALL gc.LoadLobby
+	;CALL gc.LoadLevel3
+	CALL gc.LoadLobby
 	
 	;CALL ro.AssemblyRocketForDebug
 
@@ -56,9 +56,9 @@ mainLoop
 	INCLUDE "pl_platform.asm"
 	INCLUDE "bg_background.asm"
 	INCLUDE "jm_jet_move.asm"
-	INCLUDE "ep_enemy_pattern.asm"
-	INCLUDE "ef_enemy_formation.asm"
-	INCLUDE "es_enemy_single.asm"
+	INCLUDE "enp_enemy_pattern.asm"
+	INCLUDE "enf_enemy_formation.asm"
+	INCLUDE "ens_enemy_single.asm"
 	INCLUDE "jw_jet_weapon.asm"
 	INCLUDE "ro_rocket.asm"
 	INCLUDE "ros_rocket_stars.asm"
