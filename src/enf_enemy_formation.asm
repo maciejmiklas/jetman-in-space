@@ -89,6 +89,9 @@ RespawnFormation
 	; ##########################################
 	; Check whether it's time to start a new enemyFormation deployment.
 	LD A, (respawnDelay)
+	CP enp.RESPAWN_OFF							; Formation disabled?
+	RET Z
+	
 	LD B, A
 	LD A, (respawnDelayCnt)
 

@@ -47,16 +47,15 @@ PrintDebug
 	CP GB_VISIBLE
 	RET NZ
 
-/*
+
 	; ##########################################
 	LD B, 40
 	LD H, 0
 
 	LD IX, db.spriteEx01
-f	LD A, (IX + enp.ENP.RESPAWN_DELAY)
+	LD A, (jpo.jetY)
 	LD L, A	
 	CALL ut.PrintDebugNum
-		*/
 	
 		
 	RET											; ## END of the function ##

@@ -307,7 +307,7 @@ LoadLevel4Data
 
 	; ##########################################
 	; Load formation.
-	LD A, 0
+	LD A, 5
 	LD IX, db.enemyFormationL4
 	CALL enf.SetupEnemyFormation
 
