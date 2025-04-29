@@ -629,7 +629,7 @@ _StartLevel
 	CALL jo.ResetJetpackOverheating
 
 	; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
-	CALL gc.RespawnJet
+	CALL RespawnJet
 
 	RET											; ## END of the function ##
 

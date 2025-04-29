@@ -78,6 +78,40 @@ srSpriteDB
 	SPR_REC {SDB_ENEMY3, SDB_ENEMY3 - SDB_SUB, 03}
 			DB 34, 35, 36
 			
+					
+;----------------------------------------------------------;
+;                   #CheckSpriteVisible                    ;
+;----------------------------------------------------------;
+; Input:
+;  - IX:  Pointer to #SPR.
+;  - B:   Number of sprites.
+; Output:
+;  - A:
+;      - _RET_YES_D1: At least one sprite visible.
+;      - _RET_NO_D0:  All sprites are hidden.
+CheckSpriteVisible
+
+.sprLoop
+	LD A, (IX + sr.SPR.STATE)
+	BIT sr.SPRITE_ST_VISIBLE_BIT, A
+	JR Z, .continue								; Jump if visibility is not set (sprite is hidden).
+
+	; Sprite is visible!
+	LD A, _RET_YES_D1
+	
+	RET
+
+.continue
+	LD DE, IX
+	ADD DE, SPR
+	LD IX, DE
+	DJNZ .sprLoop
+	
+	; All sprites are hidden, otherwise, we would have found one in the loop.
+	LD A, _RET_NO_D0
+
+	RET											; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       #ResetSprite                       ;
 ;----------------------------------------------------------;
@@ -341,7 +375,7 @@ UpdateSpritePattern
 ;----------------------------------------------------------;
 ;                          #MoveX                          ;
 ;----------------------------------------------------------;
-; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on the #SPR.STATE.
+; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on D.
 ; Input
 ;  - IX:	Pointer to #SPR
 ;  - D: 	Configuration, bits:

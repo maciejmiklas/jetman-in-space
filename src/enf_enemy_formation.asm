@@ -83,15 +83,34 @@ SetupEnemyFormation
 ;                   #RespawnFormation                      ;
 ;----------------------------------------------------------;
 RespawnFormation
-	
+
 	CALL dbs.SetupArraysBank
 
 	; ##########################################
-	; Check whether it's time to start a new enemyFormation deployment.
+	; Check whether formation is disabled.
 	LD A, (respawnDelay)
-	CP enp.RESPAWN_OFF							; Formation disabled?
+	CP enp.RESPAWN_OFF
 	RET Z
 	
+	; ##########################################
+	; Check whether the respawn delay timer is 0, indicating that deployment is over.
+	LD A, (respawnDelayCnt)
+	CP 0
+	JR NZ, .afterStillAliveCheck
+
+	; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous 
+	; deployment are still visible.
+	LD IX, db.formationEnemySprites
+	LD B, db.ENEMY_FORMATION_SIZE
+	CALL sr.CheckSpriteVisible
+	CP _RET_YES_D1								; Return if at least one sprite is visible.
+	RET Z
+
+.afterStillAliveCheck
+
+	; ##########################################
+	; Check whether the timer is up and whether it's time to start a new formation deployment.
+	LD A, (respawnDelay)
 	LD B, A
 	LD A, (respawnDelayCnt)
 
@@ -112,7 +131,7 @@ RespawnFormation
 	CP B
 	JR C, .deployNextEnemy						; Jump if #spritesCnt < #enf.ENEMY_FORMATION_SIZE -> There are still enemies that need to be deployed.
 	
-	; Deployment is over, reset enemyFormation counters.
+	; Deployment is over, reset formation counters.
 	XOR A
 	LD (spritesCnt), A
 	LD (respawnDelayCnt), A
