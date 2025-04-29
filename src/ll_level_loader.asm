@@ -70,6 +70,7 @@ LoadLevel1Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L1
 	LD IX, db.singleEnemiesL1
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -147,6 +148,7 @@ LoadLevel2Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L2
 	LD IX, db.singleEnemiesL2
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -224,6 +226,7 @@ LoadLevel3Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L3
 	LD IX, db.singleEnemiesL3
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -303,11 +306,12 @@ LoadLevel4Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L4
 	LD IX, db.singleEnemiesL4
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
 	; Load formation.
-	LD A, 5
+	LD A, 100
 	LD IX, db.enemyFormationL4
 	CALL enf.SetupEnemyFormation
 
@@ -380,6 +384,7 @@ LoadLevel5Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L5
 	LD IX, db.singleEnemiesL5
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -457,6 +462,7 @@ LoadLevel6Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L6
 	LD IX, db.singleEnemiesL6
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -534,6 +540,7 @@ LoadLevel7Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L7
 	LD IX, db.singleEnemiesL7
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -611,6 +618,7 @@ LoadLevel8Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L8
 	LD IX, db.singleEnemiesL8
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -688,6 +696,7 @@ LoadLevel9Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L9
 	LD IX, db.singleEnemiesL9
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################
@@ -764,6 +773,7 @@ LoadLevel10Data
 	; Load single enemies.
 	LD A, db.SINGLE_ENEMIES_L10
 	LD IX, db.singleEnemiesL10
+	LD B, ens.NEXT_RESP_DEL
 	CALL ens.SetupSingleEnemies
 
 	; ##########################################

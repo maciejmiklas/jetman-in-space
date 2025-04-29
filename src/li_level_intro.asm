@@ -11,7 +11,7 @@ sourceTilesRowMax		BYTE 0
 tileOffset				BYTE 0					; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tilePixelCnt			BYTE 0					; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
 
-animateDelayCnt			BYTE 0
+animateDelayCnt			BYTE ANIMATE_DELAY 		; Start scrolling without a delay.
 ANIMATE_DELAY			= 50
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
@@ -120,6 +120,9 @@ _ResetLevelIntro
 	LD (sourceTilesRow), A
 	LD (tilePixelCnt), A
 
+	LD A, ANIMATE_DELAY
+	LD (animateDelayCnt), A
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

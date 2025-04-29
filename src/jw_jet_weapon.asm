@@ -9,7 +9,7 @@ FIRE_ADJUST_X_D10		= 10
 FIRE_ADJUST_Y_D4		= 4
 FIRE_THICKNESS_D10		= 10
 
-JM_FIRE_DELAY			= 15
+JM_FIRE_DELAY			= 5
 
 // TODO move do db
 ; Sprites for single shots (#shots), based on #SPR.

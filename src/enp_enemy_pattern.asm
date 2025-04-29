@@ -77,30 +77,34 @@ RESPAWN_OFF				= 255
 ; 6) _,     DEC Y:	%0'011'1'101
 ; In this example, both counters count up, and hoverer X position is increment (move right), and Y is decrement (move up).
 
-MOVE_PAT_X_MASK			= %0'000'0'111
-MOVE_PAT_X_ADD			= %0'000'0'001
+MOVE_PAT_X_MASK			= %0'000'0'111 
+MOVE_PAT_X_ADD			= %0'000'0'001 
 
 ; Determines whether X should be incremented (1 - move right) or decremented (0 - move left) in each iteration. It's under the assumption,
 ; that deployment takes place on the left side of the screen. Values will be automatically inverted if it's on the right side of the screen.
 MOVE_PAT_X_TOD_DIR_BIT	= 3
-MOVE_PAT_X_TOD_DIR_MASK	= %0'000'1'000
+MOVE_PAT_X_TOD_DIR_MASK	= %0'000'1'000 
 
-MOVE_PAT_Y_MASK			= %0'111'0'000
-MOVE_PAT_Y_ADD			= %0'001'0'000
+MOVE_PAT_Y_MASK			= %0'111'0'000 
+MOVE_PAT_Y_ADD			= %0'001'0'000 
 
-MOVE_PAT_Y_TOD_DIR_MASK	= %1'000'0'000
+MOVE_PAT_Y_TOD_DIR_MASK	= %1'000'0'000 
 
 ; Determines whether Y should be decremented (0 - move up) or incremented (1 - move down) in each iteration.
 MOVE_PAT_Y_TOD_DIR_BIT	= 7
 
-MOVE_PAT_XY_MASK		= %0'111'0'111
-MOVE_PAT_XY_MASK_RES	= %1'000'1'000
+MOVE_PAT_XY_MASK		= %0'111'0'111 
+MOVE_PAT_XY_MASK_RES	= %1'000'1'000 
 
 MOVE_STEP_SIZE			= 2						; Each move step in the pattern takes two bytes: pattern and delay/number of repeats.
 MOVE_STEP_CNT_OFF		= 1
 MOVE_PAT_STEP_OFFSET	= 1						; Data for move pattern starts at byte 1, byte 0 provides size.
-MOVE_PAT_REPEAT_MASK	= %0000'1111
-MOVE_PAT_DELAY_MASK		= %1111'0000
+MOVE_PAT_REPEAT_MASK	= %0000'1111 
+MOVE_PAT_DELAY_MASK		= %1111'0000 
+
+MOVE_DELAY_3X			= %0000'0000 			; Delay 0 moves the enemy by 3 pixels during a single frame.
+MOVE_DELAY_2X			= %0001'0000 			; Delay 1 moves the enemy by 2 pixels during a single frame.
+DEC_MOVE_DELAY			= %0001'0000 
 
 MOVEX_SETUP				= %000'0'0000			; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
@@ -243,7 +247,8 @@ HidePatternEnemies
 	CALL sr.HideAllSimpleSprites
 
 	RET											; ## END of the function ##
-
+tmp1 byte 0
+tmp2 byte 0
 ;----------------------------------------------------------;
 ;                 #MovePatternEnemies                      ;
 ;----------------------------------------------------------;
@@ -282,16 +287,40 @@ MovePatternEnemies
 	CP 0										
 	JR NZ, .continue							; Skip enemy if the delay counter > 0.
 
-	CALL _LoadMoveDelayCounter		
+	CALL _LoadMoveDelay		
 	LD (IY + ENP.MOVE_DELAY_CNT), A				; Reset counter, A has the max value of delay counter.
 
 .afterDelayMove
 
+	; ##########################################
 	; Sprite is visible, move it!
+	PUSH IY
 	CALL _MoveEnemy
-	
+	POP IY
+
+	; Tripple movement speed if move delay is 0.
+	CALL _LoadMoveDelay
+	CP MOVE_DELAY_3X
+	JR NZ, .after3x
+	PUSH IY
+	CALL _MoveEnemy
+	POP IY
+	CALL _MoveEnemy
+	ld a, (tmp1)
+	inc a 
+	ld (tmp1),a
+	JR .continue
+.after3x	
+
+	; Double movement speed if move delay is 1.
+	CP MOVE_DELAY_2X
+	JR NZ, .continue
+	CALL _MoveEnemy
+	ld a, (tmp2)
+	inc a 
+	ld (tmp2),a
+
 .continue	
-	
 	; ##########################################
 	; Move IX to the beginning of the next #SPR.
 	LD DE, sr.SPR
@@ -360,9 +389,8 @@ RespawnPatternEnemy
 	XOR A										; Set A to 0
 	LD (IY + ENP.RESPAWN_DELAY_CNT), A
 
-
-	CALL _LoadMoveDelayCounter
-	LD (IY + ENP.MOVE_DELAY_CNT), A
+	CALL _LoadMoveDelay
+	CALL _SetDelayCnt
 
 	CALL _RestartMovePattern
 
@@ -399,18 +427,18 @@ RespawnPatternEnemy
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                 #_LoadMoveDelayCounter                   ;
+;                 #_LoadMoveDelay                   ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IY:	Pointer to #ENP holding data for single sprite.
 ; Output:
 ;  - A;		Value of move delay counter for this pattern (bits 8-5).
 ; Modifies: A, HL
-_LoadMoveDelayCounter
+_LoadMoveDelay
 
 	CALL _LoadCurrentMoveStep
 	INC HL
-	LD A, (HL)									; Load the delay/repetition counter into A, reset all bits but delay, and shift to the proper number.
+	LD A, (HL)									; Load the delay/repetition counter into A, reset all bits but delay.
 	AND MOVE_PAT_DELAY_MASK
 
 	RET											; ## END of the function ##
@@ -422,7 +450,7 @@ _LoadMoveDelayCounter
 ; Input
 ;  - IX:	Pointer to #SPR.
 ;  - IY:	Pointer to #ENP.
-;  - HL: 	Points to the current move pattern's st
+;  - HL: 	Points to the current move pattern
 ; Modifies: A, BC
 _MoveEnemyX
 
@@ -562,7 +590,7 @@ _MoveEnemy
 
 	; Check if X and Y have reached 0
 	LD A, (IY + ENP.MOVE_PAT_STEP)				; A contains pattern counter.
-	AND MOVE_PAT_XY_MASK						; Reset all but max X,Y valuens.
+	AND MOVE_PAT_XY_MASK						; Reset all but max X,Y values.
 	CP 0
 	JR Z, .resetXYCounters						; Jump if X and Y counters has reached 0
 
@@ -619,8 +647,7 @@ _MoveEnemy
 
 	; Set delay counter for next pattern.
 	LD A, D
-	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits.
-	LD (IY + ENP.MOVE_DELAY_CNT), A
+	CALL _SetDelayCnt
 	JR .checkPlatformHit
 
 .restartMovePattern
@@ -642,11 +669,11 @@ _MoveEnemy
 ;----------------------------------------------------------;
 ;                 #_LoadCurrentMoveStep                    ;
 ;----------------------------------------------------------;
-; Load HL that points to the current move pattern's st
+; Load HL that points to the current move pattern.
 ; Input
 ;  - IY: 	Pointer to #ENP for current sprite.
 ; Output:
-;  - HL: 	Points to the current move pattern's st
+;  - HL: 	Points to the current move pattern.
 ; Modifies: A
 _LoadCurrentMoveStep
 
@@ -690,9 +717,30 @@ _RestartMovePattern
 
 	; Set delay counter 
 	LD A, B
-	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits.
-	LD (IY + ENP.MOVE_DELAY_CNT), A
+	CALL _SetDelayCnt
 
+	RET											; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #_SetDelayCnt                        ;
+;----------------------------------------------------------;
+; Input:
+;  - A: Delay counter from configuration.
+_SetDelayCnt
+
+	AND MOVE_PAT_DELAY_MASK						; Leave only delay counter bits.
+
+	;  If the delay counter is above 0, decrement it by 2 if possible. The reason for this is that delay 0 and delay 1 move by 3 or 2 
+	; pixels per frame, so there is no delay at all. Delay 2 should move by 1 pixel, and first delay 3 should skip one pixel.
+	CP 0
+	JR Z, .storeA
+	SUB DEC_MOVE_DELAY							; First decrement, try again to decrement if still above 0.
+	CP 0
+	JR Z, .storeA
+	SUB DEC_MOVE_DELAY
+.storeA
+	LD (IY + ENP.MOVE_DELAY_CNT), A
+	
 	RET											; ## END of the function ##
 
 ;----------------------------------------------------------;

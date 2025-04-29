@@ -7,10 +7,12 @@
 singleRespDelayCnt 		BYTE 0
 singleEnemySize			BYTE db.ENEMY_SINGLE_SIZE
 
+NEXT_RESP_DEL			= 3
 ; Each enemy has a dedicated respawn delay (enf.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
 ; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
 ; the respawn of the next enemy from the enemies list. 
-NEXT_RESP_DEL			= 3
+nextRespDel				BYTE NEXT_RESP_DEL
+
 
 ;----------------------------------------------------------;
 ;                  #MoveSingleEnemies                      ;
@@ -31,11 +33,14 @@ MoveSingleEnemies
 ; Resets single enemies and loads given #enp.ENPS array into #enp.ENP and #sr.SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
 ; Input:
 ;   - A:  Number of single enemies (size of #ENPS)
+;   - B:  Respawn delay for #nextRespDel
 ;   - IX: Pointer to #ENPS array.
 SetupSingleEnemies
 	CALL dbs.SetupArraysBank
 
 	LD (singleEnemySize), A
+	LD A, B
+	LD (nextRespDel), A
 
 	; ##########################################
 	PUSH IX
@@ -104,7 +109,9 @@ RespawnNextSingleEnemy
 
 	; ##########################################	
 	; Increment respawn timer and exit function if it's not time to respawn a new enemy.
-	LD A, NEXT_RESP_DEL
+	LD A, (nextRespDel)
+	CP 0
+	JR Z, .startRespawn
 	LD D, A
 	LD A, (singleRespDelayCnt)
 	INC A
