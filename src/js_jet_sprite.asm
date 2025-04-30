@@ -26,8 +26,8 @@ SDB_FRAME_SIZE			= 2
 
 sprDBIdx			WORD 0						; Current position in DB.
 sprDBRemain			BYTE 0						; Amount of bytes that have to be still processed from the current record.
-sprDBCurrentID		BYTE SDB_FLY				; Active animation.
-sprDBNextID			BYTE SDB_FLY				; ID in #jetSpriteDB for next animation/DB record.
+sprDBCurrentID		BYTE SDB_STAND				; Active animation.
+sprDBNextID			BYTE SDB_STAND				; ID in #jetSpriteDB for next animation/DB record.
 sprDBDelay			BYTE 0						; Value from #DELAY.
 sprDBDelayCnt		BYTE 0						; Counter from #sprDBDelay to 0.
 
@@ -45,7 +45,7 @@ UpdateJetSpritePositionRotation
 	; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B).
 	LD BC, (jpo.jetX)
 
-	; Set _SPR_REG_NR_H34 with LDB from Jetmans X postion.
+	; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion.
 	LD A, C			
 	NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP		; Set the ID of the Jetman's sprite for the following commands.
 	NEXTREG _SPR_REG_X_H35, A					; Set LSB from BC (X).
@@ -93,7 +93,7 @@ UpdateJetSpritePositionRotation
 ;----------------------------------------------------------;
 ; Switches immediately to the given animation, breaking the currently running one.
 ; Input:
-;   - A: ID for #jesSprites, to siwtch to the next animation record.
+;   - A: ID for #jesSprites, to switch to the next animation record.
 ChangeJetSpritePattern
 
 	; Do not change the animation if the same animation is already playing, it will restart it.
@@ -277,7 +277,6 @@ ChangeJetSpriteOnFlyDown
 	CALL ChangeJetSpritePattern
 
 	RET											; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;               #ChangeJetSpriteOnFlyUp                    ;

@@ -402,7 +402,7 @@ RespawnJet
 	CALL st.ShowStars
 
 	; Switch to flaying animation.
-	LD A, js.SDB_FLY
+	LD A, js.SDB_STAND
 	CALL js.ChangeJetSpritePattern
 
 	RET											; ## END of the function ##	
