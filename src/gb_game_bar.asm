@@ -47,14 +47,14 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-/*
+
     ; ##########################################
     LD B, 40
     LD H, 0
-    LD A, (jt.jetGnd)
+    LD A, (gc.tmp)
     LD L, A 
     CALL ut.PrintDebugNum
-*/
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

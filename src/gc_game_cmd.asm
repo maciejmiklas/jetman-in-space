@@ -6,7 +6,7 @@
 ; Start times to change animations.
 HOVER_START_D250        = 250
 STAND_START_D30         = 30
-JSTAND_START_D100       = 100
+JSTAND_START_D15        = 15
 
 ; Invincibility
 JM_INV_D400             = 400                   ; Number of loops to keep Jetman invincible.
@@ -442,6 +442,7 @@ JetmanMovesDown
 
     RET                                         ; ## END of the function ##
 
+tmp byte 0
 ;----------------------------------------------------------;
 ;                 #MovementInactivity                      ;
 ;----------------------------------------------------------;
@@ -506,15 +507,20 @@ MovementInactivity
     ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
     LD A, (jt.jetGnd)
     CP jt.GND_WALK
-    RET NZ                                      ; Jump is if not walking.
+    RET NZ                                      ; Jump if not walking.
     
     CP jt.GND_JSTAND
     RET Z                                       ; Jump already j-standing (just standing - for a short time).
 
     LD A, (jm.jetInactivityCnt)
-    CP JSTAND_START_D100
-    RET NZ                                      ; Jump if Jetman stands for too short to trigger j-standing.
+    CP JSTAND_START_D15
+    RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing.
 
+    ld a, (tmp)
+    inc a 
+    ld (tmp),a
+
+    ; Stop walking immediately and stand still.
     LD A, jt.GND_JSTAND
     CALL jt.SetJetStateGnd
 

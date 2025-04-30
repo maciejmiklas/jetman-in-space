@@ -29,7 +29,7 @@ sprDBRemain             BYTE 0                  ; Amount of bytes that have to b
 sprDBCurrentID          BYTE SDB_STAND          ; Active animation.
 sprDBNextID             BYTE SDB_STAND          ; ID in #jetSpriteDB for next animation/DB record.
 sprDBDelay              BYTE 0                  ; Value from #DELAY.
-sprDBDelayCnt       B   YTE 0                   ; Counter from #sprDBDelay to 0.
+sprDBDelayCnt           BYTE 0                   ; Counter from #sprDBDelay to 0.
 
 SPR_STATE_HIDE      = 0
 SPR_STATE_SHOW      = 1

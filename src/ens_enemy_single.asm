@@ -8,7 +8,8 @@ singleRespDelayCnt      BYTE 0
 singleEnemySize         BYTE db.ENEMY_SINGLE_SIZE
 
 NEXT_RESP_DEL           = 3
-; Each enemy has a dedicated respawn delay (enf.RESPAWN_DELAY_CNT). Enemies are renowned one after another from the enemies list. 
+
+; Each enemy has a dedicated respawn delay (#enp.ENP.RESPAWN_DELAY_CNT). Enemies are respawned one after another from the enemies list. 
 ; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
 ; the respawn of the next enemy from the enemies list. 
 nextRespDel             BYTE NEXT_RESP_DEL
