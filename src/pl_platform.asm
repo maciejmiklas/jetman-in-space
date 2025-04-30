@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE pl
 
-MAX_PLATFORM_Y          = 27*8
+MAX_PLATFORM_Y          = 26*8
 PL_FALL_JOY_OFF_D10     = 10                    ; Disable the joystick for a few frames because Jetman is falling from the platform.
 PL_BUMP_JOY_D15         = 15                    ; Disable the joystick for a few frames because Jetman is bumping into the platform.
 PL_BUMP_JOY_DEC_D1      = 1                     ; With each bump into the platform, the period to turn off the joystick decrements by this value.
@@ -476,6 +476,12 @@ MoveJetOnPlatformSideHit
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls.
 JetFallingFromPlatform
+
+    ; Return if Jetman is below all platforms.
+    LD A, (jpo.jetY)
+    CP MAX_PLATFORM_Y
+    RET NC
+    
     CALL dbs.SetupArraysBank
 
     ; Does Jetman walk on any platform?

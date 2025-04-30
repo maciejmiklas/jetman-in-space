@@ -46,15 +46,14 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-
-
+/*
     ; ##########################################
     LD B, 40
     LD H, 0
-    LD A, (gc.tmp)
+    LD A, (ro.rocketElementCnt)
     LD L, A 
     CALL ut.PrintDebugNum
-
+*/
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
