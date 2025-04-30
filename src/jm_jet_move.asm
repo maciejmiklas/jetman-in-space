@@ -192,6 +192,7 @@ JoyMoveDown
 JoyMoveDownRelease
 
     CALL js.ChangeJetSpriteOnFlyUp
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -388,7 +389,7 @@ _JoystickMoves
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #_StandToWalk                      ; 
+;                    #_StandToWalk                         ; 
 ;----------------------------------------------------------;
 ; Transition from standing/landing on ground to walking.
 _StandToWalk

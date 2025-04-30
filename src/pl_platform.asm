@@ -391,10 +391,6 @@ MoveJetOnHitPlatformBelow
 ;                    #JetPlatformTakesOff                  ;
 ;----------------------------------------------------------;
 JetPlatformTakesOff
-    ; Return if Jetman is below all platforms.
-    LD A, (jpo.jetY)
-    CP MAX_PLATFORM_Y
-    RET NC
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
