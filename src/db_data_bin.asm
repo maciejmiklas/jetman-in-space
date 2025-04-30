@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                    Binary Data Loader                    ;
 ;----------------------------------------------------------;
-	module db
+    module db
 
 
 ;----------------------------------------------------------;
@@ -14,238 +14,238 @@
 ;----------------------------------------------------------;
 ; Before using it call #dbs.SetupStarsBank
 
-	MMU _RAM_SLOT7, dbs.ST_BANK_D28
-	ORG _RAM_SLOT7_STA_HE000
+    MMU _RAM_SLOT7, dbs.ST_BANK_D28
+    ORG _RAM_SLOT7_STA_HE000
 starsBankStart
 
 starsData1
-	st.SC {0/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}	; X=2
-	DB 12,1, 15,4, 70,5, 94,15, 160,8, 250,19
+    st.SC {0/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}    ; X=2
+    DB 12,1, 15,4, 70,5, 94,15, 160,8, 250,19
 
-	st.SC {0/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}	; X=8
-	DB 5,3, 38,6, 120,10, 158,4, 245,18
+    st.SC {0/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}    ; X=8
+    DB 5,3, 38,6, 120,10, 158,4, 245,18
 
-	st.SC {0/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}	; X=20
-	DB 4,4, 42,8, 133,1, 245,15
+    st.SC {0/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}    ; X=20
+    DB 4,4, 42,8, 133,1, 245,15
 
-	st.SC {1/*BANK*/, 05/*X_OFFSET*/, 5/*SIZE*/}	; X=37
-	DB 20,3, 80,8, 104,12, 150,9, 255,5
+    st.SC {1/*BANK*/, 05/*X_OFFSET*/, 5/*SIZE*/}    ; X=37
+    DB 20,3, 80,8, 104,12, 150,9, 255,5
 
-	st.SC {1/*BANK*/, 15/*X_OFFSET*/, 5/*SIZE*/}	; X=47
-	DB 10,1, 115,4, 130,9, 155,2, 230,15
+    st.SC {1/*BANK*/, 15/*X_OFFSET*/, 5/*SIZE*/}    ; X=47
+    DB 10,1, 115,4, 130,9, 155,2, 230,15
 
-	st.SC {1/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}	; X=55
-	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,16
+    st.SC {1/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}    ; X=55
+    DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,16
 
-	st.SC {2/*BANK*/, 04/*X_OFFSET*/, 5/*SIZE*/}	; X=68
-	DB 14,2, 52,4, 113,6, 189,8, 241,16
+    st.SC {2/*BANK*/, 04/*X_OFFSET*/, 5/*SIZE*/}    ; X=68
+    DB 14,2, 52,4, 113,6, 189,8, 241,16
 
-	st.SC {2/*BANK*/, 11/*X_OFFSET*/, 4/*SIZE*/}	; X=75
-	DB 21,1, 92,6, 158,9, 221,19
+    st.SC {2/*BANK*/, 11/*X_OFFSET*/, 4/*SIZE*/}    ; X=75
+    DB 21,1, 92,6, 158,9, 221,19
 
-	st.SC {2/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=84
-	DB 31,5, 93,4, 159,13, 178,8, 248,19
+    st.SC {2/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=84
+    DB 31,5, 93,4, 159,13, 178,8, 248,19
 
-	st.SC {3/*BANK*/, 01/*X_OFFSET*/, 6/*SIZE*/}	; X=97
-	DB 26,3, 45,8, 125,4, 138,11, 160,9, 193,12
+    st.SC {3/*BANK*/, 01/*X_OFFSET*/, 6/*SIZE*/}    ; X=97
+    DB 26,3, 45,8, 125,4, 138,11, 160,9, 193,12
 
-	st.SC {3/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=116
-	DB 10,4, 104,5, 145,6, 190,8, 249,12
+    st.SC {3/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=116
+    DB 10,4, 104,5, 145,6, 190,8, 249,12
 
-	st.SC {3/*BANK*/, 28/*X_OFFSET*/, 4/*SIZE*/}	; X=124
-	DB 86,11, 123,7, 158,1, 233,19
+    st.SC {3/*BANK*/, 28/*X_OFFSET*/, 4/*SIZE*/}    ; X=124
+    DB 86,11, 123,7, 158,1, 233,19
 
-	st.SC {4/*BANK*/, 05/*X_OFFSET*/, 6/*SIZE*/}	; X=133
-	DB 21,19, 55,11, 80,8, 144,3, 148,13, 243,2
+    st.SC {4/*BANK*/, 05/*X_OFFSET*/, 6/*SIZE*/}    ; X=133
+    DB 21,19, 55,11, 80,8, 144,3, 148,13, 243,2
 
-	st.SC {4/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}	; X=143
-	DB 47,13, 77,2, 93,18, 139,1, 188,5, 233,7
+    st.SC {4/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}    ; X=143
+    DB 47,13, 77,2, 93,18, 139,1, 188,5, 233,7
 
-	st.SC {4/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}	; X=151
-	DB 5,3, 84,5, 98,9, 142,12, 168,11, 201,10
+    st.SC {4/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}    ; X=151
+    DB 5,3, 84,5, 98,9, 142,12, 168,11, 201,10
 
-	st.SC {5/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}	; X=171
-	DB 38,1, 78,5, 132,9, 149,12, 231,11
+    st.SC {5/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}    ; X=171
+    DB 38,1, 78,5, 132,9, 149,12, 231,11
 
-	st.SC {5/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=180
-	DB 24,2, 44,9, 126,3, 160,7, 243,17
+    st.SC {5/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=180
+    DB 24,2, 44,9, 126,3, 160,7, 243,17
 
-	st.SC {6/*BANK*/, 05/*X_OFFSET*/, 3/*SIZE*/}	; X=197
-	DB 64,11, 116,3, 174,15
+    st.SC {6/*BANK*/, 05/*X_OFFSET*/, 3/*SIZE*/}    ; X=197
+    DB 64,11, 116,3, 174,15
 
-	st.SC {6/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=212
-	DB 13,15, 44,3, 100,5, 143,7, 199,2
+    st.SC {6/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=212
+    DB 13,15, 44,3, 100,5, 143,7, 199,2
 
-	st.SC {7/*BANK*/, 03/*X_OFFSET*/, 5/*SIZE*/}	; X=227
-	DB 55,2, 98,3, 120,7, 187,11, 255,19
+    st.SC {7/*BANK*/, 03/*X_OFFSET*/, 5/*SIZE*/}    ; X=227
+    DB 55,2, 98,3, 120,7, 187,11, 255,19
 
-	st.SC {7/*BANK*/, 12/*X_OFFSET*/, 4/*SIZE*/}	; X=236
-	DB 11,14, 82,16, 148,11, 213,9
+    st.SC {7/*BANK*/, 12/*X_OFFSET*/, 4/*SIZE*/}    ; X=236
+    DB 11,14, 82,16, 148,11, 213,9
 
-	st.SC {7/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}	; X=254
-	DB 44,1, 113,12, 192,15, 253,12
+    st.SC {7/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=254
+    DB 44,1, 113,12, 192,15, 253,12
 
-	st.SC {8/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}	; X=264
-	DB 4,3, 39,1, 88,13, 133,2, 152,15
+    st.SC {8/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}    ; X=264
+    DB 4,3, 39,1, 88,13, 133,2, 152,15
 
-	st.SC {8/*BANK*/, 16/*X_OFFSET*/, 3/*SIZE*/}	; X=272
-	DB 3,1, 142,4, 241,9
+    st.SC {8/*BANK*/, 16/*X_OFFSET*/, 3/*SIZE*/}    ; X=272
+    DB 3,1, 142,4, 241,9
 
-	st.SC {8/*BANK*/, 31/*X_OFFSET*/, 4/*SIZE*/}	; X=287
-	DB 30,12, 103,3, 150,8, 189,2
+    st.SC {8/*BANK*/, 31/*X_OFFSET*/, 4/*SIZE*/}    ; X=287
+    DB 30,12, 103,3, 150,8, 189,2
 
-	st.SC {9/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}	; X=308
-	DB 5,4, 36,11, 120,14, 211,2
+    st.SC {9/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}    ; X=308
+    DB 5,4, 36,11, 120,14, 211,2
 
-	st.SC {9/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}	; X=318
-	DB 5,3, 102,6, 142,9, 240,12
+    st.SC {9/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=318
+    DB 5,3, 102,6, 142,9, 240,12
 
 starsData2
-	st.SC {0/*BANK*/, 15/*X_OFFSET*/, 4/*SIZE*/}	; X=15
-	DB 4,4, 42,8, 133,1, 245,9
+    st.SC {0/*BANK*/, 15/*X_OFFSET*/, 4/*SIZE*/}    ; X=15
+    DB 4,4, 42,8, 133,1, 245,9
 
-	st.SC {1/*BANK*/, 10/*X_OFFSET*/, 6/*SIZE*/}	; X=42
-	DB 26,3, 45,8, 125,4, 138,3, 160,9, 193,2
+    st.SC {1/*BANK*/, 10/*X_OFFSET*/, 6/*SIZE*/}    ; X=42
+    DB 26,3, 45,8, 125,4, 138,3, 160,9, 193,2
 
-	st.SC {1/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}	; X=52
-	DB 14,2, 52,4, 113,6, 189,8, 241,1
+    st.SC {1/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=52
+    DB 14,2, 52,4, 113,6, 189,8, 241,1
 
-	st.SC {2/*BANK*/, 06/*X_OFFSET*/, 5/*SIZE*/}	; X=70
-	DB 10,1, 115,4, 130,9, 155,2, 230,4
+    st.SC {2/*BANK*/, 06/*X_OFFSET*/, 5/*SIZE*/}    ; X=70
+    DB 10,1, 115,4, 130,9, 155,2, 230,4
 
-	st.SC {2/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}	; X=82
-	DB 38,1, 78,5, 132,9, 149,2, 231,5
+    st.SC {2/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}    ; X=82
+    DB 38,1, 78,5, 132,9, 149,2, 231,5
 
-	st.SC {3/*BANK*/, 12/*X_OFFSET*/, 5/*SIZE*/}	; X=108
-	DB 5,3, 38,6, 120,9, 158,4, 245,1
+    st.SC {3/*BANK*/, 12/*X_OFFSET*/, 5/*SIZE*/}    ; X=108
+    DB 5,3, 38,6, 120,9, 158,4, 245,1
 
-	st.SC {3/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}	; X=114
-	DB 31,5, 93,4, 159,1, 178,8, 248,4
+    st.SC {3/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}    ; X=114
+    DB 31,5, 93,4, 159,1, 178,8, 248,4
 
-	st.SC {4/*BANK*/, 1/*X_OFFSET*/, 5/*SIZE*/}		; X=129
-	DB 10,4, 104,5, 145,6, 190,8, 249,3
+    st.SC {4/*BANK*/, 1/*X_OFFSET*/, 5/*SIZE*/}     ; X=129
+    DB 10,4, 104,5, 145,6, 190,8, 249,3
 
-	st.SC {4/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}	; X=158
-	DB 21,1, 92,6, 158,9, 221,6
+    st.SC {4/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=158
+    DB 21,1, 92,6, 158,9, 221,6
 
-	st.SC {5/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}	; X=175
-	DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,7
+    st.SC {5/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}    ; X=175
+    DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,7
 
-	st.SC {6/*BANK*/, 04/*X_OFFSET*/, 6/*SIZE*/}	; X=194
-	DB 12,1, 15,4, 70,5, 94,3, 160,8, 250,2
+    st.SC {6/*BANK*/, 04/*X_OFFSET*/, 6/*SIZE*/}    ; X=194
+    DB 12,1, 15,4, 70,5, 94,3, 160,8, 250,2
 
-	st.SC {6/*BANK*/, 10/*X_OFFSET*/, 4/*SIZE*/}	; X=202
-	DB 86,3, 123,7, 158,1, 233,9
+    st.SC {6/*BANK*/, 10/*X_OFFSET*/, 4/*SIZE*/}    ; X=202
+    DB 86,3, 123,7, 158,1, 233,9
 
-	st.SC {7/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}	; X=235
-	DB 20,3, 80,8, 104,2, 150,9, 255,5
+    st.SC {7/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}    ; X=235
+    DB 20,3, 80,8, 104,2, 150,9, 255,5
 
-	st.SC {8/*BANK*/, 12/*X_OFFSET*/, 6/*SIZE*/}	; X=268
-	DB 21,3, 55,4, 80,8, 144,5, 148,8, 243,6
+    st.SC {8/*BANK*/, 12/*X_OFFSET*/, 6/*SIZE*/}    ; X=268
+    DB 21,3, 55,4, 80,8, 144,5, 148,8, 243,6
 
-	st.SC {8/*BANK*/, 25/*X_OFFSET*/, 6/*SIZE*/}	; X=281
-	DB 47,3, 77,2, 93,5, 139,7, 188,4, 233,1
+    st.SC {8/*BANK*/, 25/*X_OFFSET*/, 6/*SIZE*/}    ; X=281
+    DB 47,3, 77,2, 93,5, 139,7, 188,4, 233,1
 
-	st.SC {9/*BANK*/, 13/*X_OFFSET*/, 6/*SIZE*/}	; X=301
-	DB 5,3, 84,5, 98,9, 142,1, 168,4, 201,5
+    st.SC {9/*BANK*/, 13/*X_OFFSET*/, 6/*SIZE*/}    ; X=301
+    DB 5,3, 84,5, 98,9, 142,1, 168,4, 201,5
 
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
 starsData1MaxYL1
-	DB 143/*X=002*/, 154/*X=008*/, 159/*X=020*/, 196/*X=037*/, 195/*X=047*/, 196/*X=055*/, 140/*X=068*/, 134/*X=075*/, 106/*X=084*/
-	DB 192/*X=097*/, 049/*X=116*/, 039/*X=124*/, 022/*X=133*/, 019/*X=143*/, 023/*X=151*/, 123/*X=171*/, 062/*X=180*/, 082/*X=197*/
-	DB 104/*X=212*/, 187/*X=227*/, 187/*X=236*/, 187/*X=254*/, 128/*X=264*/, 119/*X=272*/, 102/*X=287*/, 221/*X=308*/, 230/*X=318*/
+    DB 143/*X=002*/, 154/*X=008*/, 159/*X=020*/, 196/*X=037*/, 195/*X=047*/, 196/*X=055*/, 140/*X=068*/, 134/*X=075*/, 106/*X=084*/
+    DB 192/*X=097*/, 049/*X=116*/, 039/*X=124*/, 022/*X=133*/, 019/*X=143*/, 023/*X=151*/, 123/*X=171*/, 062/*X=180*/, 082/*X=197*/
+    DB 104/*X=212*/, 187/*X=227*/, 187/*X=236*/, 187/*X=254*/, 128/*X=264*/, 119/*X=272*/, 102/*X=287*/, 221/*X=308*/, 230/*X=318*/
 starsData2MaxYL1
-	DB 154/*X=015*/, 196/*X=042*/, 195/*X=052*/, 139/*X=070*/, 106/*X=082*/, 086/*X=108*/, 082/*X=114*/, 037/*X=129*/, 168/*X=158*/
-	DB 121/*X=175*/, 080/*X=194*/, 087/*X=202*/, 187/*X=235*/, 123/*X=268*/, 106/*X=281*/, 222/*X=301*/
+    DB 154/*X=015*/, 196/*X=042*/, 195/*X=052*/, 139/*X=070*/, 106/*X=082*/, 086/*X=108*/, 082/*X=114*/, 037/*X=129*/, 168/*X=158*/
+    DB 121/*X=175*/, 080/*X=194*/, 087/*X=202*/, 187/*X=235*/, 123/*X=268*/, 106/*X=281*/, 222/*X=301*/
 
 starsData1MaxYL2
-	DB 084/*X=002*/, 082/*X=008*/, 085/*X=020*/, 087/*X=037*/, 089/*X=047*/, 089/*X=055*/, 093/*X=068*/, 094/*X=075*/, 096/*X=084*/
-	DB 099/*X=097*/, 100/*X=116*/, 102/*X=124*/, 104/*X=133*/, 106/*X=143*/, 108/*X=151*/, 103/*X=171*/, 101/*X=180*/, 096/*X=197*/
-	DB 095/*X=212*/, 096/*X=227*/, 092/*X=236*/, 088/*X=254*/, 086/*X=264*/, 089/*X=272*/, 088/*X=287*/, 084/*X=308*/, 083/*X=318*/
+    DB 084/*X=002*/, 082/*X=008*/, 085/*X=020*/, 087/*X=037*/, 089/*X=047*/, 089/*X=055*/, 093/*X=068*/, 094/*X=075*/, 096/*X=084*/
+    DB 099/*X=097*/, 100/*X=116*/, 102/*X=124*/, 104/*X=133*/, 106/*X=143*/, 108/*X=151*/, 103/*X=171*/, 101/*X=180*/, 096/*X=197*/
+    DB 095/*X=212*/, 096/*X=227*/, 092/*X=236*/, 088/*X=254*/, 086/*X=264*/, 089/*X=272*/, 088/*X=287*/, 084/*X=308*/, 083/*X=318*/
 starsData2MaxYL2
-	DB 082/*X=015*/, 088/*X=042*/, 088/*X=052*/, 092/*X=070*/, 095/*X=082*/, 101/*X=108*/, 101/*X=114*/, 103/*X=129*/, 107/*X=158*/
-	DB 103/*X=175*/, 097/*X=194*/, 096/*X=202*/, 095/*X=235*/, 087/*X=268*/, 088/*X=281*/, 087/*X=301*/
+    DB 082/*X=015*/, 088/*X=042*/, 088/*X=052*/, 092/*X=070*/, 095/*X=082*/, 101/*X=108*/, 101/*X=114*/, 103/*X=129*/, 107/*X=158*/
+    DB 103/*X=175*/, 097/*X=194*/, 096/*X=202*/, 095/*X=235*/, 087/*X=268*/, 088/*X=281*/, 087/*X=301*/
 
 starsData1MaxYL3
-	DB 173/*X=002*/, 173/*X=008*/, 193/*X=020*/, 193/*X=037*/, 116/*X=047*/, 107/*X=055*/, 199/*X=068*/, 098/*X=075*/, 065/*X=084*/
-	DB 146/*X=097*/, 101/*X=116*/, 179/*X=124*/, 018/*X=133*/, 020/*X=143*/, 000/*X=151*/, 000/*X=171*/, 175/*X=180*/, 065/*X=197*/
-	DB 068/*X=212*/, 088/*X=227*/, 148/*X=236*/, 073/*X=254*/, 099/*X=264*/, 097/*X=272*/, 193/*X=287*/, 188/*X=308*/, 188/*X=318*/
+    DB 173/*X=002*/, 173/*X=008*/, 193/*X=020*/, 193/*X=037*/, 116/*X=047*/, 107/*X=055*/, 199/*X=068*/, 098/*X=075*/, 065/*X=084*/
+    DB 146/*X=097*/, 101/*X=116*/, 179/*X=124*/, 018/*X=133*/, 020/*X=143*/, 000/*X=151*/, 000/*X=171*/, 175/*X=180*/, 065/*X=197*/
+    DB 068/*X=212*/, 088/*X=227*/, 148/*X=236*/, 073/*X=254*/, 099/*X=264*/, 097/*X=272*/, 193/*X=287*/, 188/*X=308*/, 188/*X=318*/
 starsData2MaxYL3
-	DB 175/*X=015*/, 193/*X=042*/, 107/*X=052*/, 199/*X=070*/, 088/*X=082*/, 104/*X=108*/, 079/*X=114*/, 056/*X=129*/, 000/*X=158*/
-	DB 002/*X=175*/, 089/*X=194*/, 069/*X=202*/, 148/*X=235*/, 193/*X=268*/, 190/*X=281*/, 176/*X=301*/
+    DB 175/*X=015*/, 193/*X=042*/, 107/*X=052*/, 199/*X=070*/, 088/*X=082*/, 104/*X=108*/, 079/*X=114*/, 056/*X=129*/, 000/*X=158*/
+    DB 002/*X=175*/, 089/*X=194*/, 069/*X=202*/, 148/*X=235*/, 193/*X=268*/, 190/*X=281*/, 176/*X=301*/
 
 starsData1MaxYL4
-	DB 003/*X=002*/, 043/*X=008*/, 077/*X=020*/, 109/*X=037*/, 098/*X=047*/, 045/*X=055*/, 141/*X=068*/, 144/*X=075*/, 133/*X=084*/
-	DB 085/*X=097*/, 114/*X=116*/, 135/*X=124*/, 131/*X=133*/, 110/*X=143*/, 129/*X=151*/, 055/*X=171*/, 108/*X=180*/, 116/*X=197*/
-	DB 118/*X=212*/, 073/*X=227*/, 095/*X=236*/, 142/*X=254*/, 010/*X=264*/, 058/*X=272*/, 135/*X=287*/, 093/*X=308*/, 072/*X=318*/
+    DB 003/*X=002*/, 043/*X=008*/, 077/*X=020*/, 109/*X=037*/, 098/*X=047*/, 045/*X=055*/, 141/*X=068*/, 144/*X=075*/, 133/*X=084*/
+    DB 085/*X=097*/, 114/*X=116*/, 135/*X=124*/, 131/*X=133*/, 110/*X=143*/, 129/*X=151*/, 055/*X=171*/, 108/*X=180*/, 116/*X=197*/
+    DB 118/*X=212*/, 073/*X=227*/, 095/*X=236*/, 142/*X=254*/, 010/*X=264*/, 058/*X=272*/, 135/*X=287*/, 093/*X=308*/, 072/*X=318*/
 starsData2MaxYL4
-	DB 088/*X=015*/, 079/*X=042*/, 050/*X=052*/, 141/*X=070*/, 120/*X=082*/, 090/*X=108*/, 102/*X=114*/, 135/*X=129*/, 116/*X=158*/
-	DB 052/*X=175*/, 136/*X=194*/, 111/*X=202*/, 096/*X=235*/, 016/*X=268*/, 133/*X=281*/, 102/*X=301*/
+    DB 088/*X=015*/, 079/*X=042*/, 050/*X=052*/, 141/*X=070*/, 120/*X=082*/, 090/*X=108*/, 102/*X=114*/, 135/*X=129*/, 116/*X=158*/
+    DB 052/*X=175*/, 136/*X=194*/, 111/*X=202*/, 096/*X=235*/, 016/*X=268*/, 133/*X=281*/, 102/*X=301*/
 
 starsData1MaxYL5
-	DB 004/*X=002*/, 010/*X=008*/, 020/*X=020*/, 028/*X=037*/, 028/*X=047*/, 033/*X=055*/, 064/*X=068*/, 064/*X=075*/, 062/*X=084*/
-	DB 056/*X=097*/, 059/*X=116*/, 063/*X=124*/, 087/*X=133*/, 106/*X=143*/, 117/*X=151*/, 210/*X=171*/, 217/*X=180*/, 221/*X=197*/
-	DB 217/*X=212*/, 224/*X=227*/, 229/*X=236*/, 074/*X=254*/, 053/*X=264*/, 051/*X=272*/, 037/*X=287*/, 023/*X=308*/, 025/*X=318*/
+    DB 004/*X=002*/, 010/*X=008*/, 020/*X=020*/, 028/*X=037*/, 028/*X=047*/, 033/*X=055*/, 064/*X=068*/, 064/*X=075*/, 062/*X=084*/
+    DB 056/*X=097*/, 059/*X=116*/, 063/*X=124*/, 087/*X=133*/, 106/*X=143*/, 117/*X=151*/, 210/*X=171*/, 217/*X=180*/, 221/*X=197*/
+    DB 217/*X=212*/, 224/*X=227*/, 229/*X=236*/, 074/*X=254*/, 053/*X=264*/, 051/*X=272*/, 037/*X=287*/, 023/*X=308*/, 025/*X=318*/
 starsData2MaxYL5
-	DB 016/*X=015*/, 028/*X=042*/, 030/*X=052*/, 045/*X=070*/, 062/*X=082*/, 051/*X=108*/, 061/*X=114*/, 075/*X=129*/, 127/*X=158*/
-	DB 214/*X=175*/, 221/*X=194*/, 221/*X=202*/, 229/*X=235*/, 052/*X=268*/, 042/*X=281*/, 024/*X=301*/
+    DB 016/*X=015*/, 028/*X=042*/, 030/*X=052*/, 045/*X=070*/, 062/*X=082*/, 051/*X=108*/, 061/*X=114*/, 075/*X=129*/, 127/*X=158*/
+    DB 214/*X=175*/, 221/*X=194*/, 221/*X=202*/, 229/*X=235*/, 052/*X=268*/, 042/*X=281*/, 024/*X=301*/
 
 starsData1MaxYL6
-	DB 115/*X=002*/, 109/*X=008*/, 114/*X=020*/, 126/*X=037*/, 129/*X=047*/, 135/*X=055*/, 136/*X=068*/, 135/*X=075*/, 142/*X=084*/
-	DB 154/*X=097*/, 166/*X=116*/, 166/*X=124*/, 166/*X=133*/, 163/*X=143*/, 157/*X=151*/, 144/*X=171*/, 140/*X=180*/, 133/*X=197*/
-	DB 018/*X=212*/, 003/*X=227*/, 017/*X=236*/, 167/*X=254*/, 157/*X=264*/, 155/*X=272*/, 148/*X=287*/, 013/*X=308*/, 134/*X=318*/
+    DB 115/*X=002*/, 109/*X=008*/, 114/*X=020*/, 126/*X=037*/, 129/*X=047*/, 135/*X=055*/, 136/*X=068*/, 135/*X=075*/, 142/*X=084*/
+    DB 154/*X=097*/, 166/*X=116*/, 166/*X=124*/, 166/*X=133*/, 163/*X=143*/, 157/*X=151*/, 144/*X=171*/, 140/*X=180*/, 133/*X=197*/
+    DB 018/*X=212*/, 003/*X=227*/, 017/*X=236*/, 167/*X=254*/, 157/*X=264*/, 155/*X=272*/, 148/*X=287*/, 013/*X=308*/, 134/*X=318*/
 starsData2MaxYL6
-	DB 109/*X=015*/, 126/*X=042*/, 133/*X=052*/, 136/*X=070*/, 137/*X=082*/, 163/*X=108*/, 166/*X=114*/, 166/*X=129*/, 155/*X=158*/
-	DB 142/*X=175*/, 132/*X=194*/, 062/*X=202*/, 016/*X=235*/, 161/*X=268*/, 152/*X=281*/, 134/*X=301*/
+    DB 109/*X=015*/, 126/*X=042*/, 133/*X=052*/, 136/*X=070*/, 137/*X=082*/, 163/*X=108*/, 166/*X=114*/, 166/*X=129*/, 155/*X=158*/
+    DB 142/*X=175*/, 132/*X=194*/, 062/*X=202*/, 016/*X=235*/, 161/*X=268*/, 152/*X=281*/, 134/*X=301*/
 
 starsData1MaxYL7
-	DB 056/*X=002*/, 056/*X=008*/, 056/*X=020*/, 055/*X=037*/, 056/*X=047*/, 055/*X=055*/, 056/*X=068*/, 056/*X=075*/, 058/*X=084*/
-	DB 058/*X=097*/, 058/*X=116*/, 053/*X=124*/, 039/*X=133*/, 041/*X=143*/, 034/*X=151*/, 029/*X=171*/, 039/*X=180*/, 036/*X=197*/
-	DB 028/*X=212*/, 021/*X=227*/, 018/*X=236*/, 007/*X=254*/, 004/*X=264*/, 004/*X=272*/, 006/*X=287*/, 005/*X=308*/, 000/*X=318*/
+    DB 056/*X=002*/, 056/*X=008*/, 056/*X=020*/, 055/*X=037*/, 056/*X=047*/, 055/*X=055*/, 056/*X=068*/, 056/*X=075*/, 058/*X=084*/
+    DB 058/*X=097*/, 058/*X=116*/, 053/*X=124*/, 039/*X=133*/, 041/*X=143*/, 034/*X=151*/, 029/*X=171*/, 039/*X=180*/, 036/*X=197*/
+    DB 028/*X=212*/, 021/*X=227*/, 018/*X=236*/, 007/*X=254*/, 004/*X=264*/, 004/*X=272*/, 006/*X=287*/, 005/*X=308*/, 000/*X=318*/
 starsData2MaxYL7
-	DB 056/*X=015*/, 055/*X=042*/, 056/*X=052*/, 056/*X=070*/, 058/*X=082*/, 058/*X=108*/, 051/*X=114*/, 039/*X=129*/, 037/*X=158*/
-	DB 034/*X=175*/, 038/*X=194*/, 034/*X=202*/, 018/*X=235*/, 005/*X=268*/, 004/*X=281*/, 004/*X=301*/
+    DB 056/*X=015*/, 055/*X=042*/, 056/*X=052*/, 056/*X=070*/, 058/*X=082*/, 058/*X=108*/, 051/*X=114*/, 039/*X=129*/, 037/*X=158*/
+    DB 034/*X=175*/, 038/*X=194*/, 034/*X=202*/, 018/*X=235*/, 005/*X=268*/, 004/*X=281*/, 004/*X=301*/
 
 starsData1MaxYL8
-	DB 081/*X=002*/, 082/*X=008*/, 082/*X=020*/, 083/*X=037*/, 083/*X=047*/, 084/*X=055*/, 084/*X=068*/, 084/*X=075*/, 084/*X=084*/
-	DB 084/*X=097*/, 084/*X=116*/, 084/*X=124*/, 084/*X=133*/, 082/*X=143*/, 026/*X=151*/, 025/*X=171*/, 035/*X=180*/, 081/*X=197*/
-	DB 080/*X=212*/, 078/*X=227*/, 077/*X=236*/, 079/*X=254*/, 079/*X=264*/, 079/*X=272*/, 079/*X=287*/, 078/*X=308*/, 078/*X=318*/
+    DB 081/*X=002*/, 082/*X=008*/, 082/*X=020*/, 083/*X=037*/, 083/*X=047*/, 084/*X=055*/, 084/*X=068*/, 084/*X=075*/, 084/*X=084*/
+    DB 084/*X=097*/, 084/*X=116*/, 084/*X=124*/, 084/*X=133*/, 082/*X=143*/, 026/*X=151*/, 025/*X=171*/, 035/*X=180*/, 081/*X=197*/
+    DB 080/*X=212*/, 078/*X=227*/, 077/*X=236*/, 079/*X=254*/, 079/*X=264*/, 079/*X=272*/, 079/*X=287*/, 078/*X=308*/, 078/*X=318*/
 starsData2MaxYL8
-	DB 082/*X=015*/, 083/*X=042*/, 083/*X=052*/, 084/*X=070*/, 084/*X=082*/, 084/*X=108*/, 084/*X=114*/, 084/*X=129*/, 022/*X=158*/
-	DB 028/*X=175*/, 082/*X=194*/, 081/*X=202*/, 077/*X=235*/, 079/*X=268*/, 079/*X=281*/, 078/*X=301*/
+    DB 082/*X=015*/, 083/*X=042*/, 083/*X=052*/, 084/*X=070*/, 084/*X=082*/, 084/*X=108*/, 084/*X=114*/, 084/*X=129*/, 022/*X=158*/
+    DB 028/*X=175*/, 082/*X=194*/, 081/*X=202*/, 077/*X=235*/, 079/*X=268*/, 079/*X=281*/, 078/*X=301*/
 
 starsData1MaxYL9
-	DB 003/*X=002*/, 000/*X=008*/, 002/*X=020*/, 009/*X=037*/, 011/*X=047*/, 016/*X=055*/, 019/*X=068*/, 025/*X=075*/, 032/*X=084*/
-	DB 061/*X=097*/, 060/*X=116*/, 059/*X=124*/, 058/*X=133*/, 058/*X=143*/, 059/*X=151*/, 058/*X=171*/, 058/*X=180*/, 057/*X=197*/
-	DB 058/*X=212*/, 059/*X=227*/, 061/*X=236*/, 058/*X=254*/, 058/*X=264*/, 059/*X=272*/, 054/*X=287*/, 047/*X=308*/, 046/*X=318*/
+    DB 003/*X=002*/, 000/*X=008*/, 002/*X=020*/, 009/*X=037*/, 011/*X=047*/, 016/*X=055*/, 019/*X=068*/, 025/*X=075*/, 032/*X=084*/
+    DB 061/*X=097*/, 060/*X=116*/, 059/*X=124*/, 058/*X=133*/, 058/*X=143*/, 059/*X=151*/, 058/*X=171*/, 058/*X=180*/, 057/*X=197*/
+    DB 058/*X=212*/, 059/*X=227*/, 061/*X=236*/, 058/*X=254*/, 058/*X=264*/, 059/*X=272*/, 054/*X=287*/, 047/*X=308*/, 046/*X=318*/
 starsData2MaxYL9
-	DB 000/*X=015*/, 008/*X=042*/, 013/*X=052*/, 020/*X=070*/, 032/*X=082*/, 061/*X=108*/, 060/*X=114*/, 058/*X=129*/, 059/*X=158*/
-	DB 057/*X=175*/, 057/*X=194*/, 056/*X=202*/, 061/*X=235*/, 058/*X=268*/, 059/*X=281*/, 050/*X=301*/
+    DB 000/*X=015*/, 008/*X=042*/, 013/*X=052*/, 020/*X=070*/, 032/*X=082*/, 061/*X=108*/, 060/*X=114*/, 058/*X=129*/, 059/*X=158*/
+    DB 057/*X=175*/, 057/*X=194*/, 056/*X=202*/, 061/*X=235*/, 058/*X=268*/, 059/*X=281*/, 050/*X=301*/
 
 starsData1MaxYL10
-	DB 217/*X=002*/, 166/*X=008*/, 162/*X=020*/, 163/*X=037*/, 116/*X=047*/, 081/*X=055*/, 103/*X=068*/, 107/*X=075*/, 048/*X=084*/
-	DB 044/*X=097*/, 199/*X=116*/, 199/*X=124*/, 000/*X=133*/, 000/*X=143*/, 000/*X=151*/, 000/*X=171*/, 000/*X=180*/, 163/*X=197*/
-	DB 188/*X=212*/, 072/*X=227*/, 072/*X=236*/, 072/*X=254*/, 071/*X=264*/, 080/*X=272*/, 141/*X=287*/, 142/*X=308*/, 198/*X=318*/
+    DB 217/*X=002*/, 166/*X=008*/, 162/*X=020*/, 163/*X=037*/, 116/*X=047*/, 081/*X=055*/, 103/*X=068*/, 107/*X=075*/, 048/*X=084*/
+    DB 044/*X=097*/, 199/*X=116*/, 199/*X=124*/, 000/*X=133*/, 000/*X=143*/, 000/*X=151*/, 000/*X=171*/, 000/*X=180*/, 163/*X=197*/
+    DB 188/*X=212*/, 072/*X=227*/, 072/*X=236*/, 072/*X=254*/, 071/*X=264*/, 080/*X=272*/, 141/*X=287*/, 142/*X=308*/, 198/*X=318*/
 starsData2MaxYL10
-	DB 163/*X=015*/, 120/*X=042*/, 113/*X=052*/, 106/*X=070*/, 062/*X=082*/, 114/*X=108*/, 199/*X=114*/, 000/*X=129*/, 000/*X=158*/
-	DB 000/*X=175*/, 000/*X=194*/, 195/*X=202*/, 068/*X=235*/, 072/*X=268*/, 102/*X=281*/, 128/*X=301*/
+    DB 163/*X=015*/, 120/*X=042*/, 113/*X=052*/, 106/*X=070*/, 062/*X=082*/, 114/*X=108*/, 199/*X=114*/, 000/*X=129*/, 000/*X=158*/
+    DB 000/*X=175*/, 000/*X=194*/, 195/*X=202*/, 068/*X=235*/, 072/*X=268*/, 102/*X=281*/, 128/*X=301*/
 
 starsPalL1
-	DW $1FF, $1FF, $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
+    DW $1FF, $1FF, $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
 
 starsPalL2
-	DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
+    DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
-	; ##########################################
-	ASSERT $$ == dbs.ST_BANK_D28				; Data should remain in the same bank
-	ASSERT $$starsBankStart == dbs.ST_BANK_D28 	; Make sure that we have configured the right bank.
+    ; ##########################################
+    ASSERT $$ == dbs.ST_BANK_D28                ; Data should remain in the same bank
+    ASSERT $$starsBankStart == dbs.ST_BANK_D28  ; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                    Arrays (Bank 29)                      ;
 ;----------------------------------------------------------;
 ; Before using it call #SetupArraysBank
-	MMU _RAM_SLOT7, dbs.ARR_BANK_D29
-	ORG _RAM_SLOT7_STA_HE000
+    MMU _RAM_SLOT7, dbs.ARR_BANK_D29
+    ORG _RAM_SLOT7_STA_HE000
 spritesBankStart
 
 ; ##############################################
@@ -253,388 +253,388 @@ spritesBankStart
 
 ; Horizontal, max speed.
 movePattern01D0
-	DB 2, %0'000'1'111,$00
+    DB 2, %0'000'1'111,$00
 
 ; Horizontal, max speed.
 movePattern01D1
-	DB 2, %0'000'1'111,$10	
+    DB 2, %0'000'1'111,$10  
 
 ; Horizontal, delay 2.
 movePattern01D2
-	DB 2, %0'000'1'111,$20
+    DB 2, %0'000'1'111,$20
 
 ; Horizontal, delay 3.
 movePattern01D3
-	DB 2, %0'000'1'111,$30
+    DB 2, %0'000'1'111,$30
 
 ; 18deg down, delay 0.
 movePattern02D0
-	DB 2, %1'001'1'111,$00
+    DB 2, %1'001'1'111,$00
 
 ; 18deg down, delay 1.
 movePattern02D1
-	DB 2, %1'001'1'111,$10	
+    DB 2, %1'001'1'111,$10  
 
 ; 18deg down, delay 2.
 movePattern02D2
-	DB 2, %1'001'1'111,$20
+    DB 2, %1'001'1'111,$20
 
 ; 18deg down, delay 3.
 movePattern02D3
-	DB 2, %1'001'1'111,$30	
+    DB 2, %1'001'1'111,$30  
 
 ; 18deg up, delay 0.
 movePattern03D0
-	DB 2, %0'001'1'111,$20
+    DB 2, %0'001'1'111,$20
 
 ; 5* horizontal, 2x 45deg down,...
 movePattern05
-	DB 4, %0'000'1'111,$05, %1'111'1'111,$02
+    DB 4, %0'000'1'111,$05, %1'111'1'111,$02
 
 ; Half sinus.
 movePattern06
-	DB 32, %0'010'1'001,$22, %0'011'1'010,$22, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31 	; going up
-		DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$11, %1'100'1'011,$11, %1'011'1'010,$12, %1'010'1'001,$01	; going down
+    DB 32, %0'010'1'001,$22, %0'011'1'010,$22, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31   ; going up
+        DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$11, %1'100'1'011,$11, %1'011'1'010,$12, %1'010'1'001,$01   ; going down
 
 ; Sinus.
 movePattern07
-	DB 64, %0'010'1'001,$32, %0'011'1'010,$32, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31 	; going up, above X
-		DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$21, %1'100'1'011,$21, %1'011'1'010,$22, %1'010'1'001,$22	; going down, above X
-		DB %1'010'1'001,$11, %1'011'1'010,$11, %1'100'1'011,$11, %1'011'1'011,$01, %1'010'1'011,$03, %1'001'1'011,$02, %1'001'1'100,$02, %1'001'1'101,$01 	; going down, below X
-		DB %0'001'1'101,$11, %0'001'1'100,$12, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32	; going up, below X
-		
+    DB 64, %0'010'1'001,$32, %0'011'1'010,$32, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31   ; going up, above X
+        DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$21, %1'100'1'011,$21, %1'011'1'010,$22, %1'010'1'001,$22   ; going down, above X
+        DB %1'010'1'001,$11, %1'011'1'010,$11, %1'100'1'011,$11, %1'011'1'011,$01, %1'010'1'011,$03, %1'001'1'011,$02, %1'001'1'100,$02, %1'001'1'101,$01   ; going down, below X
+        DB %0'001'1'101,$11, %0'001'1'100,$12, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32   ; going up, below X
+        
 ; Square wave.
 movePattern08
-	DB 8, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23
+    DB 8, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23
 
 ; Saw wave.
 movePattern09
 ;         45deg up slow    45deg down slow   45deg up slow   45deg down slow  45deg up fast   45deg down fast
-	DB 12, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,31, %1'001'1'011,31
+    DB 12, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,31, %1'001'1'011,31
 
 ; Square, triangle wave.
 movePattern10
-	DB 24, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %1'111'1'111,$03, %0'111'1'111,$03, %1'111'1'111,$03, %0'111'1'111,$03
+    DB 24, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %1'111'1'111,$03, %0'111'1'111,$03, %1'111'1'111,$03, %0'111'1'111,$03
 
 movePattern11
 ;         45deg down         horizontal        horizontal       horizontal         45deg up
-	DB 10, %1'111'1'111,$0F, %0'000'1'111,$1F, %0'000'1'111,$2F, %0'000'1'111,$1F, %0'011'1'011,$3F 
+    DB 10, %1'111'1'111,$0F, %0'000'1'111,$1F, %0'000'1'111,$2F, %0'000'1'111,$1F, %0'011'1'011,$3F 
 
 ; 34deg up, delay 2.
 movePattern12D2
-	DB 2, %0'011'1'111,$20 
+    DB 2, %0'011'1'111,$20 
 
 ; 34deg up, delay 1.
 movePattern12D1
-	DB 2, %0'011'1'111,$10 
+    DB 2, %0'011'1'111,$10 
 
 ; 34deg down, delay 0.
 movePattern13D0
-	DB 2, %1'011'1'111,$00 
+    DB 2, %1'011'1'111,$00 
 
 ; 34deg down, delay 1.
 movePattern13D1
-	DB 2, %1'011'1'111,$10 
+    DB 2, %1'011'1'111,$10 
 
 ; 34deg down, delay 2.
 movePattern13D2
-	DB 2, %1'011'1'111,$20 
+    DB 2, %1'011'1'111,$20 
 
 ; 34deg down, delay 3.
 movePattern13D3
-	DB 2, %1'011'1'111,$30 
+    DB 2, %1'011'1'111,$30 
 
 ; 34deg down, delay 4.
 movePattern13D4
-	DB 2, %1'011'1'111,$40 	
+    DB 2, %1'011'1'111,$40  
 
 ; 45deg down, delay 0.
 movePattern14D0
-	DB 2, %1'001'1'001,$00 
+    DB 2, %1'001'1'001,$00 
 
 ; 45deg down, delay 1.
 movePattern14D1
-	DB 2, %1'001'1'001,$10 
+    DB 2, %1'001'1'001,$10 
 
 ; 45deg down, delay 2.
 movePattern14D2
-	DB 2, %1'001'1'001,$20 
+    DB 2, %1'001'1'001,$20 
 
 ; 45deg up, delay 1.
 movePattern15D1
-	DB 2, %0'001'1'001,$10 
+    DB 2, %0'001'1'001,$10 
 
 ; 45deg up, delay 2.
 movePattern15D2
-	DB 2, %0'001'1'001,$20 
+    DB 2, %0'001'1'001,$20 
 
 movePattern16
 ;         horizontal        45deg up
-	DB 4, %0'000'1'111,$0C, %0'111'1'111,$19 
+    DB 4, %0'000'1'111,$0C, %0'111'1'111,$19 
 
 movePattern17
 ;           horizontal fast  horizontal slow    34deg down        horizontal        34deg up
-	DB 10, %0'000'1'111,$1A, %0'000'1'111,$45, %1'011'1'111,$05, %0'000'1'111,$29, %0'011'1'111,37
+    DB 10, %0'000'1'111,$1A, %0'000'1'111,$45, %1'011'1'111,$05, %0'000'1'111,$29, %0'011'1'111,37
 
 movePattern18
 ;         horizontal        45deg down
-	DB 4, %0'000'1'111,$2C, %1'111'1'111,$39 
+    DB 4, %0'000'1'111,$2C, %1'111'1'111,$39 
 
 ; Single enemies.
 spriteEx01
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx02
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx03
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx04
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx05
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx06
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx07
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx08
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx09
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}	
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/} 
 spriteEx10
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx11
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx12
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx13
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx14
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx15
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx16
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx17
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx18
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx19
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx20
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 
 ; Enemies reserved for enemyFormation.
 spriteExEf01
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteExEf02
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteExEf03
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteExEf04
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteExEf05
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteExEf06
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteExEf07
-	enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 
 ; Single sprites, used by single enemies (#spriteExXX).
 singleEnemySprites
-	sr.SPR {20/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
-	sr.SPR {21/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx02/*EXT_DATA_POINTER*/}
-	sr.SPR {22/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx03/*EXT_DATA_POINTER*/}
-	sr.SPR {23/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx04/*EXT_DATA_POINTER*/}
-	sr.SPR {24/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx05/*EXT_DATA_POINTER*/}
-	sr.SPR {25/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx06/*EXT_DATA_POINTER*/}
-	sr.SPR {26/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx07/*EXT_DATA_POINTER*/}
-	sr.SPR {27/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx08/*EXT_DATA_POINTER*/}
-	sr.SPR {28/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx09/*EXT_DATA_POINTER*/}
-	sr.SPR {29/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx10/*EXT_DATA_POINTER*/}
-	sr.SPR {30/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx11/*EXT_DATA_POINTER*/}
-	sr.SPR {31/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx12/*EXT_DATA_POINTER*/}
-	sr.SPR {32/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx13/*EXT_DATA_POINTER*/}
-	sr.SPR {33/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx14/*EXT_DATA_POINTER*/}
-	sr.SPR {34/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx15/*EXT_DATA_POINTER*/}
-	sr.SPR {35/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx16/*EXT_DATA_POINTER*/}
-	sr.SPR {36/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx17/*EXT_DATA_POINTER*/}
-	sr.SPR {37/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx18/*EXT_DATA_POINTER*/}
-	sr.SPR {38/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx19/*EXT_DATA_POINTER*/}
-	sr.SPR {39/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx20/*EXT_DATA_POINTER*/}
-ENEMY_SINGLE_SIZE 		= 20
+    sr.SPR {20/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
+    sr.SPR {21/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx02/*EXT_DATA_POINTER*/}
+    sr.SPR {22/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx03/*EXT_DATA_POINTER*/}
+    sr.SPR {23/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx04/*EXT_DATA_POINTER*/}
+    sr.SPR {24/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx05/*EXT_DATA_POINTER*/}
+    sr.SPR {25/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx06/*EXT_DATA_POINTER*/}
+    sr.SPR {26/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx07/*EXT_DATA_POINTER*/}
+    sr.SPR {27/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx08/*EXT_DATA_POINTER*/}
+    sr.SPR {28/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx09/*EXT_DATA_POINTER*/}
+    sr.SPR {29/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx10/*EXT_DATA_POINTER*/}
+    sr.SPR {30/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx11/*EXT_DATA_POINTER*/}
+    sr.SPR {31/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx12/*EXT_DATA_POINTER*/}
+    sr.SPR {32/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx13/*EXT_DATA_POINTER*/}
+    sr.SPR {33/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx14/*EXT_DATA_POINTER*/}
+    sr.SPR {34/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx15/*EXT_DATA_POINTER*/}
+    sr.SPR {35/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx16/*EXT_DATA_POINTER*/}
+    sr.SPR {36/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx17/*EXT_DATA_POINTER*/}
+    sr.SPR {37/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx18/*EXT_DATA_POINTER*/}
+    sr.SPR {38/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx19/*EXT_DATA_POINTER*/}
+    sr.SPR {39/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx20/*EXT_DATA_POINTER*/}
+ENEMY_SINGLE_SIZE       = 20
 
 ; Formation sprites used by enemyFormation enemies (#spriteExEfXX).
 formationEnemySprites
-	sr.SPR {61/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf01/*EXT_DATA_POINTER*/}
-	sr.SPR {62/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf02/*EXT_DATA_POINTER*/}
-	sr.SPR {63/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf03/*EXT_DATA_POINTER*/}
-	sr.SPR {64/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf04/*EXT_DATA_POINTER*/}
-	sr.SPR {65/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
-	sr.SPR {66/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf06/*EXT_DATA_POINTER*/}
-	sr.SPR {67/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}
-ENEMY_FORMATION_SIZE	= 7
+    sr.SPR {61/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf01/*EXT_DATA_POINTER*/}
+    sr.SPR {62/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf02/*EXT_DATA_POINTER*/}
+    sr.SPR {63/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf03/*EXT_DATA_POINTER*/}
+    sr.SPR {64/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf04/*EXT_DATA_POINTER*/}
+    sr.SPR {65/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
+    sr.SPR {66/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf06/*EXT_DATA_POINTER*/}
+    sr.SPR {67/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}
+ENEMY_FORMATION_SIZE    = 7
 
 ; ##############################################
 ; Enemies for Levels
 
 singleEnemiesL1
-	enp.ENPS {020/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {040/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {050/*RESPAWN_Y*/, 050/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {085/*RESPAWN_Y*/, 045/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {090/*RESPAWN_Y*/, 080/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {105/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {125/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {150/*RESPAWN_Y*/, 074/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {175/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {220/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-SINGLE_ENEMIES_L1 		= 10
+    enp.ENPS {020/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {040/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {050/*RESPAWN_Y*/, 050/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {085/*RESPAWN_Y*/, 045/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {090/*RESPAWN_Y*/, 080/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {105/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {125/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {150/*RESPAWN_Y*/, 074/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {175/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {220/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+SINGLE_ENEMIES_L1       = 10
 enemyFormationL1 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL2
-	enp.ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
-	enp.ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT  /*SETUP*/}
-	enp.ENPS {080/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
-	enp.ENPS {100/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
-	enp.ENPS {120/*RESPAWN_Y*/, 005/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
-	enp.ENPS {140/*RESPAWN_Y*/, 024/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
-	enp.ENPS {180/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
-	enp.ENPS {200/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern16  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
-	enp.ENPS {220/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
-	enp.ENPS {220/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
-SINGLE_ENEMIES_L2 		= 10
+    enp.ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
+    enp.ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT  /*SETUP*/}
+    enp.ENPS {080/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
+    enp.ENPS {100/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
+    enp.ENPS {120/*RESPAWN_Y*/, 005/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
+    enp.ENPS {140/*RESPAWN_Y*/, 024/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
+    enp.ENPS {180/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
+    enp.ENPS {200/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern16  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
+    enp.ENPS {220/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
+    enp.ENPS {220/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
+SINGLE_ENEMIES_L2       = 10
 enemyFormationL2 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL3
-	enp.ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
-	enp.ENPS {020/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {050/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {060/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {060/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {080/*RESPAWN_Y*/, 021/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {080/*RESPAWN_Y*/, 021/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {100/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {100/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {120/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {120/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {140/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {140/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {160/*RESPAWN_Y*/, 038/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {160/*RESPAWN_Y*/, 037/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {180/*RESPAWN_Y*/, 035/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {180/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-	enp.ENPS {200/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
-	enp.ENPS {200/*RESPAWN_Y*/, 044/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
-SINGLE_ENEMIES_L3 		= 20
+    enp.ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
+    enp.ENPS {020/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {050/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {060/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {060/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {080/*RESPAWN_Y*/, 021/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {080/*RESPAWN_Y*/, 021/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {100/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {100/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {120/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {120/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {140/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {140/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {160/*RESPAWN_Y*/, 038/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {160/*RESPAWN_Y*/, 037/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {180/*RESPAWN_Y*/, 035/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {180/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+    enp.ENPS {200/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
+    enp.ENPS {200/*RESPAWN_Y*/, 044/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT /*SETUP*/}
+SINGLE_ENEMIES_L3       = 20
 enemyFormationL3 enp.ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
 
 singleEnemiesL4
-	enp.ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG	/*SETUP*/}
-	enp.ENPS {010/*RESPAWN_Y*/, 030/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG	/*SETUP*/}
-	enp.ENPS {020/*RESPAWN_Y*/, 049/*RESPAWN_DELAY*/, movePattern13D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG	/*SETUP*/}
-	enp.ENPS {010/*RESPAWN_Y*/, 035/*RESPAWN_DELAY*/, movePattern13D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG	/*SETUP*/}
-	enp.ENPS {010/*RESPAWN_Y*/, 030/*RESPAWN_DELAY*/, movePattern18  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG	/*SETUP*/}
-	enp.ENPS {010/*RESPAWN_Y*/, 035/*RESPAWN_DELAY*/, movePattern18  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG	/*SETUP*/}
+    enp.ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG  /*SETUP*/}
+    enp.ENPS {010/*RESPAWN_Y*/, 030/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG /*SETUP*/}
+    enp.ENPS {020/*RESPAWN_Y*/, 049/*RESPAWN_DELAY*/, movePattern13D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG  /*SETUP*/}
+    enp.ENPS {010/*RESPAWN_Y*/, 035/*RESPAWN_DELAY*/, movePattern13D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG /*SETUP*/}
+    enp.ENPS {010/*RESPAWN_Y*/, 030/*RESPAWN_DELAY*/, movePattern18  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG  /*SETUP*/}
+    enp.ENPS {010/*RESPAWN_Y*/, 035/*RESPAWN_DELAY*/, movePattern18  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG /*SETUP*/}
 
-	enp.ENPS {127/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {127/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT	/*SETUP*/}
-	enp.ENPS {165/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {165/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT	/*SETUP*/}
+    enp.ENPS {127/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {127/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT   /*SETUP*/}
+    enp.ENPS {165/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {165/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT   /*SETUP*/}
 
-	enp.ENPS {103/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {144/*RESPAWN_Y*/, 031/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT	/*SETUP*/}
-	enp.ENPS {144/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {185/*RESPAWN_Y*/, 029/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT	/*SETUP*/}	
-	enp.ENPS {185/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	
-	enp.ENPS {227/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern09  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG	/*SETUP*/}
-	enp.ENPS {227/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern09  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
+    enp.ENPS {103/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {144/*RESPAWN_Y*/, 031/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT   /*SETUP*/}
+    enp.ENPS {144/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {185/*RESPAWN_Y*/, 029/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT   /*SETUP*/}  
+    enp.ENPS {185/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    
+    enp.ENPS {227/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern09  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG /*SETUP*/}
+    enp.ENPS {227/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern09  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
 
-SINGLE_ENEMIES_L4 		= 17
+SINGLE_ENEMIES_L4       = 17
 enemyFormationL4 enp.ENPS {085/*RESPAWN_Y*/, 8/*RESPAWN_DELAY*/, movePattern17/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
 
 singleEnemiesL5
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-SINGLE_ENEMIES_L5 		= 1
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+SINGLE_ENEMIES_L5       = 1
 enemyFormationL5 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL6
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-SINGLE_ENEMIES_L6 		= 1
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+SINGLE_ENEMIES_L6       = 1
 enemyFormationL6 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL7
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-SINGLE_ENEMIES_L7 		= 1	
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+SINGLE_ENEMIES_L7       = 1 
 enemyFormationL7 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL8
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-SINGLE_ENEMIES_L8 		= 1	
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+SINGLE_ENEMIES_L8       = 1 
 enemyFormationL8 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL9
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-SINGLE_ENEMIES_L9 		= 1	
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+SINGLE_ENEMIES_L9       = 1 
 enemyFormationL9 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL10
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-	enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT	/*SETUP*/}
-SINGLE_ENEMIES_L10 		= 1	
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+    enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
+SINGLE_ENEMIES_L10      = 1 
 enemyFormationL10 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 ; ##############################################
@@ -645,249 +645,249 @@ enemyFormationL10 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, mo
 ; DB Record:
 ;    [ID], [OFF_NX], [SIZE], [DELAY], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]] 
 ; where:
-;	- ID: 			Entry ID for lookup via CPIR.
-;	- OFF_NX:		ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
-;	- SIZE:			Amount of bytes in this record.
-;	- DELAY:		Amount animation calls to skip (slows down animation).
-;	- FRAME_UP:		Offset for the upper part of the Jetman.
-;	- FRAME_LW: 	Offset for the lower part of the Jetman.
+;   - ID:           Entry ID for lookup via CPIR.
+;   - OFF_NX:       ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
+;   - SIZE:         Amount of bytes in this record.
+;   - DELAY:        Amount animation calls to skip (slows down animation).
+;   - FRAME_UP:     Offset for the upper part of the Jetman.
+;   - FRAME_LW:     Offset for the lower part of the Jetman.
 jetSpriteDB
-	; Jetman is flaying.
-	DB js.SDB_FLY,		js.SDB_FLY - js.SDB_SUB,		48, 5
-											DB 00,10, 00,11, 01,12, 01,13, 02,11, 02,12, 03,10, 03,11, 04,12, 04,13
-											DB 05,12, 05,11, 03,10, 03,11, 04,12, 04,13, 05,10, 05,12, 03,10, 03,11
-											DB 04,12, 04,13, 05,12, 05,10
+    ; Jetman is flaying.
+    DB js.SDB_FLY,      js.SDB_FLY - js.SDB_SUB,        48, 5
+                                            DB 00,10, 00,11, 01,12, 01,13, 02,11, 02,12, 03,10, 03,11, 04,12, 04,13
+                                            DB 05,12, 05,11, 03,10, 03,11, 04,12, 04,13, 05,10, 05,12, 03,10, 03,11
+                                            DB 04,12, 04,13, 05,12, 05,10
 
-	; Jetman is flaying down.
-	DB js.SDB_FLYD, 	js.SDB_FLYD - js.SDB_SUB,		48, 5
-											DB 00,12, 00,37, 01,38, 01,37, 02,12, 02,38, 03,12, 03,37, 04,38, 04,12
-											DB 05,38, 05,37, 03,37, 03,12, 04,38, 04,12, 05,37, 05,38, 03,37, 03,12
-											DB 04,12, 04,37, 05,38, 05,37
+    ; Jetman is flaying down.
+    DB js.SDB_FLYD,     js.SDB_FLYD - js.SDB_SUB,       48, 5
+                                            DB 00,12, 00,37, 01,38, 01,37, 02,12, 02,38, 03,12, 03,37, 04,38, 04,12
+                                            DB 05,38, 05,37, 03,37, 03,12, 04,38, 04,12, 05,37, 05,38, 03,37, 03,12
+                                            DB 04,12, 04,37, 05,38, 05,37
 
-	; Jetman hovers.
-	DB js.SDB_HOVER, 	js.SDB_HOVER - js.SDB_SUB,		48, 10
-											DB 00,14, 00,15, 01,16, 01,10, 02,11, 02,12, 03,13, 03,10, 04,11, 04,12 
-											DB 05,13, 05,14, 03,15, 03,16, 04,10, 04,11, 05,12, 05,13, 03,10, 03,11
-											DB 04,12, 04,13, 05,10, 05,11
+    ; Jetman hovers.
+    DB js.SDB_HOVER,    js.SDB_HOVER - js.SDB_SUB,      48, 10
+                                            DB 00,14, 00,15, 01,16, 01,10, 02,11, 02,12, 03,13, 03,10, 04,11, 04,12 
+                                            DB 05,13, 05,14, 03,15, 03,16, 04,10, 04,11, 05,12, 05,13, 03,10, 03,11
+                                            DB 04,12, 04,13, 05,10, 05,11
 
-	; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
-	DB js.SDB_WALK_ST,	js.SDB_WALK	- js.SDB_SUB,		02, 3
-											DB 03,07
+    ; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
+    DB js.SDB_WALK_ST,  js.SDB_WALK - js.SDB_SUB,       02, 3
+                                            DB 03,07
 
-	; Jetman is walking.
-	DB js.SDB_WALK, 	js.SDB_WALK - js.SDB_SUB,		48, 3
-											DB 03,06, 03,07, 04,08, 04,09, 05,06, 05,06, 03,08, 03,09, 04,06, 04,07
-											DB 05,08, 05,09, 00,06, 00,07, 01,08, 01,09, 02,06, 02,07, 03,08, 03,09 
-											DB 04,06, 04,07, 05,08, 05,09
+    ; Jetman is walking.
+    DB js.SDB_WALK,     js.SDB_WALK - js.SDB_SUB,       48, 3
+                                            DB 03,06, 03,07, 04,08, 04,09, 05,06, 05,06, 03,08, 03,09, 04,06, 04,07
+                                            DB 05,08, 05,09, 00,06, 00,07, 01,08, 01,09, 02,06, 02,07, 03,08, 03,09 
+                                            DB 04,06, 04,07, 05,08, 05,09
 
-	; Jetman stands in place.
-	DB js.SDB_STAND,	js.SDB_STAND - js.SDB_SUB,		46, 5
-											DB 03,06, 03,18, 04,19, 04,18, 05,06, 05,19, 03,06, 03,18, 04,19, 04,06
-											DB 05,19, 05,18, 00,19, 00,18, 01,06, 01,18, 02,06, 02,19, 03,18, 03,18
-											DB 04,19, 05,06, 05,18
+    ; Jetman stands in place.
+    DB js.SDB_STAND,    js.SDB_STAND - js.SDB_SUB,      46, 5
+                                            DB 03,06, 03,18, 04,19, 04,18, 05,06, 05,19, 03,06, 03,18, 04,19, 04,06
+                                            DB 05,19, 05,18, 00,19, 00,18, 01,06, 01,18, 02,06, 02,19, 03,18, 03,18
+                                            DB 04,19, 05,06, 05,18
 
-	; Jetman stands on the ground for a very short time.
-	DB js.SDB_JSTAND,	js.SDB_STAND - js.SDB_SUB, 		02, 3
-											DB 03,11
+    ; Jetman stands on the ground for a very short time.
+    DB js.SDB_JSTAND,   js.SDB_STAND - js.SDB_SUB,      02, 3
+                                            DB 03,11
 
-	; Jetman got hit.
-	DB js.SDB_RIP,		js.SDB_RIP - js.SDB_SUB,		08, 5 
-											DB 00,27, 01,28, 02,15, 03,29
+    ; Jetman got hit.
+    DB js.SDB_RIP,      js.SDB_RIP - js.SDB_SUB,        08, 5 
+                                            DB 00,27, 01,28, 02,15, 03,29
 
-	; Transition: walking -> flaying.
-	DB js.SDB_T_WF,		js.SDB_FLY - js.SDB_SUB, 		08, 5
-											DB 03,26, 04,25, 05,24, 03,23
+    ; Transition: walking -> flaying.
+    DB js.SDB_T_WF,     js.SDB_FLY - js.SDB_SUB,        08, 5
+                                            DB 03,26, 04,25, 05,24, 03,23
 
-	; Transition: flaying -> standing.
-	DB js.SDB_T_FS, 	js.SDB_STAND - js.SDB_SUB,		08, 5
-											DB 03,23, 04,24, 05,25, 03,26
+    ; Transition: flaying -> standing.
+    DB js.SDB_T_FS,     js.SDB_STAND - js.SDB_SUB,      08, 5
+                                            DB 03,23, 04,24, 05,25, 03,26
 
-	; Transition: flaying -> walking.
-	DB js.SDB_T_FW, 	js.SDB_WALK - js.SDB_SUB,		08, 5
-											DB 03,23, 04,24, 05,25, 03,26
+    ; Transition: flaying -> walking.
+    DB js.SDB_T_FW,     js.SDB_WALK - js.SDB_SUB,       08, 5
+                                            DB 03,23, 04,24, 05,25, 03,26
 
-	; Transition: kinking -> flying.
-	DB js.SDB_T_KF,		js.SDB_FLY - js.SDB_SUB, 		10, 5
-											DB 03,15, 04,16, 05,27, 03,28, 04,29
+    ; Transition: kinking -> flying.
+    DB js.SDB_T_KF,     js.SDB_FLY - js.SDB_SUB,        10, 5
+                                            DB 03,15, 04,16, 05,27, 03,28, 04,29
 
 ; ##############################################
 ; Rocket Sprite Data.
 
-AGND					= 30*8
-TASM					= 226
-TSID					= ro.EXHAUST_SPRID_D83
-TSRE					= 17
+AGND                    = 30*8
+TASM                    = 226
+TSID                    = ro.EXHAUST_SPRID_D83
+TSRE                    = 17
 
 ; Level 1
-rocketAssemblyXL1		BYTE 22*8
+rocketAssemblyXL1       BYTE 22*8
 rocketElL1
 ; Rocket element.
-	ro.RO {04*8/*DROP_X*/, 14*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {13*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {18*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {04*8/*DROP_X*/, 14*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {13*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {18*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {03*8/*DROP_X*/, 14*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {29*8/*DROP_X*/, 09*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {09*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {25*8/*DROP_X*/, 09*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {09*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	
+    ro.RO {03*8/*DROP_X*/, 14*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {29*8/*DROP_X*/, 09*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {09*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {25*8/*DROP_X*/, 09*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {09*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    
 ; Level 2
-rocketAssemblyXL2		BYTE 24*8
+rocketAssemblyXL2       BYTE 24*8
 rocketElL2
 ; Rocket element.
-	ro.RO {07*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {26*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {07*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {26*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {09*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {29*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {26*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {17*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {09*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {29*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {26*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {17*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 3
-rocketAssemblyXL3		BYTE 6*8
+rocketAssemblyXL3       BYTE 6*8
 rocketElL3
 ; Rocket element.
-	ro.RO {09*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {24*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {13*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {09*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {24*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {13*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {05*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {12*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {03*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {23*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {05*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {12*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {03*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {23*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 4
-rocketAssemblyXL4		BYTE 18*8
+rocketAssemblyXL4       BYTE 18*8
 rocketElL4
 ; Rocket element.
-	ro.RO {06*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {14*8/*DROP_X*/, 12*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {23*8/*DROP_X*/, 17*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {06*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {14*8/*DROP_X*/, 12*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {23*8/*DROP_X*/, 17*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {02*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {30*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {21*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {27*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {10*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {16*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {02*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {30*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {21*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {27*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {10*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {16*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 5
-rocketAssemblyXL5		BYTE 18*8
+rocketAssemblyXL5       BYTE 18*8
 rocketElL5
 ; Rocket element.
-	ro.RO {11*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {25*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {04*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {11*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {25*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {04*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {04*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {14*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {27*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {06*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {02*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {04*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {14*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {27*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {06*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {02*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 6
-rocketAssemblyXL6		BYTE 02*8
+rocketAssemblyXL6       BYTE 02*8
 rocketElL6
 ; Rocket element.
-	ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {12*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {16*8/*DROP_X*/, 09*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {12*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {16*8/*DROP_X*/, 09*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {21*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {24*8/*DROP_X*/, 18*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {27*8/*DROP_X*/, 21*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {30*8/*DROP_X*/, 24*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {21*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {21*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {24*8/*DROP_X*/, 18*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {27*8/*DROP_X*/, 21*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {30*8/*DROP_X*/, 24*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {21*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 7
-rocketAssemblyXL7		BYTE 18*8
+rocketAssemblyXL7       BYTE 18*8
 rocketElL7
 ; Rocket element.
-	ro.RO {06*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {16*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {06*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {16*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {02*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {05*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {12*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {21*5/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {27*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {02*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {05*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {12*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {21*5/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {27*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 8
-rocketAssemblyXL8		BYTE 29*8
+rocketAssemblyXL8       BYTE 29*8
 rocketElL8
 ; Rocket element.
-	ro.RO {08*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {15*8/*DROP_X*/, 21*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {08*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {15*8/*DROP_X*/, 21*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {27*8/*DROP_X*/, 18*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {31*8/*DROP_X*/, 12*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {12*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {03*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {27*8/*DROP_X*/, 18*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {31*8/*DROP_X*/, 12*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {12*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {03*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 9
-rocketAssemblyXL9		BYTE 15*8
+rocketAssemblyXL9       BYTE 15*8
 rocketElL9
 ; Rocket element.
-	ro.RO {04*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {08*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {30*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {04*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {08*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {30*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {16*8/*DROP_X*/, 16*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {25*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {20*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {25*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {08*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {16*8/*DROP_X*/, 16*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {25*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {20*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {25*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {08*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 10
-rocketAssemblyXL10		BYTE 19*8
+rocketAssemblyXL10      BYTE 19*8
 rocketElL10
 ; Rocket element.
-	ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-	ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-	ro.RO {15*8/*DROP_X*/, 17*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
-	
+    ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {15*8/*DROP_X*/, 17*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    
 ; Fuel tank.
-	ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {23*8/*DROP_X*/, 17*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-	
+    ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {23*8/*DROP_X*/, 17*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    
 ; Three explode DBs for three rocket elements.
-rocketExplodeDB1		DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33	; bottom element
-rocketExplodeDB2		DB 56,56,56,56, 30,31,32,31, 30,31,32,31, 32,30,32,31, 30,31,32,33	; middle element
-rocketExplodeDB3		DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,32,33	; top of the rocket
+rocketExplodeDB1        DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33  ; bottom element
+rocketExplodeDB2        DB 56,56,56,56, 30,31,32,31, 30,31,32,31, 32,30,32,31, 30,31,32,33  ; middle element
+rocketExplodeDB3        DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,32,33  ; top of the rocket
 
-rocketExhaustDB									; Sprite IDs for exhaust
-	DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
-RO_EXHAUST_MAX			= 18
+rocketExhaustDB                                 ; Sprite IDs for exhaust
+    DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
+RO_EXHAUST_MAX          = 18
 
-rocketExplodeTankDB		DB 30, 31, 32, 33		; Sprite IDs for explosion.
+rocketExplodeTankDB     DB 30, 31, 32, 33       ; Sprite IDs for explosion.
 
 ; ##############################################
 ; Platforms
@@ -895,164 +895,164 @@ rocketExplodeTankDB		DB 30, 31, 32, 33		; Sprite IDs for explosion.
 
 ; Level 1
 platformsL1
-	pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 10*8/*Y_BOTTOM*/}
-platformsSizeL1 		BYTE 3
+    pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+    pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 10*8/*Y_BOTTOM*/}
+platformsSizeL1         BYTE 3
 
 ; Level 2
 platformsL2
-	pl.PLA {02*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {27*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-	pl.PLA {26*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-platformsSizeL2 		BYTE 4
+    pl.PLA {02*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {27*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+    pl.PLA {26*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+platformsSizeL2         BYTE 4
 
 ; Level 3
 platformsL3
-	pl.PLA {09*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-platformsSizeL3 		BYTE 1
+    pl.PLA {09*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+platformsSizeL3         BYTE 1
 
 ; Level 4
 platformsL4
-	pl.PLA {04*8/*X_LEFT*/, 11*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-	pl.PLA {24*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
+    pl.PLA {04*8/*X_LEFT*/, 11*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+    pl.PLA {24*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
 
-	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+    pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
 
-	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
 
-	pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
-	pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+    pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 
-platformsSizeL4 		BYTE 7
+platformsSizeL4         BYTE 7
 
 ; Level 5
 platformsL5
-	pl.PLA {09*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-	pl.PLA {22*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {09*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
 
-	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
-	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
-	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
-	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL5 		BYTE 11
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL5         BYTE 11
 
 ; Level 6
 platformsL6
-	pl.PLA {08*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 04*8/*Y_BOTTOM*/}
-	pl.PLA {11*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-	pl.PLA {14*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 10*8/*Y_BOTTOM*/}
-	pl.PLA {19*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {22*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
-	pl.PLA {26*8/*X_LEFT*/, 28*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {29*8/*X_LEFT*/, 31*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
-	pl.PLA {32*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL6 		BYTE 9
+    pl.PLA {08*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 04*8/*Y_BOTTOM*/}
+    pl.PLA {11*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+    pl.PLA {14*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 10*8/*Y_BOTTOM*/}
+    pl.PLA {19*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
+    pl.PLA {26*8/*X_LEFT*/, 28*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
+    pl.PLA {29*8/*X_LEFT*/, 31*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+    pl.PLA {32*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL6         BYTE 9
 
 ; Level 7
 platformsL7
-	pl.PLA {10*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+    pl.PLA {10*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
 
-	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
-	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 16*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
+    pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 16*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {10*8/*X_LEFT*/, 10*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
-	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 16*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL7 		BYTE 9
+    pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
+    pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 16*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL7         BYTE 9
 
 ; Level 8
 platformsL8
-	pl.PLA {01*8/*X_LEFT*/, 01*8/*X_RIGHT*/, 01*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-	pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-	pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-	pl.PLA {17*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
-	pl.PLA {15*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-	pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-	pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 26*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-	pl.PLA {26*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-	pl.PLA {31*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
-	pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-	pl.PLA {34*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {33*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-	pl.PLA {38*8/*X_LEFT*/, 38*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL8 		BYTE 15
+    pl.PLA {01*8/*X_LEFT*/, 01*8/*X_RIGHT*/, 01*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+    pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+    pl.PLA {17*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 26*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {26*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+    pl.PLA {31*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
+    pl.PLA {34*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {33*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {38*8/*X_LEFT*/, 38*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL8         BYTE 15
 
 ; Level 9
 platformsL9
-	pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-	pl.PLA {12*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
-	pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-	pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 23*8/*Y_BOTTOM*/}
-	pl.PLA {32*8/*X_LEFT*/, 37*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
-platformsSizeL9 		BYTE 5
+    pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {12*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 23*8/*Y_BOTTOM*/}
+    pl.PLA {32*8/*X_LEFT*/, 37*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
+platformsSizeL9         BYTE 5
 
 ; Level 10
 platformsL10
-	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+    pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-	pl.PLA {13*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 18*8/*Y_BOTTOM*/}
-	pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 26*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {13*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 18*8/*Y_BOTTOM*/}
+    pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 26*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
-	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
-	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
-	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-	pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
+    pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
+    pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
+    pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-	pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-	pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-platformsSizeL10 		BYTE 30
+platformsSizeL10        BYTE 30
 
 ; ##############################################
 ; Final Checks.
 
-	ASSERT $$ == dbs.ARR_BANK_D29					; Data should remain in the same bank
-	ASSERT $$spritesBankStart == dbs.ARR_BANK_D29 	; Make sure that we have configured the right bank.
-	ASSERT $ < _RAM_SLOT7_END_HFFFF					; Data should remain within slot 7 address space.
-	
+    ASSERT $$ == dbs.ARR_BANK_D29                   ; Data should remain in the same bank
+    ASSERT $$spritesBankStart == dbs.ARR_BANK_D29   ; Make sure that we have configured the right bank.
+    ASSERT $ < _RAM_SLOT7_END_HFFFF                 ; Data should remain within slot 7 address space.
+    
 ;----------------------------------------------------------;
 ;         Game Tile Sprites and Palette (Bank 30)          ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT7, dbs.TI_SPR_BANK_D30 		; Assign slots 7 to bank 30.
-	ORG _RAM_SLOT7_STA_HE000					; Set memory pointer to start of the slot 6.
+    MMU _RAM_SLOT7, dbs.TI_SPR_BANK_D30         ; Assign slots 7 to bank 30.
+    ORG _RAM_SLOT7_STA_HE000                    ; Set memory pointer to start of the slot 6.
 
 ; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
 ; Sprites
@@ -1064,12 +1064,12 @@ platformsSizeL10 		BYTE 30
 
 tileSprBin INCBIN "assets/tiles.spr"
 tileSprBinLength = $ - tileSprBin
-	ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
+    ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
 
 ; Palettes:
-;	1: Text
-;	2: Ground
-;	3: Trees
+;   1: Text
+;   2: Ground
+;   3: Trees
 ;   4-6: Platforms
 
 ;  Values for Remy's editor:
@@ -1081,111 +1081,111 @@ tileSprBinLength = $ - tileSprBin
   $1C7  $1F8  $1F0  $1E8  $1E0  $1D8  $1D0  $1C8  $1C0  $1C0  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
   $1C7   $85   $7D   $75   $6D   $65   $5D   $55   $4D  $5  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
 */
-tilePaletteBin									; RGB332, 8 bit
-	DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
-	DB $E3, $04, $20, $20, $20, $10, $16, $17, $0D, $0E, $1A, $1B, $1D, $0C, $1E, $40
-	DB $E3, $40, $0C, $20, $54, $08, $20, $30, $00, $E0, $40, $E0, $E0, $E0, $E0, $6F
-	DB $E3, $DD, $D9, $D5, $D1, $CD, $C9, $C5, $C1, $E0, $94, $FD, $26, $2A, $BC, $E3
-	DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E0, $E3, $E3, $E3, $E3, $E3, $E3
-	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $02, $E3, $E3, $E3, $E3, $E3, $E3
+tilePaletteBin                                  ; RGB332, 8 bit
+    DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
+    DB $E3, $04, $20, $20, $20, $10, $16, $17, $0D, $0E, $1A, $1B, $1D, $0C, $1E, $40
+    DB $E3, $40, $0C, $20, $54, $08, $20, $30, $00, $E0, $40, $E0, $E0, $E0, $E0, $6F
+    DB $E3, $DD, $D9, $D5, $D1, $CD, $C9, $C5, $C1, $E0, $94, $FD, $26, $2A, $BC, $E3
+    DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E0, $E3, $E3, $E3, $E3, $E3, $E3
+    DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $02, $E3, $E3, $E3, $E3, $E3, $E3
 tilePaletteBinLength = $ - tilePaletteBin
-	
-	ASSERT $ > _RAM_SLOT6_STA_HC000			; All data should fit into slot 6,7.
-	ASSERT $ <= _RAM_SLOT7_END_HFFFF 			
-	ASSERT $$ <= dbs.TI_SPR_BANK_D30 			; All data should fit into bank 45.
+    
+    ASSERT $ > _RAM_SLOT6_STA_HC000         ; All data should fit into slot 6,7.
+    ASSERT $ <= _RAM_SLOT7_END_HFFFF            
+    ASSERT $$ <= dbs.TI_SPR_BANK_D30            ; All data should fit into bank 45.
 
 ;----------------------------------------------------------;
 ;                Layer 2 Palettes (Bank 31)                ;
 ;----------------------------------------------------------;
-	MMU _RAM_SLOT6, dbs.PAL2_BANK_D31
-	ORG _RAM_SLOT6_STA_HC000
+    MMU _RAM_SLOT6, dbs.PAL2_BANK_D31
+    ORG _RAM_SLOT6_STA_HC000
 
  ; #############################################
 bgrL1PaletteAdr
-	INCBIN  "assets/l01/bg.nxp"
+    INCBIN  "assets/l01/bg.nxp"
 
 bgrL1PaletteBytes = $ - bgrL1PaletteAdr
-	ASSERT bgrL1PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL1PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL2PaletteAdr
-	INCBIN  "assets/l02/bg.nxp"
+    INCBIN  "assets/l02/bg.nxp"
 
 bgrL2PaletteBytes = $ - bgrL2PaletteAdr
-	ASSERT bgrL2PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL2PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL3PaletteAdr
-	INCBIN  "assets/l03/bg.nxp"
+    INCBIN  "assets/l03/bg.nxp"
 
 bgrL3PaletteBytes = $ - bgrL3PaletteAdr
-	ASSERT bgrL3PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL3PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL4PaletteAdr
-	INCBIN  "assets/l04/bg.nxp"
+    INCBIN  "assets/l04/bg.nxp"
 
 bgrL4PaletteBytes = $ - bgrL4PaletteAdr
-	ASSERT bgrL4PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL4PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL5PaletteAdr
-	INCBIN  "assets/l05/bg.nxp"
+    INCBIN  "assets/l05/bg.nxp"
 
 bgrL5PaletteBytes = $ - bgrL5PaletteAdr
-	ASSERT bgrL5PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL5PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL6PaletteAdr
-	INCBIN  "assets/l06/bg.nxp"
+    INCBIN  "assets/l06/bg.nxp"
 
 bgrL6PaletteBytes = $ - bgrL6PaletteAdr
-	ASSERT bgrL6PaletteBytes <= btd.PAL2_BYTES_D512
-	
+    ASSERT bgrL6PaletteBytes <= btd.PAL2_BYTES_D512
+    
  ; #############################################
 bgrL7PaletteAdr
-	INCBIN  "assets/l07/bg.nxp"
+    INCBIN  "assets/l07/bg.nxp"
 
 bgrL7PaletteBytes = $ - bgrL7PaletteAdr
-	ASSERT bgrL7PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL7PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL8PaletteAdr
-	INCBIN  "assets/l08/bg.nxp"
+    INCBIN  "assets/l08/bg.nxp"
 
 bgrL8PaletteBytes = $ - bgrL8PaletteAdr
-	ASSERT bgrL8PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL8PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL9PaletteAdr
-	INCBIN  "assets/l09/bg.nxp"
+    INCBIN  "assets/l09/bg.nxp"
 
 bgrL9PaletteBytes = $ - bgrL9PaletteAdr
-	ASSERT bgrL9PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL9PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL10PaletteAdr
-	INCBIN  "assets/l10/bg.nxp"
+    INCBIN  "assets/l10/bg.nxp"
 
 bgrL10PaletteBytes = $ - bgrL10PaletteAdr
-	ASSERT bgrL10PaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT bgrL10PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 gameIntroPaletteAdr
-	INCBIN  "assets/l01/intro.nxp"
+    INCBIN  "assets/l01/intro.nxp"
 
 gameIntroPaletteBytes = $ - gameIntroPaletteAdr
-	ASSERT gameIntroPaletteBytes <= btd.PAL2_BYTES_D512
+    ASSERT gameIntroPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 menuBgPaletteAdr
-	INCBIN  "assets/lobby/bg.nxp"
+    INCBIN  "assets/lobby/bg.nxp"
 
 menuBbPaletteBytes = $ - menuBgPaletteAdr
-	ASSERT menuBbPaletteBytes <= btd.PAL2_BYTES_D512	
-	
+    ASSERT menuBbPaletteBytes <= btd.PAL2_BYTES_D512    
+    
  ; #############################################
-	ASSERT $$ == dbs.PAL2_BANK_D31
+    ASSERT $$ == dbs.PAL2_BANK_D31
 
 ;----------------------------------------------------------;
 ;                Game Sprites (Bank 32...33)               ;
@@ -1195,7 +1195,7 @@ menuBbPaletteBytes = $ - menuBgPaletteAdr
 ;----------------------------------------------------------;
 ;          Layer 2 Brightness Palettes (Bank 34)           ;
 ;----------------------------------------------------------;
-todL2Palettes									; Palette will be generated during runtime.
+todL2Palettes                                   ; Palette will be generated during runtime.
 
 ;----------------------------------------------------------;
 ;              Game Background (Bank 35...44)              ;
@@ -1209,4 +1209,4 @@ todL2Palettes									; Palette will be generated during runtime.
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-	ENDMODULE
+    ENDMODULE
