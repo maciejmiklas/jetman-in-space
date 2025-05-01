@@ -69,6 +69,7 @@ mainLoop
     INCLUDE "li_level_intro.asm"
     INCLUDE "los_lobby_state.asm"
     INCLUDE "lom_lobby_main_menu.asm"
+    INCLUDE "sc_score.asm"
 
     ; LAST import due to bank offset!
     INCLUDE "db_data_bin.asm"

@@ -11,7 +11,6 @@ FIRE_THICKNESS_D10      = 10
 
 JM_FIRE_DELAY           = 5
 
-// TODO move do db
 ; Sprites for single shots (#shots), based on #SPR.
 shots
     sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}

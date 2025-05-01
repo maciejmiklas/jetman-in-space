@@ -57,7 +57,8 @@ SetupGame
 ;----------------------------------------------------------;
 LoadLobby
 
-    CALL _DisableGame
+    CALL _HaltGame
+    CALL sc.ResetScore
     CALL lom.LoadMainMenu
 
     ; TODO remove it when menu is ready, also remove assets/l00
@@ -77,7 +78,7 @@ LoadLobby
 ;----------------------------------------------------------;
 LoadLevel1Intro
 
-    CALL _DisableGame
+    CALL _HaltGame
     CALL los.SetLobbyStateLevelIntro
 
     LD D, "0"
@@ -212,6 +213,7 @@ BackgroundPaletteLoaded
 ;----------------------------------------------------------;
 RocketTakesOff
 
+    CALL sc.BoardRocket
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
     CALL gb.HideGameBar
@@ -331,6 +333,42 @@ RocketFlying
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
+;                    #RocketTankHit                        ;
+;----------------------------------------------------------;
+RocketTankHit
+    
+    CALL sc.HitRocketTank
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #RocketElementPickup                    ;
+;----------------------------------------------------------;
+RocketElementPickup
+    
+    CALL sc.PickupRocketElement
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;               #RocketElementPickupInAir                  ;
+;----------------------------------------------------------;
+RocketElementPickupInAir
+    
+    CALL sc.PickupRocketElementInAir
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                  #RocketElementDrop                      ;
+;----------------------------------------------------------;
+RocketElementDrop
+    
+    CALL sc.DropRocketElement
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
 ;                        #EnemyHit                         ;
 ;----------------------------------------------------------;
 ; Input
@@ -339,6 +377,7 @@ EnemyHit
 
     CALL sr.SetSpriteId
     CALL sr.SpriteHit
+    CALL sc.HitEnemy
 
     RET                                         ; ## END of the function ##
 
@@ -593,9 +632,9 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_DisableGame                        ;
+;                       #_HaltGame                         ;
 ;----------------------------------------------------------;
-_DisableGame
+_HaltGame
 
     CALL bm.HideImage
     CALL js.HideJetSprite
@@ -614,7 +653,7 @@ _DisableGame
 ;----------------------------------------------------------;
 _InitLevelLoad
 
-    CALL _DisableGame
+    CALL _HaltGame
     
     CALL los.SetLobbyStateInactive
     CALL ti.ResetTilemapOffset
@@ -630,6 +669,7 @@ _StartLevel
 
     CALL sp.LoadSpritesFPGA
     CALL gb.ShowGameBar
+    CALL sc.PrintScore
     CALL ro.StartRocketAssembly
     CALL ti.SetTilesClipFull
     CALL jo.ResetJetpackOverheating

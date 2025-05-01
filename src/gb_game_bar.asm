@@ -8,7 +8,7 @@ GB_HIDDEN               = 0
 GB_TILES_D13            = 320 / 8 * 3
 
 gamebarState            BYTE GB_VISIBLE
-refreshCnt              BYTE 0
+
 ;----------------------------------------------------------;
 ;                    #HideGameBar                          ;
 ;----------------------------------------------------------;
@@ -52,7 +52,7 @@ PrintDebug
     LD H, 0
     LD A, (ro.rocketElementCnt)
     LD L, A 
-    CALL ut.PrintDebugNum
+    CALL ut.PrintNumber
 */
     RET                                         ; ## END of the function ##
 

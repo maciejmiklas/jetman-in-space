@@ -99,7 +99,6 @@ SetupSingleEnemies
 
     RET                                         ; ## END of the function ##
 
-tmp byte 0
 ;----------------------------------------------------------;
 ;                #RespawnNextSingleEnemy                   ;
 ;----------------------------------------------------------;
@@ -121,10 +120,7 @@ RespawnNextSingleEnemy
     LD (singleRespDelayCnt), A
 
     RET
-.startRespawn   
-    ld a, (tmp)
-    inc a
-    ld (tmp),a
+.startRespawn
     XOR A                                       ; Set A to 0.
     LD (singleRespDelayCnt), A                  ; Reset delay timer.
 
