@@ -43,7 +43,7 @@ ResetRocketStars
 AnimateStarsOnFlyRocket
 
     ; Start animation when the rocket reaches given height.
-    LD HL, (ro.rocketDistance)
+    LD HL, (rof.rocketDistance)
     LD A, H
     CP 0                                        ; If H > 0 then distance is definitely > TI_MOVE_FROM_D50.
     JR NZ, .afterAnimationStart

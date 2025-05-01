@@ -716,7 +716,7 @@ jetSpriteDB
 
 AGND                    = 30*8
 TASM                    = 226
-TSID                    = ro.EXHAUST_SPRID_D83
+TSID                    = rof.EXHAUST_SPRID_D83
 TSRE                    = 17
 
 ; Level 1
