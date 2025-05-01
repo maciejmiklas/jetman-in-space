@@ -181,6 +181,11 @@ _JetpackTempDown
 ;----------------------------------------------------------;
 _UpdateUiHeatBar
 
+    ; Return if gamebar is hidden.
+    LD A, (gb.gamebarState)
+    CP gb.GB_VISIBLE
+    RET NZ
+
     LD B, 0
     LD HL, ti.RAM_START_H5B00 + BAR_TILE_START -1   ; HL points to screen memory containing tilemap. ; // TODO why -1?
 .tilesLoop

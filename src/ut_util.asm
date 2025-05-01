@@ -6,6 +6,32 @@
 PAUSE_TIME_D10      = 10
 
 ;----------------------------------------------------------;
+;                       Add8To32                           ;
+;----------------------------------------------------------;
+; Input:
+;  - HL: Points to the start of the two WORD (LO,HI) elements in RAM.
+;  - A:  Contains the 8-bit value to add.
+Add8To32
+
+    ; Add 8-bit value to the second WORD, LO byte.
+    LD B, A                                     ; Copy the 8-bit value into B (used for carry handling).
+    LD A, (HL)                                  ; Load the least significant byte (LSB) of the second WORD (LO).
+    ADD A, B                                    ; Add the 8-bit value to the LSB.
+    LD (HL), A                                  ; Store the result back to memory.
+    INC HL                                      ; Move to the next byte.
+
+    ; Populate overflow to remaining 3 bytes.
+    LD B, 3
+.loop
+    LD A, (HL)                                  ; Load next byte from 32bit word.
+    ADC A, 0                                    ; Add the carry from the previous addition.
+    LD (HL), A                                  ; Store the result back to memory.
+    INC HL                                      ; Move to the next byte.
+    DJNZ .loop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                          CdivD                           ;
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
@@ -92,14 +118,14 @@ AbsA
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    PrintDebugNum                         ;
+;                    PrintNumber                           ;
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels.
 ;Input:
 ;  - HL:    16-bit number to print.
 ;  - B:     Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
-PrintDebugNum
+PrintNumber
 
     PUSH BC, DE, IX, IY
     

@@ -247,8 +247,7 @@ HidePatternEnemies
     CALL sr.HideAllSimpleSprites
 
     RET                                         ; ## END of the function ##
-tmp1 byte 0
-tmp2 byte 0
+
 ;----------------------------------------------------------;
 ;                 #MovePatternEnemies                      ;
 ;----------------------------------------------------------;
@@ -306,9 +305,6 @@ MovePatternEnemies
     CALL _MoveEnemy
     POP IY
     CALL _MoveEnemy
-    ld a, (tmp1)
-    inc a 
-    ld (tmp1),a
     JR .continue
 .after3x    
 
@@ -316,9 +312,6 @@ MovePatternEnemies
     CP MOVE_DELAY_2X
     JR NZ, .continue
     CALL _MoveEnemy
-    ld a, (tmp2)
-    inc a 
-    ld (tmp2),a
 
 .continue   
     ; ##########################################

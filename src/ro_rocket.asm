@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE ro
 
-RO_DROP_NEXT_D5         = 10;10                 ; Drop next element delay
+RO_DROP_NEXT_D5         = 10                    ; Drop next element delay
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element.
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element.
 RO_FLY_DELAY_D8         = 8
@@ -248,6 +248,9 @@ CheckHitTank
 
     LD A, ROST_TANK_EXPLODE
     LD (rocketState), A
+
+    ; ##########################################
+    CALL gc.RocketTankHit 
 
     RET                                         ; ## END of the function ##
 
@@ -783,6 +786,17 @@ _PickupRocketElement
     CP COLLISION_NO
     RET Z
 
+     ; ##########################################
+    ; Call game command with pickup info.
+    LD A, (rocketState)
+    CP ROST_FALL_PICKUP
+    JR Z, .pickupInAir
+    CALL gc.RocketElementPickup
+    JR .afterPickup
+.pickupInAir
+    CALL gc.RocketElementPickupInAir
+.afterPickup
+
     ; ##########################################
     ; Jetman picks up element/tank. Update state to reflect it and return.
     LD A, ROST_CARRY
@@ -850,6 +864,9 @@ _JetmanDropsRocketElement
     CALL _SetIXtoCurrentRocketElement           ; Set IX to current #rocket postion.
     LD A, (jpo.jetY)
     LD (IX + RO.Y), A
+
+     ; ##########################################
+    CALL gc.RocketElementDrop
 
     RET                                         ; ## END of the function ##
 
