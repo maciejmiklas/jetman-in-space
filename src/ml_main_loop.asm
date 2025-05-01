@@ -59,7 +59,8 @@ _MainLoop000OnFlayRocket
     RET NZ
 
     ; ##########################################
-    CALL ro.FlyRocket
+    CALL rof.FlyRocket
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -237,7 +238,7 @@ _MainLoop004OnRocketExplosion
     RET NZ
 
     ; ##########################################
-    CALL ro.AnimateRocketExplosion
+    CALL rof.AnimateRocketExplosion
     
     RET                                         ; ## END of the function ##
 
@@ -324,8 +325,8 @@ _MainLoop008OnFlayingRocket
     RET NZ
 
     ; ##########################################
-    CALL ro.AnimateRocketExhaust
-    CALL ro.BlinkFlyingRocket
+    CALL rof.AnimateRocketExhaust
+    CALL rof.BlinkFlyingRocket
 
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;

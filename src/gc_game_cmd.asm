@@ -639,6 +639,7 @@ _HaltGame
     CALL bm.HideImage
     CALL js.HideJetSprite
     CALL ro.ResetAndDisableRocket
+    CALL rof.ResetAndDisableFlyRocket
     CALL st.HideStars
     CALL jw.HideShots
     CALL enp.HidePatternEnemies

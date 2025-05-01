@@ -61,6 +61,7 @@ mainLoop
     INCLUDE "ens_enemy_single.asm"
     INCLUDE "jw_jet_weapon.asm"
     INCLUDE "ro_rocket.asm"
+    INCLUDE "rof_rocket_fly.asm"
     INCLUDE "ros_rocket_stars.asm"
     INCLUDE "td_times_of_day.asm"
     INCLUDE "st_stars.asm"
