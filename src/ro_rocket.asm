@@ -12,7 +12,9 @@ RO_DOWN_SPR_ID_D80      = 80                    ; Sprite ID is used to lower the
 ; Number of _MainLoop040 cycles to drop next rocket module.
 dropNextDelay           BYTE 0
 
-rocketElementCnt        BYTE 0                  ; Counts from EL_LOW_D1 to EL_TANK3_D6, both inclusive.
+; It counts from EL_LOW_D1 to EL_TANK6_D9, both inclusive. After the rocket is ready for takeoff, it is set to EL_TANK6_D9+1 to light up 
+; the last progress bar section.
+rocketElementCnt        BYTE 0
 
 rocketState             BYTE ROST_INACTIVE
 
@@ -59,12 +61,21 @@ EL_MID_D2               = 2
 EL_TOP_D3               = 3
 EL_TANK1_D4             = 4
 EL_TANK6_D9             = 9
-
+EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
+EL_PROGRESS_START       = EL_TANK1_D4+1
 PICK_MARGX_D8           = 8
 PICK_MARGY_D16          = 16
 CARRY_ADJUSTY_D10       = 10
 
 rocketEl                WORD 0                  ; Pointer to 9x ro.RO
+
+BAR_TILE_START         = 24*2                  ; *2 because each tile takes 2 bytes
+BAR_RAM_START          = ti.RAM_START_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_TILE_PAL           = $60
+
+BAR_ICON               = 189
+BAR_ICON_RAM_START     = BAR_RAM_START - 2
+BAR_ICON_PAL           = $30
 
 ;----------------------------------------------------------;
 ;                       #SetupRocket                       ;
@@ -473,7 +484,15 @@ DropNextRocketElement
     CP EL_TANK6_D9
     JR NZ, .dropNext                            ; Jump if the counter did not reach max value.
 
+    ; ##########################################
     ; The rocket is assembled and fueled.
+
+    ; Increment element counter to light up last progress bar element.
+    LD A, (rocketElementCnt)
+    INC A
+    LD (rocketElementCnt), A
+    CALL _UpdateFuelProgressBar
+
     LD A, ROST_READY
     LD (rocketState), A
     RET
@@ -484,6 +503,7 @@ DropNextRocketElement
     LD A, (rocketElementCnt)
     INC A
     LD (rocketElementCnt), A
+    CALL _UpdateFuelProgressBar
 
     ; We are going to drop the next element -> set falling state.
     LD A, ROST_FALL_PICKUP
@@ -725,7 +745,7 @@ _JetmanDropsRocketElement
     LD A, (jpo.jetY)
     LD (IX + RO.Y), A
 
-     ; ##########################################
+    ; ##########################################
     CALL gc.RocketElementDrop
 
     RET                                         ; ## END of the function ##
@@ -762,6 +782,7 @@ _ResetRocketElement
     LD A, (rocketElementCnt)
     DEC A
     LD (rocketElementCnt), A
+    CALL _UpdateFuelProgressBar
 
     ; Change state.
     LD A, ROST_WAIT_DROP
@@ -802,6 +823,73 @@ _BoardRocket
 
     CALL gc.RocketTakesOff
 
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #_UpdateFuelProgressBar                   ;
+;----------------------------------------------------------;
+_UpdateFuelProgressBar
+
+    ; Return if gamebar is hidden.
+    LD A, (gb.gamebarState)
+    CP gb.GB_VISIBLE
+    RET NZ
+
+    ; ##########################################
+    ; Return if still building the rocket.
+    LD A, (rocketElementCnt)
+    CP EL_PROGRESS_START
+    RET C
+
+    ; ##########################################
+    ; Show icon on first load only]
+    JR NZ, .afterIcon
+    CALL _ShowHeatBarIcon
+.afterIcon
+
+    ; ##########################################
+    ; Dropping fuel already, show a progress bar.
+    LD B, 0                                     ; Loop from 0 to EL_TANK_SIZE.
+    LD HL, BAR_RAM_START
+.tilesLoop
+
+    LD A, (rocketElementCnt)
+    SUB EL_PROGRESS_START
+    CP B
+    JR C, .emptyBar                             ; Jump if B < (#rocketElementCnt-EL_TANK1_D4)
+    LD A, _BAR_FULL_SPR
+    JR .afterBar
+.emptyBar
+    LD A, _BAR_EMPTY_SPR
+.afterBar
+    ADD B
+    
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    INC HL
+    
+    LD (HL), A                                  ; Set tile id.
+    INC HL  
+
+    ; ##########################################
+    ; Loop
+    INC B
+    LD A, B
+    CP EL_TANK_SIZE
+    JR NZ, .tilesLoop
+
+    RET                                         ; ## END of the function #
+
+;----------------------------------------------------------;
+;                   #_ShowHeatBarIcon                      ;
+;----------------------------------------------------------;
+_ShowHeatBarIcon
+
+    LD HL, BAR_ICON_RAM_START
+
+    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
+    INC HL
+    LD (HL), BAR_ICON                           ; Set tile id.
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
