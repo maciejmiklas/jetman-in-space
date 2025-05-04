@@ -23,17 +23,18 @@ TEMP_MIN                = 0
 
 TEMP_NORM               = 4                     ; Jetman can move at full speed when Jetpack cools down, and this level is reached.
 
-BAR_TILE_START          = 31*2                  ; *2 because each tile takes 2 bytes
-BAR_TILE_PAL            = $30
-BAR_TILES               = 6
-BAR_FULL_SPR            = 176
-BAR_EMPTY_SPR           = 182
-
-
 ; The Jetpack heating up / cooling down thresholds.
 JM_HEAT_RED_CNT         = 80
 JM_HEAT_CNT             = 40
 JM_COOL_CNT             = 20
+
+BAR_TILE_START         = 33*2                   ; *2 because each tile takes 2 bytes
+BAR_RAM_START          = ti.RAM_START_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_TILE_PAL           = $30
+
+BAR_ICON               = 188
+BAR_ICON_RAM_START     = BAR_RAM_START - 2
+BAR_ICON_PAL           = $30
 
 ;----------------------------------------------------------;
 ;                 #ResetJetpackOverheating                 ;
@@ -44,6 +45,7 @@ ResetJetpackOverheating
     LD (jetCoolCnt), A
     LD (jetTempLevel), A
     CALL _UpdateUiHeatBar
+    CALL _ShowHeatBarIcon
 
     RET                                         ; ## END of the function ##
 
@@ -174,10 +176,24 @@ _JetpackTempDown
 .afterNormTempCheck
 
     CALL _UpdateUiHeatBar
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_UpdateUiHeatBar                        ;
+;                   #_ShowHeatBarIcon                      ;
+;----------------------------------------------------------;
+_ShowHeatBarIcon
+
+    LD HL, BAR_ICON_RAM_START
+
+    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
+    INC HL
+    LD (HL), BAR_ICON                           ; Set tile id.
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #_UpdateUiHeatBar                      ;
 ;----------------------------------------------------------;
 _UpdateUiHeatBar
 
@@ -187,18 +203,18 @@ _UpdateUiHeatBar
     RET NZ
 
     LD B, 0
-    LD HL, ti.RAM_START_H5B00 + BAR_TILE_START -1   ; HL points to screen memory containing tilemap. ; // TODO why -1?
+    LD HL, BAR_RAM_START
 .tilesLoop
 
     ; ##########################################
     ; Load heat progress bar.
     LD A, (jetTempLevel)
     CP B
-    JR NC, .emptyBar                            ; Jump if B >= #jetTempLevel
-    LD A, BAR_EMPTY_SPR
+    JR NC, .fullBar                            ; Jump if B >= #jetTempLevel
+    LD A, _BAR_EMPTY_SPR
     JR .afterBar
-.emptyBar
-    LD A, BAR_FULL_SPR
+.fullBar
+    LD A, _BAR_FULL_SPR
 .afterBar
     ADD B
     
@@ -212,10 +228,11 @@ _UpdateUiHeatBar
     ; Loop
     INC B
     LD A, B
-    CP BAR_TILES
+    CP _BAR_TILES
     JR NZ, .tilesLoop
 
     RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

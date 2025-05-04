@@ -212,7 +212,7 @@ SetupTiles
     ; Setup palette
     LD HL, db.tilePaletteBin                    ; Address of palette data in memory.
     LD B, db.tilePaletteBinLength               ; Number of colors to copy.
-    CALL LoadTilemapPalette
+    CALL _LoadTilemapPalette
 
     CALL SetTilesClipOff
 
@@ -222,34 +222,6 @@ SetupTiles
     LD HL, db.tileSprBin                        ; Address of tiles in memory.
     LD BC, db.tileSprBinLength                  ; Number of bytes to copy.
     LDIR
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #LoadTilemapPalette                     ;
-;----------------------------------------------------------;
-; Input:
-; - B:      Number of colors to copy.
-; - HL:     Address of layer 2 palette data .
-LoadTilemapPalette
-
-    ; Black for tilemap transparency.
-    NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
-
-    ; Bits
-    ;  - 0: 1 = Enable ULANext mode,
-    ;  - 1-3: 0 = First palette,
-    ;  - 6-4: 011 = Tilemap first palette,
-    ;  - 7: 0 = enable auto increment on write.
-    NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
-    NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0.
-
-    ; Copy 8 bit palette.
-.loop
-    LD A, (HL)                                  ; Load RRRGGGBB into A.
-    INC HL                                      ; Increment to next entry.
-    NEXTREG _DC_REG_LA2_PAL_VAL_H41, A          ; Send entry to Next HW.
-    DJNZ .loop                                  ; Repeat until B=0.
 
     RET                                         ; ## END of the function ##
     
@@ -290,6 +262,39 @@ SetTilesClipVertical
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  #_LoadTilemapPalette                    ;
+;----------------------------------------------------------;
+; Input:
+; - B:      Number of colors to copy.
+; - HL:     Address of layer 2 palette data .
+_LoadTilemapPalette
+
+    ; Black for tilemap transparency.
+    NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
+
+    ; Bits
+    ;  - 0: 1 = Enable ULANext mode,
+    ;  - 1-3: 0 = First palette,
+    ;  - 6-4: 011 = Tilemap first palette,
+    ;  - 7: 0 = enable auto increment on write.
+    NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
+    NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0.
+
+    ; Copy 8 bit palette.
+.loop
+    LD A, (HL)                                  ; Load RRRGGGBB into A.
+    INC HL                                      ; Increment to next entry.
+    NEXTREG _DC_REG_LA2_PAL_VAL_H41, A          ; Send entry to Next HW.
+    DJNZ .loop                                  ; Repeat until B=0.
+
+    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

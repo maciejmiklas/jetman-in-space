@@ -417,3 +417,10 @@ _BM_YRES_D256           = 256
 _TI_GND_D8              = 8                     ; The thickness of the ground (tilemap).
 _GSC_JET_GND_D217       = _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 
+
+; ##############################################
+; Progress Bar
+_BAR_TILES              = 6
+_BAR_FULL_SPR           = 176
+_BAR_EMPTY_SPR          = 182
+
