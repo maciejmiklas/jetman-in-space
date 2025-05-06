@@ -50,7 +50,7 @@ PrintDebug
     ; ##########################################
     LD B, 40
     LD H, 0
-    LD A, (ro.rocketElementCnt)
+    LD A, (pi.deployCnt)
     LD L, A 
     CALL ut.PrintNumber
 */

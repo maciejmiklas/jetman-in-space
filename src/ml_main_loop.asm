@@ -88,6 +88,7 @@ _MainLoop000OnActiveJetman
     CALL gi.GameKeyboardInput
     CALL ens.MoveSingleEnemies
     CALL enf.MoveFormationEnemies
+    CALL pi.PickupTriggerCounter
 
     RET                                         ; ## END of the function ##
 

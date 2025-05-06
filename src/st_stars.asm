@@ -392,7 +392,7 @@ _NextStarsColor
 
     LD A, (randColor)
     LD C, A
-    LD A, R                                     ; Load the random number into A register
+    LD A, R                                     ; Load the random number into A register.
     LD (randColor), A
     CP C
     JR C, .nextStarPixel

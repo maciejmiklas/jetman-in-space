@@ -11,8 +11,8 @@ start
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
     
     CALL gc.SetupGame
-    ;CALL gc.LoadLevel4
-    CALL gc.LoadLobby
+    CALL gc.LoadLevel4
+    ;CALL gc.LoadLobby
     
     ;CALL ro.AssemblyRocketForDebug
 
@@ -71,6 +71,7 @@ mainLoop
     INCLUDE "los_lobby_state.asm"
     INCLUDE "lom_lobby_main_menu.asm"
     INCLUDE "sc_score.asm"
+    INCLUDE "pi_pickups.asm"
 
     ; LAST import due to bank offset!
     INCLUDE "db_data_bin.asm"
