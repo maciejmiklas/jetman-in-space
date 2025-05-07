@@ -70,7 +70,8 @@ LoadLobby
     CALL fi.LoadLevelIntroTilemap
     CALL li._ResetLevelIntro
     CALL ti.SetTilesClipVertical
-
+    CALL jw.SpeedMin
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -406,6 +407,7 @@ EnemyHitsJet
     ; ##########################################
     ; This is the first enemy hit.
     CALL jt.SetJetStateRip
+    CALL jw.SpeedMin
     
     LD A, js.SDB_RIP                            ; Change animation.
     CALL js.ChangeJetSpritePattern
@@ -461,6 +463,7 @@ JetmanPicksInAir
 JetmanPicksGun
 
     CALL sc.PickupRegular
+    CALL jw.SpeedUp
 
     RET                                         ; ## END of the function ##
 
@@ -734,7 +737,7 @@ _InitLevelLoad
 ;                     #_StartLevel                         ;
 ;----------------------------------------------------------;
 _StartLevel
-
+    
     CALL sp.LoadSpritesFPGA
     CALL gb.ShowGameBar
     CALL sc.PrintScore

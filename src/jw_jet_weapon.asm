@@ -5,40 +5,60 @@
 
 
 ; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
-FIRE_ADJUST_X_D10       = 10            
+FIRE_ADJUST_X_D10       = 10
 FIRE_ADJUST_Y_D4        = 4
 FIRE_THICKNESS_D10      = 10
 
-JM_FIRE_DELAY           = 5
+JM_FIRE_DELAY_MAX       = 15
+JM_FIRE_DELAY_MIN       = 3
+JM_FIRE_SPEED_UP        = 4
 
 ; Sprites for single shots (#shots), based on #SPR.
 shots
     sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots2
     sr.SPR {11/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots3
     sr.SPR {12/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots4
     sr.SPR {13/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots5
     sr.SPR {14/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots6
     sr.SPR {15/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots7
     sr.SPR {16/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots8
     sr.SPR {17/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots9
     sr.SPR {18/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-shots10
     sr.SPR {19/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-SHOTS_SIZE              = 10                    ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
+    sr.SPR {91/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+    sr.SPR {92/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+    sr.SPR {93/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+    sr.SPR {94/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+    sr.SPR {95/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+SHOTS_SIZE              = 15                    ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JM_FIRE_DELAY.
-shotsDelayCnt
-    DB 0
+fireDelayCnt            BYTE 0
+fireDelay               BYTE JM_FIRE_DELAY_MAX
 
 STATE_SHOT_TOD_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
+
+;----------------------------------------------------------;
+;                        #SpeedUp                          ;
+;----------------------------------------------------------;
+SpeedUp
+
+    LD A, JM_FIRE_SPEED_UP
+    LD B, A
+.loop
+    CALL _FireDelayDown
+    DJNZ .loop
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #SpeedMin                           ;
+;----------------------------------------------------------;
+SpeedMin
+
+    LD A, JM_FIRE_DELAY_MAX
+    LD (fireDelay), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       #HideShots                         ;
@@ -46,7 +66,7 @@ STATE_SHOT_TOD_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 -
 HideShots
 
     XOR A
-    LD (shotsDelayCnt), A
+    LD (fireDelayCnt), A
 
     ; Loop ever all #shots skipping hidden shots.
     LD IX, shots                                ; IX points to the shot.
@@ -226,12 +246,14 @@ MoveShots
 FireDelayCounter
     
     ; Increment shot counter.
-    LD A, (shotsDelayCnt)
-    CP JM_FIRE_DELAY
+    LD A, (fireDelay)
+    LD B, A
+    LD A, (fireDelayCnt)
+    CP B
     RET Z                                       ; Do increment the delay counter when it has reached the required value.
 
     INC A
-    LD (shotsDelayCnt), A
+    LD (fireDelayCnt), A
      
     RET                                         ; ## END of the function ##
 
@@ -252,13 +274,15 @@ AnimateShots
 Fire
 
     ; Check delay to limit fire speed.
-    LD A, (shotsDelayCnt)
-    CP JM_FIRE_DELAY
+    LD A, (fireDelay)
+    LD B, A
+    LD A, (fireDelayCnt)
+    CP B
     RET NZ                                      ; Return if the delay counter did not reach the defined value.
 
     ; We can fire, reset counter.
     XOR A                                       ; Set A to 0.
-    LD (shotsDelayCnt), A
+    LD (fireDelayCnt), A
 
     ; Find the first inactive (sprite hidden) shot.
     LD IX, shots
@@ -364,6 +388,23 @@ _CheckHitEnemies
 
     POP BC
     DJNZ .loop                                  ; Jump if B > 0.
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #_FireDelayDown                       ;
+;----------------------------------------------------------;
+_FireDelayDown
+
+    LD A, (fireDelay)
+    CP JM_FIRE_DELAY_MIN
+    RET Z
+
+    DEC A
+    LD (fireDelay), A
+
+    XOR A
+    LD (fireDelayCnt), A
 
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
