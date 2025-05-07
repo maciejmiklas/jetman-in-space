@@ -607,7 +607,7 @@ _PickupRocketElement
     LD BC, (IX + RO.DROP_X)                     ; X of the element.
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
-    CALL jco.JetmanElementPickup
+    CALL jco.JetmanElementCollision
     CP _RET_NO_D0
     RET Z
 
@@ -757,7 +757,7 @@ _BoardRocket
     LD BC, (rocketAssemblyX)                    ; X of the element.
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
-    CALL jco.JetmanElementPickup
+    CALL jco.JetmanElementCollision
     CP _RET_NO_D0
     RET Z
 

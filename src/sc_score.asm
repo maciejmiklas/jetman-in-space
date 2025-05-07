@@ -21,6 +21,14 @@ DROP_ROCKET             = 255
 BOARD_ROCKET            = 250
 BOARD_ROCKET_REP        = 10
 
+NO_REP                  = 1
+
+PICKUP_IN_AIR           = 200
+PICKUP_REG              = 250
+
+PICKUP_DIAMOND          = 250
+PICKUP_DIAMOND_REP      = 4
+
 ;----------------------------------------------------------;
 ;                       #ResetScore                        ;
 ;----------------------------------------------------------;
@@ -31,6 +39,39 @@ ResetScore
     LD L, A
     LD (scoreHi), HL
     LD (scoreLo), HL
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #PickupInAir                        ;
+;----------------------------------------------------------;
+PickupInAir
+
+    LD C, PICKUP_IN_AIR
+    LD B, NO_REP
+    CALL _UpdateScore
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #PickupRegular                        ;
+;----------------------------------------------------------;
+PickupRegular
+
+    LD C, PICKUP_REG
+    LD B, NO_REP
+    CALL _UpdateScore
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #PickupDiamond                        ;
+;----------------------------------------------------------;
+PickupDiamond
+
+    LD C, PICKUP_DIAMOND
+    LD B, PICKUP_DIAMOND_REP
+    CALL _UpdateScore
 
     RET                                         ; ## END of the function ##
 
@@ -111,7 +152,7 @@ BoardRocket
 PickupRocketElement
 
     LD C, PICKUP_ROCKET
-    LD B, 1
+    LD B, NO_REP
     CALL _UpdateScore 
 
     RET                                         ; ## END of the function ##
@@ -133,7 +174,7 @@ PickupRocketElementInAir
 DropRocketElement
 
     LD C, DROP_ROCKET
-    LD B, 1
+    LD B, NO_REP
     CALL _UpdateScore
 
     RET                                         ; ## END of the function ##

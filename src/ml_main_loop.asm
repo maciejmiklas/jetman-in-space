@@ -181,7 +181,8 @@ _MainLoop002OnActiveJetman
     ; ##########################################
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
-
+    CALL pi.AnimateFallingPickup
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -255,7 +256,6 @@ _MainLoop004OnActiveJetman
     ; ##########################################
     CALL ro.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
-    CALL pi.AnimatePickup
     
     RET                                         ; ## END of the function ##
 

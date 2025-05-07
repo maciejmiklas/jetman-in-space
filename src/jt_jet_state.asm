@@ -120,6 +120,21 @@ SetJetStateInactive
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #ResetOverheat                      ;
+;----------------------------------------------------------;
+ResetOverheat
+
+    ; Reset overheat only if it's active.
+    LD A, (jetState)
+    CP JETST_OVERHEAT
+    RET NZ
+
+    LD A, JETST_NORMAL
+    LD (jetState), A
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      #SetJetState                        ;
 ;----------------------------------------------------------;
 ; Input:

@@ -7,14 +7,14 @@ PI_SPR_DIAMOND          = 39
 PI_SPR_JAR              = 40
 PI_SPR_STRAWBERRY       = 41
 PI_SPR_GRENADE          = 42
-PI_SPR_LIVE             = 43
+PI_SPR_LIFE             = 43
 PI_SPR_GUN              = 44
 
 deployOrderPos          BYTE 0
 deployOrder
-    DB PI_SPR_DIAMOND, PI_SPR_DIAMOND, PI_SPR_GUN, PI_SPR_STRAWBERRY, PI_SPR_JAR, PI_SPR_DIAMOND, PI_SPR_JAR, PI_SPR_STRAWBERRY, PI_SPR_GUN
-    DB PI_SPR_GRENADE, PI_SPR_GRENADE, PI_SPR_JAR, PI_SPR_GRENADE, PI_SPR_DIAMOND, PI_SPR_GUN, PI_SPR_GUN, PI_SPR_JAR, PI_SPR_STRAWBERRY
-    DB PI_SPR_DIAMOND, PI_SPR_GUN
+    DB PI_SPR_DIAMOND, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_STRAWBERRY, PI_SPR_JAR, PI_SPR_DIAMOND, PI_SPR_JAR, PI_SPR_STRAWBERRY
+    DB PI_SPR_GUN, PI_SPR_GRENADE, PI_SPR_STRAWBERRY, PI_SPR_JAR, PI_SPR_GRENADE, PI_SPR_DIAMOND, PI_SPR_STRAWBERRY, PI_SPR_GUN
+    DB PI_SPR_JAR, PI_SPR_STRAWBERRY, PI_SPR_DIAMOND, PI_SPR_GUN, PI_SPR_STRAWBERRY
 DEPLOY_ORDER_SIZE       = 20
 
 PI_SPR_MIN              = PI_SPR_DIAMOND
@@ -35,11 +35,99 @@ LIVE_DEPLOYED_NO        = 1
 PICKUP_SPRITE_ID        = 90
 
 ;----------------------------------------------------------;
-;                    AnimatePickup                         ;
+;                #UpdatePickupsOnJetmanMove                ;
 ;----------------------------------------------------------;
-AnimatePickup
+UpdatePickupsOnJetmanMove
 
-    ; Exit if there is not pickup
+    ; Exit if there is no active pickup.
+    LD A, (deployed)
+    CP 0
+    RET Z
+
+    ; ##########################################
+    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
+    LD BC, (deployedX)                          ; X of the element.
+    LD B, 0
+    LD A, (deployedY)                           ; Y of the element.
+    LD D, A
+    CALL jco.JetmanElementCollision
+    CP _RET_NO_D0
+    RET Z
+
+    ; ##########################################
+    ; Jetman got a pickup! Now call the right callback.
+
+    ; ##########################################
+    ; Pickup in the air?
+    LD A, (deployedY)
+    CP _GSC_Y_MAX2_D234
+    CALL NZ, gc.JetmanPicksInAir
+
+    ; ##########################################
+    ; Callbacks
+    LD A, (deployed)
+
+    ; Diamond
+    CP PI_SPR_DIAMOND
+    JR NZ, .afterDiamond
+    CALL gc.JetmanPicksDiamond
+    JR .nextPickup
+.afterDiamond
+
+    ; Jar
+    CP PI_SPR_JAR
+    JR NZ, .afterJar
+    CALL gc.JetmanPicksJar
+    JR .nextPickup
+.afterJar
+
+    ; Strawberry
+    CP PI_SPR_STRAWBERRY
+    JR NZ, .afterStrawberry
+    CALL gc.JetmanPicksStrawberry
+    JR .nextPickup
+.afterStrawberry
+
+    ; Grenade
+    CP PI_SPR_GRENADE
+    JR NZ, .afterGrenade
+    CALL gc.JetmanPicksGrenade
+    JR .nextPickup
+.afterGrenade
+
+    ; Life
+    CP PI_SPR_LIFE
+    JR NZ, .afterLife
+    CALL gc.JetmanPicksLife
+    JR .nextPickup
+.afterLife
+
+    ; Gun
+    CP PI_SPR_GUN
+    JR NZ, .afterGun
+    CALL gc.JetmanPicksGun
+    JR .nextPickup
+.afterGun
+
+.nextPickup
+    ; ##########################################
+    ; Prep next pickup.
+    XOR A
+    LD (deployed), A
+    LD (deployCnt), A
+
+    ; Hide pickup.
+    LD A, PICKUP_SPRITE_ID
+    CALL sp.SetIdAndHideSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 AnimateFallingPickup                     ;
+;----------------------------------------------------------;
+AnimateFallingPickup
+
+    ; Exit if there is no active pickup.
     LD A, (deployed)
     CP 0
     RET Z
@@ -95,16 +183,16 @@ ResetPickups
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     LiveDropCounter                      ;
+;                     LifeDropCounter                      ;
 ;----------------------------------------------------------;
-LiveDropCounter
+LifeDropCounter
 
     ; Do not deploy next pickup if there is one out there.
     LD A, (deployed)
     CP 0
     RET NZ
 
-    ; Do not deploy live if it has already been deployed in this round.
+    ; Do not deploy life if it has already been deployed in this round.
     LD A, (lifeDeployed)
     CP LIVE_DEPLOYED_YES
     RET Z

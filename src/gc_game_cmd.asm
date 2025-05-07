@@ -447,12 +447,79 @@ RespawnJet
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
+;                   #JetmanPicksInAir                      ;
+;----------------------------------------------------------;
+JetmanPicksInAir
+
+    CALL sc.PickupInAir
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #JetmanPicksGun                       ;
+;----------------------------------------------------------;
+JetmanPicksGun
+
+    CALL sc.PickupRegular
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #JetmanPicksLife                       ;
+;----------------------------------------------------------;
+JetmanPicksLife
+
+
+    CALL sc.PickupRegular
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #JetmanPicksGrenade                     ;
+;----------------------------------------------------------;
+JetmanPicksGrenade
+
+    CALL sc.PickupRegular
+    CALL enp.KillFewPatternEnemies
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #JetmanPicksStrawberry                   ;
+;----------------------------------------------------------;
+JetmanPicksStrawberry
+
+    CALL sc.PickupRegular
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #JetmanPicksDiamond                     ;
+;----------------------------------------------------------;
+JetmanPicksDiamond
+
+    CALL sc.PickupDiamond
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #JetmanPicksJar                       ;
+;----------------------------------------------------------;
+JetmanPicksJar
+
+    CALL sc.PickupRegular
+    CALL jo.ResetJetpackOverheating
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      #JetmanMoves                        ;
 ;----------------------------------------------------------;
 ; Called on any Jetman movement, always before the method indicating concrete movement (#JetmanMovesUp,#JetmanMovesDown).
 JetmanMoves
 
     CALL ro.UpdateRocketOnJetmanMove
+    CALL pi.UpdatePickupsOnJetmanMove
 
     RET                                         ; ## END of the function ##
 

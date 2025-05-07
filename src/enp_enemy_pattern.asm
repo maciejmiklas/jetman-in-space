@@ -46,6 +46,8 @@ SETUP                   BYTE                    ; Value for: ENP.SETUP
 
 RESPAWN_OFF             = 255
 
+KILL_FEW                = 7
+
 ; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
 ; Each pattern step takes 2 bytes so that the size will be 24 for movement consisting of 12 patterns.
 ; The byte indicating size is being followed by move patterns, each of which consists of two bytes: the first for the pattern itself 
@@ -201,7 +203,23 @@ AnimatePatternEnemies
     LD B, db.ENEMY_FORMATION_SIZE
     CALL sr.AnimateSprites
 
-    RET                                         ; ## END of the function ## 
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;               #KillFewPatternEnemies                     ;
+;----------------------------------------------------------;
+KillFewPatternEnemies
+
+    LD B, KILL_FEW
+.killLoop
+    PUSH BC
+    CALL enp.KillOnePatternEnemy
+    POP BC
+    DJNZ .killLoop
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                 #KillOnePatternEnemy                     ;
 ;----------------------------------------------------------;

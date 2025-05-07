@@ -33,7 +33,7 @@ PICK_MARGX_D8           = 8
 PICK_MARGY_D16          = 16
 
 ;----------------------------------------------------------;
-;                  #JetmanElementPickup                    ;
+;                  #JetmanElementCollision                    ;
 ;----------------------------------------------------------;
 ; Checks whether Jetman overlaps with given element.
 ; Input:
@@ -43,8 +43,7 @@ PICK_MARGY_D16          = 16
 ;  - A:     _RET_NO_D0 or _RET_YES_D1
 _RET_NO_D0            = 0
 _RET_YES_D1           = 1
-
-JetmanElementPickup
+JetmanElementCollision
 
     ; Compare X coordinate of element and Jetman.
     LD B, 0                                     ; X is 8bit -> reset MSB.

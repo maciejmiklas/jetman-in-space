@@ -40,12 +40,15 @@ BAR_ICON_PAL           = $30
 ;                 #ResetJetpackOverheating                 ;
 ;----------------------------------------------------------;
 ResetJetpackOverheating
+
     XOR A
     LD (jetHeatCnt), A
     LD (jetCoolCnt), A
     LD (jetTempLevel), A
     CALL _UpdateUiHeatBar
     CALL _ShowHeatBarIcon
+
+    CALL jt.ResetOverheat
 
     RET                                         ; ## END of the function ##
 

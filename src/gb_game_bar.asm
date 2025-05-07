@@ -50,10 +50,16 @@ PrintDebug
     ; ##########################################
     LD B, 40
     LD H, 0
-    LD A, (ro.rocketState)
+    LD A, (pi.deployed)
     LD L, A 
     CALL ut.PrintNumber
 
+    ; ##########################################
+    LD B, 50
+    LD H, 0
+    LD A, (pi.deployCnt)
+    LD L, A 
+    CALL ut.PrintNumber
 
 
     RET                                         ; ## END of the function ##
