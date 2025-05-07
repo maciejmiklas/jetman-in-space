@@ -63,8 +63,6 @@ EL_TANK1_D4             = 4
 EL_TANK6_D9             = 9
 EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
 EL_PROGRESS_START       = EL_TANK1_D4+1
-PICK_MARGX_D8           = 8
-PICK_MARGY_D16          = 16
 CARRY_ADJUSTY_D10       = 10
 
 rocketEl                WORD 0                  ; Pointer to 9x ro.RO
@@ -76,6 +74,7 @@ BAR_TILE_PAL           = $60
 BAR_ICON               = 189
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
 BAR_ICON_PAL           = $30
+DROP_MARGX_D8           = 8
 
 ;----------------------------------------------------------;
 ;                       #SetupRocket                       ;
@@ -579,60 +578,6 @@ _SetIXtoCurrentRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_JetmanElementPickup                    ;
-;----------------------------------------------------------;
-; Checks whether Jetman overlaps with rocket element/tank.
-; Input:
-;  - BC: X postion of rocket element.
-;  - D: Y postion of rocket element.
-; Output:
-;  - A:     COLLISION_NO or COLLISION_YES
-COLLISION_NO            = 0
-COLLISION_YES           = 1
-
-_JetmanElementPickup
-
-    ; Compare X coordinate of element and Jetman.
-    LD B, 0                                     ; X is 8bit -> reset MSB.
-    LD HL, (jpo.jetX)                           ; X of the Jetman.
-
-    ; Check whether Jetman is horizontal with the element.
-    SBC HL, BC  
-    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
-    LD A, H
-    CP 0
-    JR Z, .keepCheckingHorizontal               ; HL > 256 -> no collision.
-    LD A, COLLISION_NO
-    RET     
-.keepCheckingHorizontal 
-    LD A, L
-    LD B, PICK_MARGX_D8
-    CP B
-    JR C, .checkVertical                        ; Jump if there is horizontal collision, check vertical.
-    LD A, COLLISION_NO                          ; L >= D (Horizontal thickness of the enemy) -> no collision.
-    RET
-.checkVertical
-    
-    ; We are here because Jetman's horizontal position matches that of the element, now check vertical.
-    LD A, (jpo.jetY)                                ; Y of the Jetman.
-
-    ; Subtracts B from A and check whether the result is less than or equal to #PICK_MARGY_D16.
-    SUB D                                       ; D is method param (Y postion of rocket element).
-    CALL ut.AbsA
-    LD B, A
-    LD A, PICK_MARGY_D16
-    CP B
-    JR NC, .collision                           ; Jump if A(#PICK_MARGY_D16) >= B
-
-.noCollision
-    LD A, COLLISION_NO
-    RET
-.collision
-    LD A, COLLISION_YES
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 #_PickupRocketElement                    ;
 ;----------------------------------------------------------;
 _PickupRocketElement
@@ -662,8 +607,8 @@ _PickupRocketElement
     LD BC, (IX + RO.DROP_X)                     ; X of the element.
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
-    CALL _JetmanElementPickup
-    CP COLLISION_NO
+    CALL jco.JetmanElementPickup
+    CP _RET_NO_D0
     RET Z
 
      ; ##########################################
@@ -722,7 +667,7 @@ _JetmanDropsRocketElement
     LD BC, (jpo.jetX)
     LD A, (rocketAssemblyX)
     SUB C                                       ; Ignore B because X < 255.
-    CP PICK_MARGX_D8
+    CP DROP_MARGX_D8
     RET NC
 
     ; ##########################################
@@ -812,8 +757,8 @@ _BoardRocket
     LD BC, (rocketAssemblyX)                    ; X of the element.
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
-    CALL _JetmanElementPickup
-    CP COLLISION_NO
+    CALL jco.JetmanElementPickup
+    CP _RET_NO_D0
     RET Z
 
     ; ##########################################

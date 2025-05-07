@@ -88,7 +88,6 @@ _MainLoop000OnActiveJetman
     CALL gi.GameKeyboardInput
     CALL ens.MoveSingleEnemies
     CALL enf.MoveFormationEnemies
-    CALL pi.PickupTriggerCounter
 
     RET                                         ; ## END of the function ##
 
@@ -182,7 +181,7 @@ _MainLoop002OnActiveJetman
     ; ##########################################
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -256,7 +255,8 @@ _MainLoop004OnActiveJetman
     ; ##########################################
     CALL ro.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
-
+    CALL pi.AnimatePickup
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -328,8 +328,8 @@ _MainLoop008OnFlayingRocket
     ; ##########################################
     CALL rof.AnimateRocketExhaust
     CALL rof.BlinkFlyingRocket
-
     RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;               #_MainLoop008OnActiveJetman                ;
 ;----------------------------------------------------------;
@@ -412,7 +412,7 @@ _MainLoop010OnActiveJetman
     CALL st.BlinkStarsL2
     CALL ens.RespawnNextSingleEnemy
     CALL enf.RespawnFormation
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -489,6 +489,7 @@ _MainLoop040OnActiveJetman
     ; ##########################################
     CALL ro.DropNextRocketElement
     CALL td.NextTimeOfDayTrigger
+    CALL pi.PickupDropCounter
     
     RET                                         ; ## END of the function ##
 

@@ -46,14 +46,16 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-/*
+
     ; ##########################################
     LD B, 40
     LD H, 0
-    LD A, (pi.deployCnt)
+    LD A, (ro.rocketState)
     LD L, A 
     CALL ut.PrintNumber
-*/
+
+
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

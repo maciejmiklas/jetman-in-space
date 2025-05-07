@@ -14,6 +14,7 @@ SP_ADDR_HC000           = _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
 ; Single Enemy:         20-59
 ; Enemy Formation:      60-69
 ; Rocket:               80-89
+; Pickups:              90
 
 ;----------------------------------------------------------;
 ;                     #LoadSpritesFPGA                     ;
