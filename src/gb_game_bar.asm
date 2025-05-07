@@ -46,21 +46,21 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-
+/*
     ; ##########################################
     LD B, 40
     LD H, 0
-    LD A, (pi.deployed)
+    LD A, (jw.fireDelay)
     LD L, A 
     CALL ut.PrintNumber
 
     ; ##########################################
     LD B, 50
     LD H, 0
-    LD A, (pi.deployCnt)
+    LD A, (jw.fireDelayCnt)
     LD L, A 
     CALL ut.PrintNumber
-
+*/
 
     RET                                         ; ## END of the function ##
 
