@@ -18,6 +18,37 @@ ReadNextReg:
         ret
 
 
+
+
+
+
+
+
+
+
+FX_PICKUP_JAR           = 0
+FX_ROCKET_DOCK          = 1
+FX_PICKUP_STRAWBERRY    = 3
+FX_ROCKET_START         = 4
+FX_PICKUP_LIVE          = 5
+FX_JET_COOL             = 6
+FX_PICKUP_FUEL          = 7 
+FX_PICKUP_DIAMOND       = 8
+FX_PICKUP_GRENADE       = 9
+FX_JET_OVERHEAT         = 10
+FX_EXPLODE_TANK         = 11
+FX_PICKUP_GUN           = 12
+FX_BUMP_PLATFORM        = 13
+FX_JET_KILL             = 14
+FX_FIRE                 = 15
+FX_EXPLODE_ENEMY_1      = 16
+FX_PICKUP_ROCKET        = 17
+FX_EXPLODE_ENEMY_2      = 18
+FX_EXPLODE_ENEMY_3      = 19
+FX_ROCKET_FLY           = 20
+FX_FUEL_DOCK            = 21
+
+
 ; Effects map to AY Sound FX Editor (Effect-1)
 AyFXBombExplode:        equ     0
 AyFXDiamond:            equ     1
@@ -74,11 +105,13 @@ BackupData:             DW      1                       ; Used as memory backup
 ; Params:
 SetupAYFX:
      CALL dbs.SetupAyFxsBank
+     
         ld      a, %1'11'111'01         ; Set to AY-3
         ld      bc, $fffd
         out     (c), a
 
         ld      hl, _RAM_SLOT6_STA_HC000            ; Bank containing sound effects
+    ; ld      hl, db.ayFxBank
         call    AFXInit
 
         ret

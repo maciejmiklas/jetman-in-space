@@ -106,8 +106,13 @@ effectsFileName        DB "assets/common/effects.afb",0
 LoadEffects
 
     CALL dbs.SetupAyFxsBank
+
     LD IX, effectsFileName
-    CALL _Load8KFileToSlot6
+    CALL _FileOpen
+    
+    LD IX, _RAM_SLOT6_STA_HC000
+    LD BC, 3014
+    CALL _FileRead
 
     RET                                         ; ## END of the function ##
 
@@ -310,22 +315,6 @@ _LoadImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_Load8KFileToSlot6                      ;
-;----------------------------------------------------------;
-; Input:
-;  - IX: File name
-_Load8KFileToSlot6
-
-    ; Read file.
-    CALL _FileOpen
-    
-    LD IX, _RAM_SLOT6_STA_HC000
-    LD BC, ST_FILE1_BYT_D8192
-    CALL _FileRead
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 #_Load16KTilemap                         ;
 ;----------------------------------------------------------;
 ; Input:
@@ -443,6 +432,8 @@ _FileRead
 ;----------------------------------------------------------;
 ;                        #_FileOpen                        ;
 ;----------------------------------------------------------;
+; Input:
+;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
 _FileOpen
 
     ; Set params for F_OPEN

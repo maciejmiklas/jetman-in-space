@@ -339,6 +339,9 @@ Fire
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
     CALL sr.ShowSprite
 
+    ; Call callback.
+    CALL gc.FireWeapon
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

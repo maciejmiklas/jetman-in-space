@@ -181,9 +181,7 @@ GameKeyboardInput
 ;                        _Key_Q                            ;
 ;----------------------------------------------------------;
 _Key_Q
-    ;CALL gc.LoadLevel1
-    ld a, AyFXDropBomb
-    call AFXPlay
+    CALL gc.LoadLevel1
 
     RET                                         ; ## END of the function ##
 
