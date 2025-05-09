@@ -42,7 +42,7 @@ _MainLoop000
     ; First update graphics, logic follows afterwards!
 
     CALL gb.PrintDebug
-    CALL AFXFrame                               ; Keep AYFX sound effect playing
+    CALL AfxFrame                               ; Keep AYFX sound effect playing
 
     CALL _MainLoop000OnActiveJetman
     CALL _MainLoop000OnActiveLobby

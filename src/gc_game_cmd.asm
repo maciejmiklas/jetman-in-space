@@ -421,7 +421,7 @@ EnemyHitsJet
 FireWeapon
 
     LD A, FX_FIRE
-    CALL AFXPlay
+    CALL AfxPlay
 
     RET                                         ; ## END of the function ##
 

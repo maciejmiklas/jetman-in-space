@@ -165,6 +165,24 @@ HlEqualB
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #ReadNextReg                        ;
+;----------------------------------------------------------;
+; Input:
+;   - A: Nextreg to read.
+; Output:
+;   - A: Value in nextreg.
+ReadNextReg
+
+    PUSH    BC
+    LD      BC, _GL_REG_SELECT_H243B
+    OUT     (C),A
+    INC     B                                   ; bc = TBBLUE_REGISTER_ACCESS_P_253B
+    IN      A,(C)                               ; Read desired NextReg state
+    POP     BC
+
+    RET
+
+;----------------------------------------------------------;
 ;                       #PauseShort                        ;
 ;----------------------------------------------------------;
 PauseShort

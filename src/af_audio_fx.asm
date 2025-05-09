@@ -1,29 +1,77 @@
+;----------------------------------------------------------;
+;                        Audio FX                          ;
+;----------------------------------------------------------;
 ; Based on: https://github.com/robgmoran/DougieDoSource
 
-;-------------------------------------------------------------------------------------
-; Read NextReg
+; -Minimal ayFX player (Improved)  v2.05  25/01/21--------------;
+; https://github.com/Threetwosevensixseven/ayfxedit-improved    ;
+; Zeus format (http://www.desdes.com/products/oldfiles)         ;
+;                                                               ;
+; Forked from  v0.15  06/05/06                                  ;
+; https://shiru.untergrund.net/software.shtml                   ;
+;                                                               ;
+; The simplest effects player. Plays effects on one AY,         ;
+; without music in the background.                              ;
+; Priority of the choice of channels: if there are free         ;
+; channels, one of them is selected if free.                    ;
+; If there are are no free channels, the longest-sounding       ;
+; one is selected.                                              ;
+; Procedure plays registers AF, BC, DE, HL, IX.                 ;
+;                                                               ;
+; Initialization:                                               ;
+;   ld hl, the address of the effects bank                      ;
+;   call AfxInit                                                ;
+;                                                               ;
+; Start the effect:                                             ;
+;   ld a, the number of the effect (0..255)                     ;
+;   call AfxPlay                                                ;
+;                                                               ;
+; In the interrupt handler:                                     ;
+;   call AfxFrame                                               ;
+;                                                               ;
+; Start the effect on a specified channel:                      ;
+;   ld a, the number of the effect (0..255)                     ;
+;   ld e, the number of the channel (A=0, B=1, C=2)             ;
+;   call AfxPlayChannel                                         ;
+;                                                               ;
+; Start the effect with sustain loop enabled:                   ;
+;   ld a, the number of the effect (0..255)                     ;
+;   ld e, the number of the channel (A=0, B=1, C=2)             ;
+;   ld bc, the bank address + the release address offset        ;
+;   call AfxPlayChannel                                         ;
+;                                                               ;
+; Notify AFX.Frame that the should be should be looped back to  ;
+; the sustain point once the release point has been reached:    ;
+;   ld a, the number of the effect (0..255)                     ;
+;   ld e, the number of the channel (A=0, B=1, C=2)             ;
+;   ld bc, the bank address + the sustain address offset        ;
+;   call AfxSustain                                             ;
+;                                                               ;
+; Change log:
+;   v2.05  25/01/21  Bug fix: AfxInit was overwriting itself    ;
+;                    the first time it was called, so it        ;
+;                    couldn't ever be called a second time.     ;
+;   v2.04  22/10/17  Bug fix: EffectTime was not fully          ;
+;                    initialised.                               ;
+;   v2.03  22/10/17  Bug fix: disabled loop markers should have ;
+;                    MSB $00, as $FF could be a valid address.  ;
+;                    Backported Zeus player to Pasmo format.    ;
+;   v2.02  21/10/17  Added the ability to loop a sound while    ;
+;                    receiving sustain messages.                ;
+;   v2.01  21/10/17  Added the ability to play a sound on a     ;
+;                    specific channel.                          ;
+;   v2.00  27/08/17  Converted Z80 player to Zeus format.       ;
+; --------------------------------------------------------------;
 
-; Params:
-; A = nextreg to read
-; Output:
-; A = value in nextreg
-ReadNextReg:
-        push    bc
-        ld      bc, $243B   ; TBBLUE_REGISTER_SELECT_P_243B
-        out     (c),a
-        inc     b       ; bc = TBBLUE_REGISTER_ACCESS_P_253B
-        in      a,(c)   ; read desired NextReg state
-        pop     bc
-        
-        ret
 
-
-
-
-
-
-
-
+; Channel descriptors, 4 bytes per channel:
+; +0 (2) current address (channel is free if high byte=$00)
+; +2 (2) sound effect time
+; +2 (2) start address of sustain loop (disabled if high byte=$00)
+; +2 (2) end address of sustain loop (disabled if high byte=$00)
+AFX_CH_DESC_COUNT       = 3
+afxChDesc               DS AFX_CH_DESC_COUNT*8
+AFX_SMC                 = 0
 
 
 FX_PICKUP_JAR           = 0
@@ -48,194 +96,51 @@ FX_EXPLODE_ENEMY_3      = 19
 FX_ROCKET_FLY           = 20
 FX_FUEL_DOCK            = 21
 
-
-; Effects map to AY Sound FX Editor (Effect-1)
-AyFXBombExplode:        equ     0
-AyFXDiamond:            equ     1
-AyFXDropRock:           equ     2
-AyFXDropBomb:           equ     3
-AyFXEnemyDead:          equ     4
-AyFXSpawnEnemy:         equ     5
-AyFXExtraBomb1:          equ    6
-AyFXExtraBomb2:          equ    7
-AyFXExtraLife1:          equ    8
-AyFXExtraLife2:          equ    9
-AyFXExtraLife3:          equ    10
-AyFXStartLevel1:         equ    11
-AyFXStartLevel2:         equ    12
-AyFXStartLevel3:         equ    13
-AyFXGameOver1:           equ    14 
-AyFXGameOver2:           equ    15
-AyFXGameOver3:           equ    16
-AyFXPlayerDead1:         equ    17 
-AyFXPlayerDead2:         equ    18
-AyFXPlayerDead3:         equ    19
-AyFXLevelComplete1:      equ    20
-AyFXLevelComplete2:      equ    21
-AyFXLevelComplete3:      equ    22
-
-; NextDAW
-NextDAWMMUSlots:        defb    3, 6    ; Temporary MMU slots to be used for initialisation
-SongIntroDataMapping:	defb	32, 33  ; Memory banks containing music data - Defned/Populated below 
-Song2DataMapping:	    defb	34, 35  ; Memory banks containing music data - Defned/Populated below 
-Song3DataMapping:	    defb	36, 37  ; Memory banks containing music data - Defned/Populated below 
-NextDAW:		    equ     $E000
-NextDAW_InitSong:	equ     NextDAW + $00
-NextDAW_UpdateSong:	equ     NextDAW + $03
-NextDAW_PlaySong:	equ     NextDAW + $06
-NextDAW_StopSong:       equ     NextDAW + $09
-NextDAW_StopSongHard:	equ     NextDAW + $0C
-
-
-
-BackupData:             DW      1                       ; Used as memory backup
-
-
-
-
-
-
-
-
-
-
-
-;-------------------------------------------------------------------------------------
+;----------------------------------------------------------;
+;                         SetupAyFx                        ;
+;----------------------------------------------------------;
 ; Setup AYFX for playing sound effects
-; Params:
-SetupAYFX:
-     CALL dbs.SetupAyFxsBank
-     
-        ld      a, %1'11'111'01         ; Set to AY-3
-        ld      bc, $fffd
-        out     (c), a
+SetupAyFx
 
-        ld      hl, _RAM_SLOT6_STA_HC000            ; Bank containing sound effects
-    ; ld      hl, db.ayFxBank
-        call    AFXInit
+    CALL dbs.SetupAyFxsBank
 
-        ret
+    LD A, %1'11'111'01                          ; Set to AY-3
+    LD BC, $FFFD
+    OUT (C), A
 
+    LD HL, _RAM_SLOT6_STA_HC000                 ; Bank containing sound effects
+    CALL AfxInit
 
-;-------------------------------------------------------------------------------------
-; Configure AY3 as mono; call after PlayNextDAWSong
-; Params:
-SetAY3ToMono:
-        ld      a, $09
-        call    ReadNextReg
+    RET
+
+;----------------------------------------------------------;
+;                       SetAy3ToMono                       ;
+;----------------------------------------------------------;
+; Configure AY3 as mono; call after PlayNextDawSong
+SetAy3ToMono
+
+    LD A, $09
+    CALL ut.ReadNextReg
+
+    SET 7, A
+    NEXTREG $09, A
         
-        set     7, a
-        nextreg $09, a
-        
-        ret
+    RET
 
-;-------------------------------------------------------------------------------------
-; Play NextDAW Song 
-; Params:
-; de = SongDataMaping
-PlayNextDAWSong:
-; *** Map Memory Bank Containing NextData Player ***
-; MEMORY MANAGEMENT SLOT 7 BANK Register
-; -  Map 8kb memory bank 1 hosting NextData Player to slot 7 ($E000..$FFFF)
-        nextreg $57, 31
-
-        ld      hl, (NextDAWMMUSlots)
-        call    MapNextDAWMMUS
-        ld      a, 0
-        call    NextDAW_InitSong
-
-        ld      de, (BackupData)
-        ld      hl, (NextDAWMMUSlots)
-        call    ReMapNextDAWMMUS
-
-        call    NextDAW_PlaySong
-
-        ret
-
-; -Minimal ayFX player (Improved)  v2.05  25/01/21--------------;
-; https://github.com/Threetwosevensixseven/ayfxedit-improved    ;
-; Zeus format (http://www.desdes.com/products/oldfiles)         ;
-;                                                               ;
-; Forked from  v0.15  06/05/06                                  ;
-; https://shiru.untergrund.net/software.shtml                   ;
-;                                                               ;
-; The simplest effects player. Plays effects on one AY,         ;
-; without music in the background.                              ;
-; Priority of the choice of channels: if there are free         ;
-; channels, one of them is selected if free.                    ;
-; If there are are no free channels, the longest-sounding       ;
-; one is selected.                                              ;
-; Procedure plays registers AF, BC, DE, HL, IX.                 ;
-;                                                               ;
-; Initialization:                                               ;
-;   ld hl, the address of the effects bank                      ;
-;   call AFXInit                                                ;
-;                                                               ;
-; Start the effect:                                             ;
-;   ld a, the number of the effect (0..255)                     ;
-;   call AFXPlay                                                ;
-;                                                               ;
-; In the interrupt handler:                                     ;
-;   call AFXFrame                                               ;
-;                                                               ;
-; Start the effect on a specified channel:                      ;
-;   ld a, the number of the effect (0..255)                     ;
-;   ld e, the number of the channel (A=0, B=1, C=2)             ;
-;   call AFXPlayChannel                                         ;
-;                                                               ;
-; Start the effect with sustain loop enabled:                   ;
-;   ld a, the number of the effect (0..255)                     ;
-;   ld e, the number of the channel (A=0, B=1, C=2)             ;
-;   ld bc, the bank address + the release address offset        ;
-;   call AFXPlayChannel                                         ;
-;                                                               ;
-; Notify AFX.Frame that the should be should be looped back to  ;
-; the sustain point once the release point has been reached:    ;
-;   ld a, the number of the effect (0..255)                     ;
-;   ld e, the number of the channel (A=0, B=1, C=2)             ;
-;   ld bc, the bank address + the sustain address offset        ;
-;   call AFXSustain                                             ;
-;                                                               ;
-; Change log:
-;   v2.05  25/01/21  Bug fix: AFXInit was overwriting itself    ;
-;                    the first time it was called, so it        ;
-;                    couldn't ever be called a second time.     ;       												;
-;   v2.04  22/10/17  Bug fix: EffectTime was not fully          ;
-;                    initialised.                               ;
-;   v2.03  22/10/17  Bug fix: disabled loop markers should have ;
-;                    MSB $00, as $FF could be a valid address.  ;
-;                    Backported Zeus player to Pasmo format.    ;
-;   v2.02  21/10/17  Added the ability to loop a sound while    ;
-;                    receiving sustain messages.                ;
-;   v2.01  21/10/17  Added the ability to play a sound on a     ;
-;                    specific channel.                          ;
-;   v2.00  27/08/17  Converted Z80 player to Zeus format.       ;
-; --------------------------------------------------------------;
-
-; Channel descriptors, 4 bytes per channel:
-; +0 (2) current address (channel is free if high byte=$00)
-; +2 (2) sound effect time
-; +2 (2) start address of sustain loop (disabled if high byte=$00)
-; +2 (2) end address of sustain loop (disabled if high byte=$00)
-afxChDescCount  equ 3
-afxChDesc       DS afxChDescCount*8
-AFXSMC    	    equ 0
-
-; --------------------------------------------------------------;
-; Initialize the effects player.                                ;
-; Turns off all channels, sets variables.                       ;
-;                                                               ;
-; Input: HL = bank address with effects                         ;
-; --------------------------------------------------------------;
-
-AFXInit:
+;----------------------------------------------------------;
+;                          AfxInit                         ;
+;----------------------------------------------------------;
+; Initialize the effects player. Turns off all channels, sets variables.
+; Input: 
+;  -  HL: bank address with effects
+AfxInit
                         inc hl
                         ld (afxBnkAdr1+1), hl           ; Save the address of the table of offsets
                         ld (afxBnkAdr2+1), hl           ; Save the address of the table of offsets
                         ld hl, afxChDesc                ; Mark all channels as empty
                         ld de, $00ff
-                        ld bc, afxChDescCount*256+$fd
-afxInit0:
+                        ld bc, AFX_CH_DESC_COUNT*256+$fd
+.afxInit0
                         ld (hl), d
                         inc hl
                         ld (hl), d
@@ -252,29 +157,31 @@ afxInit0:
                         inc hl
                         ld (hl), d
                         inc hl
-                        djnz afxInit0
+                        djnz .afxInit0
 
                         ld hl, $ffbf                    ; Initialize  AY
                         ld e, $15
-afxInit1:
+.afxInit1
                         dec e
                         ld b, h
                         out (c), e
                         ld b,l
                         out (c), d
-                        jr nz, afxInit1
+                        jr nz, .afxInit1
 
                         ld (afxNseMix+1), de            ; Reset the player variables
                         ret
 
 
-
+;----------------------------------------------------------;
+;                         AfxFrame                         ;
+;----------------------------------------------------------;
 ; --------------------------------------------------------------;
 ; Play the current frame.                                       ;
 ;                                                               ;
 ; No parameters.                                                ;
 ; --------------------------------------------------------------;
-AFXFrame:
+AfxFrame
      CALL dbs.SetupAyFxsBank
     
                         ld bc, $03fd
@@ -413,6 +320,10 @@ NoLoop:
                         pop bc
                         ret
 
+;----------------------------------------------------------;
+;                     AfxPlayChannel                       ;
+;----------------------------------------------------------;
+
 ; --------------------------------------------------------------;
 ; Launch the effect on a specific channel. Any sound currently  ;
 ; playing on that channel is terminated next frame.             ;
@@ -420,14 +331,18 @@ NoLoop:
 ; Input: A = Effect number 0..255                               ;
 ;        E = Channel (A=0, B=1, C=2)                            ;
 ; --------------------------------------------------------------;
-AFXPlayChannel:
+AfxPlayChannel
                         ld bc, $0000
+
+;----------------------------------------------------------;
+;                     AfxPlayLooped                        ;
+;----------------------------------------------------------;
 
 ; --------------------------------------------------------------;
 ; Launch the effect on a specific channel. Any sound currently  ;
 ; playing on that channel is terminated next frame.             ;
 ; During playback, when reaching ReleaseAddrCh[N], if an        ;
-; AFXSustain call has been received since this AFXPlayLooped    ;
+; AfxSustain call has been received since this AfxPlayLooped    ;
 ; returned, the playback time frame will loop back to           ;
 ; SustainAddrCh[N].                                             ;
 ;                                                               ;
@@ -435,7 +350,7 @@ AFXPlayChannel:
 ;        E = Channel (A=0, B=1, C=2)                            ;
 ;       BC = ReleaseAddrCh[N]                                   ;
 ; --------------------------------------------------------------;
-AFXPlayLooped:
+AfxPlayLooped:
                         push af
                         ld a, c
                         ld (ReleaseLoSMC), a            ; SMC>
@@ -466,13 +381,17 @@ afxBnkAdr2:
                         push hl                         ; Save the effect address on the stack
                         jp DoPlay
 
+;----------------------------------------------------------;
+;                        AfxPlay                           ;
+;----------------------------------------------------------;
+
 ; --------------------------------------------------------------;
 ; Launch the effect on a free channel. If no free channels,     ;
 ; the longest sounding is selected.                             ;
 ;                                                               ;
 ; Input: A = Effect number 0..255                               ;
 ; --------------------------------------------------------------;
-AFXPlay:
+AfxPlay
     CALL dbs.SetupAyFxsBank
                         push af
                         ld a, c
@@ -524,13 +443,17 @@ DoPlay:
                         ld (ix-1), b                    ; Zero the playing time
                         ld (ix-0), b 
 ReleaseLoSMC equ $+3  
-						ld (ix+3), AFXSMC               ; <SMC Release LSB
+						ld (ix+3), AFX_SMC               ; <SMC Release LSB
 ReleaseHiSMC equ $+3
-						ld (ix+4), AFXSMC               ; <SMC Release MSB
+						ld (ix+4), AFX_SMC               ; <SMC Release MSB
                         xor a
                         ld (ix+1), a                    ; Reset sustain LSB
                         ld (ix+2), a                    ; Reset sustain MSB
                         ret
+
+;----------------------------------------------------------;
+;                      AfxSustain                          ;
+;----------------------------------------------------------;
 
 ; --------------------------------------------------------------;
 ; Notify AFX.Frame that the sound in channel E should be looped ;
@@ -540,7 +463,7 @@ ReleaseHiSMC equ $+3
 ; Input: E = Channel (A=0, B=1, C=2)                            ;
 ;       BC = SustainAddrCh[N]                                   ;
 ; --------------------------------------------------------------;
-AFXSustain:
+AfxSustain
                         ld a, e
                         add a, a
                         add a, a
@@ -561,74 +484,4 @@ AFXSustain:
 
 
 
-;-------------------------------------------------------------------------------------
-; NextDAW - Map temporary song memory banks to MMUs
-; Params:
-; de = SongDataMappingReference i.e. Memory banks hosting songs
-; hl = Temporary MMU slots
-MapNextDAWMMUS:
-        ld      ix, de
-        
-        push    de              ; Save value
 
-; Obtain/Configure memory bank hosted in first temporary MMU
-        ld      bc, $243B        ; TBBlue Register Select
-        ld      a, $50           ; Port to access
-        add     l
-        out     (c), a           ; Select NextReg
-
-        inc     b
-        in      a, (c)          ; Select NextReg
-        ld      e, a            ; Save memory bank reference
-        
-        ld      a, (ix)
-        out     (c), a          ; Assign song memory bank to first temporary MMU slot
-
-; Obtain/Configure memory bank hosted in second temporary MMU
-        ld      bc,$243B        ; TBBlue Register Select
-        ld      a,$50           ; Port to access
-        add     h
-        out     (c),a           ; Select NextReg
-
-        inc     b
-        in      a, (c)          ; Select NextReg
-        ld      d, a            ; Save memory bank reference
-
-        ld      a, (ix+1)
-        out     (c), a          ; Assign song memory bank to second temporary MMU slot
-
-        ld      (BackupData), de  ; Save to enable restoration of MMU slots
-        
-        pop     de              ; Restore value
-
-        ret
-
-;-------------------------------------------------------------------------------------
-; NextDAW - Map original memory banks back to MMUs
-; Params:
-; de = Original memory banks
-; hl = Temporary MMU slots
-ReMapNextDAWMMUS:
-; Re-map original memory bank hosted in first temporary MMU
-        ld      bc, $243B        ; TBBlue Register Select
-        ld      a, $50           ; Port to access
-        add     l
-        out     (c), a           ; Select NextReg
-
-        inc     b
-        
-        ;ld      a, e
-        out     (c), e          ; Re-assign original memory bank to first temporary MMU slot
-
-; Re-map original memory bank hosted in second temporary MMU
-        ld      bc,$243B        ; TBBlue Register Select
-        ld      a,$50           ; Port to access
-        add     h
-        out     (c),a           ; Select NextReg
-
-        inc     b
-
-        ;ld      a, d
-        out     (c), d          ; Re-assign original memory bank to second temporary MMU slot
-
-        ret
