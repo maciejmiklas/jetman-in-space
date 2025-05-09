@@ -3,8 +3,7 @@
 ;----------------------------------------------------------;
     MODULE lom
 
-FILE_IMG_POS            = 16                    ; Position of a image part number (0-9) in the file name of the background image.
-introFileName           DB "assets/lobby/bg_0.nxi",0
+
 
 ;----------------------------------------------------------;
 ;                     #LoadMainMenu                        ;
@@ -22,10 +21,8 @@ LoadMainMenu
 
     ; ##########################################
     ; Load background image
-    LD IX, introFileName
-    LD C, FILE_IMG_POS
-    CALL fi.LoadImage
-    CALL bm.LoadImage
+    CALL fi.LoadLobbyImage
+    CALL bm.CopyImageData
 
     RET                                         ; ## END of the function ##
 

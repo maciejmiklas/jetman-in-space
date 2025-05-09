@@ -49,6 +49,7 @@ SetupGame
     CALL bm.HideImage
     CALL sc.SetupScreen
     CALL ti.SetupTiles
+    CALL fi.LoadEffects
 
     RET                                         ; ## END of the function ##
 
@@ -427,7 +428,7 @@ RespawnJet
     LD (jpo.jetY), A
 
     ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
-    CALL bm.LoadImage
+    CALL bm.CopyImageData
 
     CALL jt.SetJetStateRespawn
 

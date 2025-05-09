@@ -78,7 +78,7 @@ SetupAYFX:
         ld      bc, $fffd
         out     (c), a
 
-        ld      hl, db.ayFxBank            ; Bank containing sound effects
+        ld      hl, _RAM_SLOT6_STA_HC000            ; Bank containing sound effects
         call    AFXInit
 
         ret

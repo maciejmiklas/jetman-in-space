@@ -1061,7 +1061,7 @@ platformsSizeL10        BYTE 30
 ;  - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
 ;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
 
-tileSprBin INCBIN "assets/tiles.spr"
+tileSprBin INCBIN "assets/common/tiles.spr"
 tileSprBinLength = $ - tileSprBin
     ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
 
@@ -1212,12 +1212,7 @@ todL2Palettes                                   ; Palette will be generated duri
 ;----------------------------------------------------------;
 ;               AY FX Sound (Bank 47)                      ;
 ;----------------------------------------------------------;
-    MMU _RAM_SLOT6, dbs.AY_FX_D48
-    ORG _RAM_SLOT6_STA_HC000
 
-ayFxBank INCBIN  "assets/effects.afb"
-
-   ASSERT $$ == dbs.AY_FX_D48
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

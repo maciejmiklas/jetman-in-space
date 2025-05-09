@@ -23,14 +23,14 @@ BG_EN_BANK_D44  = BGST_BANK_D35+BM_BANKS_D10-1; -1 because inclusive.
 
 LONG_TI_BANK1_D45       = 45                   ; Tilemap up to 16KiB.
 LONG_TI_BANK2_D46       = 46
-AY_FX_D48               = 47                   ; FX sound.
+AY_FX_D47               = 47                   ; FX sound.
 
 ;----------------------------------------------------------;
 ;                    #SetupAyFxsBank                       ;
 ;----------------------------------------------------------;
 SetupAyFxsBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_D48 
+    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_D47 
 
     RET                                         ; ## END of the function ## 
 
