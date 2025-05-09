@@ -176,7 +176,7 @@ ReadNextReg
     PUSH    BC
     LD      BC, _GL_REG_SELECT_H243B
     OUT     (C),A
-    INC     B                                   ; bc = TBBLUE_REGISTER_ACCESS_P_253B
+    INC     B
     IN      A,(C)                               ; Read desired NextReg state
     POP     BC
 
