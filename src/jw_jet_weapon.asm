@@ -117,7 +117,6 @@ WeaponHitEnemies
 ; Modifies: All
 SHOT_HIT                    = 1
 SHOT_MISS                   = 0
-
 ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots.
