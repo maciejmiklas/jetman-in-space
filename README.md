@@ -6,7 +6,7 @@
 <img src="/templates/scr5.jpg" width="640px"/>
 
 
-To create this game I've used following tools, books, asset and software:
+To create this game, I've used the following tools, books, assets and software:
 * [ZX Spectrum Next Assembly Developer Guide](https://github.com/tomaz/zx-next-dev-guide)
 * [Remy's ZX Spectrum Tools](https://zx.remysharp.com)
 * [DougieDoSource](https://github.com/robgmoran/DougieDoSource)
