@@ -186,6 +186,15 @@ GameKeyboardInput
     CALL Z, _Key_Y
     POP AF  
 
+    ; ##########################################
+    ; Handle row G...A
+    LD A, _KB_G_TO_A_HFD
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 3, A                                    ; F
+    CALL Z, _Key_F
+    POP AF
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -283,6 +292,16 @@ _Key_P
     CALL gc.LoadLevel10
 
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_F                            ;
+;----------------------------------------------------------;
+_Key_F
+
+    CALL jw.FlipFireFx
+
+    RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                        _JoyEnd                           ;

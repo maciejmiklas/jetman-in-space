@@ -1154,6 +1154,9 @@ _JetHitsPlatform
     SUB PL_BUMP_JOY_DEC_D1
     LD (joyOffBump), A
 
+    ; ##########################################
+    CALL gc.JetBumpsIntoPlatform
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

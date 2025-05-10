@@ -461,7 +461,7 @@ RocketElementFallsForAssembly
     LD A, (IX + RO.SPRITE_ID)
     CALL sp.SetIdAndHideSprite
 
-    CALL gc.FuelTankReachedRocket
+    CALL gc.FuelTankDock
 .notFuel
 
     RET                                         ; ## END of the function ##

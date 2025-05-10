@@ -35,4 +35,5 @@ Game Controls:
 External controller or arrow keys to navigate Jetman
 P to pause
 Q to quit
+F to disable fire FX
 Space or external controller to shoot

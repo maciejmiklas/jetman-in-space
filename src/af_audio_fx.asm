@@ -74,8 +74,8 @@ AFX_CH_DESC_COUNT       = 3
 afxChDesc               DS AFX_CH_DESC_COUNT*8
 AFX_SMC                 = 0
 
-FX_ROCKET_DOCK          = 1
-FX_FIRE2                = 2
+FX_ROCKET_DOCK          = 1 ;
+FX_FIRE2                = 2 ; 
 MENU_ENTER              = 3 
 FX_ROCKET_START         = 4
 FX_PICKUP_LIVE          = 5 ;
@@ -86,19 +86,22 @@ FX_PICKUP_DIAMOND       = 9 ;
 FX_JET_OVERHEAT         = 10 ;
 FX_EXPLODE_TANK         = 11 ; fajniejszy
 FX_PICKUP_GUN           = 12 ;
-FX_BUMP_PLATFORM        = 13
+FX_BUMP_PLATFORM        = 13 ;
 FX_JET_KILL             = 14 ;
 FX_FIRE1                = 15 ;
 FX_EXPLODE_ENEMY_1      = 16 ;
 FX_ROCKET_READY         = 17 ;
-FX_EXPLODE_ENEMY_2      = 18
-FX_EXPLODE_ENEMY_3      = 19
+FX_EXPLODE_ENEMY_2      = 18 ;
+FX_EXPLODE_ENEMY_3      = 19 ;
 FX_ROCKET_FLY           = 20
 FX_FUEL_DOCK            = 21 ;
 FX_PICKUP_STRAWBERRY    = 22 ;
 MENU_MOVE               = 23
 FX_PICKUP_JAR           = 24 ; DLUZSZY
 FX_PICKUP_ROCKET_EL     = 25 ;
+FX_JET_LAND             = 0
+FX_JET_EL_DROP          = 0
+FX_FIRE_PLATFORM_HIT    = 0
 
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;

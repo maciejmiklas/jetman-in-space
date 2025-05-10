@@ -41,7 +41,23 @@ STATE_SHOT_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - sho
 fireFxDelayCnt          BYTE 0
 fireFxDelay             BYTE FIRE_FX_DELAY_INIT
 FIRE_FX_DELAY_INIT      = 2
-FIRE_FX_DELAY_INC       = 1
+FIRE_FX_DELAY_SOUND2    = 5                     ; When delay reaches this value play #af.FX_FIRE2
+FIRE_FX_DELAY_2X        = 5
+
+fireFxOn                BYTE 1
+FIRE_FX_ON              = 1
+FIRE_FX_OFF             = 0
+
+;----------------------------------------------------------;
+;                      #FlipFireFx                         ;
+;----------------------------------------------------------;
+FlipFireFx
+
+    LD A, (fireFxOn)
+    CPL
+    LD (fireFxOn), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      #ResetWeapon                        ;
@@ -65,6 +81,10 @@ ResetWeapon
 ;----------------------------------------------------------;
 FireSpeedUp
 
+    LD A, (fireDelay)
+    CP JM_FIRE_DELAY_MIN
+    RET Z
+
     LD A, JM_FIRE_SPEED_UP
     LD B, A
 .loop
@@ -75,6 +95,11 @@ FireSpeedUp
     ; Slow down FX
     LD A, (fireFxDelay)
     INC A
+    CP FIRE_FX_DELAY_2X
+    JR NZ, .doNotDouble
+    INC A
+    INC A
+.doNotDouble
     LD (fireFxDelay), A
 
     RET                                         ; ## END of the function ##
@@ -370,7 +395,7 @@ Fire
     CALL sr.ShowSprite
 
     ; Call callback.
-    CALL _WeaponFired
+    CALL _WeaponFx
 
     RET                                         ; ## END of the function ##
 
@@ -381,9 +406,14 @@ Fire
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                      #_WeaponFired                       ;
+;                       #_WeaponFx                         ;
 ;----------------------------------------------------------;
-_WeaponFired
+_WeaponFx
+
+    ; Do to play FX it it's off
+    LD A, (fireFxOn)
+    CP FIRE_FX_ON
+    RET NZ
 
     ; Play FX every few game loops.
     LD A, (fireFxDelayCnt)
@@ -394,8 +424,16 @@ _WeaponFired
     LD A, (fireFxDelay)
     LD (fireFxDelayCnt), A
 
+    ; Start playing different FX when the weapon fires at max speed.
+    CP FIRE_FX_DELAY_SOUND2
+    JR NC, .newSound
     LD A, af.FX_FIRE1
+    JR .afterNewSound
+.newSound
+    LD A, af.FX_FIRE2
+.afterNewSound
     CALL af.AfxPlay
+
     JR .afterFireFx
 .decFireFxCnt
     DEC A

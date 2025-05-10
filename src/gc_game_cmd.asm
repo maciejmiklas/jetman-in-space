@@ -325,11 +325,21 @@ LoadCurrentLevel
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #FuelTankReachedRocket                    ;
+;                      #FuelTankDock                       ;
 ;----------------------------------------------------------;
-FuelTankReachedRocket
+FuelTankDock
 
     LD A, af.FX_FUEL_DOCK
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #FuelElementDock                      ;
+;----------------------------------------------------------;
+FuelElementDock
+
+    LD A, af.FX_ROCKET_DOCK
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -682,6 +692,16 @@ JetmanMovesDown
 RocketReady
 
     LD A, af.FX_ROCKET_READY
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #JetBumpsIntoPlatform                   ;
+;----------------------------------------------------------;
+JetBumpsIntoPlatform
+
+    LD A, af.FX_BUMP_PLATFORM
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
