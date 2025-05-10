@@ -36,27 +36,46 @@ SHOTS_SIZE              = 15                    ; Amount of shots that can be si
 fireDelayCnt            BYTE 0
 fireDelay               BYTE JM_FIRE_DELAY_MAX
 
-STATE_SHOT_TOD_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
+STATE_SHOT_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
+
+fireFxDelayCnt          BYTE 0
+fireFxDelay             BYTE FIRE_FX_DELAY_INIT
+FIRE_FX_DELAY_INIT      = 2
+FIRE_FX_DELAY_INC       = 1
 
 ;----------------------------------------------------------;
-;                        #SpeedUp                          ;
+;                      #ResetWeapon                        ;
 ;----------------------------------------------------------;
-SpeedUp
+ResetWeapon
+
+    XOR A
+    LD (fireFxDelayCnt), A
+    LD (fireDelayCnt), A
+
+    LD A, JM_FIRE_DELAY_MAX
+    LD (fireDelay), A
+
+    LD A, FIRE_FX_DELAY_INIT
+    LD (fireFxDelay), A
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #FireSpeedUp                         ;
+;----------------------------------------------------------;
+FireSpeedUp
 
     LD A, JM_FIRE_SPEED_UP
     LD B, A
 .loop
     CALL _FireDelayDown
     DJNZ .loop
-    RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                      #SpeedMin                           ;
-;----------------------------------------------------------;
-SpeedMin
-
-    LD A, JM_FIRE_DELAY_MAX
-    LD (fireDelay), A
+    ; ##########################################
+    ; Slow down FX
+    LD A, (fireFxDelay)
+    INC A
+    LD (fireFxDelay), A
 
     RET                                         ; ## END of the function ##
 
@@ -205,7 +224,7 @@ MoveShots
     LD D, sr.MVX_IN_D_6PX_HIDE
 
     ; Setup move direction for shot.
-    BIT STATE_SHOT_TOD_DIR_BIT, (IX + sr.SPR.STATE)
+    BIT STATE_SHOT_DIR_BIT, (IX + sr.SPR.STATE)
     JR Z, .shotDirLeft  
     
     ; Shot moves right.
@@ -268,6 +287,17 @@ AnimateShots
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #FireReleased                       ;
+;----------------------------------------------------------;
+FireReleased
+
+    ; Reset fire delay on fire button release so that FX plays immediately after pressing the subsequent fire. 
+    XOR A
+    LD (fireFxDelayCnt), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                          #Fire                           ;
 ;----------------------------------------------------------;
 Fire
@@ -308,7 +338,7 @@ Fire
     
     XOR A                                       ; A will hold sr.SPR.STATE.
     ; Jetman is moving right, shot will move right also.
-    SET STATE_SHOT_TOD_DIR_BIT, A                   ; Store shot direction in state.
+    SET STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state.
 
     ; Set X coordinate for laser beam.
     LD HL, (jpo.jetX)
@@ -320,7 +350,7 @@ Fire
 
     XOR A                                       ; A will hold sr.SPR.STATE.
     ; Jetman is moving left.
-    RES STATE_SHOT_TOD_DIR_BIT, A                   ; Store shot direction in state.
+    RES STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state.
 
     ; Set X coordinate for laser beam.
     LD HL, (jpo.jetX)
@@ -340,7 +370,7 @@ Fire
     CALL sr.ShowSprite
 
     ; Call callback.
-    CALL gc.FireWeapon
+    CALL _WeaponFired
 
     RET                                         ; ## END of the function ##
 
@@ -349,6 +379,30 @@ Fire
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      #_WeaponFired                       ;
+;----------------------------------------------------------;
+_WeaponFired
+
+    ; Play FX every few game loops.
+    LD A, (fireFxDelayCnt)
+    CP 0
+    JR NZ, .decFireFxCnt
+
+    ; The delay counter is done, reset it, and play FX.
+    LD A, (fireFxDelay)
+    LD (fireFxDelayCnt), A
+
+    LD A, af.FX_FIRE1
+    CALL af.AfxPlay
+    JR .afterFireFx
+.decFireFxCnt
+    DEC A
+    LD (fireFxDelayCnt), A
+.afterFireFx
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    #_CheckHitEnemies                     ;

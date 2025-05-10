@@ -37,7 +37,13 @@ joyDirection            BYTE MOVE_INACTIVE
 ; Holds #joyDirection from previous loop
 joyPrevDirection        BYTE MOVE_INACTIVE
 
-joyOverheatDelayCnt     BYTE 0              ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
+joyOverheatDelayCnt     BYTE 0                  ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
+
+; Button state keeps state for 8 buttons.
+; The button state for the current game loop is reset before the keys are processed in the current game loop.
+buttonState            BYTE 0
+buttonPrevState        BYTE 0                   ; Keeps state from the previous game loop.
+BS_FIRE_BIT             = 0
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

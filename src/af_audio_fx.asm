@@ -1,6 +1,7 @@
 ;----------------------------------------------------------;
 ;                        Audio FX                          ;
 ;----------------------------------------------------------;
+    MODULE af
 ; Based on: https://github.com/robgmoran/DougieDoSource
 
 ; -Minimal ayFX player (Improved)  v2.05  25/01/21--------------;
@@ -73,31 +74,31 @@ AFX_CH_DESC_COUNT       = 3
 afxChDesc               DS AFX_CH_DESC_COUNT*8
 AFX_SMC                 = 0
 
-
-FX_PICKUP_JAR           = 0
 FX_ROCKET_DOCK          = 1
-FX_PICKUP_STRAWBERRY    = 3
+FX_FIRE2                = 2
+MENU_ENTER              = 3 
 FX_ROCKET_START         = 4
-FX_PICKUP_LIVE          = 5
-FX_JET_COOL             = 6
-FX_PICKUP_FUEL          = 7 
-FX_PICKUP_DIAMOND       = 8
-FX_PICKUP_GRENADE       = 9
-FX_JET_OVERHEAT         = 10
-FX_EXPLODE_TANK         = 11
-FX_PICKUP_GUN           = 12
+FX_PICKUP_LIVE          = 5 ;
+FX_JET_NORMAL           = 6 ;
+FX_PICKUP_FUEL          = 7 ;
+FX_PICKUP_GRENADE       = 8 ;
+FX_PICKUP_DIAMOND       = 9 ;
+FX_JET_OVERHEAT         = 10 ;
+FX_EXPLODE_TANK         = 11 ; fajniejszy
+FX_PICKUP_GUN           = 12 ;
 FX_BUMP_PLATFORM        = 13
-FX_JET_KILL             = 14
-FX_FIRE                 = 15
-FX_EXPLODE_ENEMY_1      = 16
-FX_PICKUP_ROCKET        = 17
+FX_JET_KILL             = 14 ;
+FX_FIRE1                = 15 ;
+FX_EXPLODE_ENEMY_1      = 16 ;
+FX_ROCKET_READY         = 17 ;
 FX_EXPLODE_ENEMY_2      = 18
 FX_EXPLODE_ENEMY_3      = 19
 FX_ROCKET_FLY           = 20
-FX_FUEL_DOCK            = 21
-
-MENU_MOVE               = 0
-MENU_ENTER              = 0
+FX_FUEL_DOCK            = 21 ;
+FX_PICKUP_STRAWBERRY    = 22 ;
+MENU_MOVE               = 23
+FX_PICKUP_JAR           = 24 ; DLUZSZY
+FX_PICKUP_ROCKET_EL     = 25 ;
 
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
@@ -362,7 +363,10 @@ afxBnkAdr2
 ; Input: 
 ;  - A: Effect number 0..255
 AfxPlay
+
     CALL dbs.SetupAyFxsBank
+
+    DEC A                                       ; Start with 1 as the editor does.
     PUSH AF
     LD A, C
     LD (releaseLoSMC), A                        ; SMC>
@@ -488,3 +492,9 @@ _CheckRelease
     POP BC
 
     RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                       ENDMODULE                          ;
+;----------------------------------------------------------;
+    ENDMODULE

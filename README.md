@@ -6,12 +6,12 @@
 <img src="/templates/scr5.jpg" width="640px"/>
 
 
-To create this game, I've used the following tools, books, assets and software:
+I would like to give a shout-out to the following, without them, I would have been lost in space!
 * [ZX Spectrum Next Assembly Developer Guide](https://github.com/tomaz/zx-next-dev-guide)
 * [Remy's ZX Spectrum Tools](https://zx.remysharp.com)
 * [DougieDoSource](https://github.com/robgmoran/DougieDoSource)
 * [Spec Next](https://www.specnext.com)
 * [SjASMPlus](https://z00m128.github.io/sjasmplus/documentation.html)
 * [Gfx2Next](https://github.com/benbaker76/Gfx2Next)
-* [Threetwosevensixseven](https://raw.githubusercontent.com/Threetwosevensixseven)
+* [Threetwosevensixseven](https://github.com/Threetwosevensixseven/ayfxedit-improved)
 

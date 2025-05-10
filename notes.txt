@@ -26,3 +26,13 @@ https://github.com/seedy1812/Gen4/releases/tag/0.2
 
 https://github.com/em00k/TileMap-Example?fbclid=IwY2xjawGgFKZleHRuA2FlbQIxMAABHXx2SlSYR-91bq_qsxKi_cEi1fSXtAbEsAMriZHMnjS64mjBBWARJwSl0Q_aem_7emvkhGXOsrLlnUpcruYrA
 
+Menu:
+Up/down keys to scroll through the menu
+Left/right keys to make changes
+Enter to access submenus
+Escape to return to the main menu
+Game Controls:
+External controller or arrow keys to navigate Jetman
+P to pause
+Q to quit
+Space or external controller to shoot

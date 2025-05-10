@@ -136,6 +136,9 @@ _JetpackTempUp
     ; Jetpack has overhated.
     LD A, jt.JETST_OVERHEAT
     LD (jt.jetState), A
+
+    CALL gc.JetpackOverheat
+
 .afterTempCheck 
 
     CALL _UpdateUiHeatBar
@@ -176,6 +179,9 @@ _JetpackTempDown
     ; Jetpack is coll again.
     LD A, jt.JETST_NORMAL
     LD (jt.jetState), A
+
+    CALL gc.JetpackNormal
+
 .afterNormTempCheck
 
     CALL _UpdateUiHeatBar

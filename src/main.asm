@@ -10,10 +10,10 @@ start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
     
-    call SetupAyFx
+    call af.SetupAyFx
     CALL gc.SetupGame
-    ;CALL gc.LoadLevel1
-    CALL gc.LoadLobby
+    CALL gc.LoadLevel1
+    ;CALL gc.LoadLobby
     
     ;CALL ro.AssemblyRocketForDebug
 

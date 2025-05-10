@@ -180,6 +180,17 @@ UpdateRocketOnJetmanMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                    #IsFuelTankDeployed                   ;
+;----------------------------------------------------------;
+; Output: CF == 1 if still assembling rocket (#rocketElementCnt < 4)
+IsFuelTankDeployed
+
+    LD A, (rocketElementCnt)
+    CP EL_TANK1_D4
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     #CheckHitTank                        ;
 ;----------------------------------------------------------;
 ; Checks falling tank for collision with leaser beam.
@@ -187,8 +198,7 @@ CheckHitTank
     CALL dbs.SetupArraysBank
 
     ; Is the thank out there?
-    LD A, (rocketElementCnt)
-    CP EL_TANK1_D4
+    CALL IsFuelTankDeployed
     RET C                                       ; Return if counter is < 4 (still assembling rocket).
 
     ; Is tank already exploding?
@@ -443,15 +453,16 @@ RocketElementFallsForAssembly
     LD (rocketState), A
 
     ; ##########################################
-    ; Hide the fuel tank sprite if we drop fuel, and change rocket sprite showing fuel level.
-    LD A, (rocketElementCnt)
-    CP EL_TANK1_D4
+    ; Check if we are dropping fuel already. If it's the case, hide the fuel tank sprite. Sprite of rocket element remains visible.
+    CALL IsFuelTankDeployed
     JR C, .notFuel                              ; Jump if counter is < 4 (still assembling rocket).
 
-    ; We are dropping fuel already, hHide the fuel sprite as it has reached the rocket.
+    ; We are dropping fuel already, hide the fuel sprite as it has reached the rocket.
     LD A, (IX + RO.SPRITE_ID)
     CALL sp.SetIdAndHideSprite
-.notFuel    
+
+    CALL gc.FuelTankReachedRocket
+.notFuel
 
     RET                                         ; ## END of the function ##
 
@@ -494,6 +505,9 @@ DropNextRocketElement
 
     LD A, ROST_READY
     LD (rocketState), A
+
+    CALL gc.RocketReady
+
     RET
 
 .dropNext
@@ -518,7 +532,7 @@ DropNextRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                MoveIXtoGivenRocketElement                ;
+;                #MoveIXtoGivenRocketElement               ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: rocket element from 1 to 6.
@@ -615,12 +629,10 @@ _PickupRocketElement
     ; Call game command with pickup info.
     LD A, (rocketState)
     CP ROST_FALL_PICKUP
-    JR Z, .pickupInAir
-    CALL gc.RocketElementPickup
-    JR .afterPickup
-.pickupInAir
+    JR NZ, .pickupOnGround
     CALL gc.RocketElementPickupInAir
-.afterPickup
+.pickupOnGround
+    CALL gc.RocketElementPickup
 
     ; ##########################################
     ; Jetman picks up element/tank. Update state to reflect it and return.

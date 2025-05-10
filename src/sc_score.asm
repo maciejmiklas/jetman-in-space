@@ -76,37 +76,33 @@ PickupDiamond
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #HitEnemy                         ;
+;                       #HitEnemy1                         ;
 ;----------------------------------------------------------;
-; Input:
-;  - IX:    Pointer enemy's #SPR.
-HitEnemy
-    LD A, (IX + sr.SPR.SDB_INIT)
+HitEnemy1
 
-    ; Hit enemy 1?
-    CP sr.SDB_ENEMY1
-    JR NZ,.afterHitEnemy1
     LD C, HIT_ENEMY1
-    JR .endHit
-.afterHitEnemy1
+    LD B, 1
+    CALL _UpdateScore
 
-    ; ##########################################
-    ; Hit enemy 2?
-    CP sr.SDB_ENEMY2
-    JR NZ,.afterHitEnemy2
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       #HitEnemy2                         ;
+;----------------------------------------------------------;
+HitEnemy2
+
     LD C, HIT_ENEMY2
-    JR .endHit
-.afterHitEnemy2
+    LD B, 1
+    CALL _UpdateScore
 
-    ; ##########################################
-    ; Hit enemy 3?
-    CP sr.SDB_ENEMY3
-    JR NZ,.afterHitEnemy3
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       #HitEnemy3                         ;
+;----------------------------------------------------------;
+HitEnemy3
+
     LD C, HIT_ENEMY3
-    JR .endHit
-.afterHitEnemy3
-
-.endHit
     LD B, 1
     CALL _UpdateScore
 
