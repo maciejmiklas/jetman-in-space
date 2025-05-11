@@ -9,10 +9,6 @@ FIRE_ADJUST_X_D10       = 10
 FIRE_ADJUST_Y_D4        = 4
 FIRE_THICKNESS_D10      = 10
 
-JM_FIRE_DELAY_MAX       = 15
-JM_FIRE_DELAY_MIN       = 3
-JM_FIRE_SPEED_UP        = 4
-
 ; Sprites for single shots (#shots), based on #SPR.
 shots
     sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
@@ -33,30 +29,77 @@ shots
 SHOTS_SIZE              = 15                    ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JM_FIRE_DELAY.
+JM_FIRE_DELAY_MAX       = 15
+JM_FIRE_DELAY_MIN       = 3
+JM_FIRE_SPEED_UP        = 4
 fireDelayCnt            BYTE 0
 fireDelay               BYTE JM_FIRE_DELAY_MAX
 
-STATE_SHOT_TOD_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
+STATE_SHOT_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
+
+fireFxDelayCnt          BYTE 0
+fireFxDelay             BYTE FIRE_FX_DELAY_INIT
+FIRE_FX_DELAY_INIT      = 2
+FIRE_FX_DELAY_SOUND2    = 5                     ; When delay reaches this value play #af.FX_FIRE2
+FIRE_FX_DELAY_2X        = 5
+
+fireFxOn                BYTE 1
+FIRE_FX_ON              = 1
+FIRE_FX_OFF             = 0
 
 ;----------------------------------------------------------;
-;                        #SpeedUp                          ;
+;                      #FlipFireFx                         ;
 ;----------------------------------------------------------;
-SpeedUp
+FlipFireFx
+
+    LD A, (fireFxOn)
+    CPL
+    LD (fireFxOn), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #ResetWeapon                        ;
+;----------------------------------------------------------;
+ResetWeapon
+
+    XOR A
+    LD (fireFxDelayCnt), A
+    LD (fireDelayCnt), A
+
+    LD A, JM_FIRE_DELAY_MAX
+    LD (fireDelay), A
+
+    LD A, FIRE_FX_DELAY_INIT
+    LD (fireFxDelay), A
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #FireSpeedUp                         ;
+;----------------------------------------------------------;
+FireSpeedUp
+
+    LD A, (fireDelay)
+    CP JM_FIRE_DELAY_MIN
+    RET Z
 
     LD A, JM_FIRE_SPEED_UP
     LD B, A
 .loop
     CALL _FireDelayDown
     DJNZ .loop
-    RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                      #SpeedMin                           ;
-;----------------------------------------------------------;
-SpeedMin
-
-    LD A, JM_FIRE_DELAY_MAX
-    LD (fireDelay), A
+    ; ##########################################
+    ; Slow down FX
+    LD A, (fireFxDelay)
+    INC A
+    CP FIRE_FX_DELAY_2X
+    JR NZ, .doNotDouble
+    INC A
+    INC A
+.doNotDouble
+    LD (fireFxDelay), A
 
     RET                                         ; ## END of the function ##
 
@@ -117,7 +160,6 @@ WeaponHitEnemies
 ; Modifies: All
 SHOT_HIT                    = 1
 SHOT_MISS                   = 0
-
 ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots.
@@ -190,7 +232,7 @@ ShotsCollision
 MoveShots
 
     ; Loop ever all shots# skipping hidden sprites.
-    LD IX, shots    
+    LD IX, shots
     LD B, SHOTS_SIZE 
 
 .shootsLoop
@@ -206,7 +248,7 @@ MoveShots
     LD D, sr.MVX_IN_D_6PX_HIDE
 
     ; Setup move direction for shot.
-    BIT STATE_SHOT_TOD_DIR_BIT, (IX + sr.SPR.STATE)
+    BIT STATE_SHOT_DIR_BIT, (IX + sr.SPR.STATE)
     JR Z, .shotDirLeft  
     
     ; Shot moves right.
@@ -222,14 +264,17 @@ MoveShots
 
     ; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
-    JR Z, .afterPlatformCollision               ; Exit if sprite is not alive.
+    JR Z, .afterPlatformHit               ; Exit if sprite is not alive.
 
     ; Check the collision with the platform.
-    CALL pl.PlatformWeaponHit
+    CALL pl.CheckPlatformWeaponHit
     CP A, pl.PL_HIT_RET_A_NO
-    JR Z, .afterPlatformCollision
+    JR Z, .afterPlatformHit
+    PUSH IX
     CALL sr.SpriteHit
-.afterPlatformCollision
+    CALL gc.PlatformWeaponHit
+    POP IX
+.afterPlatformHit
 
 .continue
     ; Move IX to the beginning of the next #shotsXX.
@@ -265,6 +310,17 @@ AnimateShots
     LD IX, shots
     LD B, SHOTS_SIZE 
     CALL sr.AnimateSprites
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #FireReleased                       ;
+;----------------------------------------------------------;
+FireReleased
+
+    ; Reset fire delay on fire button release so that FX plays immediately after pressing the subsequent fire. 
+    XOR A
+    LD (fireFxDelayCnt), A
 
     RET                                         ; ## END of the function ##
 
@@ -309,7 +365,7 @@ Fire
     
     XOR A                                       ; A will hold sr.SPR.STATE.
     ; Jetman is moving right, shot will move right also.
-    SET STATE_SHOT_TOD_DIR_BIT, A                   ; Store shot direction in state.
+    SET STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state.
 
     ; Set X coordinate for laser beam.
     LD HL, (jpo.jetX)
@@ -321,7 +377,7 @@ Fire
 
     XOR A                                       ; A will hold sr.SPR.STATE.
     ; Jetman is moving left.
-    RES STATE_SHOT_TOD_DIR_BIT, A                   ; Store shot direction in state.
+    RES STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state.
 
     ; Set X coordinate for laser beam.
     LD HL, (jpo.jetX)
@@ -340,6 +396,9 @@ Fire
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
     CALL sr.ShowSprite
 
+    ; Call callback.
+    CALL _WeaponFx
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -347,6 +406,43 @@ Fire
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                       #_WeaponFx                         ;
+;----------------------------------------------------------;
+_WeaponFx
+
+    ; Do to play FX it it's off
+    LD A, (fireFxOn)
+    CP FIRE_FX_ON
+    RET NZ
+
+    ; Play FX every few game loops.
+    LD A, (fireFxDelayCnt)
+    CP 0
+    JR NZ, .decFireFxCnt
+
+    ; The delay counter is done, reset it, and play FX.
+    LD A, (fireFxDelay)
+    LD (fireFxDelayCnt), A
+
+    ; Start playing different FX when the weapon fires at max speed.
+    CP FIRE_FX_DELAY_SOUND2
+    JR NC, .newSound
+    LD A, af.FX_FIRE1
+    JR .afterNewSound
+.newSound
+    LD A, af.FX_FIRE2
+.afterNewSound
+    CALL af.AfxPlay
+
+    JR .afterFireFx
+.decFireFxCnt
+    DEC A
+    LD (fireFxDelayCnt), A
+.afterFireFx
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    #_CheckHitEnemies                     ;

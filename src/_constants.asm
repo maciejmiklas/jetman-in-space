@@ -13,20 +13,39 @@ _GL_REG_SELECT_H243B    = $243B             ; This Port is used to set the regis
 _GL_REG_VL_H1F          = $1F               ; Active video line (LSB).
 
 ;----------------------------------------------------------;
+;                 Peripheral Control                       ;
+;----------------------------------------------------------;
+
+;(R/W) 0x09 (09) => Peripheral 4 setting:
+; Bits:
+;  - 7: Mono setting for AY 2 (1 = mono, 0 default).
+;  - 6: Mono setting for AY 1 (1 = mono, 0 default).
+;  - 5: Mono setting for AY 0 (1 = mono, 0 default).
+;  - 4: Sprite id lockstep (1 = Nextreg 0x34 and IO Port 0x303B are in lockstep, 0 default).
+;  - 3: Disables Kempston port ($DF) if set.
+;  - 2: Disables divMMC ports ($E3, $E7, $EB) if set.
+; - bits 1-0 = scanlines (0 after a PoR or Hard-reset).
+; - 00 = scanlines off.
+; - 01 = scanlines 75%.
+; - 10 = scanlines 50%.
+; - 11 = scanlines 25%.
+_PERIPHERAL_04_H09      = $09
+
+;----------------------------------------------------------;
 ;                   Display Control                        ;
 ;----------------------------------------------------------;
 
 ; Layer 2 RAM bank.
 _DC_REG_L2_BANK_H12     = $12
 
-; Layer 2 Offset X (0-255) (0 after a reset)
+; Layer 2 Offset X (0-255) (0 after a reset).
 _DC_REG_L2_OFFSET_X_H16 = $16
 
-; Layer 2 Offset Y. (0-191) (0 after a reset)
+; Layer 2 Offset Y. (0-191) (0 after a reset).
 _DC_REG_L2_OFFSET_Y_H17 = $17
 
-; The coordinate values are 0,255,0,191 after a Reset
-; For Layer 2 at 320x256 use 0,159,0,255
+; The coordinate values are 0,255,0,191 after a Reset.
+; For Layer 2 at 320x256 use 0,159,0,255.
 _DC_REG_L2_CLIP_H18     = $18
 
 ; Tilemap Offset X MSB
@@ -50,8 +69,8 @@ _DC_REG_ULA_X_H32       = $32
 _DC_REG_ULA_Y_H33       = $33
 
 ; Bits:
-;  - 7: 1 to enable Layer 2 (alias for bit 1 in Layer 2 Access Port $123B),
-;  - 6: 1 to enable ULA shadow display (alias for bit 3 in Memory Paging Control $7FFD),
+;  - 7: 1 to enable Layer 2 (alias for bit 1 in Layer 2 Access Port $123B).
+;  - 6: 1 to enable ULA shadow display (alias for bit 3 in Memory Paging Control $7FFD).
 ;  - 5-0: Alias for bits 5-0 in Timex Sinclair Video Mode Control $xxFF.
 ;
 ; The 256x192x8bpp mode is simple 256 color mode, one pixel is one byte (index into Layer 2 palette), pixels are stored from left to right, 

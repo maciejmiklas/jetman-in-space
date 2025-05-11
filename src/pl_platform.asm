@@ -133,9 +133,8 @@ JetPlatformHitOnJoyMove
     LD (platformWalkNumber), A
     
     CALL JetLanding
-
     RET
-.afterLanding   
+.afterLanding
 
     ; ##########################################
     ; Does Jetman hit the platform from the left side?
@@ -306,14 +305,14 @@ PlatformSpriteClose
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                 #PlatformWeaponHit                       ;
+;                 #CheckPlatformWeaponHit                  ;
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
 ;  - IX:    Pointer to sr.SPR, single sprite to check cloison for.
 ; Output:
 ;  - A:     #PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
-PlatformWeaponHit
+CheckPlatformWeaponHit
 
     LD IY, shotHitMargin
     CALL _PlatformSpriteHit
@@ -415,7 +414,7 @@ JetPlatformTakesOff
 ;                      #JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
-    
+
     ; Ignore landing if Jetman is already on the ground.
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE
@@ -434,7 +433,7 @@ JetLanding
     LD A, js.SDB_T_FW                           ; Play transition from landing -> walking.
     CALL js.ChangeJetSpritePattern
 
-    JR .afterStand                              ; The animation is already loaded, do not overweigh it with standing.
+    JR .afterStand                              ; The animation is already loaded, do not overwrite it with standing.
 .afterMoveLR
 
     LD A, jt.GND_STAND
@@ -443,6 +442,8 @@ JetLanding
     LD A, js.SDB_T_FS                           ; Play transition from landing -> standing.
     CALL js.ChangeJetSpritePattern
 .afterStand
+
+    CALL gc.JetLanding
 
     RET                                         ; ## END of the function ##
 
@@ -1153,6 +1154,9 @@ _JetHitsPlatform
     
     SUB PL_BUMP_JOY_DEC_D1
     LD (joyOffBump), A
+
+    ; ##########################################
+    CALL gc.JetBumpsIntoPlatform
 
     RET                                         ; ## END of the function ##
 

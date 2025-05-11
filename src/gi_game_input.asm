@@ -4,14 +4,31 @@
     MODULE gi
 
 ;----------------------------------------------------------;
+;                    #ResetKeysState                       ;
+;----------------------------------------------------------;
+ResetKeysState
+
+    XOR A
+    LD (gid.joyOffCnt), A
+    LD (gid.jetDirection), A
+    LD (gid.joyDirection), A
+    LD (gid.joyPrevDirection), A
+    LD (gid.joyOverheatDelayCnt), A
+    LD (gid.buttonState), A
+    LD (gid.buttonPrevState), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  #GameJoystickInput                      ;
 ;----------------------------------------------------------;
 GameJoystickInput
 
-    LD A, gid.MOVE_INACTIVE                     ; Update #jetState by resetting left/hover and setting right.
+    XOR A
+    LD (gid.buttonState), A
     LD (gid.joyDirection), A
 
-    ; ##########################################    
+    ; ##########################################
     ; Key right pressed ?
     LD A, _KB_6_TO_0_HEF                        ; $EF -> A (6...0).
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
@@ -59,7 +76,7 @@ GameJoystickInput
     ; Joystick fire pressed ?
     PUSH AF
     AND %01110000                               ; Any of three fires pressed?
-    CALL NZ, _JoyFire   
+    CALL NZ, _JoyFire
     POP AF
 
     ; ##########################################
@@ -93,7 +110,7 @@ GameJoystickInput
     LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1).
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 4, A                                    ; Bit 4 reset -> Left pressed.
-    CALL Z, _JoyLeft        
+    CALL Z, _JoyLeft
 
     CALL _JoyEnd
 
@@ -169,6 +186,15 @@ GameKeyboardInput
     CALL Z, _Key_Y
     POP AF  
 
+    ; ##########################################
+    ; Handle row G...A
+    LD A, _KB_G_TO_A_HFD
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 3, A                                    ; F
+    CALL Z, _Key_F
+    POP AF
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -181,6 +207,7 @@ GameKeyboardInput
 ;                        _Key_Q                            ;
 ;----------------------------------------------------------;
 _Key_Q
+
     CALL gc.LoadLevel1
 
     RET                                         ; ## END of the function ##
@@ -267,6 +294,16 @@ _Key_P
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                        _Key_F                            ;
+;----------------------------------------------------------;
+_Key_F
+
+    CALL jw.FlipFireFx
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
 ;                        _JoyEnd                           ;
 ;----------------------------------------------------------;
 _JoyEnd
@@ -285,11 +322,32 @@ _JoyEnd
 
     ; Down is not pressed now, but was in previous loop.
     CALL jm.JoyMoveDownRelease
-    
 .afterJoyDownRelease
+
     ; ##########################################
+    ; Fire key has been released?
+    LD A, (gid.buttonState)
+    BIT gid.BS_FIRE_BIT, A
+    JR NZ, .afterFireRelease                 ; Jump if fire is pressed now.
+
+    ; Fire is not pressed, now check whether it was pressed during the last loop.
+    LD A, (gid.buttonPrevState)
+    BIT gid.BS_FIRE_BIT, A
+    JR Z, .afterFireRelease                  ; Jump if down was not pressed.
+
+    ; Fire is not pressed now, but was in previous loop.
+    CALL _JoyFireRelease
+
+.afterFireRelease 
+
+    ; ##########################################
+    ; Update previous state
+
     LD A, (gid.joyDirection)
     LD (gid.joyPrevDirection), A
+
+    LD A, (gid.buttonState)
+    LD (gid.buttonPrevState), A
 
     RET                                         ; ## END of the function ##
 
@@ -314,7 +372,7 @@ _JoyLeft
 
     ; Update #joyDirection state.
     LD A, (gid.joyDirection)
-    SET gid.MOVE_LEFT_BIT, A    
+    SET gid.MOVE_LEFT_BIT, A
     LD (gid.joyDirection), A
 
     ; ##########################################
@@ -344,7 +402,7 @@ _JoyDown
 
     ; Update #joyDirection state.
     LD A, (gid.joyDirection)
-    SET gid.MOVE_DOWN_BIT, A    
+    SET gid.MOVE_DOWN_BIT, A
     LD (gid.joyDirection), A
 
     ; ##########################################
@@ -365,8 +423,21 @@ _JoyDownRelease
 ;                        _JoyFire                          ;
 ;----------------------------------------------------------;
 _JoyFire
+    
+    LD A, (gid.buttonState)
+    SET gid.BS_FIRE_BIT, A
+    LD (gid.buttonState), A
 
     CALL jw.Fire
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   _JoyFireRelease                        ;
+;----------------------------------------------------------;
+_JoyFireRelease
+
+    CALL jw.FireReleased
 
     RET                                         ; ## END of the function ##
 

@@ -29,7 +29,7 @@ IncJetX
 .lessThanMaxX
     LD (jpo.jetX), BC                           ; Update new X position.
 
-    CALL gc.JetmanMoves
+    CALL gc.JetMoves
 
     RET                                         ; ## END of the function ##
 
@@ -67,7 +67,7 @@ DecJetX
 .afterResetX
     LD (jpo.jetX), BC
 
-    CALL gc.JetmanMoves
+    CALL gc.JetMoves
 
     RET                                         ; ## END of the function ##
 
@@ -95,8 +95,8 @@ IncJetY
     INC A
     LD (jpo.jetY), A
 
-    CALL gc.JetmanMoves
-    CALL gc.JetmanMovesDown
+    CALL gc.JetMoves
+    CALL gc.JetMovesDown
     
     RET                                         ; ## END of the function ##
 
@@ -109,8 +109,8 @@ DecJetY
     DEC A
     LD (jpo.jetY), A
 
-    CALL gc.JetmanMoves
-    CALL gc.JetmanMovesUp
+    CALL gc.JetMoves
+    CALL gc.JetMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

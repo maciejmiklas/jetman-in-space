@@ -49,6 +49,7 @@ SetupGame
     CALL bm.HideImage
     CALL sc.SetupScreen
     CALL ti.SetupTiles
+    CALL fi.LoadEffects
 
     RET                                         ; ## END of the function ##
 
@@ -70,7 +71,7 @@ LoadLobby
     CALL fi.LoadLevelIntroTilemap
     CALL li._ResetLevelIntro
     CALL ti.SetTilesClipVertical
-    CALL jw.SpeedMin
+    CALL jw.ResetWeapon
     
     RET                                         ; ## END of the function ##
 
@@ -331,14 +332,17 @@ RocketFlying
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
-    RET                                         ; ## END of the function ## 
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    #RocketTankHit                        ;
 ;----------------------------------------------------------;
 RocketTankHit
-    
+
     CALL sc.HitRocketTank
+
+    LD A, af.FX_EXPLODE_TANK
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
@@ -346,8 +350,22 @@ RocketTankHit
 ;                  #RocketElementPickup                    ;
 ;----------------------------------------------------------;
 RocketElementPickup
-    
+
     CALL sc.PickupRocketElement
+
+    ; ##########################################
+    ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element.
+    CALL ro.IsFuelTankDeployed
+    JR C, .notFuelTank
+
+    LD A, af.FX_PICKUP_FUEL
+    CALL af.AfxPlay
+    JR .afterFuelFx
+.notFuelTank
+
+    LD A, af.FX_PICKUP_ROCKET_EL
+    CALL af.AfxPlay
+.afterFuelFx
 
     RET                                         ; ## END of the function ## 
 
@@ -367,18 +385,78 @@ RocketElementDrop
     
     CALL sc.DropRocketElement
 
+    LD A, af.FX_ROCKET_EL_DROP
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                        #EnemyHit                         ;
+;                  #PlatformWeaponHit                      ;
+;----------------------------------------------------------;
+PlatformWeaponHit
+
+    LD A, af.FX_FIRE_PLATFORM_HIT
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                     #EnemyHit                            ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:    Pointer enemy's #SPR.
+;    A:  Sprite ID of the enemy.
+;  - IX: Pointer to enemy's #sr.SPR.
 EnemyHit
 
     CALL sr.SetSpriteId
     CALL sr.SpriteHit
-    CALL sc.HitEnemy
+
+    ; ##########################################
+    ; Checkt what enemy has been hit.
+
+    ; Enemy 1?
+    LD A, (IX + sr.SPR.SDB_INIT)
+    CP sr.SDB_ENEMY1
+    JR NZ, .afterHitEnemy1
+
+    ; Yes, enemy 1 hot git.
+    LD A, af.FX_EXPLODE_ENEMY_1
+    CALL af.AfxPlay
+
+    CALL sc.HitEnemy1
+
+    JR .afterHitEnemy
+.afterHitEnemy1
+
+    ; Enemy 2?
+    LD A, (IX + sr.SPR.SDB_INIT)
+    CP sr.SDB_ENEMY2
+    JR NZ, .afterHitEnemy2
+
+    ; Yes, enemy 2 hot git.
+    LD A, af.FX_EXPLODE_ENEMY_2
+    CALL af.AfxPlay
+
+    CALL sc.HitEnemy2
+    
+    JR .afterHitEnemy
+.afterHitEnemy2
+
+    ; Enemy 3?
+    LD A, (IX + sr.SPR.SDB_INIT)
+    CP sr.SDB_ENEMY3
+    JR NZ, .afterHitEnemy3
+
+    ; Yes, enemy 3 hot git.
+    LD A, af.FX_EXPLODE_ENEMY_3
+    CALL af.AfxPlay
+
+    CALL sc.HitEnemy3
+    
+    JR .afterHitEnemy
+.afterHitEnemy3
+
+.afterHitEnemy
 
     RET                                         ; ## END of the function ##
 
@@ -407,10 +485,15 @@ EnemyHitsJet
     ; ##########################################
     ; This is the first enemy hit.
     CALL jt.SetJetStateRip
-    CALL jw.SpeedMin
+    CALL jw.ResetWeapon
     
-    LD A, js.SDB_RIP                            ; Change animation.
+    ; Change animation.
+    LD A, js.SDB_RIP
     CALL js.ChangeJetSpritePattern
+
+    ; Play FX.
+    LD A, af.FX_JET_KILL
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
@@ -427,7 +510,7 @@ RespawnJet
     LD (jpo.jetY), A
 
     ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
-    CALL bm.LoadImage
+    CALL bm.CopyImageData
 
     CALL jt.SetJetStateRespawn
 
@@ -448,78 +531,126 @@ RespawnJet
 
     RET                                         ; ## END of the function ## 
 
+
 ;----------------------------------------------------------;
-;                   #JetmanPicksInAir                      ;
+;                   #JetpackOverheat                       ;
 ;----------------------------------------------------------;
-JetmanPicksInAir
+JetpackOverheat
+
+    LD A, af.FX_JET_OVERHEAT
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #JetpackNormal                        ;
+;----------------------------------------------------------;
+JetpackNormal
+
+    LD A, af.FX_JET_NORMAL
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #JetPicksInAir                       ;
+;----------------------------------------------------------;
+JetPicksInAir
 
     CALL sc.PickupInAir
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetmanPicksGun                       ;
+;                      #JetPicksGun                        ;
 ;----------------------------------------------------------;
-JetmanPicksGun
+JetPicksGun
 
     CALL sc.PickupRegular
-    CALL jw.SpeedUp
+    CALL jw.FireSpeedUp
+
+    LD A, af.FX_PICKUP_GUN
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #JetmanPicksLife                       ;
+;                     #JetPicksLife                        ;
 ;----------------------------------------------------------;
-JetmanPicksLife
-
+JetPicksLife
 
     CALL sc.PickupRegular
+
+    LD A, af.FX_PICKUP_LIVE
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #JetmanPicksGrenade                     ;
+;                    #JetPicksGrenade                      ;
 ;----------------------------------------------------------;
-JetmanPicksGrenade
+JetPicksGrenade
 
     CALL sc.PickupRegular
     CALL enp.KillFewPatternEnemies
 
+    LD A, af.FX_PICKUP_GRENADE
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #JetmanPicksStrawberry                   ;
+;                  #JetPicksStrawberry                     ;
 ;----------------------------------------------------------;
-JetmanPicksStrawberry
+JetPicksStrawberry
 
     CALL sc.PickupRegular
 
+    LD A, af.FX_PICKUP_STRAWBERRY
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #JetmanPicksDiamond                     ;
+;                   #JetPicksDiamond                       ;
 ;----------------------------------------------------------;
-JetmanPicksDiamond
+JetPicksDiamond
 
     CALL sc.PickupDiamond
 
+    LD A, af.FX_PICKUP_DIAMOND
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetmanPicksJar                       ;
+;                      #JetPicksJar                        ;
 ;----------------------------------------------------------;
-JetmanPicksJar
+JetPicksJar
 
     CALL sc.PickupRegular
     CALL jo.ResetJetpackOverheating
 
+    LD A, af.FX_PICKUP_JAR
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JetmanMoves                        ;
+;                      #JetLanding                         ;
 ;----------------------------------------------------------;
-; Called on any Jetman movement, always before the method indicating concrete movement (#JetmanMovesUp,#JetmanMovesDown).
-JetmanMoves
+JetLanding
+
+    LD A, af.FX_JET_LAND
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        #JetMoves                        ;
+;----------------------------------------------------------;
+; Called on any Jetman movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
+JetMoves
 
     CALL ro.UpdateRocketOnJetmanMove
     CALL pi.UpdatePickupsOnJetmanMove
@@ -527,9 +658,9 @@ JetmanMoves
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #JetmanMovesUp                       ;
+;                       #JetMovesUp                        ;
 ;----------------------------------------------------------;
-JetmanMovesUp
+JetMovesUp
 
     ; The #UpdateBackgroundOnJetmanMove calculates #bgOffset, which is used to hide the background line behind the horizon.
     ; To avoid glitches, like not hidden lines, we always have to first hide the line and then calculate the #bgOffset. This will introduce 
@@ -541,9 +672,9 @@ JetmanMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetmanMovesDown                      ;
+;                     #JetMovesDown                        ;
 ;----------------------------------------------------------;
-JetmanMovesDown
+JetMovesDown
 
     CALL bg.ShowBackgroundAboveHorizon
     CALL bg.UpdateBackgroundOnJetmanMove
@@ -551,7 +682,26 @@ JetmanMovesDown
 
     RET                                         ; ## END of the function ##
 
-tmp byte 0
+;----------------------------------------------------------;
+;                      #RocketReady                        ;
+;----------------------------------------------------------;
+RocketReady
+
+    LD A, af.FX_ROCKET_READY
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #JetBumpsIntoPlatform                   ;
+;----------------------------------------------------------;
+JetBumpsIntoPlatform
+
+    LD A, af.FX_BUMP_PLATFORM
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                 #MovementInactivity                      ;
 ;----------------------------------------------------------;
@@ -624,10 +774,6 @@ MovementInactivity
     LD A, (jm.jetInactivityCnt)
     CP JSTAND_START_D15
     RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing.
-
-    ld a, (tmp)
-    inc a 
-    ld (tmp),a
 
     ; Stop walking immediately and stand still.
     LD A, jt.GND_JSTAND
@@ -726,6 +872,7 @@ _InitLevelLoad
 
     CALL _HaltGame
     
+    CALL gi.ResetKeysState
     CALL los.SetLobbyStateInactive
     CALL ti.ResetTilemapOffset
     CALL td.ResetTimeOfDay
@@ -745,7 +892,8 @@ _StartLevel
     CALL ti.SetTilesClipFull
     CALL jo.ResetJetpackOverheating
     CALL pi.ResetPickups
-
+    CALL jw.ResetWeapon
+    
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
 

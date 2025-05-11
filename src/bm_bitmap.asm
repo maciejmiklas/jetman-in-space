@@ -13,11 +13,11 @@ BM_16KBANK_D9           = 9                     ; 16K bank 9 = 8k bank 18.
 
 
 ;----------------------------------------------------------;
-;                     #LoadImage                           ;
+;                    #CopyImageData                        ;
 ;----------------------------------------------------------;
 ; Copies data from slot 6 to 7. Slot 6 points to the bank containing the source of the image, and slot 7 points to the bank that contains 
 ; display data (NEXTREG _DC_REG_L2_BANK_H12).
-LoadImage
+CopyImageData
     
     ; Load into D the start bank containing background image source
     LD D, dbs.BGST_BANK_D35

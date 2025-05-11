@@ -3,11 +3,9 @@
 ;----------------------------------------------------------;
     module db
 
-
 ;----------------------------------------------------------;
 ;         Game Background Image (Bank 18...27)             ;
 ;----------------------------------------------------------;
-
 
 ;----------------------------------------------------------;
 ;                  Star Data (Bank 28)                     ;
@@ -1063,7 +1061,7 @@ platformsSizeL10        BYTE 30
 ;  - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
 ;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
 
-tileSprBin INCBIN "assets/tiles.spr"
+tileSprBin INCBIN "assets/common/tiles.spr"
 tileSprBinLength = $ - tileSprBin
     ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
 
@@ -1208,7 +1206,15 @@ todL2Palettes                                   ; Palette will be generated duri
 ; The screen size is 320x256 (81920 bytes, 80KiB) -> 10 8KB banks.
 
 ;----------------------------------------------------------;
-;                Star Tiles (Bank 45, 46)                  ;
+;              16KiB Tilemap (Bank 45, 46)                 ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;               AY FX Sound (Bank 47)                      ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;               AY FX Sound (Bank 47)                      ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;

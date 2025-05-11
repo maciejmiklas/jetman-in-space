@@ -46,6 +46,7 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
+
 /*
     ; ##########################################
     LD B, 40
@@ -54,13 +55,8 @@ PrintDebug
     LD L, A 
     CALL ut.PrintNumber
 
-    ; ##########################################
-    LD B, 50
-    LD H, 0
-    LD A, (jw.fireDelayCnt)
-    LD L, A 
-    CALL ut.PrintNumber
 */
+
 
     RET                                         ; ## END of the function ##
 

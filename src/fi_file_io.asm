@@ -95,6 +95,27 @@ liFileName              DB "assets/l00/intro_0.nxi",0
 LI_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
 LI_FILE_IMG_POS         = 17                    ; Position of a image part number (0-9) in the file name of the background image.
 
+mainMenuFileName        DB "assets/lobby/bg_0.nxi",0
+MAIN_MENU_POS           = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+
+effectsFileName        DB "assets/common/effects.afb",0
+EFFECTS_FILE_SIZE      = 3714
+;----------------------------------------------------------;
+;                        #LoadEffects                      ;
+;----------------------------------------------------------;
+LoadEffects
+
+    CALL dbs.SetupAyFxsBank
+
+    LD IX, effectsFileName
+    CALL _FileOpen
+    
+    LD IX, _RAM_SLOT6_STA_HC000
+    LD BC, EFFECTS_FILE_SIZE
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                 #LoadLevelIntroImage                     ;
 ;----------------------------------------------------------;
@@ -105,14 +126,14 @@ LoadLevelIntroImage
 
     ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/..."
     LD HL, liFileName
-    LD IX, HL                                   ; Param for #LoadImage
+    LD IX, HL                                   ; Param for #_LoadImage
     ADD HL, LI_FILE_LEVEL_POS                   ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number.
 
     LD C, LI_FILE_IMG_POS
-    CALL fi.LoadImage
+    CALL fi._LoadImage
 
     RET                                         ; ## END of the function ##
 
@@ -126,14 +147,14 @@ LoadLevelBgImage
 
     ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/...."
     LD HL, lbFileName
-    LD IX, HL                                   ; Param for #LoadImage
+    LD IX, HL                                   ; Param for #_LoadImage
     ADD HL, LB_FILE_LEVEL_POS                   ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number.
 
     LD C, LB_FILE_IMG_POS
-    CALL fi.LoadImage
+    CALL fi._LoadImage
 
     RET                                         ; ## END of the function ##
 
@@ -227,15 +248,33 @@ LoadLevelIntroTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #LoadImage                         ;
+;                    #LoadLobbyImage                       ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Image number as ASCII, for example for "04": D="0", E="4"
+LoadLobbyImage
+    LD IX, mainMenuFileName
+    LD C, MAIN_MENU_POS
+    CALL fi._LoadImage
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                       #_LoadImage                        ;
 ;----------------------------------------------------------;
 ; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
 ; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\l01_background.bmp
-; This function loads the image into temp RAM, in order to show it call #bm.LoadImage
+; This function loads the image into temp RAM, in order to show it call #bm.CopyImageData
 ; Input:
 ;  - IX: File name.
 ;  - C:  Position of a image part number (0-9) in the file name of the background image.
-LoadImage
+_LoadImage
 
     ; Iterate over banks, loading one after another, form 0 to 9 inclusive.
     LD B, 0 
@@ -274,12 +313,6 @@ LoadImage
     JR NZ, .bankLoop
 
     RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                 #_Load16KTilemap                         ;
@@ -399,6 +432,8 @@ _FileRead
 ;----------------------------------------------------------;
 ;                        #_FileOpen                        ;
 ;----------------------------------------------------------;
+; Input:
+;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
 _FileOpen
 
     ; Set params for F_OPEN

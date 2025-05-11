@@ -12,7 +12,7 @@ PI_SPR_GUN              = 44
 
 deployOrderPos          BYTE 0
 deployOrder
-    DB PI_SPR_DIAMOND, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_STRAWBERRY, PI_SPR_JAR, PI_SPR_GUN, PI_SPR_JAR, PI_SPR_STRAWBERRY
+    DB PI_SPR_DIAMOND, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_DIAMOND, PI_SPR_JAR, PI_SPR_GUN, PI_SPR_JAR, PI_SPR_STRAWBERRY
     DB PI_SPR_GUN, PI_SPR_GRENADE, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_GRENADE, PI_SPR_GUN, PI_SPR_STRAWBERRY, PI_SPR_GUN
     DB PI_SPR_JAR, PI_SPR_STRAWBERRY, PI_SPR_DIAMOND, PI_SPR_GUN, PI_SPR_STRAWBERRY
 DEPLOY_ORDER_SIZE       = 20
@@ -61,7 +61,7 @@ UpdatePickupsOnJetmanMove
     ; Pickup in the air?
     LD A, (deployedY)
     CP _GSC_Y_MAX2_D234
-    CALL NZ, gc.JetmanPicksInAir
+    CALL NZ, gc.JetPicksInAir
 
     ; ##########################################
     ; Callbacks
@@ -70,42 +70,42 @@ UpdatePickupsOnJetmanMove
     ; Diamond
     CP PI_SPR_DIAMOND
     JR NZ, .afterDiamond
-    CALL gc.JetmanPicksDiamond
+    CALL gc.JetPicksDiamond
     JR .nextPickup
 .afterDiamond
 
     ; Jar
     CP PI_SPR_JAR
     JR NZ, .afterJar
-    CALL gc.JetmanPicksJar
+    CALL gc.JetPicksJar
     JR .nextPickup
 .afterJar
 
     ; Strawberry
     CP PI_SPR_STRAWBERRY
     JR NZ, .afterStrawberry
-    CALL gc.JetmanPicksStrawberry
+    CALL gc.JetPicksStrawberry
     JR .nextPickup
 .afterStrawberry
 
     ; Grenade
     CP PI_SPR_GRENADE
     JR NZ, .afterGrenade
-    CALL gc.JetmanPicksGrenade
+    CALL gc.JetPicksGrenade
     JR .nextPickup
 .afterGrenade
 
     ; Life
     CP PI_SPR_LIFE
     JR NZ, .afterLife
-    CALL gc.JetmanPicksLife
+    CALL gc.JetPicksLife
     JR .nextPickup
 .afterLife
 
     ; Gun
     CP PI_SPR_GUN
     JR NZ, .afterGun
-    CALL gc.JetmanPicksGun
+    CALL gc.JetPicksGun
     JR .nextPickup
 .afterGun
 

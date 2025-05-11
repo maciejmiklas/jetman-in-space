@@ -42,6 +42,7 @@ _MainLoop000
     ; First update graphics, logic follows afterwards!
 
     CALL gb.PrintDebug
+    CALL af.AfxFrame                            ; Keep AYFX sound effect playing
 
     CALL _MainLoop000OnActiveJetman
     CALL _MainLoop000OnActiveLobby
@@ -181,7 +182,6 @@ _MainLoop002OnActiveJetman
     ; ##########################################
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
-    CALL pi.AnimateFallingPickup
     
     RET                                         ; ## END of the function ##
 
@@ -256,6 +256,7 @@ _MainLoop004OnActiveJetman
     ; ##########################################
     CALL ro.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
+    CALL pi.AnimateFallingPickup
     
     RET                                         ; ## END of the function ##
 
