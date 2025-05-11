@@ -47,6 +47,7 @@ _MainLoop000
     CALL _MainLoop000OnActiveJetman
     CALL _MainLoop000OnActiveLobby
     CALL _MainLoop000OnFlayRocket
+    CALL _MainLoop000OnActiveLevelIntro
 
     RET                                         ; ## END of the function ##
 
@@ -105,7 +106,22 @@ _MainLoop000OnActiveLobby
     ; ##########################################
     CALL loi.MainMenuUserInput
     
-    RET                                         ; ## END of the function ## 
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;             #_MainLoop000OnActiveLevelIntro              ;
+;----------------------------------------------------------;
+_MainLoop000OnActiveLevelIntro
+
+    ; Return if intro is inactive
+    LD A, (li.introState)
+    CP li.INT_ST_INACTIVE
+    RET Z
+
+    ; ##########################################
+    CALL li.LevelIntroUserInput
+    
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;               #_MainLoop000OnDisabledJoy                 ;
@@ -149,7 +165,7 @@ _MainLoop002
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop002OnActiveJetman
-    CALL _MainLoop002OnActiveLobby
+    CALL _MainLoop002OnActiveLevelIntro
     CALL _MainLoop002OnFlayRocket
 
     RET                                         ; ## END of the function ##
@@ -186,13 +202,13 @@ _MainLoop002OnActiveJetman
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop002OnActiveLobby                 ;
+;            #_MainLoop002OnActiveLevelIntro               ;
 ;----------------------------------------------------------;
-_MainLoop002OnActiveLobby
+_MainLoop002OnActiveLevelIntro
     
-    ; Return if Lobby is inactive
-    LD A, (los.lobbyState)
-    CP los.LOBBY_INACTIVE
+    ; Return if intro is inactive
+    LD A, (li.introState)
+    CP li.INT_ST_INACTIVE
     RET Z
 
     ; ##########################################

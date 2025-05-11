@@ -109,8 +109,8 @@ SetupAyFx
 
     CALL dbs.SetupAyFxsBank
 
-    LD A, %1'11'111'01                          ; Set to AY-3
-    LD BC, $FFFD
+    LD A, %1'11'111'01                          ; Set FX to AY-3
+    LD BC, _GL_REG_SOUND_HFFFD
     OUT (C), A
 
     LD HL, _RAM_SLOT6_STA_HC000                 ; Bank containing sound effects

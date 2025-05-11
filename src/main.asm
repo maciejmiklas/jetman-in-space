@@ -69,13 +69,12 @@ mainLoop
     INCLUDE "jo_jetpack_overheat.asm"
     INCLUDE "loi_lobby_input.asm"
     INCLUDE "li_level_intro.asm"
-    INCLUDE "los_lobby_state.asm"
     INCLUDE "lom_lobby_main_menu.asm"
     INCLUDE "sc_score.asm"
     INCLUDE "pi_pickups.asm"
     INCLUDE "af_audio_fx.asm"
     INCLUDE "ad_audio_daw.asm"
-    
+    INCLUDE "los_lobby_state.asm"
 
     ; LAST import due to bank offset!
     INCLUDE "db_data_bin.asm"

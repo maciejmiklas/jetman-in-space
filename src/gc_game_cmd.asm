@@ -81,7 +81,6 @@ LoadLobby
 LoadLevel1Intro
 
     CALL _HaltGame
-    CALL los.SetLobbyStateLevelIntro
 
     LD D, "0"
     LD E, "1"

@@ -12,6 +12,19 @@ _GL_REG_TRANP_COL_H14   = $14               ; Global transparency color.
 _GL_REG_SELECT_H243B    = $243B             ; This Port is used to set the register number.
 _GL_REG_VL_H1F          = $1F               ; Active video line (LSB).
 
+; Turbo Sound Next Control Register.
+; Bits:
+;  - 7: 
+;  - 6: 1 to enable left audio.
+;  - 5: 1 to enable right audio.
+;  - 4-2: Must be 1
+;  - 1-0: Selects active chip:
+;     - 00: Unused
+;     - 01: AY3
+;     - 10: AY2
+;     - 11: AY1
+_GL_REG_SOUND_HFFFD     = $FFFD             ; AY reg
+
 ;----------------------------------------------------------;
 ;                 Peripheral Control                       ;
 ;----------------------------------------------------------;

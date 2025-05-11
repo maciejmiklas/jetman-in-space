@@ -13,19 +13,29 @@ tilePixelCnt            BYTE 0                  ; Runs from 0 to 7 (#ti.TI_PIXEL
 
 animateDelayCnt         BYTE ANIMATE_DELAY      ; Start scrolling without a delay.
 ANIMATE_DELAY           = 50
+
+INT_ST_ACTIVE           = 1
+INT_ST_INACTIVE         = 0
+introState              BYTE INT_ST_INACTIVE
+
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:  Number of horizontal lines in source tilemap (40xA).
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
 ;  - HL: Size of second tiles file (first one has 8KiB).
 LoadLevelIntro
 
-    LD (sourceTilesRowMax), A
-
-    PUSH DE
     CALL _ResetLevelIntro
+
+    ; ##########################################
+    ; Update state
+    LD A, INT_ST_ACTIVE
+    LD (introState), A
+
+    ; ##########################################
+    PUSH DE
     LD (fi.introSecondFileSize), HL
     CALL ti.SetTilesClipVertical
 
@@ -55,17 +65,6 @@ LoadLevelIntro
 ;             #AnimateLevelIntroTextScroll                 ;
 ;----------------------------------------------------------;
 AnimateLevelIntroTextScroll
-    ; Return if intro is not active
-
-    /* TODO use it when menu is ready.
-    LD A, (los.lobbyState)
-    CP los.LEVEL_INTRO                          
-    RET NZ */
-    LD A, (los.lobbyState)
-    CP los.LOBBY_INACTIVE
-    RET Z
-    
-    ; ##########################################
     ; Delay animation (text scrolling) until the counter has reached ANIMATE_DELAY. When this happens, the animation runs at full speed 
     ; until the delay counter has been reset. It occurs when the next text line from Tilemap is being loaded.
     LD A, (animateDelayCnt)
@@ -100,7 +99,41 @@ AnimateLevelIntroTextScroll
     NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset.
 
     RET                                         ; ## END of the function ##
-    
+
+;----------------------------------------------------------;
+;                   #LevelIntroUserInput                   ;
+;----------------------------------------------------------;
+LevelIntroUserInput
+ 
+    ; Key Fire (Z) pressed ?
+    LD A, _KB_V_TO_SH_HFE
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
+    CALL Z, _KeyExitIntro
+
+    ; ##########################################
+    ; Key SPACE pressed ?
+    LD A, _KB_B_TO_SPC_H7F
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
+    CALL Z, _KeyExitIntro
+
+    ; ##########################################
+    ; Key ENTER pressed ?
+    LD A, _KB_H_TO_ENT_HBF
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
+    CALL Z, _KeyExitIntro
+
+    ; ##########################################
+    ; Joystick right pressed ?
+    LD A, _JOY_MASK_H20                         ; Activate joystick register.
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
+    AND %01110000                               ; Any of three fires pressed?
+    CALL NZ, _KeyExitIntro
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
@@ -108,9 +141,25 @@ AnimateLevelIntroTextScroll
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                    #_KeyExitIntro                        ;
+;----------------------------------------------------------;
+_KeyExitIntro
+
+    XOR A
+    LD (introState), A
+
+    CALL gc.LoadCurrentLevel
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  #_ResetLevelIntro                       ;
 ;----------------------------------------------------------;
+; Input:
+;  - A:  Number of horizontal lines in source tilemap (40xA).
 _ResetLevelIntro
+
+    LD (sourceTilesRowMax), A
 
     LD A, ti.TI_VTILES_D32-1
     LD (screenTilesRow), A

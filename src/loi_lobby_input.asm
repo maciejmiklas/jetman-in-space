@@ -2,13 +2,18 @@
 ;            Lobby Keyboard/Joystick Input.                ;
 ;----------------------------------------------------------;
     MODULE loi
-    
+
+EL_START_GAME           = 1
+EL_DIFFICULTY           = 2
+EL_HIGHSCORE            = 3
+EL_SETTINGS             = 4
+
 ;----------------------------------------------------------;
 ;                     #MainMenuUserInput                   ;
 ;----------------------------------------------------------;
 MainMenuUserInput
 
-    ; ##########################################    
+    ; ##########################################
     ; Key right pressed ?
     LD A, _KB_6_TO_0_HEF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
@@ -152,21 +157,15 @@ _ExitMenu
 
     LD A, (los.lobbyState)
     CP los.MAIN_MENU
-    JR NZ, .afterMainMenu
+    RET NZ
+
+    XOR A
+    LD (los.lobbyState), A
 
     CALL gc.LoadLevel1Intro
     RET
-.afterMainMenu
 
-    LD A, (los.lobbyState)
-    CP los.LEVEL_INTRO
-    JR NZ, .afterLevelIntro
-
-    CALL gc.LoadCurrentLevel
-    RET
-.afterLevelIntro
-
-    RET                                         ; ## END of the function ## 
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
