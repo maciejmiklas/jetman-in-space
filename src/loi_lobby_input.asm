@@ -155,15 +155,7 @@ _JoyFire
 ;----------------------------------------------------------;
 _ExitMenu
 
-    LD A, (los.lobbyState)
-    CP los.MAIN_MENU
-    RET NZ
-
-    XOR A
-    LD (los.lobbyState), A
-
     CALL gc.LoadLevel1Intro
-    RET
 
     RET                                         ; ## END of the function ##
 

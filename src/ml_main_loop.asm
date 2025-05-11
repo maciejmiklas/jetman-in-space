@@ -45,7 +45,7 @@ _MainLoop000
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
 
     CALL _MainLoop000OnActiveJetman
-    CALL _MainLoop000OnActiveLobby
+    CALL _MainLoop000OnActiveMainMenu
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
 
@@ -94,14 +94,14 @@ _MainLoop000OnActiveJetman
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop000OnActiveLobby                 ;
+;               #_MainLoop000OnActiveMainMenu                 ;
 ;----------------------------------------------------------;
-_MainLoop000OnActiveLobby
+_MainLoop000OnActiveMainMenu
 
-    ; Return if Lobby is inactive
-    LD A, (los.lobbyState)
-    CP los.LOBBY_INACTIVE
-    RET Z
+    ; Return if main menu is inactive
+    LD A, (ms.mainState)
+    CP ms.MAIN_MENU
+    RET NZ
 
     ; ##########################################
     CALL loi.MainMenuUserInput
@@ -113,10 +113,10 @@ _MainLoop000OnActiveLobby
 ;----------------------------------------------------------;
 _MainLoop000OnActiveLevelIntro
 
-    ; Return if intro is inactive
-    LD A, (li.introState)
-    CP li.INT_ST_INACTIVE
-    RET Z
+    ; Return if intro is inactive.
+    LD A, (ms.mainState)
+    CP ms.LEVEL_INTRO
+    RET NZ
 
     ; ##########################################
     CALL li.LevelIntroUserInput
@@ -199,17 +199,17 @@ _MainLoop002OnActiveJetman
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
     
-    RET                                         ; ## END of the function ##
+    RET                                         ; ## END of the function ##m
 
 ;----------------------------------------------------------;
 ;            #_MainLoop002OnActiveLevelIntro               ;
 ;----------------------------------------------------------;
 _MainLoop002OnActiveLevelIntro
     
-    ; Return if intro is inactive
-    LD A, (li.introState)
-    CP li.INT_ST_INACTIVE
-    RET Z
+    ; Return if intro is inactive.
+    LD A, (ms.mainState)
+    CP ms.LEVEL_INTRO
+    RET NZ
 
     ; ##########################################
     CALL li.AnimateLevelIntroTextScroll

@@ -1,34 +1,29 @@
 ;----------------------------------------------------------;
 ;                      Lobby State                         ;
 ;----------------------------------------------------------;
-    MODULE los
+    MODULE ms
 
-LOBBY_INACTIVE          = 0
-MAIN_MENU               = 1
+GAME_ACTIVE             = 1
+GAME_PAUSE              = 2
+LEVEL_INTRO             = 3
+MAIN_MENU               = 4
+SUBMENU_SETTING         = 5
+SUBMENU_HIGH_SCORE      = 6
+FLY_ROCKET              = 7
 
-lobbyState              BYTE LOBBY_INACTIVE
+mainState              BYTE MAIN_MENU
 
 ;----------------------------------------------------------;
-;                #SetLobbyStateInactive                    ;
+;                    #SetMainState                         ;
 ;----------------------------------------------------------;
-SetLobbyStateInactive
+; Input:
+;  - A: The state.
+SetMainState
 
-    LD A, LOBBY_INACTIVE
-    LD (lobbyState), A
+    LD (mainState), A
 
     RET                                         ; ## END of the function ##
 
-
-;----------------------------------------------------------;
-;                #SetLobbyStateMainMenu                    ;
-;----------------------------------------------------------;
-SetLobbyStateMainMenu
-
-    LD A, MAIN_MENU
-    LD (lobbyState), A
-
-    RET                                         ; ## END of the function ##
-    
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

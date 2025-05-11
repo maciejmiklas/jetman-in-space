@@ -8,18 +8,19 @@
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    CALL los.SetLobbyStateMainMenu
+    LD A, ms.MAIN_MENU
+    CALL ms.SetMainState
 
     ; ##########################################
     ; Load palette
-    LD HL, db.menuBgPaletteAdr
-    LD A, (db.menuBbPaletteBytes)
+    LD HL, db.mainMenuBgPaletteAdr
+    LD A, (db.mainMenuBbPaletteBytes)
     LD B, A
     CALL bp.LoadPalette
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadLobbyImage
+    CALL fi.LoadMainMenuImage
     CALL bm.CopyImageData
 
     RET                                         ; ## END of the function ##
@@ -27,4 +28,4 @@ LoadMainMenu
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-    ENDMODULE   
+    ENDMODULE

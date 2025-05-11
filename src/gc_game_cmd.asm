@@ -54,25 +54,20 @@ SetupGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #LoadLobby                         ;
+;                     #LoadMainMenu                        ;
 ;----------------------------------------------------------;
-LoadLobby
+LoadMainMenu
 
-    CALL _HaltGame
+    LD A, ms.MAIN_MENU
+    CALL ms.SetMainState
+
+    CALL _HideGame
     CALL sc.ResetScore
     CALL lom.LoadMainMenu
-
-    ; TODO remove it when menu is ready, also remove assets/l00
-    XOR A
-    LD (fi.introSecondFileSize), A
-    LD D, "0"
-    LD E, "0"
-    LD A, 4800/80                               ; Total number of lines in intro_0.map and intro_1.map
-    CALL fi.LoadLevelIntroTilemap
     CALL li._ResetLevelIntro
     CALL ti.SetTilesClipVertical
     CALL jw.ResetWeapon
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -80,7 +75,7 @@ LoadLobby
 ;----------------------------------------------------------;
 LoadLevel1Intro
 
-    CALL _HaltGame
+    CALL _HideGame
 
     LD D, "0"
     LD E, "1"
@@ -247,6 +242,9 @@ LoadNextLevel
 ;                  #LoadCurrentLevel                       ;
 ;----------------------------------------------------------;
 LoadCurrentLevel
+
+    LD A, ms.GAME_ACTIVE
+    CALL ms.SetMainState
 
     ; Load level into A
     LD A, (level)
@@ -847,9 +845,9 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                       #_HaltGame                         ;
+;                       #_HideGame                         ;
 ;----------------------------------------------------------;
-_HaltGame
+_HideGame
 
     CALL bm.HideImage
     CALL js.HideJetSprite
@@ -869,14 +867,11 @@ _HaltGame
 ;----------------------------------------------------------;
 _InitLevelLoad
 
-    CALL _HaltGame
-    
+    CALL _HideGame
     CALL gi.ResetKeysState
-    CALL los.SetLobbyStateInactive
     CALL ti.ResetTilemapOffset
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
-    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -896,6 +891,9 @@ _StartLevel
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
 
+    LD A, ms.GAME_ACTIVE
+    CALL ms.SetMainState
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

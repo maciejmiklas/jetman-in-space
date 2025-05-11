@@ -90,16 +90,17 @@ lbFileName              DB "assets/l00/bg_0.nxi",0
 LB_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
 LB_FILE_IMG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
-; Level intro file
-liFileName              DB "assets/l00/intro_0.nxi",0
-LI_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
-LI_FILE_IMG_POS         = 17                    ; Position of a image part number (0-9) in the file name of the background image.
+; Level intro file.
+liBgFileName             DB "assets/l00/intro_0.nxi",0
+LI_BG_FILE_LEVEL_POS     = 8                     ; Position of a level number (00-99) in the file name of the background image.
+LI_BG_FILE_IMG_POS       = 17                    ; Position of a image part number (0-9) in the file name of the background image.
 
-mainMenuFileName        DB "assets/lobby/bg_0.nxi",0
-MAIN_MENU_POS           = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+mainMenuBgFileName       DB "assets/mm/bg_0.nxi",0
+MAIN_MENU_BG_POS         = 13                    ; Position of a image part number (0-9) in the file name of the background image.
 
-effectsFileName        DB "assets/common/effects.afb",0
-EFFECTS_FILE_SIZE      = 3714
+effectsFileName         DB "assets/common/effects.afb",0
+EFFECTS_FILE_SIZE       = 3714
+
 ;----------------------------------------------------------;
 ;                        #LoadEffects                      ;
 ;----------------------------------------------------------;
@@ -125,14 +126,14 @@ LoadEffects
 LoadLevelIntroImage
 
     ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/..."
-    LD HL, liFileName
+    LD HL, liBgFileName
     LD IX, HL                                   ; Param for #_LoadImage
-    ADD HL, LI_FILE_LEVEL_POS                   ; Move HL to "assets/l"
+    ADD HL, LI_BG_FILE_LEVEL_POS                   ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number.
 
-    LD C, LI_FILE_IMG_POS
+    LD C, LI_BG_FILE_IMG_POS
     CALL fi._LoadImage
 
     RET                                         ; ## END of the function ##
@@ -248,13 +249,14 @@ LoadLevelIntroTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #LoadLobbyImage                       ;
+;                  #LoadMainMenuImage                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Image number as ASCII, for example for "04": D="0", E="4"
-LoadLobbyImage
-    LD IX, mainMenuFileName
-    LD C, MAIN_MENU_POS
+LoadMainMenuImage
+
+    LD IX, mainMenuBgFileName
+    LD C, MAIN_MENU_BG_POS
     CALL fi._LoadImage
 
     RET                                         ; ## END of the function ##
@@ -427,6 +429,7 @@ _FileRead
     RST F_CMD: DB F_READ
     CALL C, _IOError                            ; Handle errors.
     CALL _FileClose
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -435,6 +438,7 @@ _FileRead
 ; Input:
 ;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
 _FileOpen
+
 
     ; Set params for F_OPEN
     LD A, '*'                                   ; Read from default drive.

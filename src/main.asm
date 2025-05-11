@@ -13,7 +13,7 @@ start
     call af.SetupAyFx
     CALL gc.SetupGame
     ;CALL gc.LoadLevel1
-    CALL gc.LoadLobby
+    CALL gc.LoadMainMenu
     
     ;CALL ro.AssemblyRocketForDebug
 
@@ -74,7 +74,7 @@ mainLoop
     INCLUDE "pi_pickups.asm"
     INCLUDE "af_audio_fx.asm"
     INCLUDE "ad_audio_daw.asm"
-    INCLUDE "los_lobby_state.asm"
+    INCLUDE "ms_main_state.asm"
 
     ; LAST import due to bank offset!
     INCLUDE "db_data_bin.asm"

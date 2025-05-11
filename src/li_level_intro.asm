@@ -14,10 +14,6 @@ tilePixelCnt            BYTE 0                  ; Runs from 0 to 7 (#ti.TI_PIXEL
 animateDelayCnt         BYTE ANIMATE_DELAY      ; Start scrolling without a delay.
 ANIMATE_DELAY           = 50
 
-INT_ST_ACTIVE           = 1
-INT_ST_INACTIVE         = 0
-introState              BYTE INT_ST_INACTIVE
-
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
@@ -31,8 +27,8 @@ LoadLevelIntro
 
     ; ##########################################
     ; Update state
-    LD A, INT_ST_ACTIVE
-    LD (introState), A
+    LD A, ms.LEVEL_INTRO
+    CALL ms.SetMainState
 
     ; ##########################################
     PUSH DE
@@ -65,6 +61,7 @@ LoadLevelIntro
 ;             #AnimateLevelIntroTextScroll                 ;
 ;----------------------------------------------------------;
 AnimateLevelIntroTextScroll
+   
     ; Delay animation (text scrolling) until the counter has reached ANIMATE_DELAY. When this happens, the animation runs at full speed 
     ; until the delay counter has been reset. It occurs when the next text line from Tilemap is being loaded.
     LD A, (animateDelayCnt)
@@ -144,9 +141,6 @@ LevelIntroUserInput
 ;                    #_KeyExitIntro                        ;
 ;----------------------------------------------------------;
 _KeyExitIntro
-
-    XOR A
-    LD (introState), A
 
     CALL gc.LoadCurrentLevel
 

@@ -1181,11 +1181,11 @@ gameIntroPaletteBytes = $ - gameIntroPaletteAdr
     ASSERT gameIntroPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
-menuBgPaletteAdr
-    INCBIN  "assets/lobby/bg.nxp"
+mainMenuBgPaletteAdr
+    INCBIN  "assets/mm/bg.nxp"
 
-menuBbPaletteBytes = $ - menuBgPaletteAdr
-    ASSERT menuBbPaletteBytes <= btd.PAL2_BYTES_D512    
+mainMenuBbPaletteBytes = $ - mainMenuBgPaletteAdr
+    ASSERT mainMenuBbPaletteBytes <= btd.PAL2_BYTES_D512
     
  ; #############################################
     ASSERT $$ == dbs.PAL2_BANK_D31
