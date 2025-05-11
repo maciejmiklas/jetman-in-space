@@ -41,7 +41,6 @@ fireFxDelayCnt          BYTE 0
 fireFxDelay             BYTE FIRE_FX_DELAY_INIT
 FIRE_FX_DELAY_INIT      = 2
 FIRE_FX_DELAY_SOUND2    = 5                     ; When delay reaches this value play #af.FX_FIRE2
-FIRE_FX_DELAY_2X        = 5
 
 fireFxOn                BYTE 1
 FIRE_FX_ON              = 1
@@ -94,11 +93,6 @@ FireSpeedUp
     ; Slow down FX
     LD A, (fireFxDelay)
     INC A
-    CP FIRE_FX_DELAY_2X
-    JR NZ, .doNotDouble
-    INC A
-    INC A
-.doNotDouble
     LD (fireFxDelay), A
 
     RET                                         ; ## END of the function ##

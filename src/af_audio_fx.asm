@@ -74,32 +74,32 @@ AFX_CH_DESC_COUNT       = 3
 afxChDesc               DS AFX_CH_DESC_COUNT*8
 AFX_SMC                 = 0
 
-FX_JET_LAND             = 1 ; 
-FX_FIRE2                = 2 ; 
+FX_JET_LAND             = 1
+FX_FIRE2                = 2
 MENU_ENTER              = 3 
 FX_ROCKET_START         = 4
-FX_PICKUP_LIVE          = 5 ;
-FX_JET_NORMAL           = 6 ;
-FX_PICKUP_FUEL          = 7 ;
-FX_PICKUP_GRENADE       = 8 ;
-FX_PICKUP_DIAMOND       = 9 ;
-FX_JET_OVERHEAT         = 10 ;
-FX_EXPLODE_TANK         = 11 ; 
-FX_PICKUP_GUN           = 12 ;
-FX_BUMP_PLATFORM        = 13 ;
-FX_JET_KILL             = 14 ;
-FX_FIRE1                = 15 ;
-FX_EXPLODE_ENEMY_1      = 16 ;
-FX_ROCKET_READY         = 17 ;
-FX_EXPLODE_ENEMY_2      = 18 ;
-FX_EXPLODE_ENEMY_3      = 19 ;
+FX_PICKUP_LIVE          = 5
+FX_JET_NORMAL           = 6
+FX_PICKUP_FUEL          = 7
+FX_PICKUP_GRENADE       = 8
+FX_PICKUP_DIAMOND       = 9
+FX_JET_OVERHEAT         = 10
+FX_EXPLODE_TANK         = 11
+FX_PICKUP_GUN           = 12
+FX_BUMP_PLATFORM        = 13
+FX_JET_KILL             = 14
+FX_FIRE1                = 15
+FX_EXPLODE_ENEMY_1      = 16
+FX_ROCKET_READY         = 17
+FX_EXPLODE_ENEMY_2      = 18
+FX_EXPLODE_ENEMY_3      = 19
 FX_ROCKET_FLY           = 20
-FX_ROCKET_EL_DROP       = 21 ;
-FX_PICKUP_STRAWBERRY    = 22 ;
+FX_ROCKET_EL_DROP       = 21
+FX_PICKUP_STRAWBERRY    = 22
 FX_MENU_MOVE            = 23
-FX_PICKUP_JAR           = 24 ; 
-FX_PICKUP_ROCKET_EL     = 25 ;
-FX_FIRE_PLATFORM_HIT    = 26 ;
+FX_PICKUP_JAR           = 24
+FX_PICKUP_ROCKET_EL     = 25
+FX_FIRE_PLATFORM_HIT    = 26
 
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
