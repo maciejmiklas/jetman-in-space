@@ -74,7 +74,7 @@ AFX_CH_DESC_COUNT       = 3
 afxChDesc               DS AFX_CH_DESC_COUNT*8
 AFX_SMC                 = 0
 
-FX_ROCKET_DOCK          = 1 ;
+FX_JET_LAND             = 1 ; 
 FX_FIRE2                = 2 ; 
 MENU_ENTER              = 3 
 FX_ROCKET_START         = 4
@@ -84,7 +84,7 @@ FX_PICKUP_FUEL          = 7 ;
 FX_PICKUP_GRENADE       = 8 ;
 FX_PICKUP_DIAMOND       = 9 ;
 FX_JET_OVERHEAT         = 10 ;
-FX_EXPLODE_TANK         = 11 ; fajniejszy
+FX_EXPLODE_TANK         = 11 ; 
 FX_PICKUP_GUN           = 12 ;
 FX_BUMP_PLATFORM        = 13 ;
 FX_JET_KILL             = 14 ;
@@ -94,14 +94,12 @@ FX_ROCKET_READY         = 17 ;
 FX_EXPLODE_ENEMY_2      = 18 ;
 FX_EXPLODE_ENEMY_3      = 19 ;
 FX_ROCKET_FLY           = 20
-FX_FUEL_DOCK            = 21 ;
+FX_ROCKET_EL_DROP       = 21 ;
 FX_PICKUP_STRAWBERRY    = 22 ;
-MENU_MOVE               = 23
-FX_PICKUP_JAR           = 24 ; DLUZSZY
+FX_MENU_MOVE            = 23
+FX_PICKUP_JAR           = 24 ; 
 FX_PICKUP_ROCKET_EL     = 25 ;
-FX_JET_LAND             = 0
-FX_JET_EL_DROP          = 0
-FX_FIRE_PLATFORM_HIT    = 0
+FX_FIRE_PLATFORM_HIT    = 26 ;
 
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
@@ -126,11 +124,11 @@ SetupAyFx
 ; Configure AY3 as mono; call after PlayNextDawSong
 SetAy3ToMono
 
-    LD A, $09
+    LD A, _PERIPHERAL_04_H09
     CALL ut.ReadNextReg
 
     SET 7, A
-    NEXTREG $09, A
+    NEXTREG _PERIPHERAL_04_H09, A
         
     RET                                         ; ## END of the function ##
 
@@ -145,7 +143,7 @@ AfxInit
     LD (afxBnkAdr1+1), HL                       ; Save the address of the table of offsets
     ld (afxBnkAdr2+1), HL                       ; Save the address of the table of offsets
     LD HL, afxChDesc                            ; Mark all channels as empty
-    LD DE, $00ff
+    LD DE, $00FF
     LD BC, AFX_CH_DESC_COUNT*256+$FD
 .afxInit0
     LD (HL), D
@@ -197,7 +195,7 @@ AfxFrame
     LD A, 11
     LD H, (IX+1)                                ; Compare high-order byte of address to <11.
     CP H
-    JR NC, .afxFrame7                            ; The channel does not play, we skip.
+    JR NC, .afxFrame7                           ; The channel does not play, we skip.
     LD L, (IX+0)
     LD E, (HL)                                  ; We take the value of the information byte.
     INC HL
@@ -327,7 +325,7 @@ AfxPlayChannel
 ;  - A:  Effect number 0..255
 ;  - E:  Channel (A=0, B=1, C=2)
 ;  - BC: ReleaseAddrCh[N]
-AfxPlayLooped:
+AfxPlayLooped
     PUSH AF
     LD A, C
     LD (releaseLoSMC), A                        ; SMC>
@@ -365,17 +363,20 @@ afxBnkAdr2
 ; Launch the effect on a free channel. If no free channels, the longest sounding is selected.
 ; Input: 
 ;  - A: Effect number 0..255
+;  - BC: ReleaseAddrCh[N]
 AfxPlay
 
     CALL dbs.SetupAyFxsBank
 
-    DEC A                                       ; Start with 1 as the editor does.
+    DEC A                                       ; Number effects from 1 as the ayfxedit.exe does.
+    
     PUSH AF
     LD A, C
     LD (releaseLoSMC), A                        ; SMC>
     LD A, B
     LD (releaseHiSmc), A                        ; SMC>
     POP AF
+    
     LD DE, 0                                    ; In DE the longest time in search.
     LD H, E
     LD L, A

@@ -9,10 +9,6 @@ FIRE_ADJUST_X_D10       = 10
 FIRE_ADJUST_Y_D4        = 4
 FIRE_THICKNESS_D10      = 10
 
-JM_FIRE_DELAY_MAX       = 15
-JM_FIRE_DELAY_MIN       = 3
-JM_FIRE_SPEED_UP        = 4
-
 ; Sprites for single shots (#shots), based on #SPR.
 shots
     sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
@@ -33,6 +29,9 @@ shots
 SHOTS_SIZE              = 15                    ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JM_FIRE_DELAY.
+JM_FIRE_DELAY_MAX       = 15
+JM_FIRE_DELAY_MIN       = 3
+JM_FIRE_SPEED_UP        = 4
 fireDelayCnt            BYTE 0
 fireDelay               BYTE JM_FIRE_DELAY_MAX
 
@@ -233,7 +232,7 @@ ShotsCollision
 MoveShots
 
     ; Loop ever all shots# skipping hidden sprites.
-    LD IX, shots    
+    LD IX, shots
     LD B, SHOTS_SIZE 
 
 .shootsLoop
@@ -265,14 +264,17 @@ MoveShots
 
     ; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
-    JR Z, .afterPlatformCollision               ; Exit if sprite is not alive.
+    JR Z, .afterPlatformHit               ; Exit if sprite is not alive.
 
     ; Check the collision with the platform.
-    CALL pl.PlatformWeaponHit
+    CALL pl.CheckPlatformWeaponHit
     CP A, pl.PL_HIT_RET_A_NO
-    JR Z, .afterPlatformCollision
+    JR Z, .afterPlatformHit
+    PUSH IX
     CALL sr.SpriteHit
-.afterPlatformCollision
+    CALL gc.PlatformWeaponHit
+    POP IX
+.afterPlatformHit
 
 .continue
     ; Move IX to the beginning of the next #shotsXX.

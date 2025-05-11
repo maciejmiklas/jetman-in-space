@@ -12,8 +12,8 @@ start
     
     call af.SetupAyFx
     CALL gc.SetupGame
-    CALL gc.LoadLevel1
-    ;CALL gc.LoadLobby
+    ;CALL gc.LoadLevel1
+    CALL gc.LoadLobby
     
     ;CALL ro.AssemblyRocketForDebug
 

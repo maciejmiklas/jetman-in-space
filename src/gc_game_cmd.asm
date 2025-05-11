@@ -325,26 +325,6 @@ LoadCurrentLevel
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #FuelTankDock                       ;
-;----------------------------------------------------------;
-FuelTankDock
-
-    LD A, af.FX_FUEL_DOCK
-    CALL af.AfxPlay
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    #FuelElementDock                      ;
-;----------------------------------------------------------;
-FuelElementDock
-
-    LD A, af.FX_ROCKET_DOCK
-    CALL af.AfxPlay
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                     #RocketFlying                        ;
 ;----------------------------------------------------------;
 RocketFlying
@@ -405,6 +385,19 @@ RocketElementDrop
     
     CALL sc.DropRocketElement
 
+    LD A, af.FX_ROCKET_EL_DROP
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                  #PlatformWeaponHit                      ;
+;----------------------------------------------------------;
+PlatformWeaponHit
+
+    LD A, af.FX_FIRE_PLATFORM_HIT
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
@@ -437,15 +430,13 @@ EnemyHit
 
     ; Enemy 2?
     LD A, (IX + sr.SPR.SDB_INIT)
-    CP sr.SDB_ENEMY1
+    CP sr.SDB_ENEMY2
     JR NZ, .afterHitEnemy2
 
     ; Yes, enemy 2 hot git.
     LD A, af.FX_EXPLODE_ENEMY_2
     CALL af.AfxPlay
 
-    LD A, $A5
-    nextreg 2,8
     CALL sc.HitEnemy2
     
     JR .afterHitEnemy
@@ -460,8 +451,6 @@ EnemyHit
     LD A, af.FX_EXPLODE_ENEMY_3
     CALL af.AfxPlay
 
-    LD A, $A6
-    nextreg 2,8
     CALL sc.HitEnemy3
     
     JR .afterHitEnemy
@@ -544,7 +533,7 @@ RespawnJet
 
 
 ;----------------------------------------------------------;
-;                   #JetpackOverheat                      ;
+;                   #JetpackOverheat                       ;
 ;----------------------------------------------------------;
 JetpackOverheat
 
@@ -564,18 +553,18 @@ JetpackNormal
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #JetmanPicksInAir                      ;
+;                     #JetPicksInAir                       ;
 ;----------------------------------------------------------;
-JetmanPicksInAir
+JetPicksInAir
 
     CALL sc.PickupInAir
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetmanPicksGun                       ;
+;                      #JetPicksGun                        ;
 ;----------------------------------------------------------;
-JetmanPicksGun
+JetPicksGun
 
     CALL sc.PickupRegular
     CALL jw.FireSpeedUp
@@ -586,9 +575,9 @@ JetmanPicksGun
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #JetmanPicksLife                       ;
+;                     #JetPicksLife                        ;
 ;----------------------------------------------------------;
-JetmanPicksLife
+JetPicksLife
 
     CALL sc.PickupRegular
 
@@ -598,9 +587,9 @@ JetmanPicksLife
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #JetmanPicksGrenade                     ;
+;                    #JetPicksGrenade                      ;
 ;----------------------------------------------------------;
-JetmanPicksGrenade
+JetPicksGrenade
 
     CALL sc.PickupRegular
     CALL enp.KillFewPatternEnemies
@@ -611,9 +600,9 @@ JetmanPicksGrenade
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #JetmanPicksStrawberry                   ;
+;                  #JetPicksStrawberry                     ;
 ;----------------------------------------------------------;
-JetmanPicksStrawberry
+JetPicksStrawberry
 
     CALL sc.PickupRegular
 
@@ -623,14 +612,11 @@ JetmanPicksStrawberry
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #JetmanPicksDiamond                     ;
+;                   #JetPicksDiamond                       ;
 ;----------------------------------------------------------;
-JetmanPicksDiamond
+JetPicksDiamond
 
     CALL sc.PickupDiamond
-
-    LD A, $B5
-    nextreg 2,8
 
     LD A, af.FX_PICKUP_DIAMOND
     CALL af.AfxPlay
@@ -638,9 +624,9 @@ JetmanPicksDiamond
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetmanPicksJar                       ;
+;                      #JetPicksJar                        ;
 ;----------------------------------------------------------;
-JetmanPicksJar
+JetPicksJar
 
     CALL sc.PickupRegular
     CALL jo.ResetJetpackOverheating
@@ -651,10 +637,20 @@ JetmanPicksJar
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JetmanMoves                        ;
+;                      #JetLanding                         ;
 ;----------------------------------------------------------;
-; Called on any Jetman movement, always before the method indicating concrete movement (#JetmanMovesUp,#JetmanMovesDown).
-JetmanMoves
+JetLanding
+
+    LD A, af.FX_JET_LAND
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        #JetMoves                        ;
+;----------------------------------------------------------;
+; Called on any Jetman movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
+JetMoves
 
     CALL ro.UpdateRocketOnJetmanMove
     CALL pi.UpdatePickupsOnJetmanMove
@@ -662,9 +658,9 @@ JetmanMoves
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #JetmanMovesUp                       ;
+;                       #JetMovesUp                        ;
 ;----------------------------------------------------------;
-JetmanMovesUp
+JetMovesUp
 
     ; The #UpdateBackgroundOnJetmanMove calculates #bgOffset, which is used to hide the background line behind the horizon.
     ; To avoid glitches, like not hidden lines, we always have to first hide the line and then calculate the #bgOffset. This will introduce 
@@ -676,9 +672,9 @@ JetmanMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetmanMovesDown                      ;
+;                     #JetMovesDown                        ;
 ;----------------------------------------------------------;
-JetmanMovesDown
+JetMovesDown
 
     CALL bg.ShowBackgroundAboveHorizon
     CALL bg.UpdateBackgroundOnJetmanMove

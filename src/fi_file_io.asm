@@ -99,7 +99,7 @@ mainMenuFileName        DB "assets/lobby/bg_0.nxi",0
 MAIN_MENU_POS           = 16                    ; Position of a image part number (0-9) in the file name of the background image.
 
 effectsFileName        DB "assets/common/effects.afb",0
-
+EFFECTS_FILE_SIZE      = 3714
 ;----------------------------------------------------------;
 ;                        #LoadEffects                      ;
 ;----------------------------------------------------------;
@@ -111,7 +111,7 @@ LoadEffects
     CALL _FileOpen
     
     LD IX, _RAM_SLOT6_STA_HC000
-    LD BC, 3014
+    LD BC, EFFECTS_FILE_SIZE
     CALL _FileRead
 
     RET                                         ; ## END of the function ##
