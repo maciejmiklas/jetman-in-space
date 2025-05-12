@@ -114,13 +114,13 @@ _NextTilesRow
     ADD HL, DE                                  ; Move RAM pointer to current row.
 
     ; Load the memory address of in-game tiles into DE. This row will be replaced with stars. 
-    ; DE = ti.RAM_START_H5B00 + tilesRow * ti.TI_H_BYTES_D80
+    ; DE = ti.TI_MAP_RAM_H5B00 + tilesRow * ti.TI_H_BYTES_D80
     LD A, (tilesRow)
     LD D, A
     LD E, ti.TI_H_BYTES_D80
     MUL D, E                                    ; DE contains #tilesRow * ti.TI_H_BYTES_D80.
     PUSH HL
-    LD HL, ti.RAM_START_H5B00                   ; HL contains memory offset to tiles.
+    LD HL, ti.TI_MAP_RAM_H5B00                   ; HL contains memory offset to tiles.
     ADD HL, DE
     LD DE, HL
     POP HL

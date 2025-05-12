@@ -67,13 +67,11 @@ mainLoop
     INCLUDE "td_times_of_day.asm"
     INCLUDE "st_stars.asm"
     INCLUDE "jo_jetpack_overheat.asm"
-    INCLUDE "loi_lobby_input.asm"
     INCLUDE "li_level_intro.asm"
     INCLUDE "me_menu_main.asm"
     INCLUDE "sc_score.asm"
     INCLUDE "pi_pickups.asm"
     INCLUDE "af_audio_fx.asm"
-    INCLUDE "ad_audio_daw.asm"
     INCLUDE "ms_main_state.asm"
 
     ; LAST import due to bank offset!

@@ -51,10 +51,16 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD L, 7
+    LD A, (me.menuPos)
+    LD L, A
     CALL ut.PrintNumber
 
-
+    ; ##########################################
+    LD BC, 50
+    LD H, 0
+    LD A, (ut.userInputDelayCnt)
+    LD L, A
+    CALL ut.PrintNumber
 
 
     RET                                         ; ## END of the function ##

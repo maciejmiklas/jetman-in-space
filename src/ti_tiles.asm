@@ -10,12 +10,12 @@ TI_H_BYTES_D80          = 320/8 * 2
 
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
-RAM_START_H5B00         = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap.
-    ASSERT RAM_START_H5B00 <= $5B00
+TI_MAP_RAM_H5B00        = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap.
+    ASSERT TI_MAP_RAM_H5B00 <= $5B00
 
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-TI_BANK_OFFSET          = (RAM_START_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
-    ASSERT TI_BANK_OFFSET =  $1B
+TI_MAP_BANK_OFFSET      = (TI_MAP_RAM_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
+    ASSERT TI_MAP_BANK_OFFSET =  $1B
 
 TI_MAP_H                = 40
 TI_MAP_V                = 32
@@ -26,7 +26,7 @@ TI_MAP_BYTES_D2560      = TI_MAP_TILES*2        ; 2560 bytes. 320x256 = 40x32 ti
 ; each taking 4x32 bytes = 128bytes. We can assign to the whole tile sprites file 6910 bytes, 6910/128 = 53.
 ; The editor stores 4 sprites (4x4) in a single row. 53/4 = 13 rows. The editor can contain at most 4x13 large sprites.
 ;   6910                 =           $7FFF      -    $5B00     -     2560
-TI_DEF_MAX_D6910         = _RAM_SLOT3_END_H7FFF - RAM_START_H5B00 - TI_MAP_BYTES_D2560
+TI_DEF_MAX_D6910         = _RAM_SLOT3_END_H7FFF - TI_MAP_RAM_H5B00 - TI_MAP_BYTES_D2560
 
 TI_CLIP_X1_D0           = 0
 TI_CLIP_X2_D159         = 159
@@ -44,8 +44,6 @@ TI_PIXELS_D8            = 8                     ; Size of a single tile in pixel
 TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertical screen size).
     ASSERT TI_VTILES_D32 =  32
 
-
-
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
 ; Time map for single screen at 320x200 requires 2650 bytes:
@@ -61,12 +59,13 @@ TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertica
 ; - $6501 - $7FFF - Tile definitions/sprites. We can store up to 215 sprites: $7FFF - $6501 = 6910. 6910/32 = 215.
 
 ; Tile definition (sprite file).
-START_H6500 = RAM_START_H5B00 + TI_MAP_BYTES_D2560 ; Tile definitions (sprite file).
-    ASSERT START_H6500 >= _RAM_SLOT2_STA_H4000
-    ASSERT START_H6500 <= _RAM_SLOT3_END_H7FFF
-    
+TI_DEF_RAM_H6500        = TI_MAP_RAM_H5B00 + TI_MAP_BYTES_D2560 ; Tile definitions (sprite file) is right after time map.
+    ASSERT TI_DEF_RAM_H6500 >= _RAM_SLOT2_STA_H4000
+    ASSERT TI_DEF_RAM_H6500 <= _RAM_SLOT3_END_H7FFF
+
 ; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
-OFFSET  = (START_H6500 - _RAM_SLOT2_STA_H4000) >> 8
+TI_DEF_BANK_OFFSET      = (TI_DEF_RAM_H6500 - _RAM_SLOT2_STA_H4000) >> 8
+    ASSERT TI_DEF_BANK_OFFSET = $25
 
 ;----------------------------------------------------------;
 ;                     #ShakeTilemap                        ;
@@ -105,8 +104,8 @@ ResetTilemapOffset
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first character starts in second line.
 PrintText
 
-    LD HL, RAM_START_H5B00                      ; HL points to screen memory containing tilemap.
-    DEC HL                                      ; TODO why -1 (verify RAM_START_H5B00)?
+    LD HL, TI_MAP_RAM_H5B00                      ; HL points to screen memory containing tilemap.
+    DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
 
     ; HL will point to the memory location containing the data of the first character (tile).
     ADD HL, BC                                  ; *2 because each tile has 2 bytes.
@@ -133,8 +132,8 @@ PrintText
 ;----------------------------------------------------------;
 CleanAllTiles
 
-    LD HL, RAM_START_H5B00                      ; HL points to screen memory containing tilemap.
-    DEC HL                                      ; TODO why -1 (verify RAM_START_H5B00)?
+    LD HL, TI_MAP_RAM_H5B00                      ; HL points to screen memory containing tilemap.
+    DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
 
     ; ##########################################
     LD A, TI_EMPTY_D57
@@ -162,8 +161,8 @@ CleanAllTiles
 ;----------------------------------------------------------;
 ;  - B:     Amount of tiles to clean 
 CleanTiles
-    LD HL, RAM_START_H5B00                      ; HL points to screen memory containing tilemap.
-    DEC HL                                      ; TODO why -1 (verify RAM_START_H5B00)?
+    LD HL, TI_MAP_RAM_H5B00                      ; HL points to screen memory containing tilemap.
+    DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
 
     ; ##########################################
     LD A, TI_EMPTY_D57
@@ -197,8 +196,8 @@ SetupTiles
 
     ; ##########################################
     ; Tell hardware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
-    NEXTREG _TI_MAP_ADR_H6E, TI_BANK_OFFSET          ; MSB of tilemap in bank 5.
-    NEXTREG _TI_DEF_ADR_H6F, OFFSET             ; MSB of tilemap definitions (sprites).
+    NEXTREG _TI_MAP_ADR_H6E, TI_MAP_BANK_OFFSET     ; MSB of tilemap in bank 5.
+    NEXTREG _TI_DEF_ADR_H6F, TI_DEF_BANK_OFFSET             ; MSB of tilemap definitions (sprites).
 
     ; ##########################################
     ; Setup palette
@@ -210,7 +209,7 @@ SetupTiles
 
     ; ##########################################
     ; Copy tile definitions (sprite file) to expected memory.
-    LD DE, START_H6500
+    LD DE, TI_DEF_RAM_H6500
     LD HL, db.tileSprBin                        ; Address of tiles in memory.
     LD BC, db.tileSprBinLength                  ; Number of bytes to copy.
     LDIR

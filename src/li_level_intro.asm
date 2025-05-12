@@ -189,14 +189,14 @@ _NextTilesRow
     ADD HL, DE                                  ; Move RAM pointer to current row.
 
     ; Load the bottom line of tilemap screen memory into DE. This row will be replaced with new lite line. 
-    ; DE = ti.RAM_START_H5B00 + screenTilesRow * ti.TI_H_BYTES_D80
+    ; DE = ti.TI_MAP_RAM_H5B00 + screenTilesRow * ti.TI_H_BYTES_D80
     LD A, (screenTilesRow)
 
     LD D, A
     LD E, ti.TI_H_BYTES_D80
     MUL D, E                                    ; DE contains #screenTilesRow * ti.TI_H_BYTES_D80.
     PUSH HL                                     ; Keep HL because it already contains proper source tiles address
-    LD HL, ti.RAM_START_H5B00                   ; Now HL contains memory offset to tiles.
+    LD HL, ti.TI_MAP_RAM_H5B00                   ; Now HL contains memory offset to tiles.
     ADD HL, DE
     LD DE, HL
     POP HL

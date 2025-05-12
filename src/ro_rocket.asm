@@ -68,7 +68,7 @@ CARRY_ADJUSTY_D10       = 10
 rocketEl                WORD 0                  ; Pointer to 9x ro.RO
 
 BAR_TILE_START         = 24*2                  ; *2 because each tile takes 2 bytes
-BAR_RAM_START          = ti.RAM_START_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
 BAR_TILE_PAL           = $60
 
 BAR_ICON               = 189

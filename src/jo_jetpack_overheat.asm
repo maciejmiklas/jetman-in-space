@@ -29,7 +29,7 @@ JM_HEAT_CNT             = 40
 JM_COOL_CNT             = 20
 
 BAR_TILE_START         = 33*2                   ; *2 because each tile takes 2 bytes
-BAR_RAM_START          = ti.RAM_START_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
 BAR_TILE_PAL           = $30
 
 BAR_ICON               = 188

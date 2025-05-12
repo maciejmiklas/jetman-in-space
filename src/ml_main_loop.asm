@@ -94,7 +94,7 @@ _MainLoop000OnActiveJetman
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop000OnActiveMainMenu                 ;
+;              #_MainLoop000OnActiveMainMenu               ;
 ;----------------------------------------------------------;
 _MainLoop000OnActiveMainMenu
 
@@ -104,7 +104,7 @@ _MainLoop000OnActiveMainMenu
     RET NZ
 
     ; ##########################################
-    CALL loi.MainMenuUserInput
+    CALL me.MainMenuUserInput
     
     RET                                         ; ## END of the function ##
 

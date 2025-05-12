@@ -3,7 +3,32 @@
 ;----------------------------------------------------------;
     MODULE ut
 
-PAUSE_TIME_D10      = 10
+PAUSE_TIME_D10          = 10
+
+userInputDelayCnt       BYTE 0
+USER_INPUT_DELAY        = 10
+
+;----------------------------------------------------------;
+;                 #CanProcessKeyboardInput                 ;
+;----------------------------------------------------------;
+; Output:
+;  A: _RET_YES_D1 or _RET_NO_D0
+CanProcessKeyboardInput
+
+    ; Delay user input processing.
+    LD A, (userInputDelayCnt)
+    INC A
+    CP USER_INPUT_DELAY
+    JR Z, .processInput
+    LD (userInputDelayCnt), A
+    LD A, _RET_NO_D0
+    RET
+.processInput
+    XOR A
+    LD (userInputDelayCnt), A
+    LD A, _RET_YES_D1
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       Add8To32                           ;

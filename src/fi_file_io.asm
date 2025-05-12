@@ -178,7 +178,7 @@ LoadPlatformsTilemap
     CALL _FileOpen
 
     ; Read file.
-    LD IX, ti.RAM_START_H5B00
+    LD IX, ti.TI_MAP_RAM_H5B00
     LD BC, ti.TI_MAP_BYTES_D2560
     CALL _FileRead
 

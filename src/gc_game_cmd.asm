@@ -63,7 +63,7 @@ LoadMainMenu
 
     CALL _HideGame
     CALL sc.ResetScore
-    CALL lom.LoadMainMenu
+    CALL me.LoadMainMenu
     CALL li._ResetLevelIntro
     CALL ti.SetTilesClipVertical
     CALL jw.ResetWeapon
