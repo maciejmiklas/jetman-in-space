@@ -44,7 +44,7 @@ _MainLoop000
     CALL gb.PrintDebug
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
 
-    CALL _MainLoop000OnActiveJetman
+    CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMainMenu
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
@@ -66,14 +66,14 @@ _MainLoop000OnFlayRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop000OnActiveJetman                ;
+;               #_MainLoop000OnActiveGame                  ;
 ;----------------------------------------------------------;
-_MainLoop000OnActiveJetman
+_MainLoop000OnActiveGame
 
-    ; Return if Jetman is inactive (game paused/loading).
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    RET Z
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
 
     ; ##########################################
     CALL _MainLoop000OnDisabledJoy
@@ -164,7 +164,7 @@ _MainLoop002
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop002OnActiveJetman
+    CALL _MainLoop002OnActiveGame
     CALL _MainLoop002OnActiveLevelIntro
     CALL _MainLoop002OnFlayRocket
 
@@ -186,14 +186,14 @@ _MainLoop002OnFlayRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop002OnActiveJetman                ;
+;               #_MainLoop002OnActiveGame                  ;
 ;----------------------------------------------------------;
-_MainLoop002OnActiveJetman
+_MainLoop002OnActiveGame
 
-    ; Return if Jetman is inactive (game paused/loading).
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    RET Z
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
 
     ; ##########################################
     CALL jco.JetInvincible
@@ -241,7 +241,7 @@ _MainLoop004
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop004OnRocketExplosion
-    CALL _MainLoop004OnActiveJetman
+    CALL _MainLoop004OnActiveGame
 
     RET                                         ; ## END of the function ##
 
@@ -260,14 +260,14 @@ _MainLoop004OnRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop004OnActiveJetman                ;
+;                #_MainLoop004OnActiveGame                 ;
 ;----------------------------------------------------------;
-_MainLoop004OnActiveJetman
+_MainLoop004OnActiveGame
 
-    ; Return if Jetman is inactive (game paused/loading).
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    RET Z
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
 
     ; ##########################################
     CALL ro.RocketElementFallsForAssembly
@@ -327,8 +327,8 @@ _MainLoop008
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop008OnActiveJetman
-    CALL _MainLoop008OnActiveJetmanOrFlyingRocket
+    CALL _MainLoop008OnActiveGame
+    CALL _MainLoop008OnActiveGameOrFlyingRocket
     CALL _MainLoop008OnFlayingRocket
 
     RET                                         ; ## END of the function ##
@@ -348,14 +348,14 @@ _MainLoop008OnFlayingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop008OnActiveJetman                ;
+;                #_MainLoop008OnActiveGame                 ;
 ;----------------------------------------------------------;
-_MainLoop008OnActiveJetman
+_MainLoop008OnActiveGame
 
-    ; Return if Jetman is inactive (game paused/loading).
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    RET Z
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
 
     ; ##########################################
     CALL jw.AnimateShots
@@ -366,17 +366,17 @@ _MainLoop008OnActiveJetman
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;         #_MainLoop008OnActiveJetmanOrFlyingRocket        ;
+;         #_MainLoop008OnActiveGameOrFlyingRocket          ;
 ;----------------------------------------------------------;
-_MainLoop008OnActiveJetmanOrFlyingRocket
+_MainLoop008OnActiveGameOrFlyingRocket
 
-    ; Is Jetman active?
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    JR Z, .jetInactive
+    ; Is Game active?
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    JR NZ, .gameInactive
     JR .execute
-.jetInactive
-    ; Jetman ist inactive, what about rocket?
+.gameInactive
+    ; Game ist inactive, what about rocket?
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
     RET NZ                                          ; Return if rocket is not flying.
@@ -411,19 +411,19 @@ _MainLoop010
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop010OnActiveJetman
+    CALL _MainLoop010OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop010OnActiveJetman                ;
+;                #_MainLoop010OnActiveGame                 ;
 ;----------------------------------------------------------;
-_MainLoop010OnActiveJetman
+_MainLoop010OnActiveGame
 
-    ; Return if Jetman is inactive (game paused/loading).
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    RET Z
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
 
     ; ##########################################
     CALL st.BlinkStarsL2
@@ -489,19 +489,19 @@ _MainLoop040
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop040OnActiveJetman
+    CALL _MainLoop040OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop040OnActiveJetman                ;
+;                #_MainLoop040OnActiveGame                 ;
 ;----------------------------------------------------------;
-_MainLoop040OnActiveJetman
+_MainLoop040OnActiveGame
 
-    ; Return if Jetman is inactive (game paused/loading).
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    RET Z
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
 
     ; ##########################################
     CALL ro.DropNextRocketElement

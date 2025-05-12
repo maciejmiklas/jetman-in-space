@@ -19,10 +19,10 @@ JET_Y                   BYTE                    ; Y postion of Jetman pointing t
 
 menuEl
     MENU {10/*TEXT_SIZE*/, TOP_OFS+15              /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 100/*JET_X*/, 100/*JET_Y*/}  ; START GAME
-    MENU {12/*TEXT_SIZE*/, TOP_OFS+(1*EL_DIST)+14  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 100/*JET_X*/, 100/*JET_Y*/}  ; LEVEL SELECT
-    MENU {10/*TEXT_SIZE*/, TOP_OFS+(2*EL_DIST)+15  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 100/*JET_X*/, 100/*JET_Y*/}  ; HIGH SCORE
-    MENU {08/*TEXT_SIZE*/, TOP_OFS+(3*EL_DIST)+16  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 100/*JET_X*/, 100/*JET_Y*/}  ; SETTINGS
-    MENU {10/*TEXT_SIZE*/, TOP_OFS+(4*EL_DIST)+15  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 100/*JET_X*/, 100/*JET_Y*/}  ; DIFFICULTY
+    MENU {12/*TEXT_SIZE*/, TOP_OFS+(1*EL_DIST)+14  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 100/*JET_X*/, 120/*JET_Y*/}  ; LEVEL SELECT
+    MENU {10/*TEXT_SIZE*/, TOP_OFS+(2*EL_DIST)+15  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 100/*JET_X*/, 140/*JET_Y*/}  ; HIGH SCORE
+    MENU {08/*TEXT_SIZE*/, TOP_OFS+(3*EL_DIST)+16  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 100/*JET_X*/, 160/*JET_Y*/}  ; SETTINGS
+    MENU {10/*TEXT_SIZE*/, TOP_OFS+(4*EL_DIST)+15  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 100/*JET_X*/, 180/*JET_Y*/}  ; DIFFICULTY
 MENU_EL_SIZE            = 5
 
 menuTextSg DB "START GAME"
@@ -166,7 +166,7 @@ MainMenuUserInput
     LD A, _KB_5_TO_1_HF7
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 4, A                                    ; Bit 4 reset -> Left pressed.
-    CALL Z, _JoyLeft    
+    CALL Z, _JoyLeft
 
     RET                                         ; ## END of the function ##
 
@@ -175,6 +175,32 @@ MainMenuUserInput
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  #_SetIXToActiveMenu                     ;
+;----------------------------------------------------------;
+_SetIXToActiveMenu
+
+    ; Load into DE "current position" * "menu size" 
+    LD A, (menuPos)
+    LD D, A
+    LD E, MENU
+    MUL D, E
+
+    LD IX, (menuEl)
+    ADD IX, DE                                  ; Move IX to current menu position (IX + #menuPos * #MENU)
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #_UpdateSelection                       ;
+;----------------------------------------------------------;
+_UpdateSelection
+
+    CALL _SetIXToActiveMenu
+    
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                #_LoadStaticMenuText                      ;
@@ -235,6 +261,9 @@ _JoyUp
 .afterActiveReset
     LD (menuPos), A
 
+    ; ##########################################
+    CALL _UpdateSelection
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -255,6 +284,9 @@ _JoyDown
     LD A, MENU_EL_MAX
 .afterActiveReset
     LD (menuPos), A
+
+    ; ##########################################
+    CALL _UpdateSelection
 
     RET                                         ; ## END of the function ##
 

@@ -144,7 +144,7 @@ KillOneSprite
     LD A, (IX + SPR.STATE)
     AND SPRITE_ST_ALIVE                     ; Reset all bits but hidden/exploding.
     CP SPRITE_ST_ALIVE
-    JR NZ, .continue                            ; Jump if this enemy is already dead or exploding.
+    JR NZ, .continue                        ; Jump if this enemy is already dead or exploding.
 
     ; ##########################################
     CALL SetSpriteId
