@@ -388,6 +388,36 @@ RocketElementDrop
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
+;                    #JetPlatformTakesOff                  ;
+;----------------------------------------------------------;
+JetPlatformTakesOff
+
+    ; Transition from walking to flaying.
+    LD A, (jt.jetGnd)
+    CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform.
+    RET Z
+
+    ; Jetman is taking off.
+    LD A, jt.AIR_FLY
+    CALL jt.SetJetStateAir
+
+    ; Play takeoff animation.
+    LD A, js.SDB_T_WF
+    CALL js.ChangeJetSpritePattern
+
+    ; Not walking on platform anymore.
+    LD A, pl.PLATFORM_WALK_INACTIVE
+    LD (pl.platformWalkNumber), A
+
+    CALL js.ChangeJetSpriteOnFlyUp
+
+    ; Play FX
+    LD A, af.FX_JET_TAKE_OFF
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  #PlatformWeaponHit                      ;
 ;----------------------------------------------------------;
 PlatformWeaponHit

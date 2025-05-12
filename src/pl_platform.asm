@@ -387,30 +387,6 @@ MoveJetOnHitPlatformBelow
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetPlatformTakesOff                  ;
-;----------------------------------------------------------;
-JetPlatformTakesOff
-
-    ; Transition from walking to flaying.
-    LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform.
-    RET Z
-
-    ; Jetman is taking off.
-    LD A, jt.AIR_FLY
-    CALL jt.SetJetStateAir
-
-    ; Play takeoff animation.
-    LD A, js.SDB_T_WF
-    CALL js.ChangeJetSpritePattern
-
-    ; Not walking on platform anymore.
-    LD A, PLATFORM_WALK_INACTIVE
-    LD (platformWalkNumber), A  
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                      #JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding

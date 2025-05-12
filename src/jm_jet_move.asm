@@ -48,8 +48,7 @@ JoyMoveUp
 .afterDec
 
     ; ##########################################
-    CALL pl.JetPlatformTakesOff                 ; Transition from walking to flaying.
-    CALL js.ChangeJetSpriteOnFlyUp  
+    CALL gc.JetPlatformTakesOff                 ; Transition from walking to flaying
 
     RET                                         ; ## END of the function ##
 

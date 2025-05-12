@@ -176,12 +176,17 @@ _JetpackTempDown
     CP TEMP_NORM
     JR NZ, .afterNormTempCheck
 
+    ; #########################################
+    ; Is Jetpack going to temp normal from overheated?
+    LD A, (jt.jetState)
+    CP jt.JETST_OVERHEAT
+    JR NZ, .afterNormTempCheck
+
     ; Jetpack is coll again.
     LD A, jt.JETST_NORMAL
     LD (jt.jetState), A
 
     CALL gc.JetpackNormal
-
 .afterNormTempCheck
 
     CALL _UpdateUiHeatBar
