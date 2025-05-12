@@ -12,16 +12,20 @@ LoadMainMenu
     CALL ms.SetMainState
 
     ; ##########################################
-    ; Load palette
+    ; Load palette.
     LD HL, db.mainMenuBgPaletteAdr
     LD A, (db.mainMenuBbPaletteBytes)
     LD B, A
     CALL bp.LoadPalette
 
     ; ##########################################
-    ; Load background image
+    ; Load background image.
     CALL fi.LoadMainMenuImage
     CALL bm.CopyImageData
+
+    ; ##########################################
+    ; Load game version.
+    ;CALL ti.PrintText
 
     RET                                         ; ## END of the function ##
 

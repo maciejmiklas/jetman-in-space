@@ -105,25 +105,22 @@ ResetTilemapOffset
 ; Print given text using tiles.
 ; Input:
 ;  - DE:    Pointer to the text.
-;  - B:     Amount of characters in DE.
-;  - C:     Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;  - A:     Amount of characters in DE.
+;  - BC:    Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first character starts in second line.
 PrintText
 
     LD HL, ti.RAM_START_H5B00                   ; HL points to screen memory containing tilemap.
-    DEC HL                                      ; TODO why (verify ti.RAM_START_H5B00)?
-    
-    ; HL will point to the memory location containing the data of the first character (tile).
-    PUSH DE
-    LD D, 0
-    LD E, C
-    ADD HL, DE                                  ; *2 because each tile has 2 bytes.
-    ADD HL, DE
-    POP DE  
+    DEC HL                                      ; TODO why +1 (verify ti.RAM_START_H5B00)?
 
+    ; HL will point to the memory location containing the data of the first character (tile).
+    ADD HL, BC                                  ; *2 because each tile has 2 bytes.
+    ADD HL, BC
+
+    LD B, A
 .loop
     LD A, (DE)                                  ; Load current char.
-    INC DE                                      ; Move to the next char .
+    INC DE                                      ; Move to the next char.
     ADD A, -TX_ASCII_OFFSET_D34                 ; Remove ASCII offset as tiles begin with 0.
 
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile.

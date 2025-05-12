@@ -180,11 +180,11 @@ DropRocketElement
 ;----------------------------------------------------------;
 PrintScore
 
-    LD B, 4
+    LD BC, 4
     LD HL, (scoreHi)
     CALL ut.PrintNumber
 
-    LD B, 9
+    LD BC, 9
     LD HL, (scoreLo)
     CALL ut.PrintNumber
 
