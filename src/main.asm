@@ -73,6 +73,7 @@ mainLoop
     INCLUDE "pi_pickups.asm"
     INCLUDE "af_audio_fx.asm"
     INCLUDE "ms_main_state.asm"
+    INCLUDE "ui_user_input.asm"
 
     ; LAST import due to bank offset!
     INCLUDE "db_data_bin.asm"

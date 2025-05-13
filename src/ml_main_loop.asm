@@ -18,6 +18,7 @@ MainLoop
     CALL _MainLoop020
     CALL _MainLoop040
     CALL _MainLoop080
+    CALL _LastLoop
 
     RET                                         ; ## END of the function ##
 
@@ -45,6 +46,7 @@ _MainLoop000
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
 
     CALL _MainLoop000OnActiveGame
+    CALL _MainLoop000OnActiveJet
     CALL _MainLoop000OnActiveMainMenu
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
@@ -66,6 +68,22 @@ _MainLoop000OnFlayRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;               #_MainLoop000OnActiveJet                   ;
+;----------------------------------------------------------;
+_MainLoop000OnActiveJet
+
+    ; Return if Jetman is inactive (game paused/loading).
+    LD A, (jt.jetState)
+    CP jt.JT_STATE_INACTIVE
+    RET Z
+
+    ; ##########################################
+    CALL js.UpdateJetSpritePositionRotation
+    CALL js.AnimateJetSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;               #_MainLoop000OnActiveGame                  ;
 ;----------------------------------------------------------;
 _MainLoop000OnActiveGame
@@ -83,8 +101,6 @@ _MainLoop000OnActiveGame
     CALL jco.JetRip
     CALL jw.MoveShots
     CALL jw.WeaponHitEnemies
-    CALL js.AnimateJetSprite
-    CALL js.UpdateJetSpritePositionRotation
     CALL jw.FireDelayCounter
     CALL jco.JetmanEnemiesCollision
     CALL gi.GameKeyboardInput
@@ -530,6 +546,15 @@ _MainLoop080
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
 
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        #_LastLoop                        ;
+;----------------------------------------------------------;
+_LastLoop
+
+    CALL ui.UserInputLastLoop
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

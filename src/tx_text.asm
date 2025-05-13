@@ -6,7 +6,6 @@
 formatted16                                     ; Formatted 16bit number.
     DB "00000"                                  ; Contains a number formatted into a string.
 FORMATTED16_SIZE         = 5
-
 ;----------------------------------------------------------;
 ;                       #PrintNum16                        ;
 ;----------------------------------------------------------;

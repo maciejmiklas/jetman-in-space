@@ -50,18 +50,22 @@ PrintDebug
 
     ; ##########################################
     LD BC, 40
-    LD H, 0
-    LD A, (me.menuPos)
-    LD L, A
+    LD HL, (jpo.jetX)
     CALL ut.PrintNumber
 
     ; ##########################################
     LD BC, 50
     LD H, 0
-    LD A, (ut.userInputDelayCnt)
+    LD A, (jpo.jetY)
     LD L, A
     CALL ut.PrintNumber
 
+    ; ##########################################
+    LD BC, 60
+    LD H, 0
+    LD A, (jt.jetState)
+    LD L, A
+    CALL ut.PrintNumber
 
     RET                                         ; ## END of the function ##
 

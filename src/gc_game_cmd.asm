@@ -50,7 +50,8 @@ SetupGame
     CALL sc.SetupScreen
     CALL ti.SetupTiles
     CALL fi.LoadEffects
-
+    CALL sp.LoadSpritesFPGA
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -902,6 +903,7 @@ _InitLevelLoad
     CALL ti.ResetTilemapOffset
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -909,7 +911,6 @@ _InitLevelLoad
 ;----------------------------------------------------------;
 _StartLevel
     
-    CALL sp.LoadSpritesFPGA
     CALL gb.ShowGameBar
     CALL sc.PrintScore
     CALL ro.StartRocketAssembly

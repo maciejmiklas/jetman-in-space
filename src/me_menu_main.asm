@@ -7,29 +7,29 @@ GAME_VERSION_OFFSET     = 40*30                 ; Version is in the last line.
 
 EL_DIST                 = 40*4
 TOP_OFS                 = 40*6
-
+LOF                     = 7                     ; Menu entry offset from the left.
 
     STRUCT MENU
-TEXT_SIZE               BYTE                    ; Length of menu text.
 TILE_OFFSET             WORD                    ; Tile offset.
 TEXT_POINT              WORD                    ; Text pointer.
+TEXT_SIZE               BYTE                    ; Length of menu text.
 JET_X                   BYTE                    ; X postion of Jetman pointing to active element.
 JET_Y                   BYTE                    ; Y postion of Jetman pointing to active element.
     ENDS
 
 menuEl
-    MENU {10/*TEXT_SIZE*/, TOP_OFS+15              /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 100/*JET_X*/, 100/*JET_Y*/}  ; START GAME
-    MENU {12/*TEXT_SIZE*/, TOP_OFS+(1*EL_DIST)+14  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 100/*JET_X*/, 120/*JET_Y*/}  ; LEVEL SELECT
-    MENU {10/*TEXT_SIZE*/, TOP_OFS+(2*EL_DIST)+15  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 100/*JET_X*/, 140/*JET_Y*/}  ; HIGH SCORE
-    MENU {08/*TEXT_SIZE*/, TOP_OFS+(3*EL_DIST)+16  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 100/*JET_X*/, 160/*JET_Y*/}  ; SETTINGS
-    MENU {10/*TEXT_SIZE*/, TOP_OFS+(4*EL_DIST)+15  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 100/*JET_X*/, 180/*JET_Y*/}  ; DIFFICULTY
+    MENU {TOP_OFS+LOF+5              /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 040/*JET_Y*/}  ; START GAME
+    MENU {TOP_OFS+(1*EL_DIST)+LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 100/*JET_X*/, 120/*JET_Y*/}  ; LEVEL SELECT
+    MENU {TOP_OFS+(2*EL_DIST)+LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 100/*JET_X*/, 140/*JET_Y*/}  ; HIGH SCORE
+    MENU {TOP_OFS+(3*EL_DIST)+LOF+6  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 10/*TEXT_SIZE*/,100/*JET_X*/, 160/*JET_Y*/}  ; SETTINGS
+    MENU {TOP_OFS+(4*EL_DIST)+LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 100/*JET_X*/, 180/*JET_Y*/}  ; DIFFICULTY
 MENU_EL_SIZE            = 5
 
-menuTextSg DB "START GAME"
-menuTextLs DB "LEVEL SELECT"
-menuTextHs DB "HIGH SCORE"
-menuTextSe DB "SETTINGS"
-menuTextDi DB "DIFFICULTY"
+menuTextSg DB "START GAME",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextLs DB "LEVEL SELECT",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_ARROWS
 
 menuPos                 BYTE MENU_EL_MIN
 MENU_EL_START           = 1
@@ -45,7 +45,12 @@ MENU_EL_MAX             = MENU_EL_DIF
 ;                     #LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
+    
+    LD A, MENU_EL_MIN
+    LD (menuPos), A
 
+    ; ##########################################
+    ; Update menu state.
     LD A, ms.MAIN_MENU
     CALL ms.SetMainState
 
@@ -75,7 +80,22 @@ LoadMainMenu
     CALL fi.LoadSprites
 
     ; ##########################################
+    ; Setup Jetman sprite.
+    CALL jt.SetJetStateMenu
+
+    ; Jetman is facing left
+    XOR A
+    SET gid.MOVE_LEFT_BIT, A
+    LD (gid.jetDirection), A
+
+    LD A, js.SDB_HOVER
+    CALL js.ChangeJetSpritePattern
+
+    CALL js.ShowJetSprite
+
+    ; ##########################################
     CALL _LoadStaticMenuText
+    CALL _UpdateSelection
 
     RET                                         ; ## END of the function ##
 
@@ -183,11 +203,12 @@ _SetIXToActiveMenu
 
     ; Load into DE "current position" * "menu size" 
     LD A, (menuPos)
+    DEC A
     LD D, A
     LD E, MENU
     MUL D, E
-
-    LD IX, (menuEl)
+    
+    LD IX, menuEl
     ADD IX, DE                                  ; Move IX to current menu position (IX + #menuPos * #MENU)
 
     RET                                         ; ## END of the function ##
@@ -199,6 +220,14 @@ _UpdateSelection
 
     CALL _SetIXToActiveMenu
     
+    ; Set X Jet position.
+    LD D, 0
+    LD E, (IX + MENU.JET_X)
+    LD (jpo.jetX), DE
+ 
+    ; Set Y Jet position.
+    LD A, (IX + MENU.JET_Y)
+    LD (jpo.jetY), A
 
     RET                                         ; ## END of the function ##
 
@@ -247,17 +276,17 @@ _JoyLeft
 ;----------------------------------------------------------;
 _JoyUp
 
-    CALL ut.CanProcessKeyboardInput
+    CALL ui.CanProcessKeyboardInput
     CP _RET_YES_D1
     RET NZ
-
+    
     ; ##########################################
-    ; Increment #menuPos
+    ; Decrement #menuPos
     LD A, (menuPos)
-    INC A
-    CP MENU_EL_MAX+1
+    DEC A
+    CP MENU_EL_MIN-1
     JR NZ, .afterActiveReset
-    LD A, MENU_EL_MIN
+    LD A, MENU_EL_MAX
 .afterActiveReset
     LD (menuPos), A
 
@@ -271,17 +300,17 @@ _JoyUp
 ;----------------------------------------------------------;
 _JoyDown
 
-    CALL ut.CanProcessKeyboardInput
+    CALL ui.CanProcessKeyboardInput
     CP _RET_YES_D1
     RET NZ
-    
+
     ; ##########################################
-    ; Decrement #menuPos
+    ; Increment #menuPos
     LD A, (menuPos)
-    DEC A
-    CP MENU_EL_MIN-1
+    INC A
+    CP MENU_EL_MAX+1
     JR NZ, .afterActiveReset
-    LD A, MENU_EL_MAX
+    LD A, MENU_EL_MIN
 .afterActiveReset
     LD (menuPos), A
 
@@ -305,6 +334,8 @@ _JoyFire
 _ExitMenu
 
     CALL gc.LoadLevel1Intro
+    CALL js.HideJetSprite
+    CALL jt.SetJetStateInactive
 
     RET                                         ; ## END of the function ##
 

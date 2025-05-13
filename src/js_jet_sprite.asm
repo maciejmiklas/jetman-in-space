@@ -21,7 +21,7 @@ SDB_T_FS                = 221                   ; Transition: flaying -> standin
 SDB_T_FW                = 222                   ; Transition: flaying -> walking.
 SDB_T_KF                = 223                   ; Transition: kinking -> flying.
 
-SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record docu below, look for: OFF_NX).
+SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX).
 SDB_FRAME_SIZE          = 2
 
 sprDBIdx                WORD 0                  ; Current position in DB.
@@ -31,9 +31,9 @@ sprDBNextID             BYTE SDB_STAND          ; ID in #jetSpriteDB for next an
 sprDBDelay              BYTE 0                  ; Value from #DELAY.
 sprDBDelayCnt           BYTE 0                   ; Counter from #sprDBDelay to 0.
 
-SPR_STATE_HIDE      = 0
-SPR_STATE_SHOW      = 1
-sprState            BYTE SPR_STATE_SHOW
+SPR_STATE_HIDE          = 0
+SPR_STATE_SHOW          = 1
+sprState                BYTE SPR_STATE_SHOW
 
 ;----------------------------------------------------------;
 ;             #UpdateJetSpritePositionRotation             ;
@@ -57,7 +57,7 @@ UpdateJetSpritePositionRotation
     LD A, (gid.jetDirection)
     LD D, A
     XOR A                                       ; Clear A to set only rotation/mirror bits.
-    BIT gid.MOVE_LEFT_BIT, D                        ; Moving left bit set?
+    BIT gid.MOVE_LEFT_BIT, D                    ; Moving left bit set?
     JR Z, .rotateRight
     SET _SPR_REG_ATR2_MIRX_BIT, A               ; Rotate sprite left.
     JR .afterRotate 
@@ -77,8 +77,8 @@ UpdateJetSpritePositionRotation
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; Move Jetman sprite to current Y postion, 8-bit value is simple.
-    LD A, (jpo.jetY)        
-    
+    LD A, (jpo.jetY)
+
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands.
     NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position.
 
@@ -119,7 +119,7 @@ ChangeJetSpritePattern
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame.
 AnimateJetSprite
-
+    
     CALL dbs.SetupArraysBank
 
     ; Delay animation.
@@ -141,7 +141,7 @@ AnimateJetSprite
     LD (sprDBDelayCnt), A
 
     RET 
-.afterAnimationDelay    
+.afterAnimationDelay
     ; ##########################################
     ; Switch to the next DB record if all bytes from the current one have been used.
     LD A, (sprDBRemain)
@@ -266,7 +266,7 @@ HideJetSprite
 ;                #ChangeJetSpriteOnFlyDown                 ;
 ;----------------------------------------------------------;
 ChangeJetSpriteOnFlyDown
-    
+
     ; Change animation only if Jetman is flying.
     LD A, (jt.jetAir)
     CP jt.AIR_FLY
