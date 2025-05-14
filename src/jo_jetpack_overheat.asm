@@ -34,7 +34,7 @@ BAR_TILE_PAL           = $30
 
 BAR_ICON               = 38
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
-BAR_ICON_PAL           = $30
+BAR_ICON_PAL           = $00
 
 ;----------------------------------------------------------;
 ;                 #ResetJetpackOverheating                 ;

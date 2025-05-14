@@ -395,6 +395,22 @@ movePattern18
 ;         horizontal        45deg down
     DB 4, %0'000'1'111,$2C, %1'111'1'111,$39 
 
+; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
+; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
+; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
+; containing another animation or a command like #SDB_HIDE that will hide the sprite.
+srSpriteDB
+    sr.SPR_REC {sr.SDB_EXPLODE, sr.SDB_HIDE - sr.SDB_SUB,   04}
+            DB 30, 31, 32, 33
+    sr.SPR_REC {sr.SDB_FIRE,    sr.SDB_FIRE - sr.SDB_SUB,   02}
+            DB 54, 55
+    sr.SPR_REC {sr.SDB_ENEMY1,  sr.SDB_ENEMY1 - sr.SDB_SUB, 24}
+            DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
+    sr.SPR_REC {sr.SDB_ENEMY2,  sr.SDB_ENEMY2 - sr.SDB_SUB, 03}
+            DB 48, 49, 50
+    sr.SPR_REC {sr.SDB_ENEMY3,  sr.SDB_ENEMY3 - sr.SDB_SUB, 03}
+            DB 34, 35, 36
+
 ; Single enemies.
 spriteEx01
     enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}

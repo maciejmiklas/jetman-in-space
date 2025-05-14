@@ -62,22 +62,6 @@ SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds
 
 SDB_SEARCH_LIMIT        = 200
 
-; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
-; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
-; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
-; containing another animation or a command like #SDB_HIDE that will hide the sprite.
-srSpriteDB
-    SPR_REC {SDB_EXPLODE, SDB_HIDE - SDB_SUB, 04} 
-            DB 30, 31, 32, 33
-    SPR_REC {SDB_FIRE, SDB_FIRE - SDB_SUB, 02}
-            DB 54, 55
-    SPR_REC {SDB_ENEMY1, SDB_ENEMY1 - SDB_SUB, 24}
-            DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
-    SPR_REC {SDB_ENEMY2, SDB_ENEMY2 - SDB_SUB, 03}
-            DB 48, 49, 50
-    SPR_REC {SDB_ENEMY3, SDB_ENEMY3 - SDB_SUB, 03}
-            DB 34, 35, 36
-
 ;----------------------------------------------------------;
 ;                   #CheckSpriteVisible                    ;
 ;----------------------------------------------------------;
@@ -539,8 +523,10 @@ MoveY
 ; Modifies: A, BC, HL
 _LoadSpritePattern
 
+    CALL dbs.SetupArraysBank
+
     ; Find DB record.
-    LD HL, srSpriteDB                       ; HL points to the beginning of the DB.
+    LD HL, db.srSpriteDB                        ; HL points to the beginning of the DB.
     LD BC, SDB_SEARCH_LIMIT                     ; Limit CPIR search.
     CPIR                                        ; CPIR will keep increasing HL until it finds a record ID from A.
 

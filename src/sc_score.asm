@@ -182,11 +182,11 @@ PrintScore
 
     LD BC, 4
     LD HL, (scoreHi)
-    CALL ut.PrintNumber
+    CALL tx.PrintNum16
 
     LD BC, 9
     LD HL, (scoreLo)
-    CALL ut.PrintNumber
+    CALL tx.PrintNum16
 
     RET                                         ; ## END of the function ##
 

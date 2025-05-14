@@ -73,7 +73,7 @@ BAR_TILE_PAL           = $60
 
 BAR_ICON               = 36
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
-BAR_ICON_PAL           = $30
+BAR_ICON_PAL           = $00
 DROP_MARGX_D8           = 8
 
 ;----------------------------------------------------------;

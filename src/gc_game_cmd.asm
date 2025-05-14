@@ -8,9 +8,6 @@ HOVER_START_D250        = 250
 STAND_START_D30         = 30
 JSTAND_START_D15        = 15
 
-; Invincibility
-JM_INV_D400             = 400                   ; Number of loops to keep Jetman invincible.
-
 LEVEL_MIN               = 1
 LEVEL_MAX               = 10
 level                   BYTE LEVEL_MIN
@@ -547,7 +544,6 @@ RespawnJet
 
     CALL jt.SetJetStateRespawn
 
-    LD HL, JM_INV_D400
     CALL jco.MakeJetInvincible
 
     CALL bg.UpdateBackgroundOnJetmanMove
@@ -641,6 +637,8 @@ JetPicksStrawberry
 
     LD A, af.FX_PICKUP_STRAWBERRY
     CALL af.AfxPlay
+
+    CALL jco.MakeJetInvincible
 
     RET                                         ; ## END of the function ##
 
