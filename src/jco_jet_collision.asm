@@ -193,8 +193,8 @@ JetInvincible
 
     CALL js.BlinkJetSprite
     RET
-    
-.lastIteration  
+
+.lastIteration
     ; ##########################################
     ; It is the last iteration, remove invincibility.
     LD A, jt.JETST_NORMAL

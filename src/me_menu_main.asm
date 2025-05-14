@@ -67,7 +67,7 @@ LoadMainMenu
 
     ; ##########################################
     ; Setup Jetman sprite.
-    CALL jt.SetJetStateMenu
+    CALL jt.SetJetStateInactive
 
     ; Jetman is facing left
     XOR A
@@ -352,9 +352,7 @@ _JoyFire
 ;----------------------------------------------------------;
 _ExitMenu
 
-    CALL gc.LoadLevel1Intro
-    CALL js.HideJetSprite
-    CALL jt.SetJetStateInactive
+    CALL gc.StartGameWithIntro
 
     RET                                         ; ## END of the function ##
 

@@ -46,10 +46,26 @@ _MainLoop000
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
 
     CALL _MainLoop000OnActiveGame
-    CALL _MainLoop000OnActiveJet
     CALL _MainLoop000OnActiveMainMenu
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
+    CALL _MainLoop000OnActiveMenu
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               #_MainLoop000OnActiveMenu                  ;
+;----------------------------------------------------------;
+_MainLoop000OnActiveMenu
+
+    ; Return if menu is not active.
+    LD A, (ms.mainState)
+    CP ms.MAIN_MENU
+    RET NZ
+
+    ; ##########################################
+    CALL js.UpdateJetSpritePositionRotation
+    CALL js.AnimateJetSprite
 
     RET                                         ; ## END of the function ##
 
@@ -57,29 +73,15 @@ _MainLoop000
 ;               #_MainLoop000OnFlayRocket                  ;
 ;----------------------------------------------------------;
 _MainLoop000OnFlayRocket
-    ; Return if rocket is not flying.
+
+    ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
+    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY!
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
     RET NZ
 
     ; ##########################################
     CALL rof.FlyRocket
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;               #_MainLoop000OnActiveJet                   ;
-;----------------------------------------------------------;
-_MainLoop000OnActiveJet
-
-    ; Return if Jetman is inactive (game paused/loading).
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    RET Z
-
-    ; ##########################################
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.AnimateJetSprite
 
     RET                                         ; ## END of the function ##
 
@@ -102,10 +104,12 @@ _MainLoop000OnActiveGame
     CALL jw.MoveShots
     CALL jw.WeaponHitEnemies
     CALL jw.FireDelayCounter
-    CALL jco.JetmanEnemiesCollision
     CALL gi.GameKeyboardInput
     CALL ens.MoveSingleEnemies
     CALL enf.MoveFormationEnemies
+    CALL jco.JetmanEnemiesCollision
+    CALL js.UpdateJetSpritePositionRotation
+    CALL js.AnimateJetSprite
 
     RET                                         ; ## END of the function ##
 
@@ -143,6 +147,11 @@ _MainLoop000OnActiveLevelIntro
 ;               #_MainLoop000OnDisabledJoy                 ;
 ;----------------------------------------------------------;
 _MainLoop000OnDisabledJoy
+
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
 
     ; Return if the joystick is about to enable
     LD A, (gid.joyOffCnt)
@@ -191,7 +200,8 @@ _MainLoop002
 ;----------------------------------------------------------;
 _MainLoop002OnFlayRocket
 
-    ; Return if rocket is not flying.
+    ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
+    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY!
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
     RET NZ
@@ -206,7 +216,7 @@ _MainLoop002OnFlayRocket
 ;----------------------------------------------------------;
 _MainLoop002OnActiveGame
 
-    ; Return if game is inactive.
+    ; Return if game is not active.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -222,7 +232,7 @@ _MainLoop002OnActiveGame
 ;----------------------------------------------------------;
 _MainLoop002OnActiveLevelIntro
     
-    ; Return if intro is inactive.
+    ; Return if intro is not active.
     LD A, (ms.mainState)
     CP ms.LEVEL_INTRO
     RET NZ
@@ -280,7 +290,7 @@ _MainLoop004OnRocketExplosion
 ;----------------------------------------------------------;
 _MainLoop004OnActiveGame
 
-    ; Return if game is inactive.
+    ; Return if game is not active.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -361,6 +371,8 @@ _MainLoop008OnFlayingRocket
     ; ##########################################
     CALL rof.AnimateRocketExhaust
     CALL rof.BlinkFlyingRocket
+    CALL st.BlinkStarsL1
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -428,6 +440,22 @@ _MainLoop010
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop010OnActiveGame
+    CALL _MainLoop010OnActiveFlyingRocket
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;            #_MainLoop010OnActiveFlyingRocket             ;
+;----------------------------------------------------------;
+_MainLoop010OnActiveFlyingRocket
+
+    ; Return if rocket is not flying.
+    LD A, (ms.mainState)
+    CP ms.FLY_ROCKET
+    RET NZ
+
+    ; ##########################################
+    CALL st.BlinkStarsL2
 
     RET                                         ; ## END of the function ##
 
@@ -477,8 +505,8 @@ _MainLoop020
 _MainLoop020nFlyingRocket
 
     ; Return if rocket is not flying.
-    LD A, (ro.rocketState)
-    CP ro.ROST_FLY
+    LD A, (ms.mainState)
+    CP ms.FLY_ROCKET
     RET NZ
 
     ; ##########################################

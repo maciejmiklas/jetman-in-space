@@ -11,11 +11,11 @@ start
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
     
     call af.SetupAyFx
-    CALL gc.SetupGame
+    CALL gc.SetupSystem
     ;CALL gc.LoadLevel1
     CALL gc.LoadMainMenu
     
-    ;CALL ro.AssemblyRocketForDebug
+    ;
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;

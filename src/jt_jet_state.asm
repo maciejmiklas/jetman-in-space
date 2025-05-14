@@ -29,7 +29,6 @@ JETST_NORMAL            = 101                   ; Jetman is alive, could be flyi
 JETST_INV               = 102                   ; Jetman is invincible.
 JETST_RIP               = 103                   ; Jetman got hit by enemy.
 JETST_OVERHEAT          = 104                   ; Jetpack is overheating, and Jetman flays slowly.
-JETST_MENU              = 105                   ; Jetman is in menu
 
 jetState                BYTE JETST_NORMAL       ; Game start, Jetman in the air.
 
@@ -104,20 +103,6 @@ SetJetStateRespawn
     LD (jetAir), A
     
     LD A, JETST_NORMAL
-    LD (jetState), A
-    
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #SetJetStateMenu                       ;
-;----------------------------------------------------------;
-SetJetStateMenu
-
-    XOR A
-    LD (jetAir), A
-    LD (jetGnd), A
-
-    LD A, JETST_MENU
     LD (jetState), A
     
     RET                                         ; ## END of the function ##

@@ -39,9 +39,21 @@ MainLoopCmd
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #SetupGame                          ;
+;                 #StartGameWithIntro                      ;
 ;----------------------------------------------------------;
-SetupGame
+StartGameWithIntro
+
+    CALL jw.ResetWeapon
+    CALL gc.LoadLevel1Intro
+    CALL js.HideJetSprite
+    CALL jt.SetJetStateInactive
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #SetupSystem                        ;
+;----------------------------------------------------------;
+SetupSystem
 
     CALL bm.HideImage
     CALL sc.SetupScreen
@@ -212,11 +224,15 @@ BackgroundPaletteLoaded
 ;----------------------------------------------------------;
 RocketTakesOff
 
+    LD A, ms.FLY_ROCKET
+    CALL ms.SetMainState
+
     CALL sc.BoardRocket
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
     CALL gb.HideGameBar
     CALL ti.SetTilesClipVertical
+    CALL pi.ResetPickups
 
     RET                                         ; ## END of the function ##
 
@@ -245,9 +261,6 @@ LoadNextLevel
 ;                  #LoadCurrentLevel                       ;
 ;----------------------------------------------------------;
 LoadCurrentLevel
-
-    LD A, ms.GAME_ACTIVE
-    CALL ms.SetMainState
 
     ; Load level into A
     LD A, (level)
@@ -557,6 +570,8 @@ RespawnJet
     ; Switch to flaying animation.
     LD A, js.SDB_STAND
     CALL js.ChangeJetSpritePattern
+
+    CALL js.ShowJetSprite
 
     RET                                         ; ## END of the function ## 
 
@@ -913,6 +928,9 @@ _InitLevelLoad
 ;                     #_StartLevel                         ;
 ;----------------------------------------------------------;
 _StartLevel
+
+    LD A, ms.GAME_ACTIVE
+    CALL ms.SetMainState
     
     CALL gb.ShowGameBar
     CALL sc.PrintScore
@@ -920,8 +938,7 @@ _StartLevel
     CALL ti.SetTilesClipFull
     CALL jo.ResetJetpackOverheating
     CALL pi.ResetPickups
-    CALL jw.ResetWeapon
-    
+
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
 
