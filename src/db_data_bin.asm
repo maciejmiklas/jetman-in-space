@@ -241,10 +241,27 @@ starsPalL2
 ;----------------------------------------------------------;
 ;                    Arrays (Bank 29)                      ;
 ;----------------------------------------------------------;
-; Before using it call #SetupArraysBank
+; Before using it call #dbs.SetupArraysBank
     MMU _RAM_SLOT7, dbs.ARR_BANK_D29
     ORG _RAM_SLOT7_STA_HE000
 spritesBankStart
+
+; ##############################################
+; Menu
+menuEl
+    me.MENU {me.TOP_OFS+me.LOF+5                 /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 040/*JET_Y*/}  ; START GAME
+    me.MENU {me.TOP_OFS+(1*me.EL_DIST)+me.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 072/*JET_Y*/}  ; LEVEL SELECT
+    me.MENU {me.TOP_OFS+(2*me.EL_DIST)+me.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 104/*JET_Y*/}  ; HIGH SCORE
+    me.MENU {me.TOP_OFS+(3*me.EL_DIST)+me.LOF+6  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 192/*JET_X*/, 136/*JET_Y*/}  ; SETTINGS
+    me.MENU {me.TOP_OFS+(4*me.EL_DIST)+me.LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 168/*JET_Y*/}  ; DIFFICULTY
+MENU_EL_SIZE            = 5
+
+menuTextSg DB "START GAME",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextLs DB "LEVEL SELECT",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_ARROWS
+
 
 ; ##############################################
 ; Movement patterns.
@@ -707,6 +724,10 @@ jetSpriteDB
 
     ; Transition: kinking -> flying.
     DB js.SDB_T_KF,     js.SDB_FLY - js.SDB_SUB,        10, 5
+                                            DB 03,15, 04,16, 05,27, 03,28, 04,29
+
+    ; Transition: kinking -> hoovering.
+    DB js.SDB_T_KO,     js.SDB_HOVER - js.SDB_SUB,        10, 5
                                             DB 03,15, 04,16, 05,27, 03,28, 04,29
 
 ; ##############################################

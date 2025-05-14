@@ -20,6 +20,7 @@ SDB_T_WF                = 220                   ; Transition: walking -> flaying
 SDB_T_FS                = 221                   ; Transition: flaying -> standing.
 SDB_T_FW                = 222                   ; Transition: flaying -> walking.
 SDB_T_KF                = 223                   ; Transition: kinking -> flying.
+SDB_T_KO                = 224                   ; Transition: kinking -> hovering.
 
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX).
 SDB_FRAME_SIZE          = 2
@@ -29,7 +30,7 @@ sprDBRemain             BYTE 0                  ; Amount of bytes that have to b
 sprDBCurrentID          BYTE SDB_STAND          ; Active animation.
 sprDBNextID             BYTE SDB_STAND          ; ID in #jetSpriteDB for next animation/DB record.
 sprDBDelay              BYTE 0                  ; Value from #DELAY.
-sprDBDelayCnt           BYTE 0                   ; Counter from #sprDBDelay to 0.
+sprDBDelayCnt           BYTE 0                  ; Counter from #sprDBDelay to 0.
 
 SPR_STATE_HIDE          = 0
 SPR_STATE_SHOW          = 1

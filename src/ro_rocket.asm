@@ -71,7 +71,7 @@ BAR_TILE_START         = 24*2                  ; *2 because each tile takes 2 by
 BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
 BAR_TILE_PAL           = $60
 
-BAR_ICON               = 189
+BAR_ICON               = 36
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
 BAR_ICON_PAL           = $30
 DROP_MARGX_D8           = 8

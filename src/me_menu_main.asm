@@ -17,20 +17,6 @@ JET_X                   BYTE                    ; X postion of Jetman pointing t
 JET_Y                   BYTE                    ; Y postion of Jetman pointing to active element.
     ENDS
 
-menuEl
-    MENU {TOP_OFS+LOF+5              /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 040/*JET_Y*/}  ; START GAME
-    MENU {TOP_OFS+(1*EL_DIST)+LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 100/*JET_X*/, 120/*JET_Y*/}  ; LEVEL SELECT
-    MENU {TOP_OFS+(2*EL_DIST)+LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 100/*JET_X*/, 140/*JET_Y*/}  ; HIGH SCORE
-    MENU {TOP_OFS+(3*EL_DIST)+LOF+6  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 10/*TEXT_SIZE*/,100/*JET_X*/, 160/*JET_Y*/}  ; SETTINGS
-    MENU {TOP_OFS+(4*EL_DIST)+LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 100/*JET_X*/, 180/*JET_Y*/}  ; DIFFICULTY
-MENU_EL_SIZE            = 5
-
-menuTextSg DB "START GAME",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextLs DB "LEVEL SELECT",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_ARROWS
-
 menuPos                 BYTE MENU_EL_MIN
 MENU_EL_START           = 1
 MENU_EL_LEV_SEL         = 2
@@ -45,7 +31,7 @@ MENU_EL_MAX             = MENU_EL_DIF
 ;                     #LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
-    
+
     LD A, MENU_EL_MIN
     LD (menuPos), A
 
@@ -95,7 +81,8 @@ LoadMainMenu
 
     ; ##########################################
     CALL _LoadStaticMenuText
-    CALL _UpdateSelection
+    CALL _SetIXToActiveMenu
+    CALL _UpdateJetPostion
 
     RET                                         ; ## END of the function ##
 
@@ -200,6 +187,7 @@ MainMenuUserInput
 ;                  #_SetIXToActiveMenu                     ;
 ;----------------------------------------------------------;
 _SetIXToActiveMenu
+    CALL dbs.SetupArraysBank
 
     ; Load into DE "current position" * "menu size" 
     LD A, (menuPos)
@@ -208,7 +196,7 @@ _SetIXToActiveMenu
     LD E, MENU
     MUL D, E
     
-    LD IX, menuEl
+    LD IX, db.menuEl
     ADD IX, DE                                  ; Move IX to current menu position (IX + #menuPos * #MENU)
 
     RET                                         ; ## END of the function ##
@@ -217,9 +205,25 @@ _SetIXToActiveMenu
 ;                  #_UpdateSelection                       ;
 ;----------------------------------------------------------;
 _UpdateSelection
-
-    CALL _SetIXToActiveMenu
     
+    CALL _SetIXToActiveMenu
+    CALL _UpdateJetPostion
+
+    LD A, js.SDB_T_KO
+    CALL js.ChangeJetSpritePattern
+
+    LD A, af.FX_MENU_MOVE
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #_UpdateJetPostion                       ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: Pointer to currently selected #MENU.
+_UpdateJetPostion
+
     ; Set X Jet position.
     LD D, 0
     LD E, (IX + MENU.JET_X)
@@ -236,8 +240,10 @@ _UpdateSelection
 ;----------------------------------------------------------;
 _LoadStaticMenuText
 
-    LD B, MENU_EL_SIZE
-    LD IX, menuEl
+    CALL dbs.SetupArraysBank
+
+    LD B, db.MENU_EL_SIZE
+    LD IX, db.menuEl
 .elementLoop
     PUSH BC
 
@@ -257,7 +263,7 @@ _LoadStaticMenuText
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        _JoyRight                         ;
+;                       _JoyRight                          ;
 ;----------------------------------------------------------;
 _JoyRight
 
@@ -272,7 +278,7 @@ _JoyLeft
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          _JoyUp                          ;
+;                         _JoyUp                           ;
 ;----------------------------------------------------------;
 _JoyUp
 
@@ -324,7 +330,20 @@ _JoyDown
 ;----------------------------------------------------------;
 _JoyFire
 
+    LD A, (menuPos)
+
+    ; ##########################################
+    ; Start game
+    CP MENU_EL_START
+    JR NZ, .notStart
     CALL _ExitMenu
+    RET
+.notStart
+
+    ; ##########################################
+    ; Wrong key hit, play sound
+    LD A, af.FX_JET_KILL
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 

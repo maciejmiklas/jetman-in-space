@@ -47,26 +47,14 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-
+/*
     ; ##########################################
     LD BC, 40
-    LD HL, (jpo.jetX)
-    CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 50
     LD H, 0
     LD A, (jpo.jetY)
     LD L, A
     CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 60
-    LD H, 0
-    LD A, (jt.jetState)
-    LD L, A
-    CALL ut.PrintNumber
-
+*/
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

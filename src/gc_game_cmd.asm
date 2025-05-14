@@ -50,6 +50,11 @@ SetupGame
     CALL sc.SetupScreen
     CALL ti.SetupTiles
     CALL fi.LoadEffects
+
+    ; Load sprites from any level for mein menu.
+    LD D, "0"
+    LD E, "1"
+    CALL fi.LoadSprites
     CALL sp.LoadSpritesFPGA
     
     RET                                         ; ## END of the function ##
