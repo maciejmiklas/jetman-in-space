@@ -99,6 +99,7 @@ BlinkFlyingRocket
 ;               #AnimateRocketExplosion                    ;
 ;----------------------------------------------------------;
 AnimateRocketExplosion
+
     CALL dbs.SetupArraysBank
 
     ; ##########################################

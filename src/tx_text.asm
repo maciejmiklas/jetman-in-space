@@ -3,29 +3,28 @@
 ;----------------------------------------------------------;
     MODULE tx
 
-formatted16
+formatted16                                     ; Formatted 16bit number.
     DB "00000"                                  ; Contains a number formatted into a string.
-
+FORMATTED16_SIZE         = 5
 ;----------------------------------------------------------;
-;                        #PrintNum8                        ;
+;                       #PrintNum16                        ;
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels.
 ;Input:
 ;  - HL:    16-bit number to print.
-;  - B:     Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
-PrintNum8
+PrintNum16
 
-    ; Print number from HL into formatted16.
-    PUSH BC
+    ; Print number from HL into #formatted8.
+    PUSH DE,BC
     LD DE, formatted16
     CALL Num16ToString
-    POP BC
+    POP BC,DE
 
-    ; Print text from formatted16 on screen using tiles.
-    LD DE, formatted16                          ; Contains 16-bit number as ASCII.
-    LD C, B                                     ; C - Character offset from the top left corner.
-    LD B, 5                                     ; Print 5 characters.
+    ; Print text from #formatted8 on screen using tiles.
+    LD DE, formatted16                           ; Contains 16-bit number as ASCII.
+    LD A, FORMATTED16_SIZE                       ; Print 5 characters.
     CALL ti.PrintText
 
     RET                                         ; ## END of the function ##
@@ -35,8 +34,9 @@ PrintNum8
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros.
 ; Input:
-;   - HL:   16-bit number to convert.
-; Output: ASCII string at DE, 5-characters long, 0 padded.
+;   - HL: 16-bit number to convert.
+;   - DE: Pointer to RAM that will contain formatted text, 5-characters long, 0 padded.
+; Output: ASCII string at memory address given by DE, 5-characters long, 0 padded.
 Num16ToString
 
     ; Each line prints one digit into DE, starting with the most significant.

@@ -100,6 +100,7 @@ FX_MENU_MOVE            = 23
 FX_PICKUP_JAR           = 24
 FX_PICKUP_ROCKET_EL     = 25
 FX_FIRE_PLATFORM_HIT    = 26
+FX_JET_TAKE_OFF         = 27
 
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
@@ -109,8 +110,8 @@ SetupAyFx
 
     CALL dbs.SetupAyFxsBank
 
-    LD A, %1'11'111'01                          ; Set to AY-3
-    LD BC, $FFFD
+    LD A, %1'11'111'01                          ; Set FX to AY-3
+    LD BC, _GL_REG_SOUND_HFFFD
     OUT (C), A
 
     LD HL, _RAM_SLOT6_STA_HC000                 ; Bank containing sound effects

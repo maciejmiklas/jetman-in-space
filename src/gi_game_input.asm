@@ -208,7 +208,8 @@ GameKeyboardInput
 ;----------------------------------------------------------;
 _Key_Q
 
-    CALL gc.LoadLevel1
+    ;CALL gc.LoadLevel1
+    CALL ro.AssemblyRocketForDebug
 
     RET                                         ; ## END of the function ##
 

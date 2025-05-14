@@ -8,9 +8,6 @@ HOVER_START_D250        = 250
 STAND_START_D30         = 30
 JSTAND_START_D15        = 15
 
-; Invincibility
-JM_INV_D400             = 400                   ; Number of loops to keep Jetman invincible.
-
 LEVEL_MIN               = 1
 LEVEL_MAX               = 10
 level                   BYTE LEVEL_MIN
@@ -42,37 +39,50 @@ MainLoopCmd
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #SetupGame                          ;
+;                 #StartGameWithIntro                      ;
 ;----------------------------------------------------------;
-SetupGame
+StartGameWithIntro
+
+    CALL jw.ResetWeapon
+    CALL gc.LoadLevel1Intro
+    CALL js.HideJetSprite
+    CALL jt.SetJetStateInactive
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #SetupSystem                        ;
+;----------------------------------------------------------;
+SetupSystem
 
     CALL bm.HideImage
     CALL sc.SetupScreen
     CALL ti.SetupTiles
     CALL fi.LoadEffects
 
+    ; Load sprites from any level for mein menu.
+    LD D, "0"
+    LD E, "1"
+    CALL fi.LoadSprites
+    CALL sp.LoadSpritesFPGA
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #LoadLobby                         ;
+;                     #LoadMainMenu                        ;
 ;----------------------------------------------------------;
-LoadLobby
+LoadMainMenu
 
-    CALL _HaltGame
+    LD A, ms.MAIN_MENU
+    CALL ms.SetMainState
+
+    CALL _HideGame
     CALL sc.ResetScore
-    CALL lom.LoadMainMenu
-
-    ; TODO remove it when menu is ready, also remove assets/l00
-    XOR A
-    LD (fi.introSecondFileSize), A
-    LD D, "0"
-    LD E, "0"
-    LD A, 4800/80                               ; Total number of lines in intro_0.map and intro_1.map
-    CALL fi.LoadLevelIntroTilemap
+    CALL me.LoadMainMenu
     CALL li._ResetLevelIntro
     CALL ti.SetTilesClipVertical
     CALL jw.ResetWeapon
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -80,8 +90,7 @@ LoadLobby
 ;----------------------------------------------------------;
 LoadLevel1Intro
 
-    CALL _HaltGame
-    CALL los.SetLobbyStateLevelIntro
+    CALL _HideGame
 
     LD D, "0"
     LD E, "1"
@@ -215,11 +224,15 @@ BackgroundPaletteLoaded
 ;----------------------------------------------------------;
 RocketTakesOff
 
+    LD A, ms.FLY_ROCKET
+    CALL ms.SetMainState
+
     CALL sc.BoardRocket
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
     CALL gb.HideGameBar
     CALL ti.SetTilesClipVertical
+    CALL pi.ResetPickups
 
     RET                                         ; ## END of the function ##
 
@@ -391,6 +404,36 @@ RocketElementDrop
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
+;                    #JetPlatformTakesOff                  ;
+;----------------------------------------------------------;
+JetPlatformTakesOff
+
+    ; Transition from walking to flaying.
+    LD A, (jt.jetGnd)
+    CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform.
+    RET Z
+
+    ; Jetman is taking off.
+    LD A, jt.AIR_FLY
+    CALL jt.SetJetStateAir
+
+    ; Play takeoff animation.
+    LD A, js.SDB_T_WF
+    CALL js.ChangeJetSpritePattern
+
+    ; Not walking on platform anymore.
+    LD A, pl.PLATFORM_WALK_INACTIVE
+    LD (pl.platformWalkNumber), A
+
+    CALL js.ChangeJetSpriteOnFlyUp
+
+    ; Play FX
+    LD A, af.FX_JET_TAKE_OFF
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  #PlatformWeaponHit                      ;
 ;----------------------------------------------------------;
 PlatformWeaponHit
@@ -514,7 +557,6 @@ RespawnJet
 
     CALL jt.SetJetStateRespawn
 
-    LD HL, JM_INV_D400
     CALL jco.MakeJetInvincible
 
     CALL bg.UpdateBackgroundOnJetmanMove
@@ -528,6 +570,8 @@ RespawnJet
     ; Switch to flaying animation.
     LD A, js.SDB_STAND
     CALL js.ChangeJetSpritePattern
+
+    CALL js.ShowJetSprite
 
     RET                                         ; ## END of the function ## 
 
@@ -608,6 +652,8 @@ JetPicksStrawberry
 
     LD A, af.FX_PICKUP_STRAWBERRY
     CALL af.AfxPlay
+
+    CALL jco.MakeJetInvincible
 
     RET                                         ; ## END of the function ##
 
@@ -848,9 +894,9 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                       #_HaltGame                         ;
+;                       #_HideGame                         ;
 ;----------------------------------------------------------;
-_HaltGame
+_HideGame
 
     CALL bm.HideImage
     CALL js.HideJetSprite
@@ -870,10 +916,8 @@ _HaltGame
 ;----------------------------------------------------------;
 _InitLevelLoad
 
-    CALL _HaltGame
-    
+    CALL _HideGame
     CALL gi.ResetKeysState
-    CALL los.SetLobbyStateInactive
     CALL ti.ResetTilemapOffset
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
@@ -884,19 +928,23 @@ _InitLevelLoad
 ;                     #_StartLevel                         ;
 ;----------------------------------------------------------;
 _StartLevel
+
+    LD A, ms.GAME_ACTIVE
+    CALL ms.SetMainState
     
-    CALL sp.LoadSpritesFPGA
     CALL gb.ShowGameBar
     CALL sc.PrintScore
     CALL ro.StartRocketAssembly
     CALL ti.SetTilesClipFull
     CALL jo.ResetJetpackOverheating
     CALL pi.ResetPickups
-    CALL jw.ResetWeapon
-    
+
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
 
+    LD A, ms.GAME_ACTIVE
+    CALL ms.SetMainState
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -32,8 +32,11 @@ JM_INV_BLINK_D100       = 100
 PICK_MARGX_D8           = 8
 PICK_MARGY_D16          = 16
 
+; Invincibility
+JM_INV_D400             = 400                   ; Number of loops to keep Jetman invincible.
+
 ;----------------------------------------------------------;
-;                  #JetmanElementCollision                    ;
+;                  #JetmanElementCollision                 ;
 ;----------------------------------------------------------;
 ; Checks whether Jetman overlaps with given element.
 ; Input:
@@ -130,10 +133,11 @@ JetRip
 ;----------------------------------------------------------;
 ;                   #MakeJetInvincible                     ;
 ;----------------------------------------------------------;
-; Input
-;  - HL:    Number of loops (#counter002) to keep Jetman invincible.
 MakeJetInvincible
-    LD (invincibleCnt), HL                      ; Store invincibility duration.
+
+    ; Store invincibility duration.
+    LD BC, JM_INV_D400
+    LD (invincibleCnt), BC
     
     ; Update state
     LD A, jt.JETST_INV
@@ -189,8 +193,8 @@ JetInvincible
 
     CALL js.BlinkJetSprite
     RET
-    
-.lastIteration  
+
+.lastIteration
     ; ##########################################
     ; It is the last iteration, remove invincibility.
     LD A, jt.JETST_NORMAL

@@ -12,13 +12,13 @@ _
 ;   - IX: [HL from dot command]=filespec, null-terminated.
 ;   - B:  Access modes, a combination of:
 ;      any/all of:
-;        - esx_mode_read $01 request read access.
-;        - esx_mode_write $02 request write access.
+;        - esx_mode_read $01 request read access,
+;        - esx_mode_write $02 request write access,
 ;        - esx_mode_use_header $40 read/write +3DOS header.
 ;      plus one of:
-;        - esx_mode_open_exist $00 only open existing file.
-;        - esx_mode_open_creat $08 open existing or create file.
-;        - esx_mode_creat_noexist $04 create new file, error if exists.
+;        - esx_mode_open_exist $00 only open existing file,
+;        - esx_mode_open_creat $08 open existing or create file,
+;        - esx_mode_creat_noexist $04 create new file, error if exists,
 ;        - esx_mode_creat_trunc $0c create new file, delete existing.
 ;   - DE: 8-byte buffer with/for +3DOS header data (if specified in mode). NB: filetype will be set to $ff if headerless file was opened.
 ; Output (success):
@@ -90,16 +90,17 @@ lbFileName              DB "assets/l00/bg_0.nxi",0
 LB_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
 LB_FILE_IMG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
-; Level intro file
-liFileName              DB "assets/l00/intro_0.nxi",0
-LI_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
-LI_FILE_IMG_POS         = 17                    ; Position of a image part number (0-9) in the file name of the background image.
+; Level intro file.
+liBgFileName             DB "assets/l00/intro_0.nxi",0
+LI_BG_FILE_LEVEL_POS     = 8                     ; Position of a level number (00-99) in the file name of the background image.
+LI_BG_FILE_IMG_POS       = 17                    ; Position of a image part number (0-9) in the file name of the background image.
 
-mainMenuFileName        DB "assets/lobby/bg_0.nxi",0
-MAIN_MENU_POS           = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+mainMenuBgFileName       DB "assets/mm/bg_0.nxi",0
+MAIN_MENU_BG_POS         = 13                    ; Position of a image part number (0-9) in the file name of the background image.
 
-effectsFileName        DB "assets/common/effects.afb",0
-EFFECTS_FILE_SIZE      = 3714
+effectsFileName         DB "assets/common/effects.afb",0
+EFFECTS_FILE_SIZE       = 3725
+
 ;----------------------------------------------------------;
 ;                        #LoadEffects                      ;
 ;----------------------------------------------------------;
@@ -121,18 +122,18 @@ LoadEffects
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
 LoadLevelIntroImage
 
     ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/..."
-    LD HL, liFileName
+    LD HL, liBgFileName
     LD IX, HL                                   ; Param for #_LoadImage
-    ADD HL, LI_FILE_LEVEL_POS                   ; Move HL to "assets/l"
+    ADD HL, LI_BG_FILE_LEVEL_POS                   ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number.
 
-    LD C, LI_FILE_IMG_POS
+    LD C, LI_BG_FILE_IMG_POS
     CALL fi._LoadImage
 
     RET                                         ; ## END of the function ##
@@ -177,7 +178,7 @@ LoadPlatformsTilemap
     CALL _FileOpen
 
     ; Read file.
-    LD IX, ti.RAM_START_H5B00
+    LD IX, ti.TI_MAP_RAM_H5B00
     LD BC, ti.TI_MAP_BYTES_D2560
     CALL _FileRead
 
@@ -187,7 +188,7 @@ LoadPlatformsTilemap
 ;                        #LoadSprites                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
 LoadSprites
     
     ; Load first file
@@ -223,7 +224,7 @@ LoadSprites
 ;               #LoadRocketStarsTilemap                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
 LoadRocketStarsTilemap
 
     LD HL, stTilesFileName
@@ -237,7 +238,7 @@ LoadRocketStarsTilemap
 ;                #LoadLevelIntroTilemap                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
 LoadLevelIntroTilemap
 
     LD HL, introTilesFileName
@@ -248,13 +249,14 @@ LoadLevelIntroTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #LoadLobbyImage                       ;
+;                  #LoadMainMenuImage                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Image number as ASCII, for example for "04": D="0", E="4"
-LoadLobbyImage
-    LD IX, mainMenuFileName
-    LD C, MAIN_MENU_POS
+LoadMainMenuImage
+
+    LD IX, mainMenuBgFileName
+    LD C, MAIN_MENU_BG_POS
     CALL fi._LoadImage
 
     RET                                         ; ## END of the function ##
@@ -291,7 +293,7 @@ _LoadImage
     LD (HL), A
 
     ; ##########################################
-    ; Load file into RAM
+    ; Load file into RAM.
     LD A, dbs.BGST_BANK_D35                     ; Set bank number.
     ADD B
     NEXTREG _MMU_REG_SLOT6_H56, A
@@ -318,9 +320,9 @@ _LoadImage
 ;                 #_Load16KTilemap                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
-;  - BC: Size in bytes of second tilemap 8K file
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
+;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName .
+;  - BC: Size in bytes of second tilemap 8K file.
 _Load16KTilemap
 
     CALL dbs.Setup16KTilemapBank
@@ -427,6 +429,7 @@ _FileRead
     RST F_CMD: DB F_READ
     CALL C, _IOError                            ; Handle errors.
     CALL _FileClose
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -435,6 +438,7 @@ _FileRead
 ; Input:
 ;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
 _FileOpen
+
 
     ; Set params for F_OPEN
     LD A, '*'                                   ; Read from default drive.

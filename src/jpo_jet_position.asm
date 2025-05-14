@@ -14,7 +14,7 @@ jetY                    BYTE 0                  ; 0-256px
 ;----------------------------------------------------------;
 IncJetX
 
-    LD BC, (jpo.jetX)   
+    LD BC, (jpo.jetX)
     INC BC
 
     ; If X >= 315 then set it to 0. X is 9-bit value. 

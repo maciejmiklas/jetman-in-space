@@ -29,12 +29,12 @@ JM_HEAT_CNT             = 40
 JM_COOL_CNT             = 20
 
 BAR_TILE_START         = 33*2                   ; *2 because each tile takes 2 bytes
-BAR_RAM_START          = ti.RAM_START_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
 BAR_TILE_PAL           = $30
 
-BAR_ICON               = 188
+BAR_ICON               = 38
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
-BAR_ICON_PAL           = $30
+BAR_ICON_PAL           = $00
 
 ;----------------------------------------------------------;
 ;                 #ResetJetpackOverheating                 ;
@@ -176,12 +176,17 @@ _JetpackTempDown
     CP TEMP_NORM
     JR NZ, .afterNormTempCheck
 
+    ; #########################################
+    ; Is Jetpack going to temp normal from overheated?
+    LD A, (jt.jetState)
+    CP jt.JETST_OVERHEAT
+    JR NZ, .afterNormTempCheck
+
     ; Jetpack is coll again.
     LD A, jt.JETST_NORMAL
     LD (jt.jetState), A
 
     CALL gc.JetpackNormal
-
 .afterNormTempCheck
 
     CALL _UpdateUiHeatBar

@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE ro
 
-RO_DROP_NEXT_D5         = 10                    ; Drop next element delay
+RO_DROP_NEXT_D5         = 1;10                    ; Drop next element delay
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element.
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element.
 
@@ -68,12 +68,12 @@ CARRY_ADJUSTY_D10       = 10
 rocketEl                WORD 0                  ; Pointer to 9x ro.RO
 
 BAR_TILE_START         = 24*2                  ; *2 because each tile takes 2 bytes
-BAR_RAM_START          = ti.RAM_START_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
 BAR_TILE_PAL           = $60
 
-BAR_ICON               = 189
+BAR_ICON               = 36
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
-BAR_ICON_PAL           = $30
+BAR_ICON_PAL           = $00
 DROP_MARGX_D8           = 8
 
 ;----------------------------------------------------------;

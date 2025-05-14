@@ -47,16 +47,13 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-/*
+
     ; ##########################################
-    LD B, 40
+    LD BC, 40
     LD H, 0
-    LD A, (jw.fireDelay)
-    LD L, A 
+    LD A, (ms.mainState)
+    LD L, A
     CALL ut.PrintNumber
-
-*/
-
 
     RET                                         ; ## END of the function ##
 

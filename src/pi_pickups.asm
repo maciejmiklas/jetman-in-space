@@ -35,6 +35,24 @@ LIVE_DEPLOYED_NO        = 1
 PICKUP_SPRITE_ID        = 90
 
 ;----------------------------------------------------------;
+;                    ResetPickups                          ;
+;----------------------------------------------------------;
+ResetPickups
+
+    XOR A
+    LD (deployed), A
+    LD (lifeDeployed), A
+    LD (deployCnt), A
+    LD (deployOrderPos), A
+    LD (deployedX), A
+    LD (deployedY), A
+
+    LD A, PICKUP_SPRITE_ID
+    CALL sp.SetIdAndHideSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                #UpdatePickupsOnJetmanMove                ;
 ;----------------------------------------------------------;
 UpdatePickupsOnJetmanMove
@@ -164,21 +182,6 @@ AnimateFallingPickup
     ; Sprite Y coordinate
     LD A, (deployedY)
     NEXTREG _SPR_REG_Y_H36, A 
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    ResetPickups                          ;
-;----------------------------------------------------------;
-ResetPickups
-
-    XOR A
-    LD (deployed), A
-    LD (lifeDeployed), A
-    LD (deployCnt), A
-    LD (deployOrderPos), A
-    LD (deployedX), A
-    LD (deployedY), A
 
     RET                                         ; ## END of the function ##
 

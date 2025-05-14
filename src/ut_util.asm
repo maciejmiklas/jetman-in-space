@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE ut
 
-PAUSE_TIME_D10      = 10
+PAUSE_TIME_D10          = 10
 
 ;----------------------------------------------------------;
 ;                       Add8To32                           ;
@@ -123,13 +123,13 @@ AbsA
 ; Print 16 bit number from HL. Each character takes 8x8 pixels.
 ;Input:
 ;  - HL:    16-bit number to print.
-;  - B:     Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
 PrintNumber
 
     PUSH BC, DE, IX, IY
     
-    CALL tx.PrintNum8
+    CALL tx.PrintNum16
     
     POP IY, IX, DE, BC
     

@@ -1,32 +1,29 @@
 ;----------------------------------------------------------;
-;                   Lobby Main Menu                        ;
+;                      Main State                          ;
 ;----------------------------------------------------------;
-    MODULE lom
+    MODULE ms
 
+GAME_ACTIVE             = 1
+GAME_PAUSE              = 2
+FLY_ROCKET              = 3
+LEVEL_INTRO             = 4
+MAIN_MENU               = 5
 
+mainState              BYTE MAIN_MENU
 
 ;----------------------------------------------------------;
-;                     #LoadMainMenu                        ;
+;                    #SetMainState                         ;
 ;----------------------------------------------------------;
-LoadMainMenu
+; Input:
+;  - A: The state.
+SetMainState
 
-    CALL los.SetLobbyStateMainMenu
-
-    ; ##########################################
-    ; Load palette
-    LD HL, db.menuBgPaletteAdr
-    LD A, (db.menuBbPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
-
-    ; ##########################################
-    ; Load background image
-    CALL fi.LoadLobbyImage
-    CALL bm.CopyImageData
+    LD (mainState), A
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-    ENDMODULE   
+
+    ENDMODULE
