@@ -14,8 +14,6 @@ start
     CALL gc.SetupSystem
     ;CALL gc.LoadLevel1
     CALL gc.LoadMainMenu
-    
-    ;
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;

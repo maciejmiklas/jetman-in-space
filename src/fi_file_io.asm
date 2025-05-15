@@ -294,7 +294,7 @@ _LoadImage
 
     ; ##########################################
     ; Load file into RAM.
-    LD A, dbs.BGST_BANK_D35                     ; Set bank number.
+    LD A, dbs.BMA_ST_BANK_S6_D35                     ; Set bank number.
     ADD B
     NEXTREG _MMU_REG_SLOT6_H56, A
 

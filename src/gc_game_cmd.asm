@@ -55,6 +55,7 @@ StartGameWithIntro
 ;----------------------------------------------------------;
 SetupSystem
 
+    CALL bm.CreateEmptyImageBank
     CALL bm.HideImage
     CALL sc.SetupScreen
     CALL ti.SetupTiles

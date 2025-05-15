@@ -8,7 +8,7 @@ palColors               BYTE 0                  ; Amount of colors in background
 palAdr                  WORD 0                  ; Address of the original palette data.
 todPalAddr              WORD 0                  ; Pointer to current brightness palette.
 
-PAL2_BYTES_D512     = 512
+PAL2_BYTES_D512         = 512
 
 ;----------------------------------------------------------;
 ;                     #NextTodPalette                      ;
@@ -79,6 +79,7 @@ CreateTodPalettes
     CALL _VariablesSet                          ; Palette global variables are set.
     CALL _LoadTodPalette                        ; Load original palette into hardware.
     CALL _CreateTodPalettes                     ; Create palettes for different times of day.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -89,7 +90,7 @@ ResetPaletteArrd
     CALL dbs.SetupPaletteBank
     
     ; Set the palette address to the beginning of the bank holding it.
-    LD DE, db.todL2Palettes
+    LD DE, _RAM_SLOT7_STA_HE000
     LD (todPalAddr), DE
 
     RET                                         ; ## END of the function ##

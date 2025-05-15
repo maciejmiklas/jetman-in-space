@@ -39,22 +39,6 @@ LoadSpritesFPGA
     LD C, _DMA_PORT_H6B                         ; Setup DMA port.
     OTIR                                        ; Upload DMA program and execute.
 
-; DMA  is a program that executes in hardware. This program consists of a series of commands from WR0 to WR6.
-; Each command is a single byte with a unique signature given by setting a few bits:
-; - WR0: $0'xxxxx'01,
-; - WR1: $0'xxxx'100,
-; - WR2: $0'xxxx'000,
-; - WR3: $1'xxxxx'00,
-; - WR4: $1'xxxxx'01,
-; - WR5: $1'xxxxx'10,
-; - WR6: $1'xxxxx'11,
-;           "xxxx" bits carry data for the DMA command.
-;
-; Some commands can have additional parameters, as they do not fit into a single byte. In such cases, the command byte is
-; followed by a few parameter bytes, like WR0: DB %0'11111'01 -> DW $C000 -> DW 2048. 
-; It is the reason for a few labels within the DMA program so that we can inject dynamic data.
-; Finally OTIR uploads the DMA program to memory through port $xx6B, and it executes.
-;
 ; More Info: https://wiki.specnext.dev/DMA
 spSpriteDMAProgram
     DB %1'00000'11                              ; WR6: Disable DMA (the last command will re-enable it).
@@ -69,7 +53,7 @@ spSpriteDMAProgram
 spSpriteDMAPortA
     DW 0                                        ; WR0 parameter pointing to RAM containing sprite data.
 
-spSpriteDMADataLength                                       
+spSpriteDMADataLength
     DW 0                                        ; WR0 parameter defining the amount of bytes for sprite data.
 
     ; WR1 - port A configuration:
