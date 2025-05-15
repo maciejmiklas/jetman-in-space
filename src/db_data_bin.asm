@@ -12,7 +12,7 @@
 ;----------------------------------------------------------;
 ; Before using it call #dbs.SetupStarsBank
 
-    MMU _RAM_SLOT7, dbs.ST_BANK_D28
+    MMU _RAM_SLOT7, dbs.ST_BANK_S7_D28
     ORG _RAM_SLOT7_STA_HE000
 starsBankStart
 
@@ -235,14 +235,14 @@ starsPalL2
     DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
     ; ##########################################
-    ASSERT $$ == dbs.ST_BANK_D28                ; Data should remain in the same bank
-    ASSERT $$starsBankStart == dbs.ST_BANK_D28  ; Make sure that we have configured the right bank.
+    ASSERT $$ == dbs.ST_BANK_S7_D28                ; Data should remain in the same bank
+    ASSERT $$starsBankStart == dbs.ST_BANK_S7_D28  ; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                    Arrays (Bank 29)                      ;
 ;----------------------------------------------------------;
 ; Before using it call #dbs.SetupArraysBank
-    MMU _RAM_SLOT7, dbs.ARR_BANK_D29
+    MMU _RAM_SLOT7, dbs.ARR_BANK_S7_D29
     ORG _RAM_SLOT7_STA_HE000
 spritesBankStart
 
@@ -1080,14 +1080,14 @@ platformsSizeL10        BYTE 30
 ; ##############################################
 ; Final Checks.
 
-    ASSERT $$ == dbs.ARR_BANK_D29                   ; Data should remain in the same bank
-    ASSERT $$spritesBankStart == dbs.ARR_BANK_D29   ; Make sure that we have configured the right bank.
-    ASSERT $ < _RAM_SLOT7_END_HFFFF                 ; Data should remain within slot 7 address space.
+    ASSERT $$ == dbs.ARR_BANK_S7_D29            ; Data should remain in the same bank
+    ASSERT $$spritesBankStart == dbs.ARR_BANK_S7_D29 ; Make sure that we have configured the right bank.
+    ASSERT $ < _RAM_SLOT7_END_HFFFF             ; Data should remain within slot 7 address space.
     
 ;----------------------------------------------------------;
 ;         Game Tile Sprites and Palette (Bank 30)          ;
 ;----------------------------------------------------------;
-    MMU _RAM_SLOT7, dbs.TI_SPR_BANK_D30         ; Assign slots 7 to bank 30.
+    MMU _RAM_SLOT7, dbs.TI_SPR_BANK_S7_D30      ; Assign slots 7 to bank 30.
     ORG _RAM_SLOT7_STA_HE000                    ; Set memory pointer to start of the slot 6.
 
 ; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
@@ -1130,14 +1130,14 @@ tilePaletteBin                                  ; RGB332, 8 bit
 	DB $E3, $DD, $DD, $D9, $D1, $D8, $C9, $C5, $D5, $E0, $D9, $FD, $26, $2A, $DA, $E3
 tilePaletteBinLength = $ - tilePaletteBin
     
-    ASSERT $ > _RAM_SLOT6_STA_HC000         ; All data should fit into slot 6,7.
-    ASSERT $ <= _RAM_SLOT7_END_HFFFF            
-    ASSERT $$ <= dbs.TI_SPR_BANK_D30            ; All data should fit into bank 45.
+    ASSERT $ > _RAM_SLOT6_STA_HC000             ; All data should fit into slot 6,7.
+    ASSERT $ <= _RAM_SLOT7_END_HFFFF
+    ASSERT $$ <= dbs.TI_SPR_BANK_S7_D30         ; All data should fit into bank 45.
 
 ;----------------------------------------------------------;
 ;                Layer 2 Palettes (Bank 31)                ;
 ;----------------------------------------------------------;
-    MMU _RAM_SLOT6, dbs.PAL2_BANK_D31
+    MMU _RAM_SLOT6, dbs.PAL2_BANK_S6_D31
     ORG _RAM_SLOT6_STA_HC000
 
  ; #############################################
@@ -1225,17 +1225,16 @@ mainMenuBbPaletteBytes = $ - mainMenuBgPaletteAdr
     ASSERT mainMenuBbPaletteBytes <= btd.PAL2_BYTES_D512
     
  ; #############################################
-    ASSERT $$ == dbs.PAL2_BANK_D31
+    ASSERT $$ == dbs.PAL2_BANK_S6_D31
 
 ;----------------------------------------------------------;
-;                Game Sprites (Bank 32...33)               ;
+;          Layer 2 Brightness Palettes (Bank 32)           ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                Game Sprites (Bank 33...34)               ;
 ;----------------------------------------------------------;
 ; Load sprites (16KB) into 2 banks mapping it to slot 6,7.
-
-;----------------------------------------------------------;
-;          Layer 2 Brightness Palettes (Bank 34)           ;
-;----------------------------------------------------------;
-todL2Palettes                                   ; Palette will be generated during runtime.
 
 ;----------------------------------------------------------;
 ;              Game Background (Bank 35...44)              ;
@@ -1251,7 +1250,7 @@ todL2Palettes                                   ; Palette will be generated duri
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;               AY FX Sound (Bank 47)                      ;
+;               Empty image (Bank 48)                      ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;

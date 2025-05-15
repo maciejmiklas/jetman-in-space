@@ -51,8 +51,8 @@ BytesToColors
 ;  - B:  Number of colors.
 LoadPalette
     
-    CALL bp.SetupPaletteLoad
-    CALL bp.WritePalette
+    CALL SetupPaletteLoad
+    CALL WritePalette
 
     RET                                         ; ## END of the function ##
 
@@ -66,7 +66,7 @@ WritePalette
 
 .loop
     LD DE, (HL)
-    CALL bp.WriteColor
+    CALL WriteColor
     INC HL
     INC HL
     DJNZ .loop

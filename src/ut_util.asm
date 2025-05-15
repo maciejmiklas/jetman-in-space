@@ -5,6 +5,45 @@
 
 PAUSE_TIME_D10          = 10
 
+; DMA Program to copy RAM from #dmaPortAAddress to #dmaPortBAddress, size is given by: dmaTransferLength
+dmaProgram
+    DB %1'00000'11                              ; WR6 - disable DMA.
+
+    DB %0'11'11'1'01                            ; WR0 - append length + port A address, A->B.
+dmaPortAAddress
+    DW 0                                        ; WR0 par 1&2 - port A start address.
+dmaTransferSize
+    DW 0                                        ; WR0 par 3&4 - transfer length.
+
+    DB %0'0'01'0'100                            ; WR1 - A incr., A=memory.
+
+    DB %0'0'01'0'000                            ; WR2 - B incr., B=memory.
+
+    DB %1'01'0'11'01                            ; WR4 - continuous, append port B address.
+dmaPortBAddress
+    DW 0                                        ; WR4 par 1&2 - port B address.
+
+    DB %10'0'0'0010                             ; WR5 - stop on end of block, CE only.
+
+    DB %1'10011'11                              ; WR6 - load addresses into DMA counters.
+    DB %1'00001'11                              ; WR6 - enable DMA.
+dmaProgramSize = $-dmaProgram
+
+;----------------------------------------------------------;
+;                        CopyRam                           ;
+;----------------------------------------------------------;
+; Input:
+;  - #dmaPortAAddress: Address from.
+;  - #dmaPortBAddress: Address to.
+;  - #dmaTransferSize: Number of bytes to copy.
+CopyRam:
+    LD HL, dmaProgram                          ; HL = pointer to DMA program.
+    LD B, dmaProgramSize                       ; B = size of the code.
+    LD C, _DMA_PORT_H6B                        ; C = $6B (zxnDMA port).
+    OTIR                                       ; Upload DMA program.
+    
+    RET
+
 ;----------------------------------------------------------;
 ;                       Add8To32                           ;
 ;----------------------------------------------------------;
