@@ -342,7 +342,8 @@ LoadCurrentLevel
 ;                     #RocketFlying                        ;
 ;----------------------------------------------------------;
 RocketFlying
-    
+
+    CALL st.MoveStarsDown
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
