@@ -440,7 +440,7 @@ _RenderStars
 
     LD IX, HL
     PUSH IX, HL, BC
-    CALL _RenderStarColumn
+    CALL _MoveAndRenderStarColumn
     POP BC, HL, IX
 
     ; Move HL to the next stars column.
@@ -456,12 +456,12 @@ _RenderStars
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_RenderStarColumn                       ;
+;               #_MoveAndRenderStarColumn                  ;
 ;----------------------------------------------------------;
 ; Input 
 ;  - IX: Pointer to SC
 ;  - IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9]).
-_RenderStarColumn
+_MoveAndRenderStarColumn
     
     ; ##########################################
     ; Assign image bank that will be modified to slot 6.
