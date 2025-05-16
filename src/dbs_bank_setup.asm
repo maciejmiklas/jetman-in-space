@@ -53,7 +53,7 @@ SetupAyFxsBank
 ;----------------------------------------------------------;
 SetupTilesBank
 
-    NEXTREG _MMU_REG_SLOT7_H57, TI_SPR_BANK_S7_D30 ; Assign bank 30 to slot 7.
+    NEXTREG _MMU_REG_SLOT7_H57, TI_SPR_BANK_S7_D30
 
     RET                                         ; ## END of the function ## 
 
@@ -62,18 +62,28 @@ SetupTilesBank
 ;----------------------------------------------------------;
 Setup16KTilemapBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, LONG_TI_BANK1_S6_D45 ; Assign bank 31 to slot 6 (see di_data_bin.asm).
-    NEXTREG _MMU_REG_SLOT7_H57, LONG_TI_BANK2_S7_D46 ; Assign bank 32 to slot 7.
+    NEXTREG _MMU_REG_SLOT6_H56, LONG_TI_BANK1_S6_D45
+    NEXTREG _MMU_REG_SLOT7_H57, LONG_TI_BANK2_S7_D46
 
     RET                                         ; ## END of the function ##
-    
+
+
+;----------------------------------------------------------;
+;                 #Setup8KTilemapBank                      ;
+;----------------------------------------------------------;
+Setup8KTilemapBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, LONG_TI_BANK1_S6_D45
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                  #SetupSpritesBank                       ;
 ;----------------------------------------------------------;
 SetupSpritesBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, SPR_BANK1_S6_D33   ; Assign bank 28 to slot 6 (see di_data_bin.asm).
-    NEXTREG _MMU_REG_SLOT7_H57, SPR_BANK2_S7_D34   ; Assign bank 29 to slot 7.
+    NEXTREG _MMU_REG_SLOT6_H56, SPR_BANK1_S6_D33
+    NEXTREG _MMU_REG_SLOT7_H57, SPR_BANK2_S7_D34
 
     RET                                         ; ## END of the function ##
 

@@ -51,12 +51,12 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (ms.mainState)
+    LD A, (mma.menuPos)
     LD L, A
     CALL ut.PrintNumber
-*/
-    RET                                         ; ## END of the function ##
 
+    RET                                         ; ## END of the function ##
+*/
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

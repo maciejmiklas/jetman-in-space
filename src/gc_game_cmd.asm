@@ -44,7 +44,7 @@ MainLoopCmd
 StartGameWithIntro
 
     CALL jw.ResetWeapon
-    CALL gc.LoadLevel1Intro
+    CALL LoadLevel1Intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
 
@@ -74,12 +74,12 @@ SetupSystem
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    LD A, ms.MAIN_MENU
+    LD A, ms.MENU_MAIN
     CALL ms.SetMainState
 
     CALL _HideGame
     CALL sc.ResetScore
-    CALL me.LoadMainMenu
+    CALL mma.LoadMainMenu
     CALL li._ResetLevelIntro
     CALL ti.SetTilesClipVertical
     CALL jw.ResetWeapon

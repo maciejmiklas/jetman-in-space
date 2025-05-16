@@ -32,7 +32,7 @@ LoadLevel1Data
     ; ##########################################
     ; Load tile map. DE is set to level number.
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemap
     POP DE
 
     ; ##########################################

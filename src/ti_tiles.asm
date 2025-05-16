@@ -43,6 +43,7 @@ TI_EMPTY_D57            = 57                    ; Empty tile.
 TX_IDX_EMPTY            = TX_ASCII_OFFSET_D34 + TI_EMPTY_D57
 TX_IDX_ARROWS           = TX_ASCII_OFFSET_D34 + 190
 TX_IDX_ENTER            = TX_ASCII_OFFSET_D34 + 191
+TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
 
 TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
 TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertical screen size).
