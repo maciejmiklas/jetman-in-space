@@ -46,26 +46,10 @@ _MainLoop000
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
 
     CALL _MainLoop000OnActiveGame
-    CALL _MainLoop000OnActiveMainMenu
+    CALL _MainLoop000OnActiveMenuMain
+    CALL _MainLoop000OnActiveMenuManual
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
-    CALL _MainLoop000OnActiveMenu
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;               #_MainLoop000OnActiveMenu                  ;
-;----------------------------------------------------------;
-_MainLoop000OnActiveMenu
-
-    ; Return if menu is not active.
-    LD A, (ms.mainState)
-    CP ms.MAIN_MENU
-    RET NZ
-
-    ; ##########################################
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.AnimateJetSprite
 
     RET                                         ; ## END of the function ##
 
@@ -114,17 +98,34 @@ _MainLoop000OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #_MainLoop000OnActiveMainMenu               ;
+;              #_MainLoop000OnActiveMenuMain               ;
 ;----------------------------------------------------------;
-_MainLoop000OnActiveMainMenu
+_MainLoop000OnActiveMenuMain
 
-    ; Return if main menu is inactive
+    ; Return if main menu is inactive.
     LD A, (ms.mainState)
-    CP ms.MAIN_MENU
+    CP ms.MENU_MAIN
     RET NZ
 
     ; ##########################################
-    CALL me.MainMenuUserInput
+    CALL mma.MenuMainUserInput
+    CALL js.UpdateJetSpritePositionRotation
+    CALL js.AnimateJetSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;            #_MainLoop000OnActiveMenuManual               ;
+;----------------------------------------------------------;
+_MainLoop000OnActiveMenuManual
+
+    ; Return if manual menu is inactive.
+    LD A, (ms.mainState)
+    CP ms.MENU_MANUAL
+    RET NZ
+
+    ; ##########################################
+    CALL mmn.MenuManualUserInput
     
     RET                                         ; ## END of the function ##
 

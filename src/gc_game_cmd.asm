@@ -74,12 +74,12 @@ SetupSystem
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    LD A, ms.MAIN_MENU
+    LD A, ms.MENU_MAIN
     CALL ms.SetMainState
 
     CALL _HideGame
     CALL sc.ResetScore
-    CALL me.LoadMainMenu
+    CALL mma.LoadMainMenu
     CALL li._ResetLevelIntro
     CALL ti.SetTilesClipVertical
     CALL jw.ResetWeapon

@@ -249,17 +249,19 @@ spritesBankStart
 ; ##############################################
 ; Menu
 menuEl
-    me.MENU {me.TOP_OFS+me.LOF+5                 /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 040/*JET_Y*/}  ; START GAME
-    me.MENU {me.TOP_OFS+(1*me.EL_DIST)+me.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 072/*JET_Y*/}  ; LEVEL SELECT
-    me.MENU {me.TOP_OFS+(2*me.EL_DIST)+me.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 104/*JET_Y*/}  ; HIGH SCORE
-    me.MENU {me.TOP_OFS+(3*me.EL_DIST)+me.LOF+6  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 192/*JET_X*/, 136/*JET_Y*/}  ; SETTINGS
-    me.MENU {me.TOP_OFS+(4*me.EL_DIST)+me.LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 168/*JET_Y*/}  ; DIFFICULTY
-MENU_EL_SIZE            = 5
+    mma.MENU {mma.TOP_OFS+mma.LOF+5                  /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 040/*JET_Y*/}  ; START GAME
+    mma.MENU {mma.TOP_OFS+(1*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 072/*JET_Y*/}  ; LEVEL SELECT
+    mma.MENU {mma.TOP_OFS+(2*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 104/*JET_Y*/}  ; HIGH SCORE
+    mma.MENU {mma.TOP_OFS+(3*mma.EL_DIST)+mma.LOF+6  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 192/*JET_X*/, 136/*JET_Y*/}  ; SETTINGS
+    mma.MENU {mma.TOP_OFS+(4*mma.EL_DIST)+mma.LOF+7  /*TILE_OFFSET*/, menuTextMa/*TEXT_POINT*/, 08/*TEXT_SIZE*/, 184/*JET_X*/, 168/*JET_Y*/}  ; MANUAL
+    mma.MENU {mma.TOP_OFS+(5*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 208/*JET_X*/, 200/*JET_Y*/}  ; DIFFICULTY
+MENU_EL_SIZE            = 6
 
 menuTextSg DB "START GAME",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextLs DB "LEVEL SELECT",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextMa DB "MANUAL",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_ARROWS
 
 
@@ -1092,10 +1094,10 @@ platformsSizeL10        BYTE 30
 
 ; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
 ; Sprites
-;  - 00 - 56: Font, palette 0
-;  - 59     : Empty, each palette
-;  - 60 - 67: Ground 1, palette 1
-;  - 68 - 95: Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
+;  - 00 - 56:  Font, palette 0
+;  - 59     :  Empty, each palette
+;  - 60 - 67:  Ground 1, palette 1
+;  - 68 - 95:  Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
 ;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
 
 tileSprBin INCBIN "assets/common/tiles.spr"
@@ -1218,12 +1220,19 @@ gameIntroPaletteBytes = $ - gameIntroPaletteAdr
     ASSERT gameIntroPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
-mainMenuBgPaletteAdr
-    INCBIN  "assets/mm/bg.nxp"
+menuMainBgPaletteAdr
+    INCBIN  "assets/mma/bg.nxp"
 
-mainMenuBbPaletteBytes = $ - mainMenuBgPaletteAdr
-    ASSERT mainMenuBbPaletteBytes <= btd.PAL2_BYTES_D512
-    
+menuMainBgPaletteBytes = $ - menuMainBgPaletteAdr
+    ASSERT menuMainBgPaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
+menuManualBgPaletteAdr
+    INCBIN  "assets/mmn/bg.nxp"
+
+menuManualBgPaletteBytes = $ - menuManualBgPaletteAdr
+    ASSERT menuManualBgPaletteBytes <= btd.PAL2_BYTES_D512
+
  ; #############################################
     ASSERT $$ == dbs.PAL2_BANK_S6_D31
 

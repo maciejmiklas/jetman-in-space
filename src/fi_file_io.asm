@@ -95,11 +95,16 @@ liBgFileName             DB "assets/l00/intro_0.nxi",0
 LI_BG_FILE_LEVEL_POS     = 8                     ; Position of a level number (00-99) in the file name of the background image.
 LI_BG_FILE_IMG_POS       = 17                    ; Position of a image part number (0-9) in the file name of the background image.
 
-mainMenuBgFileName       DB "assets/mm/bg_0.nxi",0
-MAIN_MENU_BG_POS         = 13                    ; Position of a image part number (0-9) in the file name of the background image.
+menuMainBgFileName       DB "assets/mma/bg_0.nxi",0
+MENU_MAIN_BG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuManualBgFileName     DB "assets/mmn/bg_0.nxi",0
+MENU_MANUAL_BG_POS       = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
 effectsFileName         DB "assets/common/effects.afb",0
 EFFECTS_FILE_SIZE       = 3725
+
+mlTileFileName          DB "assets/mmn/manual.map",0
 
 ;----------------------------------------------------------;
 ;                        #LoadEffects                      ;
@@ -134,7 +139,7 @@ LoadLevelIntroImage
     LD (HL), E                                  ; Set second number.
 
     LD C, LI_BG_FILE_IMG_POS
-    CALL fi._LoadImage
+    CALL _LoadImage
 
     RET                                         ; ## END of the function ##
 
@@ -155,7 +160,7 @@ LoadLevelBgImage
     LD (HL), E                                  ; Set second number.
 
     LD C, LB_FILE_IMG_POS
-    CALL fi._LoadImage
+    CALL _LoadImage
 
     RET                                         ; ## END of the function ##
 
@@ -190,10 +195,10 @@ LoadPlatformsTilemap
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
 LoadSprites
-    
+
     ; Load first file
     PUSH DE
-    
+
     CALL dbs.SetupSpritesBank
 
     LD A, "0"
@@ -249,15 +254,41 @@ LoadLevelIntroTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadMainMenuImage                      ;
+;                  #LoadManualTilemap                      ;
 ;----------------------------------------------------------;
-; Input:
-;  - DE: Image number as ASCII, for example for "04": D="0", E="4"
-LoadMainMenuImage
+LoadManualTilemap
 
-    LD IX, mainMenuBgFileName
-    LD C, MAIN_MENU_BG_POS
-    CALL fi._LoadImage
+    ; Open file.
+    LD IX, mlTileFileName
+
+    CALL _FileOpen
+
+    ; Read file.
+    LD IX, ti.TI_MAP_RAM_H5B00
+    LD BC, ti.TI_MAP_BYTES_D2560
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #LoadMenuMainImage                      ;
+;----------------------------------------------------------;
+LoadMenuMainImage
+
+    LD IX, menuMainBgFileName
+    LD C, MENU_MAIN_BG_POS
+    CALL _LoadImage
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #LoadMenuManualImage                     ;
+;----------------------------------------------------------;
+LoadMenuManualImage
+
+    LD IX, menuManualBgFileName
+    LD C, MENU_MANUAL_BG_POS
+    CALL _LoadImage
 
     RET                                         ; ## END of the function ##
 
@@ -267,11 +298,15 @@ LoadMainMenuImage
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+
 ;----------------------------------------------------------;
 ;                       #_LoadImage                        ;
 ;----------------------------------------------------------;
 ; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
-; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\l01_background.bmp
+; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\bg.bmp
+; if palette is broken try this:
+; ./gfx2next -bitmap -preview -bitmap-y  -pal-std .\bg.bmp
+
 ; This function loads the image into temp RAM, in order to show it call #bm.CopyImageData
 ; Input:
 ;  - IX: File name.
@@ -438,7 +473,6 @@ _FileRead
 ; Input:
 ;  - IX: File name, i.e: #stTilesFileName or #ltTileFileName
 _FileOpen
-
 
     ; Set params for F_OPEN
     LD A, '*'                                   ; Read from default drive.

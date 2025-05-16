@@ -22,11 +22,11 @@ def convert_to_binary(input_file, out_file_name):
     with open(out_file_name, 'wb') as out_file:
         lines_cnt = 0
         for line in lines:
-            lines_cnt += 2
-            out_file.write(bytes([SPACE_TILE, 0] * LINE_WIDTH))
+            lines_cnt += 1
+            # out_file.write(bytes([SPACE_TILE, 0] * LINE_WIDTH))
 
             # Remove line breaks and pad the line with spaces to 40 characters
-            padded_line = line.replace("\n", "").replace("\r", "").strip().ljust(LINE_WIDTH)
+            padded_line = line.replace("\n", "").replace("\r", "").ljust(LINE_WIDTH)
 
             #print(padded_line)
             for char in padded_line:
