@@ -95,8 +95,8 @@ LoadLevel1Intro
 
     LD D, "0"
     LD E, "1"
-    LD HL, 5248                                 ; Size of intro_1.map
-    LD A, 8192/80 + 5248/80                     ; Total number of lines in intro_0.map and intro_1.map
+    LD HL, 3968                                 ; Size of intro_1.map
+    LD A, 8192/80 + 3968/80                     ; Total number of lines in intro_0.map and intro_1.map
     CALL li.LoadLevelIntro
 
     RET                                         ; ## END of the function ##
