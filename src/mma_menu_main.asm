@@ -129,9 +129,11 @@ MenuMainUserInput
 
     ; ##########################################
     ; Joystick fire pressed ?
+    PUSH AF
     AND %01110000                               ; Any of three fires pressed?
     JR NZ, .pressFire
-
+    POP AF
+    
     ; ##########################################
     ; Joystick up pressed ?
     BIT 3, A                                    ; Bit 3 set -> Up pressed.

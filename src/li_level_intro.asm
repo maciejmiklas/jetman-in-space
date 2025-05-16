@@ -53,6 +53,7 @@ LoadLevelIntro
     LD E, "1"
     CALL fi.LoadLevelIntroTilemap
     CALL _NextTilesRow
+    CALL _NextTilesRow
 
     RET                                         ; ## END of the function ##
 
