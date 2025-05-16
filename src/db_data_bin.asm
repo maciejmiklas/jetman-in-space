@@ -249,20 +249,22 @@ spritesBankStart
 ; ##############################################
 ; Menu
 menuEl
-    mma.MENU {mma.TOP_OFS+mma.LOF+5                  /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 040/*JET_Y*/}  ; START GAME
-    mma.MENU {mma.TOP_OFS+(1*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 072/*JET_Y*/}  ; LEVEL SELECT
-    mma.MENU {mma.TOP_OFS+(2*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 104/*JET_Y*/}  ; HIGH SCORE
-    mma.MENU {mma.TOP_OFS+(3*mma.EL_DIST)+mma.LOF+6  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 192/*JET_X*/, 136/*JET_Y*/}  ; SETTINGS
-    mma.MENU {mma.TOP_OFS+(4*mma.EL_DIST)+mma.LOF+7  /*TILE_OFFSET*/, menuTextMa/*TEXT_POINT*/, 08/*TEXT_SIZE*/, 184/*JET_X*/, 168/*JET_Y*/}  ; MANUAL
-    mma.MENU {mma.TOP_OFS+(5*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 208/*JET_X*/, 200/*JET_Y*/}  ; DIFFICULTY
-MENU_EL_SIZE            = 6
+    mma.MENU {mma.TOP_OFS+mma.LOF+5                  /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 032/*JET_Y*/}  ; START GAME
+    mma.MENU {mma.TOP_OFS+(1*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 055/*JET_Y*/}  ; LEVEL SELECT
+    mma.MENU {mma.TOP_OFS+(2*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 080/*JET_Y*/}  ; HIGH SCORE
+    mma.MENU {mma.TOP_OFS+(3*mma.EL_DIST)+mma.LOF+6  /*TILE_OFFSET*/, menuTextSe/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 192/*JET_X*/, 104/*JET_Y*/}  ; SETTINGS
+    mma.MENU {mma.TOP_OFS+(4*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextIg/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 206/*JET_X*/, 128/*JET_Y*/}  ; IN GAME KEYS
+    mma.MENU {mma.TOP_OFS+(5*mma.EL_DIST)+mma.LOF+6  /*TILE_OFFSET*/, menuTextGp/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 192/*JET_X*/, 152/*JET_Y*/}  ; GAMEPLAY
+    mma.MENU {mma.TOP_OFS+(6*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 192/*JET_X*/, 176/*JET_Y*/}  ; DIFFICULTY
+MENU_EL_SIZE            = 7
 
 menuTextSg DB "START GAME",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextLs DB "LEVEL SELECT",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextMa DB "MANUAL",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_ARROWS
+menuTextLs DB "LEVEL SELECT",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
+menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
+menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
+menuTextIg DB "IN GAME KEYS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextGp DB "GAMEPLAY",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
+menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
 
 
 ; ##############################################
@@ -1227,11 +1229,18 @@ menuMainBgPaletteBytes = $ - menuMainBgPaletteAdr
     ASSERT menuMainBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
-menuManualBgPaletteAdr
-    INCBIN  "assets/mmn/bg.nxp"
+menuGameplayBgPaletteAdr
+    INCBIN  "assets/mmg/bg.nxp"
 
-menuManualBgPaletteBytes = $ - menuManualBgPaletteAdr
-    ASSERT menuManualBgPaletteBytes <= btd.PAL2_BYTES_D512
+menuGameplayBgPaletteBytes = $ - menuGameplayBgPaletteAdr
+    ASSERT menuGameplayBgPaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
+menuKeysBgPaletteAdr
+    INCBIN  "assets/mmk/bg.nxp"
+
+menuKeysBgPaletteBytes = $ - menuKeysBgPaletteAdr
+    ASSERT menuKeysBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
     ASSERT $$ == dbs.PAL2_BANK_S6_D31

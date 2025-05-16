@@ -5,8 +5,8 @@
 
 GAME_VERSION_OFFSET     = 40*30                 ; Version is in the last line.
 
-EL_DIST                 = 40*4
-TOP_OFS                 = 40*6
+EL_DIST                 = 40*3
+TOP_OFS                 = 40*5
 LOF                     = 7                     ; Menu entry offset from the left.
 
     STRUCT MENU
@@ -22,8 +22,9 @@ MENU_EL_START           = 1                     ; START GAME
 MENU_EL_LSELECT         = 2                     ; LEVEL SELECT
 MENU_EL_HSCORE          = 3                     ; HIGH SCORE
 MENU_EL_SETTINGS        = 4                     ; SETTINGS
-MENU_EL_MANUAL          = 5                     ; MANUAL
-MENU_EL_DIFFICULTY      = 6                     ; DIFFICULTY
+MENU_EL_KEYS            = 5                     ; IN GAME KEYS
+MENU_EL_GAMEPLAY        = 6                     ; GAMEPLAY
+MENU_EL_DIFFICULTY      = 7                     ; DIFFICULTY
 
 MENU_EL_MIN             = MENU_EL_START
 MENU_EL_MAX             = MENU_EL_DIFFICULTY
@@ -352,12 +353,20 @@ _JoyFire
 .notStartGame
 
     ; ##########################################
-    ; Show manual.
-    CP MENU_EL_MANUAL
-    JR NZ, .notShowManual
-    CALL mmn.LoadManualMenu
+    ; Show gameplay.
+    CP MENU_EL_GAMEPLAY
+    JR NZ, .notShowGameplay
+    CALL mmn.LoadMenuGameplay
     RET
-.notShowManual
+.notShowGameplay
+
+    ; ##########################################
+    ; Show game keys.
+    CP MENU_EL_KEYS
+    JR NZ, .notShowKeys
+    CALL mmn.LoadMenuKeys
+    RET
+.notShowKeys
 
     ; ##########################################
     ; Wrong key hit, play sound
@@ -365,7 +374,6 @@ _JoyFire
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -34,7 +34,6 @@ LoadLevelIntro
     PUSH DE
     LD (fi.introSecondFileSize), HL
     CALL ti.SetTilesClipVertical
-
     ; ##########################################
     ; Load palette
     LD HL, db.gameIntroPaletteAdr

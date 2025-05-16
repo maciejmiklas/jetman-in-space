@@ -91,20 +91,24 @@ LB_FILE_LEVEL_POS       = 8                     ; Position of a level number (00
 LB_FILE_IMG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
 ; Level intro file.
-liBgFileName             DB "assets/l00/intro_0.nxi",0
-LI_BG_FILE_LEVEL_POS     = 8                     ; Position of a level number (00-99) in the file name of the background image.
-LI_BG_FILE_IMG_POS       = 17                    ; Position of a image part number (0-9) in the file name of the background image.
+liBgFileName            DB "assets/l00/intro_0.nxi",0
+LI_BG_FILE_LEVEL_POS    = 8                     ; Position of a level number (00-99) in the file name of the background image.
+LI_BG_FILE_IMG_POS      = 17                    ; Position of a image part number (0-9) in the file name of the background image.
 
-menuMainBgFileName       DB "assets/mma/bg_0.nxi",0
-MENU_MAIN_BG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+menuMainBgFileName      DB "assets/mma/bg_0.nxi",0
+MENU_MAIN_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
-menuManualBgFileName     DB "assets/mmn/bg_0.nxi",0
-MENU_MANUAL_BG_POS       = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+menuGameplayBgFileName  DB "assets/mmg/bg_0.nxi",0
+MENU_GAMEPLAY_BG_POS    = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuKeysBgFileName      DB "assets/mmk/bg_0.nxi",0
+MENU_KEYS_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
 effectsFileName         DB "assets/common/effects.afb",0
 EFFECTS_FILE_SIZE       = 3725
 
-mlTileFileName          DB "assets/mmn/manual.map",0
+mmgTileFileName          DB "assets/mmg/gameplay.map",0
+mmkTileFileName          DB "assets/mmk/keys.map",0
 
 ;----------------------------------------------------------;
 ;                        #LoadEffects                      ;
@@ -132,14 +136,14 @@ LoadLevelIntroImage
 
     ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/..."
     LD HL, liBgFileName
-    LD IX, HL                                   ; Param for #_LoadImage
+    LD IX, HL                                   ; Param for #_LoadImageToTempRam
     ADD HL, LI_BG_FILE_LEVEL_POS                   ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number.
 
     LD C, LI_BG_FILE_IMG_POS
-    CALL _LoadImage
+    CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
 
@@ -153,14 +157,14 @@ LoadLevelBgImage
 
     ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/...."
     LD HL, lbFileName
-    LD IX, HL                                   ; Param for #_LoadImage
+    LD IX, HL                                   ; Param for #_LoadImageToTempRam
     ADD HL, LB_FILE_LEVEL_POS                   ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number.
 
     LD C, LB_FILE_IMG_POS
-    CALL _LoadImage
+    CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
 
@@ -254,12 +258,30 @@ LoadLevelIntroTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadManualTilemap                      ;
+;               #LoadMenuGameplayTilemap                   ;
 ;----------------------------------------------------------;
-LoadManualTilemap
+LoadMenuGameplayTilemap
 
     ; Open file.
-    LD IX, mlTileFileName
+    LD IX, mmgTileFileName
+
+    CALL _FileOpen
+
+    ; Read file.
+    LD IX, ti.TI_MAP_RAM_H5B00
+    LD BC, ti.TI_MAP_BYTES_D2560
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                  #LoadMenuKeysTilemap                    ;
+;----------------------------------------------------------;
+LoadMenuKeysTilemap
+
+    ; Open file.
+    LD IX, mmkTileFileName
 
     CALL _FileOpen
 
@@ -277,18 +299,30 @@ LoadMenuMainImage
 
     LD IX, menuMainBgFileName
     LD C, MENU_MAIN_BG_POS
-    CALL _LoadImage
+    CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #LoadMenuManualImage                     ;
+;                 #LoadMenuGameplayImage                   ;
 ;----------------------------------------------------------;
-LoadMenuManualImage
+LoadMenuGameplayImage
 
-    LD IX, menuManualBgFileName
-    LD C, MENU_MANUAL_BG_POS
-    CALL _LoadImage
+    LD IX, menuGameplayBgFileName
+    LD C, MENU_GAMEPLAY_BG_POS
+    CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                  #LoadMenuKeysImage                      ;
+;----------------------------------------------------------;
+LoadMenuKeysImage
+
+    LD IX, menuKeysBgFileName
+    LD C, MENU_KEYS_BG_POS
+    CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
 
@@ -298,9 +332,8 @@ LoadMenuManualImage
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
-
 ;----------------------------------------------------------;
-;                       #_LoadImage                        ;
+;                  #_LoadImageToTempRam                    ;
 ;----------------------------------------------------------;
 ; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
 ; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\bg.bmp
@@ -311,7 +344,7 @@ LoadMenuManualImage
 ; Input:
 ;  - IX: File name.
 ;  - C:  Position of a image part number (0-9) in the file name of the background image.
-_LoadImage
+_LoadImageToTempRam
 
     ; Iterate over banks, loading one after another, form 0 to 9 inclusive.
     LD B, 0 

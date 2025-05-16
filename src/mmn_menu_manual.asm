@@ -1,37 +1,49 @@
 ;----------------------------------------------------------;
-;                   Lobby Main Menu                        ;
+;                     Game Manual                          ;
 ;----------------------------------------------------------;
+; Manual handles two menus: MENU_EL_KEYS (IN GAME KEYS) and MENU_EL_GAMEPLAY (GAMEPLAY)
     MODULE mmn
 
 ;----------------------------------------------------------;
-;                   #LoadManualMenu                        ;
+;                    #LoadMenuGameplay                     ;
 ;----------------------------------------------------------;
-LoadManualMenu
+LoadMenuGameplay
 
-    LD A, ms.MENU_MANUAL
-    CALL ms.SetMainState
+    CALL _PreLoadMenu
 
-    CALL js.HideJetSprite
-
-    ; ##########################################
     ; Load tiles with manual.
-    CALL ti.CleanAllTiles
-    CALL fi.LoadManualTilemap
+    CALL fi.LoadMenuGameplayTilemap
     
-    ; ##########################################
-    ; Load image.
-
-    ; Clear previous image.
-    CALL bm.HideImage
-
     ; Load palette.
-    LD HL, db.menuManualBgPaletteAdr
-    LD A, (db.menuManualBgPaletteBytes)
+    LD HL, db.menuGameplayBgPaletteAdr
+    LD A, (db.menuGameplayBgPaletteBytes)
     LD B, A
     CALL bp.LoadPalette
 
     ; Load background image.
-    CALL fi.LoadMenuManualImage
+    CALL fi.LoadMenuGameplayImage
+    CALL bm.CopyImageData
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #LoadMenuKeys                        ;
+;----------------------------------------------------------;
+LoadMenuKeys
+
+    CALL _PreLoadMenu
+
+    ; Load tiles with manual.
+    CALL fi.LoadMenuKeysTilemap
+
+    ; Load palette.
+    LD HL, db.menuKeysBgPaletteAdr
+    LD A, (db.menuKeysBgPaletteBytes)
+    LD B, A
+    CALL bp.LoadPalette
+
+    ; Load background image.
+    CALL fi.LoadMenuKeysImage
     CALL bm.CopyImageData
 
     RET                                         ; ## END of the function ##
@@ -67,6 +79,25 @@ MenuManualUserInput
     CALL gc.LoadMainMenu
     
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                      #_PreLoadMenu                       ;
+;----------------------------------------------------------;
+_PreLoadMenu
+
+    LD A, ms.MENU_MANUAL
+    CALL ms.SetMainState
+
+    CALL js.HideJetSprite
+    CALL ti.CleanAllTiles
+    CALL bm.HideImage
+    RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

@@ -44,7 +44,7 @@ MainLoopCmd
 StartGameWithIntro
 
     CALL jw.ResetWeapon
-    CALL gc.LoadLevel1Intro
+    CALL LoadLevel1Intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
 
