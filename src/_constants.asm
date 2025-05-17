@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 ; Lots of documentation copied from https://wiki.specnext.dev
 
-gameVersion             DB "V0.14 UNDER CONSTRUCTION"
+gameVersion             DB "V0.15 UNDER CONSTRUCTION"
 GAME_VERSION_SIZE       = 24
 
 ;----------------------------------------------------------;
@@ -460,4 +460,10 @@ _GSC_JET_GND_D217       = _GSC_Y_MAX_D232 - _TI_GND_D8 +1
 _BAR_TILES              = 6
 _BAR_FULL_SPR           = 176
 _BAR_EMPTY_SPR          = 182
+
+_BAR_RED_A1_SPR         = 180
+_BAR_RED_A2_SPR         = 181
+
+_BAR_RED_B1_SPR         = 188
+_BAR_RED_B2_SPR         = 189
 

@@ -47,16 +47,16 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-/*
+
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (mma.menuPos)
+    LD A, (jo.jetTempLevel)
     LD L, A
     CALL ut.PrintNumber
 
     RET                                         ; ## END of the function ##
-*/
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

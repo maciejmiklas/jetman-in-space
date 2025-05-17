@@ -17,7 +17,7 @@ jetCoolCnt              BYTE 0                  ; Runs from 0 to JM_COOL_CNT
 
 jetTempLevel            BYTE 0
 
-TEMP_MAX                = 6
+TEMP_MAX                = 6                     ; The heat bar in UI (H) has 5 elements, 6 means it's overheated.
 TEMP_RED                = 4
 TEMP_MIN                = 0
 
@@ -35,6 +35,46 @@ BAR_TILE_PAL           = $30
 BAR_ICON               = 38
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
 BAR_ICON_PAL           = $00
+
+;----------------------------------------------------------;
+;                 #AnimateJetpackOverheat                  ;
+;----------------------------------------------------------;
+; Replace last two tiles in heat bar for blinking effect: _BAR_RED_A1_SPR,_BAR_RED_A2_SPR -> _BAR_RED_B1_SPR,_BAR_RED_B2_SPR.
+AnimateJetpackOverheat
+
+    ; Animate only when overheated, and Jetman slows down.
+    LD A, (jt.jetState)
+    CP jt.JETST_OVERHEAT
+    RET NZ
+
+    ; Move HL so that it points to first read tile.
+    LD HL, BAR_RAM_START
+    ADD HL, TEMP_RED*2
+
+    ; Change between two colors based on the flip-flop counter.
+    LD A, (mld.counter008FliFLop)
+    CP _GC_FLIP_ON_D1
+    JR Z, .on
+
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    INC HL
+    LD (HL), _BAR_RED_A1_SPR                    ; Set tile id.
+    INC HL
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    INC HL
+    LD (HL), _BAR_RED_A2_SPR                    ; Set tile id.
+
+    RET
+.on
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    INC HL
+    LD (HL), _BAR_RED_B1_SPR                    ; Set tile id.
+    INC HL
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    INC HL
+    LD (HL), _BAR_RED_B2_SPR                    ; Set tile id.
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                 #ResetJetpackOverheating                 ;
@@ -142,6 +182,7 @@ _JetpackTempUp
 .afterTempCheck 
 
     CALL _UpdateUiHeatBar
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
