@@ -210,10 +210,10 @@ SetSpriteId
 UpdateSpritePosition
 
     ; Move the sprite to the X position, the 9-bit value requires a few tricks. 
-    LD BC, (IX + SPR.X)                     
+    LD BC, (IX + SPR.X)
 
     LD A, C                                     ; Set LSB from BC (X).
-    NEXTREG _SPR_REG_X_H35, A                   
+    NEXTREG _SPR_REG_X_H35, A
 
     ; Update the H37
     LD A, B                                     ; Set MSB from BC (X).
@@ -360,13 +360,15 @@ UpdateSpritePattern
 ;----------------------------------------------------------;
 ; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on D.
 ; Input
-;  - IX:    Pointer to #SPR
-;  - D:     Configuration, bits:
-;           - 0-2: Number of pixels to move sprite,
-;           - 3:  #MVX_IN_D_HIDE_BIT,
-;           - 4:  #MVX_IN_D_TOD_DIR_BIT.
+;  - IX: Pointer to #SPR
+;  - D:  Do not confuse this parameter with #SPR.STATE, they are different parameters.
+;        Configuration, bits:
+;         - 0-2: Number of pixels to move sprite,
+;         - 3:  #MVX_IN_D_HIDE_BIT,
+;         - 4:  #MVX_IN_D_TOD_DIR_BIT.
 MVX_IN_D_HIDE_BIT           = 3                 ; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen.
-MVX_IN_D_TOD_DIR_BIT            = 4                 ; 1 - to move right, 0 - to move left.
+MVX_IN_D_TOD_DIR_BIT        = 4                 ; 1 - to move right, 0 - to move left.
+MVX_IN_D_1PX_HIDE           = %0000'1'001       ; Move the sprite by 1 pixel and hide on the screen end.
 MVX_IN_D_6PX_HIDE           = %0000'1'110       ; Move the sprite by 6 pixels and hide on the screen end.
 MVX_IN_D_1PX_ROL            = %0000'0'001       ; Move the sprite by 1 pixel and roll over sprite when off-screen.
 MVX_IN_D_2PX_ROL            = %0000'0'010       ; Move the sprite by 2 pixels and roll over sprite when off-screen.
@@ -374,7 +376,7 @@ MVX_IN_D_MASK_CNT           = %00000'111
 ; Modifies; A, B, HL
 MoveX
 
-    ; Load counter for .moveLeftLoop into B.
+    ; Load counter for .moveLeftLoop/.moveRightLoop into B.
     LD A, D
     AND MVX_IN_D_MASK_CNT
     LD B, A
@@ -387,33 +389,58 @@ MoveX
     ; ##########################################
     ; Move left.
 .moveLeftLoop
-    DEC HL
+
+    ; ##########################################
+    ; Is HL == 0 ? -> in this case do not decrement it ;)
+    LD A, H
+    CP 0
+    JR NZ, .hlNot0
+    LD A, L
+    CP 0
+    JR NZ, .hlNot0
+  
+    ; HL == 0
+    JR .hideSpriteL
+.hlNot0
+
+    DEC HL                                      ; Move sprite 1px to the left.
 
     ; Check whether a sprite is outside the screen.
     LD A, H
     CP 0                                        ; H holds MSB from X, if H > 0 than X > 256.
     JR NZ, .continueLeftLoop
 
-    ; H is 0, check whether L has reached #_GSC_X_MIN_D0.
+    ; H is 0, check whether L has reached left side of the screen.
     LD A, L
-    CP _GSC_X_MIN_D0+3
-    JR NC, .continueLeftLoop                    ; Jump if A >= 2
+    CP _GSC_X_MIN_D0
+    JR NZ, .continueLeftLoop                    ; Jump if A !=0
 
-    ; HL == #_GSC_X_MIN_D0
+    ; HL == #_GSC_X_MIN_D0+1
     BIT MVX_IN_D_HIDE_BIT, D                    ; Hide sprite or roll over?
     JR NZ, .hideSpriteL
-    
+
     LD HL, _GSC_X_MAX_D315                      ; Roll over.
     JR .afterMoving
 
 .continueLeftLoop
+
+    ; Break the loop and slow down the sprite if it's close to the left side of the screen. It is necessary for collision detection.
+    ; Otherwise, this loop continues moving the spire until it reaches the left edge of the screen and disappears without eventually
+    ; triggering collision detection.
+    LD A, H
+    CP 0
+    JR NZ, .afterLeftSideCheck
+    LD A, L
+    CP 2
+    JR C, .afterMoving
+.afterLeftSideCheck
+
     DJNZ .moveLeftLoop                          ; Jump if B > 0.
     JR .afterMoving
 
 .hideSpriteL
-
     CALL HideSimpleSprite                       ; Hide sprite.
-    JR .afterMoving
+    RET
 
     ; ##########################################
     ; Move right.
@@ -421,10 +448,10 @@ MoveX
     ; Moving right - increment X coordinate.
     LD HL, (IX + SPR.X) 
 
-.moveRightLoop  
+.moveRightLoop
     INC HL
 
-    ; If X >= 317 then hide sprite .
+    ; If X >= 317 then hide sprite.
     ; X is 9-bit value: 317 = 256 + 61 = %00000001 + %00111101 -> MSB: 1, LSB: 61.
     LD A, H                                     ; Load MSB from X into A.
     CP 1                                        ; 9-th bit set means X > 256.
@@ -436,7 +463,7 @@ MoveX
     ; Sprite is after 317.
     BIT MVX_IN_D_HIDE_BIT, D                    ; Hide sprite or roll over?
     JR NZ, .hideSpriteR
-    
+
     ; Roll over.
     LD H, 0
     LD L, _GSC_X_MIN_D0
@@ -448,10 +475,11 @@ MoveX
 
 .hideSpriteR
     CALL HideSimpleSprite                       ; Hide sprite.
+    RET
 
 .afterMoving
     LD (IX + SPR.X), HL                         ; Update new X position.
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

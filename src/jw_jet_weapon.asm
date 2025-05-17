@@ -5,7 +5,7 @@
 
 
 ; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
-FIRE_ADJUST_X_D10       = 10
+FIRE_ADJUST_X_D7        = 4
 FIRE_ADJUST_Y_D4        = 4
 FIRE_THICKNESS_D10      = 10
 
@@ -26,7 +26,7 @@ shots
     sr.SPR {93/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
     sr.SPR {94/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
     sr.SPR {95/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-SHOTS_SIZE              = 15                    ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
+SHOTS_SIZE              = 15                   ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JM_FIRE_DELAY.
 JM_FIRE_DELAY_MAX       = 15
@@ -172,7 +172,7 @@ ShotsCollision
     JR Z, .continueShotsLoop
 
     ; Compare X coordinate of the sprite and the shot, HL holds X of the sprite.
-    LD HL, (IX + sr.SPR.X)                  ; X of the shot.
+    LD HL, (IX + sr.SPR.X)                      ; X of the shot.
     
     ; Subtracts DE from HL and check whether the result is less than or equal to A.
     SBC DE, HL
@@ -243,16 +243,16 @@ MoveShots
 
     ; Setup move direction for shot.
     BIT STATE_SHOT_DIR_BIT, (IX + sr.SPR.STATE)
-    JR Z, .shotDirLeft  
-    
+    JR Z, .shotDirLeft
+
     ; Shot moves right.
     SET sr.MVX_IN_D_TOD_DIR_BIT, D
     JR .afterShotDir
-.shotDirLeft    
+.shotDirLeft
     ; Shot moves left.
     RES sr.MVX_IN_D_TOD_DIR_BIT, D
 .afterShotDir
-    
+
     CALL sr.MoveX
     CALL sr.UpdateSpritePosition
 
@@ -280,7 +280,7 @@ MoveShots
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #FireDelayCounter                       ;
+;                    #FireDelayCounter                     ;
 ;----------------------------------------------------------;
 FireDelayCounter
     
@@ -337,7 +337,7 @@ Fire
     ; Find the first inactive (sprite hidden) shot.
     LD IX, shots
     LD DE, sr.SPR
-    LD B, SHOTS_SIZE 
+    LD B, SHOTS_SIZE
 .findLoop
 
     ; Check whether the current #shotsX is not visible and can be reused.
@@ -349,23 +349,22 @@ Fire
     DJNZ .findLoop                              ; Jump if B > 0 (starts with B = #SPR).
     RET                                         ; Loop has ended without finding free #shotsX.
 
-.afterFound                                     
+.afterFound
     ; We are here because free #shotsX has been found, and IX points to it.
 
     ; Is Jetman moving left or right?
     LD A, (gid.jetDirection)
     BIT gid.MOVE_LEFT_BIT, A
     JR NZ, .movingLeft                          ; Jump if Jetman is moving left.
-    
+
     XOR A                                       ; A will hold sr.SPR.STATE.
     ; Jetman is moving right, shot will move right also.
     SET STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state.
 
     ; Set X coordinate for laser beam.
     LD HL, (jpo.jetX)
-    ADD HL, FIRE_ADJUST_X_D10
+    ADD HL, FIRE_ADJUST_X_D7
     LD (IX + sr.SPR.X), HL
-
     JR .afterMoving
 .movingLeft
 
@@ -375,15 +374,25 @@ Fire
 
     ; Set X coordinate for laser beam.
     LD HL, (jpo.jetX)
-    ADD HL, -FIRE_ADJUST_X_D10
+    ADD HL, -FIRE_ADJUST_X_D7
+
+    PUSH AF                                     ; Keep A for #SetStateVisible below
+    ; When Jetman is close to the left screen edge, subtracting FIRE_ADJUST_X_D7 causes overflow, because X is close to 0. 
+    LD A, H
+    CP $FF
+    JR NZ, .hlNotNegative
+    LD HL, 0
+.hlNotNegative
+    POP AF
     LD (IX + sr.SPR.X), HL
+
 .afterMoving
 
     CALL sr.SetStateVisible                     ; It will show sprite and store state from A.
 
     ; Set Y coordinate for laser beam.
     LD A, (jpo.jetY)
-    ADD a, FIRE_ADJUST_Y_D4
+    ADD A, FIRE_ADJUST_Y_D4
     LD (IX + sr.SPR.Y), A
 
     ; Setup laser beam pattern, IX already points to the right memory address.
