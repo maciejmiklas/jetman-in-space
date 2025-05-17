@@ -391,7 +391,8 @@ _MainLoop008OnActiveGame
     CALL ro.BlinkRocketReady
     CALL ro.AnimateTankExplode
     CALL st.BlinkStarsL1
-
+    CALL jo.AnimateJetpackOverheat
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
