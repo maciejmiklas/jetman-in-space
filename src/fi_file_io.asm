@@ -99,6 +99,12 @@ LI_BG_FILE_IMG_POS      = 17                    ; Position of a image part numbe
 menuMainBgFileName      DB "assets/mma/bg_0.nxi",0
 MENU_MAIN_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
+menuEasyBgFileName      DB "assets/mma/easy_0.nxi",0
+MENU_EASY_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuHardBgFileName      DB "assets/mma/hard_0.nxi",0
+MENU_HARD_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+
 menuGameplayBgFileName  DB "assets/mmg/bg_0.nxi",0
 MENU_GAMEPLAY_BG_POS    = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
@@ -138,7 +144,7 @@ LoadLevelIntroImage
     ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/..."
     LD HL, liBgFileName
     LD IX, HL                                   ; Param for #_LoadImageToTempRam
-    ADD HL, LI_BG_FILE_LEVEL_POS                   ; Move HL to "assets/l"
+    ADD HL, LI_BG_FILE_LEVEL_POS                ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number.
@@ -275,7 +281,6 @@ LoadMenuGameplayTilemap
 
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                  #LoadMenuKeysTilemap                    ;
 ;----------------------------------------------------------;
@@ -300,6 +305,28 @@ LoadMenuMainImage
 
     LD IX, menuMainBgFileName
     LD C, MENU_MAIN_BG_POS
+    CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #LoadMenuEasyImage                      ;
+;----------------------------------------------------------;
+LoadMenuEasyImage
+
+    LD IX, menuEasyBgFileName
+    LD C, MENU_EASY_BG_POS
+    CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #LoadMenuHardImage                      ;
+;----------------------------------------------------------;
+LoadMenuHardImage
+
+    LD IX, menuHardBgFileName
+    LD C, MENU_HARD_BG_POS
     CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##

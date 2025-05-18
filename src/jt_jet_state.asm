@@ -32,6 +32,11 @@ JETST_OVERHEAT          = 104                   ; Jetpack is overheating, and Je
 
 jetState                BYTE JETST_NORMAL       ; Game start, Jetman in the air.
 
+DIF_EASY                = 1
+DIF_NORMAL              = 2
+DIF_HARD                = 3
+difLevel                BYTE DIF_NORMAL
+
 ;----------------------------------------------------------;
 ;              #UpdateStateOnJoyWillEnable                 ;
 ;----------------------------------------------------------;

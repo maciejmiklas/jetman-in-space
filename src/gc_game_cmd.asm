@@ -577,11 +577,44 @@ RespawnJet
 
     RET                                         ; ## END of the function ## 
 
-
 ;----------------------------------------------------------;
 ;                   #JetpackOverheat                       ;
 ;----------------------------------------------------------;
 JetpackOverheat
+
+    LD A, af.FX_JET_OVERHEAT
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #SetDifficultyToEasy                    ;
+;----------------------------------------------------------;
+SetDifficultyToEasy
+
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #SetDifficultyToNormal                   ;
+;----------------------------------------------------------;
+SetDifficultyToNormal
+
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #SetDifficultyToHard                    ;
+;----------------------------------------------------------;
+SetDifficultyToHard
+
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #JetpackOverHard                       ;
+;----------------------------------------------------------;
+JetpackOverHard
 
     LD A, af.FX_JET_OVERHEAT
     CALL af.AfxPlay

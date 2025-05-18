@@ -195,6 +195,12 @@ IsFuelTankDeployed
 ;----------------------------------------------------------;
 ; Checks falling tank for collision with leaser beam.
 CheckHitTank
+
+    ; Not tank hit on easy
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    RET Z
+
     CALL dbs.SetupArraysBank
 
     ; Is the thank out there?

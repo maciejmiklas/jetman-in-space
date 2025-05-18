@@ -15,6 +15,7 @@ MainLoop
     CALL _MainLoop006
     CALL _MainLoop008
     CALL _MainLoop010
+    CALL _MainLoop015
     CALL _MainLoop020
     CALL _MainLoop040
     CALL _MainLoop080
@@ -89,11 +90,20 @@ _MainLoop000OnActiveGame
     CALL jw.WeaponHitEnemies
     CALL jw.FireDelayCounter
     CALL gi.GameKeyboardInput
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
     CALL jco.JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_NORMAL
+    CALL Z, ens.MoveSingleEnemies
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    CALL Z, enf.MoveFormationEnemies
+
 
     RET                                         ; ## END of the function ##
 
@@ -225,7 +235,17 @@ _MainLoop002OnActiveGame
     ; ##########################################
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
-    
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    CALL Z, ens.MoveSingleEnemies
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    CALL Z, enf.MoveFormationEnemies
+
     RET                                         ; ## END of the function ##m
 
 ;----------------------------------------------------------;
@@ -300,7 +320,12 @@ _MainLoop004OnActiveGame
     CALL ro.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
     CALL pi.AnimateFallingPickup
-    
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    CALL Z, ens.RespawnNextSingleEnemy
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -473,11 +498,54 @@ _MainLoop010OnActiveGame
 
     ; ##########################################
     CALL st.BlinkStarsL2
-    CALL ens.RespawnNextSingleEnemy
     CALL enf.RespawnFormation
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_NORMAL
+    CALL Z, ens.RespawnNextSingleEnemy
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                     #_MainLoop015                        ;
+;----------------------------------------------------------;
+_MainLoop015
+
+    ; Increment the counter.
+    LD A, (mld.counter015)
+    INC A
+    LD (mld.counter015), A
+    CP mld.COUNTER015_MAX
+    RET NZ
+
+    ; Reset the counter.
+    XOR A                                       ; Set A to 0
+    LD (mld.counter015), A
+
+    ; ##########################################
+    ; CALL functions that need to be updated every xx-th loop.
+    CALL _MainLoop015OnActiveGame
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                #_MainLoop015OnActiveGame                 ;
+;----------------------------------------------------------;
+_MainLoop015OnActiveGame
+
+    ; Return if game is inactive.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
+
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    CALL Z, ens.RespawnNextSingleEnemy
+
+    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                      #_MainLoop020                       ;
 ;----------------------------------------------------------;

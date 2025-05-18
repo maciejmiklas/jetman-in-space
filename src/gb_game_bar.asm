@@ -51,10 +51,11 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (gid.jetDirection)
+    LD A, (mma.difLevel)
     LD L, A
     CALL ut.PrintNumber
 */
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

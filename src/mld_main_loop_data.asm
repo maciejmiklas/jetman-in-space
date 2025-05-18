@@ -25,9 +25,11 @@ COUNTER010_MAX      = 10
 counter010          BYTE 0
 counter010FliFLop   BYTE 0                      ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
+COUNTER015_MAX      = 15
+counter015          BYTE 0
+
 COUNTER020_MAX      = 20
 counter020          BYTE 0
-counter020FliFLop   BYTE 0                      ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
 COUNTER040_MAX      = 40
 counter040          BYTE 0

@@ -6,6 +6,7 @@
 GAME_VERSION_OFFSET     = 40*30                 ; Version is in the last line.
 
 EL_DIST                 = 40*3
+EL_SDIST                = 40*2
 TOP_OFS                 = 40*5
 LOF                     = 7                     ; Menu entry offset from the left.
 
@@ -34,25 +35,12 @@ MENU_EL_MAX             = MENU_EL_DIFFICULTY
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    LD A, MENU_EL_MIN
-    LD (menuPos), A
-
-    ; ##########################################
     ; Update menu state.
     LD A, ms.MENU_MAIN
     CALL ms.SetMainState
 
     ; ##########################################
-    ; Load palette.
-    LD HL, db.menuMainBgPaletteAdr
-    LD A, (db.menuMainBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
-
-    ; ##########################################
-    ; Load background image.
-    CALL fi.LoadMenuMainImage
-    CALL bm.CopyImageData
+    CALL _LoadMenuNormal
 
     ; ##########################################
     ; Load game version.
@@ -198,6 +186,119 @@ MenuMainUserInput
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                     #_LoadMenuEasy                       ;
+;----------------------------------------------------------;
+_LoadMenuEasy
+ 
+    ; Hide current image.
+    CALL bm.HideImage
+
+    ; ##########################################
+    ; Load palette.
+    LD HL, db.menuEasyBgPaletteAdr
+    LD A, (db.menuEasyBgPaletteBytes)
+    LD B, A
+    CALL bp.LoadPalette
+
+    ; ##########################################
+    ; Load background image.
+    CALL fi.LoadMenuEasyImage
+    CALL bm.CopyImageData
+
+    ; ##########################################
+    LD A, jt.DIF_EASY
+    LD (jt.difLevel), A
+
+    CALL gc.SetDifficultyToEasy
+
+    ; ##########################################
+    CALL dbs.SetupArraysBank
+    LD IX, db.menuDifEasy
+    CALL _PrintMenu
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #_LoadMenuNormal                     ;
+;----------------------------------------------------------;
+_LoadMenuNormal
+
+    ; Hide current image.
+    CALL bm.HideImage
+
+    ; ##########################################
+    ; Load palette.
+    LD HL, db.menuMainBgPaletteAdr
+    LD A, (db.menuMainBgPaletteBytes)
+    LD B, A
+    CALL bp.LoadPalette
+
+    ; ##########################################
+    ; Load background image.
+    CALL fi.LoadMenuMainImage
+    CALL bm.CopyImageData
+
+    ; ##########################################
+    LD A, jt.DIF_NORMAL
+    LD (jt.difLevel), A
+
+    CALL gc.SetDifficultyToNormal
+
+    ; ##########################################
+    CALL dbs.SetupArraysBank
+    LD IX, db.menuDifNorm
+    CALL _PrintMenu
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #_LoadMenuHard                       ;
+;----------------------------------------------------------;
+_LoadMenuHard
+ 
+    ; Hide current image.
+    CALL bm.HideImage
+
+    ; ##########################################
+    ; Load palette.
+    LD HL, db.menuHardBgPaletteAdr
+    LD A, (db.menuHardBgPaletteBytes)
+    LD B, A
+    CALL bp.LoadPalette
+
+    ; ##########################################
+    ; Load background image.
+    CALL fi.LoadMenuHardImage
+    CALL bm.CopyImageData
+
+    ; ##########################################
+    LD A, jt.DIF_HARD
+    LD (jt.difLevel), A
+
+    CALL gc.SetDifficultyToHard
+
+    ; ##########################################
+    CALL dbs.SetupArraysBank
+    LD IX, db.menuDifHard
+    CALL _PrintMenu
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #_PrintMenu                         ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: Pointer to #MENU
+_PrintMenu
+
+    LD BC, (IX + MENU.TILE_OFFSET)
+    LD DE, (IX + MENU.TEXT_POINT)
+    LD A, (IX + MENU.TEXT_SIZE)
+    CALL ti.PrintText
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  #_SetIXToActiveMenu                     ;
 ;----------------------------------------------------------;
 _SetIXToActiveMenu
@@ -261,10 +362,7 @@ _LoadStaticMenuText
 .elementLoop
     PUSH BC
 
-    LD BC, (IX + MENU.TILE_OFFSET)
-    LD DE, (IX + MENU.TEXT_POINT)
-    LD A, (IX + MENU.TEXT_SIZE)
-    CALL ti.PrintText
+    CALL _PrintMenu
 
     ; Move IX to next #MENU
     LD DE, IX
@@ -281,6 +379,14 @@ _LoadStaticMenuText
 ;----------------------------------------------------------;
 _JoyRight
 
+    CALL ui.CanProcessKeyboardInput
+    CP _RET_YES_D1
+    RET NZ
+
+    LD A, (menuPos)
+    CP MENU_EL_DIFFICULTY
+    CALL Z, _DifficultyUp
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -288,6 +394,13 @@ _JoyRight
 ;----------------------------------------------------------;
 _JoyLeft
 
+    CALL ui.CanProcessKeyboardInput
+    CP _RET_YES_D1
+    RET NZ
+
+    LD A, (menuPos)
+    CP MENU_EL_DIFFICULTY
+    CALL Z, _DifficultyDown
 
     RET                                         ; ## END of the function ##
 
@@ -344,6 +457,10 @@ _JoyDown
 ;----------------------------------------------------------;
 _JoyFire
 
+    CALL ui.CanProcessKeyboardInput
+    CP _RET_YES_D1
+    RET NZ
+
     LD A, (menuPos)
 
     ; ##########################################
@@ -371,9 +488,86 @@ _JoyFire
 .notShowKeys
 
     ; ##########################################
+    ; Difficulty up.
+    CP MENU_EL_DIFFICULTY
+    JR NZ, .notDifficulty
+    CALL _DifficultyUp
+    RET
+.notDifficulty
+
+    ; ##########################################
     ; Wrong key hit, play sound
     LD A, af.FX_JET_KILL
     CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     _DifficultyUp                        ;
+;----------------------------------------------------------;
+_DifficultyUp
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    JR Z, .overflow
+    INC A
+    LD (jt.difLevel), A
+    CALL _SetupDifficulty
+    RET
+.overflow
+    LD A, jt.DIF_EASY
+    LD (jt.difLevel), A
+    CALL _SetupDifficulty
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    _DifficultyDown                       ;
+;----------------------------------------------------------;
+_DifficultyDown
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    JR Z, .overflow
+    DEC A
+    LD (jt.difLevel), A
+    CALL _SetupDifficulty
+    RET
+.overflow
+    LD A, jt.DIF_HARD
+    LD (jt.difLevel), A
+    CALL _SetupDifficulty
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   _SetupDifficulty                       ;
+;----------------------------------------------------------;
+_SetupDifficulty
+
+    LD A, js.SDB_T_KO
+    CALL js.ChangeJetSpritePattern
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    JR NZ, .notEasy
+    CALL _LoadMenuEasy
+    RET
+.notEasy
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_NORMAL
+    JR NZ, .notNormal
+    CALL _LoadMenuNormal
+    RET
+.notNormal
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    JR NZ, .notHard
+    CALL _LoadMenuHard
+    RET
+.notHard
 
     RET                                         ; ## END of the function ##
 
