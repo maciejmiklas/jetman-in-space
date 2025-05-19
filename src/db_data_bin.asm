@@ -264,7 +264,21 @@ menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
 menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
 menuTextIg DB "IN GAME KEYS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextGp DB "GAMEPLAY",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
-menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
+menuTextDi DB "DIFFICULTY",ti.TX_IDX_EMPTY,ti.TX_IDX_ARROWS
+
+DIF_OFFSET              = mma.TOP_OFS+(6*mma.EL_DIST)+mma.EL_SDIST+mma.LOF+7
+menuDifEasy
+    mma.MENU {DIF_OFFSET /*TILE_OFFSET*/, menuTextEa/*TEXT_POINT*/, 6/*TEXT_SIZE*/, 200/*JET_X*/, 176/*JET_Y*/}  ; EASY
+
+menuDifNorm
+    mma.MENU {DIF_OFFSET /*TILE_OFFSET*/, menuTextNo/*TEXT_POINT*/, 6/*TEXT_SIZE*/, 200/*JET_X*/, 176/*JET_Y*/}  ; NORMAL
+
+menuDifHard
+    mma.MENU {DIF_OFFSET /*TILE_OFFSET*/, menuTextHa/*TEXT_POINT*/, 6/*TEXT_SIZE*/, 200/*JET_X*/, 176/*JET_Y*/}  ; HARD
+
+menuTextEa DB " EASY "
+menuTextNo DB "NORMAL"
+menuTextHa DB " HARD "
 
 ; ##############################################
 ; Movement patterns.
@@ -1220,7 +1234,7 @@ gameIntroPaletteAdr
 gameIntroPaletteBytes = $ - gameIntroPaletteAdr
     ASSERT gameIntroPaletteBytes <= btd.PAL2_BYTES_D512
 
- ; #############################################
+ ; ############################################
 menuMainBgPaletteAdr
     INCBIN  "assets/mma/bg.nxp"
 
@@ -1240,6 +1254,20 @@ menuKeysBgPaletteAdr
 
 menuKeysBgPaletteBytes = $ - menuKeysBgPaletteAdr
     ASSERT menuKeysBgPaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
+menuEasyBgPaletteAdr
+    INCBIN  "assets/mma/easy.nxp"
+
+menuEasyBgPaletteBytes = $ - menuEasyBgPaletteAdr
+    ASSERT menuEasyBgPaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
+menuHardBgPaletteAdr
+    INCBIN  "assets/mma/hard.nxp"
+
+menuHardBgPaletteBytes = $ - menuHardBgPaletteAdr
+    ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
     ASSERT $$ == dbs.PAL2_BANK_S6_D31
