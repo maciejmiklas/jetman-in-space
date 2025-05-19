@@ -73,6 +73,7 @@ mainLoop
     INCLUDE "af_audio_fx.asm"
     INCLUDE "ms_main_state.asm"
     INCLUDE "ui_user_input.asm"
+    INCLUDE "mms_menu_score.asm"
 
     ; LAST import due to bank offset!
     INCLUDE "db_data_bin.asm"

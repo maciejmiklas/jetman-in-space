@@ -260,7 +260,7 @@ MENU_EL_SIZE            = 7
 
 menuTextSg DB "START GAME",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextLs DB "LEVEL SELECT",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
-menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
+menuTextHs DB "HIGH SCORE",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextSe DB "SETTINGS",ti.TX_IDX_EMPTY,ti.TX_IDX_MINUS
 menuTextIg DB "IN GAME KEYS",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
 menuTextGp DB "GAMEPLAY",ti.TX_IDX_EMPTY,ti.TX_IDX_ENTER
@@ -1267,6 +1267,13 @@ menuHardBgPaletteAdr
     INCBIN  "assets/mma/hard.nxp"
 
 menuHardBgPaletteBytes = $ - menuHardBgPaletteAdr
+    ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
+menuScoreBgPaletteAdr
+    INCBIN  "assets/mms/bg.nxp"
+
+menuScoreBgPaletteBytes = $ - menuScoreBgPaletteAdr
     ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################

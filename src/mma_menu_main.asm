@@ -21,7 +21,7 @@ JET_Y                   BYTE                    ; Y postion of Jetman pointing t
 menuPos                 BYTE MENU_EL_MIN
 MENU_EL_START           = 1                     ; START GAME
 MENU_EL_LSELECT         = 2                     ; LEVEL SELECT
-MENU_EL_HSCORE          = 3                     ; HIGH SCORE
+MENU_EL_SCORE           = 3                     ; HIGH SCORE
 MENU_EL_SETTINGS        = 4                     ; SETTINGS
 MENU_EL_KEYS            = 5                     ; IN GAME KEYS
 MENU_EL_GAMEPLAY        = 6                     ; GAMEPLAY
@@ -495,6 +495,15 @@ _JoyFire
     RET
 .notDifficulty
 
+    ; ##########################################
+    ; Show gameplay.
+    CP MENU_EL_SCORE
+    JR NZ, .notShowScore
+    CALL mms.LoadMenuScore
+    RET
+.notShowScore
+
+LoadMenuScore
     ; ##########################################
     ; Wrong key hit, play sound
     LD A, af.FX_JET_KILL

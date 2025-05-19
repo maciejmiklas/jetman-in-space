@@ -96,6 +96,7 @@ _PreLoadMenu
     CALL js.HideJetSprite
     CALL ti.CleanAllTiles
     CALL bm.HideImage
+    
     RET                                         ; ## END of the function ##
     
 ;----------------------------------------------------------;

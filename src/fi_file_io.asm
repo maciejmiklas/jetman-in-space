@@ -108,6 +108,9 @@ MENU_HARD_BG_POS        = 16                    ; Position of a image part numbe
 menuGameplayBgFileName  DB "assets/mmg/bg_0.nxi",0
 MENU_GAMEPLAY_BG_POS    = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
+menuScoreBgFileName     DB "assets/mms/bg_0.nxi",0
+MENU_SCORE_BG_POS       = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
 menuKeysBgFileName      DB "assets/mmk/bg_0.nxi",0
 MENU_KEYS_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
 
@@ -342,6 +345,16 @@ LoadMenuGameplayImage
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                 #LoadMenuScoreImage                      ;
+;----------------------------------------------------------;
+LoadMenuScoreImage
+
+    LD IX, menuScoreBgFileName
+    LD C, MENU_SCORE_BG_POS
+    CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                  #LoadMenuKeysImage                      ;

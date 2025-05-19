@@ -48,6 +48,7 @@ _MainLoop000
     CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMenuMain
     CALL _MainLoop000OnActiveMenuManual
+    CALL _MainLoop000OnActiveMenuScore
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
 
@@ -145,6 +146,21 @@ _MainLoop000OnActiveMenuManual
 
     ; ##########################################
     CALL mmn.MenuManualUserInput
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;            #_MainLoop000OnActiveMenuScore                ;
+;----------------------------------------------------------;
+_MainLoop000OnActiveMenuScore
+
+    ; Return if manual menu is inactive.
+    LD A, (ms.mainState)
+    CP ms.MENU_SCORE
+    RET NZ
+
+    ; ##########################################
+    CALL mms.MenuScoreUserInput
     
     RET                                         ; ## END of the function ##
 
