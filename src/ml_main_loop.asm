@@ -10,7 +10,6 @@ MainLoop
 
     CALL _MainLoop000
     CALL _MainLoop002
-    CALL _MainLoop002
     CALL _MainLoop004
     CALL _MainLoop006
     CALL _MainLoop008
@@ -67,6 +66,7 @@ _MainLoop000OnFlayRocket
 
     ; ##########################################
     CALL rof.FlyRocket
+    CALL ros.AnimateStarsOnFlyRocket
 
     RET                                         ; ## END of the function ##
 
@@ -82,7 +82,6 @@ _MainLoop000OnActiveGame
 
     ; ##########################################
     CALL _MainLoop000OnDisabledJoy
-
     CALL gi.GameJoystickInput
     CALL ro.CheckHitTank
     CALL jco.JetRip
@@ -93,17 +92,27 @@ _MainLoop000OnActiveGame
     CALL jco.JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
+    CALL jco.JetInvincible
+    CALL ro.RocketElementFallsForPickup
 
     ; ##########################################
+    ; Move enemies for normal or hard.
     LD A, (jt.difLevel)
-    CP jt.DIF_NORMAL
-    CALL Z, ens.MoveSingleEnemies
+    CP jt.DIF_EASY
+    JR Z, .notNormOrHard
+    CALL ens.MoveSingleEnemies
+    CALL enf.MoveFormationEnemies
+.notNormOrHard
 
     ; ##########################################
+    ; Extra speed on hard!
     LD A, (jt.difLevel)
     CP jt.DIF_HARD
-    CALL Z, enf.MoveFormationEnemies
-
+    JR NZ, .notHard
+    CALL ens.MoveSingleEnemies
+    CALL enf.MoveFormationEnemies
+    CALL gi.GameJoystickInput
+.notHard
 
     RET                                         ; ## END of the function ##
 
@@ -151,7 +160,8 @@ _MainLoop000OnActiveLevelIntro
 
     ; ##########################################
     CALL li.LevelIntroUserInput
-    
+    CALL li.AnimateLevelIntroTextScroll
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -173,7 +183,7 @@ _MainLoop000OnDisabledJoy
     CALL pl.MoveJetOnPlatformSideHit
     CALL pl.MoveJetOnFallingFromPlatform
     CALL pl.MoveJetOnHitPlatformBelow
-
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -201,25 +211,7 @@ _MainLoop002
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop002OnActiveGame
-    CALL _MainLoop002OnActiveLevelIntro
-    CALL _MainLoop002OnFlayRocket
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;               #_MainLoop002OnFlayRocket                  ;
-;----------------------------------------------------------;
-_MainLoop002OnFlayRocket
-
-    ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
-    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY!
-    LD A, (ro.rocketState)
-    CP ro.ROST_FLY
-    RET NZ
-
-    ; ##########################################
-    CALL ros.AnimateStarsOnFlyRocket
-    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -227,40 +219,19 @@ _MainLoop002OnFlayRocket
 ;----------------------------------------------------------;
 _MainLoop002OnActiveGame
 
-    ; Return if game is not active.
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
 
     ; ##########################################
-    CALL jco.JetInvincible
-    CALL ro.RocketElementFallsForPickup
-
-    ; ##########################################
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
+    JR NZ, .notEasy
     CALL Z, ens.MoveSingleEnemies
-
-    ; ##########################################
-    LD A, (jt.difLevel)
-    CP jt.DIF_EASY
     CALL Z, enf.MoveFormationEnemies
+.notEasy
 
-    RET                                         ; ## END of the function ##m
-
-;----------------------------------------------------------;
-;            #_MainLoop002OnActiveLevelIntro               ;
-;----------------------------------------------------------;
-_MainLoop002OnActiveLevelIntro
-    
-    ; Return if intro is not active.
-    LD A, (ms.mainState)
-    CP ms.LEVEL_INTRO
-    RET NZ
-
-    ; ##########################################
-    CALL li.AnimateLevelIntroTextScroll
-    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -502,8 +473,8 @@ _MainLoop010OnActiveGame
 
     ; ##########################################
     LD A, (jt.difLevel)
-    CP jt.DIF_NORMAL
-    CALL Z, ens.RespawnNextSingleEnemy
+    CP jt.DIF_HARD
+    CALL NZ, ens.RespawnNextSingleEnemy
 
     RET                                         ; ## END of the function ##
 
@@ -525,27 +496,9 @@ _MainLoop015
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop015OnActiveGame
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                #_MainLoop015OnActiveGame                 ;
-;----------------------------------------------------------;
-_MainLoop015OnActiveGame
-
-    ; Return if game is inactive.
-    LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
-    RET NZ
-
-
-    ; ##########################################
-    LD A, (jt.difLevel)
-    CP jt.DIF_EASY
-    CALL Z, ens.RespawnNextSingleEnemy
-
-    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                      #_MainLoop020                       ;
 ;----------------------------------------------------------;

@@ -30,6 +30,7 @@ SHOTS_SIZE              = 15                   ; Amount of shots that can be sim
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JM_FIRE_DELAY.
 JM_FIRE_DELAY_MAX       = 15
+JM_FIRE_DELAY_MAX_HARD  = 12
 JM_FIRE_DELAY_MIN       = 3
 JM_FIRE_SPEED_UP        = 4
 fireDelayCnt            BYTE 0
@@ -68,6 +69,13 @@ ResetWeapon
 
     LD A, JM_FIRE_DELAY_MAX
     LD (fireDelay), A
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    JR NZ, .notHard
+    LD A, JM_FIRE_DELAY_MAX_HARD
+    LD (fireDelay), A
+.notHard
 
     LD A, FIRE_FX_DELAY_INIT
     LD (fireFxDelay), A
