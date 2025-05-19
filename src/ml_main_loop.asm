@@ -99,10 +99,10 @@ _MainLoop000OnActiveGame
     ; Move enemies for normal or hard.
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
-    JR Z, .notNormOrHard
+    JR Z, .onEasy
     CALL ens.MoveSingleEnemies
     CALL enf.MoveFormationEnemies
-.notNormOrHard
+.onEasy
 
     ; ##########################################
     ; Extra speed on hard!
