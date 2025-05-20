@@ -4,8 +4,8 @@
     MODULE sc
 
 ; Memory layout: LO, HI
-scoreLo                  DW 0
-scoreHi                  DW 0
+scoreLo                  DW 22222
+scoreHi                  DW 33333
 
 HIT_ENEMY1              = 50
 HIT_ENEMY2              = 100
@@ -39,8 +39,8 @@ ResetScore
     XOR A
     LD H, A
     LD L, A
-    LD (scoreHi), HL
-    LD (scoreLo), HL
+    ;LD (scoreHi), HL
+   ; LD (scoreLo), HL
 
     RET                                         ; ## END of the function ##
 

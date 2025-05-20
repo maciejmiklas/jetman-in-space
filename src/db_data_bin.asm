@@ -296,6 +296,7 @@ menuScore3
     DW 07007
     DW 08008
     DB "   FRED      "
+menuScore4
     DW 09009
     DW 11011
     DB "   FRED1     "
@@ -314,6 +315,8 @@ menuScore3
     DW 21021
     DW 22022
     DB "   FRED6     "
+
+menuScoreEmptyName DB "             "
 
 ; ##############################################
 ; Movement patterns.

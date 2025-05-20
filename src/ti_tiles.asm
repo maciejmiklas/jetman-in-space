@@ -17,9 +17,7 @@ TI_MAP_RAM_H5B00        = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap.
 TI_MAP_BANK_OFFSET      = (TI_MAP_RAM_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
     ASSERT TI_MAP_BANK_OFFSET =  $1B
 
-TI_MAP_H                = 40
-TI_MAP_V                = 32
-TI_MAP_TILES            = TI_MAP_H*TI_MAP_V
+TI_MAP_TILES            = _TI_H_D40*_TI_V_D32
 TI_MAP_BYTES_D2560      = TI_MAP_TILES*2        ; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 
 ; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
@@ -142,11 +140,11 @@ CleanAllTiles
 
     ; ##########################################
     LD A, TI_EMPTY_D57
-    LD B, TI_MAP_H
+    LD B, _TI_H_D40
     ; Number of loops: 40*32
 .loopH
     PUSH BC
-    LD B, TI_MAP_V
+    LD B, _TI_V_D32
 
 .loopV
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile.
