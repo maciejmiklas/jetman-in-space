@@ -48,35 +48,35 @@ LoadLevel1Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL1
-    LD A, (db.platformsSizeL1)
+    LD HL, dba.platformsL1
+    LD A, (dba.platformsSizeL1)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL1
-    LD HL, db.starsData2MaxYL1
+    LD DE, dbs.starsData1MaxYL1
+    LD HL, dbs.starsData2MaxYL1
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL1
-    LD A, (db.rocketAssemblyXL1)
+    LD HL, dba.rocketElL1
+    LD A, (dba.rocketAssemblyXL1)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L1
-    LD IX, db.singleEnemiesL1
+    LD A, dba.SINGLE_ENEMIES_L1
+    LD IX, dba.singleEnemiesL1
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0                                     ; Disable formation.
-    LD IX, db.enemyFormationL1
+    LD IX, dba.enemyFormationL1
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -126,35 +126,35 @@ LoadLevel2Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL2
-    LD A, (db.platformsSizeL2)
+    LD HL, dba.platformsL2
+    LD A, (dba.platformsSizeL2)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL2
-    LD HL, db.starsData2MaxYL2
+    LD DE, dbs.starsData1MaxYL2
+    LD HL, dbs.starsData2MaxYL2
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL2
-    LD A, (db.rocketAssemblyXL2)
+    LD HL, dba.rocketElL2
+    LD A, (dba.rocketAssemblyXL2)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L2
-    LD IX, db.singleEnemiesL2
+    LD A, dba.SINGLE_ENEMIES_L2
+    LD IX, dba.singleEnemiesL2
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0                                     ; Disable formation.
-    LD IX, db.enemyFormationL2
+    LD IX, dba.enemyFormationL2
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -204,35 +204,35 @@ LoadLevel3Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL3
-    LD A, (db.platformsSizeL3)
+    LD HL, dba.platformsL3
+    LD A, (dba.platformsSizeL3)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL3
-    LD HL, db.starsData2MaxYL3
+    LD DE, dbs.starsData1MaxYL3
+    LD HL, dbs.starsData2MaxYL3
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL3
-    LD A, (db.rocketAssemblyXL3)
+    LD HL, dba.rocketElL3
+    LD A, (dba.rocketAssemblyXL3)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L3
-    LD IX, db.singleEnemiesL3
+    LD A, dba.SINGLE_ENEMIES_L3
+    LD IX, dba.singleEnemiesL3
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 150
-    LD IX, db.enemyFormationL3
+    LD IX, dba.enemyFormationL3
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -284,35 +284,35 @@ LoadLevel4Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL4
-    LD A, (db.platformsSizeL4)
+    LD HL, dba.platformsL4
+    LD A, (dba.platformsSizeL4)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL4
-    LD HL, db.starsData2MaxYL4
+    LD DE, dbs.starsData1MaxYL4
+    LD HL, dbs.starsData2MaxYL4
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL4
-    LD A, (db.rocketAssemblyXL4)
+    LD HL, dba.rocketElL4
+    LD A, (dba.rocketAssemblyXL4)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L4
-    LD IX, db.singleEnemiesL4
+    LD A, dba.SINGLE_ENEMIES_L4
+    LD IX, dba.singleEnemiesL4
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 100
-    LD IX, db.enemyFormationL4
+    LD IX, dba.enemyFormationL4
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -362,35 +362,35 @@ LoadLevel5Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL5
-    LD A, (db.platformsSizeL5)
+    LD HL, dba.platformsL5
+    LD A, (dba.platformsSizeL5)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL5
-    LD HL, db.starsData2MaxYL5
+    LD DE, dbs.starsData1MaxYL5
+    LD HL, dbs.starsData2MaxYL5
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL5
-    LD A, (db.rocketAssemblyXL5)
+    LD HL, dba.rocketElL5
+    LD A, (dba.rocketAssemblyXL5)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L5
-    LD IX, db.singleEnemiesL5
+    LD A, dba.SINGLE_ENEMIES_L5
+    LD IX, dba.singleEnemiesL5
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0
-    LD IX, db.enemyFormationL5
+    LD IX, dba.enemyFormationL5
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -440,35 +440,35 @@ LoadLevel6Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL6
-    LD A, (db.platformsSizeL6)
+    LD HL, dba.platformsL6
+    LD A, (dba.platformsSizeL6)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL6
-    LD HL, db.starsData2MaxYL6
+    LD DE, dbs.starsData1MaxYL6
+    LD HL, dbs.starsData2MaxYL6
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL6
-    LD A, (db.rocketAssemblyXL6)
+    LD HL, dba.rocketElL6
+    LD A, (dba.rocketAssemblyXL6)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L6
-    LD IX, db.singleEnemiesL6
+    LD A, dba.SINGLE_ENEMIES_L6
+    LD IX, dba.singleEnemiesL6
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0
-    LD IX, db.enemyFormationL6
+    LD IX, dba.enemyFormationL6
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -518,35 +518,35 @@ LoadLevel7Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL7
-    LD A, (db.platformsSizeL7)
+    LD HL, dba.platformsL7
+    LD A, (dba.platformsSizeL7)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL7
-    LD HL, db.starsData2MaxYL7
+    LD DE, dbs.starsData1MaxYL7
+    LD HL, dbs.starsData2MaxYL7
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL7
-    LD A, (db.rocketAssemblyXL7)
+    LD HL, dba.rocketElL7
+    LD A, (dba.rocketAssemblyXL7)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L7
-    LD IX, db.singleEnemiesL7
+    LD A, dba.SINGLE_ENEMIES_L7
+    LD IX, dba.singleEnemiesL7
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0
-    LD IX, db.enemyFormationL7
+    LD IX, dba.enemyFormationL7
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -596,35 +596,35 @@ LoadLevel8Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL8
-    LD A, (db.platformsSizeL8)
+    LD HL, dba.platformsL8
+    LD A, (dba.platformsSizeL8)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL8
-    LD HL, db.starsData2MaxYL8
+    LD DE, dbs.starsData1MaxYL8
+    LD HL, dbs.starsData2MaxYL8
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL8
-    LD A, (db.rocketAssemblyXL8)
+    LD HL, dba.rocketElL8
+    LD A, (dba.rocketAssemblyXL8)
     CALL ro.SetupRocket
     
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L8
-    LD IX, db.singleEnemiesL8
+    LD A, dba.SINGLE_ENEMIES_L8
+    LD IX, dba.singleEnemiesL8
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0
-    LD IX, db.enemyFormationL8
+    LD IX, dba.enemyFormationL8
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -674,35 +674,35 @@ LoadLevel9Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL9
-    LD A, (db.platformsSizeL9)
+    LD HL, dba.platformsL9
+    LD A, (dba.platformsSizeL9)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL9
-    LD HL, db.starsData2MaxYL9
+    LD DE, dbs.starsData1MaxYL9
+    LD HL, dbs.starsData2MaxYL9
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL9
-    LD A, (db.rocketAssemblyXL9)
+    LD HL, dba.rocketElL9
+    LD A, (dba.rocketAssemblyXL9)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L9
-    LD IX, db.singleEnemiesL9
+    LD A, dba.SINGLE_ENEMIES_L9
+    LD IX, dba.singleEnemiesL9
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0
-    LD IX, db.enemyFormationL9
+    LD IX, dba.enemyFormationL9
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -751,35 +751,35 @@ LoadLevel10Data
     ; ##########################################
     ; Setup Platforms.
     CALL dbs.SetupArraysBank
-    LD HL, db.platformsL10
-    LD A, (db.platformsSizeL10)
+    LD HL, dba.platformsL10
+    LD A, (dba.platformsSizeL10)
     CALL pl.SetupPlatforms
 
     ; ##########################################
     ; Load stars.
     CALL dbs.SetupArraysBank
-    LD DE, db.starsData1MaxYL10
-    LD HL, db.starsData2MaxYL10
+    LD DE, dbs.starsData1MaxYL10
+    LD HL, dbs.starsData2MaxYL10
     CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket.
     CALL dbs.SetupArraysBank
-    LD HL, db.rocketElL10
-    LD A, (db.rocketAssemblyXL10)
+    LD HL, dba.rocketElL10
+    LD A, (dba.rocketAssemblyXL10)
     CALL ro.SetupRocket
 
     ; ##########################################
     ; Load single enemies.
-    LD A, db.SINGLE_ENEMIES_L10
-    LD IX, db.singleEnemiesL10
+    LD A, dba.SINGLE_ENEMIES_L10
+    LD IX, dba.singleEnemiesL10
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation.
     LD A, 0
-    LD IX, db.enemyFormationL10
+    LD IX, dba.enemyFormationL10
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##

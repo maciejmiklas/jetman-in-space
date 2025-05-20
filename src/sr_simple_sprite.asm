@@ -554,7 +554,7 @@ _LoadSpritePattern
     CALL dbs.SetupArraysBank
 
     ; Find DB record.
-    LD HL, db.srSpriteDB                        ; HL points to the beginning of the DB.
+    LD HL, dba.srSpriteDB                        ; HL points to the beginning of the DB.
     LD BC, SDB_SEARCH_LIMIT                     ; Limit CPIR search.
     CPIR                                        ; CPIR will keep increasing HL until it finds a record ID from A.
 

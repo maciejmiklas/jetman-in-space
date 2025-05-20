@@ -192,15 +192,15 @@ AnimatePatternEnemies
 
     ; ##########################################
     ; Animate single enemy.
-    LD IX, db.singleEnemySprites
-    LD A, db.ENEMY_SINGLE_SIZE
+    LD IX, dba.singleEnemySprites
+    LD A, dba.ENEMY_SINGLE_SIZE
     LD B, A
     CALL sr.AnimateSprites
 
     ; ##########################################
     ; Animate formation enemy.
-    LD IX, db.formationEnemySprites
-    LD B, db.ENEMY_FORMATION_SIZE
+    LD IX, dba.formationEnemySprites
+    LD B, dba.ENEMY_FORMATION_SIZE
     CALL sr.AnimateSprites
 
     RET                                         ; ## END of the function ##
@@ -229,15 +229,15 @@ KillOnePatternEnemy
 
     ; ##########################################
     ; Kill single enemy.
-    LD IX, db.singleEnemySprites
-    LD A, db.ENEMY_SINGLE_SIZE
+    LD IX, dba.singleEnemySprites
+    LD A, dba.ENEMY_SINGLE_SIZE
     LD B, A
     CALL sr.KillOneSprite
 
     ; ##########################################
     ; Kill formation enemy.
-    LD IX, db.formationEnemySprites
-    LD A, db.ENEMY_FORMATION_SIZE
+    LD IX, dba.formationEnemySprites
+    LD A, dba.ENEMY_FORMATION_SIZE
     LD B, A
     CALL sr.KillOneSprite
 
@@ -252,15 +252,15 @@ HidePatternEnemies
 
     ; ##########################################
     ; Hide single enemies.
-    LD IX, db.singleEnemySprites
-    LD A, db.ENEMY_SINGLE_SIZE
+    LD IX, dba.singleEnemySprites
+    LD A, dba.ENEMY_SINGLE_SIZE
     LD B, A 
     CALL sr.HideAllSimpleSprites
 
     ; ##########################################
     ; Hide formation enemies.
-    LD IX, db.formationEnemySprites
-    LD A, db.ENEMY_FORMATION_SIZE
+    LD IX, dba.formationEnemySprites
+    LD A, dba.ENEMY_FORMATION_SIZE
     LD B, A
     CALL sr.HideAllSimpleSprites
 

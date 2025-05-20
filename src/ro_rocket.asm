@@ -285,7 +285,7 @@ AnimateTankExplode
     ; Move #rocketExplodeTankDB by #explodeTankCnt, so that A points to current explosion frame.
     LD A, (explodeTankCnt)
     LD B, A
-    LD A, (db.rocketExplodeTankDB)
+    LD A, (dba.rocketExplodeTankDB)
     ADD B
 
     ; Set sprite pattern.

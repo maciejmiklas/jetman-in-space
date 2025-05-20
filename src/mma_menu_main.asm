@@ -212,7 +212,7 @@ _LoadMenuEasy
 
     ; ##########################################
     CALL dbs.SetupArraysBank
-    LD IX, db.menuDifEasy
+    LD IX, dba.menuDifEasy
     CALL _PrintMenu
 
     RET                                         ; ## END of the function ##
@@ -245,7 +245,7 @@ _LoadMenuNormal
 
     ; ##########################################
     CALL dbs.SetupArraysBank
-    LD IX, db.menuDifNorm
+    LD IX, dba.menuDifNorm
     CALL _PrintMenu
 
     RET                                         ; ## END of the function ##
@@ -278,7 +278,7 @@ _LoadMenuHard
 
     ; ##########################################
     CALL dbs.SetupArraysBank
-    LD IX, db.menuDifHard
+    LD IX, dba.menuDifHard
     CALL _PrintMenu
 
     RET                                         ; ## END of the function ##
@@ -310,7 +310,7 @@ _SetIXToActiveMenu
     LD E, MENU
     MUL D, E
     
-    LD IX, db.menuEl
+    LD IX, dba.menuEl
     ADD IX, DE                                  ; Move IX to current menu position (IX + #menuPos * #MENU)
 
     RET                                         ; ## END of the function ##
@@ -356,8 +356,8 @@ _LoadStaticMenuText
 
     CALL dbs.SetupArraysBank
 
-    LD B, db.MENU_EL_SIZE
-    LD IX, db.menuEl
+    LD B, dba.MENU_EL_SIZE
+    LD IX, dba.menuEl
 .elementLoop
     PUSH BC
 

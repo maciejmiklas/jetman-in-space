@@ -150,7 +150,7 @@ AnimateJetSprite
     JR NZ, .afterRecordChange                   ; Jump if there are still bytes to be processed.
     
     ; Load new record.
-    LD HL, db.jetSpriteDB                           ; HL points to the beginning of the DB.
+    LD HL, dba.jetSpriteDB                           ; HL points to the beginning of the DB.
     LD A, (sprDBNextID)                         ; CPIR will keep increasing HL until it finds the record ID from A.
     LD (sprDBCurrentID), A                      ; Store current animation.
     LD BC, 0                                    ; Do not limit CPIR search.

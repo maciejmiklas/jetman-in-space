@@ -264,7 +264,7 @@ _JoyRight
 ;----------------------------------------------------------;
 ;                      #_PrintScore                        ;
 ;----------------------------------------------------------;
-; Prints structure from #db.menuScore
+; Prints structure from #dba.menuScore
 _PrintScore
 
     CALL dbs.SetupArraysBank
@@ -286,10 +286,10 @@ _PrintScore
 ;----------------------------------------------------------;
 ; Remember to "CALL dbs.SetupArraysBank"
 ; Input:
-;  A:  Line from #db.menuScore to print as tilemap, 0 to 9 inklusive.
+;  A:  Line from #dba.menuScore to print as tilemap, 0 to 9 inklusive.
 _PrintScoreLine
 
-    CALL _LineToIX                              ; IX points to #db.menuScore that will be updated.
+    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated.
 
     ; ##########################################
     ; DE will point to the position when we print line given by A.
@@ -340,10 +340,10 @@ _PrintScoreLine
 ;                      #_LineToIX                          ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Score line in #db.menuScore, 0 to 9 inklusive.
+;  A: Score line in #dba.menuScore, 0 to 9 inklusive.
 _LineToIX
 
-    LD IX, db.menuScore                         ; Pointer to high score data.
+    LD IX, dba.menuScore                         ; Pointer to high score data.
 
     LD E, LINE_DATA_SIZE
     LD D, A
@@ -355,13 +355,13 @@ _LineToIX
 ;----------------------------------------------------------;
 ;                   #_StoreNewScore                        ;
 ;----------------------------------------------------------;
-; Store the last user's high score into #db.menuScore.
+; Store the last user's high score into #dba.menuScore.
 ; Input:
-;  A: Line from #db.menuScore to update, 0 to 9 inklusive.
+;  A: Line from #dba.menuScore to update, 0 to 9 inklusive.
 _StoreNewScore
 
     CALL dbs.SetupArraysBank
-    CALL _LineToIX                              ; IX points to #db.menuScore that will be updated.
+    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated.
 
     LD HL, (sc.scoreHi)
     LD (IX), HL
@@ -377,10 +377,10 @@ _StoreNewScore
 ;                  #_LoadCharPosToDe                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Line from #db.menuScore to update, 0 to 9 inklusive.
+;  A: Line from #dba.menuScore to update, 0 to 9 inklusive.
 _LoadCharPosToDe
 
-    CALL _LineToIX                              ; IX points to #db.menuScore that will be updated.
+    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated.
 
     LD DE, IX
     ADD DE, SCORE_BYTES_D4
@@ -393,12 +393,12 @@ _LoadCharPosToDe
 ;                     #_EnterName                          ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Line from #db.menuScore to update, 0 to 9 inklusive.
+;  A: Line from #dba.menuScore to update, 0 to 9 inklusive.
 _EnterName
 
     CALL dbs.SetupArraysBank
 
-    CALL _LoadCharPosToDe                       ; DE points to the letter currently changing in  #db.menuScore.
+    CALL _LoadCharPosToDe                       ; DE points to the letter currently changing in  #dba.menuScore.
 
     RET                                         ; ## END of the function ##
 

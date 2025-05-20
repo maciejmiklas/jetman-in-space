@@ -77,7 +77,9 @@ mainLoop
 
     ; LAST import due to bank offset!
     INCLUDE "db_data_bin.asm"
-    
+    INCLUDE "dba_data_arrays.asm"
+    INCLUDE "dbs_data_starts.asm"
+
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;

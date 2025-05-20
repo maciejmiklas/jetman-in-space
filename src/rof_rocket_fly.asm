@@ -118,7 +118,7 @@ AnimateRocketExplosion
     ; Move HL to current frame.
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db.rocketExplodeDB3
+    LD HL, dba.rocketExplodeDB3
     DEC DE                                      ; Counter starts at 1.
     ADD HL, DE
     LD D, (HL)
@@ -133,7 +133,7 @@ AnimateRocketExplosion
     ; Move HL to current frame.
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db.rocketExplodeDB2
+    LD HL, dba.rocketExplodeDB2
     DEC DE                                      ; Counter starts at 1.
     ADD HL, DE
     LD D, (HL)
@@ -148,7 +148,7 @@ AnimateRocketExplosion
     ; Move HL to current frame
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db.rocketExplodeDB1
+    LD HL, dba.rocketExplodeDB1
     DEC DE                                      ; Counter starts at 1.
     ADD HL, DE
     LD D, (HL)
@@ -178,7 +178,7 @@ AnimateRocketExhaust
     ; Increment sprite pattern counter.
     LD A, (rocketExhaustCnt)
     INC A
-    CP db.RO_EXHAUST_MAX
+    CP dba.RO_EXHAUST_MAX
     JP NZ, .afterIncrement
     XOR A                                       ; Reset counter.
 .afterIncrement 
@@ -190,7 +190,7 @@ AnimateRocketExhaust
     NEXTREG _SPR_REG_NR_H34, A
 
     ; Load sprite pattern to A.
-    LD HL, db.rocketExhaustDB
+    LD HL, dba.rocketExhaustDB
     LD A, (rocketExhaustCnt)
     ADD HL, A
     LD A, (HL)

@@ -138,14 +138,14 @@ WeaponHitEnemies
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    LD IX, db.singleEnemySprites
+    LD IX, dba.singleEnemySprites
     LD A, (ens.singleEnemySize)
     LD B, A
     CALL _CheckHitEnemies
 
     ; ##########################################
-    LD IX, db.formationEnemySprites
-    LD B, db.ENEMY_FORMATION_SIZE
+    LD IX, dba.formationEnemySprites
+    LD B, dba.ENEMY_FORMATION_SIZE
     CALL _CheckHitEnemies
 
     RET                                         ; ## END of the function ##

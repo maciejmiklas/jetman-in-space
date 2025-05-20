@@ -5,7 +5,7 @@
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
 singleRespDelayCnt      DB 0
-singleEnemySize         DB db.ENEMY_SINGLE_SIZE
+singleEnemySize         DB dba.ENEMY_SINGLE_SIZE
 
 NEXT_RESP_DEL           = 3
 
@@ -20,7 +20,7 @@ nextRespDel             DB NEXT_RESP_DEL
 ;----------------------------------------------------------;
 MoveSingleEnemies
 
-    LD IX, db.singleEnemySprites
+    LD IX, dba.singleEnemySprites
     LD A, (singleEnemySize)
     LD B, A
 
@@ -45,15 +45,15 @@ SetupSingleEnemies
 
     ; ##########################################
     PUSH IX
-    LD B, db.ENEMY_SINGLE_SIZE
-    LD IX, db.singleEnemySprites
+    LD B, dba.ENEMY_SINGLE_SIZE
+    LD IX, dba.singleEnemySprites
     CALL enp.ResetPatternEnemies
     POP IX
 
     PUSH IX
     ; ##########################################
     ; Load #enp.ENPS int #enp.ENP
-    LD IY, db.spriteEx01                        ; Pointer to #ENP array.
+    LD IY, dba.spriteEx01                        ; Pointer to #ENP array.
     LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#ENP arrays).
     LD B, A
 .enpLoop
@@ -76,7 +76,7 @@ SetupSingleEnemies
 
     ; ##########################################
     ; Load #enp.ENPS int #sr.SPR
-    LD IY, db.singleEnemySprites                ; Pointer to #SPR array.
+    LD IY, dba.singleEnemySprites                ; Pointer to #SPR array.
     LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#SPR arrays).
     LD B, A
 .sprLoop
@@ -126,7 +126,7 @@ RespawnNextSingleEnemy
 
     ; ##########################################
     ; Iterate over all enemies to find the first hidden, respawn it, and exit function.
-    LD IX, db.singleEnemySprites
+    LD IX, dba.singleEnemySprites
     LD A, (singleEnemySize)
     LD B, A
 
