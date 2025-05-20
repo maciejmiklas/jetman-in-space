@@ -12,9 +12,9 @@ TOD_DIR_DAY_NIGHT       = 1                     ; Environment changes from day t
 TOD_DIR_NIGHT_DAY       = 2                     ; Environment changes from night to day.
 TOD_DIR_FULL_DAY        = 3                     ; It's a full day.
 
-step                    BYTE TOD_STEPS_D4       ; Counts from TOD_STEPS_D4 (inclusive) to 0 (exclusive)
-stepDuration            BYTE TOD_DAY_DURATION   ; Counts toward 0, when reached, the next #step executes.
-stepDir                 BYTE TOD_DIR_DAY_NIGHT  ; TOD_DIR_DAY_NIGHT or TOD_DIR_NIGHT_DAY
+step                    DB TOD_STEPS_D4         ; Counts from TOD_STEPS_D4 (inclusive) to 0 (exclusive)
+stepDuration            DB TOD_DAY_DURATION     ; Counts toward 0, when reached, the next #step executes.
+stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_NIGHT_DAY
 
 ;----------------------------------------------------------;
 ;                    #ResetTimeOfDay                       ;

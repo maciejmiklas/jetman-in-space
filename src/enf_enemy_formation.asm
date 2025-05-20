@@ -8,9 +8,9 @@
 ; There is also a delay in respawning each enemy in the formation (#enf.ENPS.RESPAWN_DELAY). It will define the distance between single 
 ; enemies in the formation.
 
-spritesCnt              BYTE 0                  ; Counter for #db.ENEMY_FORMATION_SIZE
-respawnDelay            BYTE 0                  ; Delay to respawn the whole formation. 
-respawnDelayCnt         BYTE 0                  ; Counter for #respawnDelay.
+spritesCnt              DB 0                    ; Counter for #db.ENEMY_FORMATION_SIZE
+respawnDelay            DB 0                    ; Delay to respawn the whole formation. 
+respawnDelayCnt         DB 0                    ; Counter for #respawnDelay.
 
 ;----------------------------------------------------------;
 ;                #MoveFormationEnemies                     ;

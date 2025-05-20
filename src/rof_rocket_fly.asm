@@ -11,14 +11,14 @@ EXPLODE_Y_LO_H7E        = $2E                   ; LO byte from #starsDistance to
 EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
 RO_MOVE_STOP_D120       = 120                   ; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 
-rocketExplodeCnt        BYTE 0                  ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
+rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
-rocketExhaustCnt        BYTE 0                  ; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
-rocketDistance          WORD 0                  ; Increments with every rocket move when the rocket is flying towards the next planet.
-rocketDelayDistance     BYTE 0                  ; Counts from 0 to RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets).
-rocketFlyDelay          BYTE RO_FLY_DELAY_D8    ; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
-rocketFlyDelayCnt       BYTE RO_FLY_DELAY_D8    ; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
+rocketExhaustCnt        DB 0                    ; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
+rocketDistance          DW 0                    ; Increments with every rocket move when the rocket is flying towards the next planet.
+rocketDelayDistance     DB 0                    ; Counts from 0 to RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets).
+rocketFlyDelay          DB RO_FLY_DELAY_D8      ; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
+rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
 
 ;----------------------------------------------------------;
 ;              #ResetAndDisableFlyRocket                   ;

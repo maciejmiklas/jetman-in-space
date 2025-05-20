@@ -13,15 +13,15 @@
 ; Bits:
 ;   - 0:    #ENP_ALONG_BIT
 ;   - 1:    #ENP_DEPLOY_BIT
-SETUP                   BYTE    
-MOVE_DELAY_CNT          BYTE                    ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
-RESPAWN_DELAY           BYTE                    ; Number of game loops delaying respawn.
-RESPAWN_DELAY_CNT       BYTE                    ; Respawn delay counter.
-RESPAWN_Y               BYTE                    ; Respawn Y position.
-MOVE_PAT_POINTER        WORD                    ; Pointer to the movement pattern (#movePatternXX).
-MOVE_PAT_POS            BYTE                    ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX.size.
-MOVE_PAT_STEP           BYTE                    ; Counters X,Y from current move pattern.
-MOVE_PAT_STEP_RCNT      BYTE                    ; Counter for repetition of single move pattern st Counts towards 0.
+SETUP                   DB    
+MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
+RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
+RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter.
+RESPAWN_Y               DB                      ; Respawn Y position.
+MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX).
+MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX.size.
+MOVE_PAT_STEP           DB                      ; Counters X,Y from current move pattern.
+MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of single move pattern st Counts towards 0.
     ENDS
 
 ; Bits 4-7 on sr.SPR.STATE will be used here:
@@ -37,11 +37,11 @@ MOVE_DELAY_CNT_INC      = %0001'0000
 
 ; Setup values loaded for each level for #SPR.
     STRUCT ENPS
-RESPAWN_Y               BYTE                    ; Value for: ENP.RESPAWN_Y
-RESPAWN_DELAY           BYTE                    ; Value for: ENP.RESPAWN_DELAY
-MOVE_PAT_POINTER        WORD                    ; Value for: ENP.MOVE_PAT_POINTER
-SDB_INIT                BYTE                    ; Value for: sr.SPR.SDB_INIT
-SETUP                   BYTE                    ; Value for: ENP.SETUP
+RESPAWN_Y               DB                      ; Value for: ENP.RESPAWN_Y
+RESPAWN_DELAY           DB                      ; Value for: ENP.RESPAWN_DELAY
+MOVE_PAT_POINTER        DW                      ; Value for: ENP.MOVE_PAT_POINTER
+SDB_INIT                DB                      ; Value for: sr.SPR.SDB_INIT
+SETUP                   DB                      ; Value for: ENP.SETUP
     ENDS
 
 RESPAWN_OFF             = 255

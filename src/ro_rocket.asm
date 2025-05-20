@@ -10,13 +10,13 @@ RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (m
 RO_DOWN_SPR_ID_D80      = 80                    ; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 
 ; Number of _MainLoop040 cycles to drop next rocket module.
-dropNextDelay           BYTE 0
+dropNextDelay           DB 0
 
 ; It counts from EL_LOW_D1 to EL_TANK6_D9, both inclusive. After the rocket is ready for takeoff, it is set to EL_TANK6_D9+1 to light up 
 ; the last progress bar section.
-rocketElementCnt        BYTE 0
+rocketElementCnt        DB 0
 
-rocketState             BYTE ROST_INACTIVE
+rocketState             DB ROST_INACTIVE
 
 ROST_INACTIVE           = 0
 ROST_WAIT_DROP          = 1                     ; Rocket element (or fuel tank) is waiting for drop from the sky. This is initial state.
@@ -39,19 +39,19 @@ DROP_LAND_Y_ADJ         = -5
 ;  2) #rocketAssemblyX when building the rocket
     STRUCT RO
 ; Configuration values  
-DROP_X                  BYTE                    ; X coordinate to drop the given element/tank, max 255.
-DROP_LAND_Y             BYTE                    ; Y coordinates where the dropped element/tank should land. Usually, it's the height of the platform/ground.
-ASSEMBLY_Y              BYTE                    ; Height where given rocket element should land for assembly.
-SPRITE_ID               BYTE                    ; Hardware ID of the sprite.
-SPRITE_REF              BYTE                    ; Sprite pattern number from the sprite file.
+DROP_X                  DB                      ; X coordinate to drop the given element/tank, max 255.
+DROP_LAND_Y             DB                      ; Y coordinates where the dropped element/tank should land. Usually, it's the height of the platform/ground.
+ASSEMBLY_Y              DB                      ; Height where given rocket element should land for assembly.
+SPRITE_ID               DB                      ; Hardware ID of the sprite.
+SPRITE_REF              DB                      ; Sprite pattern number from the sprite file.
 
 ; Values set in program
-Y                       BYTE                    ; Current Y position.
+Y                       DB                      ; Current Y position.
     ENDS
 
-rocketAssemblyX         BYTE 0
+rocketAssemblyX         DB 0
 
-explodeTankCnt          BYTE 0                  ; Current position in #rocketExplodeTankDB.
+explodeTankCnt          DB 0                    ; Current position in #rocketExplodeTankDB.
 EXPLODE_TANK_MAX        = 4                     ; The amount of explosion sprites.
 
 SPR_PAT_READY1_D60      = 60                    ; Once the rocket is ready, it will start blinking using #SPR_PAT_READY1_D60 and #SPR_PAT_READY2_D61.
@@ -65,7 +65,7 @@ EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
 EL_PROGRESS_START       = EL_TANK1_D4+1
 CARRY_ADJUSTY_D10       = 10
 
-rocketEl                WORD 0                  ; Pointer to 9x ro.RO
+rocketEl                DW 0                  ; Pointer to 9x ro.RO
 
 BAR_TILE_START         = 24*2                  ; *2 because each tile takes 2 bytes
 BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?

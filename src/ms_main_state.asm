@@ -11,7 +11,7 @@ MENU_MAIN               = 5
 MENU_MANUAL             = 6
 MENU_SCORE              = 7
 
-mainState              BYTE MENU_MAIN
+mainState              DB MENU_MAIN
 
 ;----------------------------------------------------------;
 ;                    #SetMainState                         ;

@@ -70,7 +70,7 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
 
 ; Tiles for level intro.
 introTilesFileName      DB "assets/l00/intro_0.map",0
-introSecondFileSize     WORD 0                  ; Will be set when loading particular level, now is 0.
+introSecondFileSize     DW 0                    ; Will be set when loading particular level, now is 0.
 
 stTilesFileName         DB "assets/l00/stars_0.map",0
 TI16K_FILE_LEVEL_POS    = 8 

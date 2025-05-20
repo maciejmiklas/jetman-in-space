@@ -3,6 +3,13 @@
 ;----------------------------------------------------------;
     MODULE mms
 
+PLACES                  = 10
+TILE_LINE_START         = 5
+TILE_START              = 40*3 + TILE_LINE_START
+SCORE_TEXT_SIZE         = 13
+LINE_SPACE              = 40*2
+LINE_FILL               = 40 - (TILE_LINE_START + 2*_16BIT_CHARS_D5 + SCORE_TEXT_SIZE)
+
 ;----------------------------------------------------------;
 ;                     #LoadMenuScore                       ;
 ;----------------------------------------------------------;
@@ -25,6 +32,7 @@ LoadMenuScore
     CALL fi.LoadMenuScoreImage
     CALL bm.CopyImageData
 
+    CALL _PrintScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -57,6 +65,78 @@ MenuScoreUserInput
 .enterPressed
     CALL gc.LoadMainMenu
     
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      #_PrintScore                        ;
+;----------------------------------------------------------;
+; Prints structure from #db.menuScore
+_PrintScore
+
+    CALL dbs.SetupArraysBank
+
+    LD IX, db.menuScore                         ; Pointer to high score data.
+    LD DE, TILE_START                           ; Tilemap position to print the first high score.
+
+    LD B, PLACES
+.placesLoop
+    PUSH BC
+
+    ; ##########################################
+    ; Print HI byte from current score line.  HL points to HI byte.
+    LD HL, (IX)
+    LD BC, DE
+    PUSH DE
+    CALL tx.PrintNum16
+    POP DE
+
+     ; ##########################################
+    ; Print LO byte.
+
+    ; Move IX from HI byte to LO byte.
+    INC IX
+    INC IX
+    LD HL, (IX)
+
+    ADD DE, _16BIT_CHARS_D5                     ; DE points to LO byte from high score.
+    LD BC, DE
+    PUSH DE
+    CALL tx.PrintNum16
+    POP DE
+
+    ; ##########################################
+    ; Print name
+    ; Move IX from LO byte to text.
+    INC IX
+    INC IX
+    
+    ADD DE, _16BIT_CHARS_D5                     ; DE points to text line with players name.
+    LD BC, DE
+    LD A, SCORE_TEXT_SIZE
+
+    PUSH DE
+    LD DE, IX
+    CALL ti.PrintText
+    POP DE
+
+    ; Move IX to the high score line for the next player.
+    LD BC, IX
+    ADD BC, SCORE_TEXT_SIZE
+    LD IX, BC
+
+    ; Move DE after the text, than to the end of the line, and finally insert line breaks.
+    ADD DE, SCORE_TEXT_SIZE + LINE_FILL + LINE_SPACE
+
+    ; ##########################################
+    ; Loop
+    POP BC
+    DJNZ .placesLoop
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

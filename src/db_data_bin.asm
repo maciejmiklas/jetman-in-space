@@ -232,7 +232,7 @@ starsPalL1
     DW $1FF, $1FF, $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
 
 starsPalL2
-    DW  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
+    DB  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
     ; ##########################################
     ASSERT $$ == dbs.ST_BANK_S7_D28                ; Data should remain in the same bank
@@ -279,6 +279,41 @@ menuDifHard
 menuTextEa DB " EASY "
 menuTextNo DB "NORMAL"
 menuTextHa DB " HARD "
+
+menuScore
+    DW 10001
+    DW 20002
+    DB "   MACIEJ    "
+menuScore1
+    DW 30003
+    DW 40004
+    DB "   DANIEL    "
+menuScore2
+    DW 50005
+    DW 60007
+    DB "   ARTUR     "
+menuScore3
+    DW 07007
+    DW 08008
+    DB "   FRED      "
+    DW 09009
+    DW 11011
+    DB "   FRED1     "
+    DW 12012
+    DW 13013
+    DB "   FRED2     "
+    DW 14014
+    DW 15015
+    DB "   FRED3     "
+    DW 16016
+    DW 17017
+    DB "   FRED4     "
+    DW 18018
+    DW 19019
+    DB "   FRED5     "
+    DW 21021
+    DW 22022
+    DB "   FRED6     "
 
 ; ##############################################
 ; Movement patterns.
@@ -772,7 +807,7 @@ TSID                    = rof.EXHAUST_SPRID_D83
 TSRE                    = 17
 
 ; Level 1
-rocketAssemblyXL1       BYTE 22*8
+rocketAssemblyXL1       DB 22*8
 rocketElL1
 ; Rocket element.
     ro.RO {04*8/*DROP_X*/, 14*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -788,7 +823,7 @@ rocketElL1
     ro.RO {09*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
     
 ; Level 2
-rocketAssemblyXL2       BYTE 24*8
+rocketAssemblyXL2       DB 24*8
 rocketElL2
 ; Rocket element.
     ro.RO {07*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -804,7 +839,7 @@ rocketElL2
     ro.RO {17*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 3
-rocketAssemblyXL3       BYTE 6*8
+rocketAssemblyXL3       DB 6*8
 rocketElL3
 ; Rocket element.
     ro.RO {09*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -820,7 +855,7 @@ rocketElL3
     ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 4
-rocketAssemblyXL4       BYTE 18*8
+rocketAssemblyXL4       DB 18*8
 rocketElL4
 ; Rocket element.
     ro.RO {06*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -836,7 +871,7 @@ rocketElL4
     ro.RO {16*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 5
-rocketAssemblyXL5       BYTE 18*8
+rocketAssemblyXL5       DB 18*8
 rocketElL5
 ; Rocket element.
     ro.RO {11*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -852,7 +887,7 @@ rocketElL5
     ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 6
-rocketAssemblyXL6       BYTE 02*8
+rocketAssemblyXL6       DB 02*8
 rocketElL6
 ; Rocket element.
     ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -868,7 +903,7 @@ rocketElL6
     ro.RO {20*8/*DROP_X*/, 15*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 7
-rocketAssemblyXL7       BYTE 18*8
+rocketAssemblyXL7       DB 18*8
 rocketElL7
 ; Rocket element.
     ro.RO {06*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -884,7 +919,7 @@ rocketElL7
     ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 8
-rocketAssemblyXL8       BYTE 29*8
+rocketAssemblyXL8       DB 29*8
 rocketElL8
 ; Rocket element.
     ro.RO {08*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -900,7 +935,7 @@ rocketElL8
     ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 9
-rocketAssemblyXL9       BYTE 15*8
+rocketAssemblyXL9       DB 15*8
 rocketElL9
 ; Rocket element.
     ro.RO {04*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -916,7 +951,7 @@ rocketElL9
     ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 10
-rocketAssemblyXL10      BYTE 19*8
+rocketAssemblyXL10      DB 19*8
 rocketElL10
 ; Rocket element.
     ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -951,7 +986,7 @@ platformsL1
     pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
     pl.PLA {11*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
     pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 10*8/*Y_TOP*/, 10*8/*Y_BOTTOM*/}
-platformsSizeL1         BYTE 3
+platformsSizeL1         DB 3
 
 ; Level 2
 platformsL2
@@ -959,12 +994,12 @@ platformsL2
     pl.PLA {27*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 08*8/*Y_BOTTOM*/}
     pl.PLA {08*8/*X_LEFT*/, 19*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
     pl.PLA {26*8/*X_LEFT*/, 33*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-platformsSizeL2         BYTE 4
+platformsSizeL2         DB 4
 
 ; Level 3
 platformsL3
     pl.PLA {09*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-platformsSizeL3         BYTE 1
+platformsSizeL3         DB 1
 
 ; Level 4
 platformsL4
@@ -979,7 +1014,7 @@ platformsL4
     pl.PLA {14*8/*X_LEFT*/, 14*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
     pl.PLA {23*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 
-platformsSizeL4         BYTE 7
+platformsSizeL4         DB 7
 
 ; Level 5
 platformsL5
@@ -996,7 +1031,7 @@ platformsL5
     pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
     pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
     pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL5         BYTE 11
+platformsSizeL5         DB 11
 
 ; Level 6
 platformsL6
@@ -1009,7 +1044,7 @@ platformsL6
     pl.PLA {26*8/*X_LEFT*/, 28*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
     pl.PLA {29*8/*X_LEFT*/, 31*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
     pl.PLA {32*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL6         BYTE 9
+platformsSizeL6         DB 9
 
 ; Level 7
 platformsL7
@@ -1024,7 +1059,7 @@ platformsL7
     pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
     pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 16*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
     pl.PLA {27*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL7         BYTE 9
+platformsSizeL7         DB 9
 
 ; Level 8
 platformsL8
@@ -1043,7 +1078,7 @@ platformsL8
     pl.PLA {34*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
     pl.PLA {33*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
     pl.PLA {38*8/*X_LEFT*/, 38*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL8         BYTE 15
+platformsSizeL8         DB 15
 
 ; Level 9
 platformsL9
@@ -1052,7 +1087,7 @@ platformsL9
     pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
     pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 23*8/*Y_BOTTOM*/}
     pl.PLA {32*8/*X_LEFT*/, 37*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
-platformsSizeL9         BYTE 5
+platformsSizeL9         DB 5
 
 ; Level 10
 platformsL10
@@ -1092,7 +1127,7 @@ platformsL10
     pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
     pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 28*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
 
-platformsSizeL10        BYTE 30
+platformsSizeL10        DB 30
 
 ; ##############################################
 ; Final Checks.

@@ -10,7 +10,7 @@ PI_SPR_GRENADE          = 42
 PI_SPR_LIFE             = 43
 PI_SPR_GUN              = 44
 
-deployOrderPos          BYTE 0
+deployOrderPos          DB 0
 deployOrder
     DB PI_SPR_DIAMOND, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_DIAMOND, PI_SPR_JAR, PI_SPR_GUN, PI_SPR_JAR, PI_SPR_STRAWBERRY
     DB PI_SPR_GUN, PI_SPR_GRENADE, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_GRENADE, PI_SPR_GUN, PI_SPR_STRAWBERRY, PI_SPR_GUN
@@ -20,15 +20,15 @@ DEPLOY_ORDER_SIZE       = 20
 PI_SPR_MIN              = PI_SPR_DIAMOND
 PI_SPR_MAX              = PI_SPR_GUN
 
-deployed                BYTE 0                  ; Currently deployed sprite reference from spr-file(#PI_SPR_XXX), 0 for none.
+deployed                DB 0                    ; Currently deployed sprite reference from spr-file(#PI_SPR_XXX), 0 for none.
 
-deployedX               BYTE 0                  ; Pickup X postion
-deployedY               BYTE 0                  ; Pickup Y postion
+deployedX               DB 0                    ; Pickup X postion
+deployedY               DB 0                    ; Pickup Y postion
 
-deployCnt               BYTE 0
+deployCnt               DB 0
 DEPLOY_CNT_DELAY        = 15
 
-lifeDeployed            BYTE 0
+lifeDeployed            DB 0
 LIVE_DEPLOYED_YES       = 1
 LIVE_DEPLOYED_NO        = 1
 

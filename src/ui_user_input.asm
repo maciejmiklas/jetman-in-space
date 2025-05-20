@@ -3,10 +3,10 @@
 ;----------------------------------------------------------;
     MODULE ui
 
-userInputDelayCnt       BYTE 0
+userInputDelayCnt       DB 0
 USER_INPUT_DELAY        = 10
 
-userInputInactiveCnt    BYTE 0
+userInputInactiveCnt    DB 0
 USER_INPUT_RESET        = 5
 
 ;----------------------------------------------------------;

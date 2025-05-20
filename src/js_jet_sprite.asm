@@ -25,16 +25,16 @@ SDB_T_KO                = 224                   ; Transition: kinking -> hoverin
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX).
 SDB_FRAME_SIZE          = 2
 
-sprDBIdx                WORD 0                  ; Current position in DB.
-sprDBRemain             BYTE 0                  ; Amount of bytes that have to be still processed from the current record.
-sprDBCurrentID          BYTE SDB_STAND          ; Active animation.
-sprDBNextID             BYTE SDB_STAND          ; ID in #jetSpriteDB for next animation/DB record.
-sprDBDelay              BYTE 0                  ; Value from #DELAY.
-sprDBDelayCnt           BYTE 0                  ; Counter from #sprDBDelay to 0.
+sprDBIdx                DW 0                    ; Current position in DB.
+sprDBRemain             DB 0                    ; Amount of bytes that have to be still processed from the current record.
+sprDBCurrentID          DB SDB_STAND            ; Active animation.
+sprDBNextID             DB SDB_STAND            ; ID in #jetSpriteDB for next animation/DB record.
+sprDBDelay              DB 0                    ; Value from #DELAY.
+sprDBDelayCnt           DB 0                    ; Counter from #sprDBDelay to 0.
 
 SPR_STATE_HIDE          = 0
 SPR_STATE_SHOW          = 1
-sprState                BYTE SPR_STATE_SHOW
+sprState                DB SPR_STATE_SHOW
 
 ;----------------------------------------------------------;
 ;             #UpdateJetSpritePositionRotation             ;

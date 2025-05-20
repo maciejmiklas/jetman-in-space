@@ -33,17 +33,17 @@ JM_FIRE_DELAY_MAX       = 15
 JM_FIRE_DELAY_MAX_HARD  = 12
 JM_FIRE_DELAY_MIN       = 3
 JM_FIRE_SPEED_UP        = 4
-fireDelayCnt            BYTE 0
-fireDelay               BYTE JM_FIRE_DELAY_MAX
+fireDelayCnt            DB 0
+fireDelay               DB JM_FIRE_DELAY_MAX
 
 STATE_SHOT_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left.
 
-fireFxDelayCnt          BYTE 0
-fireFxDelay             BYTE FIRE_FX_DELAY_INIT
+fireFxDelayCnt          DB 0
+fireFxDelay             DB FIRE_FX_DELAY_INIT
 FIRE_FX_DELAY_INIT      = 2
 FIRE_FX_DELAY_SOUND2    = 5                     ; When delay reaches this value play #af.FX_FIRE2
 
-fireFxOn                BYTE 1
+fireFxOn                DB 1
 FIRE_FX_ON              = 1
 FIRE_FX_OFF             = 0
 

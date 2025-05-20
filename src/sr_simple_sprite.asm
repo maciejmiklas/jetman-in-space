@@ -7,11 +7,11 @@
 ;           Memory Structure for Single Sprite             ;
 ;----------------------------------------------------------;
     STRUCT SPR
-ID                      BYTE                    ; Sprite ID for #_SPR_REG_ATR3_H38.
-SDB_INIT                BYTE                    ; Initial ID of Sprite from #srSpriteDB.
-SDB_POINTER             WORD                    ; Pointer to #srSpriteDB record.
-X                       WORD                    ; X position of the sprite.
-Y                       BYTE                    ; Y position of the sprite.
+ID                      DB                      ; Sprite ID for #_SPR_REG_ATR3_H38.
+SDB_INIT                DB                      ; Initial ID of Sprite from #srSpriteDB.
+SDB_POINTER             DW                      ; Pointer to #srSpriteDB record.
+X                       DW                      ; X position of the sprite.
+Y                       DB                      ; Y position of the sprite.
 
 ; Bits:
 ;   - 0:    #SPRITE_ST_VISIBLE_BIT,
@@ -20,10 +20,10 @@ Y                       BYTE                    ; Y position of the sprite.
 ;   - 3:    #SPRITE_ST_MIRROR_X_BIT,
 ;   - 4:    Not used, but reserved for simple sprite (sr),
 ;   - 5-8:  Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT.
-STATE                   BYTE
-NEXT                    BYTE                    ; ID in #ssSpriteDB for next animation record/state.
-REMAINING               BYTE                    ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record.
-EXT_DATA_POINTER        WORD                    ; Pointer to additional data structure for this sprite.
+STATE                   DB
+NEXT                    DB                      ; ID in #ssSpriteDB for next animation record/state.
+REMAINING               DB                      ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record.
+EXT_DATA_POINTER        DW                      ; Pointer to additional data structure for this sprite.
     ENDS
 
 ; When a weapon hits something, the sprite first gets status #SPRITE_ST_ACTIVE_BIT. After it stops exploding, it becomes status #SPRITE_ST_VISIBLE_BIT.
@@ -36,7 +36,7 @@ SPRITE_ST_ACTIVE        = %00000010
 SPRITE_ST_VISIBLE_BIT   = 0
 SPRITE_ST_VISIBLE       = %00000001
 
-SPRITE_ST_ALIVE         = %00000011         ; Alive and visible.
+SPRITE_ST_ALIVE         = %00000011             ; Alive and visible.
 
 ; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37.
 SPRITE_ST_MIRROR_X_BIT  = 3
@@ -45,9 +45,9 @@ SPRITE_ST_MIRROR_X_BIT  = 3
 ;                         Sprite DB                        ;
 ;----------------------------------------------------------;
     STRUCT SPR_REC
-ID                      BYTE                    ; Entry ID for lookup via CPIR.
-OFF_NX                  BYTE                    ; ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
-SIZE                    BYTE                    ; Amount of frames/sprite patterns in this record.
+ID                      DB                    ; Entry ID for lookup via CPIR.
+OFF_NX                  DB                    ; ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
+SIZE                    DB                    ; Amount of frames/sprite patterns in this record.
     ENDS
 
 ; DB IDs

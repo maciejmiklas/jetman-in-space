@@ -5,7 +5,7 @@
 
 ; The counter turns off the joystick for a few iterations. Each call #GameJoystickInput decrements it by one
 ; It's used for effects like bumping from the platform's edge or falling.
-joyOffCnt           BYTE 0
+joyOffCnt           DB 0
 
 ; Possible move directions##
 MOVE_INACTIVE           = 0                     ; No movement
@@ -29,20 +29,20 @@ MOVE_MSK_LR             = %0000'0011            ; Left + Right
 ; However, only opposite directions are reset, so for example, when Jetman is facing right, and the right button is released, 
 ; it still looks right; now, when up is pressed, it will look upright, and the right will be reset only when left is pressed. 
 ; Prolonged inactivity resets #jetDirection to #MOVE_INACTIVE.
-jetDirection            BYTE MOVE_INACTIVE  ; Jetman initially hovers, no movement
+jetDirection            DB MOVE_INACTIVE  ; Jetman initially hovers, no movement
 
 ; Holds currently pressed direction button. State will be updated right at the beginning of each joystick loop.
-joyDirection            BYTE MOVE_INACTIVE
+joyDirection            DB MOVE_INACTIVE
 
 ; Holds #joyDirection from previous loop
-joyPrevDirection        BYTE MOVE_INACTIVE
+joyPrevDirection        DB MOVE_INACTIVE
 
-joyOverheatDelayCnt     BYTE 0                  ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
+joyOverheatDelayCnt     DB 0                  ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
 
 ; Button state keeps state for 8 buttons.
 ; The button state for the current game loop is reset before the keys are processed in the current game loop.
-buttonState            BYTE 0
-buttonPrevState        BYTE 0                   ; Keeps state from the previous game loop.
+buttonState            DB 0
+buttonPrevState        DB 0                   ; Keeps state from the previous game loop.
 BS_FIRE_BIT             = 0
 
 ;----------------------------------------------------------;

@@ -10,7 +10,7 @@ JSTAND_START_D15        = 15
 
 LEVEL_MIN               = 1
 LEVEL_MAX               = 10
-level                   BYTE LEVEL_MIN
+level                   DB LEVEL_MIN
 
 ; Respawn location.
 JM_RESPAWN_X_D100       = 100

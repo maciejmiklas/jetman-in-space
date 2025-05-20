@@ -11,14 +11,14 @@ TOP_OFS                 = 40*5
 LOF                     = 7                     ; Menu entry offset from the left.
 
     STRUCT MENU
-TILE_OFFSET             WORD                    ; Tile offset.
-TEXT_POINT              WORD                    ; Text pointer.
-TEXT_SIZE               BYTE                    ; Length of menu text.
-JET_X                   BYTE                    ; X postion of Jetman pointing to active element.
-JET_Y                   BYTE                    ; Y postion of Jetman pointing to active element.
+TILE_OFFSET             DW                      ; Tile offset.
+TEXT_POINT              DW                      ; Text pointer.
+TEXT_SIZE               DB                      ; Length of menu text.
+JET_X                   DB                      ; X postion of Jetman pointing to active element.
+JET_Y                   DB                      ; Y postion of Jetman pointing to active element.
     ENDS
 
-menuPos                 BYTE MENU_EL_MIN
+menuPos                 DB MENU_EL_MIN
 MENU_EL_START           = 1                     ; START GAME
 MENU_EL_LSELECT         = 2                     ; LEVEL SELECT
 MENU_EL_SCORE           = 3                     ; HIGH SCORE

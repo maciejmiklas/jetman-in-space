@@ -7,7 +7,7 @@
 
     MODULE bm
 
-imageBank               BYTE 0                  ; Bank containing the image.
+imageBank               DB 0                    ; Bank containing the image.
 
 BM_16KBANK_D9           = 9                     ; 16K bank 9 = 8k bank 18.
 

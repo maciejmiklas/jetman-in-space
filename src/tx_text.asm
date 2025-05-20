@@ -6,6 +6,7 @@
 formatted16                                     ; Formatted 16bit number.
     DB "00000"                                  ; Contains a number formatted into a string.
 FORMATTED16_SIZE         = 5
+
 ;----------------------------------------------------------;
 ;                       #PrintNum16                        ;
 ;----------------------------------------------------------;
@@ -40,7 +41,7 @@ PrintNum16
 Num16ToString
 
     ; Each line prints one digit into DE, starting with the most significant.
-    LD  BC, -10000                      
+    LD  BC, -10000
     CALL .format
 
     LD  BC, -1000

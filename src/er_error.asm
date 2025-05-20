@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE er
 
-errorCnt                BYTE 0
+errorCnt                DB 0
 ERROR_MAX               = 5                     ; Limit the number of errors shown to the player.
 
 ; Error Codes

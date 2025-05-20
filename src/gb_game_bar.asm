@@ -7,7 +7,7 @@ GB_VISIBLE              = 1
 GB_HIDDEN               = 0
 GB_TILES_D13            = 320 / 8 * 3
 
-gamebarState            BYTE GB_VISIBLE
+gamebarState            DB GB_VISIBLE
 
 ;----------------------------------------------------------;
 ;                    #HideGameBar                          ;

@@ -6,8 +6,8 @@
 ; Jetman sprite consists of two spires, each 16x16px. Coordinates relate to the left top corner of the upper sprite. 
 ; For example, corner positions to display the whole spirit are as follows: (X,Y) given by (0,0) would display a complete sprite in the 
 ; left corner. The most right position on X is 320-16, and the bottom on Y is 256 - 32.
-jetX                    WORD 0                  ; 0-320px
-jetY                    BYTE 0                  ; 0-256px
+jetX                    DW 0                    ; 0-320px
+jetY                    DB 0                    ; 0-256px
 
 ;----------------------------------------------------------;
 ;                          #IncJetX                        ;

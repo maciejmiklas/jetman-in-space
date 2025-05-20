@@ -48,13 +48,13 @@ CopyRam:
 ;                       Add8To32                           ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Points to the start of the two WORD (LO,HI) elements in RAM.
+;  - HL: Points to the start of the two DW (LO,HI) elements in RAM.
 ;  - A:  Contains the 8-bit value to add.
 Add8To32
 
-    ; Add 8-bit value to the second WORD, LO byte.
+    ; Add 8-bit value to the second DW, LO byte.
     LD B, A                                     ; Copy the 8-bit value into B (used for carry handling).
-    LD A, (HL)                                  ; Load the least significant byte (LSB) of the second WORD (LO).
+    LD A, (HL)                                  ; Load the least significant byte (LSB) of the second DW (LO).
     ADD A, B                                    ; Add the 8-bit value to the LSB.
     LD (HL), A                                  ; Store the result back to memory.
     INC HL                                      ; Move to the next byte.

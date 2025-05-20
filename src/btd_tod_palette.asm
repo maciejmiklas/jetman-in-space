@@ -3,10 +3,10 @@
 ;----------------------------------------------------------;
     MODULE btd
     
-palBytes                WORD 0                  ; Size in bytes of background palette, max 512.
-palColors               BYTE 0                  ; Amount of colors in background palette, max 255.
-palAdr                  WORD 0                  ; Address of the original palette data.
-todPalAddr              WORD 0                  ; Pointer to current brightness palette.
+palBytes                DW 0                    ; Size in bytes of background palette, max 512.
+palColors               DB 0                    ; Amount of colors in background palette, max 255.
+palAdr                  DW 0                    ; Address of the original palette data.
+todPalAddr              DW 0                    ; Pointer to current brightness palette.
 
 PAL2_BYTES_D512         = 512
 

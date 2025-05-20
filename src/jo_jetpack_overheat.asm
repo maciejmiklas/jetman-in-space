@@ -12,10 +12,10 @@
 ; until it reaches #TEMP_NORM. At this point, the Jetman state changes to #JETST_NORMAL, and Jetman can fly at a full speed.
 
 ; Jetpack heats up/cools down during the flight.
-jetHeatCnt              BYTE 0                  ; Runs from 0 to JM_HEAT_CNT
-jetCoolCnt              BYTE 0                  ; Runs from 0 to JM_COOL_CNT
+jetHeatCnt              DB 0                    ; Runs from 0 to JM_HEAT_CNT
+jetCoolCnt              DB 0                    ; Runs from 0 to JM_COOL_CNT
 
-jetTempLevel            BYTE 0
+jetTempLevel            DB 0
 
 TEMP_MAX                = 6                     ; The heat bar in UI (H) has 5 elements, 6 means it's overheated.
 TEMP_RED                = 4

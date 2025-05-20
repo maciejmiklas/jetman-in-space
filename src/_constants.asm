@@ -428,6 +428,8 @@ _BANK_BYTES_D8192       = 8*1024
 _GC_FLIP_ON_D1          = 1
 _GC_FLIP_OFF_D0         = 0
 
+_16BIT_CHARS_D5         = 5
+
 ; ##############################################
 ; Screen
 _SC_SYNC_SL_D192        = 192                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.

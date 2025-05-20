@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE bg
 
-bgOffset                BYTE 0                  ; Offset of the background image.
+bgOffset                DB 0                    ; Offset of the background image.
 GB_OFFSET_D6            = _TI_GND_D8-2
 
 GB_MOVE_SLOW_D2         = 2                     ; Slows down background movement (when Jetman moves).

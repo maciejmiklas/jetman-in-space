@@ -99,7 +99,7 @@ ResetTilemapOffset
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #PrintText                        ;
+;                      #PrintText                          ;
 ;----------------------------------------------------------;
 ; Print given text using tiles.
 ; Input:

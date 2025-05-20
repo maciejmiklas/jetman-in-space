@@ -4,14 +4,14 @@
     MODULE li
 
 ; The on-screen tilemap has 40x32 tiles, and into-tiles take a few horizontal screens (i.e., 40x120). Therefore, there are two different counters.
-screenTilesRow          BYTE 0                  ; Current tiles row on the screen, runs from 0 to #ti.TI_VTILES_D32-1.
-sourceTilesRow          BYTE 0                  ; Current tiles row in source file (RAM), runs from from 0 to sourceTilesRowMax.
-sourceTilesRowMax       BYTE 0
+screenTilesRow          DB 0                    ; Current tiles row on the screen, runs from 0 to #ti.TI_VTILES_D32-1.
+sourceTilesRow          DB 0                    ; Current tiles row in source file (RAM), runs from from 0 to sourceTilesRowMax.
+sourceTilesRowMax       DB 0
 
-tileOffset              BYTE 0                  ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt            BYTE 0                  ; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
+tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
+tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
 
-animateDelayCnt         BYTE ANIMATE_DELAY      ; Start scrolling without a delay.
+animateDelayCnt         DB ANIMATE_DELAY        ; Start scrolling without a delay.
 ANIMATE_DELAY           = 50
 
 ;----------------------------------------------------------;

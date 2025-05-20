@@ -4,8 +4,8 @@
     MODULE sc
 
 ; Memory layout: LO, HI
-scoreLo                  WORD 0
-scoreHi                  WORD 0
+scoreLo                  DW 0
+scoreHi                  DW 0
 
 HIT_ENEMY1              = 50
 HIT_ENEMY2              = 100
@@ -28,6 +28,8 @@ PICKUP_REG              = 250
 
 PICKUP_DIAMOND          = 250
 PICKUP_DIAMOND_REP      = 4
+
+SCORE_TI_START          = 4
 
 ;----------------------------------------------------------;
 ;                       #ResetScore                        ;
@@ -180,11 +182,11 @@ DropRocketElement
 ;----------------------------------------------------------;
 PrintScore
 
-    LD BC, 4
+    LD BC, SCORE_TI_START
     LD HL, (scoreHi)
     CALL tx.PrintNum16
 
-    LD BC, 9
+    LD BC, SCORE_TI_START+_16BIT_CHARS_D5
     LD HL, (scoreLo)
     CALL tx.PrintNum16
 

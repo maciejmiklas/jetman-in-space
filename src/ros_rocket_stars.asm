@@ -13,11 +13,11 @@ TI_MOVE_FROM_D50        = 50                    ; Start moving stats when the ro
 ti.TI_H_BYTES_D80           = 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
-tilesRow                BYTE ti.TI_VTILES_D32   ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
-sourceTilesRow          BYTE TI_ROWS_D128       ; Current tiles row in source file (RAM), runs from from TI_ROWS_D128 to 0.
+tilesRow                DB ti.TI_VTILES_D32     ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
+sourceTilesRow          DB TI_ROWS_D128         ; Current tiles row in source file (RAM), runs from from TI_ROWS_D128 to 0.
 
-tileOffset              BYTE _SC_RESY1_D255     ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt            BYTE ti.TI_PIXELS_D8    ; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
+tileOffset              DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
+tilePixelCnt            DB ti.TI_PIXELS_D8      ; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
 
 ;----------------------------------------------------------;
 ;                   #ResetRocketStars                      ;

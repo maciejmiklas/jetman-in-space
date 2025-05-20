@@ -22,10 +22,10 @@ FALL_RX_N1              = -1
 
 ; Platform margin/border
     STRUCT PLAM
-X_LEFT                  WORD
-X_RIGHT                 WORD
-Y_TOP                   BYTE
-Y_BOTTOM                BYTE
+X_LEFT                  DW
+X_RIGHT                 DW
+Y_TOP                   DB
+Y_BOTTOM                DB
     ENDS
 
 ; The "close margin" has to be smaller on the left/right than the "hit margin" and larger on the top/bottom than the "hit margin".
@@ -44,22 +44,22 @@ jetAwayMargin   PLAM { 30/*X_LEFT*/, 20/*X_RIGHT*/, 30/*Y_TOP*/, 20/*Y_BOTTOM*/}
 
 ; Coordinates for a platform
     STRUCT PLA
-X_LEFT                  WORD                    ; X start of the platform.
-X_RIGHT                 WORD                    ; X end of the platform.
-Y_TOP                   BYTE                    ; Y start of the platform.
-Y_BOTTOM                BYTE                    ; Y end of the platform.
+X_LEFT                  DW                    ; X start of the platform.
+X_RIGHT                 DW                    ; X end of the platform.
+Y_TOP                   DB                    ; Y start of the platform.
+Y_BOTTOM                DB                    ; Y end of the platform.
     ENDS
 
 ; [amount of platforms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels.
-platforms               WORD 0                  ; Pointer value to platforms.
-platformsSize           BYTE 0
+platforms               DW 0                  ; Pointer value to platforms.
+platformsSize           DB 0
 
 ; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK.
 PLATFORM_WALK_INACTIVE  = $FF                   ; Not on any platform.
 
-platformWalkNumber      BYTE PLATFORM_WALK_INACTIVE
+platformWalkNumber      DB PLATFORM_WALK_INACTIVE
 
-joyOffBump              BYTE PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
+joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
 
 ;----------------------------------------------------------;
 ;                    #SetupPlatforms                       ;
@@ -534,7 +534,7 @@ JetFallingFromPlatform
 ; Check whether the sprite given by coordinates hits one of the platforms. It does not provide direction, just an indication that 
 ; there was a hit. To get directions use #_PlatformDirectionHit.
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision.
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IY:    Pointer to #PLA list.
 ;  - B:     Number of elements in #PLA list.
 ;  - IX:    Pointer to #PLAM.
@@ -597,7 +597,7 @@ _PlatformHit
 
     ; ##########################################
     ; Check platform's top level.
-    ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of WORD.
+    ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
     LD DE, HL
     ADD DE, Y_SPR_RAMOFFSET
     LD A, (DE)
@@ -637,7 +637,7 @@ _PlatformHit
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms, also provides platform number and side.
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision.
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX:    Pointer to #PLAM.
 ;  - IY:    Pointer to #PLA list.
 ;  - B:     Number of elements in #PLA list.
@@ -747,9 +747,9 @@ _PlatformDirectionHit
 ;----------------------------------------------------------;
 ;                   #_LoadSpriteYtoA                       ;
 ;----------------------------------------------------------;
-; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of WORD.
+; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision.
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ; Output:
 ;  - A:     Sprite's Y coordinate.
 ; Modifies: DE
@@ -767,7 +767,7 @@ _LoadSpriteYtoA
 ; Check the collision with the top side of the platform.
 ; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision.
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX:    Pointer to #PLAM.
 ;  - IY:    Pointer to #PLA.
 ; Output:
@@ -819,7 +819,7 @@ _CheckPlatformHitTop
 ; Check the collision with the bottom side of the platform.
 ; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5]
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision. 
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision. 
 ;  - IX:    Pointer to #PLAM.
 ;  - IY:    Pointer to #PLA.
 ; Output:
@@ -867,7 +867,7 @@ _CheckPlatformHitBottom
 ; Check the collision with the left side of the platform.
 ; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision.
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX:    Pointer to #PLAM.
 ;  - IY:    Pointer to #PLA.
 ; Output:
@@ -923,7 +923,7 @@ _CheckPlatformHitLeft
 ; Check the collision with the left side of the platform.
 ; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #HIT_MARGIN_D5].
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision.
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX:    Pointer to #PLAM.
 ;  - IY:    Pointer to #PLA.
 ; Output:
@@ -978,7 +978,7 @@ _CheckPlatformHitRight
 ; Jetman is within the platform's horizontal bounds when:
 ; [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision. 
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision. 
 ;  - IX:    Pointer to #PLAM.
 ;  - IY:    Pointer to #PLA.
 ; Output:
@@ -1031,7 +1031,7 @@ _CheckPlatformHitHorizontal
 ; Jetman is within the platform's vertical bounds when:
 ; [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
 ; Input:
-;  - HL:    Pointer to memory containing (X[WORD],Y[BYTE]) coordinates to check for the collision. 
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision. 
 ;  - IX:    Pointer to #PLAM.
 ;  - IY:    Pointer to #PLA.
 ; Output:

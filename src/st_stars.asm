@@ -27,9 +27,9 @@ ST_L1_SIZE              = 27                    ; Number stars on layer 1.
 ST_L2_SIZE              = 16                    ; Number stars on layer 2.
 
     STRUCT SC                                   ; Stars column.
-BANK                    BYTE                    ; Bank number from 0 to 9.
-X_OFFSET                BYTE                    ; X offset from the beginning of the bank, max 32 (32=8192/256)
-SIZE                    BYTE                    ; Amount of stars.
+BANK                    DB                      ; Bank number from 0 to 9.
+X_OFFSET                DB                      ; X offset from the beginning of the bank, max 32 (32=8192/256)
+SIZE                    DB                      ; Amount of stars.
     ENDS
 
 SC_BLINK_OFF            = 0
@@ -40,29 +40,29 @@ ST_SHOW                 = 1
 ST_MOVE_UP              = 3
 ST_MOVE_DOWN            = 4
 
-starsState              BYTE ST_SHOW
+starsState              DB ST_SHOW
 
 ST_L1_MOVE_DEL_D4       = 2                     ; Stars move delay.
 ST_L2_MOVE_DEL_D4       = 8                     ; Stars move delay.
 
-starsMoveL1Delay        BYTE ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
-starsMoveL2Delay        BYTE ST_L2_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+starsMoveL1Delay        DB ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+starsMoveL2Delay        DB ST_L2_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 
-randColor               BYTE 0                  ; Rand value from the previous call.
+randColor               DB 0                  ; Rand value from the previous call.
 
 ; Currently rendered palette.
-starsPal                WORD 0
-starsPalSize            BYTE 0
-starsPalOffset          BYTE 0
+starsPal                DW 0
+starsPalSize            DB 0
+starsPalOffset          DB 0
     
 
 ; Currently rendered stars.
-starsDataSize           BYTE 27
-starsData               WORD 0              ; Before using: CALL ut.SetupDataArraysBank
-starsDataMaxY           WORD 0              ; Before using: CALL ut.SetupDataArraysBank
+starsDataSize           DB 27
+starsData               DW 0                ; Before using: CALL ut.SetupDataArraysBank
+starsDataMaxY           DW 0                ; Before using: CALL ut.SetupDataArraysBank
 
-starsData1MaxY          WORD 0
-starsData2MaxY          WORD 0
+starsData1MaxY          DW 0
+starsData2MaxY          DW 0
 
 
 ;----------------------------------------------------------;

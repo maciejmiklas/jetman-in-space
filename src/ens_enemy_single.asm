@@ -4,15 +4,15 @@
     MODULE ens
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
-singleRespDelayCnt      BYTE 0
-singleEnemySize         BYTE db.ENEMY_SINGLE_SIZE
+singleRespDelayCnt      DB 0
+singleEnemySize         DB db.ENEMY_SINGLE_SIZE
 
 NEXT_RESP_DEL           = 3
 
 ; Each enemy has a dedicated respawn delay (#enp.ENP.RESPAWN_DELAY_CNT). Enemies are respawned one after another from the enemies list. 
 ; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
 ; the respawn of the next enemy from the enemies list. 
-nextRespDel             BYTE NEXT_RESP_DEL
+nextRespDel             DB NEXT_RESP_DEL
 
 
 ;----------------------------------------------------------;
