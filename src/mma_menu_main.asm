@@ -81,7 +81,6 @@ LoadMainMenu
 ;----------------------------------------------------------;
 MenuMainUserInput
 
-    ; ##########################################
     ; Key right pressed ?
     LD A, _KB_6_TO_0_HEF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
@@ -499,11 +498,12 @@ _JoyFire
     ; Show gameplay.
     CP MENU_EL_SCORE
     JR NZ, .notShowScore
-    CALL mms.LoadMenuScore
+    ;CALL mms.LoadMenuScore
+    CALL mms.EnterNewScore
     RET
 .notShowScore
 
-LoadMenuScore
+
     ; ##########################################
     ; Wrong key hit, play sound
     LD A, af.FX_JET_KILL

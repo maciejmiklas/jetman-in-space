@@ -5,7 +5,8 @@
 
 LINES_D10               = 10
 LINE_INDICATION_D10     = 10
-           
+
+SCORE_BYTES_D4          = 4
 TILE_START              = _TI_H_D40*2
 SCORE_TEXT_SIZE_D13     = 13
 LINE_SPACE              = _TI_H_D40*2
@@ -13,21 +14,22 @@ LINE_DATA_SIZE          = 4 + SCORE_TEXT_SIZE_D13   ; 2*DW + text
 
 ; This menu has two modes:
 ;  - Read only, where #nameChPos == NAME_CH_POS_OFF
-;  - Update new high score, wehre 0<= #nameChPos <= 9
+;  - Update new high score, wehre 0<= #nameChPos <= 9, plus #nameChPos == 10 when at ENTER.
 NAME_CH_POS_OFF         = $FF
+NAME_CH_POS_MIN         = 0
 NAME_CH_POS_MAX         = 9
-nameChPos               = NAME_CH_POS_OFF
+NAME_CH_POS_ENTER       = 10
+nameChPos               BYTE NAME_CH_POS_OFF
 
 ;----------------------------------------------------------;
 ;                     #EnterNewScore                       ;
 ;----------------------------------------------------------;
 EnterNewScore
 
-    ; User name char at first position.
-    XOR A
+    XOR A                                       ; Enable user name input.
     LD (nameChPos), A
 
-    CALL LoadMenuScore
+    CALL _RenderMenuScore
 
     RET                                         ; ## END of the function ##
 
@@ -39,6 +41,123 @@ LoadMenuScore
     ; Read only mode.
     LD A, NAME_CH_POS_OFF
     LD (nameChPos), A
+
+    CALL _RenderMenuScore
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #MenuScoreUserInput                  ;
+;----------------------------------------------------------;
+MenuScoreUserInput
+
+    ; Key right pressed ?
+    LD A, _KB_6_TO_0_HEF
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 2, A                                    ; Bit 2 reset -> right pressed.
+    JR Z, .pressRight
+
+    ; ##########################################
+    ; Key up pressed ?
+    BIT 3, A                                    ; Bit 3 reset -> Up pressed.
+    JR Z, .pressUp
+    
+    ; ##########################################
+    ; Key down pressed ?
+    BIT 4, A                                    ; Bit 4 reset -> Down pressed.
+    JR Z, .pressDown
+
+    ; ##########################################
+    ; Joystick right pressed ?
+    LD A, _JOY_MASK_H20                         ; Activate joystick register.
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
+    BIT 0, A                                    ; Bit 0 set -> Right pressed.
+    JR NZ, .pressRight
+
+    ; ##########################################
+    ; Joystick left pressed ?
+    BIT 1, A                                    ; Bit 1 set -> Left pressed.
+    JR NZ, .pressLeft
+
+    ; ##########################################
+    ; Joystick down pressed ?
+    BIT 2, A                                    ; Bit 2 set -> Down pressed.
+    JR NZ, .pressDown
+
+    ; ##########################################
+    ; Joystick fire pressed ?
+    PUSH AF
+    AND %01110000                               ; Any of three fires pressed?
+    JR NZ, .pressFire
+    POP AF
+    
+    ; ##########################################
+    ; Joystick up pressed ?
+    BIT 3, A                                    ; Bit 3 set -> Up pressed.
+    JR NZ, .pressUp
+
+    ; ##########################################
+    ; Key Fire (Z) pressed ?
+    LD A, _KB_V_TO_SH_HFE
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
+    JR Z, .pressFire
+
+    ; ##########################################
+    ; Key SPACE pressed ?
+    LD A, _KB_B_TO_SPC_H7F
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
+    JR Z, .pressFire
+
+    ; ##########################################
+    ; Key ENTER pressed ?
+    LD A, _KB_H_TO_ENT_HBF
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
+    JR Z, .pressFire
+    
+    ; ##########################################
+    ; Key Left pressed ?
+    LD A, _KB_5_TO_1_HF7
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 4, A                                    ; Bit 4 reset -> Left pressed.
+    JR Z, .pressLeft
+
+    RET                                         ; None of the keys pressed.
+
+.pressRight
+    CALL _JoyRight
+    RET
+
+.pressLeft
+    CALL _JoyLeft
+    RET
+
+.pressUp
+    CALL _JoyUp
+    RET
+
+.pressDown
+    CALL _JoyDown
+    RET
+
+.pressFire
+    CALL _JoyFire
+    RET
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     #_LoadMenuScore                      ;
+;----------------------------------------------------------;
+_RenderMenuScore
 
     LD A, ms.MENU_SCORE
     CALL ms.SetMainState
@@ -68,42 +187,79 @@ LoadMenuScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #MenuScoreUserInput                   ;
+;                        #_JoyFire                         ;
 ;----------------------------------------------------------;
-MenuScoreUserInput
+_JoyFire
 
-     ; Joystick fire pressed ?
-    LD A, _JOY_MASK_H20                         ; Activate joystick register.
-    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
-    AND %01110000                               ; Any of three fires pressed?
-    JR NZ, .enterPressed
+    ; Can user input name?
+    LD A, (nameChPos)
+    CP NAME_CH_POS_OFF
+    RET Z
 
-    ; ##########################################
-    ; Key SPACE pressed ?
-    LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    JR Z, .enterPressed
-
-    ; ##########################################
-    ; Key ENTER pressed ?
-    LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    JR Z, .enterPressed
-
-    RET                                         ; None of the keys pressed.
-
-.enterPressed
     CALL gc.LoadMainMenu
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                        #_JoyDown                         ;
 ;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
+_JoyDown
+
+    ; Can user input name?
+    LD A, (nameChPos)
+    CP NAME_CH_POS_OFF
+    RET Z
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
+;                         #_JoyUp                          ;
 ;----------------------------------------------------------;
+_JoyUp
+
+    ; Can user input name?
+    LD A, (nameChPos)
+    CP NAME_CH_POS_OFF
+    RET Z
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       #_JoyLeft                          ;
+;----------------------------------------------------------;
+_JoyLeft
+
+    ; Can user input name?
+    LD A, (nameChPos)
+    nextreg 2,8
+    CP NAME_CH_POS_OFF
+    RET Z
+
+    CP NAME_CH_POS_MIN
+    RET Z
+
+    DEC A
+  ;  LD (nameChPos), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       #_JoyRight                         ;
+;----------------------------------------------------------;
+_JoyRight
+
+    ; Can user input name?
+    LD A, (nameChPos)
+    CP NAME_CH_POS_OFF
+    RET Z
+
+    CP NAME_CH_POS_MAX
+    RET Z
+
+    INC A
+  ;  LD (nameChPos), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      #_PrintScore                        ;
@@ -218,23 +374,32 @@ _StoreNewScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  #_LoadCharPosToDe                       ;
+;----------------------------------------------------------;
+; Input:
+;  A: Line from #db.menuScore to update, 0 to 9 inklusive.
+_LoadCharPosToDe
+
+    CALL _LineToIX                              ; IX points to #db.menuScore that will be updated.
+
+    LD DE, IX
+    ADD DE, SCORE_BYTES_D4
+    LD A, (nameChPos)
+    ADD DE, A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     #_EnterName                          ;
 ;----------------------------------------------------------;
 ; Input:
-;  D: Line from #db.menuScore to update, 0 to 9 inklusive.
+;  A: Line from #db.menuScore to update, 0 to 9 inklusive.
 _EnterName
 
     CALL dbs.SetupArraysBank
 
-    CALL _LineToIX                              ; IX points to #db.menuScore that will be updated.
+    CALL _LoadCharPosToDe                       ; DE points to the letter currently changing in  #db.menuScore.
 
-    ; Move IX to text with user's name.
-    INC IX
-    INC IX
-    INC IX
-    INC IX
-
-//menuScoreEmptyName
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

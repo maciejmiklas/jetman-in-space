@@ -430,8 +430,12 @@ _GC_FLIP_OFF_D0         = 0
 
 _16BIT_CHARS_D5         = 5
 
+; ##############################################
+; Tiles
 _TI_H_D40               = 40
 _TI_V_D32               = 32
+_TI_CH_0                = 14
+_TI_CH_Z                = 56
 
 ; ##############################################
 ; Screen
@@ -461,7 +465,7 @@ _GSC_JET_GND_D217       = _GSC_Y_MAX_D232 - _GND_THICK_D8 +1
 
 
 ; ##############################################
-; Progress Bar
+; Game bar
 _BAR_TILES              = 6
 _BAR_FULL_SPR           = 176
 _BAR_EMPTY_SPR          = 182
