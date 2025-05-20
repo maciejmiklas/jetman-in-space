@@ -8,8 +8,9 @@
     ORG _RAM_SLOT7_STA_HE000
 spritesBankStart
 
-; ##############################################
-; Menu
+;----------------------------------------------------------;
+;                           Menu                           ;
+;----------------------------------------------------------;
 menuEl
     mma.MENU {mma.TOP_OFS+mma.LOF+5                  /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 032/*JET_Y*/}  ; START GAME
     mma.MENU {mma.TOP_OFS+(1*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 055/*JET_Y*/}  ; LEVEL SELECT
@@ -80,8 +81,9 @@ menuScore4
 
 menuScoreEmptyName DB "             "
 
-; ##############################################
-; Movement patterns.
+;----------------------------------------------------------;
+;                   Movement patterns                      ;
+;----------------------------------------------------------;
 
 ; Horizontal, max speed.
 movePattern01D0
@@ -212,6 +214,10 @@ movePattern18
 ;         horizontal        45deg down
     DB 4, %0'000'1'111,$2C, %1'111'1'111,$39 
 
+;----------------------------------------------------------;
+;                  Sprite Animations                       ;
+;----------------------------------------------------------;
+
 ; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
 ; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
 ; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
@@ -228,7 +234,10 @@ srSpriteDB
     sr.SPR_REC {sr.SDB_ENEMY3,  sr.SDB_ENEMY3 - sr.SDB_SUB, 03}
             DB 34, 35, 36
 
-; Single enemies.
+;----------------------------------------------------------;
+;                     Single enemies                       ;
+;----------------------------------------------------------;
+
 spriteEx01
     enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 spriteEx02
@@ -321,8 +330,9 @@ formationEnemySprites
     sr.SPR {67/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}
 ENEMY_FORMATION_SIZE    = 7
 
-; ##############################################
-; Enemies for Levels
+;----------------------------------------------------------;
+;                         Enemies                          ;
+;----------------------------------------------------------;
 
 singleEnemiesL1
     enp.ENPS {020/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
@@ -486,8 +496,9 @@ singleEnemiesL10
 SINGLE_ENEMIES_L10      = 1 
 enemyFormationL10 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
-; ##############################################
-; Jetman Sprite Data
+;----------------------------------------------------------;
+;                     Jetman Sprite Data                   ;
+;----------------------------------------------------------;
 
 ; The animation system is based on a state machine. Its database is divided into records, each containing a list of frames to be played and 
 ; a reference to the next record that will be played once all frames from the current record have been executed.
@@ -563,8 +574,9 @@ jetSpriteDB
     DB js.SDB_T_KO,     js.SDB_HOVER - js.SDB_SUB,        10, 5
                                             DB 03,15, 04,16, 05,27, 03,28, 04,29
 
-; ##############################################
-; Rocket Sprite Data.
+;----------------------------------------------------------;
+;                     Rocket Sprite Data                   ;
+;----------------------------------------------------------;
 
 AGND                    = 30*8
 TASM                    = 226
@@ -742,8 +754,9 @@ RO_EXHAUST_MAX          = 18
 
 rocketExplodeTankDB     DB 30, 31, 32, 33       ; Sprite IDs for explosion.
 
-; ##############################################
-; Platforms
+;----------------------------------------------------------;
+;                          Platforms                       ;
+;----------------------------------------------------------;
 ; [amount of platforms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels.
 
 ; Level 1
@@ -894,8 +907,14 @@ platformsL10
 
 platformsSizeL10        DB 30
 
-; ##############################################
-; Final Checks.
+;----------------------------------------------------------;
+;                           Files                          ;
+;----------------------------------------------------------;
+xxxxxxx
+
+;----------------------------------------------------------;
+;                        Final Checks                      ;
+;----------------------------------------------------------;
 
     ASSERT $$ == dbs.ARR_BANK_S7_D29            ; Data should remain in the same bank
     ASSERT $$spritesBankStart == dbs.ARR_BANK_S7_D29 ; Make sure that we have configured the right bank.
