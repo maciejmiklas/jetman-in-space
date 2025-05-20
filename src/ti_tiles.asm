@@ -204,8 +204,8 @@ SetupTiles
 
     ; ##########################################
     ; Setup palette
-    LD HL, dba.tilePaletteBin                    ; Address of palette data in memory.
-    LD B, dba.tilePaletteBinLength               ; Number of colors to copy.
+    LD HL, db.tilePaletteBin                    ; Address of palette data in memory.
+    LD B, db.tilePaletteBinLength               ; Number of colors to copy.
     CALL _LoadTilemapPalette
 
     CALL SetTilesClipOff
@@ -213,8 +213,8 @@ SetupTiles
     ; ##########################################
     ; Copy tile definitions (sprite file) to expected memory.
     LD DE, TI_DEF_RAM_H6500
-    LD HL, dba.tileSprBin                        ; Address of tiles in memory.
-    LD BC, dba.tileSprBinLength                  ; Number of bytes to copy.
+    LD HL, db.tileSprBin                        ; Address of tiles in memory.
+    LD BC, db.tileSprBinLength                  ; Number of bytes to copy.
     LDIR
 
     RET                                         ; ## END of the function ##

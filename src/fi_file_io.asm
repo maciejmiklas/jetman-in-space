@@ -117,8 +117,8 @@ MENU_KEYS_BG_POS        = 14                    ; Position of a image part numbe
 effectsFileName         DB "assets/common/effects.afb",0
 EFFECTS_FILE_SIZE       = 3725
 
-mmgTileFileName          DB "assets/mmg/gameplay.map",0
-mmkTileFileName          DB "assets/mmk/keys.map",0
+mmgTileFileName         DB "assets/mmg/gameplay.map",0
+mmkTileFileName         DB "assets/mmk/keys.map",0
 
 ;----------------------------------------------------------;
 ;                        #LoadEffects                      ;
