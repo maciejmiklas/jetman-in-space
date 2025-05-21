@@ -10,13 +10,6 @@ PI_SPR_GRENADE          = 42
 PI_SPR_LIFE             = 43
 PI_SPR_GUN              = 44
 
-deployOrderPos          DB 0
-deployOrder
-    DB PI_SPR_DIAMOND, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_DIAMOND, PI_SPR_JAR, PI_SPR_GUN, PI_SPR_JAR, PI_SPR_STRAWBERRY
-    DB PI_SPR_GUN, PI_SPR_GRENADE, PI_SPR_STRAWBERRY, PI_SPR_GUN, PI_SPR_GRENADE, PI_SPR_GUN, PI_SPR_STRAWBERRY, PI_SPR_GUN
-    DB PI_SPR_JAR, PI_SPR_STRAWBERRY, PI_SPR_DIAMOND, PI_SPR_GUN, PI_SPR_STRAWBERRY
-DEPLOY_ORDER_SIZE       = 20
-
 PI_SPR_MIN              = PI_SPR_DIAMOND
 PI_SPR_MAX              = PI_SPR_GUN
 
@@ -39,11 +32,12 @@ PICKUP_SPRITE_ID        = 90
 ;----------------------------------------------------------;
 ResetPickups
 
+    CALL dbs.SetupArraysBank
     XOR A
     LD (deployed), A
     LD (lifeDeployed), A
     LD (deployCnt), A
-    LD (deployOrderPos), A
+    LD (dba.deployOrderPos), A
     LD (deployedX), A
     LD (deployedY), A
 
@@ -207,6 +201,8 @@ LifeDropCounter
 ;----------------------------------------------------------;
 PickupDropCounter
 
+    CALL dbs.SetupArraysBank
+
     ; Do not deploy next pickup if there is one out there.
     LD A, (deployed)
     CP 0
@@ -229,16 +225,16 @@ PickupDropCounter
     ; Load into A the value of next deployment sprite (#PI_SPR_XXXX)
 
     ; Determine the index for #deployOrder.
-    LD A, (deployOrderPos)
+    LD A, (dba.deployOrderPos)
     INC A 
-    CP DEPLOY_ORDER_SIZE
+    CP dba.DEPLOY_ORDER_SIZE
     JR NZ, .afterDeployOrderPos
     XOR A
 .afterDeployOrderPos
-    LD (deployOrderPos), A
+    LD (dba.deployOrderPos), A
 
     ; Load ID of next pickup.
-    LD HL, deployOrder
+    LD HL, dba.deployOrder
     ADD HL, A                                   ; HL points to next deployment sprite id.
     LD A, (HL)
     LD (deployed), A

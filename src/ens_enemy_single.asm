@@ -14,7 +14,6 @@ NEXT_RESP_DEL           = 3
 ; the respawn of the next enemy from the enemies list. 
 nextRespDel             DB NEXT_RESP_DEL
 
-
 ;----------------------------------------------------------;
 ;                  #MoveSingleEnemies                      ;
 ;----------------------------------------------------------;

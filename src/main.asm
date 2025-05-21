@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                         Main File                        ;
 ;----------------------------------------------------------;
-STACK_SIZE              = 100
+STACK_SIZE              = 50
 
     DEVICE ZXSPECTRUMNEXT                       ; Allow the Next paging and instructions.
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.

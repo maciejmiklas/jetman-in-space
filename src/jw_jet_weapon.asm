@@ -9,25 +9,6 @@ FIRE_ADJUST_X_D7        = 4
 FIRE_ADJUST_Y_D4        = 4
 FIRE_THICKNESS_D10      = 10
 
-; Sprites for single shots (#shots), based on #SPR.
-shots
-    sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {11/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {12/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {13/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {14/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {15/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {16/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {17/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {18/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {19/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {91/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {92/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {93/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {94/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    sr.SPR {95/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-SHOTS_SIZE              = 15                   ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
-
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter reaches #JM_FIRE_DELAY.
 JM_FIRE_DELAY_MAX       = 15
 JM_FIRE_DELAY_MAX_HARD  = 12
@@ -112,10 +93,11 @@ HideShots
 
     XOR A
     LD (fireDelayCnt), A
+    CALL dbs.SetupArraysBank
 
     ; Loop ever all #shots skipping hidden shots.
-    LD IX, shots                                ; IX points to the shot.
-    LD B, SHOTS_SIZE 
+    LD IX, dba.shots                            ; IX points to the shot.
+    LD B, dba.SHOTS_SIZE 
 .shotsLoop
 
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
@@ -165,8 +147,9 @@ SHOT_MISS                   = 0
 ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots.
-    LD IX, shots                                ; IX points to the shot.
-    LD B, SHOTS_SIZE 
+    CALL dbs.SetupArraysBank
+    LD IX, dba.shots                            ; IX points to the shot.
+    LD B, dba.SHOTS_SIZE
 .shotsLoop
     PUSH BC, DE
     LD A, (IX + sr.SPR.STATE)
@@ -234,8 +217,9 @@ ShotsCollision
 MoveShots
 
     ; Loop ever all shots# skipping hidden sprites.
-    LD IX, shots
-    LD B, SHOTS_SIZE 
+    CALL dbs.SetupArraysBank
+    LD IX, dba.shots
+    LD B, dba.SHOTS_SIZE
 
 .shootsLoop
     PUSH BC                                     ; Preserve B for loop counter.
@@ -309,8 +293,9 @@ FireDelayCounter
 ;----------------------------------------------------------;
 AnimateShots
 
-    LD IX, shots
-    LD B, SHOTS_SIZE 
+    CALL dbs.SetupArraysBank
+    LD IX, dba.shots
+    LD B, dba.SHOTS_SIZE
     CALL sr.AnimateSprites
 
     RET                                         ; ## END of the function ##
@@ -343,9 +328,10 @@ Fire
     LD (fireDelayCnt), A
 
     ; Find the first inactive (sprite hidden) shot.
-    LD IX, shots
+    CALL dbs.SetupArraysBank
+    LD IX, dba.shots
     LD DE, sr.SPR
-    LD B, SHOTS_SIZE
+    LD B, dba.SHOTS_SIZE
 .findLoop
 
     ; Check whether the current #shotsX is not visible and can be reused.

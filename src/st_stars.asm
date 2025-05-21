@@ -54,7 +54,6 @@ randColor               DB 0                  ; Rand value from the previous cal
 starsPal                DW 0
 starsPalSize            DB 0
 starsPalOffset          DB 0
-    
 
 ; Currently rendered stars.
 starsDataSize           DB 27
