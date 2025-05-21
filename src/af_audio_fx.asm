@@ -105,7 +105,7 @@ FX_JET_TAKE_OFF         = 27
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
 ;----------------------------------------------------------;
-; Setup AYFX for playing sound effects
+; Setup AYFX for playing sound effects.
 SetupAyFx
 
     CALL dbs.SetupAyFxsBank
@@ -122,7 +122,7 @@ SetupAyFx
 ;----------------------------------------------------------;
 ;                       SetAy3ToMono                       ;
 ;----------------------------------------------------------;
-; Configure AY3 as mono; call after PlayNextDawSong
+; Configure AY3 as mono; call after PlayNextDawSong.
 SetAy3ToMono
 
     LD A, _PERIPHERAL_04_H09
@@ -136,7 +136,7 @@ SetAy3ToMono
 ;----------------------------------------------------------;
 ;                          AfxInit                         ;
 ;----------------------------------------------------------;
-; Initialize the effects player. Turns off all channels, sets variables
+; Initialize the effects player. Turns off all channels, sets variables.
 ; Input: 
 ;  -  HL: bank address with effects
 AfxInit
@@ -361,7 +361,7 @@ afxBnkAdr2
 ;----------------------------------------------------------;
 ;                        AfxPlay                           ;
 ;----------------------------------------------------------;
-; Launch the effect on a free channel. If no free channels, the longest sounding is selected
+; Launch the effect on a free channel. If no free channels, the longest sounding is selected.
 ; Input: 
 ;  - A: Effect number 0..255
 ;  - BC: ReleaseAddrCh[N]
@@ -439,7 +439,7 @@ releaseHiSmc equ $+3
 ;                      AfxSustain                          ;
 ;----------------------------------------------------------;
 ; Notify AFX Frame that the sound in channel E should be looped back to SustainAddrCh[N] once ReleaseAddrCh[N] has been reached, 
-; provided playback was started with AFX
+; provided playback was started with AFX.
 ; Input: 
 ;   - E = Channel (A=0, B=1, C=2)
 ;   - BC = SustainAddrCh[N]

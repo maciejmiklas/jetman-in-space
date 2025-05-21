@@ -155,18 +155,18 @@ ShotsCollision
     PUSH BC, DE
     LD A, (IX + sr.SPR.STATE)
 
-    ; Skip hidden laser shoots for collision detection
+    ; Skip hidden laser shoots for collision detection.
     BIT sr.SPRITE_ST_VISIBLE_BIT, A
     JR Z, .continueShotsLoop
 
-    ; Skip inactive laser shoots for collision detection
+    ; Skip inactive laser shoots for collision detection.
     BIT sr.SPRITE_ST_ACTIVE_BIT, A
     JR Z, .continueShotsLoop
 
-    ; Compare X coordinate of the sprite and the shot, HL holds X of the sprite
+    ; Compare X coordinate of the sprite and the shot, HL holds X of the sprite.
     LD HL, (IX + sr.SPR.X)                      ; X of the shot
     
-    ; Subtracts DE from HL and check whether the result is less than or equal to A
+    ; Subtracts DE from HL and check whether the result is less than or equal to A.
     SBC DE, HL
     CALL ut.AbsDE
 
@@ -180,10 +180,10 @@ ShotsCollision
     CP E                                        ; SUB result is < 256, we can ignore H
     JR C, .continueShotsLoop                    ; Jump if A(#FIRE_THICKNESS_D10) < L
     
-    ; We are here because the shot is horizontal with the enemy, now check the vertical match
+    ; We are here because the shot is horizontal with the enemy, now check the vertical match.
     LD A, (IX + sr.SPR.Y)                       ; A holds Y from the shot
 
-    ; Subtracts C from A and check whether the result is less than or equal to #FIRE_THICKNESS_D10
+    ; Subtracts C from A and check whether the result is less than or equal to #FIRE_THICKNESS_D10.
     SUB C
     CALL ut.AbsA
     LD D, A
@@ -344,7 +344,7 @@ Fire
     RET                                         ; Loop has ended without finding free #shotsX
 
 .afterFound
-    ; We are here because free #shotsX has been found, and IX points to it
+    ; We are here because free #shotsX has been found, and IX points to it.
 
     ; Is Jetman moving left or right?
     LD A, (gid.jetDirection)
@@ -353,7 +353,7 @@ Fire
 
     XOR A                                       ; A will hold sr.SPR.STATE
 
-    ; Jetman is moving right, shot will move right also
+    ; Jetman is moving right, shot will move right also.
     SET STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state
 
     ; Set X coordinate for laser beam
@@ -373,7 +373,7 @@ Fire
 
     PUSH AF                                     ; Keep A for #SetStateVisible below
 
-    ; When Jetman is close to the left screen edge, subtracting FIRE_ADJUST_X_D7 causes overflow, because X is close to 0
+    ; When Jetman is close to the left screen edge, subtracting FIRE_ADJUST_X_D7 causes overflow, because X is close to 0.
     LD A, H
     CP $FF
     JR NZ, .hlNotNegative
@@ -391,7 +391,7 @@ Fire
     ADD A, FIRE_ADJUST_Y_D4
     LD (IX + sr.SPR.Y), A
 
-    ; Setup laser beam pattern, IX already points to the right memory address
+    ; Setup laser beam pattern, IX already points to the right memory address.
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
     CALL sr.ShowSprite
 
@@ -459,7 +459,7 @@ _CheckHitEnemies
     BIT sr.SPRITE_ST_VISIBLE_BIT, A
     JR Z, .continue                             ; Jump if enemy is hidden
 
-    ; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding
+    ; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
     BIT sr.SPRITE_ST_ACTIVE_BIT, A
     JR Z, .continue 
     

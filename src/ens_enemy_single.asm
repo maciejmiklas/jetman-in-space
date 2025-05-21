@@ -108,7 +108,7 @@ RespawnNextSingleEnemy
     CALL dbs.SetupArraysBank
 
     ; ##########################################    
-    ; Increment respawn timer and exit function if it's not time to respawn a new enemy
+    ; Increment respawn timer and exit function if it's not time to respawn a new enemy.
     LD A, (nextRespDel)
     CP 0
     JR Z, .startRespawn

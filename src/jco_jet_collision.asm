@@ -409,7 +409,7 @@ _CheckCollision
 ;----------------------------------------------------------;
 ;                    #_EnemiesCollision                    ;
 ;----------------------------------------------------------;
-; Checks all active enemies given by IX for collision with leaser beam
+; Checks all active enemies given by IX for collision with leaser beam.
 ; Input
 ;  - IX:    Pointer to #SPR, the enemies
 ;  - B:     Number of enemies in IX

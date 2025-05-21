@@ -58,7 +58,7 @@ HideBackgroundBehindHorizon
 
     CALL _GetGroundImageLine
 
-    ; Do not remove the line if the Jetman is on the ground (offset is 255)
+    ; Do not remove the line if the Jetman is on the ground (offset is 255).
     CP GBL_RET_A_GND
     RET Z
 
@@ -71,7 +71,7 @@ HideBackgroundBehindHorizon
 ;----------------------------------------------------------;
 ;              ShowBackgroundAboveHorizon                  ;
 ;----------------------------------------------------------;
-; Copy lower background image line from original picture
+; Copy lower background image line from original picture.
 ShowBackgroundAboveHorizon
 
     CALL _GetGroundImageLine

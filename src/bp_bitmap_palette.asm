@@ -45,7 +45,7 @@ BytesToColors
 ;----------------------------------------------------------;
 ;                     #LoadPalette                         ;
 ;----------------------------------------------------------;
-; Load palette address, set bank, and finally load colors into hardware
+; Load palette address, set bank, and finally load colors into hardware.
 ; Input:
 ;  - HL: Contains the current palette address
 ;  - B:  Number of colors
@@ -152,14 +152,14 @@ BrightnessDown
     RR D                                        ; Rotate D right, if xxxxxxx'B is set, it will set CF
     RLA                                         ; Rotate left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF
 
-    ; Ensure that BBB is > 0 before decreasing it
+    ; Ensure that BBB is > 0 before decreasing it.
     CP _BM_PAL2_MIN
     JR Z, .afterDecrementBlue
     
-    ; A contains BBB as 00000'BBB, decrement it and update DE
+    ; A contains BBB as 00000'BBB, decrement it and update DE.
     DEC A                                       ; Decrement BBB
 
-    ; Apply new BBB value to original DE
+    ; Apply new BBB value to original DE.
     RRA                                         ; 00000'BBB -> 000000'BB -> CF
     RL D                                        ; 00000000 -> 0000000'CF -> D now contains proper value
     

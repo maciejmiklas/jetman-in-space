@@ -125,13 +125,13 @@ RespawnFormation
     ; ##########################################
     ; Formation deployment in progress.....
 
-    ; Check if deployment is over -> the last sprite has been deployed
+    ; Check if deployment is over -> the last sprite has been deployed.
     LD A, (spritesCnt)
     LD B, dba.ENEMY_FORMATION_SIZE
     CP B
     JR C, .deployNextEnemy                      ; Jump if #spritesCnt < #enf.ENEMY_FORMATION_SIZE -> There are still enemies that need to be deployed
     
-    ; Deployment is over, reset formation counters
+    ; Deployment is over, reset formation counters.
     XOR A
     LD (spritesCnt), A
     LD (respawnDelayCnt), A
@@ -143,7 +143,7 @@ RespawnFormation
     LD HL, dba.formationEnemySprites
     LD IX, HL                                   ; IX points to the #SPR with the first sprite in the enemy formation
 
-    ; Move IX to the current sprite in the enemy formation
+    ; Move IX to the current sprite in the enemy formation.
     LD A, (spritesCnt)
     LD D, A                                     ; IX = IX + spritesCnt * SPR
     LD E, sr.SPR
@@ -155,7 +155,7 @@ RespawnFormation
     RET NZ                                      ; Enemy did not respawn, probably still waiting for #ENP.RESPAWN_DELAY_CNT
 
     ; ##########################################
-    ; Move to the next enemy if this has respawned
+    ; Move to the next enemy if this has respawned.
     LD A, (spritesCnt)
     INC A
     LD (spritesCnt), A

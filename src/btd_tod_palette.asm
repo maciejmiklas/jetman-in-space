@@ -89,7 +89,7 @@ ResetPaletteArrd
 
     CALL dbs.SetupPaletteBank
     
-    ; Set the palette address to the beginning of the bank holding it
+    ; Set the palette address to the beginning of the bank holding it.
     LD DE, _RAM_SLOT7_STA_HE000
     LD (todPalAddr), DE
 
@@ -114,10 +114,10 @@ _CreateTodPalettes
     ; ##########################################
     ; Copy the original palette into the address given by #todPalAddr, creating the first palette to be modified by the loop below.
 
-    ; Set the palette address to the beginning of the bank holding it
+    ; Set the palette address to the beginning of the bank holding it.
     CALL ResetPaletteArrd
     
-    ; Copy initial palette. HL (source) and BC (amount), DE (destination)
+    ; Copy initial palette. HL (source) and BC (amount), DE (destination).
     LD HL, (palAdr)
     LD DE, (todPalAddr)
     LD BC, (palBytes)
@@ -137,7 +137,7 @@ _CreateTodPalettes
     DJNZ .copyLoop
 
     ; ##########################################
-    ;Reset palette pointer
+    ; Reset palette pointer
     CALL ResetPaletteArrd
 
     RET                                         ; ## END of the function ##

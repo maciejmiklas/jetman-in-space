@@ -191,14 +191,14 @@ AnimatePatternEnemies
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    ; Animate single enemy.
+    ; Animate single enemy
     LD IX, dba.singleEnemySprites
     LD A, dba.ENEMY_SINGLE_SIZE
     LD B, A
     CALL sr.AnimateSprites
 
     ; ##########################################
-    ; Animate formation enemy.
+    ; Animate formation enemy
     LD IX, dba.formationEnemySprites
     LD B, dba.ENEMY_FORMATION_SIZE
     CALL sr.AnimateSprites
@@ -228,14 +228,14 @@ KillOnePatternEnemy
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    ; Kill single enemy.
+    ; Kill single enemy
     LD IX, dba.singleEnemySprites
     LD A, dba.ENEMY_SINGLE_SIZE
     LD B, A
     CALL sr.KillOneSprite
 
     ; ##########################################
-    ; Kill formation enemy.
+    ; Kill formation enemy
     LD IX, dba.formationEnemySprites
     LD A, dba.ENEMY_FORMATION_SIZE
     LD B, A
@@ -251,14 +251,14 @@ HidePatternEnemies
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    ; Hide single enemies.
+    ; Hide single enemies
     LD IX, dba.singleEnemySprites
     LD A, dba.ENEMY_SINGLE_SIZE
     LD B, A 
     CALL sr.HideAllSimpleSprites
 
     ; ##########################################
-    ; Hide formation enemies.
+    ; Hide formation enemies
     LD IX, dba.formationEnemySprites
     LD A, dba.ENEMY_FORMATION_SIZE
     LD B, A
@@ -362,7 +362,7 @@ RespawnPatternEnemy
     LD A, RES_SE_OUT_NO
     RET
 .afterVisibilityCheck
-    ; Sprite is hidden; check the dedicated delay before respawning
+    ; Sprite is hidden, check the dedicated delay before respawning.
 
     ; Load extra sprite data (#ENP) to IY
     LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
@@ -392,7 +392,7 @@ RespawnPatternEnemy
     RET
 .afterEnemyRespawnDelay
 
-    ; Respawn enemy, first mark it as visible
+    ; Respawn enemy, first mark it as visible.
     LD A, (IX + sr.SPR.STATE)
     CALL sr.SetStateVisible
 
@@ -631,7 +631,7 @@ _MoveEnemy
     ADD MOVE_STEP_SIZE                          ; Increment the position to the next pattern and store it
     LD (IY + ENP.MOVE_PAT_POS), A
 
-    ; Check if we should restart the move pattern, as it might have reached the last element
+    ; Check if we should restart the move pattern, as it might have reached the last element.
     DEC A                                       ; Pattern starts after offset
     PUSH HL
     LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; DE points to start of the #movePattern
@@ -640,7 +640,7 @@ _MoveEnemy
     CP B
     JR NC, .restartMovePattern                  ; Jump A >= B -> (current postion >= size)
 
-    ; There is no need to restart the move pattern, load the next one
+    ; There is no need to restart the move pattern, load the next one.
     LD BC, HL                                   ; BC points to current position in #movePatternXX
     INC BC                                      ; Move BC to the counter for current pattern
     INC BC                                      ; Move BC to the next pattern
@@ -662,7 +662,7 @@ _MoveEnemy
     JR .checkPlatformHit
 
 .restartMovePattern
-    ; Restart move pattern, it has reached max value
+    ; Restart move pattern, it has reached max value.
     CALL _RestartMovePattern
 
 ; Check the collision with the platform.

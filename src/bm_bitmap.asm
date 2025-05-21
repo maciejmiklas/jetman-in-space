@@ -145,7 +145,7 @@ HideImageLine
     ADD HL, DE                                  ; HL points at line that will be replaced
 
     ; ##########################################
-    ; Iterate over each picture line in the current bank. Each bank has 8*1024/256=32 lines
+    ; Iterate over each picture line in the current bank. Each bank has 8*1024/256=32 lines.
     PUSH BC
 
     LD B, _BANK_BYTES_D8192/_BM_YRES_D256       ; 8*1024/256=32
