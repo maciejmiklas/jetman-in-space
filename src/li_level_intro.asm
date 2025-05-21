@@ -25,7 +25,6 @@ LoadLevelIntro
 
     CALL _ResetLevelIntro
 
-    ; ##########################################
     ; Update state
     LD A, ms.LEVEL_INTRO
     CALL ms.SetMainState
@@ -56,6 +55,25 @@ LoadLevelIntro
     CALL fi.LoadLevelIntroTilemap
     CALL _NextTilesRow
     CALL _NextTilesRow
+
+    ; ##########################################
+    ; Setup joystick input
+    CALL mij.SetupJoystick
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackFire), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackDown), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackUp), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackLeft), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackRight), DE
 
     RET                                         ; ## END of the function ##
 
@@ -96,40 +114,6 @@ AnimateLevelIntroTextScroll
     INC A
     LD (tileOffset), A
     NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #LevelIntroUserInput                   ;
-;----------------------------------------------------------;
-LevelIntroUserInput
- 
-    ; Key Fire (Z) pressed ?
-    LD A, _KB_V_TO_SH_HFE
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed
-    CALL Z, _KeyExitIntro
-
-    ; ##########################################
-    ; Key SPACE pressed ?
-    LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
-    CALL Z, _KeyExitIntro
-
-    ; ##########################################
-    ; Key ENTER pressed ?
-    LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
-    CALL Z, _KeyExitIntro
-
-    ; ##########################################
-    ; Joystick right pressed ?
-    LD A, _JOY_MASK_H20                         ; Activate joystick register
-    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A
-    AND %01110000                               ; Any of three fires pressed?
-    CALL NZ, _KeyExitIntro
 
     RET                                         ; ## END of the function ##
 

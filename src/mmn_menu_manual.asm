@@ -26,11 +26,10 @@ LoadMenuGameplay
 
     ; ##########################################
     ; Setup joystick
-    LD A, ji.USER_INPUT_DELAY
-    CALL ji.SetupJoystick
+    CALL mij.SetupJoystick
 
     LD DE, gc.LoadMainMenu
-    LD (ji.callbackFire), DE
+    LD (mij.callbackFire), DE
 
     RET                                         ; ## END of the function ##
 
@@ -56,11 +55,10 @@ LoadMenuKeys
 
     ; ##########################################
     ; Setup joystick
-    LD A, ji.USER_INPUT_DELAY
-    CALL ji.SetupJoystick
+    CALL mij.SetupJoystick
 
     LD DE, gc.LoadMainMenu
-    LD (ji.callbackFire), DE
+    LD (mij.callbackFire), DE
 
     RET                                         ; ## END of the function ##
 

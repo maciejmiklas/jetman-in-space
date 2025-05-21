@@ -1,11 +1,10 @@
 ;----------------------------------------------------------;
-;                    Main Hight Score                      ;
+;                     Menu Joystick                        ;
 ;----------------------------------------------------------;
-    MODULE ji
+    MODULE mij
 
 userInputDelayCnt       DB 0
 USER_INPUT_DELAY        = 10
-USER_INPUT_DELAY_OFF    = $FF
 
 userInputInactiveCnt    DB 0
 USER_INPUT_RESET        = 5
@@ -51,11 +50,10 @@ JoystickInputLastLoop
 ;  - A: User input delay
 SetupJoystick
 
-    LD (userInputDelayCnt),A
-
     XOR A
     LD (userInputInactiveCnt), A
-
+    LD (userInputDelayCnt),A
+    
     LD DE, _DummyFunction
     LD (callbackRight), DE
     LD (callbackLeft), DE
@@ -146,7 +144,7 @@ JoystickInput
     RET                                         ; None of the keys pressed
 
 .pressRight
-    CALL CanProcessJoystickInput
+    CALL _CanProcessJoystickInput
     CP _RET_NO_D0
     RET Z
 
@@ -158,7 +156,7 @@ JoystickInput
     RET
 
 .pressLeft
-    CALL CanProcessJoystickInput
+    CALL _CanProcessJoystickInput
     CP _RET_NO_D0
     RET Z
 
@@ -170,7 +168,7 @@ JoystickInput
     RET
 
 .pressUp
-    CALL CanProcessJoystickInput
+    CALL _CanProcessJoystickInput
     CP _RET_NO_D0
     RET Z
 
@@ -182,7 +180,7 @@ JoystickInput
     RET
 
 .pressDown
-    CALL CanProcessJoystickInput
+    CALL _CanProcessJoystickInput
     CP _RET_NO_D0
     RET Z
 
@@ -194,7 +192,7 @@ JoystickInput
     RET
 
 .pressFire
-    CALL CanProcessJoystickInput
+    CALL _CanProcessJoystickInput
     CP _RET_NO_D0
     RET Z
 
@@ -213,16 +211,12 @@ JoystickInput
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
-tmpNO byte 0
-tmpYES byte 0
-
-
 ;----------------------------------------------------------;
-;                 #CanProcessJoystickInput                 ;
+;                #_CanProcessJoystickInput                 ;
 ;----------------------------------------------------------;
 ; Output:
 ;  A: _RET_YES_D1 or _RET_NO_D0
-CanProcessJoystickInput
+_CanProcessJoystickInput
 
     ; Reset inactivity count
     XOR A

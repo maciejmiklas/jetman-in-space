@@ -58,23 +58,22 @@ LoadMenuScore
 _SetupMenuScore
 
     ; Setup joystick
-    LD A, ji.USER_INPUT_DELAY
-    CALL ji.SetupJoystick
+    CALL mij.SetupJoystick
 
     LD DE, _JoyFire
-    LD (ji.callbackFire), DE
+    LD (mij.callbackFire), DE
 
     LD DE, _JoyDown
-    LD (ji.callbackDown), DE
+    LD (mij.callbackDown), DE
 
     LD DE, _JoyUp
-    LD (ji.callbackUp), DE
+    LD (mij.callbackUp), DE
 
     LD DE, _JoyLeft
-    LD (ji.callbackLeft), DE
+    LD (mij.callbackLeft), DE
 
     LD DE, _JoyRight
-    LD (ji.callbackRight), DE
+    LD (mij.callbackRight), DE
 
     ; ###########################################
     LD A, ms.MENU_SCORE

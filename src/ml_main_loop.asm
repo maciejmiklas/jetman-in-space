@@ -44,10 +44,9 @@ _MainLoop000
 
     CALL gb.PrintDebug
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
-    CALL ji.JoystickInput
-    
     CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMenuMain
+    CALL _MainLoop000OnNotInGame
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
 
@@ -117,6 +116,21 @@ _MainLoop000OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                #_MainLoop000OnNotInGame                  ;
+;----------------------------------------------------------;
+_MainLoop000OnNotInGame
+
+    ; Return if main menu is inactive
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET Z
+
+    ; ##########################################
+    CALL mij.JoystickInput
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;              #_MainLoop000OnActiveMenuMain               ;
 ;----------------------------------------------------------;
 _MainLoop000OnActiveMenuMain
@@ -143,7 +157,6 @@ _MainLoop000OnActiveLevelIntro
     RET NZ
 
     ; ##########################################
-    CALL li.LevelIntroUserInput
     CALL li.AnimateLevelIntroTextScroll
 
     RET                                         ; ## END of the function ##
@@ -558,7 +571,7 @@ _MainLoop040OnActiveGame
     CALL ro.DropNextRocketElement
     CALL td.NextTimeOfDayTrigger
     CALL pi.PickupDropCounter
-    CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps.
+    CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
 
     RET                                         ; ## END of the function ##
 
@@ -589,7 +602,7 @@ _MainLoop080
 ;----------------------------------------------------------;
 _LastLoop
 
-    CALL ji.JoystickInputLastLoop
+    CALL mij.JoystickInputLastLoop
     
     RET                                         ; ## END of the function ##
 
