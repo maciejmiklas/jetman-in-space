@@ -3,10 +3,10 @@
 ;----------------------------------------------------------;
     MODULE btd
     
-palBytes                DW 0                    ; Size in bytes of background palette, max 512.
-palColors               DB 0                    ; Amount of colors in background palette, max 255.
-palAdr                  DW 0                    ; Address of the original palette data.
-todPalAddr              DW 0                    ; Pointer to current brightness palette.
+palBytes                DW 0                    ; Size in bytes of background palette, max 512
+palColors               DB 0                    ; Amount of colors in background palette, max 255
+palAdr                  DW 0                    ; Address of the original palette data
+todPalAddr              DW 0                    ; Pointer to current brightness palette
 
 PAL2_BYTES_D512         = 512
 
@@ -76,9 +76,9 @@ LoadCurrentTodPalette
 ; Method called after setting: #palBytes and #palAdr
 CreateTodPalettes
 
-    CALL _VariablesSet                          ; Palette global variables are set.
-    CALL _LoadTodPalette                        ; Load original palette into hardware.
-    CALL _CreateTodPalettes                     ; Create palettes for different times of day.
+    CALL _VariablesSet                          ; Palette global variables are set
+    CALL _LoadTodPalette                        ; Load original palette into hardware
+    CALL _CreateTodPalettes                     ; Create palettes for different times of day
 
     RET                                         ; ## END of the function ##
 
@@ -89,7 +89,7 @@ ResetPaletteArrd
 
     CALL dbs.SetupPaletteBank
     
-    ; Set the palette address to the beginning of the bank holding it.
+    ; Set the palette address to the beginning of the bank holding it
     LD DE, _RAM_SLOT7_STA_HE000
     LD (todPalAddr), DE
 
@@ -159,15 +159,15 @@ _VariablesSet
 ;----------------------------------------------------------;
 ;              #_NextBrightnessPalette                     ;
 ;----------------------------------------------------------;
-; Moves #todPalAddr to the next palette and copies the previous palette there.
+; Moves #todPalAddr to the next palette and copies the previous palette there
 _NextBrightnessPalette
 
     ; ##########################################
     ; Moves #todPalAddr to the next palette 
-    LD HL, (todPalAddr)                         ; Use HL for LDIR below.
+    LD HL, (todPalAddr)                         ; Use HL for LDIR below
     LD DE, HL
-    ADD DE, PAL2_BYTES_D512                 ; Move DE to the next (destination) palette.
-    LD (todPalAddr), DE                         ; Move palette pointer to copied palette.
+    ADD DE, PAL2_BYTES_D512                     ; Move DE to the next (destination) palette
+    LD (todPalAddr), DE                         ; Move palette pointer to copied palette
 
     ; ##########################################
     ; Copy current palette to new address given by #todPalAddr
@@ -179,12 +179,12 @@ _NextBrightnessPalette
 ;----------------------------------------------------------;
 ;                #_DecrementPaletteColors                  ;
 ;----------------------------------------------------------;
-; This function will decrease palette brighteners given by #todPalAddr.
+; This function will decrease palette brighteners given by #todPalAddr
 _DecrementPaletteColors
 
     ; ##########################################
     ; Copy 9 bit (2 bytes per color) palette
-    LD HL, (todPalAddr)                         ; The address of current palette set by #_NextBrightnessPalette.
+    LD HL, (todPalAddr)                         ; The address of current palette set by #_NextBrightnessPalette
 
     LD A, (palColors)
     LD B, A
@@ -193,9 +193,9 @@ _DecrementPaletteColors
 
     ; ##########################################
     ; Decrement the brightness of the current color.
-    LD DE, (HL)                                 ; DE contains color that will be changed.
+    LD DE, (HL)                                 ; DE contains color that will be changed
     CALL bp.BrightnessDown
-    LD (HL), DE                                 ; Update temp color.
+    LD (HL), DE                                 ; Update temp color
     INC HL
     INC HL
 
@@ -213,10 +213,10 @@ _LoadTodPalette
 
     ; ##########################################
     ; Copy 9 bit (2 bytes per color) palette. Number of colors is given by B (method param).
-    LD A, (palColors)                           ; Number of colors/iterations.
+    LD A, (palColors)                           ; Number of colors/iterations
     LD B, A
 
-    LD HL, (palAdr)                             ; Address of the palette.
+    LD HL, (palAdr)                             ; Address of the palette
 .loopCopyColor
     
     ; 1st write

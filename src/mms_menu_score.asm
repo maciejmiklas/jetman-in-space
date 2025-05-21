@@ -14,22 +14,22 @@ LINE_DATA_SIZE          = 4 + SCORE_TEXT_SIZE_D13   ; 2*DW + text
 
 ; This menu has two modes:
 ;  - Read only, where #nameChPos == NAME_CH_POS_OFF
-;  - Update new high score, wehre 0<= #nameChPos <= 9, plus #nameChPos == 10 when at ENTER.
+;  - Update new high score, wehre 0<= #nameChPos <= 9, plus #nameChPos == 10 when at ENTER
 NAME_CH_POS_OFF         = $FF
 NAME_CH_POS_MIN         = 0
 NAME_CH_POS_MAX         = 9
 NAME_CH_POS_ENTER       = 10
-nameChPos               BYTE NAME_CH_POS_OFF
+nameChPos               DB NAME_CH_POS_OFF
 
 ;----------------------------------------------------------;
 ;                     #EnterNewScore                       ;
 ;----------------------------------------------------------;
 EnterNewScore
 
-    XOR A                                       ; Enable user name input.
+    XOR A                                       ; Enable user name input
     LD (nameChPos), A
 
-    CALL _RenderMenuScore
+    CALL _SetupMenuScore
 
     RET                                         ; ## END of the function ##
 
@@ -42,109 +42,7 @@ LoadMenuScore
     LD A, NAME_CH_POS_OFF
     LD (nameChPos), A
 
-    CALL _RenderMenuScore
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #MenuScoreUserInput                  ;
-;----------------------------------------------------------;
-MenuScoreUserInput
-
-    ; Key right pressed ?
-    LD A, _KB_6_TO_0_HEF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 2, A                                    ; Bit 2 reset -> right pressed.
-    JR Z, .pressRight
-
-    ; ##########################################
-    ; Key up pressed ?
-    BIT 3, A                                    ; Bit 3 reset -> Up pressed.
-    JR Z, .pressUp
-    
-    ; ##########################################
-    ; Key down pressed ?
-    BIT 4, A                                    ; Bit 4 reset -> Down pressed.
-    JR Z, .pressDown
-
-    ; ##########################################
-    ; Joystick right pressed ?
-    LD A, _JOY_MASK_H20                         ; Activate joystick register.
-    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
-    BIT 0, A                                    ; Bit 0 set -> Right pressed.
-    JR NZ, .pressRight
-
-    ; ##########################################
-    ; Joystick left pressed ?
-    BIT 1, A                                    ; Bit 1 set -> Left pressed.
-    JR NZ, .pressLeft
-
-    ; ##########################################
-    ; Joystick down pressed ?
-    BIT 2, A                                    ; Bit 2 set -> Down pressed.
-    JR NZ, .pressDown
-
-    ; ##########################################
-    ; Joystick fire pressed ?
-    PUSH AF
-    AND %01110000                               ; Any of three fires pressed?
-    JR NZ, .pressFire
-    POP AF
-    
-    ; ##########################################
-    ; Joystick up pressed ?
-    BIT 3, A                                    ; Bit 3 set -> Up pressed.
-    JR NZ, .pressUp
-
-    ; ##########################################
-    ; Key Fire (Z) pressed ?
-    LD A, _KB_V_TO_SH_HFE
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
-    JR Z, .pressFire
-
-    ; ##########################################
-    ; Key SPACE pressed ?
-    LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    JR Z, .pressFire
-
-    ; ##########################################
-    ; Key ENTER pressed ?
-    LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    JR Z, .pressFire
-    
-    ; ##########################################
-    ; Key Left pressed ?
-    LD A, _KB_5_TO_1_HF7
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 4, A                                    ; Bit 4 reset -> Left pressed.
-    JR Z, .pressLeft
-
-    RET                                         ; None of the keys pressed.
-
-.pressRight
-    CALL _JoyRight
-    RET
-
-.pressLeft
-    CALL _JoyLeft
-    RET
-
-.pressUp
-    CALL _JoyUp
-    RET
-
-.pressDown
-    CALL _JoyDown
-    RET
-
-.pressFire
-    CALL _JoyFire
-    RET
+    CALL _SetupMenuScore
 
     RET                                         ; ## END of the function ##
 
@@ -155,10 +53,27 @@ MenuScoreUserInput
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_LoadMenuScore                      ;
+;                    #_SetupMenuScore                      ;
 ;----------------------------------------------------------;
-_RenderMenuScore
+_SetupMenuScore
 
+    ; Setup joystick
+    LD DE, _JoyFire
+    LD (ji.callbackFire), DE
+
+    LD DE, _JoyDown
+    LD (ji.callbackDown), DE
+
+    LD DE, _JoyUp
+    LD (ji.callbackUp), DE
+
+    LD DE, _JoyLeft
+    LD (ji.callbackLeft), DE
+
+    LD DE, _JoyRight
+    LD (ji.callbackRight), DE
+
+    ; ###########################################
     LD A, ms.MENU_SCORE
     CALL ms.SetMainState
 
@@ -166,13 +81,15 @@ _RenderMenuScore
     CALL ti.CleanAllTiles
     CALL bm.HideImage
 
-    ; Load palette.
+    ; ###########################################
+    ; Load palette
     LD HL, db.menuScoreBgPaletteAdr
     LD A, (db.menuScoreBgPaletteBytes)
     LD B, A
     CALL bp.LoadPalette
 
-    ; Load background image.
+    ; ###########################################
+    ; Load background image
     CALL fi.LoadMenuScoreImage
     CALL bm.CopyImageData
 
@@ -191,6 +108,10 @@ _RenderMenuScore
 ;----------------------------------------------------------;
 _JoyFire
 
+    CALL ji.CanProcessJoystickInput
+    CP _RET_YES_D1
+    RET NZ
+
     ; Can user input name?
     LD A, (nameChPos)
     CP NAME_CH_POS_OFF
@@ -205,6 +126,10 @@ _JoyFire
 ;----------------------------------------------------------;
 _JoyDown
 
+    CALL ji.CanProcessJoystickInput
+    CP _RET_YES_D1
+    RET NZ
+
     ; Can user input name?
     LD A, (nameChPos)
     CP NAME_CH_POS_OFF
@@ -216,6 +141,10 @@ _JoyDown
 ;                         #_JoyUp                          ;
 ;----------------------------------------------------------;
 _JoyUp
+
+    CALL ji.CanProcessJoystickInput
+    CP _RET_YES_D1
+    RET NZ
 
     ; Can user input name?
     LD A, (nameChPos)
@@ -229,9 +158,12 @@ _JoyUp
 ;----------------------------------------------------------;
 _JoyLeft
 
+    CALL ji.CanProcessJoystickInput
+    CP _RET_YES_D1
+    RET NZ
+
     ; Can user input name?
     LD A, (nameChPos)
-    nextreg 2,8
     CP NAME_CH_POS_OFF
     RET Z
 
@@ -239,7 +171,7 @@ _JoyLeft
     RET Z
 
     DEC A
-  ;  LD (nameChPos), A
+    LD (nameChPos), A
 
     RET                                         ; ## END of the function ##
 
@@ -247,6 +179,10 @@ _JoyLeft
 ;                       #_JoyRight                         ;
 ;----------------------------------------------------------;
 _JoyRight
+
+    CALL ji.CanProcessJoystickInput
+    CP _RET_YES_D1
+    RET NZ
 
     ; Can user input name?
     LD A, (nameChPos)
@@ -257,7 +193,7 @@ _JoyRight
     RET Z
 
     INC A
-  ;  LD (nameChPos), A
+    LD (nameChPos), A
 
     RET                                         ; ## END of the function ##
 
@@ -286,21 +222,21 @@ _PrintScore
 ;----------------------------------------------------------;
 ; Remember to "CALL dbs.SetupArraysBank"
 ; Input:
-;  A:  Line from #dba.menuScore to print as tilemap, 0 to 9 inklusive.
+;  A:  Line from #dba.menuScore to print as tilemap, 0 to 9 inklusive
 _PrintScoreLine
 
-    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated.
+    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated
 
     ; ##########################################
-    ; DE will point to the position when we print line given by A.
+    ; DE will point to the position when we print line given by A
     LD D, LINE_SPACE + _TI_H_D40
     LD E, A
-    MUL DE                                      ; DE has been moved A lines.
-    ADD DE, TILE_START                          ; Add top margin.
-    ADD DE, LINE_INDICATION_D10                     ; Add line indication.
+    MUL DE                                      ; DE has been moved A lines
+    ADD DE, TILE_START                          ; Add top margin
+    ADD DE, LINE_INDICATION_D10                 ; Add line indication
 
     ; ##########################################
-    ; Print HI byte from current score line.  HL points to HI byte.
+    ; Print HI byte from current score line.  HL points to HI byte
     LD HL, (IX)
     LD BC, DE
     PUSH DE
@@ -308,14 +244,14 @@ _PrintScoreLine
     POP DE
 
     ; ##########################################
-    ; Print LO byte.
+    ; Print LO byte
 
-    ; Move IX from HI byte to LO byte.
+    ; Move IX from HI byte to LO byte
     INC IX
     INC IX
     LD HL, (IX)
 
-    ADD DE, _16BIT_CHARS_D5                     ; DE points to LO byte from high score.
+    ADD DE, _16BIT_CHARS_D5                     ; DE points to LO byte from high score
     LD BC, DE
     PUSH DE
     CALL tx.PrintNum16
@@ -323,11 +259,11 @@ _PrintScoreLine
 
     ; ##########################################
     ; Print name
-    ; Move IX from LO byte to text.
+    ; Move IX from LO byte to text
     INC IX
     INC IX
     
-    ADD DE, _16BIT_CHARS_D5                     ; DE points to text line with players name.
+    ADD DE, _16BIT_CHARS_D5                     ; DE points to text line with players name
     LD BC, DE
     LD A, SCORE_TEXT_SIZE_D13
 
@@ -340,7 +276,7 @@ _PrintScoreLine
 ;                      #_LineToIX                          ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Score line in #dba.menuScore, 0 to 9 inklusive.
+;  A: Score line in #dba.menuScore, 0 to 9 inklusive
 _LineToIX
 
     LD IX, dba.menuScore                         ; Pointer to high score data.
@@ -357,7 +293,7 @@ _LineToIX
 ;----------------------------------------------------------;
 ; Store the last user's high score into #dba.menuScore.
 ; Input:
-;  A: Line from #dba.menuScore to update, 0 to 9 inklusive.
+;  A: Line from #dba.menuScore to update, 0 to 9 inklusive
 _StoreNewScore
 
     CALL dbs.SetupArraysBank
@@ -377,7 +313,7 @@ _StoreNewScore
 ;                  #_LoadCharPosToDe                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Line from #dba.menuScore to update, 0 to 9 inklusive.
+;  A: Line from #dba.menuScore to update, 0 to 9 inklusive
 _LoadCharPosToDe
 
     CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated.
@@ -393,7 +329,7 @@ _LoadCharPosToDe
 ;                     #_EnterName                          ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Line from #dba.menuScore to update, 0 to 9 inklusive.
+;  A: Line from #dba.menuScore to update, 0 to 9 inklusive
 _EnterName
 
     CALL dbs.SetupArraysBank

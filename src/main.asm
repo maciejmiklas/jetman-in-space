@@ -3,12 +3,12 @@
 ;----------------------------------------------------------;
 STACK_SIZE              = 50
 
-    DEVICE ZXSPECTRUMNEXT                       ; Allow the Next paging and instructions.
-    ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
+    DEVICE ZXSPECTRUMNEXT                       ; Allow the Next paging and instructions
+    ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000
 
 start
-    DI                                          ; Disable Interrupts, use wait_for_scanline instead.
-    NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
+    DI                                          ; Disable Interrupts, use wait_for_scanline instead
+    NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz
     
     call af.SetupAyFx
     CALL gc.SetupSystem
@@ -37,6 +37,7 @@ mainLoop
 
     INCLUDE "gc_game_cmd.asm"
 
+    INCLUDE "ji_joystick_input.asm"
     INCLUDE "er_error.asm"
     INCLUDE "fi_file_io.asm"
     INCLUDE "dbs_bank_setup.asm"
@@ -72,7 +73,6 @@ mainLoop
     INCLUDE "pi_pickups.asm"
     INCLUDE "af_audio_fx.asm"
     INCLUDE "ms_main_state.asm"
-    INCLUDE "ui_user_input.asm"
     INCLUDE "mms_menu_score.asm"
 
     ; LAST import due to bank offset!
@@ -85,17 +85,17 @@ mainLoop
 ;----------------------------------------------------------;
 ; https://z00m128.github.io/sjasmplus/documentation.html
 
-    CSPECTMAP "jetman.map"                      ; Generate a map file for use with Cspect.
+    CSPECTMAP "jetman.map"                      ; Generate a map file for use with Cspect
 
-    ; This sets the name of the project, the start address, and the initial stack pointer.
+    ; This sets the name of the project, the start address, and the initial stack pointer
     SAVENEX OPEN "jetman.nex", start, _RAM_SLOT4_STA_H8000
 
     ; This asserts the minimum core version.
     SAVENEX CORE 3,0,0
 
-    ; SAVENEX CFG <border 0..7>[,<fileHandle 0/1/$4000+>[,<PreserveNextRegs 0/1>[,<2MbRamReq 0/1>]]].
+    ; SAVENEX CFG <border 0..7>[,<fileHandle 0/1/$4000+>[,<PreserveNextRegs 0/1>[,<2MbRamReq 0/1>]]]
     SAVENEX CFG 0,0,0,0
 
-    ; Generate the Nex file automatically based on which pages you use.
+    ; Generate the Nex file automatically based on which pages you use
     SAVENEX AUTO
     SAVENEX CLOSE

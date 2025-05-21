@@ -3,7 +3,8 @@
 ;----------------------------------------------------------;
     MODULE ens
 
-; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, counting again.
+; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, 
+; counting again.
 singleRespDelayCnt      DB 0
 singleEnemySize         DB dba.ENEMY_SINGLE_SIZE
 
@@ -34,7 +35,7 @@ MoveSingleEnemies
 ; Input:
 ;   - A:  Number of single enemies (size of #ENPS)
 ;   - B:  Respawn delay for #nextRespDel
-;   - IX: Pointer to #ENPS array.
+;   - IX: Pointer to #ENPS array
 SetupSingleEnemies
     CALL dbs.SetupArraysBank
 
@@ -52,20 +53,20 @@ SetupSingleEnemies
     PUSH IX
     ; ##########################################
     ; Load #enp.ENPS int #enp.ENP
-    LD IY, dba.spriteEx01                        ; Pointer to #ENP array.
-    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#ENP arrays).
+    LD IY, dba.spriteEx01                       ; Pointer to #ENP array
+    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#ENP arrays)
     LD B, A
 .enpLoop
 
     CALL enp.CopyEnpsToEnp
 
     ; ##########################################
-    ; Move IX to next array postion.
+    ; Move IX to next array postion
     LD DE, IX
     ADD DE, enp.ENPS
     LD IX, DE
 
-    ; Move IY to next array postion.
+    ; Move IY to next array postion
     LD DE, IY
     ADD DE, enp.ENP
     LD IY, DE
@@ -75,8 +76,8 @@ SetupSingleEnemies
 
     ; ##########################################
     ; Load #enp.ENPS int #sr.SPR
-    LD IY, dba.singleEnemySprites                ; Pointer to #SPR array.
-    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#SPR arrays).
+    LD IY, dba.singleEnemySprites               ; Pointer to #SPR array
+    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#SPR arrays)
     LD B, A
 .sprLoop
 
@@ -84,12 +85,12 @@ SetupSingleEnemies
     LD (IY + sr.SPR.SDB_INIT), A
 
     ; ##########################################
-    ; Move IX to next array postion.
+    ; Move IX to next array postion
     LD DE, IX
     ADD DE, enp.ENPS
     LD IX, DE
 
-    ; Move IY to next array postion.
+    ; Move IY to next array postion
     LD DE, IY
     ADD DE, sr.SPR
     LD IY, DE
@@ -107,7 +108,7 @@ RespawnNextSingleEnemy
     CALL dbs.SetupArraysBank
 
     ; ##########################################    
-    ; Increment respawn timer and exit function if it's not time to respawn a new enemy.
+    ; Increment respawn timer and exit function if it's not time to respawn a new enemy
     LD A, (nextRespDel)
     CP 0
     JR Z, .startRespawn
@@ -115,13 +116,13 @@ RespawnNextSingleEnemy
     LD A, (singleRespDelayCnt)
     INC A
     CP D
-    JR Z, .startRespawn                         ; Jump if the timer reaches respawn delay.
+    JR Z, .startRespawn                         ; Jump if the timer reaches respawn delay
     LD (singleRespDelayCnt), A
 
     RET
 .startRespawn
-    XOR A                                       ; Set A to 0.
-    LD (singleRespDelayCnt), A                  ; Reset delay timer.
+    XOR A                                       ; Set A to 0
+    LD (singleRespDelayCnt), A                  ; Reset delay timer
 
     ; ##########################################
     ; Iterate over all enemies to find the first hidden, respawn it, and exit function.
@@ -130,19 +131,19 @@ RespawnNextSingleEnemy
     LD B, A
 
 .loop
-    PUSH BC                                     ; Preserve B for loop counter.
+    PUSH BC                                     ; Preserve B for loop counter
     CALL enp.RespawnPatternEnemy
     POP BC
 
     CP A, enp.RES_SE_OUT_YES
-    RET Z                                       ; Exit after respawning first enemy.
-                                        
-    ; Move IX to the beginning of the next #shotsXX.
+    RET Z                                       ; Exit after respawning first enemy
+
+    ; Move IX to the beginning of the next #shotsXX
     LD DE, sr.SPR
     ADD IX, DE
-    DJNZ .loop                                  ; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE).
+    DJNZ .loop                                  ; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE)
 
-    RET                                         ; ## END of the function ##.
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;

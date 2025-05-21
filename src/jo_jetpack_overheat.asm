@@ -11,17 +11,17 @@
 ; When Jetman lands, the #jetCoolCnt decreases. When it reaches JM_COOL_CNT, the jetpack temperature decreases,
 ; until it reaches #TEMP_NORM. At this point, the Jetman state changes to #JETST_NORMAL, and Jetman can fly at a full speed.
 
-; Jetpack heats up/cools down during the flight.
+; Jetpack heats up/cools down during the flight
 jetHeatCnt              DB 0                    ; Runs from 0 to JM_HEAT_CNT
 jetCoolCnt              DB 0                    ; Runs from 0 to JM_COOL_CNT
 
 jetTempLevel            DB 0
 
-TEMP_MAX                = 6                     ; The heat bar in UI (H) has 5 elements, 6 means it's overheated.
+TEMP_MAX                = 6                     ; The heat bar in UI (H) has 5 elements, 6 means it's overheated
 TEMP_RED                = 4
 TEMP_MIN                = 0
 
-TEMP_NORM               = 4                     ; Jetman can move at full speed when Jetpack cools down, and this level is reached.
+TEMP_NORM               = 4                     ; Jetman can move at full speed when Jetpack cools down, and this level is reached
 
 ; The Jetpack heating up / cooling down thresholds.
 JM_HEAT_RED_CNT         = 80
@@ -39,40 +39,40 @@ BAR_ICON_PAL           = $00
 ;----------------------------------------------------------;
 ;                 #AnimateJetpackOverheat                  ;
 ;----------------------------------------------------------;
-; Replace last two tiles in heat bar for blinking effect: _BAR_RED_A1_SPR,_BAR_RED_A2_SPR -> _BAR_RED_B1_SPR,_BAR_RED_B2_SPR.
+; Replace last two tiles in heat bar for blinking effect: _BAR_RED_A1_SPR,_BAR_RED_A2_SPR -> _BAR_RED_B1_SPR,_BAR_RED_B2_SPR
 AnimateJetpackOverheat
 
-    ; Animate only when overheated, and Jetman slows down.
+    ; Animate only when overheated, and Jetman slows down
     LD A, (jt.jetState)
     CP jt.JETST_OVERHEAT
     RET NZ
 
-    ; Move HL so that it points to first read tile.
+    ; Move HL so that it points to first read tile
     LD HL, BAR_RAM_START
     ADD HL, TEMP_RED*2
 
-    ; Change between two colors based on the flip-flop counter.
+    ; Change between two colors based on the flip-flop counter
     LD A, (mld.counter008FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .on
 
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
-    LD (HL), _BAR_RED_A1_SPR                    ; Set tile id.
+    LD (HL), _BAR_RED_A1_SPR                    ; Set tile id
     INC HL
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
-    LD (HL), _BAR_RED_A2_SPR                    ; Set tile id.
+    LD (HL), _BAR_RED_A2_SPR                    ; Set tile id
 
     RET
 .on
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
-    LD (HL), _BAR_RED_B1_SPR                    ; Set tile id.
+    LD (HL), _BAR_RED_B1_SPR                    ; Set tile id
     INC HL
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
-    LD (HL), _BAR_RED_B2_SPR                    ; Set tile id.
+    LD (HL), _BAR_RED_B2_SPR                    ; Set tile id
 
     RET                                         ; ## END of the function ##
 
@@ -97,18 +97,18 @@ ResetJetpackOverheating
 ;----------------------------------------------------------;
 UpdateJetpackOverheating
 
-    ; Increase the overheating timer if Jetman is flying.
+    ; Increase the overheating timer if Jetman is flying
     LD A, (jt.jetAir)
     CP jt.JT_STATE_INACTIVE
     JR Z, .afterFlaying
     
-    ; Jetman is flying.
+    ; Jetman is flying
     CALL _JetpackTempUp
     RET
 .afterFlaying
 
     ; ##########################################
-    ; Increase the cool down timer if Jetman is walking.
+    ; Increase the cool down timer if Jetman is walking
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE
     RET Z
@@ -129,18 +129,18 @@ UpdateJetpackOverheating
 ;----------------------------------------------------------;
 _JetpackTempUp
 
-    ; Check if Jetpack has overheated already.
+    ; Check if Jetpack has overheated already
     LD A, (jetTempLevel)
     CP TEMP_MAX
     RET Z
 
     ; ##########################################
-    ; Increase the heat counter, and check whether it's necessary to increase the heat level of the jetpack.
+    ; Increase the heat counter, and check whether it's necessary to increase the heat level of the jetpack
     LD A, (jetHeatCnt)
     INC A
     LD (jetHeatCnt),A
 
-    ; Temperature increase speed slows down hen #jetTempLevel is over TEMP_RED.
+    ; Temperature increase speed slows down hen #jetTempLevel is over TEMP_RED
     ; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with JM_HEAT_CNT
     ; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with JM_HEAT_RED_CNT
     LD A, (jetTempLevel)
@@ -150,17 +150,17 @@ _JetpackTempUp
     ; Fast heat increase.
     LD A, (jetHeatCnt)
     CP JM_HEAT_CNT
-    RET NZ                                      ; The counter did not reach the required value to increase jeptack's temp.
+    RET NZ                                      ; The counter did not reach the required value to increase jeptack's temp
     JR .afterIncrease
 
 .increaseSlow
     ; Slow down hating.
     LD A, (jetHeatCnt)
     CP JM_HEAT_RED_CNT
-    RET NZ                                      ; The counter did not reach the required value to increase jeptack's temp.
+    RET NZ                                      ; The counter did not reach the required value to increase jeptack's temp
 .afterIncrease
 
-    ; Heat up counter has reached max value, reset it.
+    ; Heat up counter has reached max value, reset it
     XOR A
     LD (jetHeatCnt),A
 
@@ -196,20 +196,20 @@ _JetpackTempDown
     RET Z
 
     ; ##########################################
-    ; Increase the cool down counter, and check whether it's necessary to decrease the heat level of the jetpack.
+    ; Increase the cool down counter, and check whether it's necessary to decrease the heat level of the jetpack
     LD A, (jetCoolCnt)
     INC A
     LD (jetCoolCnt),A
 
     CP JM_COOL_CNT
-    RET NZ                                      ; The counter did not reach the required value to decrease jeptack temp.
+    RET NZ                                      ; The counter did not reach the required value to decrease jeptack temp
 
-    ; Cool down counter has reached max value, reset it.
+    ; Cool down counter has reached max value, reset it
     XOR A
     LD (jetCoolCnt), A
 
     ; ##########################################
-    ; Decrease jetpack temp.
+    ; Decrease jetpack temp
     LD A, (jetTempLevel)
     DEC A
     LD (jetTempLevel),A
@@ -223,7 +223,7 @@ _JetpackTempDown
     CP jt.JETST_OVERHEAT
     JR NZ, .afterNormTempCheck
 
-    ; Jetpack is coll again.
+    ; Jetpack is coll again
     LD A, jt.JETST_NORMAL
     LD (jt.jetState), A
 
@@ -241,9 +241,9 @@ _ShowHeatBarIcon
 
     LD HL, BAR_ICON_RAM_START
 
-    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
+    LD (HL), BAR_ICON_PAL                       ; Set palette for tile
     INC HL
-    LD (HL), BAR_ICON                           ; Set tile id.
+    LD (HL), BAR_ICON                           ; Set tile id
     
     RET                                         ; ## END of the function ##
 
@@ -273,10 +273,10 @@ _UpdateUiHeatBar
 .afterBar
     ADD B
     
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
     
-    LD (HL), A                                  ; Set tile id.
+    LD (HL), A                                  ; Set tile id
     INC HL  
 
     ; ##########################################

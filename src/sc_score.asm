@@ -117,7 +117,7 @@ HitRocketTank
 
     LD HL, (scoreLo)
     
-    ; Decrement H by 2 and set L to 0 (if possible).
+    ; Decrement H by 2 and set L to 0 (if possible)
     LD A, H
     CP 3
     RET C
@@ -214,7 +214,7 @@ _UpdateScore
     DJNZ .loop
 
     ; #########################################
-    ; Update UI, but return if gamebar is hidden.
+    ; Update UI, but return if gamebar is hidden
     LD A, (gb.gamebarState)
     CP gb.GB_VISIBLE
     RET NZ

@@ -10,16 +10,16 @@ joyOffCnt           DB 0
 ; Possible move directions##
 MOVE_INACTIVE           = 0                     ; No movement
 
-MOVE_LEFT_BIT           = 0                     ; Bit 0 - Jetman moving left, facing left.
+MOVE_LEFT_BIT           = 0                     ; Bit 0 - Jetman moving left, facing left
 MOVE_LEFT_MASK          = %0000'0001
 
-MOVE_RIGHT_BIT          = 1                     ; Bit 1 - Jetman moving right, facing right.
+MOVE_RIGHT_BIT          = 1                     ; Bit 1 - Jetman moving right, facing right
 MOVE_RIGHT_MASK         = %0000'0010
 
-MOVE_UP_BIT             = 2                     ; Bit 2 - Jetman moving up, facing up.
+MOVE_UP_BIT             = 2                     ; Bit 2 - Jetman moving up, facing up
 MOVE_UP_MASK            = %0000'0100
 
-MOVE_DOWN_BIT           = 3                     ; Bit 3 - Jetman moving down, facing up.
+MOVE_DOWN_BIT           = 3                     ; Bit 3 - Jetman moving down, facing up
 MOVE_DOWN_MASK          = %0000'1000
 
 MOVE_MSK_LR             = %0000'0011            ; Left + Right
@@ -31,18 +31,18 @@ MOVE_MSK_LR             = %0000'0011            ; Left + Right
 ; Prolonged inactivity resets #jetDirection to #MOVE_INACTIVE.
 jetDirection            DB MOVE_INACTIVE  ; Jetman initially hovers, no movement
 
-; Holds currently pressed direction button. State will be updated right at the beginning of each joystick loop.
+; Holds currently pressed direction button. State will be updated right at the beginning of each joystick loop
 joyDirection            DB MOVE_INACTIVE
 
 ; Holds #joyDirection from previous loop
 joyPrevDirection        DB MOVE_INACTIVE
 
-joyOverheatDelayCnt     DB 0                  ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
+joyOverheatDelayCnt     DB 0                  ; The delay counter for joystick input and Jetman movement speed when jetpack overheats
 
 ; Button state keeps state for 8 buttons.
 ; The button state for the current game loop is reset before the keys are processed in the current game loop.
 buttonState            DB 0
-buttonPrevState        DB 0                   ; Keeps state from the previous game loop.
+buttonPrevState        DB 0                   ; Keeps state from the previous game loop
 BS_FIRE_BIT             = 0
 
 ;----------------------------------------------------------;

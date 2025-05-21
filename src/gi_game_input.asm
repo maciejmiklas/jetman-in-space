@@ -30,45 +30,45 @@ GameJoystickInput
 
     ; ##########################################
     ; Key right pressed ?
-    LD A, _KB_6_TO_0_HEF                        ; $EF -> A (6...0).
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 2, A                                    ; Bit 2 reset -> right pressed.
+    LD A, _KB_6_TO_0_HEF                        ; $EF -> A (6...0)
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
+    BIT 2, A                                    ; Bit 2 reset -> right pressed
     CALL Z, _JoyRight
     POP AF
 
     ; ##########################################
     ; Key up pressed ?
     PUSH AF
-    BIT 3, A                                    ; Bit 3 reset -> Up pressed.
+    BIT 3, A                                    ; Bit 3 reset -> Up pressed
     CALL Z, _JoyUp
     POP AF
     
     ; ##########################################
     ; Key down pressed ?
-    BIT 4, A                                    ; Bit 4 reset -> Down pressed.
+    BIT 4, A                                    ; Bit 4 reset -> Down pressed
     CALL Z, _JoyDown
 
     ; ##########################################
     ; Joystick right pressed ?
-    LD A, _JOY_MASK_H20                         ; Activate joystick register.
-    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 0, A                                    ; Bit 0 set -> Right pressed.
+    LD A, _JOY_MASK_H20                         ; Activate joystick register
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
+    BIT 0, A                                    ; Bit 0 set -> Right pressed
     CALL NZ, _JoyRight  
     POP AF
 
     ; ##########################################
     ; Joystick left pressed ?
     PUSH AF
-    BIT 1, A                                    ; Bit 1 set -> Left pressed.
+    BIT 1, A                                    ; Bit 1 set -> Left pressed
     CALL NZ, _JoyLeft
     POP AF
 
     ; ##########################################
     ; Joystick down pressed ?
     PUSH AF
-    BIT 2, A                                    ; Bit 2 set -> Down pressed.
+    BIT 2, A                                    ; Bit 2 set -> Down pressed
     CALL NZ, _JoyDown
     POP AF
 
@@ -81,35 +81,35 @@ GameJoystickInput
 
     ; ##########################################
     ; Joystick up pressed ?
-    BIT 3, A                                    ; Bit 3 set -> Up pressed.
+    BIT 3, A                                    ; Bit 3 set -> Up pressed
     CALL NZ, _JoyUp
 
     ; ##########################################
     ; Key Fire (Z) pressed ?
-    LD A, _KB_V_TO_SH_HFE                       ; $FD -> A (5...1).
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
+    LD A, _KB_V_TO_SH_HFE                       ; $FD -> A (5...1)
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    BIT 1, A                                    ; Bit 1 reset -> Z pressed
     CALL Z, _JoyFire
 
     ; ##########################################
     ; Key SPACE pressed ?
     LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
     CALL Z, _JoyFire
 
     ; ##########################################
     ; Key ENTER pressed ?
     LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
     CALL Z, _JoyFire        
     
     ; ##########################################
     ; Key Left pressed ?
-    LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1).
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 4, A                                    ; Bit 4 reset -> Left pressed.
+    LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1)
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    BIT 4, A                                    ; Bit 4 reset -> Left pressed
     CALL Z, _JoyLeft
 
     CALL _JoyEnd
@@ -123,32 +123,32 @@ GameKeyboardInput
 
     ; Handle row T...Q
     LD A, _KB_T_TO_Q_HFB
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 0, A                                    ; Q
     CALL Z, _Key_Q
     POP AF
 
     ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 1, A                                    ; W
     CALL Z, _Key_W
     POP AF  
 
     ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 2, A                                    ; E
     CALL Z, _Key_E
     POP AF
 
     ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 3, A                                    ; R
     CALL Z, _Key_R
     POP AF
 
     ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 4, A                                    ; T
     CALL Z, _Key_T
     POP AF
@@ -156,8 +156,8 @@ GameKeyboardInput
     ; ##########################################
     ; Handle row Y...P
     LD A, _KB_P_TO_Y_HDF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 0, A                                    ; P
     CALL Z, _Key_P
     POP AF
@@ -169,19 +169,19 @@ GameKeyboardInput
     POP AF
 
     ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 2, A                                    ; I
     CALL Z, _Key_I
     POP AF
 
     ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 3, A                                    ; U
     CALL Z, _Key_U
     POP AF
 
     ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 4, A                                    ; Y
     CALL Z, _Key_Y
     POP AF  
@@ -189,8 +189,8 @@ GameKeyboardInput
     ; ##########################################
     ; Handle row G...A
     LD A, _KB_G_TO_A_HFD
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 3, A                                    ; F
     CALL Z, _Key_F
     POP AF
@@ -314,14 +314,14 @@ _JoyEnd
     ; Down key has been released?
     LD A, (gid.joyDirection)
     BIT gid.MOVE_DOWN_BIT, A
-    JR NZ, .afterJoyDownRelease                 ; Jump if down is pressed now.
+    JR NZ, .afterJoyDownRelease                 ; Jump if down is pressed now
 
-    ; Down is not pressed, now check whether it was pressed during the last loop.
+    ; Down is not pressed, now check whether it was pressed during the last loop
     LD A, (gid.joyPrevDirection)
     BIT gid.MOVE_DOWN_BIT, A
-    JR Z, .afterJoyDownRelease                  ; Jump if down was not pressed.
+    JR Z, .afterJoyDownRelease                  ; Jump if down was not pressed
 
-    ; Down is not pressed now, but was in previous loop.
+    ; Down is not pressed now, but was in previous loop
     CALL jm.JoyMoveDownRelease
 .afterJoyDownRelease
 
@@ -329,14 +329,14 @@ _JoyEnd
     ; Fire key has been released?
     LD A, (gid.buttonState)
     BIT gid.BS_FIRE_BIT, A
-    JR NZ, .afterFireRelease                 ; Jump if fire is pressed now.
+    JR NZ, .afterFireRelease                 ; Jump if fire is pressed now
 
-    ; Fire is not pressed, now check whether it was pressed during the last loop.
+    ; Fire is not pressed, now check whether it was pressed during the last loop
     LD A, (gid.buttonPrevState)
     BIT gid.BS_FIRE_BIT, A
-    JR Z, .afterFireRelease                  ; Jump if down was not pressed.
+    JR Z, .afterFireRelease                  ; Jump if down was not pressed
 
-    ; Fire is not pressed now, but was in previous loop.
+    ; Fire is not pressed now, but was in previous loop
     CALL _JoyFireRelease
 
 .afterFireRelease 
@@ -356,9 +356,9 @@ _JoyEnd
 ;                        _JoyRight                         ;
 ;----------------------------------------------------------;
 _JoyRight
-    ; Update temp state.
+    ; Update temp state
     LD A, (gid.joyDirection)
-    SET gid.MOVE_RIGHT_BIT, A   
+    SET gid.MOVE_RIGHT_BIT, A
     LD (gid.joyDirection), A
 
     ; ##########################################
@@ -371,7 +371,7 @@ _JoyRight
 ;----------------------------------------------------------;
 _JoyLeft
 
-    ; Update #joyDirection state.
+    ; Update #joyDirection state
     LD A, (gid.joyDirection)
     SET gid.MOVE_LEFT_BIT, A
     LD (gid.joyDirection), A
@@ -386,7 +386,7 @@ _JoyLeft
 ;----------------------------------------------------------;
 _JoyUp
 
-    ; Update #joyDirection state.
+    ; Update #joyDirection state
     LD A, (gid.joyDirection)
     SET gid.MOVE_UP_BIT, A  
     LD (gid.joyDirection), A
@@ -401,7 +401,7 @@ _JoyUp
 ;----------------------------------------------------------;
 _JoyDown
 
-    ; Update #joyDirection state.
+    ; Update #joyDirection state
     LD A, (gid.joyDirection)
     SET gid.MOVE_DOWN_BIT, A
     LD (gid.joyDirection), A

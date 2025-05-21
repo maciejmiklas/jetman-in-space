@@ -13,7 +13,7 @@ PI_SPR_GUN              = 44
 PI_SPR_MIN              = PI_SPR_DIAMOND
 PI_SPR_MAX              = PI_SPR_GUN
 
-deployed                DB 0                    ; Currently deployed sprite reference from spr-file(#PI_SPR_XXX), 0 for none.
+deployed                DB 0                    ; Currently deployed sprite reference from spr-file(#PI_SPR_XXX), 0 for none
 
 deployedX               DB 0                    ; Pickup X postion
 deployedY               DB 0                    ; Pickup Y postion
@@ -57,17 +57,17 @@ UpdatePickupsOnJetmanMove
     RET Z
 
     ; ##########################################
-    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
-    LD BC, (deployedX)                          ; X of the element.
+    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none
+    LD BC, (deployedX)                          ; X of the element
     LD B, 0
-    LD A, (deployedY)                           ; Y of the element.
+    LD A, (deployedY)                           ; Y of the element
     LD D, A
     CALL jco.JetmanElementCollision
     CP _RET_NO_D0
     RET Z
 
     ; ##########################################
-    ; Jetman got a pickup! Now call the right callback.
+    ; Jetman got a pickup! Now call the right callback
 
     ; ##########################################
     ; Pickup in the air?
@@ -123,12 +123,12 @@ UpdatePickupsOnJetmanMove
 
 .nextPickup
     ; ##########################################
-    ; Prep next pickup.
+    ; Prep next pickup
     XOR A
     LD (deployed), A
     LD (deployCnt), A
 
-    ; Hide pickup.
+    ; Hide pickup
     LD A, PICKUP_SPRITE_ID
     CALL sp.SetIdAndHideSprite
 
@@ -139,7 +139,7 @@ UpdatePickupsOnJetmanMove
 ;----------------------------------------------------------;
 AnimateFallingPickup
 
-    ; Exit if there is no active pickup.
+    ; Exit if there is no active pickup
     LD A, (deployed)
     CP 0
     RET Z
@@ -148,22 +148,22 @@ AnimateFallingPickup
     ; Update y postion (falling down)
     LD A, (deployedY)
     CP _GSC_Y_MAX2_D234
-    RET Z                                       ; Pickup is already on the ground, so moving it is unnecessary.
+    RET Z                                       ; Pickup is already on the ground, so moving it is unnecessary
     
     ; Move pickup down.
     INC A
     LD (deployedY), A
 
     ; ##########################################
-    ; Update sprite pattern.
+    ; Update sprite pattern
 
-    ; Set the ID of the sprite for the following commands.
+    ; Set the ID of the sprite for the following commands
     LD A, PICKUP_SPRITE_ID
     NEXTREG _SPR_REG_NR_H34, A
     
     ; Set sprite pattern
     LD A, (deployed)
-    OR _SPR_PATTERN_SHOW                        ; Set show bit.
+    OR _SPR_PATTERN_SHOW                        ; Set show bit
     NEXTREG _SPR_REG_ATR3_H38, A
 
     ; Sprite X coordinate from A param
@@ -184,12 +184,12 @@ AnimateFallingPickup
 ;----------------------------------------------------------;
 LifeDropCounter
 
-    ; Do not deploy next pickup if there is one out there.
+    ; Do not deploy next pickup if there is one out there
     LD A, (deployed)
     CP 0
     RET NZ
 
-    ; Do not deploy life if it has already been deployed in this round.
+    ; Do not deploy life if it has already been deployed in this round
     LD A, (lifeDeployed)
     CP LIVE_DEPLOYED_YES
     RET Z
@@ -203,13 +203,13 @@ PickupDropCounter
 
     CALL dbs.SetupArraysBank
 
-    ; Do not deploy next pickup if there is one out there.
+    ; Do not deploy next pickup if there is one out there
     LD A, (deployed)
     CP 0
     RET NZ
 
     ; ##########################################
-    ; Check deploy counter, deploy next only in case of overflow.
+    ; Check deploy counter, deploy next only in case of overflow
     LD A, (deployCnt)
     INC A
     LD (deployCnt), A
@@ -217,14 +217,14 @@ PickupDropCounter
     RET NZ
 
     ; ##########################################
-    ; Deploy next pickup, first reset counter.
+    ; Deploy next pickup, first reset counter
     XOR A
     LD (deployCnt), A
 
     ; ##########################################
     ; Load into A the value of next deployment sprite (#PI_SPR_XXXX)
 
-    ; Determine the index for #deployOrder.
+    ; Determine the index for #deployOrder
     LD A, (dba.deployOrderPos)
     INC A 
     CP dba.DEPLOY_ORDER_SIZE
@@ -233,9 +233,9 @@ PickupDropCounter
 .afterDeployOrderPos
     LD (dba.deployOrderPos), A
 
-    ; Load ID of next pickup.
+    ; Load ID of next pickup
     LD HL, dba.deployOrder
-    ADD HL, A                                   ; HL points to next deployment sprite id.
+    ADD HL, A                                   ; HL points to next deployment sprite id
     LD A, (HL)
     LD (deployed), A
 

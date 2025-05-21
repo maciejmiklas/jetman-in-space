@@ -503,74 +503,74 @@ enemyFormationL10 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, mo
 ; The animation system is based on a state machine. Its database is divided into records, each containing a list of frames to be played and 
 ; a reference to the next record that will be played once all frames from the current record have been executed.
 ; DB Record:
-;    [ID], [OFF_NX], [SIZE], [DELAY], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]] 
+;    [ID], [OFF_NX], [SIZE], [DELAY], [[FRAME_UP,FRAME_LW], [FRAME_UP,FRAME_LW],...,[FRAME_UP,FRAME_LW]]
 ; where:
-;   - ID:           Entry ID for lookup via CPIR.
-;   - OFF_NX:       ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
-;   - SIZE:         Amount of bytes in this record.
-;   - DELAY:        Amount animation calls to skip (slows down animation).
-;   - FRAME_UP:     Offset for the upper part of the Jetman.
-;   - FRAME_LW:     Offset for the lower part of the Jetman.
+;   - ID:           Entry ID for lookup via CPIR
+;   - OFF_NX:       ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
+;   - SIZE:         Amount of bytes in this record
+;   - DELAY:        Amount animation calls to skip (slows down animation)
+;   - FRAME_UP:     Offset for the upper part of the Jetman
+;   - FRAME_LW:     Offset for the lower part of the Jetman
 jetSpriteDB
-    ; Jetman is flaying.
+    ; Jetman is flaying
     DB js.SDB_FLY,      js.SDB_FLY - js.SDB_SUB,        48, 5
                                             DB 00,10, 00,11, 01,12, 01,13, 02,11, 02,12, 03,10, 03,11, 04,12, 04,13
                                             DB 05,12, 05,11, 03,10, 03,11, 04,12, 04,13, 05,10, 05,12, 03,10, 03,11
                                             DB 04,12, 04,13, 05,12, 05,10
 
-    ; Jetman is flaying down.
+    ; Jetman is flaying down
     DB js.SDB_FLYD,     js.SDB_FLYD - js.SDB_SUB,       48, 5
                                             DB 00,12, 00,37, 01,38, 01,37, 02,12, 02,38, 03,12, 03,37, 04,38, 04,12
                                             DB 05,38, 05,37, 03,37, 03,12, 04,38, 04,12, 05,37, 05,38, 03,37, 03,12
                                             DB 04,12, 04,37, 05,38, 05,37
 
-    ; Jetman hovers.
+    ; Jetman hovers
     DB js.SDB_HOVER,    js.SDB_HOVER - js.SDB_SUB,      48, 10
                                             DB 00,14, 00,15, 01,16, 01,10, 02,11, 02,12, 03,13, 03,10, 04,11, 04,12 
                                             DB 05,13, 05,14, 03,15, 03,16, 04,10, 04,11, 05,12, 05,13, 03,10, 03,11
                                             DB 04,12, 04,13, 05,10, 05,11
 
-    ; Jetman starts walking with raised feet to avoid moving over the ground and standing still.
+    ; Jetman starts walking with raised feet to avoid moving over the ground and standing still
     DB js.SDB_WALK_ST,  js.SDB_WALK - js.SDB_SUB,       02, 3
                                             DB 03,07
 
-    ; Jetman is walking.
+    ; Jetman is walking
     DB js.SDB_WALK,     js.SDB_WALK - js.SDB_SUB,       48, 3
                                             DB 03,06, 03,07, 04,08, 04,09, 05,06, 05,06, 03,08, 03,09, 04,06, 04,07
                                             DB 05,08, 05,09, 00,06, 00,07, 01,08, 01,09, 02,06, 02,07, 03,08, 03,09 
                                             DB 04,06, 04,07, 05,08, 05,09
 
-    ; Jetman stands in place.
+    ; Jetman stands in place
     DB js.SDB_STAND,    js.SDB_STAND - js.SDB_SUB,      46, 5
                                             DB 03,06, 03,18, 04,19, 04,18, 05,06, 05,19, 03,06, 03,18, 04,19, 04,06
                                             DB 05,19, 05,18, 00,19, 00,18, 01,06, 01,18, 02,06, 02,19, 03,18, 03,18
                                             DB 04,19, 05,06, 05,18
 
-    ; Jetman stands on the ground for a very short time.
+    ; Jetman stands on the ground for a very short time
     DB js.SDB_JSTAND,   js.SDB_STAND - js.SDB_SUB,      02, 3
                                             DB 03,18
 
-    ; Jetman got hit.
+    ; Jetman got hit
     DB js.SDB_RIP,      js.SDB_RIP - js.SDB_SUB,        08, 5 
                                             DB 00,27, 01,28, 02,15, 03,29
 
-    ; Transition: walking -> flaying.
+    ; Transition: walking -> flaying
     DB js.SDB_T_WF,     js.SDB_FLY - js.SDB_SUB,        08, 5
                                             DB 03,26, 04,25, 05,24, 03,23
 
-    ; Transition: flaying -> standing.
+    ; Transition: flaying -> standing
     DB js.SDB_T_FS,     js.SDB_STAND - js.SDB_SUB,      08, 5
                                             DB 03,23, 04,24, 05,25, 03,26
 
-    ; Transition: flaying -> walking.
+    ; Transition: flaying -> walking
     DB js.SDB_T_FW,     js.SDB_WALK - js.SDB_SUB,       08, 5
                                             DB 03,23, 04,24, 05,25, 03,26
 
-    ; Transition: kinking -> flying.
+    ; Transition: kinking -> flying
     DB js.SDB_T_KF,     js.SDB_FLY - js.SDB_SUB,        10, 5
                                             DB 03,15, 04,16, 05,27, 03,28, 04,29
 
-    ; Transition: kinking -> hoovering.
+    ; Transition: kinking -> hoovering
     DB js.SDB_T_KO,     js.SDB_HOVER - js.SDB_SUB,        10, 5
                                             DB 03,15, 04,16, 05,27, 03,28, 04,29
 
@@ -752,7 +752,7 @@ rocketExhaustDB                                 ; Sprite IDs for exhaust
     DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
 RO_EXHAUST_MAX          = 18
 
-rocketExplodeTankDB     DB 30, 31, 32, 33       ; Sprite IDs for explosion.
+rocketExplodeTankDB     DB 30, 31, 32, 33       ; Sprite IDs for explosion
 
 ;----------------------------------------------------------;
 ;                      Jetman Weapon                       ;
@@ -958,17 +958,17 @@ platformsSizeL10        DB 30
 ;----------------------------------------------------------;
 ;                           Files                          ;
 ;----------------------------------------------------------;
-; Tiles for level intro.
+; Tiles for level intro
 introTilesFileName      DB "assets/l00/intro_0.map",0
-introSecondFileSize     DW 0                    ; Will be set when loading particular level, now is 0.
+introSecondFileSize     DW 0                    ; Will be set when loading particular level, now is 0
 
 stTilesFileName         DB "assets/l00/stars_0.map",0
 TI16K_FILE_LEVEL_POS    = 8 
 TI16K_FILE_NR_POS       = 8
 
-; Tiles for in-game platforms.
+; Tiles for in-game platforms
 plTileFileName          DB "assets/l00/tiles.map",0
-PL_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
+PL_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image
 
 ; Sprite file.
 sprTileFileName         DB "assets/l00/sprites_0.spr",0
@@ -976,33 +976,33 @@ SPR_FILE_LEVEL_POS      = 8
 SPR_FILE_NR_POS         = 10
 SPR_FILE_BYT_D8192      = _BANK_BYTES_D8192
 
-; Level background file.
+; Level background file
 lbFileName              DB "assets/l00/bg_0.nxi",0
-LB_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
-LB_FILE_IMG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+LB_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image
+LB_FILE_IMG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image
 
-; Level intro file.
+; Level intro file
 liBgFileName            DB "assets/l00/intro_0.nxi",0
-LI_BG_FILE_LEVEL_POS    = 8                     ; Position of a level number (00-99) in the file name of the background image.
-LI_BG_FILE_IMG_POS      = 17                    ; Position of a image part number (0-9) in the file name of the background image.
+LI_BG_FILE_LEVEL_POS    = 8                     ; Position of a level number (00-99) in the file name of the background image
+LI_BG_FILE_IMG_POS      = 17                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuMainBgFileName      DB "assets/mma/bg_0.nxi",0
-MENU_MAIN_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+MENU_MAIN_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuEasyBgFileName      DB "assets/mma/easy_0.nxi",0
-MENU_EASY_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+MENU_EASY_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuHardBgFileName      DB "assets/mma/hard_0.nxi",0
-MENU_HARD_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+MENU_HARD_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuGameplayBgFileName  DB "assets/mmg/bg_0.nxi",0
-MENU_GAMEPLAY_BG_POS    = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+MENU_GAMEPLAY_BG_POS    = 14                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuScoreBgFileName     DB "assets/mms/bg_0.nxi",0
-MENU_SCORE_BG_POS       = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+MENU_SCORE_BG_POS       = 14                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuKeysBgFileName      DB "assets/mmk/bg_0.nxi",0
-MENU_KEYS_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+MENU_KEYS_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image
 
 effectsFileName         DB "assets/com/effects.afb",0
 EFFECTS_FILE_SIZE       = 3725
@@ -1015,8 +1015,8 @@ mmkTileFileName         DB "assets/mmk/keys.map",0
 ;----------------------------------------------------------;
 
     ASSERT $$ == dbs.ARR_BANK_S7_D29            ; Data should remain in the same bank
-    ASSERT $$spritesBankStart == dbs.ARR_BANK_S7_D29 ; Make sure that we have configured the right bank.
-    ASSERT $ < _RAM_SLOT7_END_HFFFF             ; Data should remain within slot 7 address space.
+    ASSERT $$spritesBankStart == dbs.ARR_BANK_S7_D29 ; Make sure that we have configured the right bank
+    ASSERT $ < _RAM_SLOT7_END_HFFFF             ; Data should remain within slot 7 address space
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

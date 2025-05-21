@@ -47,14 +47,33 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (mms.nameChPos)
+    LD A, (ji.userInputInactiveCnt)
     LD L, A
     CALL ut.PrintNumber
 
+    ; ##########################################
+    LD BC, 50
+    LD H, 0
+    LD A, (ji.userInputDelayCnt)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 60
+    LD H, 0
+    LD A, (ji.tmpNO)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 70
+    LD H, 0
+    LD A, (ji.tmpYES)
+    LD L, A
+    CALL ut.PrintNumber
 
     RET                                         ; ## END of the function ##
 

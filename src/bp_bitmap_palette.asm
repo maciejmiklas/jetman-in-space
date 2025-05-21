@@ -5,13 +5,13 @@
 
 _BM_PAL2_MIN            = 0
 _BM_PAL2_MAX            = 7
-_BM_PAL2_RRR_MASK       = %111'000'00           ; Mask red color.
-_BM_PAL2_RRR_MASKN      = %000'111'11           ; Mask all but red color.
-_BM_PAL2_RRR_INC        = %001'000'00           ; Increment/decrement red color.
+_BM_PAL2_RRR_MASK       = %111'000'00           ; Mask red color
+_BM_PAL2_RRR_MASKN      = %000'111'11           ; Mask all but red color
+_BM_PAL2_RRR_INC        = %001'000'00           ; Increment/decrement red color
 
-_BM_PAL2_GGG_MASK       = %000'111'00           ; Mask green color.
-_BM_PAL2_GGG_MASKN      = %111'000'11           ; Mask all but green color.
-_BM_PAL2_GGG_INC        = %000'001'00           ; Increment/decrement green color.
+_BM_PAL2_GGG_MASK       = %000'111'00           ; Mask green color
+_BM_PAL2_GGG_MASKN      = %111'000'11           ; Mask all but green color
+_BM_PAL2_GGG_INC        = %000'001'00           ; Increment/decrement green color
 
 _BM_PAL2_BB_MASK        = %000'000'11
 _BM_PAL2_BB_MASKN       = %111'111'00
@@ -22,9 +22,9 @@ _BM_PAL2_B_MASK         = %0000000'1
 ;                     #BytesToColors                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - BC: Sieze of the palette in bytes.
+;  - BC: Sieze of the palette in bytes
 ; Output:
-;  - B: Number of colors.
+;  - B: Number of colors
 BytesToColors
     
     ; Divide BC by 2 -> one color takes two bytes
@@ -34,7 +34,7 @@ BytesToColors
     ; Now BC contains max 255, because we have 512 colors
     LD B, C
 
-    ; In case of 512 colors there is an overflow, and B is 0.
+    ; In case of 512 colors there is an overflow, and B is 0
     LD A, B
     CP 0
     RET NZ
@@ -45,10 +45,10 @@ BytesToColors
 ;----------------------------------------------------------;
 ;                     #LoadPalette                         ;
 ;----------------------------------------------------------;
-; Load palette address, set bank, and finally load colors into hardware.
+; Load palette address, set bank, and finally load colors into hardware
 ; Input:
-;  - HL: Contains the current palette address.
-;  - B:  Number of colors.
+;  - HL: Contains the current palette address
+;  - B:  Number of colors
 LoadPalette
     
     CALL SetupPaletteLoad
@@ -61,7 +61,7 @@ LoadPalette
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: Address of the palette that will be copied
-;  - B:  Number of colors.
+;  - B:  Number of colors
 WritePalette
 
 .loop
@@ -87,7 +87,7 @@ SetupPaletteLoad
     ;  - 7:   0 = enable palette write auto-increment for _DC_REG_LA2_PAL_VAL_H44
     NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'001'000'1 
 
-    NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start writing the palette from the first color, we will replace all 256 colors.
+    NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start writing the palette from the first color, we will replace all 256 colors
         
     RET                                         ; ## END of the function ##
 
@@ -97,27 +97,27 @@ SetupPaletteLoad
 ; Input
 ;  - DE: Contains 9-bit color. D = xxxxxxx'B, E = RRR'GGG'BB
 ; Output:
-;  - DE: Given color with decremented brightness.
+;  - DE: Given color with decremented brightness
 BrightnessDown
 
     ; ##########################################
     ; Decrement red color (RRR'xxx'xx)
     LD A, E
-    AND _BM_PAL2_RRR_MASK                       ; Reset all bits but red.
+    AND _BM_PAL2_RRR_MASK                       ; Reset all bits but red
 
-    CP _BM_PAL2_MIN                             ; Do not decrement if red is already at 0.
+    CP _BM_PAL2_MIN                             ; Do not decrement if red is already at 0
     JR Z, .afterDecrementRed
 
-    ; Red is above 0, decrement it.
+    ; Red is above 0, decrement it
     SUB _BM_PAL2_RRR_INC
 
     ; Update original color in DE
-    LD B, A                                     ; Keep A in B, A contains new RRR value.
+    LD B, A                                     ; Keep A in B, A contains new RRR value
 
-    LD A, E                                     ; Load RRR'GGG'BB into A and reset RRR, because we will set it to new value with XOR.
+    LD A, E                                     ; Load RRR'GGG'BB into A and reset RRR, because we will set it to new value with XOR
     AND _BM_PAL2_RRR_MASKN
-    XOR B                                       ; Set new RRR value to E.
-    LD E, A                                     ; Update original input/return value.
+    XOR B                                       ; Set new RRR value to E
+    LD E, A                                     ; Update original input/return value
 
 .afterDecrementRed
 
@@ -125,21 +125,21 @@ BrightnessDown
     ; Decrement green color (xxx'GGG'xxx)
 
     LD A, E
-    AND _BM_PAL2_GGG_MASK                       ; Reset all bits but green.
+    AND _BM_PAL2_GGG_MASK                       ; Reset all bits but green
 
-    CP _BM_PAL2_MIN                             ; Do not decrement if green is already at 0.
+    CP _BM_PAL2_MIN                             ; Do not decrement if green is already at 0
     JR Z, .afterDecrementGreen
 
-    ; Green is above 0, decrement it.
+    ; Green is above 0, decrement it
     SUB _BM_PAL2_GGG_INC 
 
-    ; Update original color in DE.
-    LD B, A                                     ; Keep A in B, A contains new GGG value.
+    ; Update original color in DE
+    LD B, A                                     ; Keep A in B, A contains new GGG value
 
-    LD A, E                                     ; Load RRR'GGG'BB into A and reset GGG, because we will set it to new value with XOR.
+    LD A, E                                     ; Load RRR'GGG'BB into A and reset GGG, because we will set it to new value with XOR
     AND _BM_PAL2_GGG_MASKN
-    XOR B                                       ; Set new GGG value to E.
-    LD E, A                                     ; Update original input/return value.
+    XOR B                                       ; Set new GGG value to E
+    LD E, A                                     ; Update original input/return value
 
 .afterDecrementGreen    
 
@@ -148,24 +148,24 @@ BrightnessDown
 
     ; Prepare BBB for decrement operation: xxx'xxx'BB xxxxxxx'B-> 00000BBB
     LD A, E
-    AND _BM_PAL2_BB_MASK                        ; A contains 000'000'BB.
-    RR D                                        ; Rotate D right, if xxxxxxx'B is set, it will set CF.
-    RLA                                         ; Rotate left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF.
+    AND _BM_PAL2_BB_MASK                        ; A contains 000'000'BB
+    RR D                                        ; Rotate D right, if xxxxxxx'B is set, it will set CF
+    RLA                                         ; Rotate left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF
 
-    ; Ensure that BBB is > 0 before decreasing it.
+    ; Ensure that BBB is > 0 before decreasing it
     CP _BM_PAL2_MIN
     JR Z, .afterDecrementBlue
     
     ; A contains BBB as 00000'BBB, decrement it and update DE
-    DEC A                                       ; Decrement BBB.
+    DEC A                                       ; Decrement BBB
 
-    ; Apply new BBB value to original DE.
+    ; Apply new BBB value to original DE
     RRA                                         ; 00000'BBB -> 000000'BB -> CF
-    RL D                                        ; 00000000 -> 0000000'CF -> D now contains proper value.
+    RL D                                        ; 00000000 -> 0000000'CF -> D now contains proper value
     
-    LD B, A                                     ; Backup A containing BB.
+    LD B, A                                     ; Backup A containing BB
     LD A, E
-    AND _BM_PAL2_BB_MASKN                       ; Load RRR'GGG'BB into A and reset BB, because we will set it to new value with XOR.
+    AND _BM_PAL2_BB_MASKN                       ; Load RRR'GGG'BB into A and reset BB, because we will set it to new value with XOR
     XOR B
     LD E, A
 .afterDecrementBlue 

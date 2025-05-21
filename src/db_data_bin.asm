@@ -19,8 +19,8 @@
 ;----------------------------------------------------------;
 ;         Game Tile Sprites and Palette (Bank 30)          ;
 ;----------------------------------------------------------;
-    MMU _RAM_SLOT7, dbs.TI_SPR_BANK_S7_D30      ; Assign slots 7 to bank 30.
-    ORG _RAM_SLOT7_STA_HE000                    ; Set memory pointer to start of the slot 6.
+    MMU _RAM_SLOT7, dbs.TI_SPR_BANK_S7_D30      ; Assign slots 7 to bank 30
+    ORG _RAM_SLOT7_STA_HE000                    ; Set memory pointer to start of the slot 6
 
 ; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
 ; Sprites
@@ -62,9 +62,9 @@ tilePaletteBin                                  ; RGB332, 8 bit
 	DB $E3, $DD, $DD, $D9, $D1, $D8, $C9, $C5, $D5, $E0, $D9, $FD, $26, $2A, $DA, $E3
 tilePaletteBinLength = $ - tilePaletteBin
     
-    ASSERT $ > _RAM_SLOT6_STA_HC000             ; All data should fit into slot 6,7.
+    ASSERT $ > _RAM_SLOT6_STA_HC000             ; All data should fit into slot 6,7
     ASSERT $ <= _RAM_SLOT7_END_HFFFF
-    ASSERT $$ <= dbs.TI_SPR_BANK_S7_D30         ; All data should fit into bank 45.
+    ASSERT $$ <= dbs.TI_SPR_BANK_S7_D30         ; All data should fit into bank 45
     
 ;----------------------------------------------------------;
 ;                Layer 2 Palettes (Bank 31)                ;
@@ -201,12 +201,12 @@ menuScoreBgPaletteBytes = $ - menuScoreBgPaletteAdr
 ;----------------------------------------------------------;
 ;                Game Sprites (Bank 33...34)               ;
 ;----------------------------------------------------------;
-; Load sprites (16KB) into 2 banks mapping it to slot 6,7.
+; Load sprites (16KB) into 2 banks mapping it to slot 6,7
 
 ;----------------------------------------------------------;
 ;              Game Background (Bank 35...44)              ;
 ;----------------------------------------------------------;
-; The screen size is 320x256 (81920 bytes, 80KiB) -> 10 8KB banks.
+; The screen size is 320x256 (81920 bytes, 80KiB) -> 10 8KB banks
 
 ;----------------------------------------------------------;
 ;              16KiB Tilemap (Bank 45, 46)                 ;

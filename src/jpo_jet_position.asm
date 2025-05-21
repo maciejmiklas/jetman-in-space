@@ -17,17 +17,17 @@ IncJetX
     LD BC, (jpo.jetX)
     INC BC
 
-    ; If X >= 315 then set it to 0. X is 9-bit value. 
+    ; If X >= 315 then set it to 0. X is 9-bit value.
     ; 315 = 256 + 59 = %00000001 + %00111011 -> MSB: 1, LSB: 59
-    LD A, B                                     ; Load MSB from X into A.
-    CP 1                                        ; 9-th bit set means X > 256.
+    LD A, B                                     ; Load MSB from X into A
+    CP 1                                        ; 9-th bit set means X > 256
     JR NZ, .lessThanMaxX
-    LD A, C                                     ; Load MSB from X into A.
-    CP 59                                       ; MSB > 59.
+    LD A, C                                     ; Load MSB from X into A
+    CP 59                                       ; MSB > 59
     JR C, .lessThanMaxX
-    LD BC, 1                                    ; Jetman is above 315 -> set to 1.
+    LD BC, 1                                    ; Jetman is above 315 -> set to 1
 .lessThanMaxX
-    LD (jpo.jetX), BC                           ; Update new X position.
+    LD (jpo.jetX), BC                           ; Update new X position
 
     CALL gc.JetMoves
 
@@ -56,14 +56,14 @@ DecJetX
     LD BC, (jpo.jetX)
     DEC BC
 
-    ; If X == 0 (_GSC_X_MIN_D0) then set it to 315. X == 0 when B and C are 0.
+    ; If X == 0 (_GSC_X_MIN_D0) then set it to 315. X == 0 when B and C are 0
     LD A, B
     CP _GSC_X_MIN_D0                            ; If B > 0 then X is also > 0.
     JR NZ, .afterResetX
     LD A, C
-    CP _GSC_X_MIN_D0                            ; If C > 0 then X is also > 0.
+    CP _GSC_X_MIN_D0                            ; If C > 0 then X is also > 0
     JR NZ, .afterResetX
-    LD BC, _GSC_X_MAX_D315                      ; X == 0 (both A and B are 0) -> set X to 315.
+    LD BC, _GSC_X_MAX_D315                      ; X == 0 (both A and B are 0) -> set X to 315
 .afterResetX
     LD (jpo.jetX), BC
 
@@ -75,7 +75,7 @@ DecJetX
 ;                         #DecJetXbyB                      ;
 ;----------------------------------------------------------;
 ; Input 
-; - B: number of pixels to move Jetman Up.
+; - B: number of pixels to move Jetman Up
 DecJetXbyB
 
 .loop   

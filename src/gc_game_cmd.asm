@@ -14,7 +14,7 @@ level                   DB LEVEL_MIN
 
 ; Respawn location.
 JM_RESPAWN_X_D100       = 100
-JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off
 
 ;----------------------------------------------------------;
 ;                   #MainLoopCmd                           ;
@@ -61,7 +61,7 @@ SetupSystem
     CALL ti.SetupTiles
     CALL fi.LoadEffects
 
-    ; Load sprites from any level for mein menu.
+    ; Load sprites from any level for mein menu
     LD D, "0"
     LD E, "1"
     CALL fi.LoadSprites
@@ -216,7 +216,7 @@ LoadLevel10
 ;----------------------------------------------------------;
 BackgroundPaletteLoaded
 
-    CALL st.LoadStarsPalette                    ; Call it after the level palette because the stars' colors are right after it.
+    CALL st.LoadStarsPalette                    ; Call it after the level palette because the stars' colors are right after it
 
     RET                                         ; ## END of the function ##
 
@@ -369,7 +369,7 @@ RocketElementPickup
     CALL sc.PickupRocketElement
 
     ; ##########################################
-    ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element.
+    ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element
     CALL ro.IsFuelTankDeployed
     JR C, .notFuelTank
 
@@ -412,7 +412,7 @@ JetPlatformTakesOff
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform.
+    CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform
     RET Z
 
     ; Jetman is taking off.
@@ -517,15 +517,15 @@ EnemyHitsJet
     CALL sr.SpriteHit
 
     ; ##########################################
-    ; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy.
+    ; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy
     LD A, (jt.jetState)                         
     CP jt.JETST_RIP
-    RET Z                                       ; Exit if RIP.
+    RET Z                                       ; Exit if RIP
 
     ; ##########################################
     ; Is Jetman invincible? If so, just kill the enemy.
     CP jt.JETST_INV
-    RET Z                                       ; Exit if invincible.
+    RET Z                                       ; Exit if invincible
 
     ; ##########################################
     ; This is the first enemy hit.
@@ -554,7 +554,7 @@ RespawnJet
     LD A, JM_RESPAWN_Y_D217
     LD (jpo.jetY), A
 
-    ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
+    ; Reload the image because it has moved with the Jetman, and now he respawns on the ground
     CALL bm.CopyImageData
 
     CALL jt.SetJetStateRespawn
@@ -566,10 +566,10 @@ RespawnJet
     CALL jw.HideShots
     CALL jo.ResetJetpackOverheating
 
-    ; Show stars after loading the background image.
+    ; Show stars after loading the background image
     CALL st.ShowStars
 
-    ; Switch to flaying animation.
+    ; Switch to flaying animation
     LD A, js.SDB_STAND
     CALL js.ChangeJetSpritePattern
 
@@ -584,30 +584,6 @@ JetpackOverheat
 
     LD A, af.FX_JET_OVERHEAT
     CALL af.AfxPlay
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #SetDifficultyToEasy                    ;
-;----------------------------------------------------------;
-SetDifficultyToEasy
-
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #SetDifficultyToNormal                   ;
-;----------------------------------------------------------;
-SetDifficultyToNormal
-
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #SetDifficultyToHard                    ;
-;----------------------------------------------------------;
-SetDifficultyToHard
-
 
     RET                                         ; ## END of the function ##
 
@@ -807,7 +783,7 @@ MovementInactivity
     ; Jetman is in the air, not hovering, but is he not moving long enough?
     LD A, (jm.jetInactivityCnt)
     CP HOVER_START_D250
-    JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering.
+    JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering
 
     ; Jetman starts to hover!
     LD A, jt.AIR_HOOVER
@@ -815,52 +791,52 @@ MovementInactivity
 
     LD A, js.SDB_HOVER
     CALL js.ChangeJetSpritePattern
-    RET                     ; Already hovering, do not check standing.
+    RET                     ; Already hovering, do not check standing
 .afterHoover
 
     ; ##########################################
     ; Jetman is not hovering, but should he stand?
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE                     ; Is Jetman on the ground already?
-    RET Z                                       ; Jump if not on the ground.
+    RET Z                                       ; Jump if not on the ground
 
     LD A, (jt.jetGnd)
     CP jt.GND_STAND                             ; Jetman is on the ground, but is he standing already?
-    RET Z                                       ; Jump if already standing.
+    RET Z                                       ; Jump if already standing
 
     ; ##########################################
     ; Jetman is on the ground and does not move, but is he not moving long enough?
     LD A, (jm.jetInactivityCnt)
     CP STAND_START_D30
-    JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing.
+    JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing
     
     ; Transition from walking to standing.
     LD A, jt.GND_STAND
     CALL jt.SetJetStateGnd
 
-    LD A, js.SDB_STAND                          ; Change animation.
+    LD A, js.SDB_STAND                          ; Change animation
     CALL js.ChangeJetSpritePattern
     RET
 .afterStand
 
     ; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
-    ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
+    ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation
     LD A, (jt.jetGnd)
     CP jt.GND_WALK
-    RET NZ                                      ; Jump if not walking.
+    RET NZ                                      ; Jump if not walking
     
     CP jt.GND_JSTAND
-    RET Z                                       ; Jump already j-standing (just standing - for a short time).
+    RET Z                                       ; Jump already j-standing (just standing - for a short time)
 
     LD A, (jm.jetInactivityCnt)
     CP JSTAND_START_D15
-    RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing.
+    RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing
 
-    ; Stop walking immediately and stand still.
+    ; Stop walking immediately and stand still
     LD A, jt.GND_JSTAND
     CALL jt.SetJetStateGnd
 
-    LD A, js.SDB_JSTAND                         ; Change animation.
+    LD A, js.SDB_JSTAND                         ; Change animation
     CALL js.ChangeJetSpritePattern
 
     RET                                         ; ## END of the function ##
@@ -974,7 +950,7 @@ _StartLevel
     CALL jo.ResetJetpackOverheating
     CALL pi.ResetPickups
 
-    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
+    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data
     CALL RespawnJet
 
     LD A, ms.GAME_ACTIVE
