@@ -32,8 +32,10 @@ LoadLevelIntro
 
     ; ##########################################
     PUSH DE
-    LD (fi.introSecondFileSize), HL
+    CALL dbs.SetupArraysBank
+    LD (dba.introSecondFileSize), HL
     CALL ti.SetTilesClipVertical
+
     ; ##########################################
     ; Load palette
     LD HL, db.gameIntroPaletteAdr

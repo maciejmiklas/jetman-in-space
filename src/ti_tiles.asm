@@ -199,8 +199,8 @@ SetupTiles
 
     ; ##########################################
     ; Tell hardware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
-    NEXTREG _TI_MAP_ADR_H6E, TI_MAP_BANK_OFFSET     ; MSB of tilemap in bank 5.
-    NEXTREG _TI_DEF_ADR_H6F, TI_DEF_BANK_OFFSET             ; MSB of tilemap definitions (sprites).
+    NEXTREG _TI_MAP_ADR_H6E, TI_MAP_BANK_OFFSET ; MSB of tilemap in bank 5.
+    NEXTREG _TI_DEF_ADR_H6F, TI_DEF_BANK_OFFSET ; MSB of tilemap definitions (sprites).
 
     ; ##########################################
     ; Setup palette

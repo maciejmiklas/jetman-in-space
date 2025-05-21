@@ -910,7 +910,57 @@ platformsSizeL10        DB 30
 ;----------------------------------------------------------;
 ;                           Files                          ;
 ;----------------------------------------------------------;
-xxxxxxx
+; Tiles for level intro.
+introTilesFileName      DB "assets/l00/intro_0.map",0
+introSecondFileSize     DW 0                    ; Will be set when loading particular level, now is 0.
+
+stTilesFileName         DB "assets/l00/stars_0.map",0
+TI16K_FILE_LEVEL_POS    = 8 
+TI16K_FILE_NR_POS       = 8
+
+; Tiles for in-game platforms.
+plTileFileName          DB "assets/l00/tiles.map",0
+PL_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
+
+; Sprite file.
+sprTileFileName         DB "assets/l00/sprites_0.spr",0
+SPR_FILE_LEVEL_POS      = 8
+SPR_FILE_NR_POS         = 10
+SPR_FILE_BYT_D8192      = _BANK_BYTES_D8192
+
+; Level background file.
+lbFileName              DB "assets/l00/bg_0.nxi",0
+LB_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image.
+LB_FILE_IMG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
+; Level intro file.
+liBgFileName            DB "assets/l00/intro_0.nxi",0
+LI_BG_FILE_LEVEL_POS    = 8                     ; Position of a level number (00-99) in the file name of the background image.
+LI_BG_FILE_IMG_POS      = 17                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuMainBgFileName      DB "assets/mma/bg_0.nxi",0
+MENU_MAIN_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuEasyBgFileName      DB "assets/mma/easy_0.nxi",0
+MENU_EASY_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuHardBgFileName      DB "assets/mma/hard_0.nxi",0
+MENU_HARD_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuGameplayBgFileName  DB "assets/mmg/bg_0.nxi",0
+MENU_GAMEPLAY_BG_POS    = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuScoreBgFileName     DB "assets/mms/bg_0.nxi",0
+MENU_SCORE_BG_POS       = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
+menuKeysBgFileName      DB "assets/mmk/bg_0.nxi",0
+MENU_KEYS_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image.
+
+effectsFileName         DB "assets/com/effects.afb",0
+EFFECTS_FILE_SIZE       = 3725
+
+mmgTileFileName         DB "assets/mmg/gameplay.map",0
+mmkTileFileName         DB "assets/mmk/keys.map",0
 
 ;----------------------------------------------------------;
 ;                        Final Checks                      ;

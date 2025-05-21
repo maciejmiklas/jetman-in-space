@@ -953,7 +953,6 @@ _InitLevelLoad
 
     CALL _HideGame
     CALL gi.ResetKeysState
-    CALL ti.ResetTilemapOffset
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
     
@@ -971,6 +970,7 @@ _StartLevel
     CALL sc.PrintScore
     CALL ro.StartRocketAssembly
     CALL ti.SetTilesClipFull
+    CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
     CALL pi.ResetPickups
 
@@ -979,7 +979,7 @@ _StartLevel
 
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

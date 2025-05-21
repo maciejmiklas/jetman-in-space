@@ -30,7 +30,7 @@
 ;  - 68 - 95:  Tree 1, 6x6 , palette 2, bytes: 2176-3071, last two 4x4 tiles (stump) are combined into one 4x4
 ;  - 96 - 131: Tree 2, 6x6 , palette 2, bytes: 3072-4023
 
-tileSprBin INCBIN "assets/common/tiles.spr"
+tileSprBin INCBIN "assets/com/tiles.spr"
 tileSprBinLength = $ - tileSprBin
     ASSERT tileSprBinLength <= ti.TI_DEF_MAX_D6910
 

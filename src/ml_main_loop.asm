@@ -590,7 +590,8 @@ _MainLoop040OnActiveGame
     CALL ro.DropNextRocketElement
     CALL td.NextTimeOfDayTrigger
     CALL pi.PickupDropCounter
-    
+    CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
