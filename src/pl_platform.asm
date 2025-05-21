@@ -28,20 +28,6 @@ Y_TOP                   DB
 Y_BOTTOM                DB
     ENDS
 
-; The "close margin" has to be smaller on the left/right than the "hit margin" and larger on the top/bottom than the "hit margin".
-; We will first recognize whether an enemy should fly along the platform and, after that, whether it is a hit. If the "close margin" 
-; on the left were larger than the hit margin, the enemy would never hit the platform from the left, it would fly through it. The same is 
-; true for "top margin". Here, the "close margin" has to be larger so that the enemy first starts flying along the platform and does not 
-; hit it first.
-closeMargin     PLAM { 14/*X_LEFT*/, 14/*X_RIGHT*/, 18/*Y_TOP*/, 09/*Y_BOTTOM*/}
-spriteHitMargin PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
-shotHitMargin   PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
-jetHitMargin    PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
-
-; Be careful - Jetman bumps into a platform and gets pushed away, which counts as movement. When Jetman gets pushed too far,
-; it exceeds the margin defined here, resetting #joyOffBump.
-jetAwayMargin   PLAM { 30/*X_LEFT*/, 20/*X_RIGHT*/, 30/*Y_TOP*/, 20/*Y_BOTTOM*/}
-
 ; Coordinates for a platform
     STRUCT PLA
 X_LEFT                  DW                    ; X start of the platform.
@@ -102,8 +88,7 @@ JetPlatformHitOnJoyMove
     LD A, (platformsSize)
     LD B, A
 
-    LD IX, jetHitMargin
-
+    LD IX, dba.jetHitMargin
     CALL _PlatformDirectionHit
 
     CP PL_DHIT_RET_A_NO
@@ -260,8 +245,7 @@ ResetJoyOffBump
     LD A, (platformsSize)
     LD B, A
 
-    LD IX, jetAwayMargin
-
+    LD IX, dba.jetAwayMargin
     CALL _PlatformHit
     CP PL_HIT_RET_A_YES                         ; Jetman is close to platform - do not reset the bump.
     RET Z   
@@ -283,7 +267,7 @@ ResetJoyOffBump
 ;  - A:     #PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 PlatformSpriteHit
 
-    LD IY, spriteHitMargin
+    LD IY, dba.spriteHitMargin
     CALL _PlatformSpriteHit
 
     RET                                         ; ## END of the function ##
@@ -299,7 +283,7 @@ PlatformSpriteHit
 ;  - A:     #PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 PlatformSpriteClose
 
-    LD IY, closeMargin
+    LD IY, dba.closeMargin
     CALL _PlatformSpriteHit
     
     RET                                         ; ## END of the function ## 
@@ -314,7 +298,7 @@ PlatformSpriteClose
 ;  - A:     #PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 CheckPlatformWeaponHit
 
-    LD IY, shotHitMargin
+    LD IY, dba.shotHitMargin
     CALL _PlatformSpriteHit
 
     RET                                         ; ## END of the function ##
@@ -548,6 +532,7 @@ PL_HIT_RET_A_YES        = 1                     ; Sprite hits the platform.
 ; Unchanged: HL, IX
 _PlatformHit
 
+    CALL dbs.SetupArraysBank
 .loopOverPlatforms
 
     ; ##########################################
@@ -653,6 +638,7 @@ PL_DHIT_RET_A_BOTTOM    = 4                     ; Sprite hits the platform from 
 
 _PlatformDirectionHit
 
+    CALL dbs.SetupArraysBank
 .loopOverPlatforms
 
     ; ##########################################

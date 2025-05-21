@@ -759,6 +759,20 @@ rocketExplodeTankDB     DB 30, 31, 32, 33       ; Sprite IDs for explosion.
 ;----------------------------------------------------------;
 ; [amount of platforms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels.
 
+; The "close margin" has to be smaller on the left/right than the "hit margin" and larger on the top/bottom than the "hit margin".
+; We will first recognize whether an enemy should fly along the platform and, after that, whether it is a hit. If the "close margin" 
+; on the left were larger than the hit margin, the enemy would never hit the platform from the left, it would fly through it. The same is 
+; true for "top margin". Here, the "close margin" has to be larger so that the enemy first starts flying along the platform and does not 
+; hit it first.
+closeMargin     pl.PLAM { 14/*X_LEFT*/, 14/*X_RIGHT*/, 18/*Y_TOP*/, 09/*Y_BOTTOM*/}
+spriteHitMargin pl.PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
+shotHitMargin   pl.PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
+jetHitMargin    pl.PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
+
+; Be careful - Jetman bumps into a platform and gets pushed away, which counts as movement. When Jetman gets pushed too far,
+; it exceeds the margin defined here, resetting #joyOffBump.
+jetAwayMargin   pl.PLAM { 30/*X_LEFT*/, 20/*X_RIGHT*/, 30/*Y_TOP*/, 20/*Y_BOTTOM*/}
+
 ; Level 1
 platformsL1
     pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
