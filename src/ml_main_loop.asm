@@ -48,7 +48,6 @@ _MainLoop000
     
     CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMenuMain
-    CALL _MainLoop000OnActiveMenuManual
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
 
@@ -131,21 +130,6 @@ _MainLoop000OnActiveMenuMain
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;            #_MainLoop000OnActiveMenuManual               ;
-;----------------------------------------------------------;
-_MainLoop000OnActiveMenuManual
-
-    ; Return if manual menu is inactive
-    LD A, (ms.mainState)
-    CP ms.MENU_MANUAL
-    RET NZ
-
-    ; ##########################################
-    CALL mmn.MenuManualUserInput
-    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

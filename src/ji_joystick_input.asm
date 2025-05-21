@@ -54,7 +54,7 @@ SetupJoystick
     LD (userInputDelayCnt),A
 
     XOR A
-    LD (userInputInactiveCnt), 0
+    LD (userInputInactiveCnt), A
 
     LD DE, _DummyFunction
     LD (callbackRight), DE

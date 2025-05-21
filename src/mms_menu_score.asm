@@ -58,6 +58,9 @@ LoadMenuScore
 _SetupMenuScore
 
     ; Setup joystick
+    LD A, ji.USER_INPUT_DELAY
+    CALL ji.SetupJoystick
+
     LD DE, _JoyFire
     LD (ji.callbackFire), DE
 
@@ -108,10 +111,6 @@ _SetupMenuScore
 ;----------------------------------------------------------;
 _JoyFire
 
-    CALL ji.CanProcessJoystickInput
-    CP _RET_YES_D1
-    RET NZ
-
     ; Can user input name?
     LD A, (nameChPos)
     CP NAME_CH_POS_OFF
@@ -126,10 +125,6 @@ _JoyFire
 ;----------------------------------------------------------;
 _JoyDown
 
-    CALL ji.CanProcessJoystickInput
-    CP _RET_YES_D1
-    RET NZ
-
     ; Can user input name?
     LD A, (nameChPos)
     CP NAME_CH_POS_OFF
@@ -142,10 +137,6 @@ _JoyDown
 ;----------------------------------------------------------;
 _JoyUp
 
-    CALL ji.CanProcessJoystickInput
-    CP _RET_YES_D1
-    RET NZ
-
     ; Can user input name?
     LD A, (nameChPos)
     CP NAME_CH_POS_OFF
@@ -157,10 +148,6 @@ _JoyUp
 ;                       #_JoyLeft                          ;
 ;----------------------------------------------------------;
 _JoyLeft
-
-    CALL ji.CanProcessJoystickInput
-    CP _RET_YES_D1
-    RET NZ
 
     ; Can user input name?
     LD A, (nameChPos)
@@ -179,10 +166,6 @@ _JoyLeft
 ;                       #_JoyRight                         ;
 ;----------------------------------------------------------;
 _JoyRight
-
-    CALL ji.CanProcessJoystickInput
-    CP _RET_YES_D1
-    RET NZ
 
     ; Can user input name?
     LD A, (nameChPos)

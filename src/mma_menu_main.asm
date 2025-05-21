@@ -35,12 +35,13 @@ MENU_EL_MAX             = MENU_EL_DIFFICULTY
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    ; Update menu state.
+    ; Update menu state
     LD A, ms.MENU_MAIN
     CALL ms.SetMainState
 
     ; ##########################################
-    ; Setup joystick.
+    ; Setup joystick
+    LD A, ji.USER_INPUT_DELAY
     CALL ji.SetupJoystick
 
     LD DE, _JoyFire
@@ -58,6 +59,7 @@ LoadMainMenu
     LD DE, _JoyRight
     LD (ji.callbackRight), DE
 
+    ; ##########################################
     CALL _LoadMenuNormal
 
     ; ##########################################
