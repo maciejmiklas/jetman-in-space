@@ -22,10 +22,9 @@ menuPos                 DB MENU_EL_MIN
 MENU_EL_START           = 1                     ; START GAME
 MENU_EL_LSELECT         = 2                     ; LEVEL SELECT
 MENU_EL_SCORE           = 3                     ; HIGH SCORE
-MENU_EL_SETTINGS        = 4                     ; SETTINGS
-MENU_EL_KEYS            = 5                     ; IN GAME KEYS
-MENU_EL_GAMEPLAY        = 6                     ; GAMEPLAY
-MENU_EL_DIFFICULTY      = 7                     ; DIFFICULTY
+MENU_EL_KEYS            = 4                     ; IN GAME KEYS
+MENU_EL_GAMEPLAY        = 5                     ; GAMEPLAY
+MENU_EL_DIFFICULTY      = 6                     ; DIFFICULTY
 
 MENU_EL_MIN             = MENU_EL_START
 MENU_EL_MAX             = MENU_EL_DIFFICULTY

@@ -19,7 +19,7 @@ HideGameBar
     LD (gamebarState), A
 
     ; ##########################################
-    ; Remove gamebar from screen.
+    ; Remove gamebar from screen
     LD A, GB_TILES_D13
     LD B, A
     CALL ti.CleanTiles
@@ -42,7 +42,7 @@ ShowGameBar
 ;----------------------------------------------------------;
 PrintDebug
     
-    ; Return if gamebar is hidden.
+    ; Return if gamebar is hidden
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
@@ -50,7 +50,14 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (mij.userInputInactiveCnt)
+    LD A, (mms.nameChPos)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 50
+    LD H, 0
+    LD A, (mms.tileChar)
     LD L, A
     CALL ut.PrintNumber
 
