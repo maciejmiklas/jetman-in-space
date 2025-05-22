@@ -41,6 +41,7 @@ menuTextEa DB " EASY "
 menuTextNo DB "NORMAL"
 menuTextHa DB " HARD "
 
+; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
 menuScore
     DW 10001
     DW 20002
@@ -56,28 +57,26 @@ menuScore2
 menuScore3
     DW 07007
     DW 08008
-    DB "   FRED      "
+    DB "   MARCIN    "
 menuScore4
     DW 09009
     DW 11011
-    DB "   FRED1     "
+    DB "   ANKA      "
     DW 12012
     DW 13013
-    DB "   FRED2     "
+    DB "   JUREK     "
     DW 14014
     DW 15015
-    DB "   FRED3     "
+    DB "   FRANEK    "
     DW 16016
     DW 17017
-    DB "   FRED4     "
+    DB "   ZUZA      "
     DW 18018
     DW 19019
-    DB "   FRED5     "
+    DB "   KAROL     "
     DW 21021
     DW 22022
-    DB "   FRED6     "
-
-menuScoreEmptyName DB "             "
+    DB "   FRED      "
 
 ;----------------------------------------------------------;
 ;                   Movement patterns                      ;

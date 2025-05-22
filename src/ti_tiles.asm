@@ -5,6 +5,9 @@
 
 TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels
 
+H_D40                   = 40
+V_D32                   = 32
+
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
 TI_H_BYTES_D80          = 320/8 * 2 
 
@@ -17,7 +20,7 @@ TI_MAP_RAM_H5B00        = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap
 TI_MAP_BANK_OFFSET      = (TI_MAP_RAM_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
     ASSERT TI_MAP_BANK_OFFSET =  $1B
 
-TI_MAP_TILES            = _TI_H_D40*_TI_V_D32
+TI_MAP_TILES            = H_D40*V_D32
 TI_MAP_BYTES_D2560      = TI_MAP_TILES*2        ; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes
 
 ; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
@@ -38,6 +41,7 @@ TX_ASCII_OFFSET_D34     = 34                    ; Tiles containing characters be
 TX_PALETTE_D0           = 0                     ; Palette byte for tile characters
 TI_EMPTY_D57            = 57                    ; Empty tile
 
+; TX - Text, ASCII codes
 TX_IDX_EMPTY            = TX_ASCII_OFFSET_D34 + TI_EMPTY_D57
 TX_IDX_ARROWS           = TX_ASCII_OFFSET_D34 + 190
 TX_IDX_ENTER            = TX_ASCII_OFFSET_D34 + 191
@@ -140,11 +144,11 @@ CleanAllTiles
 
     ; ##########################################
     LD A, TI_EMPTY_D57
-    LD B, _TI_H_D40
+    LD B, H_D40
     ; Number of loops: 40*32
 .loopH
     PUSH BC
-    LD B, _TI_V_D32
+    LD B, V_D32
 
 .loopV
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile

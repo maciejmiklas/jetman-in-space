@@ -431,11 +431,6 @@ _GC_FLIP_OFF_D0         = 0
 _16BIT_CHARS_D5         = 5
 
 ; ##############################################
-; Tiles
-_TI_H_D40               = 40
-_TI_V_D32               = 32
-
-; ##############################################
 ; Screen
 _SC_SYNC_SL_D192        = 192                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz
 _SC_SHAKE_BY_D2         = 2                     ; Number of pixels to move the screen by shaking
@@ -460,7 +455,6 @@ _BM_YRES_D256           = 256
 
 _GND_THICK_D8           = 8                     ; The thickness of the ground (tilemap)
 _GSC_JET_GND_D217       = _GSC_Y_MAX_D232 - _GND_THICK_D8 +1
-
 
 ; ##############################################
 ; Game bar

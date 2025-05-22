@@ -9,11 +9,13 @@ LINE_INDICATION_D10     = 10
 ASCII_A                 = 64                    ; 64 is space, it's not proper ASCII code, but tiles are set so
 ASCII_Z                 = 90
 
-SCORE_BYTES_D4          = 4
-TILE_START              = _TI_H_D40*2
+SCORE_BYTES_D4          = 4                     ; Hi score takes 4 characters, 2x16bit number
+TILE_START              = ti.H_D40*2
+
+; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
 SCORE_TEXT_SIZE_D13     = 13
 SCORE_TEXT_START        = SCORE_BYTES_D4 + 3    ; Whole text has 13 characters, but starts with 3 spaces
-LINE_SPACE              = _TI_H_D40*2
+LINE_SPACE              = ti.H_D40*2
 LINE_DATA_SIZE          = 4 + SCORE_TEXT_SIZE_D13; 2*DW + text
 
 ; This menu has two modes:
@@ -112,7 +114,6 @@ _SetupMenuScore
     CALL _PrintWholeScore
 
     ; ###########################################
-    LD A, 2
     CALL _StoreNewScore
 
     LD A, 2
@@ -135,6 +136,10 @@ _JoyFire
     RET
 .enter
 
+    ; FX
+    LD A, af.MENU_ENTER
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -155,6 +160,10 @@ _JoyDown
     LD (tileChar), A
 
     CALL _StoreCurrentChar
+
+    ; FX
+    LD A, af.FX_FIRE2
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
@@ -177,6 +186,10 @@ _JoyUp
 
     CALL _StoreCurrentChar
 
+    ; FX
+    LD A, af.FX_FIRE1
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -196,6 +209,10 @@ _JoyLeft
     LD A, ASCII_A
     LD (tileChar), A
 
+    ; FX
+    LD A, af.FX_MENU_MOVE
+    CALL af.AfxPlay
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -214,6 +231,10 @@ _JoyRight
     ; Reset character to first one
     LD A, ASCII_A
     LD (tileChar), A
+
+    ; FX
+    LD A, af.FX_MENU_MOVE
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
@@ -249,7 +270,7 @@ _PrintScoreLine
 
     ; ##########################################
     ; DE will point to the position when we print line given by A
-    LD D, LINE_SPACE + _TI_H_D40
+    LD D, LINE_SPACE + ti.H_D40
     LD E, A
     MUL DE                                      ; DE has been moved A lines
     ADD DE, TILE_START                          ; Add top margin
@@ -276,17 +297,16 @@ _PrintScoreLine
     PUSH DE
     CALL tx.PrintNum16
     POP DE
-
+    
     ; ##########################################
     ; Print name
-    ; Move IX from LO byte to text
+    ; Move IX and DE from LO byte to text
     INC IX
     INC IX
-    
     ADD DE, _16BIT_CHARS_D5                     ; DE points to text line with players name
+
     LD BC, DE
     LD A, SCORE_TEXT_SIZE_D13
-
     LD DE, IX
     CALL ti.PrintText
 
@@ -311,21 +331,33 @@ _LineToIX
 ;----------------------------------------------------------;
 ;                   #_StoreNewScore                        ;
 ;----------------------------------------------------------;
-; Store the last user's high score into #dba.menuScore.
+; Store the last user's high score into #dba.menuScore, position is given by #scoreLine
 _StoreNewScore
 
+    ; Set IX to #dba.menuScore that will be updated 
     CALL dbs.SetupArraysBank
-
     LD A, (scoreLine)
-    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated
+    CALL _LineToIX
 
+    ; ##########################################
+    ; Copy score from game to the line
     LD HL, (sc.scoreHi)
     LD (IX), HL
 
     INC IX
     INC IX
+
     LD HL, (sc.scoreLo)
     LD (IX), HL
+
+    ; ##########################################
+    ; Clear users name
+    LD B, SCORE_TEXT_SIZE_D13 +2                ; +2 for size of #sc.scoreLo
+    LD A, ti.TX_IDX_EMPTY
+.nameLoop
+    LD (IX), A
+    INC IX
+    DJNZ .nameLoop
 
     RET                                         ; ## END of the function ##
 
