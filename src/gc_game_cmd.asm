@@ -452,6 +452,8 @@ PlatformWeaponHit
 ;  - IX: Pointer to enemy's #sr.SPR.
 EnemyHit
 
+    CALL dbs.SetupArraysBank
+
     CALL sr.SetSpriteId
     CALL sr.SpriteHit
 
@@ -511,6 +513,8 @@ EnemyHit
 ;  - IX:    Pointer enemy's #SPR
 EnemyHitsJet
 
+    CALL dbs.SetupArraysBank
+    
     ; Destroy the enemy.
     CALL sr.SetSpriteId
     CALL sr.SpriteHit

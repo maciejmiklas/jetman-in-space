@@ -4,19 +4,25 @@
     MODULE mms
 
 LINES_D10               = 10
-LINE_INDICATION_D10     = 10
+LINE_INDICATION_TI_D10  = 10
 
 ASCII_A                 = 64                    ; 64 is space, it's not proper ASCII code, but tiles are set so
 ASCII_Z                 = 90
 
-MARGIN_TI_TOP_D80        = ti.H_D40*2
-LINE_TI_H_D120          = LINE_TI_BREAK_D80+ti.H_D40; Horizontal space in tiles taken by a single line
-LINE_TI_BREAK_D80       = ti.H_D40*2            ; Space in tiles between lines
+MARGIN_TOP_LI_D2        = 2                     ; Top margin has 3 lines
+MARGIN_TOP_TI_D80       = MARGIN_TOP_LI_D2*ti.H_D40
 
-SCORE_BYTES_D4          = 4                     ; Hi score takes 4 characters, 2x16bit number
-SCORE_TEXT_BYTES_D13    = 13                    ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
-SCORE_TEXT_START_D7     = SCORE_BYTES_D4+3      ; Whole text has 13 characters, but starts with 3 spaces
-LINE_BYTES_D15          = 4+SCORE_TEXT_BYTES_D13; 2*DW + text
+SPACE_LINES_LI_D2       = 2                     ; Space between score lines is 2 lines
+SPACE_LINES_TI_D80      = SPACE_LINES_LI_D2*ti.H_D40 ; Number of tiles taken by the space between score lines
+SCORE_H_LI_D3           = 3                     ; Number of lines taken by the single score
+SCORE_H_TI_D120         = SCORE_H_LI_D3*ti.H_D40; Number of tiles taken by the single score
+
+NAME_TI_SPACE_D3        = 3                     ; Before the name there are 3 spaces
+SCORE_TI_D10            = 10                    ; 2x16 bit has 2x5 = 10 characters
+SCORE_BYTES_D4          = 4                     ; Hi score takes 4 bytes, 2x16bit number
+SCORE_TX_START_BYT_D7   = SCORE_BYTES_D4+NAME_TI_SPACE_D3; Whole text has 13 characters, but starts with 3 spaces
+SCORE_TX_BYTES_D13      = NAME_TI_SPACE_D3+SCORE_TI_D10; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
+LINE_BYTES_D15          = 4+SCORE_TX_BYTES_D13  ; 2*DW + text
 
 ; This menu has two modes:
 ;  - Read only, where #nameChPos == NAME_CH_POS_OFF
@@ -28,7 +34,19 @@ NAME_CH_POS_ENTER       = 10
 nameChPos               DB NAME_CH_POS_OFF      ; Cursor position where the user enters the name
 
 tileChar                DB ASCII_A              ; Currently visible character from tile map
-scoreLine               DB 2                    ; Score line where user enters the name
+scoreLine               DB 6                    ; Score line where user enters the name
+
+;----------------------------------------------------------;
+;                      #AnimateCursor                      ;
+;----------------------------------------------------------;
+AnimateCursor
+
+    CALL dbs.SetupArraysBank
+    LD IX, dba.menuScoreCursor
+    CALL sr.SetSpriteId
+    CALL sr.UpdateSpritePattern
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                     #EnterNewScore                       ;
@@ -39,6 +57,10 @@ EnterNewScore
     LD (nameChPos), A
 
     CALL _SetupMenuScore
+    CALL _StoreNewScore
+
+    LD A, (scoreLine)
+    CALL _PrintScoreLine
 
     RET                                         ; ## END of the function ##
 
@@ -112,12 +134,6 @@ _SetupMenuScore
 
     ; ###########################################
     CALL _PrintWholeScore
-
-    ; ###########################################
-    CALL _StoreNewScore
-
-    LD A, 2
-    CALL _PrintScoreLine
     
     RET                                         ; ## END of the function ##
 
@@ -213,22 +229,7 @@ _JoyLeft
     LD A, af.FX_MENU_MOVE
     CALL af.AfxPlay
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      #_ShowCursor                        ;
-;----------------------------------------------------------;
-_ShowCursor
-
-    ; Calculate the Y position for the cursor
-
-    ; First calculate the amount of tiles taken by
-    LD A, (scoreLine)
-    LD D, LINE_TI_H_D120*8                      ; *8 to calculate tiles to pixels
-    LD E, A
-    MUL DE                                      ; DE has been moved A lines
-    ADD DE, MARGIN_TI_TOP_D80*8                   ; Add top margin
-
+    CALL _UpdateCursor
 
     RET                                         ; ## END of the function ##
 
@@ -252,6 +253,50 @@ _JoyRight
     ; FX
     LD A, af.FX_MENU_MOVE
     CALL af.AfxPlay
+
+    CALL _UpdateCursor
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #_UpdateCursor                        ;
+;----------------------------------------------------------;
+_UpdateCursor
+
+    CALL dbs.SetupArraysBank
+
+    ; Calculate X postion
+    LD DE, (nameChPos)
+    ADD DE, LINE_INDICATION_TI_D10
+    ADD DE, SCORE_TI_D10
+    ADD DE, NAME_TI_SPACE_D3
+    LD D, ti.TI_PIXELS_D8
+    MUL D, E
+    ADD DE, -4
+    LD HL, DE
+
+    ; ##########################################
+    ; Calculate the Y position for the cursor
+
+    ; First calculate the amount of tiles taken by
+    LD A, (scoreLine)
+    LD D, SCORE_H_LI_D3
+    LD E, A
+    MUL D, E                                    ; DE has been moved A lines
+    ADD DE, MARGIN_TOP_LI_D2                    ; Add top margin
+
+    ; E contains the number of lines from the top to the current score, D is 0.
+    LD D, ti.TI_PIXELS_D8
+    MUL D, E                                    ; E contains number of pixels from the top, D is 0.
+
+    ; ##########################################
+    ; Store X, Y position to sprite
+    LD IX, dba.menuScoreCursor
+    LD (IX + sr.SPR.X), HL
+    LD (IX + sr.SPR.Y), E
+
+    ; ##########################################
+    CALL sr.UpdateSpritePosition
 
     RET                                         ; ## END of the function ##
 
@@ -287,11 +332,11 @@ _PrintScoreLine
 
     ; ##########################################
     ; DE will point to the position when we print line given by A
-    LD D, LINE_TI_H_D120
+    LD D, SCORE_H_TI_D120
     LD E, A
-    MUL DE                                      ; DE has been moved A lines
-    ADD DE, MARGIN_TI_TOP_D80                   ; Add top margin
-    ADD DE, LINE_INDICATION_D10                 ; Add line indication
+    MUL D, E                                    ; DE has been moved A lines
+    ADD DE, MARGIN_TOP_TI_D80                   ; Add top margin
+    ADD DE, LINE_INDICATION_TI_D10                 ; Add line indication
 
     ; ##########################################
     ; Print HI byte from current score line.  HL points to HI byte
@@ -323,7 +368,7 @@ _PrintScoreLine
     ADD DE, _16BIT_CHARS_D5                     ; DE points to text line with players name
 
     LD BC, DE
-    LD A, SCORE_TEXT_BYTES_D13
+    LD A, SCORE_TX_BYTES_D13
     LD DE, IX
     CALL ti.PrintText
 
@@ -369,12 +414,23 @@ _StoreNewScore
 
     ; ##########################################
     ; Clear users name
-    LD B, SCORE_TEXT_BYTES_D13 +2                ; +2 for size of #sc.scoreLo
+    LD B, SCORE_TX_BYTES_D13 +2                ; +2 for size of #sc.scoreLo
     LD A, ti.TX_IDX_EMPTY
 .nameLoop
     LD (IX), A
     INC IX
     DJNZ .nameLoop
+
+    ; ##########################################
+    ; Show cursor
+    CALL _UpdateCursor
+
+    XOR A
+    LD IX, dba.menuScoreCursor
+
+    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
+    CALL sr.SetStateVisible
+    CALL sr.ShowSprite
 
     RET                                         ; ## END of the function ##
 
@@ -387,9 +443,9 @@ _StoreCurrentChar
 
      ; DE will point to RAM containing the character the user currently enters.
     LD A, (scoreLine)
-    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated
+    CALL _LineToIX                                 ; IX points to #dba.menuScore that will be updated
     LD DE, IX
-    ADD DE, SCORE_TEXT_START_D7                    ; Move DE to start of user name
+    ADD DE, SCORE_TX_START_BYT_D7                    ; Move DE to start of user name
     LD A, (nameChPos)
     ADD DE, A
 

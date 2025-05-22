@@ -46,20 +46,15 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-
+/*
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (mms.nameChPos)
+    LD A, (mms.tmp2)
     LD L, A
     CALL ut.PrintNumber
+*/
 
-    ; ##########################################
-    LD BC, 50
-    LD H, 0
-    LD A, (mms.tileChar)
-    LD L, A
-    CALL ut.PrintNumber
 
 
     RET                                         ; ## END of the function ##

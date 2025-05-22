@@ -161,7 +161,7 @@ ResetEnp
 ;  - IX:  Pointer to the #sr.SPR array
 ;  - B:   Size of the #sr.SPR and #ENP array (both will be modified)
 ResetPatternEnemies
-
+    
 .enemyLoop
     CALL sr.ResetSprite
     
@@ -187,7 +187,7 @@ ResetPatternEnemies
 ;                #AnimatePatternEnemies                    ;
 ;----------------------------------------------------------;
 AnimatePatternEnemies
-    
+
     CALL dbs.SetupArraysBank
 
     ; ##########################################
@@ -504,6 +504,7 @@ _MoveEnemyX
 ;  - IX:    Pointer to #SPR holding data for single sprite that will be moved
 ; Modifies: all
 _MoveEnemy
+
     ; Move the Sprite horizontally if it has been hit and it's dying
     LD A, (IX + sr.SPR.STATE)
     CALL sr.SetSpriteId                         ; Set sprite ID in hardware

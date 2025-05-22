@@ -289,7 +289,7 @@ ShowSprite
     CALL UpdateSpritePattern                    ; Render sprite
 
     RET                                         ; ## END of the function ##
-    
+
 ;----------------------------------------------------------;
 ;                    #SetStateVisible                      ;
 ;----------------------------------------------------------;
@@ -549,8 +549,6 @@ MoveY
 ;  - A:     ID in #srSpriteDB
 ; Modifies: A, BC, HL
 _LoadSpritePattern
-
-    CALL dbs.SetupArraysBank
 
     ; Find DB record.
     LD HL, dba.srSpriteDB                       ; HL points to the beginning of the DB

@@ -46,19 +46,15 @@ menuScore
     DW 10001
     DW 20002
     DB "   MACIEJ    "
-menuScore1
     DW 30003
     DW 40004
     DB "   DANIEL    "
-menuScore2
     DW 50005
     DW 60007
     DB "   ARTUR     "
-menuScore3
     DW 07007
     DW 08008
     DB "   MARCIN    "
-menuScore4
     DW 09009
     DW 11011
     DB "   ANKA      "
@@ -77,6 +73,9 @@ menuScore4
     DW 21021
     DW 22022
     DB "   FRED      "
+
+menuScoreCursor
+    sr.SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
 ;----------------------------------------------------------;
 ;                   Movement patterns                      ;

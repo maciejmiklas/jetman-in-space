@@ -91,6 +91,7 @@ FireSpeedUp
 ;                       #HideShots                         ;
 ;----------------------------------------------------------;
 HideShots
+    CALL dbs.SetupArraysBank
 
     XOR A
     LD (fireDelayCnt), A
@@ -316,6 +317,8 @@ FireReleased
 ;----------------------------------------------------------;
 Fire
 
+    CALL dbs.SetupArraysBank
+    
     ; Check delay to limit fire speed
     LD A, (fireDelay)
     LD B, A

@@ -350,6 +350,21 @@ _MainLoop008
     CALL _MainLoop008OnActiveGame
     CALL _MainLoop008OnActiveGameOrFlyingRocket
     CALL _MainLoop008OnFlayingRocket
+    CALL _MainLoop008OnActiveScoreMenu
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;            #_MainLoop008OnActiveScoreMenu                ;
+;----------------------------------------------------------;
+_MainLoop008OnActiveScoreMenu
+
+    LD A, (ms.mainState)
+    CP ms.MENU_SCORE
+    RET NZ
+
+    ; ##########################################
+    CALL mms.AnimateCursor
 
     RET                                         ; ## END of the function ##
 
