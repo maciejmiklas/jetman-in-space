@@ -105,7 +105,7 @@ FX_JET_TAKE_OFF         = 27
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
 ;----------------------------------------------------------;
-; Setup AYFX for playing sound effects
+; Setup AYFX for playing sound effects.
 SetupAyFx
 
     CALL dbs.SetupAyFxsBank
@@ -122,7 +122,7 @@ SetupAyFx
 ;----------------------------------------------------------;
 ;                       SetAy3ToMono                       ;
 ;----------------------------------------------------------;
-; Configure AY3 as mono; call after PlayNextDawSong
+; Configure AY3 as mono; call after PlayNextDawSong.
 SetAy3ToMono
 
     LD A, _PERIPHERAL_04_H09
@@ -175,7 +175,7 @@ AfxInit
     OUT (C), D
     JR NZ, .afxInit1
 
-    LD (afxNseMix+1), DE                         ; Reset the player variables
+    LD (afxNseMix+1), DE                        ; Reset the player variables
 
     RET                                         ; ## END of the function ##
 
@@ -194,30 +194,30 @@ AfxFrame
     PUSH BC
 
     LD A, 11
-    LD H, (IX+1)                                ; Compare high-order byte of address to <11.
+    LD H, (IX+1)                                ; Compare high-order byte of address to <11
     CP H
-    JR NC, .afxFrame7                           ; The channel does not play, we skip.
+    JR NC, .afxFrame7                           ; The channel does not play, we skip
     LD L, (IX+0)
-    LD E, (HL)                                  ; We take the value of the information byte.
+    LD E, (HL)                                  ; We take the value of the information byte
     INC HL
 
     SUB B                                       ; Select the volume register:
     LD D, B                                     ; (11-3=8, 11-2=9, 11-1=10)
 
-    LD B, $FF                                   ; Output the volume value.
+    LD B, $FF                                   ; Output the volume value
     OUT (C), A
     LD B, $BF
     LD A, E
     AND $0F
     OUT (C), A
     BIT 5, E                                    ; Will the tone change?
-    JR Z, .afxFrame1                            ; Tone does not change.
+    JR Z, .afxFrame1                            ; Tone does not change
 
     LD A, 3                                     ; Select the tone registers:
     SUB D                                       ; 3-3=0, 3-2=1, 3-1=2
     ADD A, A                                    ; 0*2=0, 1*2=2, 2*2=4
 
-    LD B, $FF                                   ; Output the tone values.
+    LD B, $FF                                   ; Output the tone values
     OUT (C), A
     LD B, $BF
     LD D, (HL)
@@ -233,41 +233,41 @@ AfxFrame
 
 .afxFrame1
     BIT 6, E                                    ; Will the noise change?
-    JR Z, .afxFrame3                            ; Noise does not change.
+    JR Z, .afxFrame3                            ; Noise does not change
 
-    LD A, (HL)                                  ; Read the meaning of noise.
+    LD A, (HL)                                  ; Read the meaning of noise
     SUB $20
-    JR C, .afxFrame2                            ; Less than $20, play on.
-    LD H, A                                     ; Otherwise the end of the effect.
+    JR C, .afxFrame2                            ; Less than $20, play on
+    LD H, A                                     ; Otherwise the end of the effect
     LD C,$FF
-    LD B, C                                     ; In BC we record the most time.
+    LD B, C                                     ; In BC we record the most time
     JR .afxFrame6
 
 .afxFrame2
     INC HL
-    LD (afxNseMix+1), A                        ; Keep the noise value.
+    LD (afxNseMix+1), A                        ; Keep the noise value
 
 .afxFrame3
-    POP BC                                      ; Restore the value of the cycle in B.
+    POP BC                                      ; Restore the value of the cycle in B
     PUSH BC
-    INC B                                       ; Number of shifts for flags TN.
+    INC B                                       ; Number of shifts for flags TN
 
-    LD A, %01101111                             ; Mask for flags TN.
+    LD A, %01101111                             ; Mask for flags TN
 .afxFrame4:
-    RRC E                                       ; Shift flags and mask.
+    RRC E                                       ; Shift flags and mask
     RRCA
     DJNZ .afxFrame4
     LD D, A
 
-    LD BC, afxNseMix+2                         ; Store the values of the flags.
+    LD BC, afxNseMix+2                         ; Store the values of the flags
     LD A, (BC)
     XOR E
     AND D
-    XOR E                                       ; E is masked with D.
+    XOR E                                       ; E is masked with D
     LD (BC), A
 
 .afxFrame5
-    LD C, (IX+2)                                ; Increase the time counter.
+    LD C, (IX+2)                                ; Increase the time counter
     LD B, (IX+3)
     INC BC
 
@@ -275,17 +275,17 @@ AfxFrame
     LD (IX+2), C
     LD (IX+3), B
 
-    LD (IX+0), L                                ; Save the changed address.
+    LD (IX+0), L                                ; Save the changed address
     LD (IX+1), H
 
     CALL _CheckRelease
 .afxFrame7
-    LD BC, 8                                    ; Go to the next channel.
+    LD BC, 8                                    ; Go to the next channel
     ADD IX, BC
     POP BC
     DJNZ .afxFrame0
 
-    LD HL, $FFBF                                ; Output the value of noise and mixer.
+    LD HL, $FFBF                                ; Output the value of noise and mixer
 
 afxNseMix
     LD DE, 0                                    ; +1(E)=noise, +2(D)=mixer
@@ -343,18 +343,18 @@ AfxPlayLooped
     LD E, 3
     ADD IX, DE
     POP AF
-    LD DE, 0                                    ; In DE the longest time in search.
+    LD DE, 0                                    ; In DE the longest time in search
     LD H, E
     LD L, A
     ADD HL, HL
 afxBnkAdr2
-    LD BC, 0                                    ; Address of the effect offsets table.
+    LD BC, 0                                    ; Address of the effect offsets table
     ADD HL, BC
     LD C, (HL)
     INC HL
     LD B, (HL)
-    ADD HL, BC                                  ; The effect address is obtained in hl.
-    PUSH HL                                     ; Save the effect address on the stack.
+    ADD HL, BC                                  ; The effect address is obtained in hl
+    PUSH HL                                     ; Save the effect address on the stack
     JP DoPlay
     ; !!!! AfxPlay MUST FOLLOW - THERE IS NOT RET !!!!
 
@@ -369,7 +369,7 @@ AfxPlay
 
     CALL dbs.SetupAyFxsBank
 
-    DEC A                                       ; Number effects from 1 as the ayfxedit.exe does.
+    DEC A                                       ; Number effects from 1 as the ayfxedit.exe does
     
     PUSH AF
     LD A, C
@@ -378,25 +378,25 @@ AfxPlay
     LD (releaseHiSmc), A                        ; SMC>
     POP AF
     
-    LD DE, 0                                    ; In DE the longest time in search.
+    LD DE, 0                                    ; In DE the longest time in search
     LD H, E
     LD L, A
     ADD HL, HL
 
 afxBnkAdr1
-    LD BC, 0                                    ; Address of the effect offsets table.
+    LD BC, 0                                    ; Address of the effect offsets table
     ADD HL, BC
     LD C, (HL)
     INC HL
     LD B, (HL)
-    ADD HL, BC                                  ; The effect address is obtained in HL.
-    PUSH HL                                     ; Save the effect address on the stack.
-    LD HL, afxChDesc                            ; Empty channel search.
+    ADD HL, BC                                  ; The effect address is obtained in HL
+    PUSH HL                                     ; Save the effect address on the stack
+    LD HL, afxChDesc                            ; Empty channel search
     LD B, 3
 .afxPlay0
     INC HL
     INC HL
-    LD A, (HL)                                  ; Compare the channel time with the largest.
+    LD A, (HL)                                  ; Compare the channel time with the largest
     INC HL
     CP E
     JR C, .afxPlay1
@@ -404,9 +404,9 @@ afxBnkAdr1
     LD A, (HL)
     CP D
     JR C, .afxPlay1
-    LD E, C                                     ; Remember the longest time.
+    LD E, C                                     ; Remember the longest time
     LD D, A
-    PUSH HL                                     ; Remember the channel address+3 in IX.
+    PUSH HL                                     ; Remember the channel address+3 in IX
     POP IX
 
 .afxPlay1
@@ -419,19 +419,19 @@ afxBnkAdr1
     DJNZ .afxPlay0
 
 DoPlay
-    POP DE                                      ; Take the effect address from the stack.
-    LD (IX-3), E                                ; Put in the channel descriptor.
+    POP DE                                      ; Take the effect address from the stack
+    LD (IX-3), E                                ; Put in the channel descriptor
     LD (IX-2), D
-    LD (IX-1), B                                ; Zero the playing time.
+    LD (IX-1), B                                ; Zero the playing time
     LD (IX-0), B 
 
 releaseLoSMC equ $+3  
-    LD (IX+3), AFX_SMC                          ; <SMC Release LSB.
+    LD (IX+3), AFX_SMC                          ; <SMC Release LSB
 releaseHiSmc equ $+3
-    LD (ix+4), AFX_SMC                          ; <SMC Release MSB.
+    LD (ix+4), AFX_SMC                          ; <SMC Release MSB
     XOR A
-    LD (IX+1), A                                ; Reset sustain LSB.
-    LD (IX+2), A                                ; Reset sustain MSB.
+    LD (IX+1), A                                ; Reset sustain LSB
+    LD (IX+2), A                                ; Reset sustain MSB
 
     RET                                         ; ## END of the function ##
 
@@ -439,7 +439,7 @@ releaseHiSmc equ $+3
 ;                      AfxSustain                          ;
 ;----------------------------------------------------------;
 ; Notify AFX Frame that the sound in channel E should be looped back to SustainAddrCh[N] once ReleaseAddrCh[N] has been reached, 
-; provided playback was started with AFX.PlayLooped
+; provided playback was started with AFX.
 ; Input: 
 ;   - E = Channel (A=0, B=1, C=2)
 ;   - BC = SustainAddrCh[N]
@@ -474,14 +474,14 @@ AfxSustain
 ;                     _CheckRelease                        ;
 ;----------------------------------------------------------;
 _CheckRelease
-    LD A, (IX+6)                                ; get release LSB.
+    LD A, (IX+6)                                ; get release LSB
     CP L
-    RET NZ                                      ; Carry on if no MLB match.
-    LD A, (IX+7)                                ; Get release MSB.
+    RET NZ                                      ; Carry on if no MLB match
+    LD A, (IX+7)                                ; Get release MSB
     OR A
-    RET Z                                       ; Carry on if release disabled.
+    RET Z                                       ; Carry on if release disabled
     CP H
-    RET NZ                                      ; Carry on if no MSB match.
+    RET NZ                                      ; Carry on if no MSB match
     PUSH BC
     LD A, (IX+4)
     OR A
@@ -492,7 +492,7 @@ _CheckRelease
     LD (IX+0), A                                ; and MSB
     XOR A
     LD (IX+4), A                                ; then toggle off the sustain
-    LD (IX+5), A                                ; to require it to be resent.
+    LD (IX+5), A                                ; to require it to be resent
 .noLoop:
     POP BC
 

@@ -7,18 +7,18 @@ FLAME_OFFSET_D16        = 16
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 EXPLODE_Y_HI_H4         = 4                     ; HI byte from #starsDistance to explode rocket,1070 = $42E.
-EXPLODE_Y_LO_H7E        = $2E                   ; LO byte from #starsDistance to explode rocket.
-EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
-RO_MOVE_STOP_D120       = 120                   ; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
+EXPLODE_Y_LO_H7E        = $2E                   ; LO byte from #starsDistance to explode rocket
+EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust
+RO_MOVE_STOP_D120       = 120                   ; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position
 
-rocketExplodeCnt        BYTE 0                  ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
-RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
+rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive)
+RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3]
 
-rocketExhaustCnt        BYTE 0                  ; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
-rocketDistance          WORD 0                  ; Increments with every rocket move when the rocket is flying towards the next planet.
-rocketDelayDistance     BYTE 0                  ; Counts from 0 to RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets).
-rocketFlyDelay          BYTE RO_FLY_DELAY_D8    ; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
-rocketFlyDelayCnt       BYTE RO_FLY_DELAY_D8    ; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
+rocketExhaustCnt        DB 0                    ; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive)
+rocketDistance          DW 0                    ; Increments with every rocket move when the rocket is flying towards the next planet
+rocketDelayDistance     DB 0                    ; Counts from 0 to RO_FLY_DELAY_DIST_D5, increments with every rocket move (when #rocketFlyDelay resets)
+rocketFlyDelay          DB RO_FLY_DELAY_D8      ; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move
+rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets
 
 ;----------------------------------------------------------;
 ;              #ResetAndDisableFlyRocket                   ;
@@ -52,21 +52,21 @@ FlyRocket
     CALL _MoveFlyingRocket
     
     ; ##########################################
-    ; Set X/Y coordinates for flames coming out of the exhaust.
+    ; Set X/Y coordinates for flames coming out of the exhaust
     LD A, EXHAUST_SPRID_D83
-    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
+    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands
 
-    ; Sprite X coordinate from assembly location.
+    ; Sprite X coordinate from assembly location
     LD A, (ro.rocketAssemblyX)
     NEXTREG _SPR_REG_X_H35, A
 
     LD A, _SPR_REG_ATR2_EMPTY
     NEXTREG _SPR_REG_ATR2_H37, A
 
-    ; Sprite Y coordinate.
+    ; Sprite Y coordinate
     LD IX, (ro.rocketEl)
         
-    LD A, (IX + ro.RO.Y)                           ; Lowest rocket element + 16px.
+    LD A, (IX + ro.RO.Y)                           ; Lowest rocket element + 16px
     ADD A, FLAME_OFFSET_D16
     NEXTREG _SPR_REG_Y_H36, A
 
@@ -81,7 +81,7 @@ BlinkFlyingRocket
     LD A, ro.EL_LOW_D1
     CALL ro.MoveIXtoGivenRocketElement
 
-    ; Set sprite pattern - one for flip, one for flop -> rocket will blink.
+    ; Set sprite pattern - one for flip, one for flop -> rocket will blink
     LD A, (mld.counter008FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .flip
@@ -110,52 +110,52 @@ AnimateRocketExplosion
     ; Nope, keep exploding
     
     ; ##########################################
-    ; Animation for the top rockets element.
+    ; Animation for the top rockets element
     LD IX, (ro.rocketEl)
     LD A, ro.EL_TOP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
-    ; Move HL to current frame.
+    ; Move HL to current frame
     LD DE, (rocketExplodeCnt)
-    LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db.rocketExplodeDB3
-    DEC DE                                      ; Counter starts at 1.
+    LD D, 0                                     ; Reset D, we have an 8-bit counter here
+    LD HL, dba.rocketExplodeDB3
+    DEC DE                                      ; Counter starts at 1
     ADD HL, DE
     LD D, (HL)
     CALL ro.UpdateRocketSpritePattern
 
     ; ##########################################
-    ; Animation for the middle rockets element.
+    ; Animation for the middle rockets element
     LD IX, (ro.rocketEl)
     LD A, ro.EL_MID_D2
     CALL ro.MoveIXtoGivenRocketElement
 
-    ; Move HL to current frame.
+    ; Move HL to current frame
     LD DE, (rocketExplodeCnt)
-    LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db.rocketExplodeDB2
-    DEC DE                                      ; Counter starts at 1.
+    LD D, 0                                     ; Reset D, we have an 8-bit counter here
+    LD HL, dba.rocketExplodeDB2
+    DEC DE                                      ; Counter starts at 1
     ADD HL, DE
     LD D, (HL)
     CALL ro.UpdateRocketSpritePattern
 
     ; ##########################################
-    ; Animation for the bottom rockets element.
+    ; Animation for the bottom rockets element
     LD IX, (ro.rocketEl)
     LD A, ro.EL_LOW_D1
     CALL ro.MoveIXtoGivenRocketElement
 
     ; Move HL to current frame
     LD DE, (rocketExplodeCnt)
-    LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db.rocketExplodeDB1
-    DEC DE                                      ; Counter starts at 1.
+    LD D, 0                                     ; Reset D, we have an 8-bit counter here
+    LD HL, dba.rocketExplodeDB1
+    DEC DE                                      ; Counter starts at 1
     ADD HL, DE
     LD D, (HL)
     CALL ro.UpdateRocketSpritePattern
 
     ; ##########################################
-    ; Update explosion frame counter.
+    ; Update explosion frame counter
     LD A, (rocketExplodeCnt)
     INC A
     LD (rocketExplodeCnt), A
@@ -163,7 +163,7 @@ AnimateRocketExplosion
     RET
 .explodingEnds
 
-    ; sequence is over, load next level.
+    ; sequence is over, load next level
     CALL gc.LoadNextLevel
 
     RET                                         ; ## END of the function ##
@@ -175,28 +175,28 @@ AnimateRocketExhaust
     
     CALL dbs.SetupArraysBank
 
-    ; Increment sprite pattern counter.
+    ; Increment sprite pattern counter
     LD A, (rocketExhaustCnt)
     INC A
-    CP db.RO_EXHAUST_MAX
+    CP dba.RO_EXHAUST_MAX
     JP NZ, .afterIncrement
-    XOR A                                       ; Reset counter.
+    XOR A                                       ; Reset counter
 .afterIncrement 
 
-    LD (rocketExhaustCnt), A                    ; Store current counter (increment or reset).
+    LD (rocketExhaustCnt), A                    ; Store current counter (increment or reset)
 
-    ; Set the ID of the sprite for the following commands.
+    ; Set the ID of the sprite for the following commands
     LD A, EXHAUST_SPRID_D83
     NEXTREG _SPR_REG_NR_H34, A
 
-    ; Load sprite pattern to A.
-    LD HL, db.rocketExhaustDB
+    ; Load sprite pattern to A
+    LD HL, dba.rocketExhaustDB
     LD A, (rocketExhaustCnt)
     ADD HL, A
     LD A, (HL)
 
-    ; Set sprite pattern.
-    OR _SPR_PATTERN_SHOW                        ; Set show bit.
+    ; Set sprite pattern
+    OR _SPR_PATTERN_SHOW                        ; Set show bit
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##
@@ -218,20 +218,20 @@ _MoveFlyingRocket
     ; with a given delay. When the current section ends, the following section begins, but with decrement delay. During each section, 
     ; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
 
-    ; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.
+    ; #rocketFlyDelayCnt == 0 when the whole delay sequence is over
     LD A, (rocketFlyDelayCnt)
     CP 0
     JR Z, .afterDelay
 
-    ; Decrement delay counter.
+    ; Decrement delay counter
     LD A, (rocketFlyDelay)
     DEC A
     LD (rocketFlyDelay), A
 
     CP 0
-    RET NZ                                      ; Return if delay counter has not been reached.
+    RET NZ                                      ; Return if delay counter has not been reached
     
-    ; The counter reached 0, reset it and increment the distance counter.
+    ; The counter reached 0, reset it and increment the distance counter
     LD A, (rocketFlyDelayCnt)
     LD (rocketFlyDelay), A
 
@@ -241,9 +241,9 @@ _MoveFlyingRocket
 
     ; Has the traveled distance of the rocket with the current delay been reached?
     CP RO_FLY_DELAY_DIST_D5
-    JR NZ, .afterDelay                          ; Jump if rocket should still move with current delay.
+    JR NZ, .afterDelay                          ; Jump if rocket should still move with current delay
 
-    ; The rocket traveled far enough, decrement the delay for the next section.
+    ; The rocket traveled far enough, decrement the delay for the next section
     LD A, (rocketFlyDelayCnt)
     DEC A
     LD (rocketFlyDelayCnt), A
@@ -257,7 +257,7 @@ _MoveFlyingRocket
     CALL dbs.SetupArraysBank                    ; gc-call can change bank!
 
     ; ##########################################
-    ; Increment total distance.
+    ; Increment total distance
     LD HL, (rocketDistance)
     INC HL
     LD (rocketDistance), HL
@@ -288,7 +288,7 @@ _MoveFlyingRocket
     CP RO_MOVE_STOP_D120
     JR NC, .keepMoving
 
-    ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
+    ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation
     LD A, (ro.rocketAssemblyX)
     CALL ro.UpdateElementPosition
     
@@ -297,7 +297,7 @@ _MoveFlyingRocket
     ; Keep moving
     
     ; ##########################################
-    ; Move bottom rocket element.
+    ; Move bottom rocket element
     LD A, (IX + ro.RO.Y)
 
     DEC A
@@ -307,7 +307,7 @@ _MoveFlyingRocket
     CALL ro.UpdateElementPosition
 
     ; ##########################################
-    ; Move middle rocket element.
+    ; Move middle rocket element
     LD A, ro.EL_MID_D2
     CALL ro.MoveIXtoGivenRocketElement
 
@@ -319,7 +319,7 @@ _MoveFlyingRocket
     CALL ro.UpdateElementPosition
 
     ; ##########################################
-    ; Move top rocket element.
+    ; Move top rocket element
     LD A, ro.EL_TOP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
@@ -335,7 +335,7 @@ _MoveFlyingRocket
 ;----------------------------------------------------------;
 ;               #_StartRocketExplosion                     ;
 ;----------------------------------------------------------;
-; Start explosion sequence. The rocket explodes when the state is flying and counter above zero.
+; Start explosion sequence. The rocket explodes when the state is flying and counter above zero
 _StartRocketExplosion
 
     LD A, 1
@@ -343,7 +343,7 @@ _StartRocketExplosion
 
     ; ##########################################
     ; Hide exhaust
-    LD A, EXHAUST_SPRID_D83                 ; Hide sprite on display.
+    LD A, EXHAUST_SPRID_D83                     ; Hide sprite on display
     CALL sp.SetIdAndHideSprite
 
     ; ##########################################
@@ -358,9 +358,9 @@ _StartRocketExplosion
 ;----------------------------------------------------------;
 _ShakeTilemapOnFlyingRocket
 
-    ; Execute function until the rocket has reached its destination, where it stops and only stars are moving.
+    ; Execute function until the rocket has reached its destination, where it stops and only stars are moving
     LD HL, (rocketDistance)
-    LD A, H                                     ; H is always 0, because distance < 255.
+    LD A, H                                     ; H is always 0, because distance < 255
     CP 0
     RET NZ
 

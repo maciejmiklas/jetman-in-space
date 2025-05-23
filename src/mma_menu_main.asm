@@ -3,29 +3,28 @@
 ;----------------------------------------------------------;
     MODULE mma
 
-GAME_VERSION_OFFSET     = 40*30                 ; Version is in the last line.
+GAME_VERSION_OFFSET     = 40*30                 ; Version is in the last line
 
 EL_DIST                 = 40*3
 EL_SDIST                = 40*2
 TOP_OFS                 = 40*5
-LOF                     = 7                     ; Menu entry offset from the left.
+LOF                     = 7                     ; Menu entry offset from the left
 
     STRUCT MENU
-TILE_OFFSET             WORD                    ; Tile offset.
-TEXT_POINT              WORD                    ; Text pointer.
-TEXT_SIZE               BYTE                    ; Length of menu text.
-JET_X                   BYTE                    ; X postion of Jetman pointing to active element.
-JET_Y                   BYTE                    ; Y postion of Jetman pointing to active element.
+TILE_OFFSET             DW                      ; Tile offset
+TEXT_POINT              DW                      ; Text pointer
+TEXT_SIZE               DB                      ; Length of menu text
+JET_X                   DB                      ; X postion of Jetman pointing to active element
+JET_Y                   DB                      ; Y postion of Jetman pointing to active element
     ENDS
 
-menuPos                 BYTE MENU_EL_MIN
+menuPos                 DB MENU_EL_MIN
 MENU_EL_START           = 1                     ; START GAME
 MENU_EL_LSELECT         = 2                     ; LEVEL SELECT
-MENU_EL_HSCORE          = 3                     ; HIGH SCORE
-MENU_EL_SETTINGS        = 4                     ; SETTINGS
-MENU_EL_KEYS            = 5                     ; IN GAME KEYS
-MENU_EL_GAMEPLAY        = 6                     ; GAMEPLAY
-MENU_EL_DIFFICULTY      = 7                     ; DIFFICULTY
+MENU_EL_SCORE           = 3                     ; HIGH SCORE
+MENU_EL_KEYS            = 4                     ; IN GAME KEYS
+MENU_EL_GAMEPLAY        = 5                     ; GAMEPLAY
+MENU_EL_DIFFICULTY      = 6                     ; DIFFICULTY
 
 MENU_EL_MIN             = MENU_EL_START
 MENU_EL_MAX             = MENU_EL_DIFFICULTY
@@ -35,28 +34,47 @@ MENU_EL_MAX             = MENU_EL_DIFFICULTY
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    ; Update menu state.
+    ; Update menu state
     LD A, ms.MENU_MAIN
     CALL ms.SetMainState
+
+    ; ##########################################
+    ; Setup joystick
+    CALL mij.ResetJoystick
+
+    LD DE, _JoyFire
+    LD (mij.callbackFire), DE
+
+    LD DE, _JoyDown
+    LD (mij.callbackDown), DE
+
+    LD DE, _JoyUp
+    LD (mij.callbackUp), DE
+
+    LD DE, _JoyLeft
+    LD (mij.callbackLeft), DE
+
+    LD DE, _JoyRight
+    LD (mij.callbackRight), DE
 
     ; ##########################################
     CALL _LoadMenuNormal
 
     ; ##########################################
-    ; Load game version.
+    ; Load game version
     LD BC, GAME_VERSION_OFFSET
     LD DE, gameVersion
     LD A, GAME_VERSION_SIZE
     CALL ti.PrintText
 
     ; ##########################################
-    ; Load sprites from any level.
+    ; Load sprites from any level
     LD D, "0"
     LD E, "1"
     CALL fi.LoadSprites
 
     ; ##########################################
-    ; Setup Jetman sprite.
+    ; Setup Jetman sprite
     CALL jt.SetJetStateInactive
 
     ; Jetman is facing left
@@ -77,109 +95,6 @@ LoadMainMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #MenuMainUserInput                   ;
-;----------------------------------------------------------;
-MenuMainUserInput
-
-    ; ##########################################
-    ; Key right pressed ?
-    LD A, _KB_6_TO_0_HEF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 2, A                                    ; Bit 2 reset -> right pressed.
-    JR Z, .pressRight
-
-    ; ##########################################
-    ; Key up pressed ?
-    BIT 3, A                                    ; Bit 3 reset -> Up pressed.
-    JR Z, .pressUp
-    
-    ; ##########################################
-    ; Key down pressed ?
-    BIT 4, A                                    ; Bit 4 reset -> Down pressed.
-    JR Z, .pressDown
-
-    ; ##########################################
-    ; Joystick right pressed ?
-    LD A, _JOY_MASK_H20                         ; Activate joystick register.
-    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
-    BIT 0, A                                    ; Bit 0 set -> Right pressed.
-    JR NZ, .pressRight
-
-    ; ##########################################
-    ; Joystick left pressed ?
-    BIT 1, A                                    ; Bit 1 set -> Left pressed.
-    JR NZ, .pressLeft
-
-    ; ##########################################
-    ; Joystick down pressed ?
-    BIT 2, A                                    ; Bit 2 set -> Down pressed.
-    JR NZ, .pressDown
-
-    ; ##########################################
-    ; Joystick fire pressed ?
-    PUSH AF
-    AND %01110000                               ; Any of three fires pressed?
-    JR NZ, .pressFire
-    POP AF
-    
-    ; ##########################################
-    ; Joystick up pressed ?
-    BIT 3, A                                    ; Bit 3 set -> Up pressed.
-    JR NZ, .pressUp
-
-    ; ##########################################
-    ; Key Fire (Z) pressed ?
-    LD A, _KB_V_TO_SH_HFE
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
-    JR Z, .pressFire
-
-    ; ##########################################
-    ; Key SPACE pressed ?
-    LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    JR Z, .pressFire
-
-    ; ##########################################
-    ; Key ENTER pressed ?
-    LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    JR Z, .pressFire
-    
-    ; ##########################################
-    ; Key Left pressed ?
-    LD A, _KB_5_TO_1_HF7
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 4, A                                    ; Bit 4 reset -> Left pressed.
-    JR Z, .pressLeft
-
-    RET                                         ; None of the keys pressed.
-
-.pressRight
-    CALL _JoyRight
-    RET
-
-.pressLeft
-    CALL _JoyLeft
-    RET
-
-.pressUp
-    CALL _JoyUp
-    RET
-
-.pressDown
-    CALL _JoyDown
-    RET
-
-.pressFire
-    CALL _JoyFire
-    RET
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
@@ -190,18 +105,18 @@ MenuMainUserInput
 ;----------------------------------------------------------;
 _LoadMenuEasy
  
-    ; Hide current image.
+    ; Hide current image
     CALL bm.HideImage
 
     ; ##########################################
-    ; Load palette.
+    ; Load palette
     LD HL, db.menuEasyBgPaletteAdr
     LD A, (db.menuEasyBgPaletteBytes)
     LD B, A
     CALL bp.LoadPalette
 
     ; ##########################################
-    ; Load background image.
+    ; Load background image
     CALL fi.LoadMenuEasyImage
     CALL bm.CopyImageData
 
@@ -209,11 +124,9 @@ _LoadMenuEasy
     LD A, jt.DIF_EASY
     LD (jt.difLevel), A
 
-    CALL gc.SetDifficultyToEasy
-
     ; ##########################################
     CALL dbs.SetupArraysBank
-    LD IX, db.menuDifEasy
+    LD IX, dba.menuDifEasy
     CALL _PrintMenu
 
     RET                                         ; ## END of the function ##
@@ -223,18 +136,18 @@ _LoadMenuEasy
 ;----------------------------------------------------------;
 _LoadMenuNormal
 
-    ; Hide current image.
+    ; Hide current image
     CALL bm.HideImage
 
     ; ##########################################
-    ; Load palette.
+    ; Load palette
     LD HL, db.menuMainBgPaletteAdr
     LD A, (db.menuMainBgPaletteBytes)
     LD B, A
     CALL bp.LoadPalette
 
     ; ##########################################
-    ; Load background image.
+    ; Load background image
     CALL fi.LoadMenuMainImage
     CALL bm.CopyImageData
 
@@ -242,11 +155,9 @@ _LoadMenuNormal
     LD A, jt.DIF_NORMAL
     LD (jt.difLevel), A
 
-    CALL gc.SetDifficultyToNormal
-
     ; ##########################################
     CALL dbs.SetupArraysBank
-    LD IX, db.menuDifNorm
+    LD IX, dba.menuDifNorm
     CALL _PrintMenu
 
     RET                                         ; ## END of the function ##
@@ -256,18 +167,18 @@ _LoadMenuNormal
 ;----------------------------------------------------------;
 _LoadMenuHard
  
-    ; Hide current image.
+    ; Hide current image
     CALL bm.HideImage
 
     ; ##########################################
-    ; Load palette.
+    ; Load palette
     LD HL, db.menuHardBgPaletteAdr
     LD A, (db.menuHardBgPaletteBytes)
     LD B, A
     CALL bp.LoadPalette
 
     ; ##########################################
-    ; Load background image.
+    ; Load background image
     CALL fi.LoadMenuHardImage
     CALL bm.CopyImageData
 
@@ -275,11 +186,9 @@ _LoadMenuHard
     LD A, jt.DIF_HARD
     LD (jt.difLevel), A
 
-    CALL gc.SetDifficultyToHard
-
     ; ##########################################
     CALL dbs.SetupArraysBank
-    LD IX, db.menuDifHard
+    LD IX, dba.menuDifHard
     CALL _PrintMenu
 
     RET                                         ; ## END of the function ##
@@ -304,14 +213,14 @@ _PrintMenu
 _SetIXToActiveMenu
     CALL dbs.SetupArraysBank
 
-    ; Load into DE "current position" * "menu size" 
+    ; Load into DE "current position" * "menu size"
     LD A, (menuPos)
     DEC A
     LD D, A
     LD E, MENU
     MUL D, E
     
-    LD IX, db.menuEl
+    LD IX, dba.menuEl
     ADD IX, DE                                  ; Move IX to current menu position (IX + #menuPos * #MENU)
 
     RET                                         ; ## END of the function ##
@@ -336,7 +245,7 @@ _UpdateSelection
 ;                 #_UpdateJetPostion                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to currently selected #MENU.
+;  - IX: Pointer to currently selected #MENU
 _UpdateJetPostion
 
     ; Set X Jet position.
@@ -357,8 +266,8 @@ _LoadStaticMenuText
 
     CALL dbs.SetupArraysBank
 
-    LD B, db.MENU_EL_SIZE
-    LD IX, db.menuEl
+    LD B, dba.MENU_EL_SIZE
+    LD IX, dba.menuEl
 .elementLoop
     PUSH BC
 
@@ -379,10 +288,6 @@ _LoadStaticMenuText
 ;----------------------------------------------------------;
 _JoyRight
 
-    CALL ui.CanProcessKeyboardInput
-    CP _RET_YES_D1
-    RET NZ
-
     LD A, (menuPos)
     CP MENU_EL_DIFFICULTY
     CALL Z, _DifficultyUp
@@ -393,10 +298,6 @@ _JoyRight
 ;                       _JoyLeft                           ;
 ;----------------------------------------------------------;
 _JoyLeft
-
-    CALL ui.CanProcessKeyboardInput
-    CP _RET_YES_D1
-    RET NZ
 
     LD A, (menuPos)
     CP MENU_EL_DIFFICULTY
@@ -409,11 +310,6 @@ _JoyLeft
 ;----------------------------------------------------------;
 _JoyUp
 
-    CALL ui.CanProcessKeyboardInput
-    CP _RET_YES_D1
-    RET NZ
-    
-    ; ##########################################
     ; Decrement #menuPos
     LD A, (menuPos)
     DEC A
@@ -433,11 +329,6 @@ _JoyUp
 ;----------------------------------------------------------;
 _JoyDown
 
-    CALL ui.CanProcessKeyboardInput
-    CP _RET_YES_D1
-    RET NZ
-
-    ; ##########################################
     ; Increment #menuPos
     LD A, (menuPos)
     INC A
@@ -457,14 +348,10 @@ _JoyDown
 ;----------------------------------------------------------;
 _JoyFire
 
-    CALL ui.CanProcessKeyboardInput
-    CP _RET_YES_D1
-    RET NZ
-
     LD A, (menuPos)
 
     ; ##########################################
-    ; Start game.
+    ; Start game
     CP MENU_EL_START
     JR NZ, .notStartGame
     CALL gc.StartGameWithIntro
@@ -472,7 +359,7 @@ _JoyFire
 .notStartGame
 
     ; ##########################################
-    ; Show gameplay.
+    ; Show gameplay
     CP MENU_EL_GAMEPLAY
     JR NZ, .notShowGameplay
     CALL mmn.LoadMenuGameplay
@@ -480,7 +367,7 @@ _JoyFire
 .notShowGameplay
 
     ; ##########################################
-    ; Show game keys.
+    ; Show game keys
     CP MENU_EL_KEYS
     JR NZ, .notShowKeys
     CALL mmn.LoadMenuKeys
@@ -488,12 +375,21 @@ _JoyFire
 .notShowKeys
 
     ; ##########################################
-    ; Difficulty up.
+    ; Difficulty up
     CP MENU_EL_DIFFICULTY
     JR NZ, .notDifficulty
     CALL _DifficultyUp
     RET
 .notDifficulty
+
+    ; ##########################################
+    ; Show gameplay
+    CP MENU_EL_SCORE
+    JR NZ, .notShowScore
+    CALL mms.LoadMenuScore
+    RET
+.notShowScore
+
 
     ; ##########################################
     ; Wrong key hit, play sound

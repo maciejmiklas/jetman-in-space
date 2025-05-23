@@ -7,7 +7,7 @@ GB_VISIBLE              = 1
 GB_HIDDEN               = 0
 GB_TILES_D13            = 320 / 8 * 3
 
-gamebarState            BYTE GB_VISIBLE
+gamebarState            DB GB_VISIBLE
 
 ;----------------------------------------------------------;
 ;                    #HideGameBar                          ;
@@ -19,7 +19,7 @@ HideGameBar
     LD (gamebarState), A
 
     ; ##########################################
-    ; Remove gamebar from screen.
+    ; Remove gamebar from screen
     LD A, GB_TILES_D13
     LD B, A
     CALL ti.CleanTiles
@@ -42,19 +42,20 @@ ShowGameBar
 ;----------------------------------------------------------;
 PrintDebug
     
-    ; Return if gamebar is hidden.
+    ; Return if gamebar is hidden
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-
 /*
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (mma.difLevel)
+    LD A, (mms.tmp2)
     LD L, A
     CALL ut.PrintNumber
 */
+
+
 
     RET                                         ; ## END of the function ##
 

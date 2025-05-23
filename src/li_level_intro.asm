@@ -3,37 +3,38 @@
 ;----------------------------------------------------------;
     MODULE li
 
-; The on-screen tilemap has 40x32 tiles, and into-tiles take a few horizontal screens (i.e., 40x120). Therefore, there are two different counters.
-screenTilesRow          BYTE 0                  ; Current tiles row on the screen, runs from 0 to #ti.TI_VTILES_D32-1.
-sourceTilesRow          BYTE 0                  ; Current tiles row in source file (RAM), runs from from 0 to sourceTilesRowMax.
-sourceTilesRowMax       BYTE 0
+; The on-screen tilemap has 40x32 tiles, and into-tiles take a few horizontal screens (i.e., 40x120). Therefore, there are two different counters
+screenTilesRow          DB 0                    ; Current tiles row on the screen, runs from 0 to #ti.TI_VTILES_D32-1
+sourceTilesRow          DB 0                    ; Current tiles row in source file (RAM), runs from from 0 to sourceTilesRowMax
+sourceTilesRowMax       DB 0
 
-tileOffset              BYTE 0                  ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt            BYTE 0                  ; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
+tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen
+tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1)
 
-animateDelayCnt         BYTE ANIMATE_DELAY      ; Start scrolling without a delay.
+animateDelayCnt         DB ANIMATE_DELAY        ; Start scrolling without a delay
 ANIMATE_DELAY           = 50
 
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Number of horizontal lines in source tilemap (40xA).
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4".
-;  - HL: Size of second tiles file (first one has 8KiB).
+;  - A:  Number of horizontal lines in source tilemap (40xA)
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - HL: Size of second tiles file (first one has 8KiB)
 LoadLevelIntro
 
     CALL _ResetLevelIntro
 
-    ; ##########################################
     ; Update state
     LD A, ms.LEVEL_INTRO
     CALL ms.SetMainState
 
     ; ##########################################
     PUSH DE
-    LD (fi.introSecondFileSize), HL
+    CALL dbs.SetupArraysBank
+    LD (dba.introSecondFileSize), HL
     CALL ti.SetTilesClipVertical
+
     ; ##########################################
     ; Load palette
     LD HL, db.gameIntroPaletteAdr
@@ -55,6 +56,25 @@ LoadLevelIntro
     CALL _NextTilesRow
     CALL _NextTilesRow
 
+    ; ##########################################
+    ; Setup joystick input
+    CALL mij.ResetJoystick
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackFire), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackDown), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackUp), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackLeft), DE
+
+    LD DE, _KeyExitIntro
+    LD (mij.callbackRight), DE
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -73,7 +93,7 @@ AnimateLevelIntroTextScroll
 .afterAnimateDelay
 
     ; ##########################################
-    ; Increment the tile counter to determine whether we should load the next tile row.
+    ; Increment the tile counter to determine whether we should load the next tile row
     LD A, (tilePixelCnt)
     INC A
     LD (tilePixelCnt), A
@@ -81,7 +101,7 @@ AnimateLevelIntroTextScroll
     CP ti.TI_PIXELS_D8
     JR NZ, .afterNextTile
     
-    ; Reset the counter and fetch the next tile row.
+    ; Reset the counter and fetch the next tile row
     XOR A
     LD (tilePixelCnt), A
     LD (animateDelayCnt), A
@@ -93,41 +113,7 @@ AnimateLevelIntroTextScroll
     LD A, (tileOffset)
     INC A
     LD (tileOffset), A
-    NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #LevelIntroUserInput                   ;
-;----------------------------------------------------------;
-LevelIntroUserInput
- 
-    ; Key Fire (Z) pressed ?
-    LD A, _KB_V_TO_SH_HFE
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
-    CALL Z, _KeyExitIntro
-
-    ; ##########################################
-    ; Key SPACE pressed ?
-    LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    CALL Z, _KeyExitIntro
-
-    ; ##########################################
-    ; Key ENTER pressed ?
-    LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    CALL Z, _KeyExitIntro
-
-    ; ##########################################
-    ; Joystick right pressed ?
-    LD A, _JOY_MASK_H20                         ; Activate joystick register.
-    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
-    AND %01110000                               ; Any of three fires pressed?
-    CALL NZ, _KeyExitIntro
+    NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset
 
     RET                                         ; ## END of the function ##
 
@@ -150,7 +136,7 @@ _KeyExitIntro
 ;                  #_ResetLevelIntro                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Number of horizontal lines in source tilemap (40xA).
+;  - A:  Number of horizontal lines in source tilemap (40xA)
 _ResetLevelIntro
 
     LD (sourceTilesRowMax), A
@@ -178,40 +164,40 @@ _NextTilesRow
     CALL dbs.Setup16KTilemapBank
 
     ; ##########################################
-    ; Prepare tile copy fom temp RAM to screen RAM.
+    ; Prepare tile copy fom temp RAM to screen RAM
 
-    ; Load the memory address of the tiles row to be copied into HL. HL = RS_ADDR_HC000 + sourceTilesRow * ti.TI_H_BYTES_D80.
+    ; Load the memory address of the tiles row to be copied into HL. HL = RS_ADDR_HC000 + sourceTilesRow * ti.TI_H_BYTES_D80
     LD A, (sourceTilesRow)
     LD D, A
     LD E, ti.TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains byte offset to current row.
+    MUL D, E                                    ; DE contains byte offset to current row
     LD HL, _RAM_SLOT6_STA_HC000
-    ADD HL, DE                                  ; Move RAM pointer to current row.
+    ADD HL, DE                                  ; Move RAM pointer to current row
 
-    ; Load the bottom line of tilemap screen memory into DE. This row will be replaced with new lite line. 
+    ; Load the bottom line of tilemap screen memory into DE. This row will be replaced with new lite line.
     ; DE = ti.TI_MAP_RAM_H5B00 + screenTilesRow * ti.TI_H_BYTES_D80
     LD A, (screenTilesRow)
 
     LD D, A
     LD E, ti.TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains #screenTilesRow * ti.TI_H_BYTES_D80.
+    MUL D, E                                    ; DE contains #screenTilesRow * ti.TI_H_BYTES_D80
     PUSH HL                                     ; Keep HL because it already contains proper source tiles address
     LD HL, ti.TI_MAP_RAM_H5B00                   ; Now HL contains memory offset to tiles.
     ADD HL, DE
     LD DE, HL
     POP HL
-    LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
+    LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row
     LDIR
 
     ; ##########################################
-    ; Increment and reset #sourceTilesRow counter.
+    ; Increment and reset #sourceTilesRow counter
     LD A, (sourceTilesRow)
     INC A
     LD (sourceTilesRow), A
     LD B, A
     LD A, (sourceTilesRowMax)
     CP B
-    JR NZ, .afterResetStarsRow                  ; Jump if #sourceTilesRow != #sourceTilesRowMax.
+    JR NZ, .afterResetStarsRow                  ; Jump if #sourceTilesRow != #sourceTilesRowMax
 
     ; Reset counter.
     XOR A
@@ -219,7 +205,7 @@ _NextTilesRow
 .afterResetStarsRow
 
     ; ##########################################
-    ; Increment and reset #screenTilesRow counter.
+    ; Increment and reset #screenTilesRow counter
     LD A, (screenTilesRow)
     INC A
     LD (screenTilesRow), A
@@ -227,7 +213,7 @@ _NextTilesRow
     CP A, ti.TI_VTILES_D32
     JR NZ, .afterResetTilesRow                  ; Jump if #screenTilesRow != #ti.TI_VTILES_D32
 
-    ; Reset tiles counter.
+    ; Reset tiles counter
     XOR A
     LD (screenTilesRow), A
 .afterResetTilesRow

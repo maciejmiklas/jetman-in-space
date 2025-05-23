@@ -7,40 +7,40 @@ PAUSE_TIME_D10          = 10
 
 ; DMA Program to copy RAM from #dmaPortAAddress to #dmaPortBAddress, size is given by: dmaTransferLength
 dmaProgram
-    DB %1'00000'11                              ; WR6 - disable DMA.
+    DB %1'00000'11                              ; WR6 - disable DMA
 
-    DB %0'11'11'1'01                            ; WR0 - append length + port A address, A->B.
+    DB %0'11'11'1'01                            ; WR0 - append length + port A address, A->B
 dmaPortAAddress
-    DW 0                                        ; WR0 par 1&2 - port A start address.
+    DW 0                                        ; WR0 par 1&2 - port A start address
 dmaTransferSize
-    DW 0                                        ; WR0 par 3&4 - transfer length.
+    DW 0                                        ; WR0 par 3&4 - transfer length
 
-    DB %0'0'01'0'100                            ; WR1 - A incr., A=memory.
+    DB %0'0'01'0'100                            ; WR1 - A incr., A=memory
 
-    DB %0'0'01'0'000                            ; WR2 - B incr., B=memory.
+    DB %0'0'01'0'000                            ; WR2 - B incr., B=memory
 
-    DB %1'01'0'11'01                            ; WR4 - continuous, append port B address.
+    DB %1'01'0'11'01                            ; WR4 - continuous, append port B address
 dmaPortBAddress
-    DW 0                                        ; WR4 par 1&2 - port B address.
+    DW 0                                        ; WR4 par 1&2 - port B address
 
-    DB %10'0'0'0010                             ; WR5 - stop on end of block, CE only.
+    DB %10'0'0'0010                             ; WR5 - stop on end of block, CE only
 
-    DB %1'10011'11                              ; WR6 - load addresses into DMA counters.
-    DB %1'00001'11                              ; WR6 - enable DMA.
+    DB %1'10011'11                              ; WR6 - load addresses into DMA counters
+    DB %1'00001'11                              ; WR6 - enable DMA
 dmaProgramSize = $-dmaProgram
 
 ;----------------------------------------------------------;
 ;                        CopyRam                           ;
 ;----------------------------------------------------------;
 ; Input:
-;  - #dmaPortAAddress: Address from.
-;  - #dmaPortBAddress: Address to.
-;  - #dmaTransferSize: Number of bytes to copy.
+;  - #dmaPortAAddress: Address from
+;  - #dmaPortBAddress: Address to
+;  - #dmaTransferSize: Number of bytes to copy
 CopyRam:
-    LD HL, dmaProgram                          ; HL = pointer to DMA program.
-    LD B, dmaProgramSize                       ; B = size of the code.
-    LD C, _DMA_PORT_H6B                        ; C = $6B (zxnDMA port).
-    OTIR                                       ; Upload DMA program.
+    LD HL, dmaProgram                          ; HL = pointer to DMA program
+    LD B, dmaProgramSize                       ; B = size of the code
+    LD C, _DMA_PORT_H6B                        ; C = $6B (zxnDMA port)
+    OTIR                                       ; Upload DMA program
     
     RET
 
@@ -48,24 +48,24 @@ CopyRam:
 ;                       Add8To32                           ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Points to the start of the two WORD (LO,HI) elements in RAM.
-;  - A:  Contains the 8-bit value to add.
+;  - HL: Points to the start of the two DW (LO,HI) elements in RAM
+;  - A:  Contains the 8-bit value to add
 Add8To32
 
-    ; Add 8-bit value to the second WORD, LO byte.
-    LD B, A                                     ; Copy the 8-bit value into B (used for carry handling).
-    LD A, (HL)                                  ; Load the least significant byte (LSB) of the second WORD (LO).
-    ADD A, B                                    ; Add the 8-bit value to the LSB.
-    LD (HL), A                                  ; Store the result back to memory.
-    INC HL                                      ; Move to the next byte.
+    ; Add 8-bit value to the second DW, LO byte.
+    LD B, A                                     ; Copy the 8-bit value into B (used for carry handling)
+    LD A, (HL)                                  ; Load the least significant byte (LSB) of the second DW (LO)
+    ADD A, B                                    ; Add the 8-bit value to the LSB
+    LD (HL), A                                  ; Store the result back to memory
+    INC HL                                      ; Move to the next byte
 
-    ; Populate overflow to remaining 3 bytes.
+    ; Populate overflow to remaining 3 bytes
     LD B, 3
 .loop
-    LD A, (HL)                                  ; Load next byte from 32bit word.
-    ADC A, 0                                    ; Add the carry from the previous addition.
-    LD (HL), A                                  ; Store the result back to memory.
-    INC HL                                      ; Move to the next byte.
+    LD A, (HL)                                  ; Load next byte from 32bit word
+    ADC A, 0                                    ; Add the carry from the previous addition
+    LD (HL), A                                  ; Store the result back to memory
+    INC HL                                      ; Move to the next byte
     DJNZ .loop
 
     RET                                         ; ## END of the function ##
@@ -161,9 +161,9 @@ AbsA
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels.
 ;Input:
-;  - HL:    16-bit number to print.
-;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
-;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
+;  - HL:    16-bit number to print
+;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
+;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
 PrintNumber
 
     PUSH BC, DE, IX, IY
@@ -177,12 +177,12 @@ PrintNumber
 ;----------------------------------------------------------;
 ;                       #HlEqualB                          ;
 ;----------------------------------------------------------;
-; Check if both H and L are equal to B.
+; Check if both H and L are equal to B
 HL_IS_B                 = 0
 HL_NOT_B                = 1
 ; Input:
-;  - HL:    Value to compare to B.
-;  - B:     Value to compare to HL.
+;  - HL:    Value to compare to B
+;  - B:     Value to compare to HL
 ; Return:
 ;  - A:     #HL_IS_0 or #HL_NOT_0
 HlEqualB
@@ -275,13 +275,13 @@ CountdownBC
 ;                        #FillBank                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Destination bank.
-;  - D:  Value to fill banks with.
-;  - HL: Start address.
+;  - A:  Destination bank
+;  - D:  Value to fill banks with
+;  - HL: Start address
 ; Modifies: AF,BC,HL
 FillBank
 
-    LD BC, _BANK_BYTES_D8192                    ; 8192 bytes is a full bank.
+    LD BC, _BANK_BYTES_D8192                    ; 8192 bytes is a full bank
 .loop
     LD (HL), D
     INC HL
@@ -290,7 +290,7 @@ FillBank
     ; Check if BC is 0. OR returns 0 when both params are 0, it also sets ZF.
     LD A, B
     OR C
-    JR NZ, .loop                                ; Keep looping if ZF is not set (BC != 0).
+    JR NZ, .loop                                ; Keep looping if ZF is not set (BC != 0)
 
     RET                                         ; ## END of the function ##
 
