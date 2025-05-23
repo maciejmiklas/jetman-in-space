@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE mms
 
-LINES_D10               = 10
+LINES_D10               = 10                    ; There are 10 score lines, but we display only 9, skipping first one in #dba.menuScore
 LINE_INDICATION_TI_D10  = 10
 
 ASCII_A                 = 64                    ; 64 is space, it's not proper ASCII code, but tiles are set so
@@ -16,6 +16,7 @@ SPACE_LINES_LI_D2       = 2                     ; Space between score lines is 2
 SPACE_LINES_TI_D80      = SPACE_LINES_LI_D2*ti.H_D40 ; Number of tiles taken by the space between score lines
 SCORE_H_LI_D3           = 3                     ; Number of lines taken by the single score
 SCORE_H_TI_D120         = SCORE_H_LI_D3*ti.H_D40; Number of tiles taken by the single score
+CURSOR_SPR_ADJ          = -4
 
 NAME_TI_SPACE_D3        = 3                     ; Before the name there are 3 spaces
 SCORE_TI_D10            = 10                    ; 2x16 bit has 2x5 = 10 characters
@@ -33,20 +34,11 @@ NAME_CH_POS_MAX         = 9
 NAME_CH_POS_ENTER       = 10
 nameChPos               DB NAME_CH_POS_OFF      ; Cursor position where the user enters the name
 
+ENTER_TI_POS            = LINE_INDICATION_TI_D10+SCORE_TI_D10+SCORE_TX_BYTES_D13+1
+ENTER_SPACE_PX          = 8                     ; Space between name text and ENTER in pixels
+
 tileChar                DB ASCII_A              ; Currently visible character from tile map
-scoreLine               DB 6                    ; Score line where user enters the name
-
-;----------------------------------------------------------;
-;                      #AnimateCursor                      ;
-;----------------------------------------------------------;
-AnimateCursor
-
-    CALL dbs.SetupArraysBank
-    LD IX, dba.menuScoreCursor
-    CALL sr.SetSpriteId
-    CALL sr.UpdateSpritePattern
-
-    RET                                         ; ## END of the function ##
+scoreLine               DB $FF                  ; Score line where user enters the name, 1 - first place, 9 - last place
 
 ;----------------------------------------------------------;
 ;                     #EnterNewScore                       ;
@@ -57,6 +49,7 @@ EnterNewScore
     LD (nameChPos), A
 
     CALL _SetupMenuScore
+    CALL _CalculateScoreLine
     CALL _StoreNewScore
 
     LD A, (scoreLine)
@@ -78,10 +71,96 @@ LoadMenuScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #AnimateCursor                      ;
+;----------------------------------------------------------;
+AnimateCursor
+
+    LD A, (nameChPos)
+    CP NAME_CH_POS_OFF
+    RET Z
+
+    CALL dbs.SetupArraysBank
+    LD IX, dba.menuScoreCursor
+    CALL sr.SetSpriteId
+    CALL sr.UpdateSpritePattern
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                 #_CalculateScoreLine                     ;
+;----------------------------------------------------------;
+; Output:
+;  A: Contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
+_CalculateScoreLine
+
+    CALL dbs.SetupArraysBank
+
+    ; Compare the new score starting from the bottom line (nr 9) until we find a line in the score that is larger than the current score.
+    LD B, LINES_D10-1
+.linesLoop                                      ; Loop over score lines, starting from the bottom
+
+    ; ##########################################
+    LD A, B                                     ; Set current score line
+    CALL _LineToIX                              ; IX points to the score line compared to new users' game score
+
+    ; 32bit number is stored in RAM in little-endian: [DB1][DB0][DB3][DB2], but we compare 8bit values from new score and score line.
+    ; Because of that, this is the processing order: [DB0][DB1][DB2][DB3].
+
+    LD IY, sc.scoreHi
+    ; Compare score byte: [THIS][DB][DB][DB]
+    LD A, (IY+1)                                ; #sc.scoreHi:          [THIS][DB]
+    LD D, (IX+1)                                ; #dba.menuScore[line]: [THIS][DB][DB][DB]
+    CP D
+    JR Z, .byte1                                ; Bytes from the current line and the new score are equal -> check the next byte
+    JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
+    JR C, .break                                ; New score is < than value in current line -> break search
+
+.byte1
+    ; Compare score byte: [DB][THIS][DB][DB]
+    LD A, (IY)                                  ; #sc.scoreHi:          [DB][THIS]
+    LD D, (IX)                                  ; #dba.menuScore[line]: [DB][THIS][DB][DB]
+    CP D
+    JR Z, .byte2                                ; Bytes from the current line and the new score are equal -> check the next byte
+    JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
+    JR C, .break                                ; New score is < than value in current line -> break search
+
+.byte2
+     LD IY, sc.scoreLo
+    ; Compare score byte: [DB][DB][THIS][DB]
+    LD A, (IY+1)                                ; #sc.scoreLo:                  [THIS][DB]
+    LD D, (IX+3)                                ; #dba.menuScore[line]: [DB][DB][THIS][DB]
+    CP D
+    JR Z, .byte3                                ; Bytes from the current line and the new score are equal -> check the next byte
+    JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
+    JR C, .break                                ; New score is < than value in current line -> break search
+
+.byte3
+    ; Compare score byte: [DB][DB][DB][THIS]
+    LD A, (IY)                                  ; #sc.scoreLo:              [DB][THIS]
+    LD D, (IX+2)                                ; #menuScore[line]: [DB][DB][DB][THIS]
+    CP D
+    JR Z, .break                                ; 4 bytes from the new score and current line are equal -> take this line
+    JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
+    JR C, .break                                ; New score is < than value in current line -> break search
+
+    ; ##########################################
+.nextScoreLine
+    DJNZ .linesLoop
+
+    ; ##########################################
+    ; Update found the line, but it still could be out of the scoreboard (A > 9)!
+.break
+    LD A, B
+    INC A
+    LD (scoreLine), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    #_SetupMenuScore                      ;
@@ -89,7 +168,7 @@ LoadMenuScore
 _SetupMenuScore
 
     ; Setup joystick
-    CALL mij.SetupJoystick
+    CALL mij.ResetJoystick
 
     LD DE, _JoyFire
     LD (mij.callbackFire), DE
@@ -152,6 +231,15 @@ _JoyFire
     RET
 .enter
 
+    ; Return if cursor is at ENTER
+    LD A, (nameChPos)
+    CP NAME_CH_POS_ENTER
+    RET NZ
+
+    ; ##########################################
+    ; User finished entering his name
+    CALL _SetScoreToReadOnly
+
     ; FX
     LD A, af.MENU_ENTER
     CALL af.AfxPlay
@@ -162,6 +250,11 @@ _JoyFire
 ;                        #_JoyDown                         ;
 ;----------------------------------------------------------;
 _JoyDown
+
+    ; Return if cursor is at ENTER
+    LD A, (nameChPos)
+    CP NAME_CH_POS_ENTER
+    RET Z
 
     ; Previous character
     LD A, (tileChar)
@@ -187,6 +280,11 @@ _JoyDown
 ;                         #_JoyUp                          ;
 ;----------------------------------------------------------;
 _JoyUp
+
+    ; Return if cursor is at ENTER
+    LD A, (nameChPos)
+    CP NAME_CH_POS_ENTER
+    RET Z
 
     ; Next character
     LD A, (tileChar)
@@ -240,7 +338,7 @@ _JoyRight
 
     ; Update position
     LD A, (nameChPos)
-    CP NAME_CH_POS_MAX
+    CP NAME_CH_POS_ENTER
     RET Z
 
     INC A
@@ -259,6 +357,39 @@ _JoyRight
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                 #_SetScoreToReadOnly                     ;
+;----------------------------------------------------------;
+_SetScoreToReadOnly
+
+    ; Hide ENTER char
+    CALL _SetDeToEnterTiRam
+
+    ; Load tile and palette into tile ram
+    LD A, ti.TX_PALETTE_D0
+    LD (DE), A
+    INC DE
+    
+    LD A, ti.TI_EMPTY_D57
+    LD (DE), A
+
+    ; Set to read only
+    LD A, NAME_CH_POS_OFF
+    LD (nameChPos), A
+
+    ; Disable name input
+    CALL mij.ResetJoystick
+
+    LD DE, _JoyFire
+    LD (mij.callbackFire), DE
+
+    ; Hide cursor
+    CALL dbs.SetupArraysBank
+    LD IX, dba.menuScoreCursor
+    CALL sr.HideSimpleSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                    #_UpdateCursor                        ;
 ;----------------------------------------------------------;
 _UpdateCursor
@@ -272,8 +403,16 @@ _UpdateCursor
     ADD DE, NAME_TI_SPACE_D3
     LD D, ti.TI_PIXELS_D8
     MUL D, E
-    ADD DE, -4
-    LD HL, DE
+    ADD DE, CURSOR_SPR_ADJ
+
+    ; Add an extra character if the cursor is at ENTER
+    LD A, (nameChPos)
+    CP NAME_CH_POS_ENTER
+    JR NZ, .notEnter
+    ADD DE, ENTER_SPACE_PX
+.notEnter
+
+    LD HL, DE                                   ; Store calculated X to HL
 
     ; ##########################################
     ; Calculate the Y position for the cursor
@@ -336,7 +475,7 @@ _PrintScoreLine
     LD E, A
     MUL D, E                                    ; DE has been moved A lines
     ADD DE, MARGIN_TOP_TI_D80                   ; Add top margin
-    ADD DE, LINE_INDICATION_TI_D10                 ; Add line indication
+    ADD DE, LINE_INDICATION_TI_D10              ; Add line indication
 
     ; ##########################################
     ; Print HI byte from current score line.  HL points to HI byte
@@ -378,7 +517,9 @@ _PrintScoreLine
 ;                      #_LineToIX                          ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Score line in #dba.menuScore, 0 to 9 inklusive
+;  A: Score line in #dba.menuScore, 0 (first entry in #dba.menuScore) to 9 (bottom, lowest score) inklusive
+; Output:
+;  IX: Points to score line
 _LineToIX
 
     LD IX, dba.menuScore                        ; Pointer to high score data.
@@ -399,8 +540,16 @@ _StoreNewScore
     ; Set IX to #dba.menuScore that will be updated 
     CALL dbs.SetupArraysBank
     LD A, (scoreLine)
-    CALL _LineToIX
 
+    ; Does the user qualify for the scoreboard?
+    CP LINES_D10
+    JR C, .prepareEdit
+    
+    CALL _SetScoreToReadOnly
+    RET
+.prepareEdit
+
+      CALL _LineToIX
     ; ##########################################
     ; Copy score from game to the line
     LD HL, (sc.scoreHi)
@@ -431,6 +580,35 @@ _StoreNewScore
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
     CALL sr.SetStateVisible
     CALL sr.ShowSprite
+
+    ; ##########################################
+    ; Show enter tile on the end the of score line
+    CALL _SetDeToEnterTiRam
+
+    ; Load tile and palette into tile ram
+    LD A, ti.TX_PALETTE_D0
+    LD (DE), A
+    INC DE
+    
+    LD A, ti.TI_ENTER
+    LD (DE), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  #_SetDeToEnterTiRam                     ;
+;----------------------------------------------------------;
+; Output:
+;  DE:  Points to the RAM position when enter-character should be printed. This is the end of the active score line.
+_SetDeToEnterTiRam
+
+    LD A, (scoreLine)
+    LD E, A
+    LD D, SCORE_H_TI_D120*2                     ; *2 because each tile has 2 bytes
+    MUL D, E                                    ; DE has been moved A lines
+    ADD DE, MARGIN_TOP_TI_D80*2                 ; Add top margin
+    ADD DE, ENTER_TI_POS*2                      ; Add enter offset within the line
+    ADD DE, ti.TI_MAP_RAM_H5B00 -1              ; Tiles start RAM.
 
     RET                                         ; ## END of the function ##
 

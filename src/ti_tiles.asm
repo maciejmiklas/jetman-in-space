@@ -40,11 +40,12 @@ TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - TI_PIXELS_D8
 TX_ASCII_OFFSET_D34     = 34                    ; Tiles containing characters beginning with '!' - this is 33 in the ASCII table
 TX_PALETTE_D0           = 0                     ; Palette byte for tile characters
 TI_EMPTY_D57            = 57                    ; Empty tile
+TI_ENTER                = 191
 
 ; TX - Text, ASCII codes
 TX_IDX_EMPTY            = TX_ASCII_OFFSET_D34 + TI_EMPTY_D57
 TX_IDX_ARROWS           = TX_ASCII_OFFSET_D34 + 190
-TX_IDX_ENTER            = TX_ASCII_OFFSET_D34 + 191
+TX_IDX_ENTER            = TX_ASCII_OFFSET_D34 + TI_ENTER
 TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
 
 TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels
@@ -132,7 +133,6 @@ PrintText
     DJNZ .loop                                  ; Loop until B == 0
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                    #CleanAllTiles                        ;

@@ -58,7 +58,7 @@ LoadLevelIntro
 
     ; ##########################################
     ; Setup joystick input
-    CALL mij.SetupJoystick
+    CALL mij.ResetJoystick
 
     LD DE, _KeyExitIntro
     LD (mij.callbackFire), DE

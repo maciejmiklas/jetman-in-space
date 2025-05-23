@@ -42,36 +42,45 @@ menuTextNo DB "NORMAL"
 menuTextHa DB " HARD "
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
-menuScore
-    DW 10001
-    DW 20002
+menuScore                                       ; This score does not show on screen, it's only there for the sorting ;)
+    DW $FFFF
+    DW $FFFF
+    DB "   FREDUS    "
+menuScore1
+    DW 00000
+    DW 09000
     DB "   MACIEJ    "
-    DW 30003
-    DW 40004
-    DB "   DANIEL    "
-    DW 50005
-    DW 60007
+menuScore2
+    DW 00000
+    DW 08000
     DB "   ARTUR     "
-    DW 07007
-    DW 08008
+menuScore3
+    DW 00000
+    DW 07000
     DB "   MARCIN    "
-    DW 09009
-    DW 11011
-    DB "   ANKA      "
-    DW 12012
-    DW 13013
+menuScore4
+    DW 00000
+    DW 06000
+    DB "   MACIEJ    "
+menuScore5
+    DW 00000
+    DW 05000
     DB "   JUREK     "
-    DW 14014
-    DW 15015
+menuScore6
+    DW 00000
+    DW 04000
     DB "   FRANEK    "
-    DW 16016
-    DW 17017
+menuScore7
+    DW 00000
+    DW 03000
     DB "   ZUZA      "
-    DW 18018
-    DW 19019
+menuScore8
+    DW 00000
+    DW 02000
     DB "   KAROL     "
-    DW 21021
-    DW 22022
+menuScore9
+    DW 00000
+    DW 01000
     DB "   FRED      "
 
 menuScoreCursor

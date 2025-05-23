@@ -26,7 +26,7 @@ LoadMenuGameplay
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.SetupJoystick
+    CALL mij.ResetJoystick
 
     LD DE, gc.LoadMainMenu
     LD (mij.callbackFire), DE
@@ -55,7 +55,7 @@ LoadMenuKeys
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.SetupJoystick
+    CALL mij.ResetJoystick
 
     LD DE, gc.LoadMainMenu
     LD (mij.callbackFire), DE

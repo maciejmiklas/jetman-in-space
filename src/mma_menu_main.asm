@@ -40,7 +40,7 @@ LoadMainMenu
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.SetupJoystick
+    CALL mij.ResetJoystick
 
     LD DE, _JoyFire
     LD (mij.callbackFire), DE
@@ -386,8 +386,7 @@ _JoyFire
     ; Show gameplay
     CP MENU_EL_SCORE
     JR NZ, .notShowScore
-    ;CALL mms.LoadMenuScore
-    CALL mms.EnterNewScore
+    CALL mms.LoadMenuScore
     RET
 .notShowScore
 

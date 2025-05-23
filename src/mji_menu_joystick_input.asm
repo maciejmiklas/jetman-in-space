@@ -44,11 +44,11 @@ JoystickInputLastLoop
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #SetupJoystick                       ;
+;                     #ResetJoystick                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: User input delay
-SetupJoystick
+ResetJoystick
 
     XOR A
     LD (userInputInactiveCnt), A
