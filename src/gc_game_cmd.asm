@@ -936,6 +936,7 @@ _HideGame
     CALL jt.SetJetStateInactive
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
+    CALL pi.ResetPickups
 
     RET                                         ; ## END of the function ##
 
@@ -965,7 +966,6 @@ _StartLevel
     CALL ti.SetTilesClipFull
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
-    CALL pi.ResetPickups
     CALL jl.SetupLivesBar
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data

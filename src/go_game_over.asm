@@ -20,8 +20,8 @@ ShowGameOver
     CALL bp.LoadPalette
 
     ; Load background image
-    ;CALL fi.LoadGameOverImage
-    ;CALL bm.CopyImageData
+    CALL fi.LoadGameOverImage
+    CALL bm.CopyImageData
 
     ; ##########################################
     ; Setup joystick
