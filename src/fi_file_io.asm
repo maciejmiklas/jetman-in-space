@@ -336,6 +336,20 @@ LoadMenuGameplayImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   #LoadGameOverImage                     ;
+;----------------------------------------------------------;
+LoadGameOverImage
+
+    CALL dbs.SetupArraysBank
+    LD HL, dba.gameOverBgFileName
+    CALL _CopyFileName
+
+    LD C, dba.GAME_OVER_BG_POS
+    CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                 #LoadMenuScoreImage                      ;
 ;----------------------------------------------------------;
 LoadMenuScoreImage

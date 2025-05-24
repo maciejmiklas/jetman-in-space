@@ -68,7 +68,7 @@ CARRY_ADJUSTY_D10       = 10
 rocketEl                DW 0                  ; Pointer to 9x ro.RO
 
 BAR_TILE_START         = 24*2                  ; *2 because each tile takes 2 bytes
-BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap
 BAR_TILE_PAL           = $60
 
 BAR_ICON               = 36
@@ -826,11 +826,10 @@ _UpdateFuelProgressBar
 .afterBar
     ADD B
     
+    LD (HL), A                                  ; Set tile id
+    INC HL
     LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
-    
-    LD (HL), A                                  ; Set tile id
-    INC HL  
 
     ; ##########################################
     ; Loop
@@ -848,10 +847,10 @@ _ShowHeatBarIcon
 
     LD HL, BAR_ICON_RAM_START
 
-    LD (HL), BAR_ICON_PAL                       ; Set palette for tile
-    INC HL
     LD (HL), BAR_ICON                           ; Set tile id
-    
+    INC HL
+    LD (HL), BAR_ICON_PAL                       ; Set palette for tile
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -64,7 +64,7 @@ ResetJoystick
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #JoystickInput                     ;
+;                    #JoystickInput                        ;
 ;----------------------------------------------------------;
 JoystickInput
 

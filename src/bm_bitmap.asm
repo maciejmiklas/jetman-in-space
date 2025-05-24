@@ -87,6 +87,12 @@ HideImage
 
     CALL dbs.SetupEmptyImageBank
 
+    ; ##########################################
+    ; Reset image offset
+    XOR A
+    NEXTREG _DC_REG_L2_OFFSET_Y_H17, A
+
+    ; ##########################################
     ; We will copy 10x full bank, from slot 6 to slot 7
     LD DE, _BANK_BYTES_D8192 : LD (ut.dmaTransferSize), DE
     LD DE, _RAM_SLOT6_STA_HC000 : LD (ut.dmaPortAAddress), DE

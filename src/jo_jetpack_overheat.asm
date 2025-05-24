@@ -29,7 +29,7 @@ JM_HEAT_CNT             = 40
 JM_COOL_CNT             = 20
 
 BAR_TILE_START         = 33*2                   ; *2 because each tile takes 2 bytes
-BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START -1 ; HL points to screen memory containing tilemap. ; // TODO why -1?
+BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap
 BAR_TILE_PAL           = $30
 
 BAR_ICON               = 38
@@ -56,23 +56,22 @@ AnimateJetpackOverheat
     CP _GC_FLIP_ON_D1
     JR Z, .on
 
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
-    INC HL
     LD (HL), _BAR_RED_A1_SPR                    ; Set tile id
     INC HL
     LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
     LD (HL), _BAR_RED_A2_SPR                    ; Set tile id
-
+    INC HL
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     RET
 .on
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
-    INC HL
     LD (HL), _BAR_RED_B1_SPR                    ; Set tile id
     INC HL
     LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
     LD (HL), _BAR_RED_B2_SPR                    ; Set tile id
+    INC HL
+    LD (HL), BAR_TILE_PAL                       ; Set palette for tile
 
     RET                                         ; ## END of the function ##
 
@@ -241,10 +240,10 @@ _ShowHeatBarIcon
 
     LD HL, BAR_ICON_RAM_START
 
-    LD (HL), BAR_ICON_PAL                       ; Set palette for tile
-    INC HL
     LD (HL), BAR_ICON                           ; Set tile id
-    
+    INC HL
+    LD (HL), BAR_ICON_PAL                       ; Set palette for tile
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -273,11 +272,10 @@ _UpdateUiHeatBar
 .afterBar
     ADD B
     
+    LD (HL), A                                  ; Set tile id
+    INC HL
     LD (HL), BAR_TILE_PAL                       ; Set palette for tile
     INC HL
-    
-    LD (HL), A                                  ; Set tile id
-    INC HL  
 
     ; ##########################################
     ; Loop
