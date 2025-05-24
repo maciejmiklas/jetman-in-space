@@ -248,10 +248,10 @@ SetTilesClipFull
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #SetTilesClipVertical                    ;
+;                 #SetTilesClipHorizontal                  ;
 ;----------------------------------------------------------;
 ; 8px clip from top and 8px clip from the bottom.
-SetTilesClipVertical
+SetTilesClipHorizontal
 
     NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X1_D0
     NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X2_D159

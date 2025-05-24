@@ -383,13 +383,12 @@ _JoyFire
 .notDifficulty
 
     ; ##########################################
-    ; Show gameplay
+    ; Show high score
     CP MENU_EL_SCORE
     JR NZ, .notShowScore
     CALL mms.LoadMenuScore
     RET
 .notShowScore
-
 
     ; ##########################################
     ; Wrong key hit, play sound

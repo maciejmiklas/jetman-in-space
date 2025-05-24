@@ -108,8 +108,6 @@ _MainLoop000OnActiveGame
     LD A, (jt.difLevel)
     CP jt.DIF_HARD
     JR NZ, .notHard
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
     CALL gi.GameJoystickInput
 .notHard
 
@@ -228,6 +226,15 @@ _MainLoop002OnActiveGame
     CALL Z, ens.MoveSingleEnemies
     CALL Z, enf.MoveFormationEnemies
 .notEasy
+
+    ; ##########################################
+    ; Extra speed on hard
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    JR NZ, .notHard
+    CALL ens.MoveSingleEnemies
+    CALL enf.MoveFormationEnemies
+.notHard
 
     RET                                         ; ## END of the function ##
 

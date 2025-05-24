@@ -5,7 +5,7 @@
 
 formatted16                                     ; Formatted 16bit number
     DB "00000"                                  ; Contains a number formatted into a string
-FORMATTED16_SIZE         = 5
+FORMATTED16_SIZE        = 5
 
 ;----------------------------------------------------------;
 ;                       #PrintNum16                        ;
@@ -17,15 +17,41 @@ FORMATTED16_SIZE         = 5
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
 PrintNum16
 
-    ; Print number from HL into #formatted8
-    PUSH DE,BC
+    ; Print number from HL into #formatted16
+    PUSH BC
     LD DE, formatted16
     CALL Num16ToString
-    POP BC,DE
+    POP BC
 
     ; Print text from #formatted8 on screen using tiles
     LD DE, formatted16                           ; Contains 16-bit number as ASCII
     LD A, FORMATTED16_SIZE                       ; Print 5 characters
+    CALL ti.PrintText
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      #PrintNum99                         ;
+;----------------------------------------------------------;
+; Print 8 bit number from A, but only up to 99
+;Input:
+;  - A:    8-bit number to print
+;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
+;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
+PrintNum99
+
+    ; Print number from HL into #formatted16
+    LD H, 0
+    LD L, A
+    PUSH BC
+    LD DE, formatted16
+    CALL Num16ToString
+    POP BC
+
+    ; Print text from #formatted8 on screen using tiles
+    LD DE, formatted16                          ; Contains 16-bit number as ASCII, move to last 2 dights
+    ADD DE, 3
+    LD A, 2                                     ; Print 2 characters
     CALL ti.PrintText
 
     RET                                         ; ## END of the function ##

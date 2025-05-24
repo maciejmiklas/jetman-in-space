@@ -192,6 +192,13 @@ menuScoreBgPaletteBytes = $ - menuScoreBgPaletteAdr
     ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
+gameOverBgPaletteAdr
+    INCBIN  "assets/go/bg.nxp"
+
+gameOverBgPaletteBytes = $ - gameOverBgPaletteAdr
+    ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
+
+ ; #############################################
     ASSERT $$ == dbs.PAL2_BANK_S6_D31
 
 ;----------------------------------------------------------;

@@ -79,9 +79,9 @@ LoadMainMenu
 
     CALL _HideGame
     CALL sc.ResetScore
-    CALL mma.LoadMainMenu
-    CALL ti.SetTilesClipVertical
+    CALL ti.SetTilesClipFull
     CALL jw.ResetWeapon
+    CALL mma.LoadMainMenu
 
     RET                                         ; ## END of the function ##
 
@@ -231,7 +231,7 @@ RocketTakesOff
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
     CALL gb.HideGameBar
-    CALL ti.SetTilesClipVertical
+    CALL ti.SetTilesClipHorizontal
     CALL pi.ResetPickups
 
     RET                                         ; ## END of the function ##
@@ -543,6 +543,9 @@ EnemyHitsJet
     LD A, af.FX_JET_KILL
     CALL af.AfxPlay
 
+    ; Remove one life
+    CALL jl.LifeDown
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -714,6 +717,7 @@ JetMoves
 
     CALL ro.UpdateRocketOnJetmanMove
     CALL pi.UpdatePickupsOnJetmanMove
+    CALL jl.UpdateLifeFaceOnJetMove
 
     RET                                         ; ## END of the function ##
 
@@ -902,6 +906,16 @@ ChangeToFullDay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      #GameOver                           ;
+;----------------------------------------------------------;
+GameOver
+    CALL _HideGame
+
+    CALL go.ShowGameOver
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
@@ -922,6 +936,7 @@ _HideGame
     CALL jt.SetJetStateInactive
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
+    CALL pi.ResetPickups
 
     RET                                         ; ## END of the function ##
 
@@ -951,7 +966,7 @@ _StartLevel
     CALL ti.SetTilesClipFull
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
-    CALL pi.ResetPickups
+    CALL jl.SetupLivesBar
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data
     CALL RespawnJet
