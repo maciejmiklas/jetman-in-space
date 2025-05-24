@@ -15,7 +15,7 @@ TI_RAM_START            = ti.TI_MAP_RAM_H5B00 + FACE_TI_POS_BYTE
 RED_FACE_LIVES          = 3                     ; Show face when #lives < than this value
 JET_POS_LEFT            = 100                   ; Face looks to the left, if Jetman postion is < 100
 JET_POS_RIGHT           = 200                   ; Face looks to the right, if Jetman postion is > 100
-lives                   DB 1
+lives                   DB 10
 
 ;----------------------------------------------------------;
 ;                        #LifeUp                           ;
