@@ -1,6 +1,7 @@
 ;----------------------------------------------------------;
 ;                        Audio FX                          ;
 ;----------------------------------------------------------;
+; LAST COMMIT
     MODULE af
 ; Based on: https://github.com/robgmoran/DougieDoSource
 
@@ -41,7 +42,7 @@
 ;   ld bc, the bank address + the release address offset        ;
 ;   call AfxPlayChannel                                         ;
 ;                                                               ;
-; Notify AFX Frame that the should be should be looped back to  ;
+; Notify AFX Frame that the sound be should be looped back to   ;
 ; the sustain point once the release point has been reached:    ;
 ;   ld a, the number of the effect (0..255)                     ;
 ;   ld e, the number of the channel (A=0, B=1, C=2)             ;
@@ -115,7 +116,7 @@ SetupAyFx
     OUT (C), A
 
     LD HL, _RAM_SLOT6_STA_HC000                 ; Bank containing sound effects
-    CALL AfxInit
+    CALL _AfxInit
 
     RET                                         ; ## END of the function ##
 
@@ -131,52 +132,6 @@ SetAy3ToMono
     SET 7, A
     NEXTREG _PERIPHERAL_04_H09, A
         
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                          AfxInit                         ;
-;----------------------------------------------------------;
-; Initialize the effects player. Turns off all channels, sets variables.
-; Input: 
-;  -  HL: bank address with effects
-AfxInit
-    INC HL
-    LD (afxBnkAdr1+1), HL                       ; Save the address of the table of offsets
-    ld (afxBnkAdr2+1), HL                       ; Save the address of the table of offsets
-    LD HL, afxChDesc                            ; Mark all channels as empty
-    LD DE, $00FF
-    LD BC, AFX_CH_DESC_COUNT*256+$FD
-.afxInit0
-    LD (HL), D
-    INC HL
-    LD (HL), D
-    INC HL
-    LD (HL), E
-    INC HL
-    LD (HL), E
-    INC HL
-    LD (HL), D
-    INC HL
-    LD (HL), D
-    INC HL
-    LD (HL), D
-    INC HL
-    LD (HL), D
-    INC HL
-    DJNZ .afxInit0
-
-    LD HL, $FFBF                                ; Initialize  AY
-    LD E, $15
-.afxInit1
-    DEC E
-    LD B, H
-    OUT (C), E
-    LD B,L
-    OUT (C), D
-    JR NZ, .afxInit1
-
-    LD (afxNseMix+1), DE                        ; Reset the player variables
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -303,62 +258,6 @@ afxNseMix
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     AfxPlayChannel                       ;
-;----------------------------------------------------------;
-; Launch the effect on a specific channel. Any sound currently playing on that channel is terminated next frame.
-; Input: 
-;  - A: Effect number 0..255
-;  - E: Channel (A=0, B=1, C=2)
-AfxPlayChannel
-
-    LD BC, $0000
-    CALL AfxPlayLooped
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     AfxPlayLooped                        ;
-;----------------------------------------------------------;
-; Launch the effect on a specific channel. Any sound currently playing on that channel is terminated next frame. During playback, 
-; when reaching ReleaseAddrCh[N], if an  AfxSustain call has been received since this AfxPlayLooped returned, the playback time frame will 
-; loop back to SustainAddrCh[N].
-; Input: 
-;  - A:  Effect number 0..255
-;  - E:  Channel (A=0, B=1, C=2)
-;  - BC: ReleaseAddrCh[N]
-AfxPlayLooped
-    PUSH AF
-    LD A, C
-    LD (releaseLoSMC), A                        ; SMC>
-    LD A, B
-    LD (releaseHiSmc), A                        ; SMC>
-    LD A, E
-    ADD A, A
-    ADD A, A
-    ADD A, A
-    LD E, A
-    LD D, 0
-    LD IX, afxChDesc
-    ADD IX, DE
-    LD E, 3
-    ADD IX, DE
-    POP AF
-    LD DE, 0                                    ; In DE the longest time in search
-    LD H, E
-    LD L, A
-    ADD HL, HL
-afxBnkAdr2
-    LD BC, 0                                    ; Address of the effect offsets table
-    ADD HL, BC
-    LD C, (HL)
-    INC HL
-    LD B, (HL)
-    ADD HL, BC                                  ; The effect address is obtained in hl
-    PUSH HL                                     ; Save the effect address on the stack
-    JP DoPlay
-    ; !!!! AfxPlay MUST FOLLOW - THERE IS NOT RET !!!!
-
-;----------------------------------------------------------;
 ;                        AfxPlay                           ;
 ;----------------------------------------------------------;
 ; Launch the effect on a free channel. If no free channels, the longest sounding is selected.
@@ -418,7 +317,6 @@ afxBnkAdr1
     LD H, A                                     ;            }
     DJNZ .afxPlay0
 
-DoPlay
     POP DE                                      ; Take the effect address from the stack
     LD (IX-3), E                                ; Put in the channel descriptor
     LD (IX-2), D
@@ -436,40 +334,10 @@ releaseHiSmc equ $+3
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      AfxSustain                          ;
-;----------------------------------------------------------;
-; Notify AFX Frame that the sound in channel E should be looped back to SustainAddrCh[N] once ReleaseAddrCh[N] has been reached, 
-; provided playback was started with AFX.
-; Input: 
-;   - E = Channel (A=0, B=1, C=2)
-;   - BC = SustainAddrCh[N]
-AfxSustain
-    LD A, E
-    ADD A, A
-    ADD A, A
-    ADD A, A
-    LD E, 4
-    ADD A, E
-    LD HL, afxChDesc
-    ADD A, L                                    ; ADD(HL, A) }
-    LD L, A                                     ;            }
-    ADC A, H                                    ;            }
-    SUB L                                       ;            }
-    LD H, A                                     ;            }
-    LD (HL), C
-    INC HL
-    LD (HL), B
-
-    RET                                         ; ## END of the function ##
-
-
-;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
-
 ;----------------------------------------------------------;
 ;                     _CheckRelease                        ;
 ;----------------------------------------------------------;
@@ -498,6 +366,52 @@ _CheckRelease
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                         _AfxInit                         ;
+;----------------------------------------------------------;
+; Initialize the effects player. Turns off all channels, sets variables.
+; Input: 
+;  -  HL: bank address with effects
+_AfxInit
+
+    INC HL
+    LD (afxBnkAdr1+1), HL                       ; Save the address of the table of offsets
+    ;ld (afxBnkAdr2+1), HL                       ; Save the address of the table of offsets
+    LD HL, afxChDesc                            ; Mark all channels as empty
+    LD DE, $00FF
+    LD BC, AFX_CH_DESC_COUNT*256+$FD
+.afxInit0
+    LD (HL), D
+    INC HL
+    LD (HL), D
+    INC HL
+    LD (HL), E
+    INC HL
+    LD (HL), E
+    INC HL
+    LD (HL), D
+    INC HL
+    LD (HL), D
+    INC HL
+    LD (HL), D
+    INC HL
+    LD (HL), D
+    INC HL
+    DJNZ .afxInit0
+
+    LD HL, $FFBF                                ; Initialize  AY
+    LD E, $15
+.afxInit1
+    DEC E
+    LD B, H
+    OUT (C), E
+    LD B,L
+    OUT (C), D
+    JR NZ, .afxInit1
+
+    LD (afxNseMix+1), DE                        ; Reset the player variables
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -63,6 +63,12 @@ SetupLivesBar
 ;----------------------------------------------------------;
 UpdateLifeFaceOnJetMove
 
+    ; This method is called only when the gamer is active. However, there is one exception. When Jetman boards the rocket, it still counts 
+    ; as movement, but the state has already changed to rocket fly.
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
+
     LD HL, TI_RAM_START
 
     LD DE, (jpo.jetX)

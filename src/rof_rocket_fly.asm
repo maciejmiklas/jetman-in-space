@@ -20,6 +20,8 @@ rocketDelayDistance     DB 0                    ; Counts from 0 to RO_FLY_DELAY_
 rocketFlyDelay          DB RO_FLY_DELAY_D8      ; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move
 rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets
 
+FLY_SOUND_REPEAT        = 20
+soundRepeatDelay        DB FLY_SOUND_REPEAT
 ;----------------------------------------------------------;
 ;              #ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
@@ -38,6 +40,32 @@ ResetAndDisableFlyRocket
     LD A, RO_FLY_DELAY_D8
     LD (rocketFlyDelay), A
     LD (rocketFlyDelayCnt), A
+    
+    ; ##########################################
+    LD A, FLY_SOUND_REPEAT
+    LD (soundRepeatDelay), A                    ;Set the count to max so the sound plays immediately when the rocket takes off
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   #FlyRocketSound                        ;
+;----------------------------------------------------------;
+FlyRocketSound
+
+    ; Loop rocket sound by repeating it every few game loops
+    LD A, (soundRepeatDelay)
+    CP FLY_SOUND_REPEAT
+    JR Z, .play
+    INC A
+    LD (soundRepeatDelay), A
+    RET
+
+.play
+    XOR A
+    LD (soundRepeatDelay), A
+
+    LD A, af.FX_ROCKET_FLY
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
@@ -108,6 +136,11 @@ AnimateRocketExplosion
     CP RO_EXPLODE_MAX
     JR Z, .explodingEnds
     ; Nope, keep exploding
+
+    ; ##########################################
+    ; FX
+    LD A, af.FX_EXPLODE_ENEMY_2
+    CALL af.AfxPlay
     
     ; ##########################################
     ; Animation for the top rockets element
