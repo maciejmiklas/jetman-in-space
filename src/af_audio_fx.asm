@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                        Audio FX                          ;
 ;----------------------------------------------------------;
-; LAST COMMIT
+
     MODULE af
 ; Based on: https://github.com/robgmoran/DougieDoSource
 

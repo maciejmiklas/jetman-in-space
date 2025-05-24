@@ -44,7 +44,8 @@ LoadLevel1Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -122,7 +123,8 @@ LoadLevel2Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -200,7 +202,8 @@ LoadLevel3Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -280,7 +283,8 @@ LoadLevel4Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -358,7 +362,8 @@ LoadLevel5Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -436,7 +441,8 @@ LoadLevel6Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -514,7 +520,8 @@ LoadLevel7Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -592,7 +599,8 @@ LoadLevel8Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -670,7 +678,8 @@ LoadLevel9Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
@@ -747,7 +756,8 @@ LoadLevel10Data
     ; ##########################################
     ; Load tile map. DE is set to level number
     CALL fi.LoadSprites
-    
+    CALL sp.LoadSpritesFPGA
+
     ; ##########################################
     ; Setup Platforms
     CALL dbs.SetupArraysBank
