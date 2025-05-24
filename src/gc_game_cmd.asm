@@ -233,6 +233,7 @@ RocketTakesOff
     CALL gb.HideGameBar
     CALL ti.SetTilesClipHorizontal
     CALL pi.ResetPickups
+    CALL mij.ResetJoystick
 
     RET                                         ; ## END of the function ##
 
@@ -937,7 +938,8 @@ _HideGame
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
     CALL pi.ResetPickups
-
+    CALL mij.ResetJoystick
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
