@@ -314,46 +314,7 @@ _JoyJetpackOverheatSlowdown
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                     #_CanJetMove                         ;
-;----------------------------------------------------------;
-; Output:
-;   A containing one of the values:
-;     - _RET_YES_D1:        Process joystick input
-;     - _RET_NO_D0: Disable joystick input processing for this loop
-_CanJetMove
-
-    CALL _JoyCntEnabled
-    CP _RET_NO_D0
-    RET Z
-
-    ; ##########################################
-    ; Joystick disabled if Jetman is inactive
-    LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
-    JR NZ, .jetActive
-
-    ; Do not process input
-    LD A, _RET_NO_D0
-    RET
-.jetActive  
-
-    ; ##########################################
-    LD A, (jt.jetState)
-    CP jt.JETST_RIP
-    JR NZ, .afterRip                            ; Do not process input if Jetman is dying
-
-    ; Do not process input, Jet is dying
-    LD A, _RET_NO_D0
-    RET
-.afterRip
-
-    ; ##########################################
-    ; Process input
-
-    LD A, _RET_YES_D1
-
-    RET                                         ; ## END of the function ##
+extraMove   DB 0
 
 ;----------------------------------------------------------;
 ;                    #_JoystickMoves                       ;
@@ -364,7 +325,7 @@ _JoystickMoves
     CALL pl.ResetJoyOffBump
     CALL ro.UpdateRocketOnJetmanMove
     CALL pl.JetPlatformHitOnJoyMove
-    
+
     ; ##########################################
     ; Reset inactivity counter as we have movement
     XOR A                                       ; Set A to 0
@@ -408,6 +369,47 @@ _StandToWalk
     
     LD A, js.SDB_WALK_ST
     CALL js.ChangeJetSpritePattern
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     #_CanJetMove                         ;
+;----------------------------------------------------------;
+; Output:
+;   A containing one of the values:
+;     - _RET_YES_D1:        Process joystick input
+;     - _RET_NO_D0: Disable joystick input processing for this loop
+_CanJetMove
+
+    CALL _JoyCntEnabled
+    CP _RET_NO_D0
+    RET Z
+
+    ; ##########################################
+    ; Joystick disabled if Jetman is inactive
+    LD A, (jt.jetState)
+    CP jt.JT_STATE_INACTIVE
+    JR NZ, .jetActive
+
+    ; Do not process input
+    LD A, _RET_NO_D0
+    RET
+.jetActive  
+
+    ; ##########################################
+    LD A, (jt.jetState)
+    CP jt.JETST_RIP
+    JR NZ, .afterRip                            ; Do not process input if Jetman is dying
+
+    ; Do not process input, Jet is dying
+    LD A, _RET_NO_D0
+    RET
+.afterRip
+
+    ; ##########################################
+    ; Process input
+
+    LD A, _RET_YES_D1
 
     RET                                         ; ## END of the function ##
 

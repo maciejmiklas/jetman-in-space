@@ -107,10 +107,16 @@ _MainLoop000OnActiveGame
 .onEasy
 
     ; ##########################################
-    ; Extra speed on hard
+    ; Faster movement speed for Jetman on hard
     LD A, (jt.difLevel)
     CP jt.DIF_HARD
     JR NZ, .notHard
+
+    ; Do not speed up animations, like falling from the platform
+    LD A, (gid.joyOffCnt)
+    CP 0
+    JR NZ, .notHard
+
     CALL gi.GameJoystickInput
 .notHard
 
