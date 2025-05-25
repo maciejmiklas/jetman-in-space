@@ -76,6 +76,7 @@ mainLoop
     INCLUDE "mms_menu_score.asm"
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
+    INCLUDE "ft_fuel_thief.asm"
     
 
     ; LAST import due to bank offset!

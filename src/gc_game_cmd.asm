@@ -106,9 +106,12 @@ LoadLevel1Intro
 LoadLevel1
 
     CALL _InitLevelLoad
+
     CALL ll.LoadLevel1Data
     CALL _StartLevel
-    
+
+    CALL ft.DisableFuelThief
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -234,6 +237,7 @@ RocketTakesOff
     CALL ti.SetTilesClipHorizontal
     CALL pi.ResetPickups
     CALL mij.ResetJoystick
+    CALL ft.DisableFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -370,7 +374,7 @@ RocketElementPickup
 
     ; ##########################################
     ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element
-    CALL ro.IsFuelTankDeployed
+    CALL ro.IsFuelDeployment
     JR C, .notFuelTank
 
     LD A, af.FX_PICKUP_FUEL
@@ -446,6 +450,26 @@ PlatformWeaponHit
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
+;                   #WeaponHitEnemies                      ;
+;----------------------------------------------------------;
+WeaponHitEnemies
+
+    CALL dbs.SetupArraysBank
+
+    ; ##########################################
+    LD IX, dba.singleEnemySprites
+    LD A, (ens.singleEnemySize)
+    LD B, A
+    CALL jw.CheckHitEnemies
+
+    ; ##########################################
+    LD IX, dba.formationEnemySprites
+    LD B, dba.ENEMY_FORMATION_SIZE
+    CALL jw.CheckHitEnemies
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
 ;                     #EnemyHit                            ;
 ;----------------------------------------------------------;
 ; Input
@@ -455,7 +479,6 @@ EnemyHit
 
     CALL dbs.SetupArraysBank
 
-    CALL sr.SetSpriteId
     CALL sr.SpriteHit
 
     ; ##########################################
@@ -517,7 +540,6 @@ EnemyHitsJet
     CALL dbs.SetupArraysBank
     
     ; Destroy the enemy.
-    CALL sr.SetSpriteId
     CALL sr.SpriteHit
 
     ; ##########################################
@@ -939,7 +961,8 @@ _HideGame
     CALL ti.CleanAllTiles
     CALL pi.ResetPickups
     CALL mij.ResetJoystick
-    
+    CALL ft.DisableFuelThief
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -951,6 +974,7 @@ _InitLevelLoad
     CALL gi.ResetKeysState
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
+    CALL ft.EnableFuelThief
     
     RET                                         ; ## END of the function ##
 

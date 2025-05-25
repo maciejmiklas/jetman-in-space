@@ -86,7 +86,7 @@ _MainLoop000OnActiveGame
     CALL ro.CheckHitTank
     CALL jco.JetRip
     CALL jw.MoveShots
-    CALL jw.WeaponHitEnemies
+    CALL gc.WeaponHitEnemies
     CALL jw.FireDelayCounter
     CALL gi.GameKeyboardInput
     CALL jco.JetmanEnemiesCollision
@@ -94,6 +94,8 @@ _MainLoop000OnActiveGame
     CALL js.AnimateJetSprite
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
+    CALL ft.MoveFuelThief
+    CALL ft.ThiefWeaponHit
 
     ; ##########################################
     ; Move enemies for normal or hard
@@ -105,10 +107,16 @@ _MainLoop000OnActiveGame
 .onEasy
 
     ; ##########################################
-    ; Extra speed on hard
+    ; Faster movement speed for Jetman on hard
     LD A, (jt.difLevel)
     CP jt.DIF_HARD
     JR NZ, .notHard
+
+    ; Do not speed up animations, like falling from the platform
+    LD A, (gid.joyOffCnt)
+    CP 0
+    JR NZ, .notHard
+
     CALL gi.GameJoystickInput
 .notHard
 
@@ -228,14 +236,6 @@ _MainLoop002OnActiveGame
     CALL Z, enf.MoveFormationEnemies
 .notEasy
 
-    ; ##########################################
-    ; Extra speed on hard
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD
-    JR NZ, .notHard
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
-.notHard
 
     RET                                         ; ## END of the function ##
 
@@ -408,7 +408,16 @@ _MainLoop008OnActiveGame
     CALL ro.AnimateTankExplode
     CALL st.BlinkStarsL1
     CALL jo.AnimateJetpackOverheat
-    
+    CALL ft.AnimateFuelThief
+
+    ; ##########################################
+    ; Extra speed on hard
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    JR NZ, .notHard
+    CALL ens.MoveSingleEnemies
+.notHard
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -595,6 +604,7 @@ _MainLoop040OnActiveGame
     CALL td.NextTimeOfDayTrigger
     CALL pi.PickupDropCounter
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
+    CALL ft.RespawnFuelThief
 
     RET                                         ; ## END of the function ##
 

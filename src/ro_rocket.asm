@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE ro
 
-RO_DROP_NEXT_D5         = 10                    ; Drop next element delay
+RO_DROP_NEXT_D10         = 10                    ; Drop next element delay
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element
 
@@ -19,7 +19,7 @@ rocketElementCnt        DB 0
 rocketState             DB ROST_INACTIVE
 
 ROST_INACTIVE           = 0
-ROST_WAIT_DROP          = 1                     ; Rocket element (or fuel tank) is waiting for drop from the sky. This is initial state
+ROST_WAIT_DROP          = 1                     ; Rocket element (or fuel tank) is waiting for drop from the sky.
 
 ROST_FALL_PICKUP        = 10                    ; Rocket element (or fuel tank) is falling down for pickup
 ROST_FALL_ASSEMBLY      = 11                    ; The rocket element (or fuel tank) falls towards the rocket for assembly
@@ -180,10 +180,10 @@ UpdateRocketOnJetmanMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #IsFuelTankDeployed                   ;
+;                     #IsFuelDeployment                    ;
 ;----------------------------------------------------------;
 ; Output: CF == 1 if still assembling rocket (#rocketElementCnt < 4)
-IsFuelTankDeployed
+IsFuelDeployment
 
     LD A, (rocketElementCnt)
     CP EL_TANK1_D4
@@ -204,7 +204,7 @@ CheckHitTank
     CALL dbs.SetupArraysBank
 
     ; Is the thank out there?
-    CALL IsFuelTankDeployed
+    CALL IsFuelDeployment
     RET C                                       ; Return if counter is < 4 (still assembling rocket)
 
     ; Is tank already exploding?
@@ -223,7 +223,7 @@ CheckHitTank
     CP ROST_FALL_ASSEMBLY
     JR Z, .assembly
     
-    ; Falling rocket element for pickup.
+    ; Falling rocket element for pickup
     LD DE, (IX + RO.DROP_X)                     ; X param for #ShotsCollision.
     JR .afterAssembly
 .assembly
@@ -247,7 +247,7 @@ CheckHitTank
     LD (rocketState), A
 
     ; ##########################################
-    CALL gc.RocketTankHit 
+    CALL gc.RocketTankHit
 
     RET                                         ; ## END of the function ##
 
@@ -460,7 +460,7 @@ RocketElementFallsForAssembly
 
     ; ##########################################
     ; Check if we are dropping fuel already. If it's the case, hide the fuel tank sprite. Sprite of rocket element remains visible
-    CALL IsFuelTankDeployed
+    CALL IsFuelDeployment
     JR C, .notFuel                              ; Jump if counter is < 4 (still assembling rocket)
 
     ; We are dropping fuel already, hide the fuel sprite as it has reached the rocket
@@ -487,7 +487,7 @@ DropNextRocketElement
     LD A, (dropNextDelay)
     INC A
     LD (dropNextDelay), A
-    CP RO_DROP_NEXT_D5
+    CP RO_DROP_NEXT_D10
     RET NZ                                      ; Jump if #nextCnt !=  #DROP_NEXT_MAX
 
     ; The counter has reached the required value, reset it first
@@ -567,13 +567,34 @@ UpdateRocketSpritePattern
     NEXTREG _SPR_REG_NR_H34, A
     
     ; ##########################################
-    ; Set sprite pattern    
+    ; Set sprite pattern
     LD A, D
     OR _SPR_PATTERN_SHOW                        ; Set show bit
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                  #RemoveRocketElement                   ;
+;----------------------------------------------------------;
+RemoveRocketElement
+
+    LD A, (rocketElementCnt)
+    DEC A
+    LD (rocketElementCnt), A
+    
+    CALL _UpdateFuelProgressBar
+
+    ; Change state
+    LD A, ROST_WAIT_DROP
+    LD (rocketState), A
+
+    ; Reset drop delay
+    XOR A                                       ; Set A to 0.
+    LD (dropNextDelay), A
+
+    RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
@@ -683,7 +704,7 @@ _JetmanDropsRocketElement
     ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
     LD BC, (jpo.jetX)
     LD A, (rocketAssemblyX)
-    SUB C                                       ; Ignore B because X < 255
+    SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit
     CP DROP_MARGX_D8
     RET NC
 
@@ -741,18 +762,7 @@ _ResetRocketElement
     CALL sp.SetIdAndHideSprite
 
     ; Reset the state and decrement element counter -> we will drop this element again
-    LD A, (rocketElementCnt)
-    DEC A
-    LD (rocketElementCnt), A
-    CALL _UpdateFuelProgressBar
-
-    ; Change state
-    LD A, ROST_WAIT_DROP
-    LD (rocketState), A
-
-    ; Reset drop delay
-    XOR A                                       ; Set A to 0.
-    LD (dropNextDelay), A
+    CALL RemoveRocketElement
 
     RET                                         ; ## END of the function ##
 

@@ -55,6 +55,7 @@ SDB_FIRE                = 202                   ; Fire
 SDB_ENEMY1              = 203                   ; Enemy 1
 SDB_ENEMY2              = 204                   ; Enemy 2
 SDB_ENEMY3              = 205                   ; Enemy 3
+FUEL_THIEF              = 210                   ; Fuel thief
 SDB_HIDE                = 255                   ; Hides Sprite
 
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX)
@@ -130,7 +131,6 @@ KillOneSprite
     JR NZ, .continue                        ; Jump if this enemy is already dead or exploding
 
     ; ##########################################
-    CALL SetSpriteId
     CALL SpriteHit
     RET
 
@@ -151,7 +151,8 @@ KillOneSprite
 ; Input
 ;  - IX:    Pointer to #SPR
 SpriteHit
-
+    
+    CALL sr.SetSpriteId
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection
 
     LD A, SDB_EXPLODE

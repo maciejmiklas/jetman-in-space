@@ -209,8 +209,9 @@ GameKeyboardInput
 _Key_Q
 
     ;CALL gc.LoadLevel1
-    CALL ro.AssemblyRocketForDebug
-
+   ; CALL ro.AssemblyRocketForDebug
+    CALL ft.RespawnFuelThief
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -94,7 +94,7 @@ menuScoreCursor
 movePattern01D0
     DB 2, %0'000'1'111,$00
 
-; Horizontal, max speed.
+; Horizontal, delay 2.
 movePattern01D1
     DB 2, %0'000'1'111,$10  
 
@@ -219,6 +219,10 @@ movePattern18
 ;         horizontal        45deg down
     DB 4, %0'000'1'111,$2C, %1'111'1'111,$39 
 
+; Horizontal, variable speed
+movePattern19
+    DB 6, %0'000'1'111,$2F, %0'000'1'111,$1F, %0'000'1'111,$35 
+
 ;----------------------------------------------------------;
 ;                  Sprite Animations                       ;
 ;----------------------------------------------------------;
@@ -238,6 +242,8 @@ srSpriteDB
             DB 48, 49, 50
     sr.SPR_REC {sr.SDB_ENEMY3,  sr.SDB_ENEMY3 - sr.SDB_SUB, 03}
             DB 34, 35, 36
+    sr.SPR_REC {sr.FUEL_THIEF,  sr.FUEL_THIEF - sr.SDB_SUB, 03}
+            DB 58, 59, 63
 
 ;----------------------------------------------------------;
 ;                     Single enemies                       ;
@@ -500,6 +506,16 @@ singleEnemiesL10
     enp.ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
 SINGLE_ENEMIES_L10      = 1 
 enemyFormationL10 enp.ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
+
+;----------------------------------------------------------;
+;                      Fuel Thief                          ;
+;----------------------------------------------------------;
+fuelThiefEnp
+    enp.ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 233/*RESPAWN_Y*/, movePattern19/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+
+fuelThiefSpr
+    sr.SPR {96/*ID*/, sr.FUEL_THIEF/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fuelThiefEnp/*EXT_DATA_POINTER*/}
+
 
 ;----------------------------------------------------------;
 ;                     Jetman Sprite Data                   ;
