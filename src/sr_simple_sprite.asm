@@ -131,7 +131,6 @@ KillOneSprite
     JR NZ, .continue                        ; Jump if this enemy is already dead or exploding
 
     ; ##########################################
-    CALL SetSpriteId
     CALL SpriteHit
     RET
 
@@ -152,7 +151,8 @@ KillOneSprite
 ; Input
 ;  - IX:    Pointer to #SPR
 SpriteHit
-
+    
+    CALL sr.SetSpriteId
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection
 
     LD A, SDB_EXPLODE

@@ -450,6 +450,26 @@ PlatformWeaponHit
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
+;                   #WeaponHitEnemies                      ;
+;----------------------------------------------------------;
+WeaponHitEnemies
+
+    CALL dbs.SetupArraysBank
+
+    ; ##########################################
+    LD IX, dba.singleEnemySprites
+    LD A, (ens.singleEnemySize)
+    LD B, A
+    CALL jw.CheckHitEnemies
+
+    ; ##########################################
+    LD IX, dba.formationEnemySprites
+    LD B, dba.ENEMY_FORMATION_SIZE
+    CALL jw.CheckHitEnemies
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
 ;                     #EnemyHit                            ;
 ;----------------------------------------------------------;
 ; Input
@@ -459,7 +479,6 @@ EnemyHit
 
     CALL dbs.SetupArraysBank
 
-    CALL sr.SetSpriteId
     CALL sr.SpriteHit
 
     ; ##########################################
@@ -521,7 +540,6 @@ EnemyHitsJet
     CALL dbs.SetupArraysBank
     
     ; Destroy the enemy.
-    CALL sr.SetSpriteId
     CALL sr.SpriteHit
 
     ; ##########################################

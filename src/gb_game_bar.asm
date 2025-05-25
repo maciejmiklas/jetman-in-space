@@ -61,8 +61,19 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
 
+    ; ##########################################
+    LD BC, 60
+    LD H, 0
+    LD A, (ro.rocketElementCnt)
+    LD L, A
+    CALL ut.PrintNumber
 
-
+    ; ##########################################
+    LD BC, 70
+    LD H, 0
+    LD A, (ro.rocketState)
+    LD L, A
+    CALL ut.PrintNumber
 
     RET                                         ; ## END of the function ##
 
