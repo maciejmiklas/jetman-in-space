@@ -106,9 +106,12 @@ LoadLevel1Intro
 LoadLevel1
 
     CALL _InitLevelLoad
+
     CALL ll.LoadLevel1Data
     CALL _StartLevel
-    
+
+    CALL ft.DisableFuelThief
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -234,6 +237,7 @@ RocketTakesOff
     CALL ti.SetTilesClipHorizontal
     CALL pi.ResetPickups
     CALL mij.ResetJoystick
+    CALL ft.DisableFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -370,7 +374,7 @@ RocketElementPickup
 
     ; ##########################################
     ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element
-    CALL ro.IsFuelTankDeployed
+    CALL ro.IsFuelDeployment
     JR C, .notFuelTank
 
     LD A, af.FX_PICKUP_FUEL
@@ -939,7 +943,8 @@ _HideGame
     CALL ti.CleanAllTiles
     CALL pi.ResetPickups
     CALL mij.ResetJoystick
-    
+    CALL ft.DisableFuelThief
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -951,6 +956,7 @@ _InitLevelLoad
     CALL gi.ResetKeysState
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
+    CALL ft.EnableFuelThief
     
     RET                                         ; ## END of the function ##
 
@@ -969,7 +975,6 @@ _StartLevel
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
     CALL jl.SetupLivesBar
-    CALL ft.SetupFuelThief
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data
     CALL RespawnJet

@@ -180,10 +180,10 @@ UpdateRocketOnJetmanMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #IsFuelTankDeployed                   ;
+;                     #IsFuelDeployment                    ;
 ;----------------------------------------------------------;
 ; Output: CF == 1 if still assembling rocket (#rocketElementCnt < 4)
-IsFuelTankDeployed
+IsFuelDeployment
 
     LD A, (rocketElementCnt)
     CP EL_TANK1_D4
@@ -204,7 +204,7 @@ CheckHitTank
     CALL dbs.SetupArraysBank
 
     ; Is the thank out there?
-    CALL IsFuelTankDeployed
+    CALL IsFuelDeployment
     RET C                                       ; Return if counter is < 4 (still assembling rocket)
 
     ; Is tank already exploding?
@@ -460,7 +460,7 @@ RocketElementFallsForAssembly
 
     ; ##########################################
     ; Check if we are dropping fuel already. If it's the case, hide the fuel tank sprite. Sprite of rocket element remains visible
-    CALL IsFuelTankDeployed
+    CALL IsFuelDeployment
     JR C, .notFuel                              ; Jump if counter is < 4 (still assembling rocket)
 
     ; We are dropping fuel already, hide the fuel sprite as it has reached the rocket

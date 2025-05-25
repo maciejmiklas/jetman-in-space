@@ -409,7 +409,8 @@ _MainLoop008OnActiveGame
     CALL ro.AnimateTankExplode
     CALL st.BlinkStarsL1
     CALL jo.AnimateJetpackOverheat
-    
+    CALL ft.AnimateFuelThief
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -431,7 +432,6 @@ _MainLoop008OnActiveGameOrFlyingRocket
 .execute
     ; ##########################################
     CALL enp.AnimatePatternEnemies
-    CALL ft.AnimateFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -597,7 +597,7 @@ _MainLoop040OnActiveGame
     CALL td.NextTimeOfDayTrigger
     CALL pi.PickupDropCounter
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
-
+    CALL ft.RespawnFuelThief
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

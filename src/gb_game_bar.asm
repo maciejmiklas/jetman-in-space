@@ -46,14 +46,21 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-/*
+
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (mms.tmp2)
+    LD A, (ft.thiefState)
     LD L, A
     CALL ut.PrintNumber
-*/
+
+    ; ##########################################
+    LD BC, 50
+    LD H, 0
+    LD A, (ft.respawnDelayCnt)
+    LD L, A
+    CALL ut.PrintNumber
+
 
 
 

@@ -13,41 +13,63 @@ THIEF_SIZE              = 1
 FUEL_SPRITE_ID          = 97                    ; Sprite ID for the screen
 FUEL_SPRITE_REF         = 17                    ; Sprite id from sprite file
 FUEL_HEIGHT             = 226
+DEPLOY_SIDE_RND         = $30
+
+respawnDelayCnt         DB 0
+RESPAWN_DELAY           = 20
+
+MIN_FUEL_LEVEL          = ro.EL_TANK1_D4 + 2
 
 ;----------------------------------------------------------;
-;                    #SetThiefState                        ;
+;                    #DisableFuelThief                     ;
 ;----------------------------------------------------------;
-; Input:
-;  A: New state as one of: TS_XXX
-SetThiefState
+DisableFuelThief
 
+    CALL _HideFuelThief
+
+    LD A, ft.TS_DISABLED
     LD (thiefState), A
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    #SetupFuelThief                       ;
-;----------------------------------------------------------;
-SetupFuelThief
-
-    CALL dbs.SetupArraysBank
-
-    LD IX, dba.fuelThiefSpr
-    LD B, THIEF_SIZE
-    CALL enp.ResetPatternEnemies
-
-    XOR A
-    LD (IY + enp.ENP.RESPAWN_DELAY), A
+    CALL ft._SetupFuelThief
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #RespawnFuelThief                       ;
+;                     #EnableFuelThief                     ;
+;----------------------------------------------------------;
+EnableFuelThief
+
+    CALL _HideFuelThief
+    
+    LD A, ft.TS_WAITING
+    LD (thiefState), A
+
+    CALL ft._SetupFuelThief
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #RespawnFuelThief                     ;
 ;----------------------------------------------------------;
 RespawnFuelThief
 
+    LD A, (thiefState)
+    CP TS_WAITING
+    RET NZ
+
+    ; Is the thank out there?
+    LD A, (ro.rocketElementCnt)
+    CP MIN_FUEL_LEVEL
+    RET C                                       ; Return if rocket does not have enough fuel
+
+    LD A, (respawnDelayCnt)
+    INC A
+    LD (respawnDelayCnt), A
+    CP RESPAWN_DELAY
+    RET NZ
+
     LD A, TS_RUNS_EMPTY
-    CALL SetThiefState
+    LD (thiefState), A
 
     CALL dbs.SetupArraysBank
 
@@ -55,28 +77,17 @@ RespawnFuelThief
     LD BC, (IX + sr.SPR.EXT_DATA_POINTER)       ; Load extra sprite data (#ENP) to IY
     LD IY, BC
 
-    LD (IY+enp.ENP.SETUP),  enp.ENP_S_LEFT_ALONG ;ENP_S_RIGHT_ALONG
+    ; Random left/right deployment
+    LD A, R
+    CP DEPLOY_SIDE_RND
+    JR C, .deployRight
+    LD (IY+enp.ENP.SETUP),  enp.ENP_S_LEFT_ALONG 
+    JR .afterDeploySide
+.deployRight
+    LD (IY+enp.ENP.SETUP),  enp.ENP_S_RIGHT_ALONG 
+.afterDeploySide
 
     CALL enp.RespawnPatternEnemy
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     #HideFuelThief                       ;
-;----------------------------------------------------------;
-HideFuelThief
-
-    LD A, TS_WAITING
-    CALL SetThiefState
-
-    CALL dbs.SetupArraysBank
-
-    LD IX, dba.fuelThiefSpr
-    CALL sr.HideSimpleSprite
-
-    ; Hide tank
-    LD A, FUEL_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -84,6 +95,11 @@ HideFuelThief
 ;                  #AnimateFuelThief                       ;
 ;----------------------------------------------------------;
 AnimateFuelThief
+
+    ; Do not execute it thief is not moving
+    LD A, (thiefState)
+    CP TS_RUNS_EMPTY
+    RET C
 
     CALL dbs.SetupArraysBank
 
@@ -122,6 +138,9 @@ MoveFuelThief
     ; ##########################################
     ; Check if the thief has reached the rocket to steal fuel
     LD BC, (IX + sr.SPR.X)
+    LD A, B                                     ; Rocket postion is 8 bit, ignore X postion if > 256 (9bit)
+    CP 1
+    JR Z, .notAtRocket
     LD A, (ro.rocketAssemblyX)
     SUB C                                       ; Ignore B because X < 255, rocket assembly X is 8bit
     CP ro.DROP_MARGX_D8
@@ -129,9 +148,9 @@ MoveFuelThief
  
     ; ##########################################
     ; Pickup fuel tank
-    ;CALL ro.DecrementRocketFuelLevel
+    CALL ro.DecrementRocketFuelLevel
     LD A, TS_CARRIES_FUEL
-    CALL SetThiefState
+    LD (thiefState), A
 .notAtRocket
 
     ; ##########################################
@@ -177,7 +196,7 @@ MoveFuelThief
     CP 5
     JR NC, .notHideLeft
     ; Hide sprite, is on the left side
-    CALL HideFuelThief
+    CALL _HideFuelThief
 .notHideLeft
 
     ; ##########################################
@@ -193,8 +212,54 @@ MoveFuelThief
     CP $3B
     JR C, .notHideRight
     ; Hide sprite, is on the right side
-    CALL HideFuelThief
+    CALL _HideFuelThief
 .notHideRight
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                   #_SetupFuelThief                       ;
+;----------------------------------------------------------;
+_SetupFuelThief
+
+    CALL dbs.SetupArraysBank
+
+    LD IX, dba.fuelThiefSpr
+    LD B, THIEF_SIZE
+    CALL enp.ResetPatternEnemies
+
+    XOR A
+    LD (IY + enp.ENP.RESPAWN_DELAY), A
+    LD (respawnDelayCnt), A
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #_HideFuelThief                       ;
+;----------------------------------------------------------;
+_HideFuelThief
+
+    LD A, TS_WAITING
+    LD (thiefState), A
+
+    CALL dbs.SetupArraysBank
+
+    LD IX, dba.fuelThiefSpr
+    CALL sr.HideSimpleSprite
+
+    ; Hide tank
+    LD A, FUEL_SPRITE_ID
+    CALL sp.SetIdAndHideSprite
+
+    ; Restart deploy countdown
+    XOR A
+    LD (respawnDelayCnt), A
 
     RET                                         ; ## END of the function ##
 

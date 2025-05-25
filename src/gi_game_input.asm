@@ -219,8 +219,7 @@ _Key_Q
 ;----------------------------------------------------------;
 _Key_W
 
-    ;CALL gc.LoadLevel2
-    CALL ft.HideFuelThief
+    CALL gc.LoadLevel2
 
     RET                                         ; ## END of the function ##
 
