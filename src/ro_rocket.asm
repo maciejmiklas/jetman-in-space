@@ -567,13 +567,26 @@ UpdateRocketSpritePattern
     NEXTREG _SPR_REG_NR_H34, A
     
     ; ##########################################
-    ; Set sprite pattern    
+    ; Set sprite pattern
     LD A, D
     OR _SPR_PATTERN_SHOW                        ; Set show bit
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;               #DecrementRocketFuelLevel                  ;
+;----------------------------------------------------------;
+DecrementRocketFuelLevel
+
+    LD A, (rocketElementCnt)
+    DEC A
+    LD (rocketElementCnt), A
+    
+    CALL _UpdateFuelProgressBar
+
+    RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
@@ -683,7 +696,7 @@ _JetmanDropsRocketElement
     ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
     LD BC, (jpo.jetX)
     LD A, (rocketAssemblyX)
-    SUB C                                       ; Ignore B because X < 255
+    SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit
     CP DROP_MARGX_D8
     RET NC
 
@@ -741,10 +754,7 @@ _ResetRocketElement
     CALL sp.SetIdAndHideSprite
 
     ; Reset the state and decrement element counter -> we will drop this element again
-    LD A, (rocketElementCnt)
-    DEC A
-    LD (rocketElementCnt), A
-    CALL _UpdateFuelProgressBar
+    CALL DecrementRocketFuelLevel
 
     ; Change state
     LD A, ROST_WAIT_DROP

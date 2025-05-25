@@ -94,6 +94,7 @@ _MainLoop000OnActiveGame
     CALL js.AnimateJetSprite
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
+    CALL ft.MoveFuelThief
 
     ; ##########################################
     ; Move enemies for normal or hard
@@ -430,6 +431,7 @@ _MainLoop008OnActiveGameOrFlyingRocket
 .execute
     ; ##########################################
     CALL enp.AnimatePatternEnemies
+    CALL ft.AnimateFuelThief
 
     RET                                         ; ## END of the function ##
 

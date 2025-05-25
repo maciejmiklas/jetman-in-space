@@ -111,7 +111,7 @@ DEC_MOVE_DELAY          = %0001'0000
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
 ;----------------------------------------------------------;
-;                    #CopyEnpsToEnp                        ;
+;                    #CopyEnpsToEnpMovePatternEnemies                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - IX: Pointer to #ENPS array
@@ -161,7 +161,7 @@ ResetEnp
 ;  - IX:  Pointer to the #sr.SPR array
 ;  - B:   Size of the #sr.SPR and #ENP array (both will be modified)
 ResetPatternEnemies
-    
+
 .enemyLoop
     CALL sr.ResetSprite
     
@@ -375,7 +375,11 @@ RespawnPatternEnemy
 
     ; Enemy disabled?
     CP enp.RESPAWN_OFF
-    RET Z
+    JR NZ, .respawnOn
+
+    LD A, RES_SE_OUT_NO
+    RET
+.respawnOn
 
     CP 0
     JR Z, .afterEnemyRespawnDelay               ; Jump if there is no extra delay for this enemy

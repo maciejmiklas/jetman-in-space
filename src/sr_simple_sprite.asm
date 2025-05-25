@@ -55,6 +55,7 @@ SDB_FIRE                = 202                   ; Fire
 SDB_ENEMY1              = 203                   ; Enemy 1
 SDB_ENEMY2              = 204                   ; Enemy 2
 SDB_ENEMY3              = 205                   ; Enemy 3
+FUEL_THIEF              = 210                   ; Fuel thief
 SDB_HIDE                = 255                   ; Hides Sprite
 
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX)

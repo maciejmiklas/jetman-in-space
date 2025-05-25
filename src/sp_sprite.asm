@@ -16,6 +16,7 @@ SP_ADDR_HC000           = _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
 ; Rocket:               80-89
 ; Pickups:              90
 ; Jetman's Weapon:      91-95
+; Fuel thief:           96-97
 
 ;----------------------------------------------------------;
 ;                     #LoadSpritesFPGA                     ;
