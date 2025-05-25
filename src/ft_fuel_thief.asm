@@ -236,7 +236,6 @@ MoveFuelThief
  
     ; ##########################################
     ; Pickup fuel tank
-    nextreg 2,8
     CALL ro.RemoveRocketElement
     LD A, TS_CARRIES_FUEL
     LD (thiefState), A
