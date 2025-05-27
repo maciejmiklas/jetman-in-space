@@ -242,6 +242,7 @@ _JoyFire
 
     ; FX
     LD A, af.MENU_ENTER
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -272,6 +273,7 @@ _JoyDown
 
     ; FX
     LD A, af.FX_FIRE2
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -302,6 +304,7 @@ _JoyUp
 
     ; FX
     LD A, af.FX_FIRE1
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -325,6 +328,7 @@ _JoyLeft
 
     ; FX
     LD A, af.FX_MENU_MOVE
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL _UpdateCursor
@@ -350,6 +354,7 @@ _JoyRight
 
     ; FX
     LD A, af.FX_MENU_MOVE
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL _UpdateCursor

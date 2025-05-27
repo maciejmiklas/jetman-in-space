@@ -459,6 +459,7 @@ _WeaponFx
 .newSound
     LD A, af.FX_FIRE2
 .afterNewSound
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     JR .afterFireFx

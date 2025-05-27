@@ -65,6 +65,7 @@ FlyRocketSound
     LD (soundRepeatDelay), A
 
     LD A, af.FX_ROCKET_FLY
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -140,6 +141,7 @@ AnimateRocketExplosion
     ; ##########################################
     ; FX
     LD A, af.FX_EXPLODE_ENEMY_2
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
     
     ; ##########################################

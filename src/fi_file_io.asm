@@ -70,25 +70,6 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
     ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
 ;----------------------------------------------------------;
-;                        #LoadEffects                      ;
-;----------------------------------------------------------;
-LoadEffects
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.effectsFileName
-    CALL _CopyFileName
-
-    CALL dbs.SetupAyFxsBank
-
-    CALL _FileOpen
-    
-    LD IX, _RAM_SLOT6_STA_HC000
-    LD BC, dba.EFFECTS_FILE_SIZE
-    CALL _FileRead
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 #LoadLevelIntroImage                     ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB)

@@ -59,7 +59,6 @@ SetupSystem
     CALL bm.HideImage
     CALL sc.SetupScreen
     CALL ti.SetupTiles
-    CALL fi.LoadEffects
 
     ; Load sprites from any level for mein menu
     LD D, "0"
@@ -361,6 +360,7 @@ RocketTankHit
     CALL sc.HitRocketTank
 
     LD A, af.FX_EXPLODE_TANK
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -378,11 +378,13 @@ RocketElementPickup
     JR C, .notFuelTank
 
     LD A, af.FX_PICKUP_FUEL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
     JR .afterFuelFx
 .notFuelTank
 
     LD A, af.FX_PICKUP_ROCKET_EL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 .afterFuelFx
 
@@ -405,6 +407,7 @@ RocketElementDrop
     CALL sc.DropRocketElement
 
     LD A, af.FX_ROCKET_EL_DROP
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ## 
@@ -435,6 +438,7 @@ JetPlatformTakesOff
 
     ; Play FX
     LD A, af.FX_JET_TAKE_OFF
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -445,6 +449,7 @@ JetPlatformTakesOff
 PlatformWeaponHit
 
     LD A, af.FX_FIRE_PLATFORM_HIT
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ## 
@@ -491,6 +496,7 @@ EnemyHit
 
     ; Yes, enemy 1 hot git.
     LD A, af.FX_EXPLODE_ENEMY_1
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL sc.HitEnemy1
@@ -505,6 +511,7 @@ EnemyHit
 
     ; Yes, enemy 2 hot git.
     LD A, af.FX_EXPLODE_ENEMY_2
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL sc.HitEnemy2
@@ -519,6 +526,7 @@ EnemyHit
 
     ; Yes, enemy 3 hot git.
     LD A, af.FX_EXPLODE_ENEMY_3
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL sc.HitEnemy3
@@ -564,6 +572,7 @@ EnemyHitsJet
 
     ; Play FX.
     LD A, af.FX_JET_KILL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     ; Remove one life
@@ -612,6 +621,7 @@ RespawnJet
 JetpackOverheat
 
     LD A, af.FX_JET_OVERHEAT
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -622,6 +632,7 @@ JetpackOverheat
 JetpackOverHard
 
     LD A, af.FX_JET_OVERHEAT
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -632,6 +643,7 @@ JetpackOverHard
 JetpackNormal
 
     LD A, af.FX_JET_NORMAL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -654,6 +666,7 @@ JetPicksGun
     CALL jw.FireSpeedUp
 
     LD A, af.FX_PICKUP_GUN
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -666,6 +679,7 @@ JetPicksLife
     CALL sc.PickupRegular
 
     LD A, af.FX_PICKUP_LIVE
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -679,6 +693,7 @@ JetPicksGrenade
     CALL enp.KillFewPatternEnemies
 
     LD A, af.FX_PICKUP_GRENADE
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -691,6 +706,7 @@ JetPicksStrawberry
     CALL sc.PickupRegular
 
     LD A, af.FX_PICKUP_STRAWBERRY
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL jco.MakeJetInvincible
@@ -705,6 +721,7 @@ JetPicksDiamond
     CALL sc.PickupDiamond
 
     LD A, af.FX_PICKUP_DIAMOND
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -718,6 +735,7 @@ JetPicksJar
     CALL jo.ResetJetpackOverheating
 
     LD A, af.FX_PICKUP_JAR
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -728,6 +746,7 @@ JetPicksJar
 JetLanding
 
     LD A, af.FX_JET_LAND
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -775,6 +794,7 @@ JetMovesDown
 RocketReady
 
     LD A, af.FX_ROCKET_READY
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -785,6 +805,7 @@ RocketReady
 JetBumpsIntoPlatform
 
     LD A, af.FX_BUMP_PLATFORM
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##

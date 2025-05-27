@@ -9,8 +9,10 @@ STACK_SIZE              = 50
 start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz
-    
-    call af.SetupAyFx
+
+    CALL dbs.SetupAyFxsBank
+    CALL af.SetupAyFx
+
     CALL gc.SetupSystem
     ;CALL gc.LoadLevel1
     CALL gc.LoadMainMenu
@@ -71,7 +73,6 @@ mainLoop
     INCLUDE "mmn_menu_manual.asm"
     INCLUDE "sc_score.asm"
     INCLUDE "pi_pickups.asm"
-    INCLUDE "af_audio_fx.asm"
     INCLUDE "ms_main_state.asm"
     INCLUDE "mms_menu_score.asm"
     INCLUDE "jl_jetman_lives.asm"
@@ -80,6 +81,7 @@ mainLoop
     
 
     ; LAST import due to bank offset!
+    INCLUDE "af_audio_fx.asm"
     INCLUDE "db_data_bin.asm"
     INCLUDE "dba_data_arrays.asm"
     INCLUDE "dbs_data_starts.asm"

@@ -36,7 +36,7 @@ EMPTY_IMG_S6_D86        = 86                   ; Slot 6. Empty image
 ;----------------------------------------------------------;
 SetupEmptyImageBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, EMPTY_IMG_S6_D86 
+    NEXTREG _MMU_REG_SLOT6_H56, EMPTY_IMG_S6_D86
 
     RET                                         ; ## END of the function ## 
 
@@ -45,7 +45,7 @@ SetupEmptyImageBank
 ;----------------------------------------------------------;
 SetupAyFxsBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D85 
+    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D85    ; $C000 - $DFFF
 
     RET                                         ; ## END of the function ## 
 
