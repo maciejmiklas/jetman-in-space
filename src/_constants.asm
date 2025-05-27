@@ -225,14 +225,14 @@ _RAM_SLOT7              = 7
 ;----------------------------------------------------------;
 ;                          MMU                             ;
 ;----------------------------------------------------------;
-_MMU_REG_SLOT0_H50      = $50
-_MMU_REG_SLOT1_H51      = $51
-_MMU_REG_SLOT2_H52      = $52
-_MMU_REG_SLOT3_H53      = $53
-_MMU_REG_SLOT4_H54      = $54
-_MMU_REG_SLOT5_H55      = $55
-_MMU_REG_SLOT6_H56      = $56
-_MMU_REG_SLOT7_H57      = $57
+_MMU_REG_SLOT0_H50      = $50                   ; $0000 - $1FFF
+_MMU_REG_SLOT1_H51      = $51                   ; $2000 - $3FFF
+_MMU_REG_SLOT2_H52      = $52                   ; $4000 - $5FFF
+_MMU_REG_SLOT3_H53      = $53                   ; $6000 - $7FFF
+_MMU_REG_SLOT4_H54      = $54                   ; $8000 - $9FFF
+_MMU_REG_SLOT5_H55      = $55                   ; $A000 - $BFFF
+_MMU_REG_SLOT6_H56      = $56                   ; $C000 - $DFFF
+_MMU_REG_SLOT7_H57      = $57                   ; $E000 = $FFFF
 
 ;----------------------------------------------------------;
 ;                        Sprites                           ;
