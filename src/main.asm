@@ -14,7 +14,6 @@ start
     CALL af.SetupAyFx
 
     CALL dbs.SetupVortexTrackerBank
-    LD HL, av.pt3bin
     CALL av.InitMusic
 
     CALL gc.SetupSystem

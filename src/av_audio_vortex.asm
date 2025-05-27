@@ -137,6 +137,7 @@ MUTE
     JP ROUT_A0
 
 InitMusic
+    LD HL, musicBin
 INIT
 ;HL - AddressOfModule
 
@@ -1343,9 +1344,9 @@ MDLADDR = $
 ;tables really used only for modules of 3.3 and older versions.
 
 ;----------------------------------------------------------;
-;                         Load                             ;
+;                       Load PT3                           ;
 ;----------------------------------------------------------;
-pt3bin
+musicBin
     INCBIN  "assets/mma/music.pt3"
 
 ;----------------------------------------------------------;
