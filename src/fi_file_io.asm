@@ -431,7 +431,7 @@ _LoadImageToTempRam
     ; Load file into RAM
 
     ; Set bank number for slot 6, we will read file into it
-    LD A, dbs.BMA_ST_BANK_S6_D35
+    LD A, dbs.BMA_ST_BANK_S6_D73
     ADD B
     NEXTREG _MMU_REG_SLOT6_H56, A
 

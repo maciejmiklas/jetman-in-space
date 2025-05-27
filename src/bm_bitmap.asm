@@ -23,7 +23,7 @@ CopyImageData
     LD DE, _RAM_SLOT6_STA_HC000 : LD (ut.dmaPortAAddress), DE
     LD DE, _RAM_SLOT7_STA_HE000 : LD (ut.dmaPortBAddress), DE
 
-    LD D, dbs.BMA_ST_BANK_S6_D35                ; Start bank containing background image source
+    LD D, dbs.BMA_ST_BANK_S6_D73                ; Start bank containing background image source
     LD E, dbs.BMB_ST_BANK_S7_D18                ; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
 
     NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
@@ -98,7 +98,7 @@ HideImage
     LD DE, _RAM_SLOT6_STA_HC000 : LD (ut.dmaPortAAddress), DE
     LD DE, _RAM_SLOT7_STA_HE000 : LD (ut.dmaPortBAddress), DE
     
-    LD D, dbs.EMPTY_IMG_S6_D48                  ; Bank containing just black color
+    LD D, dbs.EMPTY_IMG_S6_D86                  ; Bank containing just black color
     LD E, dbs.BMB_ST_BANK_S7_D18                ; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
 
     NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
@@ -181,7 +181,7 @@ ReplaceImageLine
     ; Setup banks. The source image will be stored in bank 6, destination image in bank 7. We will copy line from 6 to 7.
 
     ; Setup slot 6 with source
-    LD A, dbs.BMA_ST_BANK_S6_D35
+    LD A, dbs.BMA_ST_BANK_S6_D73
     ADD B                                       ; A points to current bank from the source image
     NEXTREG _MMU_REG_SLOT6_H56, A               ; Slot 6 contains source of the image
 
