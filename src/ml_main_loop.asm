@@ -47,6 +47,9 @@ _MainLoop000
     CALL dbs.SetupAyFxsBank
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
     
+    CALL dbs.SetupVortexTrackerBank
+    CALL av.MusicLoop
+
     CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMenuMain
     CALL _MainLoop000OnNotInGame

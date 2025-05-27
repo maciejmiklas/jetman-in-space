@@ -115,10 +115,6 @@ FX_JET_TAKE_OFF         = 27
 ; Setup AYFX for playing sound effects.
 SetupAyFx
 
-    LD A, %1'11'111'01                          ; Set FX to AY-3
-    LD BC, _GL_REG_SOUND_HFFFD
-    OUT (C), A
-
     LD HL, effectsFileAddr                      ; Address containing sound effects
     CALL _AfxInit
 
@@ -147,6 +143,10 @@ SetAy3ToMono
 ;
 ; Play the current frame.
 AfxFrame
+
+    LD A, %1'11'111'11                          ; Set FX to AY-1
+    LD BC, _GL_REG_SOUND_HFFFD
+    OUT (C), A
 
     LD BC, $03FD
     LD IX, afxChDesc
@@ -382,7 +382,6 @@ _AfxInit
 
     INC HL
     LD (afxBnkAdr1+1), HL                       ; Save the address of the table of offsets
-    ;ld (afxBnkAdr2+1), HL                       ; Save the address of the table of offsets
     LD HL, afxChDesc                            ; Mark all channels as empty
     LD DE, $00FF
     LD BC, AFX_CH_DESC_COUNT*256+$FD
@@ -395,14 +394,14 @@ _AfxInit
     INC HL
     LD (HL), E
     INC HL
-    LD (HL), D
+   /* LD (HL), D
     INC HL
     LD (HL), D
     INC HL
     LD (HL), D
     INC HL
     LD (HL), D
-    INC HL
+    INC HL*/
     DJNZ .afxInit0
 
     LD HL, $FFBF                                ; Initialize  AY
@@ -411,7 +410,7 @@ _AfxInit
     DEC E
     LD B, H
     OUT (C), E
-    LD B,L
+    LD B, L
     OUT (C), D
     JR NZ, .afxInit1
 

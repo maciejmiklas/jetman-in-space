@@ -13,6 +13,10 @@ start
     CALL dbs.SetupAyFxsBank
     CALL af.SetupAyFx
 
+    CALL dbs.SetupVortexTrackerBank
+    LD HL, av.pt3bin
+    CALL av.InitMusic
+
     CALL gc.SetupSystem
     ;CALL gc.LoadLevel1
     CALL gc.LoadMainMenu
@@ -82,6 +86,8 @@ mainLoop
 
     ; LAST import due to bank offset!
     INCLUDE "af_audio_fx.asm"
+    INCLUDE "av_audio_vortex.asm"
+    
     INCLUDE "db_data_bin.asm"
     INCLUDE "dba_data_arrays.asm"
     INCLUDE "dbs_data_starts.asm"

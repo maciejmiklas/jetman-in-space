@@ -16,6 +16,7 @@ ARR_BANK_S7_D29         = 29                    ; Slot 7. Bank for arrays, slot 
 TI_SPR_BANK_S7_D30      = 30
 PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
 AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
+AY_MUSIC_S6_D33         = 33                    ; Slot 6. FX sound
 
 PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D31
 SPR_BANK1_S6_D71        = 71
@@ -37,6 +38,15 @@ EMPTY_IMG_S6_D86        = 86                   ; Slot 6. Empty image
 SetupEmptyImageBank
 
     NEXTREG _MMU_REG_SLOT6_H56, EMPTY_IMG_S6_D86
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;               #SetupVortexTrackerBank                    ;
+;----------------------------------------------------------;
+SetupVortexTrackerBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, AY_MUSIC_S6_D33
 
     RET                                         ; ## END of the function ## 
 

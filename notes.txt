@@ -40,3 +40,6 @@ P to pause
 Q to quit
 F to disable fire FX
 Space or external controller to shoot
+
+MUSIC:
+Revenge-of-Autumn-DiHalt-2025-Winter-3-.pt3 -> mma\music.pt3
