@@ -15,6 +15,7 @@ ST_BANK_S7_D28          = 28                    ; Slot 7. Bank for stars, slot 6
 ARR_BANK_S7_D29         = 29                    ; Slot 7. Bank for arrays, slot 6
 TI_SPR_BANK_S7_D30      = 30
 PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
+AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
 
 PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D31
 SPR_BANK1_S6_D71        = 71
@@ -28,7 +29,6 @@ BMA_EN_BANK_S6_D82  = BMA_ST_BANK_S6_D73+BM_BANKS_D10-1; -1 because inclusive
 
 LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6. Tilemap up to 16KiB
 LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7
-AY_FX_S6_D85            = 85                   ; Slot 6. FX sound
 EMPTY_IMG_S6_D86        = 86                   ; Slot 6. Empty image
 
 ;----------------------------------------------------------;
@@ -45,7 +45,7 @@ SetupEmptyImageBank
 ;----------------------------------------------------------;
 SetupAyFxsBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D85    ; $C000 - $DFFF
+    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D32    ; $C000 - $DFFF
 
     RET                                         ; ## END of the function ## 
 
