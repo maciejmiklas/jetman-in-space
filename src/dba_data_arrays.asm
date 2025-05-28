@@ -1022,14 +1022,14 @@ MENU_GAMEPLAY_BG_POS    = 13                    ; Position of a image part numbe
 menuScoreBgFileName     DB "assets/mms/bg_0.nxi",0
 MENU_SCORE_BG_POS       = 14                    ; Position of a image part number (0-9) in the file name of the background image
 
-menuKeysBgFileName      DB "assets/mmk/bg_0.nxi",0
-MENU_KEYS_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image
+menuKeysBgFileName      DB "assets/mk/bg_0.nxi",0
+MENU_KEYS_BG_POS        = 13                    ; Position of a image part number (0-9) in the file name of the background image
 
 gameOverBgFileName      DB "assets/go/bg_0.nxi",0
 GAME_OVER_BG_POS        = 13                    ; Position of a image part number (0-9) in the file name of the background image
 
 mmgTileFileName         DB "assets/mg/gameplay.map",0
-mmkTileFileName         DB "assets/mmk/keys.map",0
+mmkTileFileName         DB "assets/mk/keys.map",0
 
 ;----------------------------------------------------------;
 ;                        Final Checks                      ;
