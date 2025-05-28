@@ -20,7 +20,9 @@ ShowGameOver
     CALL bp.LoadPalette
 
     ; Load background image
-    CALL fi.LoadGameOverImage
+    LD D, "g"
+    LD E, "o"
+    CALL fi.LoadBgImage
     CALL bm.CopyImageData
 
     ; ##########################################

@@ -21,7 +21,9 @@ LoadMenuGameplay
     CALL bp.LoadPalette
 
     ; Load background image
-    CALL fi.LoadMenuGameplayImage
+    LD D, "m"
+    LD E, "g"
+    CALL fi.LoadBgImage
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -50,7 +52,9 @@ LoadMenuKeys
     CALL bp.LoadPalette
 
     ; Load background image
-    CALL fi.LoadMenuKeysImage
+    LD D, "m"
+    LD E, "k"
+    CALL fi.LoadBgImage
     CALL bm.CopyImageData
 
     ; ##########################################

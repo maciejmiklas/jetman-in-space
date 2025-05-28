@@ -288,62 +288,6 @@ LoadMenuHardImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #LoadMenuGameplayImage                   ;
-;----------------------------------------------------------;
-LoadMenuGameplayImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.menuGameplayBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.MENU_GAMEPLAY_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #LoadGameOverImage                     ;
-;----------------------------------------------------------;
-LoadGameOverImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.gameOverBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.GAME_OVER_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #LoadMenuScoreImage                      ;
-;----------------------------------------------------------;
-LoadMenuScoreImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.menuScoreBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.MENU_SCORE_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #LoadMenuKeysImage                      ;
-;----------------------------------------------------------;
-LoadMenuKeysImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.menuKeysBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.MENU_KEYS_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;

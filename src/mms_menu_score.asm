@@ -208,7 +208,9 @@ _SetupMenuScore
 
     ; ###########################################
     ; Load background image
-    CALL fi.LoadMenuScoreImage
+    LD D, "m"
+    LD E, "s"
+    CALL fi.LoadBgImage
     CALL bm.CopyImageData
 
     ; ###########################################
