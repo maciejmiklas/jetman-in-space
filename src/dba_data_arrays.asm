@@ -1007,14 +1007,14 @@ liBgFileName            DB "assets/l00/intro_0.nxi",0
 LI_BG_FILE_LEVEL_POS    = 8                     ; Position of a level number (00-99) in the file name of the background image
 LI_BG_FILE_IMG_POS      = 17                    ; Position of a image part number (0-9) in the file name of the background image
 
-menuMainBgFileName      DB "assets/mma/bg_0.nxi",0
-MENU_MAIN_BG_POS        = 14                    ; Position of a image part number (0-9) in the file name of the background image
+menuMainBgFileName      DB "assets/ma/bg_0.nxi",0
+MENU_MAIN_BG_POS        = 13                    ; Position of a image part number (0-9) in the file name of the background image
 
-menuEasyBgFileName      DB "assets/mma/easy_0.nxi",0
-MENU_EASY_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image
+menuEasyBgFileName      DB "assets/ma/easy_0.nxi",0
+MENU_EASY_BG_POS        = 15                    ; Position of a image part number (0-9) in the file name of the background image
 
-menuHardBgFileName      DB "assets/mma/hard_0.nxi",0
-MENU_HARD_BG_POS        = 16                    ; Position of a image part number (0-9) in the file name of the background image
+menuHardBgFileName      DB "assets/ma/hard_0.nxi",0
+MENU_HARD_BG_POS        = 15                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuGameplayBgFileName  DB "assets/mg/bg_0.nxi",0
 MENU_GAMEPLAY_BG_POS    = 13                    ; Position of a image part number (0-9) in the file name of the background image
