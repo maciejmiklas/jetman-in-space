@@ -186,7 +186,7 @@ menuHardBgPaletteBytes = $ - menuHardBgPaletteAdr
 
  ; #############################################
 menuScoreBgPaletteAdr
-    INCBIN  "assets/mms/bg.nxp"
+    INCBIN  "assets/ms/bg.nxp"
 
 menuScoreBgPaletteBytes = $ - menuScoreBgPaletteAdr
     ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
