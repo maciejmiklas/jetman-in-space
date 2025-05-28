@@ -980,38 +980,38 @@ platformsSizeL10        DB 30
 ;                           Files                          ;
 ;----------------------------------------------------------;
 ; Tiles for level intro
-introTilesFileName      DB "assets/l00/intro_0.map",0
+introTilesFileName      DB "assets/00/intro_0.map",0
 introSecondFileSize     DW 0                    ; Will be set when loading particular level, now is 0
 
-stTilesFileName         DB "assets/l00/stars_0.map",0
-TI16K_FILE_LEVEL_POS    = 8 
+stTilesFileName         DB "assets/00/stars_0.map",0
+TI16K_FILE_LEVEL_POS    = 7 
 TI16K_FILE_NR_POS       = 8
 
 ; Tiles for in-game platforms
-plTileFileName          DB "assets/l00/tiles.map",0
-PL_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image
+plTileFileName          DB "assets/00/tiles.map",0
+PL_FILE_LEVEL_POS       = 7                     ; Position of a level number (00-99) in the file name of the background image
 
 ; Sprite file.
-sprTileFileName         DB "assets/l00/sprites_0.spr",0
-SPR_FILE_LEVEL_POS      = 8
+sprTileFileName         DB "assets/00/sprites_0.spr",0
+SPR_FILE_LEVEL_POS      = 7
 SPR_FILE_NR_POS         = 10
 SPR_FILE_BYT_D8192      = _BANK_BYTES_D8192
 
 ; Level background file
-lbFileName              DB "assets/l00/bg_0.nxi",0
-LB_FILE_LEVEL_POS       = 8                     ; Position of a level number (00-99) in the file name of the background image
-LB_FILE_IMG_POS         = 14                    ; Position of a image part number (0-9) in the file name of the background image
+lbFileName              DB "assets/00/bg_0.nxi",0
+LB_FILE_LEVEL_POS       = 7                     ; Position of a level number (00-99) in the file name of the background image
+LB_FILE_IMG_POS         = 13                    ; Position of a image part number (0-9) in the file name of the background image
 
 ; Level intro file
-liBgFileName            DB "assets/l00/intro_0.nxi",0
-LI_BG_FILE_LEVEL_POS    = 8                     ; Position of a level number (00-99) in the file name of the background image
-LI_BG_FILE_IMG_POS      = 17                    ; Position of a image part number (0-9) in the file name of the background image
-
-menuMainBgFileName      DB "assets/ma/bg_0.nxi",0
-MENU_MAIN_BG_POS        = 13                    ; Position of a image part number (0-9) in the file name of the background image
+liBgFileName            DB "assets/00/intro_0.nxi",0
+LI_BG_FILE_LEVEL_POS    = 7                     ; Position of a level number (00-99) in the file name of the background image
+LI_BG_FILE_IMG_POS      = 16                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuEasyBgFileName      DB "assets/ma/easy_0.nxi",0
 MENU_EASY_BG_POS        = 15                    ; Position of a image part number (0-9) in the file name of the background image
+
+menuMainBgFileName      DB "assets/ma/bg_0.nxi",0
+MENU_MAIN_BG_POS        = 13                    ; Position of a image part number (0-9) in the file name of the background image
 
 menuHardBgFileName      DB "assets/ma/hard_0.nxi",0
 MENU_HARD_BG_POS        = 15                    ; Position of a image part number (0-9) in the file name of the background image

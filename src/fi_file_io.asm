@@ -77,17 +77,16 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroImage
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/...".
+    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/...".
     CALL dbs.SetupArraysBank
     LD HL, dba.liBgFileName
-    PUSH HL
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
     LD IX, HL                                   ; Param for #_LoadImageToTempRam
     ADD HL, dba.LI_BG_FILE_LEVEL_POS            ; Move HL to "assets/l"
     LD (HL), D                                  ; Set first number
     INC HL
     LD (HL), E                                  ; Set second number
     POP HL
-
     CALL _CopyFileName
 
     LD C, dba.LI_BG_FILE_IMG_POS
@@ -103,7 +102,7 @@ LoadLevelIntroImage
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelBgImage
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/....".
+    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
     CALL dbs.SetupArraysBank
     LD HL, dba.lbFileName
     PUSH HL
@@ -128,7 +127,7 @@ LoadLevelBgImage
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadPlatformsTilemap
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/tiles.map" -> "assets/l35/tiles.map".
+    ; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
     CALL dbs.SetupArraysBank
     LD HL, dba.plTileFileName
     PUSH HL
@@ -403,7 +402,7 @@ _LoadImageToTempRam
     ; Set the image part in the file name, for B=3  "...bg_0.nxi" -> "...bg_3.nxi"
     LD HL, fileName
     LD A, C
-    ADD HL, A                                   ; Move HL to "...l00/bg_"
+    ADD HL, A                                   ; Move HL to "...00/bg_"
     LD A, ASCII_O                               ; Map B to ASCII value 0 to 9
     ADD B
     LD (HL), A
@@ -499,9 +498,9 @@ _Prepare16KTilemapFile
 
     LD IX, fileName
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/stars_0.map" -> "assets/l35/stars_0.map"
+    ; Set the level number in the file name, DE="35" will give: "assets/00/stars_0.map" -> "assets/35/stars_0.map"
     LD HL, IX
-    ADD HL, dba.TI16K_FILE_LEVEL_POS            ; Move HL to "assets/l"
+    ADD HL, dba.TI16K_FILE_LEVEL_POS            ; Move HL to "assets/0"
     LD (HL), D                                  ; Set first number
     INC HL
     LD (HL), E                                  ; Set second number
@@ -521,7 +520,7 @@ _Prepare16KTilemapFile
 ;  - #fileName with correct name
 _PrepareFileOpenForSprites
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/sprites_0.map" -> "assets/l35/sprites_0.map"
+    ; Set the level number in the file name, DE="35" will give: "assets/00/sprites_0.map" -> "assets/35/sprites_0.map"
     LD HL, fileName
     LD IX, HL                                   ; Param for _FileOpen
     ADD HL, dba.SPR_FILE_LEVEL_POS              ; Move HL to "assets/l"
