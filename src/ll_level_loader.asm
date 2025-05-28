@@ -26,7 +26,7 @@ LoadLevel1Data
     LD D, "0"
     LD E, "1"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -105,7 +105,7 @@ LoadLevel2Data
     LD D, "0"
     LD E, "2"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -184,7 +184,7 @@ LoadLevel3Data
     LD D, "0"
     LD E, "3"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -265,7 +265,7 @@ LoadLevel4Data
     LD D, "0"
     LD E, "4"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -344,7 +344,7 @@ LoadLevel5Data
     LD D, "0"
     LD E, "5"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -423,7 +423,7 @@ LoadLevel6Data
     LD D, "0"
     LD E, "6"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -502,7 +502,7 @@ LoadLevel7Data
     LD D, "0"
     LD E, "7"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -581,7 +581,7 @@ LoadLevel8Data
     LD D, "0"
     LD E, "8"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -660,7 +660,7 @@ LoadLevel9Data
     LD D, "0"
     LD E, "9"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################
@@ -738,7 +738,7 @@ LoadLevel10Data
     LD D, "1"
     LD E, "0"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImage
     POP DE
 
     ; ##########################################

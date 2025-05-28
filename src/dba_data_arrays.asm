@@ -1010,8 +1010,15 @@ LI_BG_FILE_IMG_POS      = 16                    ; Position of a image part numbe
 menuEasyBgFileName      DB "assets/ma/easy_0.nxi",0
 MENU_EASY_BG_POS        = 15                    ; Position of a image part number (0-9) in the file name of the background image
 
-menuMainBgFileName      DB "assets/ma/bg_0.nxi",0
-MENU_MAIN_BG_POS        = 13                    ; Position of a image part number (0-9) in the file name of the background image
+
+
+
+
+
+
+
+
+
 
 menuHardBgFileName      DB "assets/ma/hard_0.nxi",0
 MENU_HARD_BG_POS        = 15                    ; Position of a image part number (0-9) in the file name of the background image
@@ -1027,6 +1034,16 @@ MENU_KEYS_BG_POS        = 13                    ; Position of a image part numbe
 
 gameOverBgFileName      DB "assets/go/bg_0.nxi",0
 GAME_OVER_BG_POS        = 13                    ; Position of a image part number (0-9) in the file name of the background image
+
+
+
+
+
+
+
+
+
+
 
 mmgTileFileName         DB "assets/mg/gameplay.map",0
 mmkTileFileName         DB "assets/mk/keys.map",0

@@ -148,7 +148,9 @@ _LoadMenuNormal
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadMenuMainImage
+    LD D, "m"
+    LD E, "a"
+    CALL fi.LoadBgImage
     CALL bm.CopyImageData
 
     ; ##########################################

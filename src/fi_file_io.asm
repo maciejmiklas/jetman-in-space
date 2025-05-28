@@ -95,12 +95,12 @@ LoadLevelIntroImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #LoadLevelBgImage                     ;
+;                       #LoadBgImage                       ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadLevelBgImage
+LoadBgImage
 
     ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
     CALL dbs.SetupArraysBank
@@ -256,20 +256,6 @@ LoadMenuKeysTilemap
     LD IX, ti.TI_MAP_RAM_H5B00
     LD BC, ti.TI_MAP_BYTES_D2560
     CALL _FileRead
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #LoadMenuMainImage                      ;
-;----------------------------------------------------------;
-LoadMenuMainImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.menuMainBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.MENU_MAIN_BG_POS
-    CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
 
