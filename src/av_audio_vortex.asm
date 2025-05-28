@@ -52,50 +52,54 @@
 ;	JR Z,_LP
 ;	JR START+8
 
-TonA	= 0
-TonB	= 2
-TonC	= 4
-Noise	= 6
-Mixer	= 7
-AmplA	= 8
-AmplB	= 9
-AmplC	= 10
-Env	= 11
-EnvTp	= 13
+TonA	                = 0
+TonB	                = 2
+TonC	                = 4
+Noise	                = 6
+Mixer	                = 7
+AmplA	                = 8
+AmplB	                = 9
+AmplC	                = 10
+Env	                    = 11
+EnvTp	                = 13
 
 ;ChannelsVars
 	STRUCT	CHP
 ;reset group
-PsInOr	DB 0
-PsInSm	DB 0
-CrAmSl	DB 0
-CrNsSl	DB 0
-CrEnSl	DB 0
-TSlCnt	DB 0
-CrTnSl	DW 0
-TnAcc	DW 0
-COnOff	DB 0
+PsInOr	                DB 0
+PsInSm	                DB 0
+CrAmSl	                DB 0
+CrNsSl	                DB 0
+CrEnSl	                DB 0
+TSlCnt	                DB 0
+CrTnSl	                DW 0
+TnAcc	                DW 0
+COnOff	                DB 0
 ;reset group
 
-OnOffD	DB 0
+OnOffD	                DB 0
 
 ;IX for PTDECOD here (+12)
-OffOnD	DB 0
-OrnPtr	DW 0
-SamPtr	DW 0
-NNtSkp	DB 0
-Note	DB 0
-SlToNt	DB 0
-Env_En	DB 0
-Flags	DB 0
+OffOnD	                DB 0
+OrnPtr	                DW 0
+SamPtr	                DW 0
+NNtSkp	                DB 0
+Note	                DB 0
+SlToNt	                DB 0
+Env_En	                DB 0
+Flags	                DB 0
  ;Enabled - 0,SimpleGliss - 2
-TnSlDl	DB 0
-TSlStp	DW 0
-TnDelt	DW 0
-NtSkCn	DB 0
-Volume	DB 0
+TnSlDl	                DB 0
+TSlStp	                DW 0
+TnDelt	                DW 0
+NtSkCn	                DB 0
+Volume	                DB 0
 	ENDS
-    
+
+MUSIC_ST_ON             = 1
+MUSIC_ST_OFF            = 0
+musicState              DB MUSIC_ST_ON
+
 ;Entry and other points
 ;START initialization
 ;START+3 initialization with module address in HL
@@ -116,7 +120,7 @@ START
 	;DD Release
 	;DB "="
 
-CHECKLP	
+CHECKLP
     LD HL,SETUP
     SET 7,(HL)
     BIT 0,(HL)
@@ -927,7 +931,13 @@ CH_ONDL
     LD (IX+CHP.COnOff),A
     RET
 
+;----------------------------------------------------------;
+;                         MusicLoop                        ;
+;----------------------------------------------------------;
 MusicLoop
+    LD A, (musicState)
+    CP MUSIC_ST_ON
+    RET NZ
 PLAY
 
     LD A, %1'11'111'10                          ; Set FX to AY-2
