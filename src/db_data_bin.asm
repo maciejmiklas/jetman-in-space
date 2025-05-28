@@ -158,7 +158,7 @@ menuMainBgPaletteBytes = $ - menuMainBgPaletteAdr
 
  ; #############################################
 menuGameplayBgPaletteAdr
-    INCBIN  "assets/mmg/bg.nxp"
+    INCBIN  "assets/mg/bg.nxp"
 
 menuGameplayBgPaletteBytes = $ - menuGameplayBgPaletteAdr
     ASSERT menuGameplayBgPaletteBytes <= btd.PAL2_BYTES_D512
