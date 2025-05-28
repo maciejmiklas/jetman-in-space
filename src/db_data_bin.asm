@@ -151,7 +151,7 @@ gameIntroPaletteBytes = $ - gameIntroPaletteAdr
 
  ; ############################################
 menuMainBgPaletteAdr
-    INCBIN  "assets/mma/bg.nxp"
+    INCBIN  "assets/mda/bg.nxp"
 
 menuMainBgPaletteBytes = $ - menuMainBgPaletteAdr
     ASSERT menuMainBgPaletteBytes <= btd.PAL2_BYTES_D512
@@ -172,14 +172,14 @@ menuKeysBgPaletteBytes = $ - menuKeysBgPaletteAdr
 
  ; #############################################
 menuEasyBgPaletteAdr
-    INCBIN  "assets/mma/easy.nxp"
+    INCBIN  "assets/ma/easy.nxp"
 
 menuEasyBgPaletteBytes = $ - menuEasyBgPaletteAdr
     ASSERT menuEasyBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 menuHardBgPaletteAdr
-    INCBIN  "assets/mma/hard.nxp"
+    INCBIN  "assets/ma/hard.nxp"
 
 menuHardBgPaletteBytes = $ - menuHardBgPaletteAdr
     ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512

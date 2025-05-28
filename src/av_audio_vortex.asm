@@ -1357,7 +1357,7 @@ MDLADDR = $
 ;                       Load PT3                           ;
 ;----------------------------------------------------------;
 musicBin
-    INCBIN  "assets/mma/music.pt3"
+    INCBIN  "assets/ma/music.pt3"
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
