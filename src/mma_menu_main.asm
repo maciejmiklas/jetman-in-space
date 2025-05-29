@@ -88,6 +88,12 @@ LoadMainMenu
     CALL js.ShowJetSprite
 
     ; ##########################################
+    ; Music
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_MAIN_MENU
+    CALL aml.LoadSong
+
+    ; ##########################################
     CALL _LoadStaticMenuText
     CALL _SetIXToActiveMenu
     CALL _UpdateJetPostion

@@ -48,7 +48,7 @@ _MainLoop000
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
     
     CALL dbs.SetupMusicBank
-    CALL av.MusicLoop
+    CALL am.MusicLoop
 
     CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMenuMain

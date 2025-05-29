@@ -13,9 +13,6 @@ start
     CALL dbs.SetupAyFxsBank
     CALL af.SetupAyFx
 
-    CALL dbs.SetupMusicBank
-    CALL av.InitMusic
-
     CALL gc.SetupSystem
     ;CALL gc.LoadLevel1
     CALL gc.LoadMainMenu

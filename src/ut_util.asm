@@ -31,14 +31,14 @@ dmaProgramSize = $-dmaProgram
 
 
 ;----------------------------------------------------------;
-;                        To99Str                           ;
+;                        NumTo99Str                           ;
 ;----------------------------------------------------------;
 ; Input:  
 ;    - A: 8-bit value (0..99)
 ; Output: 
 ;    - D: ASCII tens digit
 ;    - E: ASCII units digit
-To99Str
+NumTo99Str
     LD B, 0                                     ; B = tens counter
     LD C, 10                                    ; C = divisor
 

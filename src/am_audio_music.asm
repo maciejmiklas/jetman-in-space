@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
 ;                   Vortex Tracker II                      ;
 ;----------------------------------------------------------;
-    MODULE av
+    MODULE am
 
     ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
 
@@ -36,7 +36,7 @@
 ;Call MUTE or INIT one more time to mute sound after stopping
 ;playing 
 
-    ORG #C000
+   ; ORG #C000
 
 ;Test codes (commented)
 ;	CALL START
@@ -49,6 +49,8 @@
 ;	AND 15
 ;	JR Z,_LP
 ;	JR START+8
+
+MUSIC_BIN_ADDR_HE000    = _RAM_SLOT7_STA_HE000
 
 TonA	                = 0
 TonB	                = 2
@@ -98,6 +100,15 @@ MUSIC_ST_ON             = 1
 MUSIC_ST_OFF            = 0
 musicState              DB MUSIC_ST_OFF
 
+;----------------------------------------------------------;
+;                    SetMusicState                         ;
+;----------------------------------------------------------;
+; Input: A: MUSIC_ST_XX
+SetMusicState
+    LD (musicState), A
+
+    RET                                         ; ## END of the function ##
+
 ;Entry and other points
 ;START initialization
 ;START+3 initialization with module address in HL
@@ -139,8 +150,7 @@ MUTE
     JP ROUT_A0
 
 InitMusic
-ret
-;    LD HL, musicBin
+    LD HL, MUSIC_BIN_ADDR_HE000
 INIT
 ;HL - AddressOfModule
 

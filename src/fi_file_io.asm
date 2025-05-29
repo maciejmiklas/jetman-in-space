@@ -69,9 +69,6 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
     ASSERT ST_BYTES_D10240 =  10240
     ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
-SetupMusicBank
-
-
 ;----------------------------------------------------------;
 ;                        LoadMusic                         ;
 ;----------------------------------------------------------;
@@ -79,10 +76,9 @@ SetupMusicBank
 ;  - A: song number from "assets/snd/xx.pt3"
 LoadMusic
 
-    CALL dbs.SetupMusicBank                     ; Setup slot 7 to load music binary
-    CALL dbs.SetupArraysBank                    ; Setup slot 6 to load arrays
+    CALL dbs.SetupArraysBank                    ; Setup slot 7 to load arrays
 
-    CALL ut.To99Str                             ; DE now contains ASCII of value from A
+    CALL ut.NumTo99Str                          ; DE now contains ASCII of value from A
 
     LD HL, dba.sndFileName
     PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
@@ -93,10 +89,15 @@ LoadMusic
     INC HL
     LD (HL), E                                  ; Set second number
     POP HL
-    CALL _CopyFileName
 
-    LD C, dba.LI_BG_FILE_IMG_POS
-    CALL _LoadImageToTempRam
+    CALL _CopyFileName
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupMusicBank                     ; Setup slot 7 to load music binary
+    LD IX, am.MUSIC_BIN_ADDR_HE000              ; Song bin takes whole bank
+    LD BC, _BANK_BYTES_D8192                    ; Read always 8KiB, this will read a whole song and some garbage
+    CALL _FileRead
 
     RET                                         ; ## END of the function ##
 
@@ -173,11 +174,9 @@ LoadPlatformsTilemap
     POP HL
 
     CALL _CopyFileName
-
-    ; Open file.
     CALL _FileOpen
 
-    ; Read file.
+    ; Read file
     LD IX, ti.TI_MAP_RAM_H5B00
     LD BC, ti.TI_MAP_BYTES_D2560
     CALL _FileRead
@@ -495,9 +494,9 @@ _PrepareFileOpenForSprites
     LD HL, fileName
     LD IX, HL                                   ; Param for _FileOpen
     ADD HL, dba.SPR_FILE_LEVEL_POS              ; Move HL to "assets/"
-    LD (HL), D                                  ; Set first number.
+    LD (HL), D                                  ; Set first number
     INC HL
-    LD (HL), E                                  ; Set second number.
+    LD (HL), E                                  ; Set second number
 
     ADD HL, dba.SPR_FILE_NR_POS                 ; Move HL to "assets/35/sprites_"
     LD (HL), A
@@ -509,8 +508,8 @@ _PrepareFileOpenForSprites
 ;----------------------------------------------------------;
 ; Read bytes from a file.
 ; Input:
-;  - IX: Address to load into.
-;  - BC: Number of bytes to read.
+;  - IX: Address to load into
+;  - BC: Number of bytes to read
 _FileRead
 
     LD A, (fileHandle)

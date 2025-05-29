@@ -41,7 +41,7 @@ PrintNum16
 PrintNum99
 
     PUSH BC
-    CALL ut.To99Str
+    CALL ut.NumTo99Str
     POP BC
     LD HL, formatted16
     LD (HL), D
