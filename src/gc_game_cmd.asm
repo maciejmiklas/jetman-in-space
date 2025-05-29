@@ -979,6 +979,10 @@ GameOver
 ;----------------------------------------------------------;
 _HideGame
 
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
     CALL bm.HideImage
     CALL js.HideJetSprite
     CALL ro.ResetAndDisableRocket
@@ -1029,6 +1033,10 @@ _StartLevel
 
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.NextGameSong
 
     RET                                         ; ## END of the function ##
 

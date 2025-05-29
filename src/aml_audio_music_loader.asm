@@ -16,6 +16,20 @@ MUSIC_HIGH_SCORE        = 82
 MUSIC_INTRO             = 83
 
 ;----------------------------------------------------------;
+;                   FlipOnOff                              ;
+;----------------------------------------------------------;
+FlipOnOff
+
+    LD A, (am.musicState)
+    CP am.MUSIC_ST_ON
+    JR Z, .isOn
+    CALL MusicOn
+    RET
+.isOn
+    CALL MusicOff
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                         MusicOn                          ;
 ;----------------------------------------------------------;
 MusicOn

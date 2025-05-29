@@ -187,12 +187,27 @@ GameKeyboardInput
     POP AF  
 
     ; ##########################################
-    ; Handle row G...A
+    ; G...A
     LD A, _KB_G_TO_A_HFD
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 3, A                                    ; F
     CALL Z, _Key_F
+    POP AF
+
+    ; ##########################################
+    ; B...M
+    LD A, _KB_B_TO_SPC_H7F
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
+    BIT 3, A                                    ; N
+    CALL Z, _Key_N
+    POP AF
+
+    ; ##########################################
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
+    BIT 2, A                                    ; M
+    CALL Z, _Key_M
     POP AF
 
     RET                                         ; ## END of the function ##
@@ -204,14 +219,42 @@ GameKeyboardInput
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                        _Key_N                            ;
+;----------------------------------------------------------;
+_Key_N
+
+    CALL mij.CanProcessUserInput
+    CP _RET_NO_D0
+    RET Z
+
+    CALL dbs.SetupMusicBank
+    CALL aml.NextGameSong
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_M                            ;
+;----------------------------------------------------------;
+_Key_M
+
+    CALL mij.CanProcessUserInput
+    CP _RET_NO_D0
+    RET Z
+    
+    CALL dbs.SetupMusicBank
+    CALL aml.FlipOnOff
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        _Key_Q                            ;
 ;----------------------------------------------------------;
 _Key_Q
 
-    ;CALL gc.LoadLevel1
+    CALL gc.LoadLevel1
    ; CALL ro.AssemblyRocketForDebug
-    CALL ft.RespawnFuelThief
-    
+   ; CALL ft.RespawnFuelThief
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
