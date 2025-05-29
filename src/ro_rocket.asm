@@ -575,10 +575,10 @@ UpdateRocketSpritePattern
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   RemoveRocketElement                   ;
+;                   RemoveRocketElement                    ;
 ;----------------------------------------------------------;
 RemoveRocketElement
-
+    ;nextreg 2,8
     LD A, (rocketElementCnt)
     DEC A
     LD (rocketElementCnt), A

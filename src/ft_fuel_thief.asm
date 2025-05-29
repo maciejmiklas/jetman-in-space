@@ -271,8 +271,6 @@ MoveFuelThief
     NEXTREG _SPR_REG_ATR3_H38, A
 .notCarryFuel
 
-
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

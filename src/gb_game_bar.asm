@@ -50,31 +50,11 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (ft.thiefState)
-    LD L, A
-    CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 50
-    LD H, 0
-    LD A, (ft.respawnDelayCnt)
-    LD L, A
-    CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 60
-    LD H, 0
     LD A, (ro.rocketElementCnt)
     LD L, A
     CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 70
-    LD H, 0
-    LD A, (ro.rocketState)
-    LD L, A
-    CALL ut.PrintNumber
 */
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

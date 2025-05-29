@@ -303,11 +303,6 @@ _MainLoop004OnActiveGame
     CALL jo.UpdateJetpackOverheating
     CALL pi.AnimateFallingPickup
 
-    ; ##########################################
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD
-    CALL Z, ens.RespawnNextSingleEnemy
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -423,6 +418,11 @@ _MainLoop008OnActiveGame
     JR NZ, .notHard
     CALL ens.MoveSingleEnemies
 .notHard
+
+    ; ##########################################
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    CALL Z, ens.RespawnNextSingleEnemy
 
     RET                                         ; ## END of the function ##
 

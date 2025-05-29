@@ -32,6 +32,13 @@ ShowGameOver
     LD DE, mms.EnterNewScore
     LD (mij.callbackFire), DE
 
+    ; ##########################################
+    ; Music
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_GAME_OVER
+    CALL aml.LoadSong
+
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
