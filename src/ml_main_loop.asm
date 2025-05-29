@@ -473,22 +473,6 @@ _MainLoop010
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
     CALL _MainLoop010OnActiveGame
-    CALL _MainLoop010OnActiveFlyingRocket
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;             _MainLoop010OnActiveFlyingRocket             ;
-;----------------------------------------------------------;
-_MainLoop010OnActiveFlyingRocket
-
-    ; Return if rocket is not flying
-    LD A, (ms.mainState)
-    CP ms.FLY_ROCKET
-    RET NZ
-
-    ; ##########################################
-    CALL st.BlinkStarsL2
 
     RET                                         ; ## END of the function ##
 
@@ -503,7 +487,6 @@ _MainLoop010OnActiveGame
     RET NZ
 
     ; ##########################################
-    CALL st.BlinkStarsL2
     CALL enf.RespawnFormation
 
     ; ##########################################

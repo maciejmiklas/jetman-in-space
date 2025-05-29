@@ -42,7 +42,7 @@ ST_MOVE_DOWN            = 4
 
 starsState              DB ST_SHOW
 
-ST_L1_MOVE_DEL_D4       = 2                     ; Stars move delay for layer 1
+ST_L1_MOVE_DEL_D4       = 1                     ; Stars move delay for layer 1
 ST_L2_MOVE_DEL_D4       = 8                     ; Stars move delay for layer 2
 
 starsMoveL1Delay        DB ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars)
@@ -197,13 +197,16 @@ BlinkStarsL1
 ;----------------------------------------------------------;
 ;                       BlinkStarsL2                       ;
 ;----------------------------------------------------------;
+; It is not used for now because it dominates the parallax effect. 
+/*
 BlinkStarsL2
 
     CALL _SetupLayer2
     CALL _NextStarsColor
 
-    RET                                         ; ## END of the function ## 
-    
+    RET                                         ; ## END of the function ##
+*/
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
