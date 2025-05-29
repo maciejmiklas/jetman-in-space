@@ -40,6 +40,22 @@ PrintNum16
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
 PrintNum99
 
+    PUSH BC
+    CALL ut.To99Str
+    POP BC
+    LD HL, formatted16
+    LD (HL), D
+    INC HL
+    LD (HL), E
+
+    LD DE, formatted16
+    LD A, 2                                     ; Print 2 characters
+    CALL ti.PrintText
+
+    RET                                         ; ## END of the function ##
+
+_PrintNum99
+
     ; Print number from HL into #formatted16
     LD H, 0
     LD L, A
