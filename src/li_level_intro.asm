@@ -45,14 +45,14 @@ LoadLevelIntro
     ; ##########################################
     ; Load background image
     POP DE
-    CALL fi.LoadLevelIntroImage
+    CALL fi.LoadLevelIntroImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
     ; Tilemap with story
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadLevelIntroTilemap
+    CALL fi.LoadLevelIntroTilemapFile
     CALL _NextTilesRow
     CALL _NextTilesRow
 
@@ -78,7 +78,7 @@ LoadLevelIntro
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #AnimateLevelIntroTextScroll                 ;
+;              AnimateLevelIntroTextScroll                 ;
 ;----------------------------------------------------------;
 AnimateLevelIntroTextScroll
    
@@ -124,7 +124,7 @@ AnimateLevelIntroTextScroll
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    #_KeyExitIntro                        ;
+;                     _KeyExitIntro                        ;
 ;----------------------------------------------------------;
 _KeyExitIntro
 
@@ -133,7 +133,7 @@ _KeyExitIntro
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_ResetLevelIntro                       ;
+;                   _ResetLevelIntro                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:  Number of horizontal lines in source tilemap (40xA)
@@ -155,7 +155,7 @@ _ResetLevelIntro
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_NextTilesRow                         ;
+;                    _NextTilesRow                         ;
 ;----------------------------------------------------------;
 ; This method is called when the on screen tilemap has moved by 8 pixels. It reads the next row from the source tilemap and places it on 
 ; the bottom row on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to 

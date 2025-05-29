@@ -30,7 +30,7 @@ FIRE_FX_ON              = 1
 FIRE_FX_OFF             = 0
 
 ;----------------------------------------------------------;
-;                      #FlipFireFx                         ;
+;                       FlipFireFx                         ;
 ;----------------------------------------------------------;
 FlipFireFx
 
@@ -41,7 +41,7 @@ FlipFireFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #ResetWeapon                        ;
+;                       ResetWeapon                        ;
 ;----------------------------------------------------------;
 ResetWeapon
 
@@ -65,7 +65,7 @@ ResetWeapon
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #FireSpeedUp                         ;
+;                      FireSpeedUp                         ;
 ;----------------------------------------------------------;
 FireSpeedUp
 
@@ -88,7 +88,7 @@ FireSpeedUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #CheckHitEnemies                      ;
+;                     CheckHitEnemies                      ;
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
@@ -131,7 +131,7 @@ CheckHitEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #HideShots                         ;
+;                        HideShots                         ;
 ;----------------------------------------------------------;
 HideShots
     CALL dbs.SetupArraysBank
@@ -158,7 +158,7 @@ HideShots
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #ShotsCollision                     ;
+;                       ShotsCollision                     ;
 ;----------------------------------------------------------;
 ; The method checks whether any active laser beam has hit the sprite given by X/Y.
 ; Input:
@@ -236,7 +236,7 @@ ShotsCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #MoveShots                          ;
+;                       MoveShots                          ;
 ;----------------------------------------------------------;
 MoveShots
 
@@ -296,7 +296,7 @@ MoveShots
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #FireDelayCounter                     ;
+;                     FireDelayCounter                     ;
 ;----------------------------------------------------------;
 FireDelayCounter
     
@@ -313,7 +313,7 @@ FireDelayCounter
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #AnimateShots                       ;
+;                       AnimateShots                       ;
 ;----------------------------------------------------------;
 AnimateShots
 
@@ -325,7 +325,7 @@ AnimateShots
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #FireReleased                       ;
+;                       FireReleased                       ;
 ;----------------------------------------------------------;
 FireReleased
 
@@ -336,7 +336,7 @@ FireReleased
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          #Fire                           ;
+;                           Fire                           ;
 ;----------------------------------------------------------;
 Fire
 
@@ -433,7 +433,7 @@ Fire
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                       #_WeaponFx                         ;
+;                        _WeaponFx                         ;
 ;----------------------------------------------------------;
 _WeaponFx
 
@@ -459,6 +459,7 @@ _WeaponFx
 .newSound
     LD A, af.FX_FIRE2
 .afterNewSound
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     JR .afterFireFx
@@ -470,7 +471,7 @@ _WeaponFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_FireDelayDown                       ;
+;                     _FireDelayDown                       ;
 ;----------------------------------------------------------;
 _FireDelayDown
 

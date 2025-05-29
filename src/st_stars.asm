@@ -65,7 +65,7 @@ starsData2MaxY          DW 0
 
 
 ;----------------------------------------------------------;
-;                      #SetupStars                         ;
+;                       SetupStars                         ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Max horizontal star position for each column (#SC) for Level 1
@@ -78,7 +78,7 @@ SetupStars
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #LoadStarsPalette                      ;
+;                    LoadStarsPalette                      ;
 ;----------------------------------------------------------;
 LoadStarsPalette
 
@@ -109,7 +109,7 @@ LoadStarsPalette
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #ShowStars                         ;
+;                        ShowStars                         ;
 ;----------------------------------------------------------;
 ShowStars
 
@@ -126,7 +126,7 @@ ShowStars
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #HideStars                         ;
+;                        HideStars                         ;
 ;----------------------------------------------------------;
 HideStars
 
@@ -143,7 +143,7 @@ HideStars
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #MoveStarsUp                        ;
+;                       MoveStarsUp                        ;
 ;----------------------------------------------------------;
 MoveStarsUp
 
@@ -164,7 +164,7 @@ MoveStarsUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #MoveStarsDown                       ;
+;                      MoveStarsDown                       ;
 ;----------------------------------------------------------;
 MoveStarsDown
     
@@ -185,7 +185,7 @@ MoveStarsDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #BlinkStarsL1                       ;
+;                       BlinkStarsL1                       ;
 ;----------------------------------------------------------;
 BlinkStarsL1
 
@@ -195,7 +195,7 @@ BlinkStarsL1
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #BlinkStarsL2                       ;
+;                       BlinkStarsL2                       ;
 ;----------------------------------------------------------;
 BlinkStarsL2
 
@@ -211,7 +211,7 @@ BlinkStarsL2
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   #_MoveStarsL1Down                      ;
+;                    _MoveStarsL1Down                      ;
 ;----------------------------------------------------------;
 _MoveStarsL1Down
 
@@ -235,7 +235,7 @@ _MoveStarsL1Down
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_MoveStarsL2Down                      ;
+;                    _MoveStarsL2Down                      ;
 ;----------------------------------------------------------;
 _MoveStarsL2Down
 
@@ -259,7 +259,7 @@ _MoveStarsL2Down
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_MoveStarsL1Up                       ;
+;                     _MoveStarsL1Up                       ;
 ;----------------------------------------------------------;
 _MoveStarsL1Up
 
@@ -282,7 +282,7 @@ _MoveStarsL1Up
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_MoveStarsL2Up                       ;
+;                     _MoveStarsL2Up                       ;
 ;----------------------------------------------------------;
 _MoveStarsL2Up
 
@@ -305,7 +305,7 @@ _MoveStarsL2Up
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_SetupLayer1                        ;
+;                      _SetupLayer1                        ;
 ;----------------------------------------------------------;
 _SetupLayer1
 
@@ -333,7 +333,7 @@ _SetupLayer1
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_SetupLayer2                        ;
+;                      _SetupLayer2                        ;
 ;----------------------------------------------------------;
 _SetupLayer2
 
@@ -361,7 +361,7 @@ _SetupLayer2
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_NextStarsColor                      ;
+;                     _NextStarsColor                      ;
 ;----------------------------------------------------------;
 _NextStarsColor
 
@@ -424,7 +424,7 @@ _NextStarsColor
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_RenderStars                          ;
+;                    _RenderStars                          ;
 ;----------------------------------------------------------;
 _RenderStars
 
@@ -455,7 +455,7 @@ _RenderStars
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MoveAndRenderStarColumn                  ;
+;                _MoveAndRenderStarColumn                  ;
 ;----------------------------------------------------------;
 ; Input 
 ;  - IX: Pointer to SC
@@ -587,7 +587,7 @@ _MoveAndRenderStarColumn
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_CanShowStar                         ;
+;                     _CanShowStar                         ;
 ;----------------------------------------------------------;
 ; Input 
 ;  - B:  Star postion to be checked
@@ -631,7 +631,7 @@ _CanShowStar
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_GetStarColor                       ;
+;                      _GetStarColor                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: Points to the source pixel from stars column.

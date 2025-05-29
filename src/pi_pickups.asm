@@ -19,7 +19,7 @@ deployedX               DB 0                    ; Pickup X postion
 deployedY               DB 0                    ; Pickup Y postion
 
 deployCnt               DB 0
-DEPLOY_CNT_DELAY        = 15
+DEPLOY_CNT_DELAY        = 10
 
 lifeDeployed            DB 0
 LIVE_DEPLOYED_YES       = 1
@@ -47,7 +47,7 @@ ResetPickups
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #UpdatePickupsOnJetmanMove                ;
+;                 UpdatePickupsOnJetmanMove                ;
 ;----------------------------------------------------------;
 UpdatePickupsOnJetmanMove
 

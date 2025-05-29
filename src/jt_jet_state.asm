@@ -38,7 +38,7 @@ DIF_HARD                = 3
 difLevel                DB DIF_NORMAL
 
 ;----------------------------------------------------------;
-;              #UpdateStateOnJoyWillEnable                 ;
+;               UpdateStateOnJoyWillEnable                 ;
 ;----------------------------------------------------------;
 UpdateStateOnJoyWillEnable
 
@@ -55,7 +55,7 @@ UpdateStateOnJoyWillEnable
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #SetJetStateAir                      ;
+;                      SetJetStateAir                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:                                         ; Air State: #AIR_XXX
@@ -69,7 +69,7 @@ SetJetStateAir
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #SetJetStateGnd                       ;
+;                     SetJetStateGnd                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:                                         ; Air State: #GND_XXX
@@ -83,7 +83,7 @@ SetJetStateGnd
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #SetJetStateRip                       ;
+;                     SetJetStateRip                       ;
 ;----------------------------------------------------------;
 SetJetStateRip
 
@@ -97,7 +97,7 @@ SetJetStateRip
     RET                                         ; ## END of the function ##
     
 ;----------------------------------------------------------;
-;                  #SetJetStateRespawn                     ;
+;                   SetJetStateRespawn                     ;
 ;----------------------------------------------------------;
 SetJetStateRespawn
 
@@ -113,7 +113,7 @@ SetJetStateRespawn
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #SetJetStateInactive                    ;
+;                   SetJetStateInactive                    ;
 ;----------------------------------------------------------;
 SetJetStateInactive
 
@@ -125,7 +125,7 @@ SetJetStateInactive
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #ResetOverheat                      ;
+;                       ResetOverheat                      ;
 ;----------------------------------------------------------;
 ResetOverheat
 
@@ -140,7 +140,7 @@ ResetOverheat
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #SetJetState                        ;
+;                       SetJetState                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:                                         ; Air State: #JETST_XXX

@@ -13,7 +13,7 @@ respawnDelay            DB 0                    ; Delay to respawn the whole for
 respawnDelayCnt         DB 0                    ; Counter for #respawnDelay
 
 ;----------------------------------------------------------;
-;                #MoveFormationEnemies                     ;
+;                 MoveFormationEnemies                     ;
 ;----------------------------------------------------------;
 MoveFormationEnemies
     
@@ -26,7 +26,7 @@ MoveFormationEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #SetupEnemyFormation                   ;
+;                    SetupEnemyFormation                   ;
 ;----------------------------------------------------------;
 ;Input:
 ;  - A:  Delay to respawn the whole formation
@@ -80,7 +80,7 @@ SetupEnemyFormation
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #RespawnFormation                      ;
+;                    RespawnFormation                      ;
 ;----------------------------------------------------------;
 RespawnFormation
 

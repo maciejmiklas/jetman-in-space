@@ -17,7 +17,7 @@ JM_RESPAWN_X_D100       = 100
 JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off
 
 ;----------------------------------------------------------;
-;                   #MainLoopCmd                           ;
+;                    MainLoopCmd                           ;
 ;----------------------------------------------------------;
     //DEFINE  PERFORMANCE_BORDER 
 MainLoopCmd
@@ -39,19 +39,28 @@ MainLoopCmd
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #StartGameWithIntro                      ;
+;                  StartGameWithIntro                      ;
 ;----------------------------------------------------------;
 StartGameWithIntro
 
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
     CALL jw.ResetWeapon
-    CALL LoadLevel1Intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
+    CALL LoadLevel1Intro
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_INTRO
+    CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #SetupSystem                        ;
+;                       SetupSystem                        ;
 ;----------------------------------------------------------;
 SetupSystem
 
@@ -59,18 +68,17 @@ SetupSystem
     CALL bm.HideImage
     CALL sc.SetupScreen
     CALL ti.SetupTiles
-    CALL fi.LoadEffects
 
     ; Load sprites from any level for mein menu
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadMainMenu                        ;
+;                      LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
 
@@ -86,7 +94,7 @@ LoadMainMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #LoadLevel1Intro                      ;
+;                     LoadLevel1Intro                      ;
 ;----------------------------------------------------------;
 LoadLevel1Intro
 
@@ -101,7 +109,7 @@ LoadLevel1Intro
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel1                         ;
+;                       LoadLevel1                         ;
 ;----------------------------------------------------------;
 LoadLevel1
 
@@ -115,7 +123,7 @@ LoadLevel1
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel2                         ;
+;                       LoadLevel2                         ;
 ;----------------------------------------------------------;
 LoadLevel2
 
@@ -126,7 +134,7 @@ LoadLevel2
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel3                         ;
+;                       LoadLevel3                         ;
 ;----------------------------------------------------------;
 LoadLevel3
 
@@ -137,7 +145,7 @@ LoadLevel3
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel4                         ;
+;                       LoadLevel4                         ;
 ;----------------------------------------------------------;
 LoadLevel4
 
@@ -148,7 +156,7 @@ LoadLevel4
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel5                         ;
+;                       LoadLevel5                         ;
 ;----------------------------------------------------------;
 LoadLevel5
 
@@ -159,7 +167,7 @@ LoadLevel5
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel6                         ;
+;                       LoadLevel6                         ;
 ;----------------------------------------------------------;
 LoadLevel6
 
@@ -170,7 +178,7 @@ LoadLevel6
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel7                         ;
+;                       LoadLevel7                         ;
 ;----------------------------------------------------------;
 LoadLevel7
 
@@ -181,7 +189,7 @@ LoadLevel7
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel8                         ;
+;                       LoadLevel8                         ;
 ;----------------------------------------------------------;
 LoadLevel8
 
@@ -192,7 +200,7 @@ LoadLevel8
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #LoadLevel9                         ;
+;                       LoadLevel9                         ;
 ;----------------------------------------------------------;
 LoadLevel9
 
@@ -203,7 +211,7 @@ LoadLevel9
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadLevel10                         ;
+;                      LoadLevel10                         ;
 ;----------------------------------------------------------;
 LoadLevel10
 
@@ -214,7 +222,7 @@ LoadLevel10
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #BackgroundPaletteLoaded                    ;
+;               BackgroundPaletteLoaded                    ;
 ;----------------------------------------------------------;
 BackgroundPaletteLoaded
 
@@ -223,7 +231,7 @@ BackgroundPaletteLoaded
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #RocketTakesOff                       ;
+;                     RocketTakesOff                       ;
 ;----------------------------------------------------------;
 RocketTakesOff
 
@@ -242,7 +250,7 @@ RocketTakesOff
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadNextLevel                       ;
+;                      LoadNextLevel                       ;
 ;----------------------------------------------------------;
 LoadNextLevel
 
@@ -263,7 +271,7 @@ LoadNextLevel
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadCurrentLevel                       ;
+;                   LoadCurrentLevel                       ;
 ;----------------------------------------------------------;
 LoadCurrentLevel
 
@@ -343,7 +351,7 @@ LoadCurrentLevel
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #RocketFlying                        ;
+;                      RocketFlying                        ;
 ;----------------------------------------------------------;
 RocketFlying
 
@@ -354,19 +362,20 @@ RocketFlying
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #RocketTankHit                        ;
+;                     RocketTankHit                        ;
 ;----------------------------------------------------------;
 RocketTankHit
 
     CALL sc.HitRocketTank
 
     LD A, af.FX_EXPLODE_TANK
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #RocketElementPickup                    ;
+;                   RocketElementPickup                    ;
 ;----------------------------------------------------------;
 RocketElementPickup
 
@@ -378,18 +387,20 @@ RocketElementPickup
     JR C, .notFuelTank
 
     LD A, af.FX_PICKUP_FUEL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
     JR .afterFuelFx
 .notFuelTank
 
     LD A, af.FX_PICKUP_ROCKET_EL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 .afterFuelFx
 
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;               #RocketElementPickupInAir                  ;
+;                RocketElementPickupInAir                  ;
 ;----------------------------------------------------------;
 RocketElementPickupInAir
     
@@ -398,19 +409,20 @@ RocketElementPickupInAir
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                  #RocketElementDrop                      ;
+;                   RocketElementDrop                      ;
 ;----------------------------------------------------------;
 RocketElementDrop
     
     CALL sc.DropRocketElement
 
     LD A, af.FX_ROCKET_EL_DROP
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    #JetPlatformTakesOff                  ;
+;                     JetPlatformTakesOff                  ;
 ;----------------------------------------------------------;
 JetPlatformTakesOff
 
@@ -435,22 +447,24 @@ JetPlatformTakesOff
 
     ; Play FX
     LD A, af.FX_JET_TAKE_OFF
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #PlatformWeaponHit                      ;
+;                   PlatformWeaponHit                      ;
 ;----------------------------------------------------------;
 PlatformWeaponHit
 
     LD A, af.FX_FIRE_PLATFORM_HIT
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                   #WeaponHitEnemies                      ;
+;                    WeaponHitEnemies                      ;
 ;----------------------------------------------------------;
 WeaponHitEnemies
 
@@ -470,7 +484,7 @@ WeaponHitEnemies
     RET                                         ; ## END of the function ##
     
 ;----------------------------------------------------------;
-;                     #EnemyHit                            ;
+;                      EnemyHit                            ;
 ;----------------------------------------------------------;
 ; Input
 ;    A:  Sprite ID of the enemy.
@@ -491,6 +505,7 @@ EnemyHit
 
     ; Yes, enemy 1 hot git.
     LD A, af.FX_EXPLODE_ENEMY_1
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL sc.HitEnemy1
@@ -505,6 +520,7 @@ EnemyHit
 
     ; Yes, enemy 2 hot git.
     LD A, af.FX_EXPLODE_ENEMY_2
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL sc.HitEnemy2
@@ -519,6 +535,7 @@ EnemyHit
 
     ; Yes, enemy 3 hot git.
     LD A, af.FX_EXPLODE_ENEMY_3
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL sc.HitEnemy3
@@ -531,7 +548,7 @@ EnemyHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #EnemyHitsJet                       ;
+;                       EnemyHitsJet                       ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:    Pointer enemy's #SPR
@@ -564,6 +581,7 @@ EnemyHitsJet
 
     ; Play FX.
     LD A, af.FX_JET_KILL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     ; Remove one life
@@ -572,7 +590,7 @@ EnemyHitsJet
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #RespawnJet                         ;
+;                       RespawnJet                         ;
 ;----------------------------------------------------------;
 RespawnJet
 
@@ -607,37 +625,40 @@ RespawnJet
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                   #JetpackOverheat                       ;
+;                    JetpackOverheat                       ;
 ;----------------------------------------------------------;
 JetpackOverheat
 
     LD A, af.FX_JET_OVERHEAT
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #JetpackOverHard                       ;
+;                    JetpackOverHard                       ;
 ;----------------------------------------------------------;
 JetpackOverHard
 
     LD A, af.FX_JET_OVERHEAT
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetpackNormal                        ;
+;                     JetpackNormal                        ;
 ;----------------------------------------------------------;
 JetpackNormal
 
     LD A, af.FX_JET_NORMAL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #JetPicksInAir                       ;
+;                      JetPicksInAir                       ;
 ;----------------------------------------------------------;
 JetPicksInAir
 
@@ -646,7 +667,7 @@ JetPicksInAir
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JetPicksGun                        ;
+;                       JetPicksGun                        ;
 ;----------------------------------------------------------;
 JetPicksGun
 
@@ -654,24 +675,26 @@ JetPicksGun
     CALL jw.FireSpeedUp
 
     LD A, af.FX_PICKUP_GUN
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #JetPicksLife                        ;
+;                      JetPicksLife                        ;
 ;----------------------------------------------------------;
 JetPicksLife
 
     CALL sc.PickupRegular
 
     LD A, af.FX_PICKUP_LIVE
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JetPicksGrenade                      ;
+;                     JetPicksGrenade                      ;
 ;----------------------------------------------------------;
 JetPicksGrenade
 
@@ -679,18 +702,20 @@ JetPicksGrenade
     CALL enp.KillFewPatternEnemies
 
     LD A, af.FX_PICKUP_GRENADE
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #JetPicksStrawberry                     ;
+;                   JetPicksStrawberry                     ;
 ;----------------------------------------------------------;
 JetPicksStrawberry
 
     CALL sc.PickupRegular
 
     LD A, af.FX_PICKUP_STRAWBERRY
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     CALL jco.MakeJetInvincible
@@ -698,19 +723,20 @@ JetPicksStrawberry
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #JetPicksDiamond                       ;
+;                    JetPicksDiamond                       ;
 ;----------------------------------------------------------;
 JetPicksDiamond
 
     CALL sc.PickupDiamond
 
     LD A, af.FX_PICKUP_DIAMOND
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JetPicksJar                        ;
+;                       JetPicksJar                        ;
 ;----------------------------------------------------------;
 JetPicksJar
 
@@ -718,22 +744,24 @@ JetPicksJar
     CALL jo.ResetJetpackOverheating
 
     LD A, af.FX_PICKUP_JAR
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JetLanding                         ;
+;                       JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
 
     LD A, af.FX_JET_LAND
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #JetMoves                        ;
+;                         JetMoves                         ;
 ;----------------------------------------------------------;
 ; Called on any Jetman movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
 JetMoves
@@ -745,7 +773,7 @@ JetMoves
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #JetMovesUp                        ;
+;                        JetMovesUp                        ;
 ;----------------------------------------------------------;
 JetMovesUp
 
@@ -759,7 +787,7 @@ JetMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #JetMovesDown                        ;
+;                      JetMovesDown                        ;
 ;----------------------------------------------------------;
 JetMovesDown
 
@@ -770,27 +798,29 @@ JetMovesDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #RocketReady                        ;
+;                       RocketReady                        ;
 ;----------------------------------------------------------;
 RocketReady
 
     LD A, af.FX_ROCKET_READY
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #JetBumpsIntoPlatform                   ;
+;                   JetBumpsIntoPlatform                   ;
 ;----------------------------------------------------------;
 JetBumpsIntoPlatform
 
     LD A, af.FX_BUMP_PLATFORM
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #MovementInactivity                      ;
+;                  MovementInactivity                      ;
 ;----------------------------------------------------------;
 ; It gets executed as a last procedure after the input has been processed, and there was no movement from joystick.
 MovementInactivity
@@ -895,7 +925,7 @@ NightEnds
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #NextDayToNight                       ;
+;                     NextDayToNight                       ;
 ;----------------------------------------------------------;
 ; The function will be called when a night shifts to a day.
 ; Call sequence:
@@ -908,7 +938,7 @@ NextDayToNight
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #NextNightToDay                         ;
+;                   NextNightToDay                         ;
 ;----------------------------------------------------------;
 ; The function will be called when a day shifts to a night.
 NextNightToDay
@@ -918,7 +948,7 @@ NextNightToDay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #ChangeToFullDay                       ;
+;                    ChangeToFullDay                       ;
 ;----------------------------------------------------------;
 ; Called when the lighting condition has changed to a full day.
 ChangeToFullDay
@@ -929,7 +959,7 @@ ChangeToFullDay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #GameOver                           ;
+;                      GameOver                            ;
 ;----------------------------------------------------------;
 GameOver
     CALL _HideGame
@@ -945,9 +975,13 @@ GameOver
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                       #_HideGame                         ;
+;                        _HideGame                         ;
 ;----------------------------------------------------------;
 _HideGame
+
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
 
     CALL bm.HideImage
     CALL js.HideJetSprite
@@ -966,7 +1000,7 @@ _HideGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_InitLevelLoad                        ;
+;                    _InitLevelLoad                        ;
 ;----------------------------------------------------------;
 _InitLevelLoad
 
@@ -979,7 +1013,7 @@ _InitLevelLoad
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_StartLevel                         ;
+;                      _StartLevel                         ;
 ;----------------------------------------------------------;
 _StartLevel
 
@@ -999,6 +1033,10 @@ _StartLevel
 
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.NextGameSong
 
     RET                                         ; ## END of the function ##
 

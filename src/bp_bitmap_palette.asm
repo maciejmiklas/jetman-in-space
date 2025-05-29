@@ -19,7 +19,7 @@ _BM_PAL2_BB_MASKN       = %111'111'00
 _BM_PAL2_B_MASK         = %0000000'1 
 
 ;----------------------------------------------------------;
-;                     #BytesToColors                       ;
+;                      BytesToColors                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - BC: Sieze of the palette in bytes
@@ -43,7 +43,7 @@ BytesToColors
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadPalette                         ;
+;                      LoadPalette                         ;
 ;----------------------------------------------------------;
 ; Load palette address, set bank, and finally load colors into hardware.
 ; Input:
@@ -57,7 +57,7 @@ LoadPalette
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #WritePalette                       ;
+;                       WritePalette                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: Address of the palette that will be copied
@@ -74,7 +74,7 @@ WritePalette
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #SetupPaletteLoad                      ;
+;                    SetupPaletteLoad                      ;
 ;----------------------------------------------------------;
 SetupPaletteLoad
 
@@ -92,7 +92,7 @@ SetupPaletteLoad
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #BrightnessDown                       ;
+;                     BrightnessDown                       ;
 ;----------------------------------------------------------;
 ; Input
 ;  - DE: Contains 9-bit color. D = xxxxxxx'B, E = RRR'GGG'BB
@@ -173,7 +173,7 @@ BrightnessDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #WriteColor                         ;
+;                       WriteColor                         ;
 ;----------------------------------------------------------;
 ; Input
 ;  - DE - contains given color, E: RRRGGGBB, D: xxxxxxxB

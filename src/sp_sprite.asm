@@ -19,7 +19,7 @@ SP_ADDR_HC000           = _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
 ; Fuel thief:           96-97
 
 ;----------------------------------------------------------;
-;                     #LoadSpritesFPGA                     ;
+;                      LoadSpritesFPGA                     ;
 ;----------------------------------------------------------;
 ; Loads sprites from a file into hardware using DMA.
 LoadSpritesFPGA
@@ -86,7 +86,7 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #HideSprite                          ;
+;                      HideSprite                          ;
 ;----------------------------------------------------------;
 HideSprite
 
@@ -96,7 +96,7 @@ HideSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #SetIdAndHideSprite                      ;
+;                  SetIdAndHideSprite                      ;
 ;----------------------------------------------------------;
 SetIdAndHideSprite
 ; Input:

@@ -20,7 +20,7 @@ tileOffset              DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "
 tilePixelCnt            DB ti.TI_PIXELS_D8      ; Runs from 0 to 7 (ti.TI_PIXELS_D8-1)
 
 ;----------------------------------------------------------;
-;                   #ResetRocketStars                      ;
+;                    ResetRocketStars                      ;
 ;----------------------------------------------------------;
 ResetRocketStars
     LD A, ti.TI_VTILES_D32
@@ -38,7 +38,7 @@ ResetRocketStars
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #AnimateStarsOnFlyRocket                   ;
+;                AnimateStarsOnFlyRocket                   ;
 ;----------------------------------------------------------;
 AnimateStarsOnFlyRocket
 
@@ -85,7 +85,7 @@ AnimateStarsOnFlyRocket
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   #_NextTilesRow                         ;
+;                    _NextTilesRow                         ;
 ;----------------------------------------------------------;
 ; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 

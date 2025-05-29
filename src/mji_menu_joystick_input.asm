@@ -16,7 +16,7 @@ callbackDown            DW _DummyFunction
 callbackFire            DW _DummyFunction
 
 ;----------------------------------------------------------;
-;                #JoystickInputLastLoop                    ;
+;                 JoystickInputLastLoop                    ;
 ;----------------------------------------------------------;
 JoystickInputLastLoop
 
@@ -44,7 +44,7 @@ JoystickInputLastLoop
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #ResetJoystick                       ;
+;                      ResetJoystick                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: User input delay
@@ -64,7 +64,7 @@ ResetJoystick
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JoystickInput                        ;
+;                     JoystickInput                        ;
 ;----------------------------------------------------------;
 JoystickInput
 
@@ -144,7 +144,7 @@ JoystickInput
     RET                                         ; None of the keys pressed
 
 .pressRight
-    CALL _CanProcessJoystickInput
+    CALL CanProcessUserInput
     CP _RET_NO_D0
     RET Z
 
@@ -156,7 +156,7 @@ JoystickInput
     RET
 
 .pressLeft
-    CALL _CanProcessJoystickInput
+    CALL CanProcessUserInput
     CP _RET_NO_D0
     RET Z
 
@@ -168,7 +168,7 @@ JoystickInput
     RET
 
 .pressUp
-    CALL _CanProcessJoystickInput
+    CALL CanProcessUserInput
     CP _RET_NO_D0
     RET Z
 
@@ -180,7 +180,7 @@ JoystickInput
     RET
 
 .pressDown
-    CALL _CanProcessJoystickInput
+    CALL CanProcessUserInput
     CP _RET_NO_D0
     RET Z
 
@@ -192,7 +192,7 @@ JoystickInput
     RET
 
 .pressFire
-    CALL _CanProcessJoystickInput
+    CALL CanProcessUserInput
     CP _RET_NO_D0
     RET Z
 
@@ -206,17 +206,11 @@ JoystickInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                #_CanProcessJoystickInput                 ;
+;                  CanProcessUserInput                     ;
 ;----------------------------------------------------------;
 ; Output:
 ;  A: _RET_YES_D1 or _RET_NO_D0
-_CanProcessJoystickInput
+CanProcessUserInput
 
     ; Reset inactivity count
     XOR A
@@ -240,7 +234,13 @@ _CanProcessJoystickInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_DummyFunction                      ;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      _DummyFunction                      ;
 ;----------------------------------------------------------;
 _DummyFunction
 

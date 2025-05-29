@@ -29,6 +29,39 @@ dmaPortBAddress
     DB %1'00001'11                              ; WR6 - enable DMA
 dmaProgramSize = $-dmaProgram
 
+
+;----------------------------------------------------------;
+;                        NumTo99Str                           ;
+;----------------------------------------------------------;
+; Input:  
+;    - A: 8-bit value (0..99)
+; Output: 
+;    - D: ASCII tens digit
+;    - E: ASCII units digit
+NumTo99Str
+    LD B, 0                                     ; B = tens counter
+    LD C, 10                                    ; C = divisor
+
+.divLoop:
+    CP C                                        ; A < 10?
+    JR C, .doneDiv                              ; If yes, exit loop
+    SUB C                                       ; A -= 10
+    INC B                                       ; B++
+    JR .divLoop
+
+.doneDiv:
+    LD D, B                                     ; D = tens digit (BCD)
+    LD E, A                                     ; E = units digit (BCD)
+    LD A, D
+    ADD A,'0'                                   ; Convert tens to ASCII
+    LD D, A
+    LD A, E
+    ADD A,'0'                                   ; Convert units to ASCII
+    LD E, A
+    ; D and E now contain the ASCII digits
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                        CopyRam                           ;
 ;----------------------------------------------------------;
@@ -175,7 +208,7 @@ PrintNumber
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #HlEqualB                          ;
+;                        HlEqualB                          ;
 ;----------------------------------------------------------;
 ; Check if both H and L are equal to B
 HL_IS_B                 = 0
@@ -204,7 +237,7 @@ HlEqualB
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #ReadNextReg                        ;
+;                       ReadNextReg                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - A: Nextreg to read.
@@ -222,7 +255,7 @@ ReadNextReg
     RET
 
 ;----------------------------------------------------------;
-;                       #PauseShort                        ;
+;                        PauseShort                        ;
 ;----------------------------------------------------------;
 PauseShort
 
@@ -232,7 +265,7 @@ PauseShort
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         #Pause                           ;
+;                          Pause                           ;
 ;----------------------------------------------------------;
 Pause
 
@@ -253,7 +286,7 @@ Pause
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #CountdownBC                       ;
+;                        CountdownBC                       ;
 ;----------------------------------------------------------;
 ; Input: 
 ;  - BC: Loop amount.
@@ -272,7 +305,7 @@ CountdownBC
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #FillBank                         ;
+;                         FillBank                         ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:  Destination bank

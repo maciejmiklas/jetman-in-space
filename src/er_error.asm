@@ -12,7 +12,7 @@ ERR_002                 = $E2                   ; File read error
 ERR_003                 = $E3                   ; Sprite in #srSpriteDB not found
 
 ;----------------------------------------------------------;
-;                     #ReportError                         ;
+;                      ReportError                         ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: Error code: ERR_XXX

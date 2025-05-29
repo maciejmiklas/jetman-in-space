@@ -76,7 +76,7 @@ TI_DEF_BANK_OFFSET      = (TI_DEF_RAM_H6500 - _RAM_SLOT2_STA_H4000) >> 8
     ASSERT TI_DEF_BANK_OFFSET = $25
 
 ;----------------------------------------------------------;
-;                     #ShakeTilemap                        ;
+;                      ShakeTilemap                        ;
 ;----------------------------------------------------------;
 ShakeTilemap
 
@@ -91,7 +91,7 @@ ShakeTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #ResetTilemapOffset                      ;
+;                  ResetTilemapOffset                      ;
 ;----------------------------------------------------------;
 ResetTilemapOffset
 
@@ -102,7 +102,7 @@ ResetTilemapOffset
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #PrintText                          ;
+;                       PrintText                          ;
 ;----------------------------------------------------------;
 ; Print given text using tiles.
 ; Input:
@@ -135,7 +135,7 @@ PrintText
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #CleanAllTiles                        ;
+;                     CleanAllTiles                        ;
 ;----------------------------------------------------------;
 CleanAllTiles
 
@@ -164,7 +164,7 @@ CleanAllTiles
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #CleanTiles                        ;
+;                        CleanTiles                        ;
 ;----------------------------------------------------------;
 ;  - B:     Amount of tiles to clean 
 CleanTiles
@@ -186,7 +186,7 @@ CleanTiles
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #SetupTiles                       ;
+;                         SetupTiles                       ;
 ;----------------------------------------------------------;
 SetupTiles
 
@@ -224,7 +224,7 @@ SetupTiles
     RET                                         ; ## END of the function ##
     
 ;----------------------------------------------------------;
-;                    #SetTilesClipOff                      ;
+;                     SetTilesClipOff                      ;
 ;----------------------------------------------------------;
 SetTilesClipOff
 
@@ -236,7 +236,7 @@ SetTilesClipOff
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #SetTilesClipFull                      ;
+;                    SetTilesClipFull                      ;
 ;----------------------------------------------------------;
 SetTilesClipFull
 
@@ -248,7 +248,7 @@ SetTilesClipFull
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #SetTilesClipHorizontal                  ;
+;                  SetTilesClipHorizontal                  ;
 ;----------------------------------------------------------;
 ; 8px clip from top and 8px clip from the bottom.
 SetTilesClipHorizontal
@@ -267,7 +267,7 @@ SetTilesClipHorizontal
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                  #_LoadTilemapPalette                    ;
+;                   _LoadTilemapPalette                    ;
 ;----------------------------------------------------------;
 ; Input:
 ; - B:      Number of colors to copy

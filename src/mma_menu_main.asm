@@ -30,10 +30,11 @@ MENU_EL_MIN             = MENU_EL_START
 MENU_EL_MAX             = MENU_EL_DIFFICULTY
 
 ;----------------------------------------------------------;
-;                     #LoadMainMenu                        ;
+;                      LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
 
+    ; ##########################################
     ; Update menu state
     LD A, ms.MENU_MAIN
     CALL ms.SetMainState
@@ -71,7 +72,7 @@ LoadMainMenu
     ; Load sprites from any level
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
 
     ; ##########################################
     ; Setup Jetman sprite
@@ -92,6 +93,11 @@ LoadMainMenu
     CALL _SetIXToActiveMenu
     CALL _UpdateJetPostion
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -101,10 +107,15 @@ LoadMainMenu
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_LoadMenuEasy                       ;
+;                      _LoadMenuEasy                       ;
 ;----------------------------------------------------------;
 _LoadMenuEasy
  
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
+    ; ##########################################
     ; Hide current image
     CALL bm.HideImage
 
@@ -117,7 +128,7 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadMenuEasyImage
+    CALL fi.LoadMenuEasyImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -129,12 +140,21 @@ _LoadMenuEasy
     LD IX, dba.menuDifEasy
     CALL _PrintMenu
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_LoadMenuNormal                     ;
+;                      _LoadMenuNormal                     ;
 ;----------------------------------------------------------;
 _LoadMenuNormal
+
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
 
     ; Hide current image
     CALL bm.HideImage
@@ -148,7 +168,9 @@ _LoadMenuNormal
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadMenuMainImage
+    LD D, "m"
+    LD E, "a"
+    CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -160,13 +182,23 @@ _LoadMenuNormal
     LD IX, dba.menuDifNorm
     CALL _PrintMenu
 
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_LoadMenuHard                       ;
+;                      _LoadMenuHard                       ;
 ;----------------------------------------------------------;
 _LoadMenuHard
  
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
     ; Hide current image
     CALL bm.HideImage
 
@@ -179,7 +211,7 @@ _LoadMenuHard
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadMenuHardImage
+    CALL fi.LoadMenuHardImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -191,10 +223,15 @@ _LoadMenuHard
     LD IX, dba.menuDifHard
     CALL _PrintMenu
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_PrintMenu                         ;
+;                       _PrintMenu                         ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to #MENU
@@ -208,7 +245,7 @@ _PrintMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_SetIXToActiveMenu                     ;
+;                   _SetIXToActiveMenu                     ;
 ;----------------------------------------------------------;
 _SetIXToActiveMenu
     CALL dbs.SetupArraysBank
@@ -226,7 +263,7 @@ _SetIXToActiveMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_UpdateSelection                       ;
+;                   _UpdateSelection                       ;
 ;----------------------------------------------------------;
 _UpdateSelection
     
@@ -237,12 +274,13 @@ _UpdateSelection
     CALL js.ChangeJetSpritePattern
 
     LD A, af.FX_MENU_MOVE
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_UpdateJetPostion                       ;
+;                  _UpdateJetPostion                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to currently selected #MENU
@@ -260,7 +298,7 @@ _UpdateJetPostion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_LoadStaticMenuText                      ;
+;                 _LoadStaticMenuText                      ;
 ;----------------------------------------------------------;
 _LoadStaticMenuText
 
@@ -393,6 +431,7 @@ _JoyFire
     ; ##########################################
     ; Wrong key hit, play sound
     LD A, af.FX_JET_KILL
+    CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##

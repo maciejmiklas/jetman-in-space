@@ -19,8 +19,6 @@
 ;----------------------------------------------------------;
 ;         Game Tile Sprites and Palette (Bank 30)          ;
 ;----------------------------------------------------------;
-    MMU _RAM_SLOT7, dbs.TI_SPR_BANK_S7_D30      ; Assign slots 7 to bank 30
-    ORG _RAM_SLOT7_STA_HE000                    ; Set memory pointer to start of the slot 6
 
 ; Sprite editor settings: 4bit, 8x8. After downloading manually remove empty data!
 ; Sprites
@@ -74,119 +72,119 @@ tilePaletteBinLength = $ - tilePaletteBin
 
  ; #############################################
 bgrL1PaletteAdr
-    INCBIN  "assets/l01/bg.nxp"
+    INCBIN  "assets/01/bg.nxp"
 
 bgrL1PaletteBytes = $ - bgrL1PaletteAdr
     ASSERT bgrL1PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL2PaletteAdr
-    INCBIN  "assets/l02/bg.nxp"
+    INCBIN  "assets/02/bg.nxp"
 
 bgrL2PaletteBytes = $ - bgrL2PaletteAdr
     ASSERT bgrL2PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL3PaletteAdr
-    INCBIN  "assets/l03/bg.nxp"
+    INCBIN  "assets/03/bg.nxp"
 
 bgrL3PaletteBytes = $ - bgrL3PaletteAdr
     ASSERT bgrL3PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL4PaletteAdr
-    INCBIN  "assets/l04/bg.nxp"
+    INCBIN  "assets/04/bg.nxp"
 
 bgrL4PaletteBytes = $ - bgrL4PaletteAdr
     ASSERT bgrL4PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL5PaletteAdr
-    INCBIN  "assets/l05/bg.nxp"
+    INCBIN  "assets/05/bg.nxp"
 
 bgrL5PaletteBytes = $ - bgrL5PaletteAdr
     ASSERT bgrL5PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL6PaletteAdr
-    INCBIN  "assets/l06/bg.nxp"
+    INCBIN  "assets/06/bg.nxp"
 
 bgrL6PaletteBytes = $ - bgrL6PaletteAdr
     ASSERT bgrL6PaletteBytes <= btd.PAL2_BYTES_D512
     
  ; #############################################
 bgrL7PaletteAdr
-    INCBIN  "assets/l07/bg.nxp"
+    INCBIN  "assets/07/bg.nxp"
 
 bgrL7PaletteBytes = $ - bgrL7PaletteAdr
     ASSERT bgrL7PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL8PaletteAdr
-    INCBIN  "assets/l08/bg.nxp"
+    INCBIN  "assets/08/bg.nxp"
 
 bgrL8PaletteBytes = $ - bgrL8PaletteAdr
     ASSERT bgrL8PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL9PaletteAdr
-    INCBIN  "assets/l09/bg.nxp"
+    INCBIN  "assets/09/bg.nxp"
 
 bgrL9PaletteBytes = $ - bgrL9PaletteAdr
     ASSERT bgrL9PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 bgrL10PaletteAdr
-    INCBIN  "assets/l10/bg.nxp"
+    INCBIN  "assets/10/bg.nxp"
 
 bgrL10PaletteBytes = $ - bgrL10PaletteAdr
     ASSERT bgrL10PaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 gameIntroPaletteAdr
-    INCBIN  "assets/l01/intro.nxp"
+    INCBIN  "assets/01/intro.nxp"
 
 gameIntroPaletteBytes = $ - gameIntroPaletteAdr
     ASSERT gameIntroPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; ############################################
 menuMainBgPaletteAdr
-    INCBIN  "assets/mma/bg.nxp"
+    INCBIN  "assets/ma/bg.nxp"
 
 menuMainBgPaletteBytes = $ - menuMainBgPaletteAdr
     ASSERT menuMainBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 menuGameplayBgPaletteAdr
-    INCBIN  "assets/mmg/bg.nxp"
+    INCBIN  "assets/mg/bg.nxp"
 
 menuGameplayBgPaletteBytes = $ - menuGameplayBgPaletteAdr
     ASSERT menuGameplayBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 menuKeysBgPaletteAdr
-    INCBIN  "assets/mmk/bg.nxp"
+    INCBIN  "assets/mk/bg.nxp"
 
 menuKeysBgPaletteBytes = $ - menuKeysBgPaletteAdr
     ASSERT menuKeysBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 menuEasyBgPaletteAdr
-    INCBIN  "assets/mma/easy.nxp"
+    INCBIN  "assets/ma/easy.nxp"
 
 menuEasyBgPaletteBytes = $ - menuEasyBgPaletteAdr
     ASSERT menuEasyBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 menuHardBgPaletteAdr
-    INCBIN  "assets/mma/hard.nxp"
+    INCBIN  "assets/ma/hard.nxp"
 
 menuHardBgPaletteBytes = $ - menuHardBgPaletteAdr
     ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
 
  ; #############################################
 menuScoreBgPaletteAdr
-    INCBIN  "assets/mms/bg.nxp"
+    INCBIN  "assets/ms/bg.nxp"
 
 menuScoreBgPaletteBytes = $ - menuScoreBgPaletteAdr
     ASSERT menuHardBgPaletteBytes <= btd.PAL2_BYTES_D512
@@ -202,29 +200,37 @@ gameOverBgPaletteBytes = $ - gameOverBgPaletteAdr
     ASSERT $$ == dbs.PAL2_BANK_S6_D31
 
 ;----------------------------------------------------------;
-;          Layer 2 Brightness Palettes (Bank 32)           ;
+;               AY FX Sound (Bank 32)                      ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                Game Sprites (Bank 33...34)               ;
+;              AY Music Code (Bank 33)                     ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;          Layer 2 Brightness Palettes (Bank 70)           ;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                Game Sprites (Bank 71...72)               ;
 ;----------------------------------------------------------;
 ; Load sprites (16KB) into 2 banks mapping it to slot 6,7
 
 ;----------------------------------------------------------;
-;              Game Background (Bank 35...44)              ;
+;              Game Background (Bank 73...82)              ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB) -> 10 8KB banks
 
 ;----------------------------------------------------------;
-;              16KiB Tilemap (Bank 45, 46)                 ;
+;              16KiB Tilemap (Bank 83, 84)                 ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;               AY FX Sound (Bank 47)                      ;
+;               Empty image (Bank 85)                      ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;               Empty image (Bank 48)                      ;
+;              Music Binary (Bank 86)                      ;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;

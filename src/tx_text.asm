@@ -8,7 +8,7 @@ formatted16                                     ; Formatted 16bit number
 FORMATTED16_SIZE        = 5
 
 ;----------------------------------------------------------;
-;                       #PrintNum16                        ;
+;                        PrintNum16                        ;
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels
 ;Input:
@@ -31,7 +31,7 @@ PrintNum16
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #PrintNum99                         ;
+;                       PrintNum99                         ;
 ;----------------------------------------------------------;
 ; Print 8 bit number from A, but only up to 99
 ;Input:
@@ -39,6 +39,22 @@ PrintNum16
 ;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
 ;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
 PrintNum99
+
+    PUSH BC
+    CALL ut.NumTo99Str
+    POP BC
+    LD HL, formatted16
+    LD (HL), D
+    INC HL
+    LD (HL), E
+
+    LD DE, formatted16
+    LD A, 2                                     ; Print 2 characters
+    CALL ti.PrintText
+
+    RET                                         ; ## END of the function ##
+
+_PrintNum99
 
     ; Print number from HL into #formatted16
     LD H, 0
@@ -57,7 +73,7 @@ PrintNum99
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #Num16ToString                       ;
+;                      Num16ToString                       ;
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros.
 ; Input:

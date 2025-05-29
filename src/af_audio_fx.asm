@@ -3,6 +3,9 @@
 ;----------------------------------------------------------;
 
     MODULE af
+
+    ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
+
 ; Based on: https://github.com/robgmoran/DougieDoSource
 
 ; -Minimal ayFX player (Improved)  v2.05  25/01/21--------------;
@@ -65,7 +68,6 @@
 ;   v2.00  27/08/17  Converted Z80 player to Zeus format.       ;
 ; --------------------------------------------------------------;
 
-
 ; Channel descriptors, 4 bytes per channel:
 ; +0 (2) current address (channel is free if high byte=$00)
 ; +2 (2) sound effect time
@@ -106,16 +108,12 @@ FX_JET_TAKE_OFF         = 27
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
 ;----------------------------------------------------------;
+; To use this function: CALL dbs.SetupAyFxsBank
+;
 ; Setup AYFX for playing sound effects.
 SetupAyFx
 
-    CALL dbs.SetupAyFxsBank
-
-    LD A, %1'11'111'01                          ; Set FX to AY-3
-    LD BC, _GL_REG_SOUND_HFFFD
-    OUT (C), A
-
-    LD HL, _RAM_SLOT6_STA_HC000                 ; Bank containing sound effects
+    LD HL, effectsFileAddr                      ; Address containing sound effects
     CALL _AfxInit
 
     RET                                         ; ## END of the function ##
@@ -123,6 +121,8 @@ SetupAyFx
 ;----------------------------------------------------------;
 ;                       SetAy3ToMono                       ;
 ;----------------------------------------------------------;
+; To use this function: CALL dbs.SetupAyFxsBank
+;
 ; Configure AY3 as mono; call after PlayNextDawSong.
 SetAy3ToMono
 
@@ -137,10 +137,14 @@ SetAy3ToMono
 ;----------------------------------------------------------;
 ;                         AfxFrame                         ;
 ;----------------------------------------------------------;
+; To use this function: CALL dbs.SetupAyFxsBank
+;
 ; Play the current frame.
 AfxFrame
 
-    CALL dbs.SetupAyFxsBank
+    LD A, %1'11'111'11                          ; Set FX to AY-1
+    LD BC, _GL_REG_SOUND_HFFFD
+    OUT (C), A
 
     LD BC, $03FD
     LD IX, afxChDesc
@@ -260,13 +264,13 @@ afxNseMix
 ;----------------------------------------------------------;
 ;                        AfxPlay                           ;
 ;----------------------------------------------------------;
+; To use this function: CALL dbs.SetupAyFxsBank
+;
 ; Launch the effect on a free channel. If no free channels, the longest sounding is selected.
 ; Input: 
 ;  - A: Effect number 0..255
 ;  - BC: ReleaseAddrCh[N]
 AfxPlay
-
-    CALL dbs.SetupAyFxsBank
 
     DEC A                                       ; Number effects from 1 as the ayfxedit.exe does
     
@@ -371,12 +375,11 @@ _CheckRelease
 ;----------------------------------------------------------;
 ; Initialize the effects player. Turns off all channels, sets variables.
 ; Input: 
-;  -  HL: bank address with effects
+;  -  HL: Address with effects
 _AfxInit
 
     INC HL
     LD (afxBnkAdr1+1), HL                       ; Save the address of the table of offsets
-    ;ld (afxBnkAdr2+1), HL                       ; Save the address of the table of offsets
     LD HL, afxChDesc                            ; Mark all channels as empty
     LD DE, $00FF
     LD BC, AFX_CH_DESC_COUNT*256+$FD
@@ -389,14 +392,14 @@ _AfxInit
     INC HL
     LD (HL), E
     INC HL
-    LD (HL), D
+   /* LD (HL), D
     INC HL
     LD (HL), D
     INC HL
     LD (HL), D
     INC HL
     LD (HL), D
-    INC HL
+    INC HL*/
     DJNZ .afxInit0
 
     LD HL, $FFBF                                ; Initialize  AY
@@ -405,13 +408,21 @@ _AfxInit
     DEC E
     LD B, H
     OUT (C), E
-    LD B,L
+    LD B, L
     OUT (C), D
     JR NZ, .afxInit1
 
     LD (afxNseMix+1), DE                        ; Reset the player variables
 
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     Effects file                         ;
+;----------------------------------------------------------;
+effectsFileAddr
+    INCBIN  "assets/com/effects.afb",0
+effectsFileSize  = $ - effectsFileAddr
+    ASSERT effectsFileSize <= 7 * 1024
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

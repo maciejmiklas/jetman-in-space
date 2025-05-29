@@ -22,7 +22,7 @@ RESPAWN_DELAY           = 25
 MIN_FUEL_LEVEL          = ro.EL_TANK1_D4 + 2
 
 ;----------------------------------------------------------;
-;                    #DisableFuelThief                     ;
+;                     DisableFuelThief                     ;
 ;----------------------------------------------------------;
 DisableFuelThief
 
@@ -36,7 +36,7 @@ DisableFuelThief
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #EnableFuelThief                     ;
+;                      EnableFuelThief                     ;
 ;----------------------------------------------------------;
 EnableFuelThief
 
@@ -50,7 +50,7 @@ EnableFuelThief
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #ThiefWeaponHit                      ;
+;                      ThiefWeaponHit                      ;
 ;----------------------------------------------------------;
 ThiefWeaponHit
 
@@ -86,7 +86,7 @@ ThiefWeaponHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #RespawnFuelThief                     ;
+;                     RespawnFuelThief                     ;
 ;----------------------------------------------------------;
 RespawnFuelThief
 
@@ -145,7 +145,7 @@ RespawnFuelThief
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #AnimateFuelThief                       ;
+;                   AnimateFuelThief                       ;
 ;----------------------------------------------------------;
 AnimateFuelThief
 
@@ -164,7 +164,7 @@ AnimateFuelThief
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #MoveFuelThief                        ;
+;                     MoveFuelThief                        ;
 ;----------------------------------------------------------;
 MoveFuelThief
 
@@ -271,8 +271,6 @@ MoveFuelThief
     NEXTREG _SPR_REG_ATR3_H38, A
 .notCarryFuel
 
-
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -282,7 +280,7 @@ MoveFuelThief
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   #_SetupFuelThief                       ;
+;                    _SetupFuelThief                       ;
 ;----------------------------------------------------------;
 _SetupFuelThief
 
@@ -299,7 +297,7 @@ _SetupFuelThief
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_HideFuelThief                       ;
+;                     _HideFuelThief                       ;
 ;----------------------------------------------------------;
 _HideFuelThief
 
@@ -322,7 +320,7 @@ _HideFuelThief
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_LoadSprToIxIy                       ;
+;                     _LoadSprToIxIy                       ;
 ;----------------------------------------------------------;
 ; Output:
 ;  IX: Points to SPR

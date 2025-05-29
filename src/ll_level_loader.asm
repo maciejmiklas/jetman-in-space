@@ -4,7 +4,7 @@
     MODULE ll
 
 ;----------------------------------------------------------;
-;                    #LoadLevel1Data                       ;
+;                     LoadLevel1Data                       ;
 ;----------------------------------------------------------;
 LoadLevel1Data
 
@@ -26,24 +26,24 @@ LoadLevel1Data
     LD D, "0"
     LD E, "1"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap
+    CALL fi.LoadPlatformsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -83,7 +83,7 @@ LoadLevel1Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel2Data                         ;
+;                   LoadLevel2Data                         ;
 ;----------------------------------------------------------;
 LoadLevel2Data
 
@@ -105,24 +105,24 @@ LoadLevel2Data
     LD D, "0"
     LD E, "2"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -162,7 +162,7 @@ LoadLevel2Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel3Data                         ;
+;                   LoadLevel3Data                         ;
 ;----------------------------------------------------------;
 LoadLevel3Data
 
@@ -184,24 +184,24 @@ LoadLevel3Data
     LD D, "0"
     LD E, "3"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -241,7 +241,7 @@ LoadLevel3Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel4Data                         ;
+;                   LoadLevel4Data                         ;
 ;----------------------------------------------------------;
 LoadLevel4Data
 
@@ -265,24 +265,24 @@ LoadLevel4Data
     LD D, "0"
     LD E, "4"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -322,7 +322,7 @@ LoadLevel4Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel5Data                         ;
+;                   LoadLevel5Data                         ;
 ;----------------------------------------------------------;
 LoadLevel5Data
 
@@ -344,24 +344,24 @@ LoadLevel5Data
     LD D, "0"
     LD E, "5"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -401,7 +401,7 @@ LoadLevel5Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel6Data                         ;
+;                   LoadLevel6Data                         ;
 ;----------------------------------------------------------;
 LoadLevel6Data
 
@@ -423,24 +423,24 @@ LoadLevel6Data
     LD D, "0"
     LD E, "6"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -480,7 +480,7 @@ LoadLevel6Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel7Data                         ;
+;                   LoadLevel7Data                         ;
 ;----------------------------------------------------------;
 LoadLevel7Data
 
@@ -502,24 +502,24 @@ LoadLevel7Data
     LD D, "0"
     LD E, "7"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -559,7 +559,7 @@ LoadLevel7Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel8Data                         ;
+;                   LoadLevel8Data                         ;
 ;----------------------------------------------------------;
 LoadLevel8Data
 
@@ -581,24 +581,24 @@ LoadLevel8Data
     LD D, "0"
     LD E, "8"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -638,7 +638,7 @@ LoadLevel8Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel9Data                         ;
+;                   LoadLevel9Data                         ;
 ;----------------------------------------------------------;
 LoadLevel9Data
 
@@ -660,24 +660,24 @@ LoadLevel9Data
     LD D, "0"
     LD E, "9"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################
@@ -717,7 +717,7 @@ LoadLevel9Data
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadLevel10Data                        ;
+;                   LoadLevel10Data                        ;
 ;----------------------------------------------------------;
 LoadLevel10Data
 
@@ -738,24 +738,24 @@ LoadLevel10Data
     LD D, "1"
     LD E, "0"
     PUSH DE
-    CALL fi.LoadLevelBgImage
+    CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemap 
+    CALL fi.LoadPlatformsTilemapFile 
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemap
+    CALL fi.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load tile map. DE is set to level number
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     ; ##########################################

@@ -5,14 +5,14 @@
     MODULE mmn
 
 ;----------------------------------------------------------;
-;                    #LoadMenuGameplay                     ;
+;                     LoadMenuGameplay                     ;
 ;----------------------------------------------------------;
 LoadMenuGameplay
 
     CALL _PreLoadMenu
 
     ; Load tiles with manual
-    CALL fi.LoadMenuGameplayTilemap
+    CALL fi.LoadMenuGameplayTilemapFile
     
     ; Load palette
     LD HL, db.menuGameplayBgPaletteAdr
@@ -21,7 +21,9 @@ LoadMenuGameplay
     CALL bp.LoadPalette
 
     ; Load background image
-    CALL fi.LoadMenuGameplayImage
+    LD D, "m"
+    LD E, "g"
+    CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -31,17 +33,22 @@ LoadMenuGameplay
     LD DE, gc.LoadMainMenu
     LD (mij.callbackFire), DE
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadMenuKeys                        ;
+;                      LoadMenuKeys                        ;
 ;----------------------------------------------------------;
 LoadMenuKeys
 
     CALL _PreLoadMenu
 
     ; Load tiles with manual
-    CALL fi.LoadMenuKeysTilemap
+    CALL fi.LoadMenuKeysTilemapFile
 
     ; Load palette
     LD HL, db.menuKeysBgPaletteAdr
@@ -50,7 +57,9 @@ LoadMenuKeys
     CALL bp.LoadPalette
 
     ; Load background image
-    CALL fi.LoadMenuKeysImage
+    LD D, "m"
+    LD E, "k"
+    CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -59,6 +68,11 @@ LoadMenuKeys
 
     LD DE, gc.LoadMainMenu
     LD (mij.callbackFire), DE
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
 
@@ -69,9 +83,13 @@ LoadMenuKeys
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                      #_PreLoadMenu                       ;
+;                       _PreLoadMenu                       ;
 ;----------------------------------------------------------;
 _PreLoadMenu
+
+    ; Music of
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
 
     LD A, ms.MENU_MANUAL
     CALL ms.SetMainState

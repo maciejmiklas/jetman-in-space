@@ -70,43 +70,56 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
     ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
 ;----------------------------------------------------------;
-;                        #LoadEffects                      ;
+;                     LoadMusicFile                        ;
 ;----------------------------------------------------------;
-LoadEffects
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.effectsFileName
-    CALL _CopyFileName
-
-    CALL dbs.SetupAyFxsBank
-
-    CALL _FileOpen
-    
-    LD IX, _RAM_SLOT6_STA_HC000
-    LD BC, dba.EFFECTS_FILE_SIZE
-    CALL _FileRead
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #LoadLevelIntroImage                     ;
-;----------------------------------------------------------;
-; The screen size is 320x256 (81920 bytes, 80KiB)
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadLevelIntroImage
+;  - A: song number from "assets/snd/xx.pt3"
+LoadMusicFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/...".
-    CALL dbs.SetupArraysBank
-    LD HL, dba.liBgFileName
-    PUSH HL
+    CALL dbs.SetupArraysBank                    ; Setup slot 7 to load arrays
+
+    CALL ut.NumTo99Str                          ; DE now contains ASCII of value from A
+
+    LD HL, dba.sndFileName
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
     LD IX, HL                                   ; Param for #_LoadImageToTempRam
-    ADD HL, dba.LI_BG_FILE_LEVEL_POS            ; Move HL to "assets/l"
+    ADD HL, dba.SND_NR_POS                      ; Move HL to ""assets/snd/"
+
     LD (HL), D                                  ; Set first number
     INC HL
     LD (HL), E                                  ; Set second number
     POP HL
 
+    CALL _CopyFileName
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupMusicBank                     ; Setup slot 7 to load music binary
+    LD IX, am.MUSIC_BIN_ADDR_HE000              ; Song bin takes whole bank
+    LD BC, _BANK_BYTES_D8192                    ; Read always 8KiB, this will read a whole song and some garbage
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               LoadLevelIntroImageFile                    ;
+;----------------------------------------------------------;
+; The screen size is 320x256 (81920 bytes, 80KiB)
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadLevelIntroImageFile
+
+    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/...".
+    CALL dbs.SetupArraysBank
+
+    LD HL, dba.liBgFileName
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
+    LD IX, HL                                   ; Param for #_LoadImageToTempRam
+    ADD HL, dba.LI_BG_FILE_LEVEL_POS            ; Move HL to "assets/"
+    LD (HL), D                                  ; Set first number
+    INC HL
+    LD (HL), E                                  ; Set second number
+    POP HL
     CALL _CopyFileName
 
     LD C, dba.LI_BG_FILE_IMG_POS
@@ -115,19 +128,20 @@ LoadLevelIntroImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #LoadLevelBgImage                     ;
+;                     LoadBgImageFile                      ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadLevelBgImage
+LoadBgImageFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/...." -> "assets/l35/....".
+    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
     CALL dbs.SetupArraysBank
+
     LD HL, dba.lbFileName
     PUSH HL
     LD IX, HL                                   ; Param for #_LoadImageToTempRam
-    ADD HL, dba.LB_FILE_LEVEL_POS               ; Move HL to "assets/l"
+    ADD HL, dba.LB_FILE_LEVEL_POS               ; Move HL to "assets/"
     LD (HL), D                                  ; Set first number.
     INC HL
     LD (HL), E                                  ; Set second number
@@ -141,29 +155,28 @@ LoadLevelBgImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #LoadPlatformsTilemap                    ;
+;               LoadPlatformsTilemapFile                   ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadPlatformsTilemap
+LoadPlatformsTilemapFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/tiles.map" -> "assets/l35/tiles.map".
+    ; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
     CALL dbs.SetupArraysBank
+
     LD HL, dba.plTileFileName
     PUSH HL
     LD IX, HL                                   ; Param for _FileOpen
-    ADD HL, dba.PL_FILE_LEVEL_POS               ; Move HL to "assets/l"
+    ADD HL, dba.PL_FILE_LEVEL_POS               ; Move HL to "assets/"
     LD (HL), D                                  ; Set first number
     INC HL
     LD (HL), E                                  ; Set second number
     POP HL
 
     CALL _CopyFileName
-
-    ; Open file.
     CALL _FileOpen
 
-    ; Read file.
+    ; Read file
     LD IX, ti.TI_MAP_RAM_H5B00
     LD BC, ti.TI_MAP_BYTES_D2560
     CALL _FileRead
@@ -171,15 +184,16 @@ LoadPlatformsTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #LoadSprites                      ;
+;                    LoadSpritesFile                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadSprites
+LoadSpritesFile
+
+    CALL dbs.SetupArraysBank
 
     ; Load first file
     PUSH DE
-    CALL dbs.SetupArraysBank
     LD HL, dba.sprTileFileName
     CALL _CopyFileName
 
@@ -210,13 +224,14 @@ LoadSprites
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #LoadRocketStarsTilemap                    ;
+;              LoadRocketStarsTilemapFile                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadRocketStarsTilemap
+LoadRocketStarsTilemapFile
 
     CALL dbs.SetupArraysBank
+
     LD HL, dba.stTilesFileName
     CALL _CopyFileName
 
@@ -226,13 +241,14 @@ LoadRocketStarsTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #LoadLevelIntroTilemap                    ;
+;               LoadLevelIntroTilemapFile                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadLevelIntroTilemap
+LoadLevelIntroTilemapFile
 
     CALL dbs.SetupArraysBank
+
     LD HL, dba.introTilesFileName
     CALL _CopyFileName
 
@@ -242,11 +258,12 @@ LoadLevelIntroTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #LoadMenuGameplayTilemap                   ;
+;              LoadMenuGameplayTilemapFile                 ;
 ;----------------------------------------------------------;
-LoadMenuGameplayTilemap
+LoadMenuGameplayTilemapFile
 
     CALL dbs.SetupArraysBank
+
     LD HL, dba.mmgTileFileName
     CALL _CopyFileName
 
@@ -261,12 +278,13 @@ LoadMenuGameplayTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadMenuKeysTilemap                    ;
+;                 LoadMenuKeysTilemapFile                  ;
 ;----------------------------------------------------------;
-LoadMenuKeysTilemap
+LoadMenuKeysTilemapFile
 
     ; Open file
     CALL dbs.SetupArraysBank
+
     LD HL, dba.mmkTileFileName
     CALL _CopyFileName
 
@@ -280,25 +298,12 @@ LoadMenuKeysTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadMenuMainImage                      ;
+;                  LoadMenuEasyImageFile                   ;
 ;----------------------------------------------------------;
-LoadMenuMainImage
+LoadMenuEasyImageFile
 
     CALL dbs.SetupArraysBank
-    LD HL, dba.menuMainBgFileName
-    CALL _CopyFileName
 
-    LD C, dba.MENU_MAIN_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #LoadMenuEasyImage                      ;
-;----------------------------------------------------------;
-LoadMenuEasyImage
-
-    CALL dbs.SetupArraysBank
     LD HL, dba.menuEasyBgFileName
     CALL _CopyFileName
 
@@ -308,71 +313,16 @@ LoadMenuEasyImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #LoadMenuHardImage                      ;
+;                 LoadMenuHardImageFile                    ;
 ;----------------------------------------------------------;
-LoadMenuHardImage
+LoadMenuHardImageFile
 
     CALL dbs.SetupArraysBank
+
     LD HL, dba.menuHardBgFileName
     CALL _CopyFileName
 
     LD C, dba.MENU_HARD_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #LoadMenuGameplayImage                   ;
-;----------------------------------------------------------;
-LoadMenuGameplayImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.menuGameplayBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.MENU_GAMEPLAY_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   #LoadGameOverImage                     ;
-;----------------------------------------------------------;
-LoadGameOverImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.gameOverBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.GAME_OVER_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 #LoadMenuScoreImage                      ;
-;----------------------------------------------------------;
-LoadMenuScoreImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.menuScoreBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.MENU_SCORE_BG_POS
-    CALL _LoadImageToTempRam
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  #LoadMenuKeysImage                      ;
-;----------------------------------------------------------;
-LoadMenuKeysImage
-
-    CALL dbs.SetupArraysBank
-    LD HL, dba.menuKeysBgFileName
-    CALL _CopyFileName
-
-    LD C, dba.MENU_KEYS_BG_POS
     CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
@@ -384,7 +334,7 @@ LoadMenuKeysImage
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_CopyFileName                       ;
+;                      _CopyFileName                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: Pointer to file name
@@ -401,7 +351,7 @@ _CopyFileName
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_LoadImageToTempRam                    ;
+;                   _LoadImageToTempRam                    ;
 ;----------------------------------------------------------;
 ; BMP 320x256 with 8bit palette (Gimp -> Image -> Mode -> Indexed)
 ; ./gfx2next -bitmap -preview -bitmap-y -pal-min .\bg.bmp
@@ -422,7 +372,7 @@ _LoadImageToTempRam
     ; Set the image part in the file name, for B=3  "...bg_0.nxi" -> "...bg_3.nxi"
     LD HL, fileName
     LD A, C
-    ADD HL, A                                   ; Move HL to "...l00/bg_"
+    ADD HL, A                                   ; Move HL to "...00/bg_"
     LD A, ASCII_O                               ; Map B to ASCII value 0 to 9
     ADD B
     LD (HL), A
@@ -431,7 +381,7 @@ _LoadImageToTempRam
     ; Load file into RAM
 
     ; Set bank number for slot 6, we will read file into it
-    LD A, dbs.BMA_ST_BANK_S6_D35
+    LD A, dbs.BMA_ST_BANK_S6_D73
     ADD B
     NEXTREG _MMU_REG_SLOT6_H56, A
 
@@ -454,7 +404,7 @@ _LoadImageToTempRam
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_Load16KTilemap                         ;
+;                   _Load16KTilemap                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
@@ -507,7 +457,7 @@ _Load16KTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_Prepare16KTilemapFile                    ;
+;                 _Prepare16KTilemapFile                   ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: Stars file number 0 for stars0.map, and 1 for stars1.map
@@ -518,20 +468,20 @@ _Prepare16KTilemapFile
 
     LD IX, fileName
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/stars_0.map" -> "assets/l35/stars_0.map"
+    ; Set the level number in the file name, DE="35" will give: "assets/00/stars_0.map" -> "assets/35/stars_0.map"
     LD HL, IX
-    ADD HL, dba.TI16K_FILE_LEVEL_POS            ; Move HL to "assets/l"
+    ADD HL, dba.TI16K_FILE_LEVEL_POS            ; Move HL to "assets/0"
     LD (HL), D                                  ; Set first number
     INC HL
     LD (HL), E                                  ; Set second number
 
-    ADD HL, dba.TI16K_FILE_NR_POS               ; Move HL to "assets/l35/stars_"
+    ADD HL, dba.TI16K_FILE_NR_POS               ; Move HL to "assets/35/stars_"
     LD (HL), A
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #_PrepareFileOpenForSprites                  ;
+;               _PrepareFileOpenForSprites                 ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: Sprites file number 0 for sprites0.spr, and 1 for sprites1.spr
@@ -540,26 +490,26 @@ _Prepare16KTilemapFile
 ;  - #fileName with correct name
 _PrepareFileOpenForSprites
 
-    ; Set the level number in the file name, DE="35" will give: "assets/l00/sprites_0.map" -> "assets/l35/sprites_0.map"
+    ; Set the level number in the file name, DE="35" will give: "assets/00/sprites_0.map" -> "assets/35/sprites_0.map"
     LD HL, fileName
     LD IX, HL                                   ; Param for _FileOpen
-    ADD HL, dba.SPR_FILE_LEVEL_POS              ; Move HL to "assets/l"
-    LD (HL), D                                  ; Set first number.
+    ADD HL, dba.SPR_FILE_LEVEL_POS              ; Move HL to "assets/"
+    LD (HL), D                                  ; Set first number
     INC HL
-    LD (HL), E                                  ; Set second number.
+    LD (HL), E                                  ; Set second number
 
-    ADD HL, dba.SPR_FILE_NR_POS                 ; Move HL to "assets/l35/sprites_"
+    ADD HL, dba.SPR_FILE_NR_POS                 ; Move HL to "assets/35/sprites_"
     LD (HL), A
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_FileRead                          ;
+;                       _FileRead                          ;
 ;----------------------------------------------------------;
 ; Read bytes from a file.
 ; Input:
-;  - IX: Address to load into.
-;  - BC: Number of bytes to read.
+;  - IX: Address to load into
+;  - BC: Number of bytes to read
 _FileRead
 
     LD A, (fileHandle)
@@ -570,7 +520,7 @@ _FileRead
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #_FileOpen                        ;
+;                         _FileOpen                        ;
 ;----------------------------------------------------------;
 _FileOpen
 
@@ -586,7 +536,7 @@ _FileOpen
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #_FileClose                        ;
+;                        _FileClose                        ;
 ;----------------------------------------------------------;
 _FileClose
     LD A, (fileHandle)
@@ -595,7 +545,7 @@ _FileClose
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #_IOError                         ;
+;                         _IOError                         ;
 ;----------------------------------------------------------;
 _IOError
     LD A, er.ERR_002

@@ -1,10 +1,10 @@
 ;----------------------------------------------------------;
-;                     Game Manual                          ;
+;                      Game Over                           ;
 ;----------------------------------------------------------;
     MODULE go
 
 ;----------------------------------------------------------;
-;                      #ShowGameOver                       ;
+;                       ShowGameOver                       ;
 ;----------------------------------------------------------;
 ShowGameOver
 
@@ -20,7 +20,9 @@ ShowGameOver
     CALL bp.LoadPalette
 
     ; Load background image
-    CALL fi.LoadGameOverImage
+    LD D, "g"
+    LD E, "o"
+    CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -29,6 +31,13 @@ ShowGameOver
 
     LD DE, mms.EnterNewScore
     LD (mij.callbackFire), DE
+
+    ; ##########################################
+    ; Music
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_GAME_OVER
+    CALL aml.LoadSong
+
 
     RET                                         ; ## END of the function ##
 
