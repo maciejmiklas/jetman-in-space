@@ -8,6 +8,9 @@
 
 I would like to give a shout-out to the following, without them, I would have been lost in space!
 * [Music by: Ilya Abrosimov](https://zxart.ee/eng/authors/e/ea/)
+
+Oleg Nikitin https://zxart.ee/eng/authors/n/nq/
+
 * [ZX Spectrum Next Assembly Developer Guide](https://github.com/tomaz/zx-next-dev-guide)
 * [Remy's ZX Spectrum Tools](https://zx.remysharp.com)
 * [DougieDoSource](https://github.com/robgmoran/DougieDoSource)
