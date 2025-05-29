@@ -11,7 +11,7 @@ todPalAddr              DW 0                    ; Pointer to current brightness 
 PAL2_BYTES_D512         = 512
 
 ;----------------------------------------------------------;
-;                     #NextTodPalette                      ;
+;                      NextTodPalette                      ;
 ;----------------------------------------------------------;
 NextTodPalette
     
@@ -30,7 +30,7 @@ NextTodPalette
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #PrevTodPalette                      ;
+;                      PrevTodPalette                      ;
 ;----------------------------------------------------------;
 PrevTodPalette
     
@@ -45,7 +45,7 @@ PrevTodPalette
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #PrevTodPaletteAddr                    ;
+;                    PrevTodPaletteAddr                    ;
 ;----------------------------------------------------------;
 PrevTodPaletteAddr
     
@@ -57,7 +57,7 @@ PrevTodPaletteAddr
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #LoadCurrentTodPalette                   ;
+;                  LoadCurrentTodPalette                   ;
 ;----------------------------------------------------------;
 LoadCurrentTodPalette
     
@@ -71,7 +71,7 @@ LoadCurrentTodPalette
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #CreateTodPalettes                       ;
+;                    CreateTodPalettes                     ;
 ;----------------------------------------------------------;
 ; Method called after setting: #palBytes and #palAdr
 CreateTodPalettes
@@ -83,7 +83,7 @@ CreateTodPalettes
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #ResetPaletteArrd                       ;
+;                   ResetPaletteArrd                       ;
 ;----------------------------------------------------------;
 ResetPaletteArrd
 
@@ -102,7 +102,7 @@ ResetPaletteArrd
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                 #_CreateTodPalettes                      ;
+;                  _CreateTodPalettes                      ;
 ;----------------------------------------------------------;
 ; This function creates up to 6 palettes for the transition from day to night from the palette given by HL.
 ; Palettes are stored in #todL2Palettes; each one has up to 512 bytes. #todPalAddr points to the first palette.
@@ -143,7 +143,7 @@ _CreateTodPalettes
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_VariablesSet                        ;
+;                     _VariablesSet                        ;
 ;----------------------------------------------------------;
 ; Method called after setting: #palBytes and #palAdr
 _VariablesSet
@@ -157,7 +157,7 @@ _VariablesSet
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #_NextBrightnessPalette                     ;
+;               _NextBrightnessPalette                     ;
 ;----------------------------------------------------------;
 ; Moves #todPalAddr to the next palette and copies the previous palette there
 _NextBrightnessPalette
@@ -177,7 +177,7 @@ _NextBrightnessPalette
     RET                                         ; ## END of the function ##
     
 ;----------------------------------------------------------;
-;                #_DecrementPaletteColors                  ;
+;                 _DecrementPaletteColors                  ;
 ;----------------------------------------------------------;
 ; This function will decrease palette brighteners given by #todPalAddr
 _DecrementPaletteColors
@@ -205,7 +205,7 @@ _DecrementPaletteColors
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_LoadTodPalette                      ;
+;                     _LoadTodPalette                      ;
 ;----------------------------------------------------------;
 _LoadTodPalette
 

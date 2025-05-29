@@ -16,7 +16,7 @@ callbackDown            DW _DummyFunction
 callbackFire            DW _DummyFunction
 
 ;----------------------------------------------------------;
-;                #JoystickInputLastLoop                    ;
+;                 JoystickInputLastLoop                    ;
 ;----------------------------------------------------------;
 JoystickInputLastLoop
 
@@ -44,7 +44,7 @@ JoystickInputLastLoop
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #ResetJoystick                       ;
+;                      ResetJoystick                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: User input delay
@@ -64,7 +64,7 @@ ResetJoystick
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #JoystickInput                        ;
+;                     JoystickInput                        ;
 ;----------------------------------------------------------;
 JoystickInput
 
@@ -212,7 +212,7 @@ JoystickInput
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                #_CanProcessJoystickInput                 ;
+;                 _CanProcessJoystickInput                 ;
 ;----------------------------------------------------------;
 ; Output:
 ;  A: _RET_YES_D1 or _RET_NO_D0
@@ -240,7 +240,7 @@ _CanProcessJoystickInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_DummyFunction                      ;
+;                      _DummyFunction                      ;
 ;----------------------------------------------------------;
 _DummyFunction
 

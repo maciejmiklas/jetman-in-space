@@ -1,32 +1,31 @@
 ;----------------------------------------------------------;
-;                      Main State                          ;
+;                   Vortex Tracker II                      ;
 ;----------------------------------------------------------;
-    MODULE ms
-
-GAME_ACTIVE             = 1
-GAME_PAUSE              = 2
-FLY_ROCKET              = 3
-LEVEL_INTRO             = 4
-MENU_MAIN               = 5
-MENU_MANUAL             = 6
-MENU_SCORE              = 7
-GAME_OVER               = 8
-
-mainState              DB MENU_MAIN
+    MODULE aml
+    
+; Counter for game music from assets\snd
+gameMusicCnt            DB 12
+GAME_MUSIC_MIN          = 1
+GAME_MUSIC_MAX          = 29
 
 ;----------------------------------------------------------;
-;                     SetMainState                         ;
+;                       NextGameSong                       ;
 ;----------------------------------------------------------;
-; Input:
-;  - A: The state.
-SetMainState
 
-    LD (mainState), A
+    ; Increase music counter, or overflow to min value
+    LD A, (gameMusicCnt)
+    CP GAME_MUSIC_MAX
+    JR NZ, .incMusicCnt
+    JR .afterMusicCnt
+    LD A, GAME_MUSIC_MIN
+.incMusicCnt
+    INC A
+.afterMusicCnt
+    LD (gameMusicCnt), A
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
-
     ENDMODULE

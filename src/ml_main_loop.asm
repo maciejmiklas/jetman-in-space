@@ -29,7 +29,7 @@ MainLoop
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_MainLoop000                        ;
+;                      _MainLoop000                        ;
 ;----------------------------------------------------------;
 _MainLoop000
 
@@ -47,7 +47,7 @@ _MainLoop000
     CALL dbs.SetupAyFxsBank
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing
     
-    CALL dbs.SetupVortexTrackerBank
+    CALL dbs.SetupMusicBank
     CALL av.MusicLoop
 
     CALL _MainLoop000OnActiveGame
@@ -59,7 +59,7 @@ _MainLoop000
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop000OnFlayRocket                  ;
+;                _MainLoop000OnFlayRocket                  ;
 ;----------------------------------------------------------;
 _MainLoop000OnFlayRocket
 
@@ -77,7 +77,7 @@ _MainLoop000OnFlayRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop000OnActiveGame                  ;
+;                _MainLoop000OnActiveGame                  ;
 ;----------------------------------------------------------;
 _MainLoop000OnActiveGame
 
@@ -129,7 +129,7 @@ _MainLoop000OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_MainLoop000OnNotInGame                  ;
+;                 _MainLoop000OnNotInGame                  ;
 ;----------------------------------------------------------;
 _MainLoop000OnNotInGame
 
@@ -144,7 +144,7 @@ _MainLoop000OnNotInGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #_MainLoop000OnActiveMenuMain               ;
+;               _MainLoop000OnActiveMenuMain               ;
 ;----------------------------------------------------------;
 _MainLoop000OnActiveMenuMain
 
@@ -160,7 +160,7 @@ _MainLoop000OnActiveMenuMain
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #_MainLoop000OnActiveLevelIntro              ;
+;              _MainLoop000OnActiveLevelIntro              ;
 ;----------------------------------------------------------;
 _MainLoop000OnActiveLevelIntro
 
@@ -175,7 +175,7 @@ _MainLoop000OnActiveLevelIntro
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop000OnDisabledJoy                 ;
+;                _MainLoop000OnDisabledJoy                 ;
 ;----------------------------------------------------------;
 _MainLoop000OnDisabledJoy
 
@@ -197,7 +197,7 @@ _MainLoop000OnDisabledJoy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #_MainLoop002                      ;
+;                        _MainLoop002                      ;
 ;----------------------------------------------------------;
 _MainLoop002
 
@@ -225,7 +225,7 @@ _MainLoop002
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop002OnActiveGame                  ;
+;                _MainLoop002OnActiveGame                  ;
 ;----------------------------------------------------------;
 _MainLoop002OnActiveGame
 
@@ -246,7 +246,7 @@ _MainLoop002OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_MainLoop004                        ;
+;                      _MainLoop004                        ;
 ;----------------------------------------------------------;
 _MainLoop004
 
@@ -275,7 +275,7 @@ _MainLoop004
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #_MainLoop004OnRocketExplosion               ;
+;              _MainLoop004OnRocketExplosion               ;
 ;----------------------------------------------------------;
 _MainLoop004OnRocketExplosion
     ; Is rocket exploding ?
@@ -289,7 +289,7 @@ _MainLoop004OnRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_MainLoop004OnActiveGame                 ;
+;                 _MainLoop004OnActiveGame                 ;
 ;----------------------------------------------------------;
 _MainLoop004OnActiveGame
 
@@ -311,7 +311,7 @@ _MainLoop004OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_MainLoop006                       ;
+;                       _MainLoop006                       ;
 ;----------------------------------------------------------;
 _MainLoop006
 
@@ -338,7 +338,7 @@ _MainLoop006
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_MainLoop008                        ;
+;                      _MainLoop008                        ;
 ;----------------------------------------------------------;
 _MainLoop008
 
@@ -369,7 +369,7 @@ _MainLoop008
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;            #_MainLoop008OnActiveScoreMenu                ;
+;             _MainLoop008OnActiveScoreMenu                ;
 ;----------------------------------------------------------;
 _MainLoop008OnActiveScoreMenu
 
@@ -383,7 +383,7 @@ _MainLoop008OnActiveScoreMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #_MainLoop008OnFlayingRocket                ;
+;               _MainLoop008OnFlayingRocket                ;
 ;----------------------------------------------------------;
 _MainLoop008OnFlayingRocket
     ; Return if rocket is not flying
@@ -399,7 +399,7 @@ _MainLoop008OnFlayingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_MainLoop008OnActiveGame                 ;
+;                 _MainLoop008OnActiveGame                 ;
 ;----------------------------------------------------------;
 _MainLoop008OnActiveGame
 
@@ -427,7 +427,7 @@ _MainLoop008OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;         #_MainLoop008OnActiveGameOrFlyingRocket          ;
+;          _MainLoop008OnActiveGameOrFlyingRocket          ;
 ;----------------------------------------------------------;
 _MainLoop008OnActiveGameOrFlyingRocket
 
@@ -449,7 +449,7 @@ _MainLoop008OnActiveGameOrFlyingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_MainLoop010                        ;
+;                      _MainLoop010                        ;
 ;----------------------------------------------------------;
 _MainLoop010
 
@@ -478,7 +478,7 @@ _MainLoop010
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;            #_MainLoop010OnActiveFlyingRocket             ;
+;             _MainLoop010OnActiveFlyingRocket             ;
 ;----------------------------------------------------------;
 _MainLoop010OnActiveFlyingRocket
 
@@ -493,7 +493,7 @@ _MainLoop010OnActiveFlyingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_MainLoop010OnActiveGame                 ;
+;                 _MainLoop010OnActiveGame                 ;
 ;----------------------------------------------------------;
 _MainLoop010OnActiveGame
 
@@ -514,7 +514,7 @@ _MainLoop010OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_MainLoop015                        ;
+;                      _MainLoop015                        ;
 ;----------------------------------------------------------;
 _MainLoop015
 
@@ -535,7 +535,7 @@ _MainLoop015
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_MainLoop020                       ;
+;                       _MainLoop020                       ;
 ;----------------------------------------------------------;
 _MainLoop020
 
@@ -558,7 +558,7 @@ _MainLoop020
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_MainLoop020nFlyingRocket                 ;
+;                _MainLoop020nFlyingRocket                 ;
 ;----------------------------------------------------------;
 _MainLoop020nFlyingRocket
 
@@ -573,7 +573,7 @@ _MainLoop020nFlyingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_MainLoop040                       ;
+;                       _MainLoop040                       ;
 ;----------------------------------------------------------;
 _MainLoop040
 
@@ -596,7 +596,7 @@ _MainLoop040
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_MainLoop040OnActiveGame                 ;
+;                 _MainLoop040OnActiveGame                 ;
 ;----------------------------------------------------------;
 _MainLoop040OnActiveGame
 
@@ -615,7 +615,7 @@ _MainLoop040OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_MainLoop080                       ;
+;                       _MainLoop080                       ;
 ;----------------------------------------------------------;
 _MainLoop080
 
@@ -637,7 +637,7 @@ _MainLoop080
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #_LastLoop                        ;
+;                         _LastLoop                        ;
 ;----------------------------------------------------------;
 _LastLoop
 

@@ -30,7 +30,7 @@ MENU_EL_MIN             = MENU_EL_START
 MENU_EL_MAX             = MENU_EL_DIFFICULTY
 
 ;----------------------------------------------------------;
-;                     #LoadMainMenu                        ;
+;                      LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
 
@@ -101,7 +101,7 @@ LoadMainMenu
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_LoadMenuEasy                       ;
+;                      _LoadMenuEasy                       ;
 ;----------------------------------------------------------;
 _LoadMenuEasy
  
@@ -132,7 +132,7 @@ _LoadMenuEasy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_LoadMenuNormal                     ;
+;                      _LoadMenuNormal                     ;
 ;----------------------------------------------------------;
 _LoadMenuNormal
 
@@ -165,7 +165,7 @@ _LoadMenuNormal
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_LoadMenuHard                       ;
+;                      _LoadMenuHard                       ;
 ;----------------------------------------------------------;
 _LoadMenuHard
  
@@ -196,7 +196,7 @@ _LoadMenuHard
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_PrintMenu                         ;
+;                       _PrintMenu                         ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to #MENU
@@ -210,7 +210,7 @@ _PrintMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_SetIXToActiveMenu                     ;
+;                   _SetIXToActiveMenu                     ;
 ;----------------------------------------------------------;
 _SetIXToActiveMenu
     CALL dbs.SetupArraysBank
@@ -228,7 +228,7 @@ _SetIXToActiveMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_UpdateSelection                       ;
+;                   _UpdateSelection                       ;
 ;----------------------------------------------------------;
 _UpdateSelection
     
@@ -245,7 +245,7 @@ _UpdateSelection
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_UpdateJetPostion                       ;
+;                  _UpdateJetPostion                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to currently selected #MENU
@@ -263,7 +263,7 @@ _UpdateJetPostion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_LoadStaticMenuText                      ;
+;                 _LoadStaticMenuText                      ;
 ;----------------------------------------------------------;
 _LoadStaticMenuText
 

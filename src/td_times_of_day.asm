@@ -17,7 +17,7 @@ stepDuration            DB TOD_DAY_DURATION     ; Counts toward 0, when reached,
 stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_NIGHT_DAY
 
 ;----------------------------------------------------------;
-;                    #ResetTimeOfDay                       ;
+;                     ResetTimeOfDay                       ;
 ;----------------------------------------------------------;
 ResetTimeOfDay
 
@@ -33,7 +33,7 @@ ResetTimeOfDay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #NextTimeOfDayTrigger                    ;
+;                  NextTimeOfDayTrigger                    ;
 ;----------------------------------------------------------;
 NextTimeOfDayTrigger
 
@@ -78,7 +78,7 @@ NextTimeOfDayTrigger
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                  #_NextStepFullDay                       ;
+;                   _NextStepFullDay                       ;
 ;----------------------------------------------------------;
 _NextStepFullDay
 
@@ -96,7 +96,7 @@ _NextStepFullDay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_NextStepDayToNight                     ;
+;                  _NextStepDayToNight                     ;
 ;----------------------------------------------------------;
 _NextStepDayToNight
 
@@ -139,7 +139,7 @@ _NextStepDayToNight
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_NextStepNightToDay                      ;
+;                 _NextStepNightToDay                      ;
 ;----------------------------------------------------------;
 _NextStepNightToDay
 

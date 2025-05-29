@@ -12,7 +12,7 @@ imageBank               DB 0                    ; Bank containing the image
 BM_16KBANK_D9           = 9                     ; 16K bank 9 = 8k bank 18
 
 ;----------------------------------------------------------;
-;                    #CopyImageData                        ;
+;                     CopyImageData                        ;
 ;----------------------------------------------------------;
 ; Copies image data from temp RAM into screen memory. Copies data from slot 6 to 7. Slot 6 points to the bank containing the source of the 
 ; image, and slot 7 points to the bank that contains display data (NEXTREG _DC_REG_L2_BANK_H12).
@@ -54,7 +54,7 @@ CopyImageData
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #CreateEmptyImageBank                   ;
+;                   CreateEmptyImageBank                   ;
 ;----------------------------------------------------------;
 ; Copies 10x bank with black color over displayed image
 CreateEmptyImageBank
@@ -80,7 +80,7 @@ CreateEmptyImageBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #HideImage                        ;
+;                         HideImage                        ;
 ;----------------------------------------------------------;
 ; Copies 10x bank with black color over displayed image
 HideImage
@@ -98,7 +98,7 @@ HideImage
     LD DE, _RAM_SLOT6_STA_HC000 : LD (ut.dmaPortAAddress), DE
     LD DE, _RAM_SLOT7_STA_HE000 : LD (ut.dmaPortBAddress), DE
     
-    LD D, dbs.EMPTY_IMG_S6_D86                  ; Bank containing just black color
+    LD D, dbs.EMPTY_IMG_S6_D85                  ; Bank containing just black color
     LD E, dbs.BMB_ST_BANK_S7_D18                ; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
 
     NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
@@ -128,7 +128,7 @@ HideImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #HideImageLine                       ;
+;                      HideImageLine                       ;
 ;----------------------------------------------------------;
 ; Replaces horizontal line of the image with transparent color.
 ; Input:
@@ -167,7 +167,7 @@ HideImageLine
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #ReplaceImageLine                      ;
+;                    ReplaceImageLine                      ;
 ;----------------------------------------------------------;
 ; Replaces the line of the displayed layer 2 image with the corresponding line of the given image.
 ; Input:

@@ -41,7 +41,7 @@ tileChar                DB ASCII_A              ; Currently visible character fr
 scoreLine               DB $FF                  ; Score line where user enters the name, 1 - first place, 9 - last place
 
 ;----------------------------------------------------------;
-;                     #EnterNewScore                       ;
+;                      EnterNewScore                       ;
 ;----------------------------------------------------------;
 EnterNewScore
 
@@ -58,7 +58,7 @@ EnterNewScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #LoadMenuScore                       ;
+;                      LoadMenuScore                       ;
 ;----------------------------------------------------------;
 LoadMenuScore
 
@@ -71,7 +71,7 @@ LoadMenuScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #AnimateCursor                      ;
+;                       AnimateCursor                      ;
 ;----------------------------------------------------------;
 AnimateCursor
 
@@ -93,7 +93,7 @@ AnimateCursor
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                 #_CalculateScoreLine                     ;
+;                  _CalculateScoreLine                     ;
 ;----------------------------------------------------------;
 ; Output:
 ;  A: Contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
@@ -163,7 +163,7 @@ _CalculateScoreLine
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_SetupMenuScore                      ;
+;                     _SetupMenuScore                      ;
 ;----------------------------------------------------------;
 _SetupMenuScore
 
@@ -219,7 +219,7 @@ _SetupMenuScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #_JoyFire                         ;
+;                         _JoyFire                         ;
 ;----------------------------------------------------------;
 _JoyFire
 
@@ -250,7 +250,7 @@ _JoyFire
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #_JoyDown                         ;
+;                         _JoyDown                         ;
 ;----------------------------------------------------------;
 _JoyDown
 
@@ -281,7 +281,7 @@ _JoyDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         #_JoyUp                          ;
+;                          _JoyUp                          ;
 ;----------------------------------------------------------;
 _JoyUp
 
@@ -312,7 +312,7 @@ _JoyUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #_JoyLeft                          ;
+;                        _JoyLeft                          ;
 ;----------------------------------------------------------;
 _JoyLeft
 
@@ -338,7 +338,7 @@ _JoyLeft
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #_JoyRight                         ;
+;                        _JoyRight                         ;
 ;----------------------------------------------------------;
 _JoyRight
 
@@ -364,7 +364,7 @@ _JoyRight
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_SetScoreToReadOnly                     ;
+;                  _SetScoreToReadOnly                     ;
 ;----------------------------------------------------------;
 _SetScoreToReadOnly
 
@@ -397,7 +397,7 @@ _SetScoreToReadOnly
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_UpdateCursor                        ;
+;                     _UpdateCursor                        ;
 ;----------------------------------------------------------;
 _UpdateCursor
 
@@ -447,7 +447,7 @@ _UpdateCursor
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_PrintWholeScore                     ;
+;                     _PrintWholeScore                     ;
 ;----------------------------------------------------------;
 ; Prints structure from #dba.menuScore
 _PrintWholeScore
@@ -467,7 +467,7 @@ _PrintWholeScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_PrintScoreLine                       ;
+;                    _PrintScoreLine                       ;
 ;----------------------------------------------------------;
 ; Remember to "CALL dbs.SetupArraysBank"
 ; Input:
@@ -521,7 +521,7 @@ _PrintScoreLine
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_LineToIX                          ;
+;                       _LineToIX                          ;
 ;----------------------------------------------------------;
 ; Input:
 ;  A: Score line in #dba.menuScore, 0 (first entry in #dba.menuScore) to 9 (bottom, lowest score) inklusive
@@ -539,7 +539,7 @@ _LineToIX
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_StoreNewScore                        ;
+;                    _StoreNewScore                        ;
 ;----------------------------------------------------------;
 ; Store the last user's high score into #dba.menuScore, position is given by #scoreLine
 _StoreNewScore
@@ -603,7 +603,7 @@ _StoreNewScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_SetDeToEnterTiRam                     ;
+;                   _SetDeToEnterTiRam                     ;
 ;----------------------------------------------------------;
 ; Output:
 ;  DE:  Points to the RAM position when enter-character should be printed. This is the end of the active score line.

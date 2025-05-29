@@ -77,7 +77,7 @@ BAR_ICON_PAL           = $00
 DROP_MARGX_D8           = 8
 
 ;----------------------------------------------------------;
-;                       #SetupRocket                       ;
+;                        SetupRocket                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: X coordinate for rocket assembly
@@ -90,7 +90,7 @@ SetupRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #AssemblyRocketForDebug                    ;
+;                AssemblyRocketForDebug                    ;
 ;----------------------------------------------------------;
 AssemblyRocketForDebug
     CALL dbs.SetupArraysBank
@@ -123,7 +123,7 @@ AssemblyRocketForDebug
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #StartRocketAssembly                    ;
+;                   StartRocketAssembly                    ;
 ;----------------------------------------------------------;
 StartRocketAssembly
     CALL dbs.SetupArraysBank
@@ -134,7 +134,7 @@ StartRocketAssembly
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #ResetAndDisableRocket                    ;
+;                 ResetAndDisableRocket                    ;
 ;----------------------------------------------------------;
 ResetAndDisableRocket
     CALL dbs.SetupArraysBank
@@ -168,7 +168,7 @@ ResetAndDisableRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #UpdateRocketOnJetmanMove                 ;
+;                 UpdateRocketOnJetmanMove                 ;
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
     CALL dbs.SetupArraysBank
@@ -180,7 +180,7 @@ UpdateRocketOnJetmanMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #IsFuelDeployment                    ;
+;                      IsFuelDeployment                    ;
 ;----------------------------------------------------------;
 ; Output: CF == 1 if still assembling rocket (#rocketElementCnt < 4)
 IsFuelDeployment
@@ -191,7 +191,7 @@ IsFuelDeployment
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #CheckHitTank                        ;
+;                      CheckHitTank                        ;
 ;----------------------------------------------------------;
 ; Checks falling tank for collision with leaser beam.
 CheckHitTank
@@ -252,7 +252,7 @@ CheckHitTank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #AnimateTankExplode                     ;
+;                   AnimateTankExplode                     ;
 ;----------------------------------------------------------;
 AnimateTankExplode
     CALL dbs.SetupArraysBank
@@ -300,7 +300,7 @@ AnimateTankExplode
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;              #ResetCarryingRocketElement                 ;
+;               ResetCarryingRocketElement                 ;
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
     CALL dbs.SetupArraysBank
@@ -315,7 +315,7 @@ ResetCarryingRocketElement
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;              #RocketElementFallsForPickup                ;
+;               RocketElementFallsForPickup                ;
 ;----------------------------------------------------------;
 RocketElementFallsForPickup
     CALL dbs.SetupArraysBank
@@ -352,7 +352,7 @@ RocketElementFallsForPickup
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #UpdateElementPosition                    ;
+;                 UpdateElementPosition                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Current #RO pointer
@@ -380,7 +380,7 @@ UpdateElementPosition
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #BlinkRocketReady                      ;
+;                    BlinkRocketReady                      ;
 ;----------------------------------------------------------;
 BlinkRocketReady
     CALL dbs.SetupArraysBank
@@ -409,7 +409,7 @@ BlinkRocketReady
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #RocketElementFallsForAssembly               ;
+;              RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly
     CALL dbs.SetupArraysBank
@@ -472,7 +472,7 @@ RocketElementFallsForAssembly
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #DropNextRocketElement                   ;
+;                  DropNextRocketElement                   ;
 ;----------------------------------------------------------;
 DropNextRocketElement
     CALL dbs.SetupArraysBank
@@ -537,7 +537,7 @@ DropNextRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #MoveIXtoGivenRocketElement               ;
+;                 MoveIXtoGivenRocketElement               ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: rocket element from 1 to 6
@@ -555,7 +555,7 @@ MoveIXtoGivenRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #UpdateRocketSpritePattern                 ;
+;                UpdateRocketSpritePattern                 ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Current #RO pointer
@@ -575,7 +575,7 @@ UpdateRocketSpritePattern
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #RemoveRocketElement                   ;
+;                   RemoveRocketElement                   ;
 ;----------------------------------------------------------;
 RemoveRocketElement
 
@@ -602,7 +602,7 @@ RemoveRocketElement
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;             #_SetIXtoCurrentRocketElement                ;
+;              _SetIXtoCurrentRocketElement                ;
 ;----------------------------------------------------------;
 ; Set IX to current #rocket postion
 _SetIXtoCurrentRocketElement
@@ -618,7 +618,7 @@ _SetIXtoCurrentRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_PickupRocketElement                    ;
+;                  _PickupRocketElement                    ;
 ;----------------------------------------------------------;
 _PickupRocketElement
 
@@ -668,7 +668,7 @@ _PickupRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_MoveWithJetman                       ;
+;                    _MoveWithJetman                       ;
 ;----------------------------------------------------------;
 ; Move the element to the current Jetman's position
 _MoveWithJetman
@@ -697,7 +697,7 @@ _MoveWithJetman
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_JetmanDropsRocketElement                ;
+;                 _JetmanDropsRocketElement                ;
 ;----------------------------------------------------------;
 _JetmanDropsRocketElement
 
@@ -734,7 +734,7 @@ _JetmanDropsRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_CarryRocketElement                    ;
+;                   _CarryRocketElement                    ;
 ;----------------------------------------------------------;
 _CarryRocketElement
 
@@ -750,7 +750,7 @@ _CarryRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_ResetRocketElement                      ;
+;                 _ResetRocketElement                      ;
 ;----------------------------------------------------------;
 _ResetRocketElement
 
@@ -767,7 +767,7 @@ _ResetRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_BoardRocket                         ;
+;                     _BoardRocket                         ;
 ;----------------------------------------------------------;
 _BoardRocket
     CALL dbs.SetupArraysBank
@@ -798,7 +798,7 @@ _BoardRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_UpdateFuelProgressBar                   ;
+;                 _UpdateFuelProgressBar                   ;
 ;----------------------------------------------------------;
 _UpdateFuelProgressBar
 
@@ -851,7 +851,7 @@ _UpdateFuelProgressBar
     RET                                         ; ## END of the function #
 
 ;----------------------------------------------------------;
-;                   #_ShowHeatBarIcon                      ;
+;                    _ShowHeatBarIcon                      ;
 ;----------------------------------------------------------;
 _ShowHeatBarIcon
 

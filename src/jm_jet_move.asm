@@ -53,7 +53,7 @@ JoyMoveUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #JoyMoveRight                        ;
+;                      JoyMoveRight                        ;
 ;----------------------------------------------------------;
 JoyMoveRight
 
@@ -92,7 +92,7 @@ JoyMoveRight
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JoyMoveLeft                        ;
+;                       JoyMoveLeft                        ;
 ;----------------------------------------------------------;
 JoyMoveLeft
 
@@ -131,7 +131,7 @@ JoyMoveLeft
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JoyMoveDown                        ;
+;                       JoyMoveDown                        ;
 ;----------------------------------------------------------;
 JoyMoveDown
 
@@ -186,7 +186,7 @@ JoyMoveDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #JoyMoveDownRelease                      ;
+;                  JoyMoveDownRelease                      ;
 ;----------------------------------------------------------;
 JoyMoveDownRelease
 
@@ -195,7 +195,7 @@ JoyMoveDownRelease
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #JoystickInputProcessed                    ;
+;                JoystickInputProcessed                    ;
 ;----------------------------------------------------------;
 ; It gets executed as a last procedure after the input has been processed, regardless of whether there was movement, or not
 JoystickInputProcessed
@@ -236,7 +236,7 @@ JoystickInputProcessed
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    #_JoyCntEnabled                       ;
+;                     _JoyCntEnabled                       ;
 ;----------------------------------------------------------;
 ; Disable joystick and, therefore, control over the Jetman.
 ; Output:
@@ -284,7 +284,7 @@ _JoyCntEnabled
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #_JoyJetpackOverheatSlowdown                 ;
+;              _JoyJetpackOverheatSlowdown                 ;
 ;----------------------------------------------------------;
 ; Slow down joystick input and, therefore, the speed of Jetman's movement when jetpack has overheated.
 ; Output:
@@ -317,7 +317,7 @@ _JoyJetpackOverheatSlowdown
 extraMove   DB 0
 
 ;----------------------------------------------------------;
-;                    #_JoystickMoves                       ;
+;                     _JoystickMoves                       ;
 ;----------------------------------------------------------;
 ; Method gets called on any joystick movement (only real key press), but not fire pressed.
 _JoystickMoves
@@ -349,7 +349,7 @@ _JoystickMoves
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_StandToWalk                         ; 
+;                     _StandToWalk                         ; 
 ;----------------------------------------------------------;
 ; Transition from standing/landing on ground to walking
 _StandToWalk
@@ -373,7 +373,7 @@ _StandToWalk
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_CanJetMove                         ;
+;                      _CanJetMove                         ;
 ;----------------------------------------------------------;
 ; Output:
 ;   A containing one of the values:

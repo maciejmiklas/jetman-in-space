@@ -5,8 +5,6 @@
 
 ; Before using it call #dbs.SetupStarsBank
 
-    MMU _RAM_SLOT7, dbs.ST_BANK_S7_D28
-    ORG _RAM_SLOT7_STA_HE000
 starsBankStart
 
 starsData1

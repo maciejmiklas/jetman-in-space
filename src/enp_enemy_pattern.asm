@@ -111,7 +111,7 @@ DEC_MOVE_DELAY          = %0001'0000
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
 ;----------------------------------------------------------;
-;                    #CopyEnpsToEnpMovePatternEnemies                        ;
+;         CopyEnpsToEnpMovePatternEnemies                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - IX: Pointer to #ENPS array
@@ -133,7 +133,7 @@ CopyEnpsToEnp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #ResetEnp                           ;
+;                       ResetEnp                           ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - IY: Pointer to #ENP array.
@@ -154,7 +154,7 @@ ResetEnp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #ResetPatternEnemies                    ;
+;                   ResetPatternEnemies                    ;
 ;----------------------------------------------------------;
 ; Resets #sr.SPR and linked #ENP
 ; Input:
@@ -184,7 +184,7 @@ ResetPatternEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #AnimatePatternEnemies                    ;
+;                 AnimatePatternEnemies                    ;
 ;----------------------------------------------------------;
 AnimatePatternEnemies
 
@@ -207,7 +207,7 @@ AnimatePatternEnemies
 
 
 ;----------------------------------------------------------;
-;               #KillFewPatternEnemies                     ;
+;                  KillFewPatternEnemies                   ;
 ;----------------------------------------------------------;
 KillFewPatternEnemies
 
@@ -221,7 +221,7 @@ KillFewPatternEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #KillOnePatternEnemy                     ;
+;                  KillOnePatternEnemy                     ;
 ;----------------------------------------------------------;
 KillOnePatternEnemy
 
@@ -244,7 +244,7 @@ KillOnePatternEnemy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #HidePatternEnemies                      ;
+;                  HidePatternEnemies                      ;
 ;----------------------------------------------------------;
 HidePatternEnemies
 
@@ -267,7 +267,7 @@ HidePatternEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #MovePatternEnemies                      ;
+;                  MovePatternEnemies                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to array #sr.SPR
@@ -344,7 +344,7 @@ MovePatternEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #RespawnPatternEnemy                      ;
+;                 RespawnPatternEnemy                      ;
 ;----------------------------------------------------------;
 ; Respawn single or formation
 ; Input
@@ -442,7 +442,7 @@ RespawnPatternEnemy
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     #_LoadMoveDelay                      ;
+;                      _LoadMoveDelay                      ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IY:    Pointer to #ENP holding data for single sprite
@@ -459,7 +459,7 @@ _LoadMoveDelay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_MoveEnemyX                          ;
+;                     _MoveEnemyX                          ;
 ;----------------------------------------------------------;
 ; Move enemy one step left or right
 ; Input
@@ -502,7 +502,7 @@ _MoveEnemyX
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #_MoveEnemy                         ;
+;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:    Pointer to #SPR holding data for single sprite that will be moved
@@ -683,7 +683,7 @@ _MoveEnemy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_LoadCurrentMoveStep                    ;
+;                  _LoadCurrentMoveStep                    ;
 ;----------------------------------------------------------;
 ; Load HL that points to the current move pattern
 ; Input
@@ -700,7 +700,7 @@ _LoadCurrentMoveStep
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_RestartMovePattern                     ;
+;                  _RestartMovePattern                     ;
 ;----------------------------------------------------------;
 ; This method resets the move pattern (#ENP) so animation can start from the first move pattern. It does not modify #SPR.
 ; Input
@@ -738,7 +738,7 @@ _RestartMovePattern
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_SetDelayCnt                        ;
+;                      _SetDelayCnt                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: Delay counter from configuration.

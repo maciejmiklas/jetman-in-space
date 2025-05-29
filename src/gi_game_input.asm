@@ -4,7 +4,7 @@
     MODULE gi
 
 ;----------------------------------------------------------;
-;                    #ResetKeysState                       ;
+;                     ResetKeysState                       ;
 ;----------------------------------------------------------;
 ResetKeysState
 
@@ -20,7 +20,7 @@ ResetKeysState
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #GameJoystickInput                      ;
+;                   GameJoystickInput                      ;
 ;----------------------------------------------------------;
 GameJoystickInput
 
@@ -117,7 +117,7 @@ GameJoystickInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #GameKeyboardInput                     ;
+;                    GameKeyboardInput                     ;
 ;----------------------------------------------------------;
 GameKeyboardInput
 

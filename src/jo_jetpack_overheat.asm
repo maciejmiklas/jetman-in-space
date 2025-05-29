@@ -37,7 +37,7 @@ BAR_ICON_RAM_START     = BAR_RAM_START - 2
 BAR_ICON_PAL           = $00
 
 ;----------------------------------------------------------;
-;                 #AnimateJetpackOverheat                  ;
+;                  AnimateJetpackOverheat                  ;
 ;----------------------------------------------------------;
 ; Replace last two tiles in heat bar for blinking effect: _BAR_RED_A1_SPR,_BAR_RED_A2_SPR -> _BAR_RED_B1_SPR,_BAR_RED_B2_SPR
 AnimateJetpackOverheat
@@ -76,7 +76,7 @@ AnimateJetpackOverheat
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #ResetJetpackOverheating                 ;
+;                  ResetJetpackOverheating                 ;
 ;----------------------------------------------------------;
 ResetJetpackOverheating
 
@@ -92,7 +92,7 @@ ResetJetpackOverheating
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #UpdateJetpackOverheating                 ;
+;                 UpdateJetpackOverheating                 ;
 ;----------------------------------------------------------;
 UpdateJetpackOverheating
 
@@ -124,7 +124,7 @@ UpdateJetpackOverheating
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    #_JetpackTempUp                       ;
+;                     _JetpackTempUp                       ;
 ;----------------------------------------------------------;
 _JetpackTempUp
 
@@ -185,7 +185,7 @@ _JetpackTempUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_JetpackTempDown                      ;
+;                    _JetpackTempDown                      ;
 ;----------------------------------------------------------;
 _JetpackTempDown
 
@@ -234,7 +234,7 @@ _JetpackTempDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_ShowHeatBarIcon                      ;
+;                    _ShowHeatBarIcon                      ;
 ;----------------------------------------------------------;
 _ShowHeatBarIcon
 
@@ -247,7 +247,7 @@ _ShowHeatBarIcon
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_UpdateUiHeatBar                      ;
+;                    _UpdateUiHeatBar                      ;
 ;----------------------------------------------------------;
 _UpdateUiHeatBar
 

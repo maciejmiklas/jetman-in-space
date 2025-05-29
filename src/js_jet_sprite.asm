@@ -37,7 +37,7 @@ SPR_STATE_SHOW          = 1
 sprState                DB SPR_STATE_SHOW
 
 ;----------------------------------------------------------;
-;             #UpdateJetSpritePositionRotation             ;
+;              UpdateJetSpritePositionRotation             ;
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation
 
@@ -90,7 +90,7 @@ UpdateJetSpritePositionRotation
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #ChangeJetSpritePattern                   ;
+;                 ChangeJetSpritePattern                   ;
 ;----------------------------------------------------------;
 ; Switches immediately to the given animation, breaking the currently running one.
 ; Input:
@@ -116,7 +116,7 @@ ChangeJetSpritePattern
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #AnimateJetSprite                       ;
+;                   AnimateJetSprite                       ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
 AnimateJetSprite
@@ -212,7 +212,7 @@ AnimateJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #BlinkJetSprite                       ;
+;                     BlinkJetSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
 ; - A:  Flip Flop counter, ie: #counter002FliFLop
@@ -233,7 +233,7 @@ BlinkJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #ShowJetSprite                       ;
+;                      ShowJetSprite                       ;
 ;----------------------------------------------------------;
 ShowJetSprite
 
@@ -246,7 +246,7 @@ ShowJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #HideJetSprite                       ;
+;                      HideJetSprite                       ;
 ;----------------------------------------------------------;
 HideJetSprite
 
@@ -259,7 +259,7 @@ HideJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #ChangeJetSpriteOnFlyDown                 ;
+;                 ChangeJetSpriteOnFlyDown                 ;
 ;----------------------------------------------------------;
 ChangeJetSpriteOnFlyDown
 
@@ -275,7 +275,7 @@ ChangeJetSpriteOnFlyDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #ChangeJetSpriteOnFlyUp                    ;
+;                ChangeJetSpriteOnFlyUp                    ;
 ;----------------------------------------------------------;
 ChangeJetSpriteOnFlyUp
 
@@ -296,7 +296,7 @@ ChangeJetSpriteOnFlyUp
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                 #_ShowOrHideJetSprite                    ;
+;                  _ShowOrHideJetSprite                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE

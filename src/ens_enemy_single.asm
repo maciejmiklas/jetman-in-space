@@ -16,7 +16,7 @@ NEXT_RESP_DEL           = 3
 nextRespDel             DB NEXT_RESP_DEL
 
 ;----------------------------------------------------------;
-;                  #MoveSingleEnemies                      ;
+;                   MoveSingleEnemies                      ;
 ;----------------------------------------------------------;
 MoveSingleEnemies
 
@@ -29,7 +29,7 @@ MoveSingleEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #SetupSingleEnemies                     ;
+;                   SetupSingleEnemies                     ;
 ;----------------------------------------------------------;
 ; Resets single enemies and loads given #enp.ENPS array into #enp.ENP and #sr.SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
 ; Input:
@@ -100,7 +100,7 @@ SetupSingleEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #RespawnNextSingleEnemy                   ;
+;                 RespawnNextSingleEnemy                   ;
 ;----------------------------------------------------------;
 ; Respawns next single enemy. To respawn next from formation use enf.RespawnFormation
 RespawnNextSingleEnemy

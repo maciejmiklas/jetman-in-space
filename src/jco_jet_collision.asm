@@ -36,7 +36,7 @@ PICK_MARGY_D16          = 16
 JM_INV_D400             = 400                   ; Number of loops to keep Jetman invincible
 
 ;----------------------------------------------------------;
-;                  #JetmanElementCollision                 ;
+;                   JetmanElementCollision                 ;
 ;----------------------------------------------------------;
 ; Checks whether Jetman overlaps with given element
 ; Input:
@@ -89,7 +89,7 @@ JetmanElementCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #JetmanEnemiesCollision                    ;
+;                JetmanEnemiesCollision                    ;
 ;----------------------------------------------------------;
 JetmanEnemiesCollision
 
@@ -109,7 +109,7 @@ JetmanEnemiesCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        #JetRip                           ;
+;                         JetRip                           ;
 ;----------------------------------------------------------;
 JetRip
 
@@ -131,7 +131,7 @@ JetRip
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #MakeJetInvincible                     ;
+;                    MakeJetInvincible                     ;
 ;----------------------------------------------------------;
 MakeJetInvincible
 
@@ -146,7 +146,7 @@ MakeJetInvincible
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #JetInvincible                         ;
+;                    JetInvincible                         ;
 ;----------------------------------------------------------;
 JetInvincible
 
@@ -211,7 +211,7 @@ JetInvincible
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    #_EnemyCollision                       ;
+;                    _EnemyCollision                       ;
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
 ; Input:
@@ -278,7 +278,7 @@ _EnemyCollision
 
 
 ;----------------------------------------------------------;
-;                    #_ResetRipMove                        ;
+;                     _ResetRipMove                        ;
 ;----------------------------------------------------------;
 _ResetRipMove
 
@@ -289,7 +289,7 @@ _ResetRipMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #_RipMove                            ;
+;                      _RipMove                            ;
 ;----------------------------------------------------------;
 ; Jetman moves in zig-zac towards the upper side of the screen
 _RipMove
@@ -407,7 +407,7 @@ _CheckCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #_EnemiesCollision                    ;
+;                     _EnemiesCollision                    ;
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam.
 ; Input

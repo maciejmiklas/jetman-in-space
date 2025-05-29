@@ -32,7 +32,7 @@ PICKUP_DIAMOND_REP      = 4
 SCORE_TI_START          = 4
 
 ;----------------------------------------------------------;
-;                       #ResetScore                        ;
+;                        ResetScore                        ;
 ;----------------------------------------------------------;
 ResetScore
 
@@ -45,7 +45,7 @@ ResetScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #PickupInAir                        ;
+;                       PickupInAir                        ;
 ;----------------------------------------------------------;
 PickupInAir
 
@@ -56,7 +56,7 @@ PickupInAir
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #PickupRegular                        ;
+;                     PickupRegular                        ;
 ;----------------------------------------------------------;
 PickupRegular
 
@@ -67,7 +67,7 @@ PickupRegular
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #PickupDiamond                        ;
+;                     PickupDiamond                        ;
 ;----------------------------------------------------------;
 PickupDiamond
 
@@ -78,7 +78,7 @@ PickupDiamond
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #HitEnemy1                         ;
+;                        HitEnemy1                         ;
 ;----------------------------------------------------------;
 HitEnemy1
 
@@ -89,7 +89,7 @@ HitEnemy1
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #HitEnemy2                         ;
+;                        HitEnemy2                         ;
 ;----------------------------------------------------------;
 HitEnemy2
 
@@ -100,7 +100,7 @@ HitEnemy2
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #HitEnemy3                         ;
+;                        HitEnemy3                         ;
 ;----------------------------------------------------------;
 HitEnemy3
 
@@ -111,7 +111,7 @@ HitEnemy3
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #HitRocketTank                       ;
+;                      HitRocketTank                       ;
 ;----------------------------------------------------------;
 HitRocketTank
 
@@ -134,7 +134,7 @@ HitRocketTank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #BoardRocket                         ;
+;                      BoardRocket                         ;
 ;----------------------------------------------------------;
 BoardRocket
 
@@ -145,7 +145,7 @@ BoardRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #PickupRocketElement                   ;
+;                    PickupRocketElement                   ;
 ;----------------------------------------------------------;
 PickupRocketElement
 
@@ -156,7 +156,7 @@ PickupRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #PickupRocketElementInAir                  ;
+;                PickupRocketElementInAir                  ;
 ;----------------------------------------------------------;
 PickupRocketElementInAir
 
@@ -167,7 +167,7 @@ PickupRocketElementInAir
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #DropRocketElement                   ;
+;                      DropRocketElement                   ;
 ;----------------------------------------------------------;
 DropRocketElement
 
@@ -178,7 +178,7 @@ DropRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #PrintScore                        ;
+;                        PrintScore                        ;
 ;----------------------------------------------------------;
 PrintScore
 
@@ -198,7 +198,7 @@ PrintScore
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-;                      #_UpdateScore                       ;
+;                       _UpdateScore                       ;
 ;----------------------------------------------------------;
 ; Input
 ;  - C: new score value for ADD

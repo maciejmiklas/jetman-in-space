@@ -23,7 +23,7 @@ rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to
 FLY_SOUND_REPEAT        = 20
 soundRepeatDelay        DB FLY_SOUND_REPEAT
 ;----------------------------------------------------------;
-;              #ResetAndDisableFlyRocket                   ;
+;               ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
 ResetAndDisableFlyRocket
     CALL dbs.SetupArraysBank
@@ -48,7 +48,7 @@ ResetAndDisableFlyRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #FlyRocketSound                        ;
+;                    FlyRocketSound                        ;
 ;----------------------------------------------------------;
 FlyRocketSound
 
@@ -71,7 +71,7 @@ FlyRocketSound
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #FlyRocket                         ;
+;                        FlyRocket                         ;
 ;----------------------------------------------------------;
 FlyRocket
 
@@ -102,7 +102,7 @@ FlyRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #BlinkFlyingRocket                     ;
+;                    BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
 BlinkFlyingRocket
     CALL dbs.SetupArraysBank
@@ -125,7 +125,7 @@ BlinkFlyingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #AnimateRocketExplosion                    ;
+;                AnimateRocketExplosion                    ;
 ;----------------------------------------------------------;
 AnimateRocketExplosion
 
@@ -204,7 +204,7 @@ AnimateRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #AnimateRocketExhaust                    ;
+;                  AnimateRocketExhaust                    ;
 ;----------------------------------------------------------;
 AnimateRocketExhaust
     
@@ -243,7 +243,7 @@ AnimateRocketExhaust
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                 #_MoveFlyingRocket                       ;
+;                  _MoveFlyingRocket                       ;
 ;----------------------------------------------------------;
 _MoveFlyingRocket
     CALL dbs.SetupArraysBank
@@ -368,7 +368,7 @@ _MoveFlyingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_StartRocketExplosion                     ;
+;                _StartRocketExplosion                     ;
 ;----------------------------------------------------------;
 ; Start explosion sequence. The rocket explodes when the state is flying and counter above zero
 _StartRocketExplosion
@@ -389,7 +389,7 @@ _StartRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_ShakeTilemapOnFlyingRocket               ;
+;                _ShakeTilemapOnFlyingRocket               ;
 ;----------------------------------------------------------;
 _ShakeTilemapOnFlyingRocket
 

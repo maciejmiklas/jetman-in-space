@@ -96,7 +96,7 @@ CheckSpriteVisible
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       #ResetSprite                       ;
+;                        ResetSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Pointer to #SPR.
@@ -113,7 +113,7 @@ ResetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #KillOneSprite                       ;
+;                      KillOneSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Pointer to #SPR
@@ -146,7 +146,7 @@ KillOneSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         #SpriteHit                       ;
+;                          SpriteHit                       ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:    Pointer to #SPR
@@ -161,7 +161,7 @@ SpriteHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #AnimateSprites                      ;
+;                      AnimateSprites                      ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:    Pointer to #SPR
@@ -189,7 +189,7 @@ AnimateSprites
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #SetSpriteId                         ;
+;                      SetSpriteId                         ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Pointer to #SPR
@@ -202,7 +202,7 @@ SetSpriteId
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #UpdateSpritePosition                    ;
+;                  UpdateSpritePosition                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    pointer to #SPR
@@ -237,7 +237,7 @@ UpdateSpritePosition
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #HideAllSimpleSprites                     ;
+;                 HideAllSimpleSprites                     ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Pointer to #SPR
@@ -257,7 +257,7 @@ HideAllSimpleSprites
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                   #HideSimpleSprite                      ;
+;                    HideSimpleSprite                      ;
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX
 ; Input
@@ -277,7 +277,7 @@ HideSimpleSprite
     RET                                         ; ## END of the function ##
     
 ;----------------------------------------------------------;
-;                       #ShowSprite                        ;
+;                        ShowSprite                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Pointer to #SPR.
@@ -292,7 +292,7 @@ ShowSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #SetStateVisible                      ;
+;                     SetStateVisible                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX:    Pointer to #SPR.
@@ -307,7 +307,7 @@ SetStateVisible
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #UpdateSpritePattern                     ;
+;                  UpdateSpritePattern                     ;
 ;----------------------------------------------------------;
 ; Show the current sprite pattern and switch the pointer to the next one so the following method CALL will display it.
 ; Input:
@@ -356,7 +356,7 @@ UpdateSpritePattern
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          #MoveX                          ;
+;                           MoveX                          ;
 ;----------------------------------------------------------;
 ; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on D.
 ; Input
@@ -483,7 +483,7 @@ MoveX
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          #MoveY                          ;
+;                           MoveY                          ;
 ;----------------------------------------------------------;
 ; Move the sprite one pixel to the right or left along the Y-axis, depending on the A.
 ; Input
@@ -542,7 +542,7 @@ MoveY
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                 #_LoadSpritePattern                      ;
+;                  _LoadSpritePattern                      ;
 ;----------------------------------------------------------;
 ; Set given pointer IX to animation pattern from #srSpriteDB given by B.
 ; Input:

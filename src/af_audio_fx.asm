@@ -5,8 +5,6 @@
     MODULE af
 
     ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
-    MMU _RAM_SLOT6, dbs.AY_FX_S6_D32
-    ORG _RAM_SLOT6_STA_HC000
 
 ; Based on: https://github.com/robgmoran/DougieDoSource
 

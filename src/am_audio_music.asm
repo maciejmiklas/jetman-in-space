@@ -3,9 +3,7 @@
 ;----------------------------------------------------------;
     MODULE av
 
-    ; TO USE THIS MODULE: CALL dbs.SetupVortexTrackerBank
-    MMU _RAM_SLOT6, dbs.AY_MUSIC_S6_D33
-    ORG _RAM_SLOT6_STA_HC000
+    ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
 
 ;Vortex Tracker II v1.0 PT3 player for ZX Spectrum
 ;ROM version (specially for Axor)
@@ -98,29 +96,7 @@ Volume	                DB 0
 
 MUSIC_ST_ON             = 1
 MUSIC_ST_OFF            = 0
-musicState              DB MUSIC_ST_ON
-
-; Counter for game music from assets\snd
-gameMusicCnt            DB 12
-GAME_MUSIC_MIN          = 1
-GAME_MUSIC_MAX          = 29
-
-;----------------------------------------------------------;
-;                      #NextGameSong                       ;
-;----------------------------------------------------------;
-
-    ; Increase music counter, or overflow to min value
-    LD A, (gameMusicCnt)
-    CP GAME_MUSIC_MAX
-    JR NZ, .incMusicCnt
-    JR .afterMusicCnt
-    LD A, GAME_MUSIC_MIN
-.incMusicCnt
-    INC A
-.afterMusicCnt
-    LD (gameMusicCnt), A
-
-    RET                                         ; ## END of the function ##
+musicState              DB MUSIC_ST_OFF
 
 ;Entry and other points
 ;START initialization
@@ -163,7 +139,8 @@ MUTE
     JP ROUT_A0
 
 InitMusic
-    LD HL, musicBin
+ret
+;    LD HL, musicBin
 INIT
 ;HL - AddressOfModule
 
@@ -1374,12 +1351,6 @@ MDLADDR = $
 ;Notes:
 ;Pro Tracker 3.4r can not be detected by header, so PT3.4r tone
 ;tables really used only for modules of 3.3 and older versions.
-
-;----------------------------------------------------------;
-;                       Load PT3                           ;
-;----------------------------------------------------------;
-musicBin
-    INCBIN  "assets/ma/snd.pt3"
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

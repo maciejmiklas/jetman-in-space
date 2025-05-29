@@ -48,7 +48,7 @@ platformWalkNumber      DB PLATFORM_WALK_INACTIVE
 joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit
 
 ;----------------------------------------------------------;
-;                    #SetupPlatforms                       ;
+;                     SetupPlatforms                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:  Platforms size
@@ -60,7 +60,7 @@ SetupPlatforms
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #JetPlatformHitOnJoyMove                  ;
+;                 JetPlatformHitOnJoyMove                  ;
 ;----------------------------------------------------------;
 JetPlatformHitOnJoyMove
 
@@ -221,7 +221,7 @@ JetPlatformHitOnJoyMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #ResetJoyOffBump                       ;
+;                    ResetJoyOffBump                       ;
 ;----------------------------------------------------------;
 ResetJoyOffBump
     
@@ -260,7 +260,7 @@ ResetJoyOffBump
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #PlatformSpriteHit                       ;
+;                   PlatformSpriteHit                      ;
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
@@ -276,7 +276,7 @@ PlatformSpriteHit
 
 
 ;----------------------------------------------------------;
-;                  #PlatformSpriteClose                    ;
+;                   PlatformSpriteClose                    ;
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX gets close the platforms.
 ; Input:
@@ -291,7 +291,7 @@ PlatformSpriteClose
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #CheckPlatformWeaponHit                  ;
+;                  CheckPlatformWeaponHit                  ;
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
@@ -306,7 +306,7 @@ CheckPlatformWeaponHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #MoveJetOnFallingFromPlatform               ;
+;               MoveJetOnFallingFromPlatform               ;
 ;----------------------------------------------------------;
 MoveJetOnFallingFromPlatform
 
@@ -340,7 +340,7 @@ MoveJetOnFallingFromPlatform
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              #MoveJetOnHitPlatformBelow                  ;
+;               MoveJetOnHitPlatformBelow                  ;
 ;----------------------------------------------------------;
 MoveJetOnHitPlatformBelow
 
@@ -373,7 +373,7 @@ MoveJetOnHitPlatformBelow
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #JetLanding                         ;
+;                       JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
 
@@ -410,7 +410,7 @@ JetLanding
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #MoveJetOnPlatformSideHit                 ;
+;                 MoveJetOnPlatformSideHit                 ;
 ;----------------------------------------------------------;
 MoveJetOnPlatformSideHit
 
@@ -435,7 +435,7 @@ MoveJetOnPlatformSideHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #JetFallingFromPlatform                   ;
+;                 JetFallingFromPlatform                   ;
 ;----------------------------------------------------------;
 ; Jetman walks to the edge of the platform and falls.
 JetFallingFromPlatform
@@ -515,7 +515,7 @@ JetFallingFromPlatform
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    #_PlatformHit                         ;
+;                     _PlatformHit                         ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms. It does not provide direction, just an indication that 
 ; there was a hit. To get directions use #_PlatformDirectionHit.
@@ -620,7 +620,7 @@ _PlatformHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_PlatformDirectionHit                     ;
+;                _PlatformDirectionHit                     ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms, also provides platform number and side.
 ; Input:
@@ -733,7 +733,7 @@ _PlatformDirectionHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #_LoadSpriteYtoA                       ;
+;                    _LoadSpriteYtoA                       ;
 ;----------------------------------------------------------;
 ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
 ; Input:
@@ -750,7 +750,7 @@ _LoadSpriteYtoA
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_CheckPlatformHitTop                     ;
+;                 _CheckPlatformHitTop                     ;
 ;----------------------------------------------------------;
 ; Check the collision with the top side of the platform.
 ; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
@@ -802,7 +802,7 @@ _CheckPlatformHitTop
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_CheckPlatformHitBottom                   ;
+;                _CheckPlatformHitBottom                   ;
 ;----------------------------------------------------------;
 ; Check the collision with the bottom side of the platform.
 ; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5]
@@ -850,7 +850,7 @@ _CheckPlatformHitBottom
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #_CheckPlatformHitLeft                    ;
+;                 _CheckPlatformHitLeft                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the left side of the platform.
 ; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
@@ -906,7 +906,7 @@ _CheckPlatformHitLeft
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_CheckPlatformHitRight                    ;
+;                _CheckPlatformHitRight                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the left side of the platform.
 ; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #HIT_MARGIN_D5].
@@ -961,7 +961,7 @@ _CheckPlatformHitRight
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             #_CheckPlatformHitHorizontal                 ;
+;              _CheckPlatformHitHorizontal                 ;
 ;----------------------------------------------------------;
 ; Jetman is within the platform's horizontal bounds when:
 ; [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
@@ -1014,7 +1014,7 @@ _CheckPlatformHitHorizontal
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               #_CheckPlatformHitVertical                 ;
+;                _CheckPlatformHitVertical                 ;
 ;----------------------------------------------------------;
 ; Jetman is within the platform's vertical bounds when:
 ; [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
@@ -1061,7 +1061,7 @@ _CheckPlatformHitVertical
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 #_PlatformSpriteHit                      ;
+;                  _PlatformSpriteHit                      ;
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) one of the platforms.
 ; Input:
@@ -1099,7 +1099,7 @@ _PlatformSpriteHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #_JetHitsPlatform                       ;
+;                   _JetHitsPlatform                       ;
 ;----------------------------------------------------------;
 _JetHitsPlatform
 

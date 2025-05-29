@@ -47,7 +47,7 @@ ResetPickups
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                #UpdatePickupsOnJetmanMove                ;
+;                 UpdatePickupsOnJetmanMove                ;
 ;----------------------------------------------------------;
 UpdatePickupsOnJetmanMove
 

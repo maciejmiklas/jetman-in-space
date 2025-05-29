@@ -8,7 +8,7 @@ formatted16                                     ; Formatted 16bit number
 FORMATTED16_SIZE        = 5
 
 ;----------------------------------------------------------;
-;                       #PrintNum16                        ;
+;                        PrintNum16                        ;
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels
 ;Input:
@@ -31,7 +31,7 @@ PrintNum16
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      #PrintNum99                         ;
+;                       PrintNum99                         ;
 ;----------------------------------------------------------;
 ; Print 8 bit number from A, but only up to 99
 ;Input:
@@ -73,7 +73,7 @@ _PrintNum99
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #Num16ToString                       ;
+;                      Num16ToString                       ;
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros.
 ; Input:

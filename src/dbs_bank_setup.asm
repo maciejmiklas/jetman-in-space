@@ -16,42 +16,44 @@ ARR_BANK_S7_D29         = 29                    ; Slot 7. Bank for arrays, slot 
 TI_SPR_BANK_S7_D30      = 30
 PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
 AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
-AY_MUSIC_S6_D33         = 33                    ; Slot 6. FX sound
+AY_MCODE_S6_D33         = 33                    ; Slot 6. music code, music binary is in AY_MCODE_S6_D33
 
 PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D31
 SPR_BANK1_S6_D71        = 71
 SPR_BANK2_S7_D72        = 72
 
-; Original background image (all values inclusive), Slot 6. Background image has 80KiB (320x256), taking 10 banks.
+; Original background image (all values inclusive), Slot 6, background image has 80KiB (320x256), taking 10 banks.
 BM_BANKS_D10            = 10                    ; Background image occupies 10 8K banks from 72 to 82 (starts on 16K bank 9, uses 5 16K banks)
 BMA_ST_BANK_S6_D73      = 73
 BMA_EN_BANK_S6_D82  = BMA_ST_BANK_S6_D73+BM_BANKS_D10-1; -1 because inclusive
     ASSERT BMA_EN_BANK_S6_D82 == 82
 
-LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6. Tilemap up to 16KiB
+LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB
 LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7
-EMPTY_IMG_S6_D86        = 86                   ; Slot 6. Empty image
+EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image
+AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33
 
 ;----------------------------------------------------------;
-;                 #SetupEmptyImageBank                     ;
+;                  SetupEmptyImageBank                     ;
 ;----------------------------------------------------------;
 SetupEmptyImageBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, EMPTY_IMG_S6_D86
+    NEXTREG _MMU_REG_SLOT6_H56, EMPTY_IMG_S6_D85
 
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;               #SetupVortexTrackerBank                    ;
+;                    SetupMusicBank                        ;
 ;----------------------------------------------------------;
-SetupVortexTrackerBank
+SetupMusicBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_MUSIC_S6_D33
+    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33
+    NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D86
 
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    #SetupAyFxsBank                       ;
+;                     SetupAyFxsBank                       ;
 ;----------------------------------------------------------;
 SetupAyFxsBank
 
@@ -60,7 +62,7 @@ SetupAyFxsBank
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    #SetupTilesBank                       ;
+;                     SetupTilesBank                       ;
 ;----------------------------------------------------------;
 SetupTilesBank
 
@@ -69,7 +71,7 @@ SetupTilesBank
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                #Setup16KTilemapBank                      ;
+;                 Setup16KTilemapBank                      ;
 ;----------------------------------------------------------;
 Setup16KTilemapBank
 
@@ -80,7 +82,7 @@ Setup16KTilemapBank
 
 
 ;----------------------------------------------------------;
-;                 #Setup8KTilemapBank                      ;
+;                  Setup8KTilemapBank                      ;
 ;----------------------------------------------------------;
 Setup8KTilemapBank
 
@@ -89,7 +91,7 @@ Setup8KTilemapBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  #SetupSpritesBank                       ;
+;                   SetupSpritesBank                       ;
 ;----------------------------------------------------------;
 SetupSpritesBank
 
@@ -99,7 +101,7 @@ SetupSpritesBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    #SetupStarsBank                       ;
+;                     SetupStarsBank                       ;
 ;----------------------------------------------------------;
 SetupStarsBank
 
@@ -108,7 +110,7 @@ SetupStarsBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #SetupArraysBank                       ;
+;                    SetupArraysBank                       ;
 ;----------------------------------------------------------;
 SetupArraysBank
 
@@ -117,7 +119,7 @@ SetupArraysBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   #SetupPaletteBank                      ;
+;                    SetupPaletteBank                      ;
 ;----------------------------------------------------------;
 SetupPaletteBank
 
