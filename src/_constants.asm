@@ -4,7 +4,7 @@
 ; Lots of documentation copied from https://wiki.specnext.dev
 
 gameVersion             DB "V0.51 UNDER CONSTRUCTION"
-GAME_VERSION_SIZE       = 19
+GAME_VERSION_SIZE       = 25
 
 ;----------------------------------------------------------;
 ;                  General Registers                       ;

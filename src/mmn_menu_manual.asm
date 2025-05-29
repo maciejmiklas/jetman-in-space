@@ -33,6 +33,11 @@ LoadMenuGameplay
     LD DE, gc.LoadMainMenu
     LD (mij.callbackFire), DE
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -64,6 +69,11 @@ LoadMenuKeys
     LD DE, gc.LoadMainMenu
     LD (mij.callbackFire), DE
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -76,6 +86,10 @@ LoadMenuKeys
 ;                       _PreLoadMenu                       ;
 ;----------------------------------------------------------;
 _PreLoadMenu
+
+    ; Music of
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
 
     LD A, ms.MENU_MANUAL
     CALL ms.SetMainState

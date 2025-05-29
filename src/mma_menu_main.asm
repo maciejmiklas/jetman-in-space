@@ -93,6 +93,11 @@ LoadMainMenu
     CALL _SetIXToActiveMenu
     CALL _UpdateJetPostion
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -106,6 +111,11 @@ LoadMainMenu
 ;----------------------------------------------------------;
 _LoadMenuEasy
  
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
+    ; ##########################################
     ; Hide current image
     CALL bm.HideImage
 
@@ -130,12 +140,21 @@ _LoadMenuEasy
     LD IX, dba.menuDifEasy
     CALL _PrintMenu
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      _LoadMenuNormal                     ;
 ;----------------------------------------------------------;
 _LoadMenuNormal
+
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
 
     ; Hide current image
     CALL bm.HideImage
@@ -163,6 +182,12 @@ _LoadMenuNormal
     LD IX, dba.menuDifNorm
     CALL _PrintMenu
 
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -170,6 +195,10 @@ _LoadMenuNormal
 ;----------------------------------------------------------;
 _LoadMenuHard
  
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
     ; Hide current image
     CALL bm.HideImage
 
@@ -193,6 +222,11 @@ _LoadMenuHard
     CALL dbs.SetupArraysBank
     LD IX, dba.menuDifHard
     CALL _PrintMenu
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
 

@@ -62,7 +62,7 @@ EnterNewScore
     ; ##########################################
     ; Music on
     CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_INTRO
+    LD A, aml.MUSIC_HIGH_SCORE
     CALL aml.LoadSong
     
     RET                                         ; ## END of the function ##
@@ -72,11 +72,20 @@ EnterNewScore
 ;----------------------------------------------------------;
 LoadMenuScore
 
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
     ; Read only mode.
     LD A, NAME_CH_POS_OFF
     LD (nameChPos), A
 
     CALL _SetupMenuScore
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
 

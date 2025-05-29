@@ -8,7 +8,7 @@
 ; Counter for game music from assets\snd
 gameMusicCnt            DB GAME_MUSIC_MIN
 GAME_MUSIC_MIN          = 1
-GAME_MUSIC_MAX          = 29
+GAME_MUSIC_MAX          = 28
 
 MUSIC_GAME_OVER         = 80
 MUSIC_MAIN_MENU         = 81
