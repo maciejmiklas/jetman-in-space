@@ -70,11 +70,11 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
     ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
 ;----------------------------------------------------------;
-;                        LoadMusic                         ;
+;                     LoadMusicFile                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: song number from "assets/snd/xx.pt3"
-LoadMusic
+LoadMusicFile
 
     CALL dbs.SetupArraysBank                    ; Setup slot 7 to load arrays
 
@@ -102,12 +102,12 @@ LoadMusic
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  LoadLevelIntroImage                     ;
+;               LoadLevelIntroImageFile                    ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB)
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadLevelIntroImage
+LoadLevelIntroImageFile
 
     ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/...".
     CALL dbs.SetupArraysBank
@@ -128,12 +128,12 @@ LoadLevelIntroImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        LoadBgImage                       ;
+;                     LoadBgImageFile                      ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadBgImage
+LoadBgImageFile
 
     ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
     CALL dbs.SetupArraysBank
@@ -155,11 +155,11 @@ LoadBgImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  LoadPlatformsTilemap                    ;
+;               LoadPlatformsTilemapFile                   ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadPlatformsTilemap
+LoadPlatformsTilemapFile
 
     ; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
     CALL dbs.SetupArraysBank
@@ -184,11 +184,11 @@ LoadPlatformsTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       LoadSprites                        ;
+;                    LoadSpritesFile                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadSprites
+LoadSpritesFile
 
     CALL dbs.SetupArraysBank
 
@@ -224,11 +224,11 @@ LoadSprites
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                LoadRocketStarsTilemap                    ;
+;              LoadRocketStarsTilemapFile                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadRocketStarsTilemap
+LoadRocketStarsTilemapFile
 
     CALL dbs.SetupArraysBank
 
@@ -241,11 +241,11 @@ LoadRocketStarsTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 LoadLevelIntroTilemap                    ;
+;               LoadLevelIntroTilemapFile                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-LoadLevelIntroTilemap
+LoadLevelIntroTilemapFile
 
     CALL dbs.SetupArraysBank
 
@@ -258,9 +258,9 @@ LoadLevelIntroTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                LoadMenuGameplayTilemap                   ;
+;              LoadMenuGameplayTilemapFile                 ;
 ;----------------------------------------------------------;
-LoadMenuGameplayTilemap
+LoadMenuGameplayTilemapFile
 
     CALL dbs.SetupArraysBank
 
@@ -278,9 +278,9 @@ LoadMenuGameplayTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   LoadMenuKeysTilemap                    ;
+;                 LoadMenuKeysTilemapFile                  ;
 ;----------------------------------------------------------;
-LoadMenuKeysTilemap
+LoadMenuKeysTilemapFile
 
     ; Open file
     CALL dbs.SetupArraysBank
@@ -298,9 +298,9 @@ LoadMenuKeysTilemap
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   LoadMenuEasyImage                      ;
+;                  LoadMenuEasyImageFile                   ;
 ;----------------------------------------------------------;
-LoadMenuEasyImage
+LoadMenuEasyImageFile
 
     CALL dbs.SetupArraysBank
 
@@ -313,9 +313,9 @@ LoadMenuEasyImage
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   LoadMenuHardImage                      ;
+;                 LoadMenuHardImageFile                    ;
 ;----------------------------------------------------------;
-LoadMenuHardImage
+LoadMenuHardImageFile
 
     CALL dbs.SetupArraysBank
 

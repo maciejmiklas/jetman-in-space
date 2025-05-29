@@ -6,13 +6,40 @@
     ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
 
 ; Counter for game music from assets\snd
-gameMusicCnt            DB 12
+gameMusicCnt            DB GAME_MUSIC_MIN
 GAME_MUSIC_MIN          = 1
 GAME_MUSIC_MAX          = 29
 
 MUSIC_GAME_OVER         = 80
 MUSIC_MAIN_MENU         = 81
-MUSIC_MAIN_SCORE        = 82
+MUSIC_HIGH_SCORE        = 82
+MUSIC_INTRO             = 83
+
+;----------------------------------------------------------;
+;                         MusicOn                          ;
+;----------------------------------------------------------;
+MusicOn
+
+    LD A, am.MUSIC_ST_ON
+    LD (am.musicState), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                         MusicOff                         ;
+;----------------------------------------------------------;
+MusicOff
+
+    CALL am.MuteMusic
+
+    XOR A
+    LD BC, _GL_REG_SOUND_HFFFD
+    OUT (C), A
+
+    LD A, am.MUSIC_ST_OFF
+    LD (am.musicState), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       LoadSong                           ;
@@ -20,12 +47,12 @@ MUSIC_MAIN_SCORE        = 82
 ;  - A: song number from "assets/snd/xx.pt3", #GAME_MUSIC_MIN - #GAME_MUSIC_MAX
 LoadSong
 
-    CALL fi.LoadMusic
-
+    PUSH AF
+    CALL aml.MusicOff
+    POP AF
+    CALL fi.LoadMusicFile
     CALL am.InitMusic
-
-    LD A, am.MUSIC_ST_ON
-    CALL am.SetMusicState
+    CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
 
@@ -44,6 +71,8 @@ NextGameSong
     INC A
 .afterMusicCnt
     LD (gameMusicCnt), A
+
+    CALL LoadSong
 
     RET                                         ; ## END of the function ##
 

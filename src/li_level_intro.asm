@@ -45,14 +45,14 @@ LoadLevelIntro
     ; ##########################################
     ; Load background image
     POP DE
-    CALL fi.LoadLevelIntroImage
+    CALL fi.LoadLevelIntroImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
     ; Tilemap with story
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadLevelIntroTilemap
+    CALL fi.LoadLevelIntroTilemapFile
     CALL _NextTilesRow
     CALL _NextTilesRow
 

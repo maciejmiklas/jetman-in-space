@@ -45,6 +45,10 @@ scoreLine               DB $FF                  ; Score line where user enters t
 ;----------------------------------------------------------;
 EnterNewScore
 
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
     XOR A                                       ; Enable user name input
     LD (nameChPos), A
 
@@ -55,6 +59,12 @@ EnterNewScore
     LD A, (scoreLine)
     CALL _PrintScoreLine
 
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_INTRO
+    CALL aml.LoadSong
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -167,6 +177,7 @@ _CalculateScoreLine
 ;----------------------------------------------------------;
 _SetupMenuScore
 
+    ; ##########################################
     ; Setup joystick
     CALL mij.ResetJoystick
 
@@ -210,7 +221,7 @@ _SetupMenuScore
     ; Load background image
     LD D, "m"
     LD E, "s"
-    CALL fi.LoadBgImage
+    CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ###########################################
@@ -246,6 +257,12 @@ _JoyFire
     LD A, af.MENU_ENTER
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
+
+    ; ##########################################
+    ; Music for main menu
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_MAIN_MENU
+    CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
 

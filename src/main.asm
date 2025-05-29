@@ -17,6 +17,12 @@ start
     ;CALL gc.LoadLevel1
     CALL gc.LoadMainMenu
 
+    ; ##########################################
+    ; Music
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_MAIN_MENU
+    CALL aml.LoadSong
+
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;
 ;----------------------------------------------------------;

@@ -34,6 +34,7 @@ MENU_EL_MAX             = MENU_EL_DIFFICULTY
 ;----------------------------------------------------------;
 LoadMainMenu
 
+    ; ##########################################
     ; Update menu state
     LD A, ms.MENU_MAIN
     CALL ms.SetMainState
@@ -71,7 +72,7 @@ LoadMainMenu
     ; Load sprites from any level
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
 
     ; ##########################################
     ; Setup Jetman sprite
@@ -86,12 +87,6 @@ LoadMainMenu
     CALL js.ChangeJetSpritePattern
 
     CALL js.ShowJetSprite
-
-    ; ##########################################
-    ; Music
-    CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_MAIN_MENU
-    CALL aml.LoadSong
 
     ; ##########################################
     CALL _LoadStaticMenuText
@@ -123,7 +118,7 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadMenuEasyImage
+    CALL fi.LoadMenuEasyImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -156,7 +151,7 @@ _LoadMenuNormal
     ; Load background image
     LD D, "m"
     LD E, "a"
-    CALL fi.LoadBgImage
+    CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -187,7 +182,7 @@ _LoadMenuHard
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadMenuHardImage
+    CALL fi.LoadMenuHardImageFile
     CALL bm.CopyImageData
 
     ; ##########################################

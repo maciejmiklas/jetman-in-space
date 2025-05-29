@@ -43,10 +43,19 @@ MainLoopCmd
 ;----------------------------------------------------------;
 StartGameWithIntro
 
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
     CALL jw.ResetWeapon
-    CALL LoadLevel1Intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
+    CALL LoadLevel1Intro
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_INTRO
+    CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
 
@@ -63,7 +72,7 @@ SetupSystem
     ; Load sprites from any level for mein menu
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadSprites
+    CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
     
     RET                                         ; ## END of the function ##

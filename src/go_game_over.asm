@@ -22,7 +22,7 @@ ShowGameOver
     ; Load background image
     LD D, "g"
     LD E, "o"
-    CALL fi.LoadBgImage
+    CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################

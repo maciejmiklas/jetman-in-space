@@ -100,15 +100,6 @@ MUSIC_ST_ON             = 1
 MUSIC_ST_OFF            = 0
 musicState              DB MUSIC_ST_OFF
 
-;----------------------------------------------------------;
-;                    SetMusicState                         ;
-;----------------------------------------------------------;
-; Input: A: MUSIC_ST_XX
-SetMusicState
-    LD (musicState), A
-
-    RET                                         ; ## END of the function ##
-
 ;Entry and other points
 ;START initialization
 ;START+3 initialization with module address in HL
@@ -139,6 +130,7 @@ CHECKLP
     INC (HL)
     LD HL,ChanA+CHP.NtSkCn
     INC (HL)
+MuteMusic
 MUTE	
     LD A,$3F
     LD (AYREGS+Mixer),A
