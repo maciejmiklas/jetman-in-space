@@ -1,11 +1,17 @@
 <img src="/img/cover.jpg" width="800px"/>
+   
 [![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
-
+   
 <img src="/img/scr1.jpg" width="640px"/>
+   
 <img src="/img/scr2.jpg" width="640px"/>
+   
 <img src="/img/scr3.jpg" width="640px"/>
+   
 <img src="/img/scr4.jpg" width="640px"/>
+    
 <img src="/img/scr5.jpg" width="640px"/>
+   
 
 I would like to give a shout-out to the following, without them, I would have been lost in space!
 * [Ilya Abrosimov](https://zxart.ee/eng/authors/e/ea)
