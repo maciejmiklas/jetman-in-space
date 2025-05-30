@@ -1,9 +1,9 @@
-<img src="/templates/cover.jpg" width="800px"/>
-<img src="/templates/scr1.jpg" width="640px"/>
-<img src="/templates/scr2.jpg" width="640px"/>
-<img src="/templates/scr3.jpg" width="640px"/>
-<img src="/templates/scr4.jpg" width="640px"/>
-<img src="/templates/scr5.jpg" width="640px"/>
+<img src="/img/cover.jpg" width="800px"/>
+<img src="/img/scr1.jpg" width="640px"/>
+<img src="/img/scr2.jpg" width="640px"/>
+<img src="/img/scr3.jpg" width="640px"/>
+<img src="/img/scr4.jpg" width="640px"/>
+<img src="/img/scr5.jpg" width="640px"/>
 
 [![Youtube)](/img/youtube_en.jpg)](https://www.youtube.com/watch?v=aa8tRvNHfRo)
 
