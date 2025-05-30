@@ -118,7 +118,7 @@ LoadLevel1
     CALL ll.LoadLevel1Data
     CALL _StartLevel
 
-    CALL ft.DisableFuelThief
+    CALL dbs.SetupEnemyBank: CALL enu.DisableFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -245,7 +245,7 @@ RocketTakesOff
     CALL ti.SetTilesClipHorizontal
     CALL pi.ResetPickups
     CALL mij.ResetJoystick
-    CALL ft.DisableFuelThief
+    CALL dbs.SetupEnemyBank: CALL enu.DisableFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -472,14 +472,16 @@ WeaponHitEnemies
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    LD IX, dba.singleEnemySprites
+    CALL dbs.SetupEnemyBank
+    LD IX, ena.singleEnemySprites
     LD A, (ens.singleEnemySize)
     LD B, A
     CALL jw.CheckHitEnemies
 
     ; ##########################################
-    LD IX, dba.formationEnemySprites
-    LD B, dba.ENEMY_FORMATION_SIZE
+    CALL dbs.SetupEnemyBank
+    LD IX, ena.formationEnemySprites
+    LD B, ena.ENEMY_FORMATION_SIZE
     CALL jw.CheckHitEnemies
 
     RET                                         ; ## END of the function ##
@@ -489,7 +491,7 @@ WeaponHitEnemies
 ;----------------------------------------------------------;
 ; Input
 ;    A:  Sprite ID of the enemy.
-;  - IX: Pointer to enemy's #sr.SPR.
+;  - IX: Pointer to enemy's #SPR.
 EnemyHit
 
     CALL dbs.SetupArraysBank
@@ -500,7 +502,7 @@ EnemyHit
     ; Checkt what enemy has been hit.
 
     ; Enemy 1?
-    LD A, (IX + sr.SPR.SDB_INIT)
+    LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY1
     JR NZ, .afterHitEnemy1
 
@@ -515,7 +517,7 @@ EnemyHit
 .afterHitEnemy1
 
     ; Enemy 2?
-    LD A, (IX + sr.SPR.SDB_INIT)
+    LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY2
     JR NZ, .afterHitEnemy2
 
@@ -530,7 +532,7 @@ EnemyHit
 .afterHitEnemy2
 
     ; Enemy 3?
-    LD A, (IX + sr.SPR.SDB_INIT)
+    LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY3
     JR NZ, .afterHitEnemy3
 
@@ -700,6 +702,7 @@ JetPicksLife
 JetPicksGrenade
 
     CALL sc.PickupRegular
+    CALL dbs.SetupEnemyBank
     CALL enp.KillFewPatternEnemies
 
     LD A, af.FX_PICKUP_GRENADE
@@ -990,13 +993,15 @@ _HideGame
     CALL rof.ResetAndDisableFlyRocket
     CALL st.HideStars
     CALL jw.HideShots
-    CALL enp.HidePatternEnemies
     CALL jt.SetJetStateInactive
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
     CALL pi.ResetPickups
     CALL mij.ResetJoystick
-    CALL ft.DisableFuelThief
+
+    CALL dbs.SetupEnemyBank
+    CALL enp.HidePatternEnemies
+    CALL enu.DisableFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -1009,8 +1014,8 @@ _InitLevelLoad
     CALL gi.ResetKeysState
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
-    CALL ft.EnableFuelThief
-    
+    CALL dbs.SetupEnemyBank: CALL enu.EnableFuelThief
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

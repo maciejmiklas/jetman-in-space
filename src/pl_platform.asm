@@ -264,7 +264,7 @@ ResetJoyOffBump
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
-;  - IX:    Pointer to sr.SPR, single sprite to check cloison for
+;  - IX:    Pointer to SPR, single sprite to check cloison for
 ; Output:
 ;  - A:     #PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 PlatformSpriteHit
@@ -280,7 +280,7 @@ PlatformSpriteHit
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX gets close the platforms.
 ; Input:
-;  - IX:    Pointer to sr.SPR, single sprite to check cloison for
+;  - IX:    Pointer to SPR, single sprite to check cloison for
 ; Output:
 ;  - A:     #PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 PlatformSpriteClose
@@ -295,7 +295,7 @@ PlatformSpriteClose
 ;----------------------------------------------------------;
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
-;  - IX:    Pointer to sr.SPR, single sprite to check cloison for
+;  - IX:    Pointer to SPR, single sprite to check cloison for
 ; Output:
 ;  - A:     #PL_HIT_RET_A_YES/ #PL_HIT_RET_A_NO
 CheckPlatformWeaponHit
@@ -1073,7 +1073,7 @@ _PlatformSpriteHit
     CALL dbs.SetupArraysBank
     
     ; Exit if sprite is not alive
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .alive                               ; Jump if sprite is alive
 
     LD A, PL_HIT_RET_A_NO
@@ -1084,7 +1084,7 @@ _PlatformSpriteHit
 
     ; Params for _PlatformHit
     LD HL, IX
-    ADD HL, sr.SPR.X
+    ADD HL, SPR.X
 
     LD IX, IY
     LD IY, (platforms)

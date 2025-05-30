@@ -253,7 +253,6 @@ _Key_Q
 
   CALL gc.LoadLevel1
    ;CALL ro.AssemblyRocketForDebug
-  ; CALL ft.RespawnFuelThief
     ;LD A, (ro.rocketElementCnt)
     ;nextreg 2,8
 

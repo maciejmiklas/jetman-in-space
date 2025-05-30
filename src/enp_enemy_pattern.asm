@@ -3,28 +3,15 @@
 ;----------------------------------------------------------;
     MODULE enp
 
+    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyBank ###
+
 ; Enemies fly by a given hardcoded pattern. This file contains generic logic for such enemies 
 ; In general, there are two kinds of enemies: 
 ; - single enemies that fly independently from each other (es_enemy_single.asm), and 
 ; - pattern enemies that fly together (ep_enemy_pattern.asm)
 
-; Extends #SPR by additional params.
-    STRUCT ENP
-; Bits:
-;   - 0:    #ENP_ALONG_BIT
-;   - 1:    #ENP_DEPLOY_BIT
-SETUP                   DB    
-MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter
-RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn
-RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter
-RESPAWN_Y               DB                      ; Respawn Y position
-MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX)
-MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX
-MOVE_PAT_STEP           DB                      ; Counters X,Y from current move pattern
-MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of single move pattern st Counts towards 0
-    ENDS
 
-; Bits 4-7 on sr.SPR.STATE will be used here:
+; Bits 4-7 on SPR.STATE will be used here:
 ENP_ALONG_BIT           = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform
 ENP_DEPLOY_BIT          = 1                     ; 1 - deploy enemy on the left, 0 - on the right
 
@@ -34,15 +21,6 @@ ENP_S_LEFT_ALONG        = %000000'1'1
 ENP_S_LEFT_HIT          = %000000'1'0
 
 MOVE_DELAY_CNT_INC      = %0001'0000 
-
-; Setup values loaded for each level for #SPR
-    STRUCT ENPS
-RESPAWN_Y               DB                      ; Value for: ENP.RESPAWN_Y
-RESPAWN_DELAY           DB                      ; Value for: ENP.RESPAWN_DELAY
-MOVE_PAT_POINTER        DW                      ; Value for: ENP.MOVE_PAT_POINTER
-SDB_INIT                DB                      ; Value for: sr.SPR.SDB_INIT
-SETUP                   DB                      ; Value for: ENP.SETUP
-    ENDS
 
 RESPAWN_OFF             = 255
 
@@ -111,7 +89,7 @@ DEC_MOVE_DELAY          = %0001'0000
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
 ;----------------------------------------------------------;
-;         CopyEnpsToEnpMovePatternEnemies                  ;
+;                    CopyEnpsToEnp                         ;
 ;----------------------------------------------------------;
 ; Input:
 ;   - IX: Pointer to #ENPS array
@@ -156,17 +134,17 @@ ResetEnp
 ;----------------------------------------------------------;
 ;                   ResetPatternEnemies                    ;
 ;----------------------------------------------------------;
-; Resets #sr.SPR and linked #ENP
+; Resets #SPR and linked #ENP
 ; Input:
-;  - IX:  Pointer to the #sr.SPR array
-;  - B:   Size of the #sr.SPR and #ENP array (both will be modified)
+;  - IX:  Pointer to the #SPR array
+;  - B:   Size of the #SPR and #ENP array (both will be modified)
 ResetPatternEnemies
 
 .enemyLoop
     CALL sr.ResetSprite
     
     ; Load extra data for this sprite to IY.
-    LD DE, (IX + sr.SPR.EXT_DATA_POINTER)
+    LD DE, (IX + SPR.EXT_DATA_POINTER)
     LD IY, DE
 
     CALL ResetEnp
@@ -177,7 +155,7 @@ ResetPatternEnemies
     ; ##########################################
     ; Next sprite
     LD DE, IX
-    ADD DE, sr.SPR
+    ADD DE, SPR
     LD IX, DE
     DJNZ .enemyLoop
 
@@ -188,19 +166,16 @@ ResetPatternEnemies
 ;----------------------------------------------------------;
 AnimatePatternEnemies
 
-    CALL dbs.SetupArraysBank
-
-    ; ##########################################
     ; Animate single enemy
-    LD IX, dba.singleEnemySprites
-    LD A, dba.ENEMY_SINGLE_SIZE
+    LD IX, ena.singleEnemySprites
+    LD A, ena.ENEMY_SINGLE_SIZE
     LD B, A
     CALL sr.AnimateSprites
 
     ; ##########################################
     ; Animate formation enemy
-    LD IX, dba.formationEnemySprites
-    LD B, dba.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    LD B, ena.ENEMY_FORMATION_SIZE
     CALL sr.AnimateSprites
 
     RET                                         ; ## END of the function ##
@@ -225,19 +200,16 @@ KillFewPatternEnemies
 ;----------------------------------------------------------;
 KillOnePatternEnemy
 
-    CALL dbs.SetupArraysBank
-
-    ; ##########################################
     ; Kill single enemy
-    LD IX, dba.singleEnemySprites
-    LD A, dba.ENEMY_SINGLE_SIZE
+    LD IX, ena.singleEnemySprites
+    LD A, ena.ENEMY_SINGLE_SIZE
     LD B, A
     CALL sr.KillOneSprite
 
     ; ##########################################
     ; Kill formation enemy
-    LD IX, dba.formationEnemySprites
-    LD A, dba.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    LD A, ena.ENEMY_FORMATION_SIZE
     LD B, A
     CALL sr.KillOneSprite
 
@@ -248,19 +220,16 @@ KillOnePatternEnemy
 ;----------------------------------------------------------;
 HidePatternEnemies
 
-    CALL dbs.SetupArraysBank
-
-    ; ##########################################
     ; Hide single enemies
-    LD IX, dba.singleEnemySprites
-    LD A, dba.ENEMY_SINGLE_SIZE
+    LD IX, ena.singleEnemySprites
+    LD A, ena.ENEMY_SINGLE_SIZE
     LD B, A 
     CALL sr.HideAllSimpleSprites
 
     ; ##########################################
     ; Hide formation enemies
-    LD IX, dba.formationEnemySprites
-    LD A, dba.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    LD A, ena.ENEMY_FORMATION_SIZE
     LD B, A
     CALL sr.HideAllSimpleSprites
 
@@ -270,26 +239,24 @@ HidePatternEnemies
 ;                  MovePatternEnemies                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to array #sr.SPR
+;  - IX: Pointer to array #SPR
 ;  - B:  Number of elements in array given by IX
 ; Moves single enemies and those in formation
 ; Modifies: ALL
 MovePatternEnemies
     
-    CALL dbs.SetupArraysBank
-
     ; Loop ever all enemies skipping hidden 
 .enemyLoop
     PUSH BC                                     ; Preserve B for loop counter
 
     ; Ignore this sprite if it's hidden
-    LD A, (IX + sr.SPR.STATE)
+    LD A, (IX + SPR.STATE)
     AND sr.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility
     CP 0
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden)
 
     ; Load extra data for this sprite to IY
-    LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
+    LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
 
     ; Slow down movement by decrementing the counter until it reaches 0
@@ -304,7 +271,7 @@ MovePatternEnemies
     CP 0                                        
     JR NZ, .continue                            ; Skip enemy if the delay counter > 0
 
-    CALL _LoadMoveDelay     
+    CALL _LoadMoveDelay
     LD (IY + ENP.MOVE_DELAY_CNT), A             ; Reset counter, A has the max value of delay counter
 
 .afterDelayMove
@@ -334,7 +301,7 @@ MovePatternEnemies
 .continue   
     ; ##########################################
     ; Move IX to the beginning of the next #SPR
-    LD DE, sr.SPR
+    LD DE, SPR
     ADD IX, DE
 
     ; ##########################################
@@ -356,7 +323,7 @@ RES_SE_OUT_NO                   = 0             ; Enemy did not respawn
 ; Modifies: all
 RespawnPatternEnemy
 
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterVisibilityCheck                 ; Skip this sprite if it's already visible
     
     LD A, RES_SE_OUT_NO
@@ -365,7 +332,7 @@ RespawnPatternEnemy
     ; Sprite is hidden, check the dedicated delay before respawning.
 
     ; Load extra sprite data (#ENP) to IY
-    LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
+    LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
     
     ; There are two respawn delay timers. The first is global (#respawnDelayCnt) and ensures that multiple enemies do not respawn at the 
@@ -397,7 +364,7 @@ RespawnPatternEnemy
 .afterEnemyRespawnDelay
 
     ; Respawn enemy, first mark it as visible.
-    LD A, (IX + sr.SPR.STATE)
+    LD A, (IX + SPR.STATE)
     CALL sr.SetStateVisible
 
     ; Reset counters and move pattern
@@ -411,7 +378,7 @@ RespawnPatternEnemy
 
     ; Set Y (horizontal respawn)
     LD A,  (IY + ENP.RESPAWN_Y)
-    LD (IX + sr.SPR.Y), A
+    LD (IX + SPR.Y), A
 
     ; Set X to left or right side of the screen
     BIT ENP_DEPLOY_BIT, (IY + ENP.SETUP)
@@ -419,15 +386,15 @@ RespawnPatternEnemy
 
     ; Deploy right
     LD BC, _GSC_X_MAX_D315
-    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + sr.SPR.STATE)  ; Mirror sprite, because it deploys on the right and moves to the left side
+    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Mirror sprite, because it deploys on the right and moves to the left side
     JR .afterLR
 .deployLeft
-    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + sr.SPR.STATE)  ; Do not mirror sprite (this could be set if in another level it was moving right)
+    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Do not mirror sprite (this could be set if in another level it was moving right)
     ; Deploy left
     LD BC, _GSC_X_MIN_D0
 
 .afterLR
-    LD (IX + sr.SPR.X), BC
+    LD (IX + SPR.X), BC
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
     CALL sr.ShowSprite
 
@@ -510,11 +477,11 @@ _MoveEnemyX
 _MoveEnemy
 
     ; Move the Sprite horizontally if it has been hit and it's dying
-    LD A, (IX + sr.SPR.STATE)
+    LD A, (IX + SPR.STATE)
     CALL sr.SetSpriteId                         ; Set sprite ID in hardware
     
     ; Load #ENP for this sprite to IY
-    LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
+    LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
     CALL _LoadCurrentMoveStep
 
@@ -523,7 +490,7 @@ _MoveEnemy
     ;  - IY: pointer to #ENP for current sprite
     ;  - HL: pointer to current position in #movePattern
 
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .afterAliveCheck                     ; Jump if sprite is alive
 
     ; Sprite is not alive -> move it horizontally while it's exploding
@@ -709,7 +676,7 @@ _LoadCurrentMoveStep
 ; Modifies: A, IY, BC, HL
 _RestartMovePattern
     
-    LD BC, (IX + sr.SPR.EXT_DATA_POINTER)       ; Load #ENP for this sprite to IY
+    LD BC, (IX + SPR.EXT_DATA_POINTER)       ; Load #ENP for this sprite to IY
     LD IY, BC
     LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; HL points to start of the #movePattern, that is the amount of elements in this pattern
     INC HL                                      ; HL points to the first move pattern element

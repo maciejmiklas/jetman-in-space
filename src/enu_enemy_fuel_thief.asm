@@ -1,7 +1,9 @@
 ;----------------------------------------------------------;
 ;                       Fuel Thief                         ;
 ;----------------------------------------------------------;
-    MODULE ft
+    MODULE enu
+
+    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyBank ###
 
 TS_DISABLED             = 0
 TS_WAITING              = 1
@@ -16,7 +18,7 @@ FUEL_SPRITE_REF         = 17                    ; Sprite id from sprite file
 FUEL_HEIGHT             = 226
 DEPLOY_SIDE_RND         = $30
 
-respawnDelayCnt         DB 0
+thiefRespawnDelayCnt    DB 0
 RESPAWN_DELAY           = 25
 
 MIN_FUEL_LEVEL          = ro.EL_TANK1_D4 + 2
@@ -28,10 +30,10 @@ DisableFuelThief
 
     CALL _HideFuelThief
 
-    LD A, ft.TS_DISABLED
+    LD A, TS_DISABLED
     LD (thiefState), A
 
-    CALL ft._SetupFuelThief
+    CALL _SetupFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -42,10 +44,10 @@ EnableFuelThief
 
     CALL _HideFuelThief
     
-    LD A, ft.TS_WAITING
+    LD A, TS_WAITING
     LD (thiefState), A
 
-    CALL ft._SetupFuelThief
+    CALL _SetupFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -62,8 +64,8 @@ ThiefWeaponHit
     CALL _LoadSprToIxIy                         ; Load SPR to IX and ENP to IY
 
     ; Check weapon hit
-    LD DE, (IX + sr.SPR.X)
-    LD C, (IX + sr.SPR.Y)
+    LD DE, (IX + SPR.X)
+    LD C, (IX + SPR.Y)
     PUSH IX
     CALL jw.ShotsCollision
     POP IX
@@ -81,7 +83,7 @@ ThiefWeaponHit
 
     ; Restart deploy countdown
     XOR A
-    LD (respawnDelayCnt), A
+    LD (thiefRespawnDelayCnt), A
 
     RET                                         ; ## END of the function ##
 
@@ -113,9 +115,9 @@ RespawnFuelThief
 
     ; ##########################################
     ; Increment respawn delay counter
-    LD A, (respawnDelayCnt)
+    LD A, (thiefRespawnDelayCnt)
     INC A
-    LD (respawnDelayCnt), A
+    LD (thiefRespawnDelayCnt), A
     CP RESPAWN_DELAY
     RET NZ
 
@@ -130,10 +132,10 @@ RespawnFuelThief
     LD A, R
     CP DEPLOY_SIDE_RND
     JR C, .deployRight
-    LD (IY+enp.ENP.SETUP),  enp.ENP_S_LEFT_ALONG 
+    LD (IY+ENP.SETUP),  enp.ENP_S_LEFT_ALONG 
     JR .afterDeploySide
 .deployRight
-    LD (IY+enp.ENP.SETUP),  enp.ENP_S_RIGHT_ALONG 
+    LD (IY+ENP.SETUP),  enp.ENP_S_RIGHT_ALONG 
 .afterDeploySide
 
     ; Reset the deployment countdown for the next fuel element because the thief is active
@@ -154,9 +156,7 @@ AnimateFuelThief
     CP TS_EXPLODES
     RET C
 
-    CALL dbs.SetupArraysBank
-
-    LD IX, dba.fuelThiefSpr
+    LD IX, ena.fuelThiefSpr
     LD A, THIEF_SIZE
     LD B, A
     CALL sr.AnimateSprites
@@ -187,10 +187,10 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the left side of the screen, if he deployed right
-    BIT enp.ENP_DEPLOY_BIT, (IY + enp.ENP.SETUP)
+    BIT enp.ENP_DEPLOY_BIT, (IY + ENP.SETUP)
     JR NZ, .notHideLeft                        ; Jump if bit is 0 -> deploy left
 
-    LD BC, (IX + sr.SPR.X)
+    LD BC, (IX + SPR.X)
     LD A, B
     CP 0
     JR NZ, .notHideLeft
@@ -204,10 +204,10 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the right side of the screen (315 =  $13B), if he deployed left
-    BIT enp.ENP_DEPLOY_BIT, (IY + enp.ENP.SETUP)
+    BIT enp.ENP_DEPLOY_BIT, (IY + ENP.SETUP)
     JR Z, .notHideRight                        ; Jump if bit is 1 -> deploy right
 
-    LD BC, (IX + sr.SPR.X)
+    LD BC, (IX + SPR.X)
     LD A, B
     CP 1
     JR NZ, .notHideRight
@@ -225,7 +225,7 @@ MoveFuelThief
     CP TS_RUNS_EMPTY
     JR NZ, .notAtRocket
 
-    LD BC, (IX + sr.SPR.X)
+    LD BC, (IX + SPR.X)
     LD A, B                                     ; Rocket postion is 8 bit, ignore X postion if > 256 (9bit)
     CP 1
     JR Z, .notAtRocket
@@ -253,7 +253,7 @@ MoveFuelThief
     NEXTREG _SPR_REG_NR_H34, A
 
     ; Set sprite X coordinate.
-    LD BC, (IX + sr.SPR.X)
+    LD BC, (IX + SPR.X)
     LD A, C     
     NEXTREG _SPR_REG_X_H35, A
     
@@ -285,15 +285,13 @@ MoveFuelThief
 ;----------------------------------------------------------;
 _SetupFuelThief
 
-    CALL dbs.SetupArraysBank
-
-    LD IX, dba.fuelThiefSpr
+    LD IX, ena.fuelThiefSpr
     LD B, THIEF_SIZE
     CALL enp.ResetPatternEnemies
 
     XOR A
-    LD (IY + enp.ENP.RESPAWN_DELAY), A
-    LD (respawnDelayCnt), A
+    LD (IY + ENP.RESPAWN_DELAY), A
+    LD (thiefRespawnDelayCnt), A
     
     RET                                         ; ## END of the function ##
 
@@ -305,9 +303,7 @@ _HideFuelThief
     LD A, TS_WAITING
     LD (thiefState), A
 
-    CALL dbs.SetupArraysBank
-
-    LD IX, dba.fuelThiefSpr
+    LD IX, ena.fuelThiefSpr
     CALL sr.HideSimpleSprite
 
     ; Hide tank
@@ -316,7 +312,7 @@ _HideFuelThief
 
     ; Restart deploy countdown
     XOR A
-    LD (respawnDelayCnt), A
+    LD (thiefRespawnDelayCnt), A
 
     RET                                         ; ## END of the function ##
 
@@ -328,10 +324,8 @@ _HideFuelThief
 ;  IY: Points to ENP
 _LoadSprToIxIy
 
-    CALL dbs.SetupArraysBank
-    
-    LD IX, dba.fuelThiefSpr
-    LD BC, (IX + sr.SPR.EXT_DATA_POINTER)
+    LD IX, ena.fuelThiefSpr
+    LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
 
     RET                                         ; ## END of the function ##

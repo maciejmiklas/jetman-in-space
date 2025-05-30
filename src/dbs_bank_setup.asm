@@ -17,6 +17,7 @@ TI_SPR_BANK_S7_D30      = 30
 PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
 AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
 AY_MCODE_S6_D33         = 33                    ; Slot 6. music code, music binary is in AY_MCODE_S6_D33
+ENEMY_BANK_S6_B34       = 34                    ; Slot 6, Enemies
 
 PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D31
 SPR_BANK1_S6_D71        = 71
@@ -33,6 +34,16 @@ LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7
 EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image
 AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33
 
+
+;----------------------------------------------------------;
+;                   SetupEnemyBank                         ;
+;----------------------------------------------------------;
+SetupEnemyBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, ENEMY_BANK_S6_B34
+
+    RET                                         ; ## END of the function ## 
+
 ;----------------------------------------------------------;
 ;                  SetupEmptyImageBank                     ;
 ;----------------------------------------------------------;
@@ -47,8 +58,8 @@ SetupEmptyImageBank
 ;----------------------------------------------------------;
 SetupMusicBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33
-    NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D86
+    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
+    NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D86  ; Binary loaded from file
 
     RET                                         ; ## END of the function ## 
 
@@ -57,7 +68,7 @@ SetupMusicBank
 ;----------------------------------------------------------;
 SetupAyFxsBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D32    ; $C000 - $DFFF
+    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D32    ; Code and effects.afb
 
     RET                                         ; ## END of the function ## 
 

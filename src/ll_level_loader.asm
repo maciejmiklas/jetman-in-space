@@ -69,15 +69,17 @@ LoadLevel1Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L1
-    LD IX, dba.singleEnemiesL1
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L1
+    LD IX, ena.singleEnemiesL1
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0                                     ; Disable formation
-    LD IX, dba.enemyFormationL1
+    LD IX, ena.enemyFormationL1
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -148,15 +150,17 @@ LoadLevel2Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L2
-    LD IX, dba.singleEnemiesL2
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L2
+    LD IX, ena.singleEnemiesL2
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0                                     ; Disable formation
-    LD IX, dba.enemyFormationL2
+    LD IX, ena.enemyFormationL2
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -227,15 +231,17 @@ LoadLevel3Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L3
-    LD IX, dba.singleEnemiesL3
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L3
+    LD IX, ena.singleEnemiesL3
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 150
-    LD IX, dba.enemyFormationL3
+    LD IX, ena.enemyFormationL3
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -308,15 +314,17 @@ LoadLevel4Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L4
-    LD IX, dba.singleEnemiesL4
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L4
+    LD IX, ena.singleEnemiesL4
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 100
-    LD IX, dba.enemyFormationL4
+    LD IX, ena.enemyFormationL4
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -387,15 +395,17 @@ LoadLevel5Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L5
-    LD IX, dba.singleEnemiesL5
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L5
+    LD IX, ena.singleEnemiesL5
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0
-    LD IX, dba.enemyFormationL5
+    LD IX, ena.enemyFormationL5
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -466,15 +476,17 @@ LoadLevel6Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L6
-    LD IX, dba.singleEnemiesL6
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L6
+    LD IX, ena.singleEnemiesL6
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0
-    LD IX, dba.enemyFormationL6
+    LD IX, ena.enemyFormationL6
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -545,15 +557,17 @@ LoadLevel7Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L7
-    LD IX, dba.singleEnemiesL7
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L7
+    LD IX, ena.singleEnemiesL7
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0
-    LD IX, dba.enemyFormationL7
+    LD IX, ena.enemyFormationL7
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -624,15 +638,17 @@ LoadLevel8Data
     
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L8
-    LD IX, dba.singleEnemiesL8
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L8
+    LD IX, ena.singleEnemiesL8
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0
-    LD IX, dba.enemyFormationL8
+    LD IX, ena.enemyFormationL8
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -703,15 +719,17 @@ LoadLevel9Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L9
-    LD IX, dba.singleEnemiesL9
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L9
+    LD IX, ena.singleEnemiesL9
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0
-    LD IX, dba.enemyFormationL9
+    LD IX, ena.enemyFormationL9
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##
@@ -781,15 +799,17 @@ LoadLevel10Data
 
     ; ##########################################
     ; Load single enemies
-    LD A, dba.SINGLE_ENEMIES_L10
-    LD IX, dba.singleEnemiesL10
+    CALL dbs.SetupEnemyBank
+    LD A, ena.SINGLE_ENEMIES_L10
+    LD IX, ena.singleEnemiesL10
     LD B, ens.NEXT_RESP_DEL
     CALL ens.SetupSingleEnemies
 
     ; ##########################################
     ; Load formation
+    CALL dbs.SetupEnemyBank
     LD A, 0
-    LD IX, dba.enemyFormationL10
+    LD IX, ena.enemyFormationL10
     CALL enf.SetupEnemyFormation
 
     RET                                         ; ## END of the function ##

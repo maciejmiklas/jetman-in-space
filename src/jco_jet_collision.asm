@@ -96,14 +96,16 @@ JetmanEnemiesCollision
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    LD IX, dba.singleEnemySprites
+    CALL dbs.SetupEnemyBank
+    LD IX, ena.singleEnemySprites
     LD A, (ens.singleEnemySize)
     LD B, A
     CALL _EnemiesCollision
 
     ; ##########################################
-    LD IX, dba.formationEnemySprites
-    LD B, dba.ENEMY_FORMATION_SIZE
+    CALL dbs.SetupEnemyBank
+    LD IX, ena.formationEnemySprites
+    LD B, ena.ENEMY_FORMATION_SIZE
     CALL _EnemiesCollision
 
     RET                                         ; ## END of the function ##
@@ -219,11 +221,11 @@ JetInvincible
 _EnemyCollision
 
     ; Exit if enemy is not alive
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     RET Z
 
     ; Exit if enemy is visible
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     RET Z   
 
     ; ################################
@@ -352,7 +354,7 @@ _RET_YES_D1           = 1
 _CheckCollision
 
     ; Compare X coordinate of enemy and Jetman
-    LD BC, (IX + sr.SPR.X)                      ; X of the enemy
+    LD BC, (IX + SPR.X)                      ; X of the enemy
     LD HL, (jpo.jetX)                           ; X of the Jetman
 
     ; Check whether Jetman is horizontal with the enemy
@@ -373,7 +375,7 @@ _CheckCollision
 .checkVertical
 
     ; We are here because Jetman's horizontal position matches that of the enemy, now check vertical.
-    LD B, (IX + sr.SPR.Y)                       ; Y of the enemy
+    LD B, (IX + SPR.Y)                       ; Y of the enemy
     LD A, (jpo.jetY)                            ; Y of the Jetman
 
     ; Is Jetman above or below the enemy?
@@ -392,7 +394,7 @@ _CheckCollision
     ; Swap A and B (compared to above) to avoid negative value
     LD A, (jpo.jetY)
     LD B, A                                     ; B: Y of the Jetman
-    LD A, (IX + sr.SPR.Y)                       ; A: Y of the enemy
+    LD A, (IX + SPR.Y)                       ; A: Y of the enemy
     SUB B
     CP D
     JR C, .collision
@@ -421,7 +423,7 @@ _EnemiesCollision
     CALL _EnemyCollision
 .continue
     ; Move HL to the beginning of the next #shotsX
-    LD DE, sr.SPR
+    LD DE, SPR
     ADD IX, DE
     POP BC
     DJNZ .loop                                  ; Jump if B > 0

@@ -18,7 +18,7 @@ JM_FIRE_SPEED_UP        = 4
 fireDelayCnt            DB 0
 fireDelay               DB JM_FIRE_DELAY_MAX
 
-STATE_SHOT_DIR_BIT      = 5                     ; Bit for #sr.SPR.STATE, 1 - shot moves right, 0 - shot moves left
+STATE_SHOT_DIR_BIT      = 5                     ; Bit for #SPR.STATE, 1 - shot moves right, 0 - shot moves left
 
 fireFxDelayCnt          DB 0
 fireFxDelay             DB FIRE_FX_DELAY_INIT
@@ -99,7 +99,7 @@ CheckHitEnemies
 
 .loop                                           ; Loop over every enemy
     PUSH BC                                     ; Preserve B for loop counter
-    LD A, (IX + sr.SPR.STATE)
+    LD A, (IX + SPR.STATE)
     BIT sr.SPRITE_ST_VISIBLE_BIT, A
     JR Z, .continue                             ; Jump if enemy is hidden
 
@@ -108,8 +108,8 @@ CheckHitEnemies
     JR Z, .continue 
     
     ; Enemy is visible, check collision with leaser beam
-    LD DE, (IX + sr.SPR.X)                      ; X of the enemy
-    LD C, (IX + sr.SPR.Y)                       ; Y of the enemy
+    LD DE, (IX + SPR.X)                      ; X of the enemy
+    LD C, (IX + SPR.Y)                       ; Y of the enemy
 
     PUSH IX
     CALL ShotsCollision
@@ -122,7 +122,7 @@ CheckHitEnemies
 
 .continue
     ; Move HL to the beginning of the next enemy
-    LD DE, sr.SPR
+    LD DE, SPR
     ADD IX, DE
 
     POP BC
@@ -151,7 +151,7 @@ HideShots
 
     ; ##########################################
     ; Move IX to the beginning of the next #shotsXX.
-    LD DE, sr.SPR
+    LD DE, SPR
     ADD IX, DE
     DJNZ .shotsLoop                             ; Jump if B > 0 (loop starts with B = #SPR)
 
@@ -177,7 +177,7 @@ ShotsCollision
     LD B, dba.SHOTS_SIZE
 .shotsLoop
     PUSH BC, DE
-    LD A, (IX + sr.SPR.STATE)
+    LD A, (IX + SPR.STATE)
 
     ; Skip hidden laser shoots for collision detection.
     BIT sr.SPRITE_ST_VISIBLE_BIT, A
@@ -188,7 +188,7 @@ ShotsCollision
     JR Z, .continueShotsLoop
 
     ; Compare X coordinate of the sprite and the shot, HL holds X of the sprite.
-    LD HL, (IX + sr.SPR.X)                      ; X of the shot
+    LD HL, (IX + SPR.X)                      ; X of the shot
     
     ; Subtracts DE from HL and check whether the result is less than or equal to A.
     SBC DE, HL
@@ -205,7 +205,7 @@ ShotsCollision
     JR C, .continueShotsLoop                    ; Jump if A(#FIRE_THICKNESS_D10) < L
     
     ; We are here because the shot is horizontal with the enemy, now check the vertical match.
-    LD A, (IX + sr.SPR.Y)                       ; A holds Y from the shot
+    LD A, (IX + SPR.Y)                       ; A holds Y from the shot
 
     ; Subtracts C from A and check whether the result is less than or equal to #FIRE_THICKNESS_D10.
     SUB C
@@ -224,7 +224,7 @@ ShotsCollision
 
 .continueShotsLoop
     ; Move IX to the beginning of the next #shotsXX
-    LD DE, sr.SPR
+    LD DE, SPR
     ADD IX, DE
 
     POP DE, BC
@@ -249,7 +249,7 @@ MoveShots
     PUSH BC                                     ; Preserve B for loop counter
 
     ; Skip hidden shoots.
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .continue
 
     ; Shot is visible, move it and update postion
@@ -258,7 +258,7 @@ MoveShots
     LD D, sr.MVX_IN_D_6PX_HIDE
 
     ; Setup move direction for shot
-    BIT STATE_SHOT_DIR_BIT, (IX + sr.SPR.STATE)
+    BIT STATE_SHOT_DIR_BIT, (IX + SPR.STATE)
     JR Z, .shotDirLeft
 
     ; Shot moves right
@@ -273,7 +273,7 @@ MoveShots
     CALL sr.UpdateSpritePosition
 
     ; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .afterPlatformHit               ; Exit if sprite is not alive
 
     ; Check the collision with the platform
@@ -288,7 +288,7 @@ MoveShots
 
 .continue
     ; Move IX to the beginning of the next #shotsXX
-    LD DE, sr.SPR
+    LD DE, SPR
     ADD IX, DE
     POP BC
     DJNZ .shootsLoop                            ; Jump if B > 0 (loop starts with B = #SPR)
@@ -356,12 +356,12 @@ Fire
     ; Find the first inactive (sprite hidden) shot
     CALL dbs.SetupArraysBank
     LD IX, dba.shots
-    LD DE, sr.SPR
+    LD DE, SPR
     LD B, dba.SHOTS_SIZE
 .findLoop
 
     ; Check whether the current #shotsX is not visible and can be reused
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + sr.SPR.STATE)
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterFound                           ; Jump if visibility is not set -> hidden, can be reused
 
     ; Move HL to the beginning of the next #shotsX (see "LD DE, SPR" above)
@@ -377,7 +377,7 @@ Fire
     BIT gid.MOVE_LEFT_BIT, A
     JR NZ, .movingLeft                          ; Jump if Jetman is moving left
 
-    XOR A                                       ; A will hold sr.SPR.STATE
+    XOR A                                       ; A will hold SPR.STATE
 
     ; Jetman is moving right, shot will move right also.
     SET STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state
@@ -385,11 +385,11 @@ Fire
     ; Set X coordinate for laser beam
     LD HL, (jpo.jetX)
     ADD HL, FIRE_ADJUST_X_D7
-    LD (IX + sr.SPR.X), HL
+    LD (IX + SPR.X), HL
     JR .afterMoving
 .movingLeft
 
-    XOR A                                       ; A will hold sr.SPR.STATE
+    XOR A                                       ; A will hold SPR.STATE
     ; Jetman is moving left
     RES STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state
 
@@ -406,7 +406,7 @@ Fire
     LD HL, 0
 .hlNotNegative
     POP AF
-    LD (IX + sr.SPR.X), HL
+    LD (IX + SPR.X), HL
 
 .afterMoving
 
@@ -415,7 +415,7 @@ Fire
     ; Set Y coordinate for laser beam
     LD A, (jpo.jetY)
     ADD A, FIRE_ADJUST_Y_D4
-    LD (IX + sr.SPR.Y), A
+    LD (IX + SPR.Y), A
 
     ; Setup laser beam pattern, IX already points to the right memory address.
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands

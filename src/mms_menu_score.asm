@@ -464,8 +464,8 @@ _UpdateCursor
     ; ##########################################
     ; Store X, Y position to sprite
     LD IX, dba.menuScoreCursor
-    LD (IX + sr.SPR.X), HL
-    LD (IX + sr.SPR.Y), E
+    LD (IX + SPR.X), HL
+    LD (IX + SPR.Y), E
 
     ; ##########################################
     CALL sr.UpdateSpritePosition

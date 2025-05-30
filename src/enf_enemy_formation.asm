@@ -3,12 +3,14 @@
 ;----------------------------------------------------------;
     MODULE enf
 
-; The enemy formation consists of multiple sprites. #dba.formationEnemySprites gives the first sprite, and #dba.ENEMY_FORMATION_SIZE
+    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyBank ###
+    
+; The enemy formation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #ENEMY_FORMATION_SIZE
 ; determines the amount. The deployment starts when #respawnDelayCnt will reach #respawnDelay. 
 ; There is also a delay in respawning each enemy in the formation (#enf.ENPS.RESPAWN_DELAY). It will define the distance between single
 ; enemies in the formation.
 
-spritesCnt              DB 0                    ; Counter for #dba.ENEMY_FORMATION_SIZE
+spritesCnt              DB 0                    ; Counter for #ENEMY_FORMATION_SIZE
 respawnDelay            DB 0                    ; Delay to respawn the whole formation
 respawnDelayCnt         DB 0                    ; Counter for #respawnDelay
 
@@ -16,11 +18,9 @@ respawnDelayCnt         DB 0                    ; Counter for #respawnDelay
 ;                 MoveFormationEnemies                     ;
 ;----------------------------------------------------------;
 MoveFormationEnemies
-    
-    CALL dbs.SetupArraysBank
-    
-    LD IX, dba.formationEnemySprites
-    LD B, dba.ENEMY_FORMATION_SIZE
+
+    LD IX, ena.formationEnemySprites
+    LD B, ena.ENEMY_FORMATION_SIZE
     CALL enp.MovePatternEnemies
 
     RET                                         ; ## END of the function ##
@@ -33,13 +33,12 @@ MoveFormationEnemies
 ;  - IX: Pointer to setup (#enf.ENPS)
 SetupEnemyFormation
 
-    CALL dbs.SetupArraysBank
     LD (respawnDelay), A
 
     ; ##########################################
     PUSH IX                                     ; Keep method param
-    LD B, dba.ENEMY_FORMATION_SIZE
-    LD IX, dba.formationEnemySprites
+    LD B, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
     CALL enp.ResetPatternEnemies
     POP IX
 
@@ -50,32 +49,31 @@ SetupEnemyFormation
 
     ; ##########################################
     ; Copy one given #ENPS to all #ENP
-    LD IY, dba.spriteExEf01                      ; Points to first #ENP
-    LD B, dba.ENEMY_FORMATION_SIZE               ; Enemies size (number of #ENP structs)
+    LD IY, ena.spriteExEf01                      ; Points to first #ENP
+    LD B, ena.ENEMY_FORMATION_SIZE               ; Enemies size (number of #ENP structs)
 .enpLoop
     CALL enp.ResetEnp
     CALL enp.CopyEnpsToEnp
 
     ; Move IY to next array position
     LD DE, IY
-    ADD DE, enp.ENP
+    ADD DE, ENP
     LD IY, DE
     DJNZ .enpLoop
 
     ; ##########################################
     ; Copy one given #ENPS to all #SPR 
-    LD IY, dba.formationEnemySprites             ; Pointer to #SPR array
-    LD B, dba.ENEMY_FORMATION_SIZE               ; Enemies size (number of #SPR structs)
+    LD IY, ena.formationEnemySprites             ; Pointer to #SPR array
+    LD B, ena.ENEMY_FORMATION_SIZE               ; Enemies size (number of #SPR structs)
 .sprLoop
-    LD A, (IX + enp.ENPS.SDB_INIT)
-    LD (IY + sr.SPR.SDB_INIT), A
+    LD A, (IX + ENPS.SDB_INIT)
+    LD (IY + SPR.SDB_INIT), A
 
     ; Move IY to next array position
     LD DE, IY
-    ADD DE, sr.SPR
+    ADD DE, SPR
     LD IY, DE
     DJNZ .sprLoop
-
 
     RET                                         ; ## END of the function ##
 
@@ -84,9 +82,6 @@ SetupEnemyFormation
 ;----------------------------------------------------------;
 RespawnFormation
 
-    CALL dbs.SetupArraysBank
-
-    ; ##########################################
     ; Check whether formation is disabled
     LD A, (respawnDelay)
     CP enp.RESPAWN_OFF
@@ -100,8 +95,8 @@ RespawnFormation
 
     ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous.
     ; deployment are still visible.
-    LD IX, dba.formationEnemySprites
-    LD B, dba.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    LD B, ena.ENEMY_FORMATION_SIZE
     CALL sr.CheckSpriteVisible
     CP _RET_YES_D1                              ; Return if at least one sprite is visible
     RET Z
@@ -127,7 +122,7 @@ RespawnFormation
 
     ; Check if deployment is over -> the last sprite has been deployed.
     LD A, (spritesCnt)
-    LD B, dba.ENEMY_FORMATION_SIZE
+    LD B, ena.ENEMY_FORMATION_SIZE
     CP B
     JR C, .deployNextEnemy                      ; Jump if #spritesCnt < #enf.ENEMY_FORMATION_SIZE -> There are still enemies that need to be deployed
     
@@ -140,13 +135,13 @@ RespawnFormation
 .deployNextEnemy
     ; ##########################################
     ; Deploy next enemy!
-    LD HL, dba.formationEnemySprites
+    LD HL, ena.formationEnemySprites
     LD IX, HL                                   ; IX points to the #SPR with the first sprite in the enemy formation
 
     ; Move IX to the current sprite in the enemy formation.
     LD A, (spritesCnt)
     LD D, A                                     ; IX = IX + spritesCnt * SPR
-    LD E, sr.SPR
+    LD E, SPR
     MUL D, E
     ADD IX, DE                                  ; Now IX points to the current #SPR that should be deployed
 

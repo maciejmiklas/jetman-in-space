@@ -63,9 +63,6 @@ mainLoop
     INCLUDE "pl_platform.asm"
     INCLUDE "bg_background.asm"
     INCLUDE "jm_jet_move.asm"
-    INCLUDE "enp_enemy_pattern.asm"
-    INCLUDE "enf_enemy_formation.asm"
-    INCLUDE "ens_enemy_single.asm"
     INCLUDE "jw_jet_weapon.asm"
     INCLUDE "ro_rocket.asm"
     INCLUDE "rof_rocket_fly.asm"
@@ -83,8 +80,6 @@ mainLoop
     INCLUDE "mms_menu_score.asm"
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
-    INCLUDE "ft_fuel_thief.asm"
-
 
     ; Imports below use ORG and dedicated memory bank!
 
@@ -93,38 +88,47 @@ mainLoop
     MMU _RAM_SLOT7, dbs.ST_BANK_S7_D28
     ORG _RAM_SLOT7_STA_HE000
     INCLUDE "dbs_data_starts.asm"
-    ; ##########################################
+    ASSERT $$ == dbs.ST_BANK_S7_D28
 
     ; ################ BANK 29 ################
     ; Before using it call #dbs.SetupArraysBank
     MMU _RAM_SLOT7, dbs.ARR_BANK_S7_D29
     ORG _RAM_SLOT7_STA_HE000
     INCLUDE "dba_data_arrays.asm"
-    ; ##########################################
+    ASSERT $$ == dbs.ARR_BANK_S7_D29
 
     ; ################ BANK 30 #################
     MMU _RAM_SLOT7, dbs.TI_SPR_BANK_S7_D30      ; Assign slots 7 to bank 30
     ORG _RAM_SLOT7_STA_HE000                    ; Set memory pointer to start of the slot 6
     INCLUDE "db_data_bin.asm"
-    ; ##########################################
+    ;ASSERT $$ == dbs.TI_SPR_BANK_S7_D30
 
     ; ################ BANK 32 #################
     ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
     MMU _RAM_SLOT6, dbs.AY_FX_S6_D32
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "af_audio_fx.asm"
-    ; ##########################################
+    ASSERT $$ == dbs.AY_FX_S6_D32
 
     ; ################ BANK  33 ################
     ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
     MMU _RAM_SLOT6, dbs.AY_MCODE_S6_D33
     ORG _RAM_SLOT6_STA_HC000
-
     INCLUDE "am_audio_music.asm"
     INCLUDE "aml_audio_music_loader.asm"
-    ; ##########################################
+    ASSERT $$ == dbs.AY_MCODE_S6_D33
 
-
+    ; ################ BANK  34 ################
+    ; TO USE THIS MODULE: CALL dbs.SetupEnemyBank
+    MMU _RAM_SLOT6, dbs.ENEMY_BANK_S6_B34
+    ORG _RAM_SLOT6_STA_HC000
+    INCLUDE "ena_enemy_data.asm"
+    INCLUDE "enf_enemy_formation.asm"
+    INCLUDE "enp_enemy_pattern.asm"
+    INCLUDE "ens_enemy_single.asm"
+    INCLUDE "enu_enemy_fuel_thief.asm"
+    ASSERT $$ == dbs.ENEMY_BANK_S6_B34
+    
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;

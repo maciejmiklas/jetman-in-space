@@ -3,29 +3,6 @@
 ;----------------------------------------------------------;
     MODULE sr
 
-;----------------------------------------------------------;
-;           Memory Structure for Single Sprite             ;
-;----------------------------------------------------------;
-    STRUCT SPR
-ID                      DB                      ; Sprite ID for #_SPR_REG_ATR3_H38
-SDB_INIT                DB                      ; Initial ID of Sprite from #srSpriteDB
-SDB_POINTER             DW                      ; Pointer to #srSpriteDB record
-X                       DW                      ; X position of the sprite
-Y                       DB                      ; Y position of the sprite
-
-; Bits:
-;   - 0:    #SPRITE_ST_VISIBLE_BIT
-;   - 1:    #SPRITE_ST_ACTIVE_BIT
-;   - 2:    Not used, but reserved for simple sprite (sr)
-;   - 3:    #SPRITE_ST_MIRROR_X_BIT
-;   - 4:    Not used, but reserved for simple sprite (sr)
-;   - 5-8:  Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT
-STATE                   DB
-NEXT                    DB                      ; ID in #ssSpriteDB for next animation record/state
-REMAINING               DB                      ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
-EXT_DATA_POINTER        DW                      ; Pointer to additional data structure for this sprite
-    ENDS
-
 ; When a weapon hits something, the sprite first gets status #SPRITE_ST_ACTIVE_BIT. After it stops exploding, it becomes status #SPRITE_ST_VISIBLE_BIT.
 
 ; Active flag, 1 - sprite is alive/active, 0 - sprite is dying (not active), disabled for collision detection, but visible (exploding/dying)
@@ -75,7 +52,7 @@ SDB_SEARCH_LIMIT        = 200
 CheckSpriteVisible
 
 .sprLoop
-    LD A, (IX + sr.SPR.STATE)
+    LD A, (IX + SPR.STATE)
     BIT sr.SPRITE_ST_VISIBLE_BIT, A
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden)
 
@@ -264,6 +241,7 @@ HideAllSimpleSprites
 ;  - IX:    Pointer to #SPR
 ; Modifies: A
 HideSimpleSprite
+    CALL dbs.SetupArraysBank
 
     CALL SetSpriteId
 
@@ -282,6 +260,7 @@ HideSimpleSprite
 ; Input:
 ;  - IX:    Pointer to #SPR.
 ShowSprite
+    CALL dbs.SetupArraysBank
 
     LD A, (IX + SPR.SDB_INIT)
     CALL _LoadSpritePattern                     ; Reset pattern
@@ -314,6 +293,7 @@ SetStateVisible
 ;  - IX:    Pointer to #SPR
 ; Modifies: A, BC, HL
 UpdateSpritePattern
+    CALL dbs.SetupArraysBank
 
     ; Switch to the next DB record if all bytes from the current one have been used
     LD A, (IX + SPR.REMAINING)
@@ -375,6 +355,7 @@ MVX_IN_D_2PX_ROL            = %0000'0'010       ; Move the sprite by 2 pixels an
 MVX_IN_D_MASK_CNT           = %00000'111
 ; Modifies; A, B, HL
 MoveX
+    CALL dbs.SetupArraysBank
 
     ; Load counter for .moveLeftLoop/.moveRightLoop into B
     LD A, D
@@ -498,6 +479,7 @@ MOVE_RET_HIDDEN             = 0                 ; Sprite outside screen, or hits
 ; Modifies: A
 MoveY
 
+    CALL dbs.SetupArraysBank
     CP MOVE_Y_IN_UP
     JR Z, .afterMovingUp                        ; Jump if moving up
 

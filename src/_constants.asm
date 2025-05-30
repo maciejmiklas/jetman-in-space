@@ -468,3 +468,55 @@ _BAR_RED_A2_SPR         = 181
 _BAR_RED_B1_SPR         = 188
 _BAR_RED_B2_SPR         = 189
 
+
+;----------------------------------------------------------;
+;       Single Enemy and Formation (Pattern Enemy)         ;
+;----------------------------------------------------------;
+
+; Extends #SPR by additional params.
+    STRUCT ENP
+; Bits:
+;   - 0:    #ENP_ALONG_BIT
+;   - 1:    #ENP_DEPLOY_BIT
+SETUP                   DB    
+MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter
+RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn
+RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter
+RESPAWN_Y               DB                      ; Respawn Y position
+MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX)
+MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX
+MOVE_PAT_STEP           DB                      ; Counters X,Y from current move pattern
+MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of single move pattern st Counts towards 0
+    ENDS
+
+; Setup values loaded for each level for #SPR
+    STRUCT ENPS
+RESPAWN_Y               DB                      ; Value for: ENP.RESPAWN_Y
+RESPAWN_DELAY           DB                      ; Value for: ENP.RESPAWN_DELAY
+MOVE_PAT_POINTER        DW                      ; Value for: ENP.MOVE_PAT_POINTER
+SDB_INIT                DB                      ; Value for: SPR.SDB_INIT
+SETUP                   DB                      ; Value for: ENP.SETUP
+    ENDS
+
+;----------------------------------------------------------;
+;           Memory Structure for Single Sprite             ;
+;----------------------------------------------------------;
+    STRUCT SPR
+ID                      DB                      ; Sprite ID for #_SPR_REG_ATR3_H38
+SDB_INIT                DB                      ; Initial ID of Sprite from #srSpriteDB
+SDB_POINTER             DW                      ; Pointer to #srSpriteDB record
+X                       DW                      ; X position of the sprite
+Y                       DB                      ; Y position of the sprite
+
+; Bits:
+;   - 0:    #SPRITE_ST_VISIBLE_BIT
+;   - 1:    #SPRITE_ST_ACTIVE_BIT
+;   - 2:    Not used, but reserved for simple sprite (sr)
+;   - 3:    #SPRITE_ST_MIRROR_X_BIT
+;   - 4:    Not used, but reserved for simple sprite (sr)
+;   - 5-8:  Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT
+STATE                   DB
+NEXT                    DB                      ; ID in #ssSpriteDB for next animation record/state
+REMAINING               DB                      ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
+EXT_DATA_POINTER        DW                      ; Pointer to additional data structure for this sprite
+    ENDS
