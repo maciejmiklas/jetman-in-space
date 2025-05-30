@@ -86,7 +86,7 @@ mainLoop
     INCLUDE "ft_fuel_thief.asm"
 
 
-    ; LAST import due to bank offset!
+    ; Imports below use ORG and dedicated memory bank!
 
     ; ################ BANK 28 ################
     ; Before using it call #dbs.SetupStarsBank
