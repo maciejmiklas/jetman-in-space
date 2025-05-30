@@ -383,8 +383,9 @@ RocketElementPickup
 
     ; ##########################################
     ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element
-    CALL ro.IsFuelDeployment
-    JR C, .notFuelTank
+    CALL ro.IsFuelDeployed
+    CP _RET_NO_D0
+    JR Z, .notFuelTank
 
     LD A, af.FX_PICKUP_FUEL
     CALL dbs.SetupAyFxsBank

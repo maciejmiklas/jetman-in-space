@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE ro
 
-RO_DROP_NEXT_D10         = 10                    ; Drop next element delay
+RO_DROP_NEXT_D10        = 10                    ; Drop next element delay
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element
 
@@ -180,13 +180,36 @@ UpdateRocketOnJetmanMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      IsFuelDeployment                    ;
+;                      IsFuelDeployed                    ;
 ;----------------------------------------------------------;
-; Output: CF == 1 if still assembling rocket (#rocketElementCnt < 4)
-IsFuelDeployment
+; Output:
+;  - A: _RET_YES_D1 or _RET_NO_D0
+
+;_RET_YES_D1             = 1
+;_RET_NO_D0              = 0
+IsFuelDeployed
 
     LD A, (rocketElementCnt)
     CP EL_TANK1_D4
+    JR C, .notFuel                              ; Jump if counter is < 4 (still assembling rocket)
+
+    ; Element count is correct, it could be fuel, but is it really out there?
+    LD A, (rocketState)
+    CP ROST_FALL_PICKUP
+    JR Z, .isFuel
+
+    CP ROST_WAIT_PICKUP
+    JR Z, .isFuel
+
+    CP ROST_FALL_ASSEMBLY
+    JR Z, .isFuel
+
+.notFuel
+    LD A, _RET_NO_D0
+    RET
+
+.isFuel
+    LD A, _RET_YES_D1
 
     RET                                         ; ## END of the function ##
 
@@ -204,8 +227,9 @@ CheckHitTank
     CALL dbs.SetupArraysBank
 
     ; Is the thank out there?
-    CALL IsFuelDeployment
-    RET C                                       ; Return if counter is < 4 (still assembling rocket)
+    CALL IsFuelDeployed
+    CP _RET_NO_D0
+    RET Z
 
     ; Is tank already exploding?
     LD A, (rocketState)
@@ -303,6 +327,7 @@ AnimateTankExplode
 ;               ResetCarryingRocketElement                 ;
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
+
     CALL dbs.SetupArraysBank
 
     ; Return if the state does not match carry
@@ -311,13 +336,14 @@ ResetCarryingRocketElement
     RET NZ
 
     CALL _ResetRocketElement
-    
+
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
 ;               RocketElementFallsForPickup                ;
 ;----------------------------------------------------------;
 RocketElementFallsForPickup
+
     CALL dbs.SetupArraysBank
 
     ; Return if there is no fall
@@ -383,6 +409,7 @@ UpdateElementPosition
 ;                    BlinkRocketReady                      ;
 ;----------------------------------------------------------;
 BlinkRocketReady
+
     CALL dbs.SetupArraysBank
 
     ; Return if rocket is not ready
@@ -412,6 +439,7 @@ BlinkRocketReady
 ;              RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly
+
     CALL dbs.SetupArraysBank
 
     ; Return if there is no assembly
@@ -452,7 +480,7 @@ RocketElementFallsForAssembly
     LD A, (IX + RO.ASSEMBLY_Y)
     CP B
     RET NZ                                      ; No, keep falling down
-    
+
     ; ##########################################
     ; Yes, element has reached landing postion, set state for next drop
     LD A, ROST_WAIT_DROP
@@ -460,14 +488,13 @@ RocketElementFallsForAssembly
 
     ; ##########################################
     ; Check if we are dropping fuel already. If it's the case, hide the fuel tank sprite. Sprite of rocket element remains visible
-    CALL IsFuelDeployment
-    JR C, .notFuel                              ; Jump if counter is < 4 (still assembling rocket)
+    LD A, (rocketElementCnt)
+    CP EL_TANK1_D4
+    RET C                                       ; Jump if counter is < 4 (still assembling rocket)
 
     ; We are dropping fuel already, hide the fuel sprite as it has reached the rocket
     LD A, (IX + RO.SPRITE_ID)
     CALL sp.SetIdAndHideSprite
-
-.notFuel
 
     RET                                         ; ## END of the function ##
 
@@ -578,7 +605,7 @@ UpdateRocketSpritePattern
 ;                   RemoveRocketElement                    ;
 ;----------------------------------------------------------;
 RemoveRocketElement
-    ;nextreg 2,8
+
     LD A, (rocketElementCnt)
     DEC A
     LD (rocketElementCnt), A
@@ -762,6 +789,7 @@ _ResetRocketElement
     CALL sp.SetIdAndHideSprite
 
     ; Reset the state and decrement element counter -> we will drop this element again
+
     CALL RemoveRocketElement
 
     RET                                         ; ## END of the function ##

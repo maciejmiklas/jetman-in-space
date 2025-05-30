@@ -104,7 +104,7 @@ SetupSingleEnemies
 ;----------------------------------------------------------;
 ; Respawns next single enemy. To respawn next from formation use enf.RespawnFormation
 RespawnNextSingleEnemy
-
+    ret
     CALL dbs.SetupArraysBank
 
     ; ##########################################    

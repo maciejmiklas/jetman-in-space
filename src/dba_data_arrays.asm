@@ -598,7 +598,7 @@ jetSpriteDB
 ;----------------------------------------------------------;
 
 AGND                    = 30*8
-TASM                    = 226
+TASM                    = 200
 TSID                    = rof.EXHAUST_SPRID_D83
 TSRE                    = 17
 
