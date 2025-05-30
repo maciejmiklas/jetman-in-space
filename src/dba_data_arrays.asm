@@ -85,28 +85,6 @@ menuScoreCursor
     SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
 ;----------------------------------------------------------;
-;                  Sprite Animations                       ;
-;----------------------------------------------------------;
-
-; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
-; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
-; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
-; containing another animation or a command like #SDB_HIDE that will hide the sprite.
-srSpriteDB
-    sr.SPR_REC {sr.SDB_EXPLODE, sr.SDB_HIDE - sr.SDB_SUB,   04}
-            DB 30, 31, 32, 33
-    sr.SPR_REC {sr.SDB_FIRE,    sr.SDB_FIRE - sr.SDB_SUB,   02}
-            DB 54, 55
-    sr.SPR_REC {sr.SDB_ENEMY1,  sr.SDB_ENEMY1 - sr.SDB_SUB, 24}
-            DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
-    sr.SPR_REC {sr.SDB_ENEMY2,  sr.SDB_ENEMY2 - sr.SDB_SUB, 03}
-            DB 48, 49, 50
-    sr.SPR_REC {sr.SDB_ENEMY3,  sr.SDB_ENEMY3 - sr.SDB_SUB, 03}
-            DB 34, 35, 36
-    sr.SPR_REC {sr.FUEL_THIEF,  sr.FUEL_THIEF - sr.SDB_SUB, 03}
-            DB 58, 59, 63
-
-;----------------------------------------------------------;
 ;                     Jetman Sprite Data                   ;
 ;----------------------------------------------------------;
 

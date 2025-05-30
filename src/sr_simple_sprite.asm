@@ -40,6 +40,28 @@ SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds
 SDB_SEARCH_LIMIT        = 200
 
 ;----------------------------------------------------------;
+;                  Sprite Animations                       ;
+;----------------------------------------------------------;
+
+; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
+; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
+; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
+; containing another animation or a command like #SDB_HIDE that will hide the sprite.
+srSpriteDB
+    sr.SPR_REC {sr.SDB_EXPLODE, sr.SDB_HIDE - sr.SDB_SUB,   04}
+            DB 30, 31, 32, 33
+    sr.SPR_REC {sr.SDB_FIRE,    sr.SDB_FIRE - sr.SDB_SUB,   02}
+            DB 54, 55
+    sr.SPR_REC {sr.SDB_ENEMY1,  sr.SDB_ENEMY1 - sr.SDB_SUB, 24}
+            DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
+    sr.SPR_REC {sr.SDB_ENEMY2,  sr.SDB_ENEMY2 - sr.SDB_SUB, 03}
+            DB 48, 49, 50
+    sr.SPR_REC {sr.SDB_ENEMY3,  sr.SDB_ENEMY3 - sr.SDB_SUB, 03}
+            DB 34, 35, 36
+    sr.SPR_REC {sr.FUEL_THIEF,  sr.FUEL_THIEF - sr.SDB_SUB, 03}
+            DB 58, 59, 63
+
+;----------------------------------------------------------;
 ;                   #CheckSpriteVisible                    ;
 ;----------------------------------------------------------;
 ; Input:
@@ -241,7 +263,6 @@ HideAllSimpleSprites
 ;  - IX:    Pointer to #SPR
 ; Modifies: A
 HideSimpleSprite
-    CALL dbs.SetupArraysBank
 
     CALL SetSpriteId
 
@@ -260,7 +281,6 @@ HideSimpleSprite
 ; Input:
 ;  - IX:    Pointer to #SPR.
 ShowSprite
-    CALL dbs.SetupArraysBank
 
     LD A, (IX + SPR.SDB_INIT)
     CALL _LoadSpritePattern                     ; Reset pattern
@@ -293,7 +313,6 @@ SetStateVisible
 ;  - IX:    Pointer to #SPR
 ; Modifies: A, BC, HL
 UpdateSpritePattern
-    CALL dbs.SetupArraysBank
 
     ; Switch to the next DB record if all bytes from the current one have been used
     LD A, (IX + SPR.REMAINING)
@@ -355,8 +374,6 @@ MVX_IN_D_2PX_ROL            = %0000'0'010       ; Move the sprite by 2 pixels an
 MVX_IN_D_MASK_CNT           = %00000'111
 ; Modifies; A, B, HL
 MoveX
-    CALL dbs.SetupArraysBank
-
     ; Load counter for .moveLeftLoop/.moveRightLoop into B
     LD A, D
     AND MVX_IN_D_MASK_CNT
@@ -478,8 +495,6 @@ MOVE_RET_VISIBLE            = 1                 ; Sprite is still visible
 MOVE_RET_HIDDEN             = 0                 ; Sprite outside screen, or hits ground
 ; Modifies: A
 MoveY
-
-    CALL dbs.SetupArraysBank
     CP MOVE_Y_IN_UP
     JR Z, .afterMovingUp                        ; Jump if moving up
 
@@ -534,7 +549,7 @@ MoveY
 _LoadSpritePattern
 
     ; Find DB record.
-    LD HL, dba.srSpriteDB                       ; HL points to the beginning of the DB
+    LD HL, srSpriteDB                       ; HL points to the beginning of the DB
     LD BC, SDB_SEARCH_LIMIT                     ; Limit CPIR search
     CPIR                                        ; CPIR will keep increasing HL until it finds a record ID from A
 
