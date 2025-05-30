@@ -1,5 +1,6 @@
 <img src="/img/cover.jpg" width="800px"/>
    
+Click on the image to play video:
 [![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
    
 <img src="/img/scr1.jpg" width="640px"/>
