@@ -187,7 +187,7 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the left side of the screen, if he deployed right
-    BIT enp.ENP_DEPLOY_BIT, (IY + ENP.SETUP)
+    BIT enp.ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     JR NZ, .notHideLeft                        ; Jump if bit is 0 -> deploy left
 
     LD BC, (IX + SPR.X)
@@ -204,7 +204,7 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the right side of the screen (315 =  $13B), if he deployed left
-    BIT enp.ENP_DEPLOY_BIT, (IY + ENP.SETUP)
+    BIT enp.ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     JR Z, .notHideRight                        ; Jump if bit is 1 -> deploy right
 
     LD BC, (IX + SPR.X)

@@ -475,10 +475,10 @@ _BAR_RED_B2_SPR         = 189
 
 ; Extends #SPR by additional params.
     STRUCT ENP
-; Bits:
-;   - 0:    #ENP_ALONG_BIT
-;   - 1:    #ENP_DEPLOY_BIT
-SETUP                   DB    
+; Setup bits:
+;   - 0:    #ENP_S_BIT_ALONG
+;   - 1:    #ENP_S_BIT_DEPLOY
+SETUP                   DB
 MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter

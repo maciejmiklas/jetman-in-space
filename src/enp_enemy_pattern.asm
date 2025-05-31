@@ -10,15 +10,31 @@
 ; - single enemies that fly independently from each other (es_enemy_single.asm), and 
 ; - pattern enemies that fly together (ep_enemy_pattern.asm)
 
+; SEE ALSO _constants.asm -> #ENP and #ENPS
 
-; Bits 4-7 on SPR.STATE will be used here:
-ENP_ALONG_BIT           = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform
-ENP_DEPLOY_BIT          = 1                     ; 1 - deploy enemy on the left, 0 - on the right
+; Each enemy has a dedicated behavior given by #ENP. #ENP contains a few bytes configuring the enemy's behavior. Others are set during runtime. 
+; The game has a maximum of 20 enemies (#spriteEx01 - #spriteEx020) that can be active in a game. #ENP is a generic structure configuring 
+; enemies and has to be configured for each level so that we have different enemies. To have this ability to configure it per level, 
+; there is another structure, #ENPS - this structure has elements with the same name as #ENP (but not all, only those that we can configure). 
+; Before the level starts, values from ENPS are directly copied to ENP, and enemies for this level are configured and ready to go.
+; Enemies can move according to the different movement patterns given by #ENP.MOVE_PAT_POINTER. After they are destroyed, the next 
+; deployment is delayed by #ENP.RESPAWN_DELAY. #ENP.SDB_INIT gives Sprite animation. #ENP.RESPAWN_Y determines the horizontal respawn position.
+; #ENP.SETUP (see #ENP_S_BIT_XXX) decides whether the enemy is deployed on the right or left side of the screen and whether it should hit 
+; a platform, fly along it, or bounce from it.
 
-ENP_S_RIGHT_ALONG       = %000000'0'1
-ENP_S_RIGHT_HIT         = %000000'0'0
-ENP_S_LEFT_ALONG        = %000000'1'1
-ENP_S_LEFT_HIT          = %000000'1'0
+; Values for #ENP.SETUP
+ENP_S_BIT_ALONG         = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform
+ENP_S_BIT_DEPLOY        = 1                     ; 1 - deploy enemy on the left, 0 - on the right
+ENP_S_BIT_BOUNCE        = 3                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG is ignored, 0 - disabled
+ENP_S_BIT_REVERSE_V     = 6                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R
+ENP_S_BIT_REVERSE_H     = 7                     ; 1 - reverses up/down movement, set during runtime when enemy hits platform from top/bottom
+
+ENP_S_RIGHT_ALONG       = %00000'0'0'1 
+ENP_S_RIGHT_HIT         = %00000'0'0'0 
+ENP_S_LEFT_ALONG        = %00000'0'1'1 
+ENP_S_LEFT_HIT          = %00000'0'1'0 
+ENP_S_LEFT_BOUNCE       = %00000'1'1'0 
+ENP_S_RIGHT_BOUNCE      = %00000'1'1'0 
 
 MOVE_DELAY_CNT_INC      = %0001'0000 
 
@@ -381,7 +397,7 @@ RespawnPatternEnemy
     LD (IX + SPR.Y), A
 
     ; Set X to left or right side of the screen
-    BIT ENP_DEPLOY_BIT, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     JR NZ, .deployLeft                          ; Jump if bit is 0 -> deploy left
 
     ; Deploy right
@@ -437,7 +453,7 @@ _LoadMoveDelay
 _MoveEnemyX
 
     LD D, MOVEX_SETUP                           ; D contains configuration for MoveX
-    BIT ENP_DEPLOY_BIT, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     JR NZ, .deployedLeft                        ; Jump if bit is 0 -> deploy left
 
     ; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_BIT
@@ -502,7 +518,7 @@ _MoveEnemy
 
     ; ##########################################
     ; Should the enemy move along the platform to avoid collision?
-    BIT ENP_ALONG_BIT, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_ALONG, (IY + ENP.SETUP)
     JR Z, .afterMoveAlong                       ; Jump if move along is not set
 
     ; Check the collision with the platform
@@ -510,7 +526,7 @@ _MoveEnemy
     CALL pl.PlatformSpriteClose
     POP HL, IY
 
-    CP A, pl.PL_HIT_RET_A_NO
+    CP A, pl.PL_HIT_NO
     JR Z, .afterMoveAlong                       ; Jump if there is no collision
 
     ; Avoid collision with the platform by moving along it
@@ -643,7 +659,7 @@ _MoveEnemy
 .checkPlatformHit
 
     CALL pl.PlatformSpriteHit
-    CP A, pl.PL_HIT_RET_A_NO
+    CP A, pl.PL_HIT_NO
     RET Z                                       ; Return if there is no collision
     CALL sr.SpriteHit                           ; Explode!
     
