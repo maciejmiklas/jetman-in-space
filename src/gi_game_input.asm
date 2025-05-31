@@ -251,10 +251,10 @@ _Key_M
 ;----------------------------------------------------------;
 _Key_Q
 
-  CALL gc.LoadLevel1
+  ;CALL gc.LoadLevel1
    ;CALL ro.AssemblyRocketForDebug
-    ;LD A, (ro.rocketElementCnt)
-    ;nextreg 2,8
+    LD A, (js.sprState)
+    nextreg 2,8
 
     RET                                         ; ## END of the function ##
 

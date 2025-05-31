@@ -211,13 +211,11 @@ PrintNumber
 ;                        HlEqualB                          ;
 ;----------------------------------------------------------;
 ; Check if both H and L are equal to B
-HL_IS_B                 = 0
-HL_NOT_B                = 1
 ; Input:
 ;  - HL:    Value to compare to B
 ;  - B:     Value to compare to HL
 ; Return:
-;  - A:     #HL_IS_0 or #HL_NOT_0
+;  - A:     #_RET_YES_D1 or #_RET_NO_D0
 HlEqualB
 
     LD A, H                                     ; Check if H == B
@@ -228,11 +226,11 @@ HlEqualB
     JR NZ, .notEqual                            ; Jump if L == B
     
     ; H == B and L == B
-    LD A, HL_IS_B
-    RET                                             
+    LD A, _RET_YES_D1
+    RET
     
 .notEqual
-    LD A, HL_NOT_B
+    LD A, _RET_NO_D0
 
     RET                                         ; ## END of the function ##
 

@@ -161,9 +161,8 @@ JetInvincible
     LD HL, (invincibleCnt)
     LD B, 0
     CALL ut.HlEqualB
-    CP ut.HL_IS_B
+    CP _RET_YES_D1
     RET Z
-.after0Check
 
     DEC HL
     LD (invincibleCnt), HL                      ; Decrement counter and store it
@@ -172,7 +171,7 @@ JetInvincible
     ; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
     LD B, 0
     CALL ut.HlEqualB
-    CP ut.HL_IS_B
+    CP _RET_YES_D1
     JR Z, .lastIteration                        ; HL == 0
 
     ; ##########################################
@@ -205,7 +204,7 @@ JetInvincible
     CALL js.ShowJetSprite
 
     RET                                         ; ## END of the function ##
-    
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
