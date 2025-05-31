@@ -432,20 +432,12 @@ platformsSizeL4         DB 7
 
 ; Level 5
 platformsL5
-    pl.PLA {09*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL5         DB 11
+    pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {12*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+    pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 23*8/*Y_BOTTOM*/}
+    pl.PLA {32*8/*X_LEFT*/, 37*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
+platformsSizeL5         DB 5
 
 ; Level 6
 platformsL6
@@ -496,12 +488,20 @@ platformsSizeL8         DB 15
 
 ; Level 9
 platformsL9
-    pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-    pl.PLA {12*8/*X_LEFT*/, 17*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
-    pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-    pl.PLA {23*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 23*8/*Y_BOTTOM*/}
-    pl.PLA {32*8/*X_LEFT*/, 37*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
-platformsSizeL9         DB 5
+    pl.PLA {09*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
+    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
+platformsSizeL9         DB 11
 
 ; Level 10
 platformsL10
