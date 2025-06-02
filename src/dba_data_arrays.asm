@@ -387,10 +387,10 @@ DEPLOY_ORDER_SIZE       = 20
 ; true for "top margin". Here, the "close margin" has to be larger so that the enemy first starts flying along the platform and does not 
 ; hit it first.
 closeMargin     pl.PLAM { 14/*X_LEFT*/, 14/*X_RIGHT*/, 18/*Y_TOP*/, 09/*Y_BOTTOM*/}
-spriteHitMargin pl.PLAM { 15/*X_LEFT*/, 15/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
+spriteHitMargin pl.PLAM { 13/*X_LEFT*/, 08/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/} ; { 13/*X_LEFT*/, 08/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
 shotHitMargin   pl.PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
 jetHitMargin    pl.PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
-bounceMargin    pl.PLAM { 17/*X_LEFT*/, 20/*X_RIGHT*/, 20/*Y_TOP*/, 11/*Y_BOTTOM*/}
+bounceMargin    pl.PLAM { 15/*X_LEFT*/, 10/*X_RIGHT*/, 15/*Y_TOP*/, 11/*Y_BOTTOM*/}
 
 ; Be careful - Jetman bumps into a platform and gets pushed away, which counts as movement. When Jetman gets pushed too far,
 ; it exceeds the margin defined here, resetting #joyOffBump.

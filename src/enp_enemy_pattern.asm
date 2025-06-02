@@ -26,7 +26,7 @@
 ENP_S_BIT_ALONG         = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform
 ENP_S_BIT_DEPLOY        = 1                     ; 1 - deploy enemy on the left, 0 - on the right
 ENP_S_BIT_BOUNCE        = 2                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG is ignored, 0 - disabled
-ENP_S_BIT_REVERSE_V     = 6                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R
+ENP_S_BIT_REVERSE_Y     = 6                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R
 ENP_S_BIT_REVERSE_H     = 7                     ; 1 - reverses up/down movement, set during runtime when enemy hits platform from top/bottom
 
 ENP_S_RIGHT_ALONG       = %00000'0'0'1 
@@ -152,8 +152,8 @@ ResetEnp
 ;----------------------------------------------------------;
 ; Resets #SPR and linked #ENP
 ; Input:
-;  - IX:  Pointer to the #SPR array
-;  - B:   Size of the #SPR and #ENP array (both will be modified)
+;  - IX: Pointer to the #SPR array
+;  - B:  Size of the #SPR and #ENP array (both will be modified)
 ResetPatternEnemies
 
 .enemyLoop
@@ -387,9 +387,11 @@ RespawnPatternEnemy
     XOR A                                       ; Set A to 0
     LD (IY + ENP.RESPAWN_DELAY_CNT), A
 
+    ; Reset reverse
+    RES ENP_S_BIT_REVERSE_Y, (IY + ENP.SETUP)
+
     CALL _LoadMoveDelay
     CALL _SetDelayCnt
-
     CALL _RestartMovePattern
 
     ; Set Y (horizontal respawn)
@@ -472,11 +474,6 @@ _MoveEnemyX
     ; Move right
 .moveRight
 
-    ; Is reverse set? If so reverse movement from right to left
-    BIT ENP_S_BIT_REVERSE_H, (IY + ENP.SETUP)
-    JR NZ, .moveLeftExec
-
-.moveRightExec
     ; Reverse bit not set, now really move right
     LD D, sr.MVX_IN_D_1PX_ROL
     SET sr.MVX_IN_D_TOD_DIR_BIT, D
@@ -489,11 +486,6 @@ _MoveEnemyX
     ; Move left
 .moveLeft
 
-    ; Is reverse set? If so reverse movement from left to right 
-    BIT ENP_S_BIT_REVERSE_H, (IY + ENP.SETUP)
-    JR NZ, .moveRightExec
-
-.moveLeftExec
     ; Reverse bit not set, now really move left
     LD D, sr.MVX_IN_D_1PX_ROL
     RES sr.MVX_IN_D_TOD_DIR_BIT, D
@@ -540,7 +532,7 @@ _MoveEnemy
     ; ##########################################
     ; Should enemy bounce of the platform?
     BIT ENP_S_BIT_BOUNCE, (IY + ENP.SETUP)
-    JR Z, .afterBounceX                        ; Jump if bounce is not set
+    JR Z, .afterBounceSetup                        ; Jump if bounce is not set
 
     ; Check the collision with the platform
     PUSH IX, IY, HL
@@ -551,33 +543,35 @@ _MoveEnemy
     POP HL, IY, IX
 
     CP pl.PL_DHIT_NO
-    JR Z, .afterBounceX
+    JR Z, .afterBounceSetup
 
     CP pl.PL_DHIT_LEFT
-    JR Z, .bounceLr
+    JR Z, .bounceL
 
     CP pl.PL_DHIT_RIGHT
-    JR Z, .bounceLr
+    JR Z, .bounceR
 
     CP pl.PL_DHIT_TOP
-    JR Z, .bounceTb
+    JR Z, .bounceHorizontal
 
     CP pl.PL_DHIT_BOTTOM
-    JR Z, .bounceTb
+    JR Z, .bounceHorizontal
 
-.bounceTb
+.bounceHorizontal
     ; Enemy bounces from the platform's top/bottom
-    SET ENP_S_BIT_REVERSE_V, (IY + ENP.SETUP)
-
-    push af: ld a, $d1: nextreg 2,8: pop af
-
-    JR .afterBounceX
-.bounceLr
-    ; Enemy bounces from the platform's left/right
-     SET ENP_S_BIT_REVERSE_H, (IY + ENP.SETUP)
-
-    push af: ld a, $d2: nextreg 2,8: pop af
-.afterBounceX
+    SET ENP_S_BIT_REVERSE_Y, (IY + ENP.SETUP)
+    JR .afterBounceSetup
+.bounceL
+    ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction
+    RES ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
+    
+    JR .afterBounceSetup
+.bounceR
+    ; Enemy bounces from the platform's right side
+    SET ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
+.afterBounceSetup
 
     ; ##########################################
     ; Should the enemy move along the platform to avoid collision?
@@ -597,7 +591,6 @@ _MoveEnemy
     CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
     RET                                         ; Return, sprite moves along platform
 .afterMoveAlong
-
 
     ; ##########################################
     ; Check if counter for X has already reached 0, or is set to 0
@@ -628,10 +621,28 @@ _MoveEnemy
 
     ; Move on Y-axis one pixel up or down?
     LD A, (HL)                                  ; A contains current pattern
+
+
+
+
+    ; Reverse movement direction?
+    BIT ENP_S_BIT_REVERSE_Y, (IY + ENP.SETUP)
+    JR Z, .doNotReverseY
+
+    ;push af: ld b, $F1: nextreg 2,8: pop af
+    ; Yes, reverse bit is set, up -> down, down -> up
+    XOR MOVE_PAT_Y_TOD_DIR_MASK
+    ;push af: ld b, $F2: nextreg 2,8: pop af
+.doNotReverseY
+
+
+
+
+
     BIT MOVE_PAT_Y_TOD_DIR_BIT, A
     JR Z, .moveUp                               ; Jump if sprite should move up
 
-    ; Move on pixel down.
+    ; Move on pixel down
     LD A, sr.MOVE_Y_IN_DOWN
     CALL sr.MoveY
     CP sr.MOVE_RET_HIDDEN
