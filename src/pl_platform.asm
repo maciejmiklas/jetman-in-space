@@ -96,7 +96,6 @@ JetPlatformHitOnJoyMove
     RET Z
     LD D, A                                     ; Keep return flag D
 
-
     ; ##########################################
     ; Jetman hits the platform, now check what it means
 
@@ -189,7 +188,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Does Jetman hit the platform from the bottom?
     LD A, D
-    CP PL_DHIT_RET_A_BOTTOM
+    CP PL_DHIT_BOTTOM
     JR NZ, .afterHitBottom
 
     ; Is Jetman moving up?
@@ -404,10 +403,18 @@ JetLanding
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                PlatformDirectionClose                    ;
+;                 PlatformBounceOff                   ;
 ;----------------------------------------------------------;
-PlatformDirectionClose
-    LD IX, dba.closeMargin
+; Input:
+;  - HL:    Pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision
+PlatformBounceOff
+
+    LD IY, (platforms)
+
+    LD A, (platformsSize)
+    LD B, A
+
+    LD IX, dba.bounceMargin
 
 ;----------------------------------------------------------;
 ;                 PlatformDirectionHit                     ;
@@ -425,7 +432,7 @@ PL_DHIT_NO              = 0                     ; No collision
 PL_DHIT_LEFT            = 1                     ; Sprite hits the platform from the left
 PL_DHIT_RIGHT           = 2                     ; Sprite hits the platform from the right
 PL_DHIT_TOP             = 3                     ; Sprite hits the platform from above
-PL_DHIT_RET_A_BOTTOM    = 4                     ; Sprite hits the platform from below
+PL_DHIT_BOTTOM          = 4                     ; Sprite hits the platform from below
 ; Modifies: All
 
 PlatformDirectionHit
@@ -451,7 +458,7 @@ PlatformDirectionHit
 
     LD A, PL_DHIT_LEFT
     RET
-.afterHitLeft   
+.afterHitLeft
 
     ; ##########################################
     ; Check the collision from the right side of the platform
@@ -507,7 +514,7 @@ PlatformDirectionHit
     CP _RET_YES_D1
     JR NZ, .afterHitBottom
 
-    LD A, PL_DHIT_RET_A_BOTTOM
+    LD A, PL_DHIT_BOTTOM
     RET
 .afterHitBottom
 
@@ -865,13 +872,14 @@ _CheckPlatformHitBottom
 ; Modifies: BC, DE
 _CheckPlatformHitLeft
 
-    ; Check [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X]
+    ; Check if [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X]
     LD DE, (IY + PLA.X_LEFT)
     LD BC, HIT_MARGIN_D5
     ADD DE, BC
 
     LD BC, (IX + PLAM.X_LEFT)
-    SUB DE, BC                                  ; DE contains [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5]
+
+    SUB DE, BC                                  ; DE contains: #PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5
 
     ; Load (HL) into HL (sprite X), as preparation for SBC
     PUSH HL
@@ -881,7 +889,7 @@ _CheckPlatformHitLeft
     SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision
     POP HL
     JP M, .keepChecking
-    
+
     LD A, _RET_NO_D0                            ; HL(sprite X) - DE > 0 -> No collision
     RET
 .keepChecking
@@ -895,14 +903,17 @@ _CheckPlatformHitLeft
     LD HL, (IY + PLA.X_LEFT)
     LD DE, (IX + PLAM.X_LEFT)
     SBC HL, DE                                  ; HL contains [#PLA.X_LEFT - #PLAM.X_LEFT]
-
+    ;push af: ld a, $a1: nextreg 2,8: pop af
     SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0
+
     POP HL
     JP M, .hit
 
     LD A, _RET_NO_D0
+    ;push af: ld a, $f0: nextreg 2,8: pop af
     RET
-.hit    
+.hit
+   ; push af: ld a, $f1: nextreg 2,8: pop af
     LD A, _RET_YES_D1
 
     RET                                         ; ## END of the function ##

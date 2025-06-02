@@ -25,7 +25,7 @@
 ; Values for #ENP.SETUP
 ENP_S_BIT_ALONG         = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform
 ENP_S_BIT_DEPLOY        = 1                     ; 1 - deploy enemy on the left, 0 - on the right
-ENP_S_BIT_BOUNCE        = 3                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG is ignored, 0 - disabled
+ENP_S_BIT_BOUNCE        = 2                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG is ignored, 0 - disabled
 ENP_S_BIT_REVERSE_V     = 6                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R
 ENP_S_BIT_REVERSE_H     = 7                     ; 1 - reverses up/down movement, set during runtime when enemy hits platform from top/bottom
 
@@ -456,6 +456,7 @@ _MoveEnemyX
     BIT ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     JR NZ, .deployedLeft                        ; Jump if bit is 0 -> deploy left
 
+.deployRight
     ; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_BIT
     BIT MOVE_PAT_X_TOD_DIR_BIT, (HL)
     JR NZ, .moveLeft                            ; Jump if bit is set to 1 (right), invert right -> left
@@ -467,19 +468,37 @@ _MoveEnemyX
     JR NZ, .moveRight                           ; Jump if bit is set to 1 (right)
     JR .moveLeft                                ; Bit is 0 -> move left
 
-.moveRight                                      ; Move right
+    ; ##########################################
+    ; Move right
+.moveRight
+
+    ; Is reverse set? If so reverse movement from right to left
+    BIT ENP_S_BIT_REVERSE_H, (IY + ENP.SETUP)
+    JR NZ, .moveLeftExec
+
+.moveRightExec
+    ; Reverse bit not set, now really move right
     LD D, sr.MVX_IN_D_1PX_ROL
     SET sr.MVX_IN_D_TOD_DIR_BIT, D
     PUSH HL
-    CALL sr.MoveX   
+    CALL sr.MoveX
     POP HL
     RET
 
-.moveLeft                                       ; Move left
+    ; ##########################################
+    ; Move left
+.moveLeft
+
+    ; Is reverse set? If so reverse movement from left to right 
+    BIT ENP_S_BIT_REVERSE_H, (IY + ENP.SETUP)
+    JR NZ, .moveRightExec
+
+.moveLeftExec
+    ; Reverse bit not set, now really move left
     LD D, sr.MVX_IN_D_1PX_ROL
     RES sr.MVX_IN_D_TOD_DIR_BIT, D
     PUSH HL
-    CALL sr.MoveX   
+    CALL sr.MoveX
     POP HL
 
     RET                                         ; ## END of the function ##
@@ -506,6 +525,8 @@ _MoveEnemy
     ;  - IY: pointer to #ENP for current sprite
     ;  - HL: pointer to current position in #movePattern
 
+    ; ##########################################
+    ; Is enemy alive?
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .afterAliveCheck                     ; Jump if sprite is alive
 
@@ -513,8 +534,50 @@ _MoveEnemy
     CALL _MoveEnemyX
     CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
 
-    RET                                         ; Return - sprite is exploding
+    RET                                         ; Return - enemy is exploding
 .afterAliveCheck
+
+    ; ##########################################
+    ; Should enemy bounce of the platform?
+    BIT ENP_S_BIT_BOUNCE, (IY + ENP.SETUP)
+    JR Z, .afterBounceX                        ; Jump if bounce is not set
+
+    ; Check the collision with the platform
+    PUSH IX, IY, HL
+    LD HL, IX
+    ADD HL, SPR.X
+
+    CALL pl.PlatformBounceOff
+    POP HL, IY, IX
+
+    CP pl.PL_DHIT_NO
+    JR Z, .afterBounceX
+
+    CP pl.PL_DHIT_LEFT
+    JR Z, .bounceLr
+
+    CP pl.PL_DHIT_RIGHT
+    JR Z, .bounceLr
+
+    CP pl.PL_DHIT_TOP
+    JR Z, .bounceTb
+
+    CP pl.PL_DHIT_BOTTOM
+    JR Z, .bounceTb
+
+.bounceTb
+    ; Enemy bounces from the platform's top/bottom
+    SET ENP_S_BIT_REVERSE_V, (IY + ENP.SETUP)
+
+    push af: ld a, $d1: nextreg 2,8: pop af
+
+    JR .afterBounceX
+.bounceLr
+    ; Enemy bounces from the platform's left/right
+     SET ENP_S_BIT_REVERSE_H, (IY + ENP.SETUP)
+
+    push af: ld a, $d2: nextreg 2,8: pop af
+.afterBounceX
 
     ; ##########################################
     ; Should the enemy move along the platform to avoid collision?
@@ -522,9 +585,9 @@ _MoveEnemy
     JR Z, .afterMoveAlong                       ; Jump if move along is not set
 
     ; Check the collision with the platform
-    PUSH IY, HL
+    PUSH IX, IY, HL
     CALL pl.PlatformSpriteClose
-    POP HL, IY
+    POP HL, IY, IX
 
     CP A, pl.PL_HIT_NO
     JR Z, .afterMoveAlong                       ; Jump if there is no collision
@@ -534,6 +597,7 @@ _MoveEnemy
     CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
     RET                                         ; Return, sprite moves along platform
 .afterMoveAlong
+
 
     ; ##########################################
     ; Check if counter for X has already reached 0, or is set to 0
@@ -551,7 +615,7 @@ _MoveEnemy
 .afterMoveLR
 
     ; ##########################################
-    ; Check if counter for Y has already reached 0, or is set to 0.
+    ; Check if counter for Y has already reached 0, or is set to 0
     LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters
     AND MOVE_PAT_Y_MASK                         ; Reset all but Y
     CP 0
