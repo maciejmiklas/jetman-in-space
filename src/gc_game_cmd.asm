@@ -628,17 +628,6 @@ RespawnJet
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    JetpackOverheat                       ;
-;----------------------------------------------------------;
-JetpackOverheat
-
-    LD A, af.FX_JET_OVERHEAT
-    CALL dbs.SetupAyFxsBank
-    CALL af.AfxPlay
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                    JetpackOverHard                       ;
 ;----------------------------------------------------------;
 JetpackOverHard

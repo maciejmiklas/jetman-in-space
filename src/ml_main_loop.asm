@@ -629,7 +629,23 @@ _MainLoop080
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
+    CALL _MainLoop080OnActiveGame
 
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 _MainLoop080OnActiveGame                 ;
+;----------------------------------------------------------;
+_MainLoop080OnActiveGame
+
+    ; Return if game is inactive
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
+
+    ; ##########################################
+    CALL jo.JetpackOverheatFx
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

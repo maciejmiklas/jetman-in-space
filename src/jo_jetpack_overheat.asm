@@ -118,6 +118,21 @@ UpdateJetpackOverheating
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   JetpackOverheatFx                      ;
+;----------------------------------------------------------;
+JetpackOverheatFx
+
+    LD A, (jt.jetState)
+    CP jt.JETST_OVERHEAT
+    RET NZ
+
+    LD A, af.FX_JET_OVERHEAT
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
@@ -174,14 +189,17 @@ _JetpackTempUp
 
     ; Jetpack has overhated.
     LD A, jt.JETST_OVERHEAT
+    CALL jt.SetJetState
     LD (jt.jetState), A
 
-    CALL gc.JetpackOverheat
+    LD A, af.FX_JET_OVERHEAT
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
 
-.afterTempCheck 
+.afterTempCheck
 
     CALL _UpdateUiHeatBar
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
