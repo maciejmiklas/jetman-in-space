@@ -4,7 +4,8 @@
 > [DOWNLOAD SECTION](https://github.com/maciejmiklas/jetman-in-space/releases)
 
 
-Click on the image to play video:
+> [!NOTE]
+> Click on the image below to play video
 [![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
    
 <img src="/img/scr1.jpg" width="640px"/>
