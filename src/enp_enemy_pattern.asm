@@ -35,7 +35,7 @@ ENP_S_LEFT_ALONG        = %0000'0'0'1'1
 ENP_S_LEFT_HIT          = %0000'0'0'1'0 
 ENP_S_LEFT_BOUNCE       = %0000'0'1'1'0 
 ENP_S_RIGHT_BOUNCE      = %0000'0'1'1'0 
-ENP_S_LEFT_BOUNCE_AN    = %0000'1'1'1'0 
+ENP_S_LEFT_BOUNCE_AN    = %0000'1'1'1'0         ; Deploy left, bounce, animate bounce effect
 ENP_S_RIGHT_BOUNCE_AN   = %0000'1'1'1'0 
 ENP_S_REVERSE_Y         = %1'0000000 
 
