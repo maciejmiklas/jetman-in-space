@@ -1021,7 +1021,7 @@ _StartLevel
     CALL ti.SetTilesClipFull
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
-    CALL jl.SetupLivesBar
+    CALL jl.SetupLives
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data
     CALL RespawnJet
