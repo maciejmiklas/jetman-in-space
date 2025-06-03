@@ -90,6 +90,7 @@ LoadMainMenu
     CALL ti.SetTilesClipFull
     CALL jw.ResetWeapon
     CALL mma.LoadMainMenu
+    CALL jl.ResetLives
 
     RET                                         ; ## END of the function ##
 
@@ -958,6 +959,7 @@ GameOver
     CALL _HideGame
 
     CALL go.ShowGameOver
+    CALL jl.ResetLives
 
     RET                                         ; ## END of the function ##
 

@@ -50,12 +50,19 @@ LifeDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       SetupLives                         ;
+;                       ResetLives                         ;
 ;----------------------------------------------------------;
-SetupLives
+ResetLives
 
     LD A, JET_LIVES
     LD (lives), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       SetupLives                         ;
+;----------------------------------------------------------;
+SetupLives
 
     CALL UpdateLifeFaceOnJetMove
     CALL _UpdateJetLives
