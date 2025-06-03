@@ -8,68 +8,68 @@
 ;                   Movement patterns                      ;
 ;----------------------------------------------------------;
 
-; Horizontal, max speed.
+; Horizontal, max speed
 movePattern01D0
     DB 2, %0'000'1'111,$00
 
-; Horizontal, delay 2.
+; Horizontal, delay 2
 movePattern01D1
     DB 2, %0'000'1'111,$10  
 
-; Horizontal, delay 2.
+; Horizontal, delay 2
 movePattern01D2
     DB 2, %0'000'1'111,$20
 
-; Horizontal, delay 3.
+; Horizontal, delay 3
 movePattern01D3
     DB 2, %0'000'1'111,$30
 
-; 18deg down, delay 0.
+; 18deg down, delay 0
 movePattern02D0
     DB 2, %1'001'1'111,$00
 
-; 18deg down, delay 1.
+; 18deg down, delay 1
 movePattern02D1
-    DB 2, %1'001'1'111,$10  
+    DB 2, %1'001'1'111,$10 
 
-; 18deg down, delay 2.
+; 18deg down, delay 2
 movePattern02D2
     DB 2, %1'001'1'111,$20
 
-; 18deg down, delay 3.
+; 18deg down, delay 3
 movePattern02D3
-    DB 2, %1'001'1'111,$30  
+    DB 2, %1'001'1'111,$30 
 
-; 18deg up, delay 0.
+; 18deg up, delay 0
 movePattern03D0
     DB 2, %0'001'1'111,$20
 
-; 5* horizontal, 2x 45deg down,...
+; 5* horizontal, 2x 45deg down
 movePattern05
     DB 4, %0'000'1'111,$05, %1'111'1'111,$02
 
-; Half sinus.
+; Half sinus
 movePattern06
     DB 32, %0'010'1'001,$22, %0'011'1'010,$22, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31   ; going up
         DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$11, %1'100'1'011,$11, %1'011'1'010,$12, %1'010'1'001,$01   ; going down
 
-; Sinus.
+; Sinus
 movePattern07
     DB 64, %0'010'1'001,$32, %0'011'1'010,$32, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31   ; going up, above X
         DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$21, %1'100'1'011,$21, %1'011'1'010,$22, %1'010'1'001,$22   ; going down, above X
-        DB %1'010'1'001,$11, %1'011'1'010,$11, %1'100'1'011,$11, %1'011'1'011,$01, %1'010'1'011,$03, %1'001'1'011,$02, %1'001'1'100,$02, %1'001'1'101,$01   ; going down, below X
-        DB %0'001'1'101,$11, %0'001'1'100,$12, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32   ; going up, below X
-        
-; Square wave.
+        DB %1'010'1'001,$21, %1'011'1'010,$21, %1'100'1'011,$21, %1'011'1'011,$21, %1'010'1'011,$13, %1'001'1'011,$12, %1'001'1'100,$12, %1'001'1'101,$11   ; going down, below X
+        DB %0'001'1'101,$21, %0'001'1'100,$22, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32   ; going up, below X
+
+; Square wave
 movePattern08
     DB 8, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23
 
-; Saw wave.
+; Saw wave
 movePattern09
 ;         45deg up slow    45deg down slow   45deg up slow   45deg down slow  45deg up fast   45deg down fast
     DB 12, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,31, %1'001'1'011,31
 
-; Square, triangle wave.
+; Square, triangle wave
 movePattern10
     DB 24, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %1'111'1'111,$03, %0'111'1'111,$03, %1'111'1'111,$03, %0'111'1'111,$03
 
@@ -77,51 +77,51 @@ movePattern11
 ;         45deg down         horizontal        horizontal       horizontal         45deg up
     DB 10, %1'111'1'111,$0F, %0'000'1'111,$1F, %0'000'1'111,$2F, %0'000'1'111,$1F, %0'011'1'011,$3F 
 
-; 34deg up, delay 2.
+; 34deg up, delay 2
 movePattern12D2
     DB 2, %0'011'1'111,$20 
 
-; 34deg up, delay 1.
+; 34deg up, delay 1
 movePattern12D1
     DB 2, %0'011'1'111,$10 
 
-; 34deg down, delay 0.
+; 34deg down, delay 0
 movePattern13D0
     DB 2, %1'011'1'111,$00 
 
-; 34deg down, delay 1.
+; 34deg down, delay 1
 movePattern13D1
     DB 2, %1'011'1'111,$10 
 
-; 34deg down, delay 2.
+; 34deg down, delay 2
 movePattern13D2
     DB 2, %1'011'1'111,$20 
 
-; 34deg down, delay 3.
+; 34deg down, delay 3
 movePattern13D3
     DB 2, %1'011'1'111,$30 
 
-; 34deg down, delay 4.
+; 34deg down, delay 4
 movePattern13D4
-    DB 2, %1'011'1'111,$40  
+    DB 2, %1'011'1'111,$40 
 
-; 45deg down, delay 0.
+; 45deg down, delay 0
 movePattern14D0
     DB 2, %1'001'1'001,$00 
 
-; 45deg down, delay 1.
+; 45deg down, delay 1
 movePattern14D1
     DB 2, %1'001'1'001,$10 
 
-; 45deg down, delay 2.
+; 45deg down, delay 2
 movePattern14D2
     DB 2, %1'001'1'001,$20 
 
-; 45deg up, delay 1.
+; 45deg up, delay 1
 movePattern15D1
     DB 2, %0'001'1'001,$10 
 
-; 45deg up, delay 2.
+; 45deg up, delay 2
 movePattern15D2
     DB 2, %0'001'1'001,$20 
 
@@ -140,6 +140,14 @@ movePattern18
 ; Horizontal, variable speed
 movePattern19
     DB 6, %0'000'1'111,$2F, %0'000'1'111,$1F, %0'000'1'111,$35 
+
+; sinus, up
+movePattern20
+    DB 65, %0'010'1'001,$32, %0'011'1'010,$32, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31   ; going up, above X
+        DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$21, %1'100'1'011,$21, %1'011'1'010,$22, %1'010'1'001,$22   ; going down, above X
+        DB %1'010'1'001,$21, %1'011'1'010,$21, %1'100'1'011,$21, %1'011'1'011,$21, %1'010'1'011,$13, %1'001'1'011,$12, %1'001'1'100,$12, %1'001'1'101,$11   ; going down, below X
+        DB %0'001'1'101,$21, %0'001'1'100,$22, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32   ; going up, below X
+        DB %1'111'1'111,$2F 
 
 ;----------------------------------------------------------;
 ;                     Single enemies                       ;
@@ -257,10 +265,10 @@ enemyFormationL1 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePat
 
 singleEnemiesL2
     ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
-    ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT   /*SETUP*/}
+    ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT  /*SETUP*/}
     ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT  /*SETUP*/}
     ENPS {080/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
-    ENPS {100/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
+    ENPS {100/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
     ENPS {120/*RESPAWN_Y*/, 005/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
     ENPS {140/*RESPAWN_Y*/, 024/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
     ENPS {180/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
@@ -320,17 +328,23 @@ SINGLE_ENEMIES_L4       = 17
 enemyFormationL4 ENPS {085/*RESPAWN_Y*/, 8/*RESPAWN_DELAY*/, movePattern17/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
 
 singleEnemiesL5
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-SINGLE_ENEMIES_L5       = 1
+    ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {030/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+    ENPS {060/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {070/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+    ENPS {080/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {100/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {120/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {130/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {150/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+    ENPS {140/*RESPAWN_Y*/, 013/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {180/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {190/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+    ENPS {200/*RESPAWN_Y*/, 030/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {220/*RESPAWN_Y*/, 012/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {120/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {220/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+SINGLE_ENEMIES_L5       = 15
 enemyFormationL5 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL6
@@ -410,7 +424,7 @@ fuelThiefEnp
     ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 233/*RESPAWN_Y*/, movePattern19/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 
 fuelThiefSpr
-    SPR {96/*ID*/, sr.FUEL_THIEF/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fuelThiefEnp/*EXT_DATA_POINTER*/}
+    SPR {96/*ID*/, sr.SDB_FUEL_THIEF/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fuelThiefEnp/*EXT_DATA_POINTER*/}
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

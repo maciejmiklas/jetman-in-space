@@ -448,7 +448,7 @@ _GSC_X_MIN_D0           = 0
 _GSC_X_MAX_D315         = 315
 _GSC_Y_MIN_D15          = 15
 _GSC_Y_MAX_D232         = 232
-_GSC_Y_MAX2_D234        = 234
+_GSC_Y_MAX2_D238        = _GSC_Y_MAX_D232 + 4
 
 _BM_XRES_D320           = 320
 _BM_YRES_D256           = 256
@@ -475,10 +475,13 @@ _BAR_RED_B2_SPR         = 189
 
 ; Extends #SPR by additional params.
     STRUCT ENP
-; Bits:
-;   - 0:    #ENP_ALONG_BIT
-;   - 1:    #ENP_DEPLOY_BIT
-SETUP                   DB    
+; Setup bits:
+;  - 0: #ENP_S_BIT_ALONG
+;  - 1: #ENP_S_BIT_DEPLOY
+;  - 2: #ENP_S_BIT_BOUNCE
+;  - 3: #ENP_S_BIT_BOUNCE_ANIM
+;  - 7: #ENP_S_BIT_REVERSE_Y
+SETUP                   DB
 MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter

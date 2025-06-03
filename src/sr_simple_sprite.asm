@@ -32,7 +32,9 @@ SDB_FIRE                = 202                   ; Fire
 SDB_ENEMY1              = 203                   ; Enemy 1
 SDB_ENEMY2              = 204                   ; Enemy 2
 SDB_ENEMY3              = 205                   ; Enemy 3
-FUEL_THIEF              = 210                   ; Fuel thief
+SDB_FUEL_THIEF          = 206                   ; Fuel thief
+SDB_BOUNCE              = 207                   ; Play bounce animation and go back to #SDB_ENEMY1
+
 SDB_HIDE                = 255                   ; Hides Sprite
 
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX)
@@ -48,19 +50,21 @@ SDB_SEARCH_LIMIT        = 200
 ; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
 ; containing another animation or a command like #SDB_HIDE that will hide the sprite.
 srSpriteDB
-    sr.SPR_REC {sr.SDB_EXPLODE, sr.SDB_HIDE - sr.SDB_SUB,   04}
+    sr.SPR_REC {sr.SDB_EXPLODE, sr.SDB_HIDE-sr.SDB_SUB, 04}
             DB 30, 31, 32, 33
-    sr.SPR_REC {sr.SDB_FIRE,    sr.SDB_FIRE - sr.SDB_SUB,   02}
+    sr.SPR_REC {sr.SDB_FIRE,sr.SDB_FIRE-sr.SDB_SUB, 02}
             DB 54, 55
-    sr.SPR_REC {sr.SDB_ENEMY1,  sr.SDB_ENEMY1 - sr.SDB_SUB, 24}
+    sr.SPR_REC {sr.SDB_ENEMY1, sr.SDB_ENEMY1-sr.SDB_SUB, 24}
             DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
-    sr.SPR_REC {sr.SDB_ENEMY2,  sr.SDB_ENEMY2 - sr.SDB_SUB, 03}
+    sr.SPR_REC {sr.SDB_ENEMY2, sr.SDB_ENEMY2-sr.SDB_SUB, 03}
             DB 48, 49, 50
-    sr.SPR_REC {sr.SDB_ENEMY3,  sr.SDB_ENEMY3 - sr.SDB_SUB, 03}
+    sr.SPR_REC {sr.SDB_ENEMY3, sr.SDB_ENEMY3-sr.SDB_SUB, 03}
             DB 34, 35, 36
-    sr.SPR_REC {sr.FUEL_THIEF,  sr.FUEL_THIEF - sr.SDB_SUB, 03}
+    sr.SPR_REC {sr.SDB_FUEL_THIEF, sr.SDB_FUEL_THIEF-sr.SDB_SUB, 03}
             DB 58, 59, 63
-
+    sr.SPR_REC {sr.SDB_BOUNCE, sr.SDB_ENEMY1-sr.SDB_SUB, 6}
+            DB 34, 35, 35,   34, 35, 35
+            
 ;----------------------------------------------------------;
 ;                   #CheckSpriteVisible                    ;
 ;----------------------------------------------------------;
@@ -150,12 +154,12 @@ KillOneSprite
 ; Input
 ;  - IX:    Pointer to #SPR
 SpriteHit
-    
+
     CALL sr.SetSpriteId
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection
 
     LD A, SDB_EXPLODE
-    CALL _LoadSpritePattern                     ; Enemy explodes
+    CALL LoadSpritePattern                     ; Enemy explodes
     
     RET                                         ; ## END of the function ##
 
@@ -283,7 +287,7 @@ HideSimpleSprite
 ShowSprite
 
     LD A, (IX + SPR.SDB_INIT)
-    CALL _LoadSpritePattern                     ; Reset pattern
+    CALL LoadSpritePattern                     ; Reset pattern
 
     CALL UpdateSpritePosition                   ; Set X, Y position for sprite
     CALL UpdateSpritePattern                    ; Render sprite
@@ -330,7 +334,7 @@ UpdateSpritePattern
 
     ; Load new DB record.
     LD A, (IX + SPR.NEXT)
-    CALL _LoadSpritePattern
+    CALL LoadSpritePattern
 
 .afterRecordChange
 
@@ -483,7 +487,7 @@ MoveX
 ;----------------------------------------------------------;
 ;                           MoveY                          ;
 ;----------------------------------------------------------;
-; Move the sprite one pixel to the right or left along the Y-axis, depending on the A.
+; Move the sprite one pixel up or down, depending on the A.
 ; Input
 ;  - IX:    Pointer to #SPR.
 ;  - A:     MOVE_Y_IN_XXX
@@ -503,8 +507,8 @@ MoveY
     INC A
 
     ; Check whether a sprite hits ground
-    CP _GSC_Y_MAX_D232
-    JR C, .afterMoving                          ; Jump if the sprite is above ground (A < _GSC_Y_MAX_D232)
+    CP _GSC_Y_MAX2_D238
+    JR C, .afterMoving                          ; Jump if the sprite is above ground (A < _GSC_Y_MAX2_D238)
 
     ; Sprite hits the ground
     LD A, MOVE_RET_HIDDEN
@@ -513,7 +517,7 @@ MoveY
 .afterMovingUp
 
     ; Moving up - decrement X coordinate
-    LD A, (IX + SPR.Y)  
+    LD A, (IX + SPR.Y)
     DEC A
 
     ; Check if sprite is above screen
@@ -523,7 +527,7 @@ MoveY
     ; Sprite is above screen -> hide it
     CALL HideSimpleSprite
     LD A, MOVE_RET_HIDDEN
-        
+
     RET
 .afterMoving
 
@@ -533,20 +537,14 @@ MoveY
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                  _LoadSpritePattern                      ;
+;                   LoadSpritePattern                      ;
 ;----------------------------------------------------------;
 ; Set given pointer IX to animation pattern from #srSpriteDB given by B.
 ; Input:
 ;  - IX:    Pointer to #SPR
 ;  - A:     ID in #srSpriteDB
 ; Modifies: A, BC, HL
-_LoadSpritePattern
+LoadSpritePattern
 
     ; Find DB record.
     LD HL, srSpriteDB                       ; HL points to the beginning of the DB
@@ -585,6 +583,13 @@ _LoadSpritePattern
     LD (IX + SPR.SDB_POINTER), HL               ; Update #SPR.SDB_POINTER
 
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

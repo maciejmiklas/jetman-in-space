@@ -72,7 +72,7 @@ UpdatePickupsOnJetmanMove
     ; ##########################################
     ; Pickup in the air?
     LD A, (deployedY)
-    CP _GSC_Y_MAX2_D234
+    CP _GSC_Y_MAX2_D238
     CALL NZ, gc.JetPicksInAir
 
     ; ##########################################
@@ -147,7 +147,7 @@ AnimateFallingPickup
     ; ##########################################
     ; Update y postion (falling down)
     LD A, (deployedY)
-    CP _GSC_Y_MAX2_D234
+    CP _GSC_Y_MAX2_D238
     RET Z                                       ; Pickup is already on the ground, so moving it is unnecessary
     
     ; Move pickup down.

@@ -278,7 +278,7 @@ MoveShots
 
     ; Check the collision with the platform
     CALL pl.CheckPlatformWeaponHit
-    CP A, pl.PL_HIT_RET_A_NO
+    CP A, pl.PL_HIT_NO
     JR Z, .afterPlatformHit
     PUSH IX
     CALL sr.SpriteHit
