@@ -26,15 +26,18 @@
 ENP_S_BIT_ALONG         = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform
 ENP_S_BIT_DEPLOY        = 1                     ; 1 - deploy enemy on the left, 0 - on the right
 ENP_S_BIT_BOUNCE        = 2                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG is ignored, 0 - disabled
-ENP_S_BIT_REVERSE_Y     = 6                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R
-ENP_S_BIT_REVERSE_H     = 7                     ; 1 - reverses up/down movement, set during runtime when enemy hits platform from top/bottom
+ENP_S_BIT_BOUNCE_ANIM   = 3                     ; 1 - enable extra bouncing animation (sprites 34,35,36)
+ENP_S_BIT_REVERSE_Y     = 7                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R
 
-ENP_S_RIGHT_ALONG       = %00000'0'0'1 
-ENP_S_RIGHT_HIT         = %00000'0'0'0 
-ENP_S_LEFT_ALONG        = %00000'0'1'1 
-ENP_S_LEFT_HIT          = %00000'0'1'0 
-ENP_S_LEFT_BOUNCE       = %00000'1'1'0 
-ENP_S_RIGHT_BOUNCE      = %00000'1'1'0 
+ENP_S_RIGHT_ALONG       = %0000'0'0'0'1 
+ENP_S_RIGHT_HIT         = %0000'0'0'0'0 
+ENP_S_LEFT_ALONG        = %0000'0'0'1'1 
+ENP_S_LEFT_HIT          = %0000'0'0'1'0 
+ENP_S_LEFT_BOUNCE       = %0000'0'1'1'0 
+ENP_S_RIGHT_BOUNCE      = %0000'0'1'1'0 
+ENP_S_LEFT_BOUNCE_AN    = %0000'1'1'1'0 
+ENP_S_RIGHT_BOUNCE_AN   = %0000'1'1'1'0 
+ENP_S_REVERSE_Y         = %1'0000000 
 
 MOVE_DELAY_CNT_INC      = %0001'0000 
 
@@ -103,6 +106,8 @@ MOVE_DELAY_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 p
 DEC_MOVE_DELAY          = %0001'0000 
 
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
+
+BOUNCE_H_MARG_D5         = 3
 
 ;----------------------------------------------------------;
 ;                    CopyEnpsToEnp                         ;
@@ -427,6 +432,34 @@ RespawnPatternEnemy
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                      _FlipReverseY                       ;
+;----------------------------------------------------------;
+_FlipReverseY
+
+    LD A, (IY + ENP.SETUP)
+    XOR ENP_S_REVERSE_Y
+    LD (IY + ENP.SETUP), A
+
+    CALL _PlayBounceAnimation
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 _PlayBounceAnimation                     ;
+;----------------------------------------------------------;
+_PlayBounceAnimation
+
+    BIT ENP_S_BIT_BOUNCE_ANIM, (IY + ENP.SETUP)
+    RET Z
+
+    PUSH BC, HL
+    LD A, sr.SDB_BOUNCE
+    CALL sr.LoadSpritePattern
+    POP HL, BC
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      _LoadMoveDelay                      ;
 ;----------------------------------------------------------;
 ; Input
@@ -558,19 +591,23 @@ _MoveEnemy
     JR Z, .bounceHorizontal
 
 .bounceHorizontal
-    ; Enemy bounces from the platform's top/bottom
-    SET ENP_S_BIT_REVERSE_Y, (IY + ENP.SETUP)
+    ; Enemy bounces from the platform's top/bottom, reverse movement
+    CALL _FlipReverseY                        ; Revert reverse
+
     JR .afterBounceSetup
 .bounceL
     ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction
     RES ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
-    
+    CALL _PlayBounceAnimation
+
     JR .afterBounceSetup
 .bounceR
     ; Enemy bounces from the platform's right side
     SET ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
+    CALL _PlayBounceAnimation
+
 .afterBounceSetup
 
     ; ##########################################
@@ -622,27 +659,33 @@ _MoveEnemy
     ; Move on Y-axis one pixel up or down?
     LD A, (HL)                                  ; A contains current pattern
 
-
-
-
     ; Reverse movement direction?
     BIT ENP_S_BIT_REVERSE_Y, (IY + ENP.SETUP)
     JR Z, .doNotReverseY
 
-    ;push af: ld b, $F1: nextreg 2,8: pop af
     ; Yes, reverse bit is set, up -> down, down -> up
     XOR MOVE_PAT_Y_TOD_DIR_MASK
     ;push af: ld b, $F2: nextreg 2,8: pop af
 .doNotReverseY
 
-
-
-
-
     BIT MOVE_PAT_Y_TOD_DIR_BIT, A
     JR Z, .moveUp                               ; Jump if sprite should move up
 
-    ; Move on pixel down
+    ; ##########################################
+    ; Move on pixel down, but first, check whether the enemy bounces off the ground
+
+    ; Bounce is set, has sprite reached the bottom of the screen?
+    LD A, (IX + SPR.Y)
+    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D5
+    JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D5)
+    ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down
+    CALL _FlipReverseY
+    LD A, sr.MOVE_Y_IN_UP
+    CALL sr.MoveY
+    JR .afterChangeY
+
+.afterBounceMoveDown
+    ; Bouncing not necessary, finally move down
     LD A, sr.MOVE_Y_IN_DOWN
     CALL sr.MoveY
     CP sr.MOVE_RET_HIDDEN
@@ -651,12 +694,28 @@ _MoveEnemy
     RET                                         ; Stop moving this sprite, it's hidden
 
 .moveUp
-    ; Move on pixel up
+    ; ##########################################
+    ; Move on pixel up, but first, check whether the enemy bounces off the top of the screen
+    BIT ENP_S_BIT_BOUNCE, (IY + ENP.SETUP)
+    JR Z, .afterBounceMoveUp                    ; Jump if bounce is not set
+
+    ; Bounce is set, has sprite reached top of the screen?
+    LD A, (IX + SPR.Y)
+    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D5
+    JR NC, .afterBounceMoveUp                   ; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15+_GSC_Y_MIN_D15)
+
+    ; Yes - we are at the top of the screen, set reverse-y and move down instead of up
+    CALL _FlipReverseY
+    LD A, sr.MOVE_Y_IN_DOWN
+    CALL sr.MoveY
+    JR .afterChangeY
+.afterBounceMoveUp
+
+    ; Bouncing not necessary, finally move up
     LD A, sr.MOVE_Y_IN_UP
     CALL sr.MoveY
     CP sr.MOVE_RET_HIDDEN
     JR NZ,.afterChangeY                         ; Jump is sprite is not hidden
-
     RET                                         ; Stop moving this sprite, it's hidden
 
 .afterChangeY
