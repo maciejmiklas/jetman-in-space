@@ -2,6 +2,7 @@
 
 ---
 [DOWNLOAD SECTION](https://github.com/maciejmiklas/jetman-in-space/releases)
+
 ---
 
 Click on the image to play video:
