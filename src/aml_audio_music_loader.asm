@@ -7,8 +7,8 @@
 
 ; Counter for game music from assets\snd
 gameMusicCnt            DB GAME_MUSIC_MIN
-GAME_MUSIC_MIN          = 5
-GAME_MUSIC_MAX          = 27
+GAME_MUSIC_MIN          = 1
+GAME_MUSIC_MAX          = 25
 
 MUSIC_GAME_OVER         = 80
 MUSIC_MAIN_MENU         = 81
@@ -79,8 +79,10 @@ NextGameSong
     LD A, (gameMusicCnt)
     CP GAME_MUSIC_MAX
     JR NZ, .incMusicCnt
-    JR .afterMusicCnt
+    
     LD A, GAME_MUSIC_MIN
+    JR .afterMusicCnt
+
 .incMusicCnt
     INC A
 .afterMusicCnt

@@ -247,6 +247,7 @@ RocketTakesOff
     CALL pi.ResetPickups
     CALL mij.ResetJoystick
     CALL dbs.SetupEnemyBank: CALL enu.DisableFuelThief
+    CALL jw.HideShots
 
     RET                                         ; ## END of the function ##
 
@@ -464,6 +465,27 @@ PlatformWeaponHit
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                   PlayFuelThiefFx                        ;
+;----------------------------------------------------------;
+PlayFuelThiefFx
+
+    CALL dbs.SetupEnemyBank
+    LD A, (enu.thiefState)
+
+    CP enu.TS_DEPLOYING
+    JR Z, .play
+    CP enu.TS_RUNS_EMPTY
+    RET NZ
+.play
+
+    ; Play FX
+    CALL dbs.SetupAyFxsBank
+    LD A, af.FX_THIEF
+    CALL af.AfxPlay
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    WeaponHitEnemies                      ;

@@ -157,22 +157,15 @@ JetInvincible
     RET NZ
 
     ; ##########################################
-    ; Exit if #invincibleCnt == 0 (B == 0 -> H == B and L == B)
+    ; Decrement counter
     LD HL, (invincibleCnt)
-    LD B, 0
-    CALL ut.HlEqualB
-    CP _RET_YES_D1
-    RET Z
-
     DEC HL
     LD (invincibleCnt), HL                      ; Decrement counter and store it
 
-    ; ##########################################
-    ; Check whether this is the last iteration (#invincibleCnt changes from 1 to 0)
-    LD B, 0
-    CALL ut.HlEqualB
+    ; End invincibility if count is 0
+    CALL ut.HlEqual0
     CP _RET_YES_D1
-    JR Z, .lastIteration                        ; HL == 0
+    JR Z, .endInvincibility
 
     ; ##########################################
     ; Still invincible - blink Jetman sprite (at first blink fast, last few seconds blink slow)
@@ -190,12 +183,12 @@ JetInvincible
     JR .afterBlinkSet
 .blinkFast  
     LD A, (mld.counter002FliFLop)
-.afterBlinkSet  
+.afterBlinkSet
 
     CALL js.BlinkJetSprite
     RET
 
-.lastIteration
+.endInvincibility
     ; ##########################################
     ; It is the last iteration, remove invincibility
     LD A, jt.JETST_NORMAL
