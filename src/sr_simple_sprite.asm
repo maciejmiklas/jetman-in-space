@@ -33,10 +33,10 @@ SDB_ENEMY1              = 203                   ; Enemy 1
 SDB_ENEMY2              = 204                   ; Enemy 2
 SDB_ENEMY3              = 205                   ; Enemy 3
 SDB_FUEL_THIEF          = 206                   ; Fuel thief
-SDB_BOUNCE              = 207                   ; Play bounce animation and go back to #SDB_ENEMY1
+SDB_BOUNCE_SIDE         = 207                   ; Play bounce animation by side hit and go back to #SDB_ENEMY1
+SDB_BOUNCE_TOP          = 208                   ; Play bounce animation by top/bottom hit and go back to #SDB_ENEMY1
 
 SDB_HIDE                = 255                   ; Hides Sprite
-
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX)
 
 SDB_SEARCH_LIMIT        = 200
@@ -62,8 +62,10 @@ srSpriteDB
             DB 34, 35, 36
     sr.SPR_REC {sr.SDB_FUEL_THIEF, sr.SDB_FUEL_THIEF-sr.SDB_SUB, 03}
             DB 58, 59, 63
-    sr.SPR_REC {sr.SDB_BOUNCE, sr.SDB_ENEMY1-sr.SDB_SUB, 6}
-            DB 34, 35, 35,   34, 35, 35
+    sr.SPR_REC {sr.SDB_BOUNCE_SIDE, sr.SDB_ENEMY1-sr.SDB_SUB, 7}
+            DB 34, 35, 36, 35, 34, 35, 36
+    sr.SPR_REC {sr.SDB_BOUNCE_TOP, sr.SDB_ENEMY1-sr.SDB_SUB, 7}
+            DB 48, 49, 50, 49, 48, 49, 50
             
 ;----------------------------------------------------------;
 ;                   #CheckSpriteVisible                    ;
