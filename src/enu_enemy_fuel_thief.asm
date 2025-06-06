@@ -7,6 +7,7 @@
 
 TS_DISABLED             = 0
 TS_WAITING              = 1
+TS_DEPLOYING            = 2
 TS_EXPLODES             = 20
 TS_RUNS_EMPTY           = 30
 TS_CARRIES_FUEL         = 31
@@ -19,7 +20,8 @@ FUEL_HEIGHT             = 226
 DEPLOY_SIDE_RND         = $30
 
 thiefRespawnDelayCnt    DB 0
-RESPAWN_DELAY           = 25
+RESPAWN_DELAY           = 22
+RESPAWN_DEPLOYING       = 16
 
 MIN_FUEL_LEVEL          = ro.EL_TANK1_D4 + 2
 
@@ -92,10 +94,14 @@ ThiefWeaponHit
 ;----------------------------------------------------------;
 RespawnFuelThief
 
-    ; Respawn if #TS_WAITING or #TS_EXPLODES
+    ; Respawn if #TS_WAITING, #TS_DEPLOYING or #TS_EXPLODES
     LD A, (thiefState)
     CP TS_WAITING
     JR Z, .respawn
+
+    CP TS_DEPLOYING
+    JR Z, .respawn
+
     CP TS_EXPLODES
     RET NZ
 .respawn
@@ -118,11 +124,27 @@ RespawnFuelThief
     LD A, (thiefRespawnDelayCnt)
     INC A
     LD (thiefRespawnDelayCnt), A
-    CP RESPAWN_DELAY
-    RET NZ
+
+    ; ##########################################
+    ; Deploying starts few loops before running, and it's used to play sound before thief starts running
+    CP RESPAWN_DEPLOYING
+    JR NZ, .afterDeploying
+
+    LD A, TS_DEPLOYING
+    LD (thiefState), A
+
+    ; Reset the deployment countdown for the next fuel element because the thief is active
+    XOR A
+    LD (ro.dropNextDelay), A
+.afterDeploying
 
     ; ##########################################
     ; Respawn thief
+
+    LD A, (thiefRespawnDelayCnt)
+    CP RESPAWN_DELAY
+    RET NZ
+
     LD A, TS_RUNS_EMPTY
     LD (thiefState), A
 

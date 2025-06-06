@@ -104,6 +104,7 @@ FX_PICKUP_JAR           = 24
 FX_PICKUP_ROCKET_EL     = 25
 FX_FIRE_PLATFORM_HIT    = 26
 FX_JET_TAKE_OFF         = 27
+FX_THIEF                = 28
 
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;

@@ -440,6 +440,7 @@ _FlipReverseY
     XOR ENP_S_REVERSE_Y
     LD (IY + ENP.SETUP), A
 
+    LD A, sr.SDB_BOUNCE_TOP
     CALL _PlayBounceAnimation
 
     RET                                         ; ## END of the function ##
@@ -447,13 +448,14 @@ _FlipReverseY
 ;----------------------------------------------------------;
 ;                 _PlayBounceAnimation                     ;
 ;----------------------------------------------------------;
+; Input:
+;  - A: Hit side sr.SDB_BOUNCE_SIDE or sr.SDB_BOUNCE_TOP
 _PlayBounceAnimation
 
     BIT ENP_S_BIT_BOUNCE_ANIM, (IY + ENP.SETUP)
     RET Z
 
     PUSH BC, HL
-    LD A, sr.SDB_BOUNCE
     CALL sr.LoadSpritePattern
     POP HL, BC
 
@@ -599,6 +601,8 @@ _MoveEnemy
     ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction
     RES ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
+
+    LD A, sr.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
 
     JR .afterBounceSetup
@@ -606,6 +610,8 @@ _MoveEnemy
     ; Enemy bounces from the platform's right side
     SET ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
+
+    LD A, sr.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
 
 .afterBounceSetup

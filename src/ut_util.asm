@@ -208,24 +208,23 @@ PrintNumber
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        HlEqualB                          ;
+;                        HlEqual0                          ;
 ;----------------------------------------------------------;
-; Check if both H and L are equal to B
+; Check if both H and L are 0
 ; Input:
 ;  - HL:    Value to compare to B
-;  - B:     Value to compare to HL
 ; Return:
 ;  - A:     #_RET_YES_D1 or #_RET_NO_D0
-HlEqualB
+HlEqual0
 
     LD A, H                                     ; Check if H == B
-    CP B
+    CP 0
     JR NZ, .notEqual                            ; Jump if H != B
     LD A, L                                     ; Check if L == B
-    CP B
+    CP 0
     JR NZ, .notEqual                            ; Jump if L == B
     
-    ; H == B and L == B
+    ; H == 0 and L == 0
     LD A, _RET_YES_D1
     RET
     

@@ -24,9 +24,9 @@ TEMP_MIN                = 0
 TEMP_NORM               = 4                     ; Jetman can move at full speed when Jetpack cools down, and this level is reached
 
 ; The Jetpack heating up / cooling down thresholds.
-JM_HEAT_RED_CNT         = 80
-JM_HEAT_CNT             = 40
-JM_COOL_CNT             = 20
+JM_HEAT_RED_CNT         = 100
+JM_HEAT_CNT             = 60
+JM_COOL_CNT             = 15
 
 BAR_TILE_START         = 33*2                   ; *2 because each tile takes 2 bytes
 BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap
@@ -51,11 +51,17 @@ AnimateJetpackOverheat
     LD HL, BAR_RAM_START
     ADD HL, TEMP_RED*2
 
+    ; Do not animate when on the ground
+    LD A, (jt.jetGnd)
+    CP jt.JT_STATE_INACTIVE
+    JR NZ, .normal
+
     ; Change between two colors based on the flip-flop counter
     LD A, (mld.counter008FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .on
 
+.normal
     LD (HL), _BAR_RED_A1_SPR                    ; Set tile id
     INC HL
     LD (HL), BAR_TILE_PAL                       ; Set palette for tile
@@ -124,6 +130,11 @@ JetpackOverheatFx
 
     LD A, (jt.jetState)
     CP jt.JETST_OVERHEAT
+    RET NZ
+
+    ; Do not beep when walking
+    LD A, (jt.jetGnd)
+    CP jt.JT_STATE_INACTIVE
     RET NZ
 
     LD A, af.FX_JET_OVERHEAT

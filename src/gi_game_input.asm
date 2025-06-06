@@ -256,6 +256,10 @@ _Key_Q
     LD A, (js.sprState)
     nextreg 2,8
 
+    LD HL, (jco.invincibleCnt)
+    LD A, (jt.jetState)
+    nextreg 2,8
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -634,7 +634,7 @@ _MainLoop080
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop080OnActiveGame                 ;
+;                _MainLoop080OnActiveGame                  ;
 ;----------------------------------------------------------;
 _MainLoop080OnActiveGame
 
@@ -645,7 +645,9 @@ _MainLoop080OnActiveGame
 
     ; ##########################################
     CALL jo.JetpackOverheatFx
-    
+
+    CALL gc.PlayFuelThiefFx
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

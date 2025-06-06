@@ -218,8 +218,6 @@ AnimateJetSprite
 ; - A:  Flip Flop counter, ie: #counter002FliFLop
 BlinkJetSprite
 
-    CALL dbs.SetupArraysBank
-
     CP _GC_FLIP_ON_D1
     JR NZ, .flipOff
     

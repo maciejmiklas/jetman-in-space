@@ -22,6 +22,7 @@ rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to
 
 FLY_SOUND_REPEAT        = 20
 soundRepeatDelay        DB FLY_SOUND_REPEAT
+
 ;----------------------------------------------------------;
 ;               ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
@@ -207,7 +208,7 @@ AnimateRocketExplosion
 ;                  AnimateRocketExhaust                    ;
 ;----------------------------------------------------------;
 AnimateRocketExhaust
-    
+
     CALL dbs.SetupArraysBank
 
     ; Increment sprite pattern counter
