@@ -253,11 +253,11 @@ _Key_Q
 
   ;CALL gc.LoadLevel1
    ;CALL ro.AssemblyRocketForDebug
-    LD A, (js.sprState)
-    nextreg 2,8
 
     LD HL, (jco.invincibleCnt)
     LD A, (jt.jetState)
+    LD A,B
+    LD A, (js.sprState)
     nextreg 2,8
 
     RET                                         ; ## END of the function ##

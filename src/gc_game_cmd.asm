@@ -364,6 +364,21 @@ RocketFlying
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     FuelThiefHit                         ;
+;----------------------------------------------------------;
+FuelThiefHit
+
+    LD A, af.FX_EXPLODE_ENEMY_3
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    CALL sc.HitEnemy3
+
+    CALL dbs.SetupEnemyBank                     ; Stack jumps back to enemy 
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     RocketTankHit                        ;
 ;----------------------------------------------------------;
 RocketTankHit
@@ -565,7 +580,7 @@ EnemyHit
     CALL af.AfxPlay
 
     CALL sc.HitEnemy3
-    
+
     JR .afterHitEnemy
 .afterHitEnemy3
 
