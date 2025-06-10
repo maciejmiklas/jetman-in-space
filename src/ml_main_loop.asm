@@ -630,7 +630,8 @@ _MainLoop080
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
     CALL _MainLoop080OnActiveGame
-
+    CALL _MainLoop080OnActiveGameOver
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -645,8 +646,22 @@ _MainLoop080OnActiveGame
 
     ; ##########################################
     CALL jo.JetpackOverheatFx
-
     CALL gc.PlayFuelThiefFx
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;            _MainLoop080OnActiveGameOver                  ;
+;----------------------------------------------------------;
+_MainLoop080OnActiveGameOver
+
+    ; Return if game is inactive
+    LD A, (ms.mainState)
+    CP ms.GAME_OVER
+    RET NZ
+
+    ; ##########################################
+    CALL go.GameOverLoop
 
     RET                                         ; ## END of the function ##
 
