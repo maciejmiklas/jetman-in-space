@@ -566,7 +566,7 @@ LoadLevel7Data
     ; ##########################################
     ; Load formation
     CALL dbs.SetupEnemyBank
-    LD A, 0
+    LD A, 100
     LD IX, ena.enemyFormationL7
     CALL enf.SetupEnemyFormation
 

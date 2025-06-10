@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE pl
 
-MAX_PLATFORM_Y          = 26*8
+MAX_PLATFORM_Y          = 27*8
 PL_FALL_JOY_OFF_D10     = 10                    ; Disable the joystick for a few frames because Jetman is falling from the platform
 PL_BUMP_JOY_D15         = 15                    ; Disable the joystick for a few frames because Jetman is bumping into the platform
 PL_BUMP_JOY_DEC_D1      = 1                     ; With each bump into the platform, the period to turn off the joystick decrements by this value
@@ -73,10 +73,10 @@ JetPlatformHitOnJoyMove
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    ; Check whether a collision with a platform is possible
+    ; Collision only possible when flying
     LD A, (jt.jetAir)
     CP jt.AIR_FLY
-    RET NZ                                      ; Return if Jetman is not flaying
+    RET NZ
 
     ; ##########################################
     ; Check for platform hit.

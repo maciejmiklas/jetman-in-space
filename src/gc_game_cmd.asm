@@ -364,6 +364,21 @@ RocketFlying
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     FuelThiefHit                         ;
+;----------------------------------------------------------;
+FuelThiefHit
+
+    LD A, af.FX_EXPLODE_ENEMY_3
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    CALL sc.HitEnemy3
+
+    CALL dbs.SetupEnemyBank                     ; Stack jumps back to enemy 
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     RocketTankHit                        ;
 ;----------------------------------------------------------;
 RocketTankHit
@@ -565,7 +580,7 @@ EnemyHit
     CALL af.AfxPlay
 
     CALL sc.HitEnemy3
-    
+
     JR .afterHitEnemy
 .afterHitEnemy3
 
@@ -1047,15 +1062,15 @@ _StartLevel
     CALL jo.ResetJetpackOverheating
     CALL jl.SetupLives
 
-    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data
-    CALL RespawnJet
-
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
 
     ; Music on
     CALL dbs.SetupMusicBank
     CALL aml.NextGameSong
+
+    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data
+    CALL RespawnJet
 
     RET                                         ; ## END of the function ##
 

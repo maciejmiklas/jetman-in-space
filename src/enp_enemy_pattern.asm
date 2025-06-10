@@ -29,14 +29,18 @@ ENP_S_BIT_BOUNCE        = 2                     ; 1 - bounce from platforms, if 
 ENP_S_BIT_BOUNCE_ANIM   = 3                     ; 1 - enable extra bouncing animation (sprites 34,35,36)
 ENP_S_BIT_REVERSE_Y     = 7                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R
 
-ENP_S_RIGHT_ALONG       = %0000'0'0'0'1 
-ENP_S_RIGHT_HIT         = %0000'0'0'0'0 
 ENP_S_LEFT_ALONG        = %0000'0'0'1'1 
+ENP_S_RIGHT_ALONG       = %0000'0'0'0'1 
+
 ENP_S_LEFT_HIT          = %0000'0'0'1'0 
+ENP_S_RIGHT_HIT         = %0000'0'0'0'0 
+
 ENP_S_LEFT_BOUNCE       = %0000'0'1'1'0 
-ENP_S_RIGHT_BOUNCE      = %0000'0'1'1'0 
+ENP_S_RIGHT_BOUNCE      = %0000'0'1'0'0 
+
 ENP_S_LEFT_BOUNCE_AN    = %0000'1'1'1'0         ; Deploy left, bounce, animate bounce effect
-ENP_S_RIGHT_BOUNCE_AN   = %0000'1'1'1'0 
+ENP_S_RIGHT_BOUNCE_AN   = %0000'1'1'0'0 
+
 ENP_S_REVERSE_Y         = %1'0000000 
 
 MOVE_DELAY_CNT_INC      = %0001'0000 

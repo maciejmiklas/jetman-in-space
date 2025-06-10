@@ -87,6 +87,8 @@ ThiefWeaponHit
     XOR A
     LD (thiefRespawnDelayCnt), A
 
+    CALL gc.FuelThiefHit
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
