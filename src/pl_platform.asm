@@ -73,10 +73,10 @@ JetPlatformHitOnJoyMove
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    ; Check whether a collision with a platform is possible
+    ; Collision only possible when flying
     LD A, (jt.jetAir)
     CP jt.AIR_FLY
-    RET NZ                                      ; Return if Jetman is not flaying
+    RET NZ
 
     ; ##########################################
     ; Check for platform hit.

@@ -60,18 +60,15 @@ movePattern07
         DB %1'010'1'001,$21, %1'011'1'010,$21, %1'100'1'011,$21, %1'011'1'011,$21, %1'010'1'011,$13, %1'001'1'011,$12, %1'001'1'100,$12, %1'001'1'101,$11   ; going down, below X
         DB %0'001'1'101,$21, %0'001'1'100,$22, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32   ; going up, below X
 
-; Square wave
+; Saw wave
 movePattern08
-    DB 8, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23
+;          45deg up          45deg up           45deg down        45deg down      45deg down
+    DB 10, %0'001'1'011,$2F, %0'001'1'011,$2F, %1'001'1'011,$2F, %1'001'1'011,$2F, %1'001'1'011,$2F 
 
 ; Saw wave
 movePattern09
 ;         45deg up slow    45deg down slow   45deg up slow   45deg down slow  45deg up fast   45deg down fast
-    DB 12, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,41, %1'001'1'011,41, %0'001'1'011,31, %1'001'1'011,31
-
-; Square, triangle wave
-movePattern10
-    DB 24, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %0'000'1'111,$25, %1'111'1'000,$23, %0'000'1'111,$25, %0'111'1'000,$23, %1'111'1'111,$03, %0'111'1'111,$03, %1'111'1'111,$03, %0'111'1'111,$03
+    DB 12, %0'001'1'011,$41, %1'001'1'011,$41, %0'001'1'011,$41, %1'001'1'011,$41, %0'001'1'011,$31, %1'001'1'011,$31
 
 movePattern11
 ;         45deg down         horizontal        horizontal       horizontal         45deg up
@@ -148,6 +145,10 @@ movePattern20
         DB %1'010'1'001,$21, %1'011'1'010,$21, %1'100'1'011,$21, %1'011'1'011,$21, %1'010'1'011,$13, %1'001'1'011,$12, %1'001'1'100,$12, %1'001'1'101,$11   ; going down, below X
         DB %0'001'1'101,$21, %0'001'1'100,$22, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32   ; going up, below X
         DB %1'111'1'111,$2F 
+
+movePattern21
+;         horizontal         45deg up
+    DB 4, %0'000'1'111,$2F,  %0'111'1'111,$3F 
 
 ;----------------------------------------------------------;
 ;                     Single enemies                       ;
@@ -360,18 +361,15 @@ SINGLE_ENEMIES_L6       = 6
 enemyFormationL6 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL7
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
-SINGLE_ENEMIES_L7       = 1 
-enemyFormationL7 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
+    ENPS {100/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {100/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+    ENPS {150/*RESPAWN_Y*/, 013/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {150/*RESPAWN_Y*/, 013/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+    ENPS {220/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN  /*SETUP*/}
+    ENPS {220/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_BOUNCE_AN /*SETUP*/}
+
+SINGLE_ENEMIES_L7       = 6 
+enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_BOUNCE_AN/*SETUP*/}
 
 singleEnemiesL8
     ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT    /*SETUP*/}
