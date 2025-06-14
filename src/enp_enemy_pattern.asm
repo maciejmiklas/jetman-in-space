@@ -111,7 +111,10 @@ DEC_MOVE_DELAY          = %0001'0000
 
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
-BOUNCE_H_MARG_D5         = 3
+BOUNCE_H_MARG_D5        = 3
+
+freezeCnt               DB 0
+FREEZE_ENEMIES_CNT      = 250
 
 ;----------------------------------------------------------;
 ;                    CopyEnpsToEnp                         ;
@@ -143,6 +146,7 @@ CopyEnpsToEnp
 ResetEnp
 
     XOR A
+    LD (freezeCnt), A
     LD (IY + ENP.MOVE_DELAY_CNT), A
     LD (IY + ENP.MOVE_PAT_STEP), A
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
@@ -261,6 +265,16 @@ HidePatternEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                FreezePatternEnemies                      ;
+;----------------------------------------------------------;
+FreezePatternEnemies
+
+    LD A, FREEZE_ENEMIES_CNT
+    LD (freezeCnt), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  MovePatternEnemies                      ;
 ;----------------------------------------------------------;
 ; Input:
@@ -269,7 +283,17 @@ HidePatternEnemies
 ; Moves single enemies and those in formation
 ; Modifies: ALL
 MovePatternEnemies
-    
+
+    ; Enemies frozen and cannot move?
+    LD A, (freezeCnt)
+    CP 0
+    JR Z, .afterFreeze
+    DEC A
+    LD (freezeCnt),A
+    RET
+.afterFreeze
+
+    ; ##########################################
     ; Loop ever all enemies skipping hidden 
 .enemyLoop
     PUSH BC                                     ; Preserve B for loop counter

@@ -105,6 +105,7 @@ FX_PICKUP_ROCKET_EL     = 25
 FX_FIRE_PLATFORM_HIT    = 26
 FX_JET_TAKE_OFF         = 27
 FX_THIEF                = 28
+FX_FREEZE_ENEMIES       = 29
 
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;

@@ -7,8 +7,9 @@ PI_SPR_DIAMOND          = 39
 PI_SPR_JAR              = 40
 PI_SPR_STRAWBERRY       = 41
 PI_SPR_GRENADE          = 42
-PI_SPR_LIFE             = 43
+PI_SPR_LIFE             = 3
 PI_SPR_GUN              = 44
+PI_FREEZE_ENEMIES       = 43
 
 PI_SPR_MIN              = PI_SPR_DIAMOND
 PI_SPR_MAX              = PI_SPR_GUN
@@ -125,6 +126,13 @@ UpdatePickupsOnJetmanMove
     CALL gc.JetPicksGun
     JR .nextPickup
 .afterGun
+
+    ; Freeze enemies
+    CP PI_FREEZE_ENEMIES
+    JR NZ, .afterFreeze
+    CALL gc.FreezeEnemies
+    JR .nextPickup
+.afterFreeze
 
 .nextPickup
     ; ##########################################
