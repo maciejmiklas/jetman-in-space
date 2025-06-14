@@ -51,6 +51,11 @@ ResetPickups
 ;----------------------------------------------------------;
 UpdatePickupsOnJetmanMove
 
+    LD A, (jt.jetState)
+    CP jt.JETST_RIP
+    RET Z
+
+    ; ##########################################
     ; Exit if there is no active pickup.
     LD A, (deployed)
     CP 0
