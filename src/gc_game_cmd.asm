@@ -732,6 +732,21 @@ JetPicksGrenade
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     FreezeEnemies                        ;
+;----------------------------------------------------------;
+FreezeEnemies
+
+    LD A, af.FX_FREEZE_ENEMIES
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    CALL dbs.SetupEnemyBank
+    CALL enp.FreezePatternEnemies
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
 ;                   JetPicksStrawberry                     ;
 ;----------------------------------------------------------;
 JetPicksStrawberry
