@@ -86,13 +86,12 @@ LoadMainMenu
     LD A, js.SDB_HOVER
     CALL js.ChangeJetSpritePattern
 
-    CALL js.ShowJetSprite
-
     ; ##########################################
     CALL _LoadStaticMenuText
     CALL _SetIXToActiveMenu
     CALL _UpdateJetPostion
-
+    CALL js.ShowJetSprite
+    
     ; ##########################################
     ; Music on
     CALL dbs.SetupMusicBank

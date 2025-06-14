@@ -6,6 +6,8 @@
 RO_DROP_NEXT_D10        = 10                    ; Drop next element delay
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element
+RO_DROP_Y_MIN_EASY_D30  = 30
+dropMinY                DB RO_DROP_Y_MIN_D130
 
 RO_DOWN_SPR_ID_D80      = 80                    ; Sprite ID is used to lower the rocket part, which has the engine and fuel
 
@@ -86,6 +88,13 @@ SetupRocket
 
     LD (rocketAssemblyX), A
     LD (rocketEl), HL
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    RET NZ
+
+    LD A, RO_DROP_Y_MIN_EASY_D30
+    LD (dropMinY), A
     
     RET                                         ; ## END of the function ##
 
@@ -736,12 +745,14 @@ _JetmanDropsRocketElement
     RET NC
 
     ; ##########################################
-    ; To drop rocket element Jetman's height has to be within bounds: RO_DROP_Y_MIN_D100 < jpo.jetY < RO_DROP_Y_MAX_D170
+    ; To drop rocket element Jetman's height has to be within bounds: #dropMinY < #jpo.jetY < #RO_DROP_Y_MAX_D180
+    LD A, (dropMinY)
+    LD B, A
     LD A, (jpo.jetY)
     CP RO_DROP_Y_MAX_D180
     RET NC
 
-    CP RO_DROP_Y_MIN_D130
+    CP B
     RET C
 
     ; ##########################################
