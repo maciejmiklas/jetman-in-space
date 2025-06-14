@@ -47,7 +47,6 @@ StartGameWithIntro
     CALL dbs.SetupMusicBank
     CALL aml.MusicOff
 
-    CALL jw.ResetWeapon
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
     CALL LoadLevel1Intro
@@ -88,7 +87,6 @@ LoadMainMenu
     CALL _HideGame
     CALL sc.ResetScore
     CALL ti.SetTilesClipFull
-    CALL jw.ResetWeapon
     CALL mma.LoadMainMenu
     CALL jl.ResetLives
 
@@ -1061,7 +1059,8 @@ _StartLevel
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
     CALL jl.SetupLives
-
+    CALL jw.ResetWeapon
+    
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
 

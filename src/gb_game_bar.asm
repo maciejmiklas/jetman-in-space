@@ -51,7 +51,7 @@ PrintDebug
     LD BC, 40
     LD H, 0
     CALL dbs.SetupMusicBank
-    LD A, (aml.gameMusicCnt)
+    LD A, (jpo.jetY)
     LD L, A
     CALL ut.PrintNumber
 */

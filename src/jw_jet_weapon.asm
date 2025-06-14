@@ -12,7 +12,6 @@ FIRE_THICKNESS_D10      = 10
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter 
 ; reaches #JM_FIRE_DELAY
 JM_FIRE_DELAY_MAX       = 15
-JM_FIRE_DELAY_MAX_HARD  = 12
 JM_FIRE_DELAY_MIN       = 3
 JM_FIRE_SPEED_UP        = 4
 fireDelayCnt            DB 0
@@ -52,16 +51,21 @@ ResetWeapon
     LD A, JM_FIRE_DELAY_MAX
     LD (fireDelay), A
 
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD
-    JR NZ, .notHard
-    LD A, JM_FIRE_DELAY_MAX_HARD
-    LD (fireDelay), A
-.notHard
-
     LD A, FIRE_FX_DELAY_INIT
     LD (fireFxDelay), A
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    CALL Z, FireSpeedUp
     
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    CALL Z, FireSpeedUp
+
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD
+    CALL Z, FireSpeedUp
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -79,8 +83,11 @@ FireSpeedUp
     CALL _FireDelayDown
     DJNZ .loop
 
+    XOR A
+    LD (fireDelayCnt), A
+
     ; ##########################################
-    ; Slow down FX
+    ; Slow down FX, yes slow down! Fire speed increases quickly, buy soot sound should not be that fast
     LD A, (fireFxDelay)
     INC A
     LD (fireFxDelay), A
@@ -421,7 +428,7 @@ Fire
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
     CALL sr.ShowSprite
 
-    ; Call callback.
+    ; Call callback
     CALL _WeaponFx
 
     RET                                         ; ## END of the function ##
@@ -481,9 +488,6 @@ _FireDelayDown
 
     DEC A
     LD (fireDelay), A
-
-    XOR A
-    LD (fireDelayCnt), A
 
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
