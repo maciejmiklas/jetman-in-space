@@ -34,6 +34,8 @@ MENU_EL_MAX             = MENU_EL_DIFFICULTY
 ;----------------------------------------------------------;
 LoadMainMenu
 
+    CALL js.HideJetSprite
+
     ; ##########################################
     ; Update menu state
     LD A, ms.MENU_MAIN
@@ -91,7 +93,7 @@ LoadMainMenu
     CALL _SetIXToActiveMenu
     CALL _UpdateJetPostion
     CALL js.ShowJetSprite
-    
+
     ; ##########################################
     ; Music on
     CALL dbs.SetupMusicBank
