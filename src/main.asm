@@ -80,6 +80,7 @@ mainLoop
     INCLUDE "mms_menu_score.asm"
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
+    INCLUDE "gr_grenade.asm"
 
     ; Imports below use ORG and dedicated memory bank!
 

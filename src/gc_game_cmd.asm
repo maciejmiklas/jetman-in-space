@@ -727,12 +727,7 @@ JetPicksLife
 JetPicksGrenade
 
     CALL sc.PickupRegular
-    CALL dbs.SetupEnemyBank
-    CALL enp.KillFewPatternEnemies
-
-    LD A, af.FX_PICKUP_GRENADE
-    CALL dbs.SetupAyFxsBank
-    CALL af.AfxPlay
+    CALL gr.GrenadePickup
 
     RET                                         ; ## END of the function ##
 

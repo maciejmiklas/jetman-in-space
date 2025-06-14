@@ -96,7 +96,7 @@ GameJoystickInput
     LD A, _KB_B_TO_SPC_H7F
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
-    CALL Z, _JoyFire
+    CALL Z, _JoyGrenade
 
     ; ##########################################
     ; Key ENTER pressed ?
@@ -479,6 +479,15 @@ _JoyFire
     LD (gid.buttonState), A
 
     CALL jw.Fire
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     _JoyGrenade                          ;
+;----------------------------------------------------------;
+_JoyGrenade
+
+    CALL gr.UseGrenade
 
     RET                                         ; ## END of the function ##
 

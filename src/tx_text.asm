@@ -31,13 +31,30 @@ PrintNum16
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   PrintCharacterAt                       ;
+;----------------------------------------------------------;
+;  - A: ASCII code to print
+;  - BC: Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
+;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
+PrintCharacterAt
+
+    LD HL, formatted16
+    LD (HL), A
+
+    LD DE, formatted16
+    LD A, 1                                     ; Print 1 character
+    CALL ti.PrintText
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       PrintNum99                         ;
 ;----------------------------------------------------------;
 ; Print 8 bit number from A, but only up to 99
 ;Input:
-;  - A:    8-bit number to print
-;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
-;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
+;  - A:  8-bit number to print
+;  - BC: Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
+;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
 PrintNum99
 
     PUSH BC
@@ -49,24 +66,6 @@ PrintNum99
     LD (HL), E
 
     LD DE, formatted16
-    LD A, 2                                     ; Print 2 characters
-    CALL ti.PrintText
-
-    RET                                         ; ## END of the function ##
-
-_PrintNum99
-
-    ; Print number from HL into #formatted16
-    LD H, 0
-    LD L, A
-    PUSH BC
-    LD DE, formatted16
-    CALL Num16ToString
-    POP BC
-
-    ; Print text from #formatted8 on screen using tiles
-    LD DE, formatted16                          ; Contains 16-bit number as ASCII, move to last 2 dights
-    ADD DE, 3
     LD A, 2                                     ; Print 2 characters
     CALL ti.PrintText
 

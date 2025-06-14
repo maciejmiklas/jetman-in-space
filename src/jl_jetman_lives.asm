@@ -8,8 +8,8 @@ FACE_NORM_LEFT          = 192
 FACE_NORM_STRAIGHT      = 193
 FACE_NORM_RIGHT         = 194
 FACE_RED_ADD            = 3                     ; Add this value to normal icon to get the same but in red
-FACE_TI_POS_BYTE        = 16*2                  ; *2 because each tile takes 2 bytes
-SCORE_NR_TI_POS         = 17
+FACE_TI_POS_BYTE        = 15*2                  ; *2 because each tile takes 2 bytes
+SCORE_NR_TI_POS         = 16
 TI_RAM_START            = ti.TI_MAP_RAM_H5B00 + FACE_TI_POS_BYTE
 
 RED_FACE_LIVES          = 3                     ; Show face when #lives < than this value
