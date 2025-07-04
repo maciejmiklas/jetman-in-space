@@ -71,7 +71,7 @@ mainLoop
     INCLUDE "st_stars.asm"
     INCLUDE "jo_jetpack_overheat.asm"
     INCLUDE "li_level_intro.asm"
-    INCLUDE "mji_menu_joystick_input.asm"
+    INCLUDE "ki_keyboard_input.asm"
     INCLUDE "mma_menu_main.asm"
     INCLUDE "mmn_menu_manual.asm"
     INCLUDE "sc_score.asm"

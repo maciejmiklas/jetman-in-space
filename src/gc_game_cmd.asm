@@ -243,7 +243,7 @@ RocketTakesOff
     CALL gb.HideGameBar
     CALL ti.SetTilesClipHorizontal
     CALL pi.ResetPickups
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
     CALL dbs.SetupEnemyBank: CALL enu.DisableFuelThief
     CALL jw.HideShots
 
@@ -1033,7 +1033,7 @@ _HideGame
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
     CALL pi.ResetPickups
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     CALL dbs.SetupEnemyBank
     CALL enp.HidePatternEnemies

@@ -103,7 +103,7 @@ GameJoystickInput
     LD A, _KB_H_TO_ENT_HBF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
-    CALL Z, _JoyFire        
+    CALL Z, _JoyFire
     
     ; ##########################################
     ; Key Left pressed ?
@@ -223,7 +223,7 @@ GameKeyboardInput
 ;----------------------------------------------------------;
 _Key_N
 
-    CALL mij.CanProcessUserInput
+    CALL ki.CanProcessKeyInput
     CP _RET_NO_D0
     RET Z
 
@@ -237,7 +237,7 @@ _Key_N
 ;----------------------------------------------------------;
 _Key_M
 
-    CALL mij.CanProcessUserInput
+    CALL ki.CanProcessKeyInput
     CP _RET_NO_D0
     RET Z
     
@@ -337,9 +337,25 @@ _Key_O
 ;----------------------------------------------------------;
 ;                        _Key_P                            ;
 ;----------------------------------------------------------;
+; Pause game
 _Key_P
 
-    CALL gc.LoadLevel10
+    CALL ki.CanProcessKeyInput
+    CP _RET_NO_D0
+    RET Z
+    
+    LD A, (ms.mainState)
+
+    CP ms.PAUSE
+    JR Z, .pause
+
+    LD A, ms.PAUSE
+    CALL ms.SetMainStateAndBackup
+    RET
+
+.pause
+
+    CALL ms.RestoreMainState
 
     RET                                         ; ## END of the function ##
 
@@ -351,7 +367,6 @@ _Key_F
     CALL jw.FlipFireFx
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                        _JoyEnd                           ;

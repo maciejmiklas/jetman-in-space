@@ -188,10 +188,10 @@ _SetupMenuScore
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     LD DE, _JoyFire
-    LD (mij.callbackFire), DE
+    LD (ki.callbackFire), DE
 
     ; Menu in read-only mode accepts only fire as input to exit the main menu.
     LD A, (nameChPos)
@@ -199,16 +199,16 @@ _SetupMenuScore
     JR Z, .noJoystick
 
     LD DE, _JoyDown
-    LD (mij.callbackDown), DE
+    LD (ki.callbackDown), DE
 
     LD DE, _JoyUp
-    LD (mij.callbackUp), DE
+    LD (ki.callbackUp), DE
 
     LD DE, _JoyLeft
-    LD (mij.callbackLeft), DE
+    LD (ki.callbackLeft), DE
 
     LD DE, _JoyRight
-    LD (mij.callbackRight), DE
+    LD (ki.callbackRight), DE
 .noJoystick
 
     ; ###########################################
@@ -410,10 +410,10 @@ _SetScoreToReadOnly
     LD (nameChPos), A
 
     ; Disable name input
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     LD DE, _JoyFire
-    LD (mij.callbackFire), DE
+    LD (ki.callbackFire), DE
 
     ; Hide cursor
     CALL dbs.SetupArraysBank

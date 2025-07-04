@@ -45,10 +45,10 @@ ShowGameOver
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     LD DE, _OnFirePressed
-    LD (mij.callbackFire), DE
+    LD (ki.callbackFire), DE
 
     ; ##########################################
     ; Music

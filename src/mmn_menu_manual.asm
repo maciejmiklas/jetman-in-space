@@ -28,10 +28,10 @@ LoadMenuGameplay
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     LD DE, gc.LoadMainMenu
-    LD (mij.callbackFire), DE
+    LD (ki.callbackFire), DE
 
     ; ##########################################
     ; Music on
@@ -64,10 +64,10 @@ LoadMenuKeys
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     LD DE, gc.LoadMainMenu
-    LD (mij.callbackFire), DE
+    LD (ki.callbackFire), DE
 
     ; ##########################################
     ; Music on
