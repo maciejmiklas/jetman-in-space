@@ -50,11 +50,25 @@ _MainLoop000
     CALL dbs.SetupMusicBank
     CALL am.MusicLoop
 
+    CALL _MainLoop000OnPause
     CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMenuMain
     CALL _MainLoop000OnNotInGame
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   _MainLoop000OnPause                    ;
+;----------------------------------------------------------;
+_MainLoop000OnPause
+
+    LD A, (ms.mainState)
+    CP ms.PAUSE
+    RET NZ
+
+    CALL gi.GameKeyboardInput
 
     RET                                         ; ## END of the function ##
 
@@ -142,7 +156,7 @@ _MainLoop000OnNotInGame
     RET Z
 
     ; ##########################################
-    CALL mij.JoystickInput
+    CALL ki.KeyboardInput
 
     RET                                         ; ## END of the function ##
 
@@ -670,7 +684,7 @@ _MainLoop080OnActiveGameOver
 ;----------------------------------------------------------;
 _LastLoop
 
-    CALL mij.JoystickInputLastLoop
+    CALL ki.KeyboardInputLastLoop
     
     RET                                         ; ## END of the function ##
 

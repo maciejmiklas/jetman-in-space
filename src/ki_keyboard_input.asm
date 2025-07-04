@@ -1,7 +1,7 @@
 ;----------------------------------------------------------;
-;                     Menu Joystick                        ;
+;                    Keyboard Input                        ;
 ;----------------------------------------------------------;
-    MODULE mij
+    MODULE ki
 
 userInputDelayCnt       DB 0
 USER_INPUT_DELAY        = 10
@@ -16,9 +16,9 @@ callbackDown            DW _DummyFunction
 callbackFire            DW _DummyFunction
 
 ;----------------------------------------------------------;
-;                 JoystickInputLastLoop                    ;
+;                 KeyboardInputLastLoop                    ;
 ;----------------------------------------------------------;
-JoystickInputLastLoop
+KeyboardInputLastLoop
 
     ; Reset #userInputDelayCnt when timer #userInputInactiveCnt has reached #USER_INPUT_RESET. By doing it, the next button press will 
     ; execute immediately.
@@ -44,11 +44,11 @@ JoystickInputLastLoop
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      ResetJoystick                       ;
+;                      ResetKeyboard                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: User input delay
-ResetJoystick
+ResetKeyboard
 
     XOR A
     LD (userInputInactiveCnt), A
@@ -64,9 +64,9 @@ ResetJoystick
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     JoystickInput                        ;
+;                     KeyboardInput                        ;
 ;----------------------------------------------------------;
-JoystickInput
+KeyboardInput
 
     ; Key right pressed ?
     LD A, _KB_6_TO_0_HEF
@@ -144,7 +144,7 @@ JoystickInput
     RET                                         ; None of the keys pressed
 
 .pressRight
-    CALL CanProcessUserInput
+    CALL CanProcessKeyInput
     CP _RET_NO_D0
     RET Z
 
@@ -156,7 +156,7 @@ JoystickInput
     RET
 
 .pressLeft
-    CALL CanProcessUserInput
+    CALL CanProcessKeyInput
     CP _RET_NO_D0
     RET Z
 
@@ -168,7 +168,7 @@ JoystickInput
     RET
 
 .pressUp
-    CALL CanProcessUserInput
+    CALL CanProcessKeyInput
     CP _RET_NO_D0
     RET Z
 
@@ -180,7 +180,7 @@ JoystickInput
     RET
 
 .pressDown
-    CALL CanProcessUserInput
+    CALL CanProcessKeyInput
     CP _RET_NO_D0
     RET Z
 
@@ -192,7 +192,7 @@ JoystickInput
     RET
 
 .pressFire
-    CALL CanProcessUserInput
+    CALL CanProcessKeyInput
     CP _RET_NO_D0
     RET Z
 
@@ -206,11 +206,11 @@ JoystickInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  CanProcessUserInput                     ;
+;                  CanProcessKeyInput                     ;
 ;----------------------------------------------------------;
 ; Output:
 ;  A: _RET_YES_D1 or _RET_NO_D0
-CanProcessUserInput
+CanProcessKeyInput
 
     ; Reset inactivity count
     XOR A

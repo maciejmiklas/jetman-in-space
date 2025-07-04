@@ -374,7 +374,7 @@ deployOrder
     DB pi.PI_SPR_DIAMOND, pi.PI_SPR_STRAWBERRY, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_JAR, pi.PI_SPR_GUN, pi.PI_SPR_JAR
     DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN
     DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_JAR, pi.PI_SPR_STRAWBERRY, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY
- DEPLOY_ORDER_SIZE       = 23
+DEPLOY_ORDER_SIZE       = 23
 
 ;----------------------------------------------------------;
 ;                          Platforms                       ;

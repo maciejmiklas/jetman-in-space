@@ -43,22 +43,22 @@ LoadMainMenu
 
     ; ##########################################
     ; Setup joystick
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     LD DE, _JoyFire
-    LD (mij.callbackFire), DE
+    LD (ki.callbackFire), DE
 
     LD DE, _JoyDown
-    LD (mij.callbackDown), DE
+    LD (ki.callbackDown), DE
 
     LD DE, _JoyUp
-    LD (mij.callbackUp), DE
+    LD (ki.callbackUp), DE
 
     LD DE, _JoyLeft
-    LD (mij.callbackLeft), DE
+    LD (ki.callbackLeft), DE
 
     LD DE, _JoyRight
-    LD (mij.callbackRight), DE
+    LD (ki.callbackRight), DE
 
     ; ##########################################
     CALL _LoadMenuNormal

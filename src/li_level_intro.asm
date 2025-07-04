@@ -58,22 +58,22 @@ LoadLevelIntro
 
     ; ##########################################
     ; Setup joystick input
-    CALL mij.ResetJoystick
+    CALL ki.ResetKeyboard
 
     LD DE, _KeyExitIntro
-    LD (mij.callbackFire), DE
+    LD (ki.callbackFire), DE
 
     LD DE, _KeyExitIntro
-    LD (mij.callbackDown), DE
+    LD (ki.callbackDown), DE
 
     LD DE, _KeyExitIntro
-    LD (mij.callbackUp), DE
+    LD (ki.callbackUp), DE
 
     LD DE, _KeyExitIntro
-    LD (mij.callbackLeft), DE
+    LD (ki.callbackLeft), DE
 
     LD DE, _KeyExitIntro
-    LD (mij.callbackRight), DE
+    LD (ki.callbackRight), DE
 
     RET                                         ; ## END of the function ##
 
