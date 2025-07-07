@@ -105,8 +105,8 @@ MOVE_PAT_STEP_OFFSET    = 1                     ; Data for move pattern starts a
 MOVE_PAT_REPEAT_MASK    = %0000'1111 
 MOVE_PAT_DELAY_MASK     = %1111'0000 
 
-MOVE_DELAY_3X           = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame.
-MOVE_DELAY_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame.
+MOVE_DELAY_3X           = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
+MOVE_DELAY_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
 DEC_MOVE_DELAY          = %0001'0000 
 
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
@@ -115,6 +115,10 @@ BOUNCE_H_MARG_D5        = 3
 
 freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
+
+; Following enemy stores its state in SR.STATE - bits 4-8.
+STATE_DIR_BIT           = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT,  ; 1 - to move right, 0 - to move left
+STATE_DIR_MASK          = %0000'1'000           ; Reset all but #STATE_DIR_BIT
 
 ;----------------------------------------------------------;
 ;                    CopyEnpsToEnp                         ;
@@ -310,7 +314,7 @@ MovePatternEnemies
     ; Slow down movement by decrementing the counter until it reaches 0
     LD A, (IY + ENP.MOVE_DELAY_CNT)
     CP 0                                        ; No delay? -> move at full speed
-    JR Z, .afterDelayMove
+    JR Z, .afterMoveDelay
 
     ; Delaying movement, decrement delay counter
     SUB MOVE_DELAY_CNT_INC
@@ -322,7 +326,7 @@ MovePatternEnemies
     CALL _LoadMoveDelay
     LD (IY + ENP.MOVE_DELAY_CNT), A             ; Reset counter, A has the max value of delay counter
 
-.afterDelayMove
+.afterMoveDelay
 
     ; ##########################################
     ; Sprite is visible, move it!
@@ -339,7 +343,7 @@ MovePatternEnemies
     POP IY
     CALL _MoveEnemy
     JR .continue
-.after3x    
+.after3x
 
     ; Double movement speed if move delay is 1
     CP MOVE_DELAY_2X
@@ -562,14 +566,12 @@ _MoveEnemyX
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:    Pointer to #SPR holding data for single sprite that will be moved
-; Modifies: all
+;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 _MoveEnemy
 
-    ; Move the Sprite horizontally if it has been hit and it's dying
-    LD A, (IX + SPR.STATE)
-    CALL sr.SetSpriteId                         ; Set sprite ID in hardware
-    
+    ; Set sprite ID in hardware
+    CALL sr.SetSpriteId
+
     ; Load #ENP for this sprite to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC

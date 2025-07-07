@@ -184,6 +184,11 @@ AnimateSprites
     CALL SetSpriteId                            ; Set the ID of the sprite for the following commands
     CALL UpdateSpritePattern
 
+    ; Move #SPR.SDB_POINTER to the next sprite pattern
+    LD HL, (IX + SPR.SDB_POINTER)
+    INC HL
+    LD (IX + SPR.SDB_POINTER), HL
+
 .continue
     ; Move HL to the beginning of the next #shotsX
     LD DE, SPR
@@ -314,7 +319,7 @@ SetStateVisible
 ;----------------------------------------------------------;
 ;                  UpdateSpritePattern                     ;
 ;----------------------------------------------------------;
-; Show the current sprite pattern and switch the pointer to the next one so the following method CALL will display it.
+; Show the current sprite pattern.
 ; Input:
 ;  - IX:    Pointer to #SPR
 ; Modifies: A, BC, HL
@@ -351,12 +356,6 @@ UpdateSpritePattern
     LD A, (HL)                                  ; A holds the next sprite pattern
     OR _SPR_PATTERN_SHOW                        ; Store pattern number into Sprite Attribute
     NEXTREG _SPR_REG_ATR3_H38, A
-
-    ; ##########################################
-    ; Move #SPR.SDB_POINTER to the next sprite pattern
-    LD HL, (IX + SPR.SDB_POINTER)
-    INC HL
-    LD (IX + SPR.SDB_POINTER), HL
 
     RET                                         ; ## END of the function ##
 

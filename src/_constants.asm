@@ -516,8 +516,7 @@ Y                       DB                      ; Y position of the sprite
 ;   - 1:    #SPRITE_ST_ACTIVE_BIT
 ;   - 2:    Not used, but reserved for simple sprite (sr)
 ;   - 3:    #SPRITE_ST_MIRROR_X_BIT
-;   - 4:    Not used, but reserved for simple sprite (sr)
-;   - 5-8:  Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT
+;   - 4-8:  Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT
 STATE                   DB
 NEXT                    DB                      ; ID in #ssSpriteDB for next animation record/state
 REMAINING               DB                      ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record

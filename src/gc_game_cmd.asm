@@ -743,6 +743,9 @@ FreezeEnemies
     CALL dbs.SetupPatternEnemyBank
     CALL enp.FreezePatternEnemies
 
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.FreezeFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 
