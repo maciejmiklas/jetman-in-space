@@ -2,7 +2,7 @@
 ;                        Enemy Data                        ;
 ;----------------------------------------------------------;
     MODULE ena
-    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
 
 ;----------------------------------------------------------;
 ;                   Movement patterns                      ;

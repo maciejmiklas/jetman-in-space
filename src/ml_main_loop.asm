@@ -115,7 +115,7 @@ _MainLoop000OnActiveGame
     CALL jco.JetInvincible
     CALL ro.RocketElementFallsForPickup
 
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enu.MoveFuelThief
     CALL enu.ThiefWeaponHit
 
@@ -124,9 +124,12 @@ _MainLoop000OnActiveGame
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
     JR Z, .onEasy
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL ens.MoveSingleEnemies
     CALL enf.MoveFormationEnemies
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.MoveFollowingEnemies
 .onEasy
 
     ; ##########################################
@@ -256,11 +259,13 @@ _MainLoop002OnActiveGame
     CP jt.DIF_EASY
     JR NZ, .notEasy
     
-    CALL dbs.SetupEnemyBank
-    CALL Z, ens.MoveSingleEnemies
-    CALL Z, enf.MoveFormationEnemies
-.notEasy
+    CALL dbs.SetupPatternEnemyBank
+    CALL ens.MoveSingleEnemies
+    CALL enf.MoveFormationEnemies
 
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.MoveFollowingEnemies
+.notEasy
 
     RET                                         ; ## END of the function ##
 
@@ -429,23 +434,23 @@ _MainLoop008OnActiveGame
     CALL st.BlinkStarsL1
     CALL jo.AnimateJetpackOverheat
 
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enu.AnimateFuelThief
 
     ; ##########################################
-    ; Extra speed on hard
+    ; Hard
     LD A, (jt.difLevel)
     CP jt.DIF_HARD
     JR NZ, .notHard
-    CALL dbs.SetupEnemyBank
-    CALL ens.MoveSingleEnemies
-.notHard
 
-    ; ##########################################
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD
-    CALL dbs.SetupEnemyBank
-    CALL Z, ens.RespawnNextSingleEnemy
+    CALL dbs.SetupPatternEnemyBank
+    CALL ens.MoveSingleEnemies
+    CALL ens.RespawnNextSingleEnemy
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.MoveFollowingEnemies
+    CALL fe.RespawnFollowingEnemy
+.notHard
 
     RET                                         ; ## END of the function ##
 
@@ -467,8 +472,11 @@ _MainLoop008OnActiveGameOrFlyingRocket
 
 .execute
     ; ##########################################
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enp.AnimatePatternEnemies
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.AnimateFollowingEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -511,14 +519,12 @@ _MainLoop010OnActiveGame
     RET NZ
 
     ; ##########################################
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enf.RespawnFormation
+    CALL ens.RespawnNextSingleEnemy
 
-    ; ##########################################
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD
-    CALL dbs.SetupEnemyBank
-    CALL NZ, ens.RespawnNextSingleEnemy
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.RespawnFollowingEnemy
 
     RET                                         ; ## END of the function ##
 
@@ -577,7 +583,7 @@ _MainLoop020nFlyingRocket
     RET NZ
 
     ; ##########################################
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enp.KillOnePatternEnemy
 
     RET                                         ; ## END of the function ##
@@ -620,7 +626,7 @@ _MainLoop040OnActiveGame
     CALL td.NextTimeOfDayTrigger
     CALL pi.PickupDropCounter
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
-    CALL dbs.SetupEnemyBank: CALL enu.RespawnFuelThief
+    CALL dbs.SetupPatternEnemyBank: CALL enu.RespawnFuelThief
 
     RET                                         ; ## END of the function ##
 

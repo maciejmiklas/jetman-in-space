@@ -34,7 +34,7 @@ UseGrenade
     DEC A
     LD (grenadeCount), A
 
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enp.KillFewPatternEnemies
 
     LD A, af.FX_GRENADE_EXPLODE

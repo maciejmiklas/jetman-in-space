@@ -157,7 +157,7 @@ HideShots
     CALL sr.ResetSprite
 
     ; ##########################################
-    ; Move IX to the beginning of the next #shotsXX.
+    ; Move IX to the beginning of the next #shotsXX
     LD DE, SPR
     ADD IX, DE
     DJNZ .shotsLoop                             ; Jump if B > 0 (loop starts with B = #SPR)

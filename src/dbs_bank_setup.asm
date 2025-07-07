@@ -17,7 +17,8 @@ TI_SPR_BANK_S7_D30      = 30
 PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
 AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
 AY_MCODE_S6_D33         = 33                    ; Slot 6. music code, music binary is in AY_MCODE_S6_D33
-ENEMY_BANK_S6_B34       = 34                    ; Slot 6, Enemies
+P_ENEMY_BANK_S6_B34     = 34                    ; Slot 6, Pattern Enemies
+F_ENEMY_BANK_S6_B35     = 35                    ; Slot 6, Following Enemies
 
 PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D31
 SPR_BANK1_S6_D71        = 71
@@ -36,11 +37,20 @@ AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is i
 
 
 ;----------------------------------------------------------;
-;                   SetupEnemyBank                         ;
+;                SetupFollowingEnemyBank                   ;
 ;----------------------------------------------------------;
-SetupEnemyBank
+SetupFollowingEnemyBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, ENEMY_BANK_S6_B34
+    NEXTREG F_ENEMY_BANK_S6_B35, P_ENEMY_BANK_S6_B34
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                SetupPatternEnemyBank                     ;
+;----------------------------------------------------------;
+SetupPatternEnemyBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, P_ENEMY_BANK_S6_B34
 
     RET                                         ; ## END of the function ## 
 

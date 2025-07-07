@@ -117,7 +117,7 @@ LoadLevel1
     CALL ll.LoadLevel1Data
     CALL _StartLevel
 
-    CALL dbs.SetupEnemyBank: CALL enu.DisableFuelThief
+    CALL dbs.SetupPatternEnemyBank: CALL enu.DisableFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -244,7 +244,7 @@ RocketTakesOff
     CALL ti.SetTilesClipHorizontal
     CALL pi.ResetPickups
     CALL ki.ResetKeyboard
-    CALL dbs.SetupEnemyBank: CALL enu.DisableFuelThief
+    CALL dbs.SetupPatternEnemyBank: CALL enu.DisableFuelThief
     CALL jw.HideShots
 
     RET                                         ; ## END of the function ##
@@ -372,7 +372,7 @@ FuelThiefHit
 
     CALL sc.HitEnemy3
 
-    CALL dbs.SetupEnemyBank                     ; Stack jumps back to enemy 
+    CALL dbs.SetupPatternEnemyBank                     ; Stack jumps back to enemy 
 
     RET                                         ; ## END of the function ##
 
@@ -484,7 +484,7 @@ PlatformWeaponHit
 ;----------------------------------------------------------;
 PlayFuelThiefFx
 
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, (enu.thiefState)
 
     CP enu.TS_DEPLOYING
@@ -508,14 +508,14 @@ WeaponHitEnemies
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD IX, ena.singleEnemySprites
     LD A, (ens.singleEnemySize)
     LD B, A
     CALL jw.CheckHitEnemies
 
     ; ##########################################
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD IX, ena.formationEnemySprites
     LD B, ena.ENEMY_FORMATION_SIZE
     CALL jw.CheckHitEnemies
@@ -740,7 +740,7 @@ FreezeEnemies
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enp.FreezePatternEnemies
 
     RET                                         ; ## END of the function ##
@@ -1035,7 +1035,7 @@ _HideGame
     CALL pi.ResetPickups
     CALL ki.ResetKeyboard
 
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     CALL enp.HidePatternEnemies
     CALL enu.DisableFuelThief
 
@@ -1050,7 +1050,7 @@ _InitLevelLoad
     CALL gi.ResetKeysState
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
-    CALL dbs.SetupEnemyBank: CALL enu.EnableFuelThief
+    CALL dbs.SetupPatternEnemyBank: CALL enu.EnableFuelThief
 
     RET                                         ; ## END of the function ##
 

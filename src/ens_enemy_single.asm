@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE ens
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, 
 ; counting again.
@@ -133,10 +133,10 @@ RespawnNextSingleEnemy
     CALL enp.RespawnPatternEnemy
     POP BC
 
-    CP A, enp.RES_SE_OUT_YES
+    CP A, _RET_YES_D1
     RET Z                                       ; Exit after respawning first enemy
 
-    ; Move IX to the beginning of the next #shotsXX
+    ; Move IX to the beginning of the next #singleEnemySprites
     LD DE, SPR
     ADD IX, DE
     DJNZ .loop                                  ; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE)

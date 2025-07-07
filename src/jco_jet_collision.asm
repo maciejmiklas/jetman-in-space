@@ -96,14 +96,14 @@ JetmanEnemiesCollision
     CALL dbs.SetupArraysBank
 
     ; ##########################################
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD IX, ena.singleEnemySprites
     LD A, (ens.singleEnemySize)
     LD B, A
     CALL _EnemiesCollision
 
     ; ##########################################
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD IX, ena.formationEnemySprites
     LD B, ena.ENEMY_FORMATION_SIZE
     CALL _EnemiesCollision

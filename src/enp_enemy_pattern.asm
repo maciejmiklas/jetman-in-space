@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE enp
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
 
 ; Enemies fly by a given hardcoded pattern. This file contains generic logic for such enemies 
 ; In general, there are two kinds of enemies: 
@@ -209,7 +209,6 @@ AnimatePatternEnemies
 
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                  KillFewPatternEnemies                   ;
 ;----------------------------------------------------------;
@@ -363,19 +362,18 @@ MovePatternEnemies
 ;                 RespawnPatternEnemy                      ;
 ;----------------------------------------------------------;
 ; Respawn single or formation
-; Input
-;  - IX:    Pointer to #SPR holding data for single enemy
+; Input:
+;  - IX: Pointer to #SPR holding data for single enemy
 ; Output:
-; - A:      RES_SE_OUT_XXX
-RES_SE_OUT_YES                  = 1             ; Enemy did respawn
-RES_SE_OUT_NO                   = 0             ; Enemy did not respawn
+;  - A:  _RET_YES_D1/_RET_NO_D0
+
 ; Modifies: all
 RespawnPatternEnemy
 
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterVisibilityCheck                 ; Skip this sprite if it's already visible
     
-    LD A, RES_SE_OUT_NO
+    LD A, _RET_NO_D0
     RET
 .afterVisibilityCheck
     ; Sprite is hidden, check the dedicated delay before respawning.
@@ -393,13 +391,13 @@ RespawnPatternEnemy
     CP enp.RESPAWN_OFF
     JR NZ, .respawnOn
 
-    LD A, RES_SE_OUT_NO
+    LD A, _RET_NO_D0
     RET
 .respawnOn
 
     CP 0
     JR Z, .afterEnemyRespawnDelay               ; Jump if there is no extra delay for this enemy
-        
+
     LD B, A
     LD A, (IY + ENP.RESPAWN_DELAY_CNT)
     INC A
@@ -408,10 +406,11 @@ RespawnPatternEnemy
 
     LD (IY + ENP.RESPAWN_DELAY_CNT), A          ; The delay timer for the enemy is still ticking
 
-    LD A, RES_SE_OUT_NO
+    LD A, _RET_NO_D0
     RET
 .afterEnemyRespawnDelay
 
+    ; ##########################################
     ; Respawn enemy, first mark it as visible.
     LD A, (IX + SPR.STATE)
     CALL sr.SetStateVisible
@@ -439,9 +438,10 @@ RespawnPatternEnemy
     LD BC, _GSC_X_MAX_D315
     SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Mirror sprite, because it deploys on the right and moves to the left side
     JR .afterLR
+
+    ; Deploy left
 .deployLeft
     RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Do not mirror sprite (this could be set if in another level it was moving right)
-    ; Deploy left
     LD BC, _GSC_X_MIN_D0
 
 .afterLR
@@ -449,7 +449,7 @@ RespawnPatternEnemy
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
     CALL sr.ShowSprite
 
-    LD A, RES_SE_OUT_YES
+    LD A, _RET_YES_D1
 
     RET                                         ; ## END of the function ##
 

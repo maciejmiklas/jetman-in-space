@@ -69,7 +69,7 @@ LoadLevel1Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L1
     LD IX, ena.singleEnemiesL1
     LD B, ens.NEXT_RESP_DEL
@@ -77,7 +77,7 @@ LoadLevel1Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 0                                     ; Disable formation
     LD IX, ena.enemyFormationL1
     CALL enf.SetupEnemyFormation
@@ -150,7 +150,7 @@ LoadLevel2Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L2
     LD IX, ena.singleEnemiesL2
     LD B, ens.NEXT_RESP_DEL
@@ -158,7 +158,7 @@ LoadLevel2Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 0                                     ; Disable formation
     LD IX, ena.enemyFormationL2
     CALL enf.SetupEnemyFormation
@@ -231,7 +231,7 @@ LoadLevel3Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L3
     LD IX, ena.singleEnemiesL3
     LD B, ens.NEXT_RESP_DEL
@@ -239,7 +239,7 @@ LoadLevel3Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 150
     LD IX, ena.enemyFormationL3
     CALL enf.SetupEnemyFormation
@@ -314,7 +314,7 @@ LoadLevel4Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L4
     LD IX, ena.singleEnemiesL4
     LD B, ens.NEXT_RESP_DEL
@@ -322,7 +322,7 @@ LoadLevel4Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 100
     LD IX, ena.enemyFormationL4
     CALL enf.SetupEnemyFormation
@@ -395,7 +395,7 @@ LoadLevel5Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L5
     LD IX, ena.singleEnemiesL5
     LD B, ens.NEXT_RESP_DEL
@@ -403,7 +403,7 @@ LoadLevel5Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 0
     LD IX, ena.enemyFormationL5
     CALL enf.SetupEnemyFormation
@@ -476,7 +476,7 @@ LoadLevel6Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L6
     LD IX, ena.singleEnemiesL6
     LD B, ens.NEXT_RESP_DEL
@@ -484,7 +484,7 @@ LoadLevel6Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 0
     LD IX, ena.enemyFormationL6
     CALL enf.SetupEnemyFormation
@@ -557,7 +557,7 @@ LoadLevel7Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L7
     LD IX, ena.singleEnemiesL7
     LD B, ens.NEXT_RESP_DEL
@@ -565,7 +565,7 @@ LoadLevel7Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 100
     LD IX, ena.enemyFormationL7
     CALL enf.SetupEnemyFormation
@@ -638,7 +638,7 @@ LoadLevel8Data
     
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L8
     LD IX, ena.singleEnemiesL8
     LD B, ens.NEXT_RESP_DEL
@@ -646,7 +646,7 @@ LoadLevel8Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 0
     LD IX, ena.enemyFormationL8
     CALL enf.SetupEnemyFormation
@@ -719,7 +719,7 @@ LoadLevel9Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L9
     LD IX, ena.singleEnemiesL9
     LD B, ens.NEXT_RESP_DEL
@@ -727,7 +727,7 @@ LoadLevel9Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 0
     LD IX, ena.enemyFormationL9
     CALL enf.SetupEnemyFormation
@@ -799,7 +799,7 @@ LoadLevel10Data
 
     ; ##########################################
     ; Load single enemies
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, ena.SINGLE_ENEMIES_L10
     LD IX, ena.singleEnemiesL10
     LD B, ens.NEXT_RESP_DEL
@@ -807,7 +807,7 @@ LoadLevel10Data
 
     ; ##########################################
     ; Load formation
-    CALL dbs.SetupEnemyBank
+    CALL dbs.SetupPatternEnemyBank
     LD A, 0
     LD IX, ena.enemyFormationL10
     CALL enf.SetupEnemyFormation
