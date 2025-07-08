@@ -116,10 +116,6 @@ BOUNCE_H_MARG_D5        = 3
 freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
 
-; Following enemy stores its state in SR.STATE - bits 4-8.
-STATE_DIR_BIT           = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT,  ; 1 - to move right, 0 - to move left
-STATE_DIR_MASK          = %0000'1'000           ; Reset all but #STATE_DIR_BIT
-
 ;----------------------------------------------------------;
 ;                    CopyEnpsToEnp                         ;
 ;----------------------------------------------------------;

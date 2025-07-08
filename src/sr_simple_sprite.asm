@@ -371,12 +371,12 @@ UpdateSpritePattern
 ;         - 3:  #MVX_IN_D_HIDE_BIT
 ;         - 4:  #MVX_IN_D_TOD_DIR_BIT
 MVX_IN_D_HIDE_BIT           = 3                 ; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen
-MVX_IN_D_TOD_DIR_BIT        = 4                 ; 1 - to move right, 0 - to move left
-MVX_IN_D_1PX_HIDE           = %0000'1'001       ; Move the sprite by 1 pixel and hide on the screen end
-MVX_IN_D_6PX_HIDE           = %0000'1'110       ; Move the sprite by 6 pixels and hide on the screen end
-MVX_IN_D_1PX_ROL            = %0000'0'001       ; Move the sprite by 1 pixel and roll over sprite when off-screen
-MVX_IN_D_2PX_ROL            = %0000'0'010       ; Move the sprite by 2 pixels and roll over sprite when off-screen
-MVX_IN_D_MASK_CNT           = %00000'111
+MVX_IN_D_TOD_DIR_BIT        = 4                 ; 1 - move from right side of the screen to the left, 0 - move left -> right
+MVX_IN_D_1PX_HIDE           = %0000'1001        ; Move the sprite by 1 pixel and hide on the screen end
+MVX_IN_D_6PX_HIDE           = %0000'1110        ; Move the sprite by 6 pixels and hide on the screen end
+MVX_IN_D_1PX_ROL            = %0000'0001        ; Move the sprite by 1 pixel and roll over sprite when off-screen
+MVX_IN_D_2PX_ROL            = %0000'0010        ; Move the sprite by 2 pixels and roll over sprite when off-screen
+MVX_IN_D_MASK_CNT           = %0000'0111 
 ; Modifies; A, B, HL
 MoveX
     ; Load counter for .moveLeftLoop/.moveRightLoop into B
@@ -390,7 +390,7 @@ MoveX
     JR NZ, .moveRight
 
     ; ##########################################
-    ; Move left.
+    ; Move from left side of the screen to the right
 .moveLeftLoop
 
     ; ##########################################
@@ -446,7 +446,7 @@ MoveX
     RET
 
     ; ##########################################
-    ; Move right
+    ; Move from right side of the screen to the left
 .moveRight
     ; Moving right - increment X coordinate
     LD HL, (IX + SPR.X) 

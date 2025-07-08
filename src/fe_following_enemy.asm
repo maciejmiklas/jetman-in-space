@@ -17,16 +17,21 @@ RESPAWN_DELAY           DB                      ; Number of game loops delaying 
 MOVE_DELAY              DB
 
 ; Values changed during runtime
-MOVE_DELAY_CNT          DB
-RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter
+MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
+RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
     ENDS
 
-DEPLOY_SIDE_RAND        = 128
+; VALUES for #FE.STATE
+STATE_DIR_BIT           = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
+STATE_DIR_MASK          = %000'1'0000           ; Reset all but #STATE_DIR_BIT
+
+STATE_MOVE_RIGHT        = %000'1'0000           ; Deploy on the left side of the screen and move right
+STATE_MOVE_LEFT         = %000'0'0000           ; Deploy on the right side of the screen and move left
 
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
-    SPR {089/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 20/*X*/, 20/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {099/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
+    SPR {089/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
+    SPR {099/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
     SPR {100/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
     SPR {101/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
     SPR {102/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
@@ -35,10 +40,13 @@ fEnemySprites
     SPR {105/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
     SPR {106/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
     SPR {107/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-fEnemySize              BYTE 1
+fEnemySize              BYTE 2
 
 fEnemy01
-    FE {050/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, 5/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/}
+    FE {STATE_MOVE_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/}
+
+fEnemy02
+    FE {STATE_MOVE_LEFT/*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/}
 
 ;----------------------------------------------------------;
 ;                FreezeFollowingEnemies                    ;
@@ -127,10 +135,11 @@ MoveFollowingEnemies
 
     ; ##########################################
     ; Slow down movement by decrementing the counter until it reaches 0
-    LD A, (IY + FE.MOVE_DELAY_CNT)
+    LD A, (IY + FE.MOVE_DELAY)
     CP 0                                        ; No delay? -> move at full speed
     JR Z, .afterMoveDelay
 
+    LD A, (IY + FE.MOVE_DELAY_CNT)
     DEC A
     LD (IY + FE.MOVE_DELAY_CNT), A
 
@@ -175,12 +184,17 @@ _MoveEnemy
     ; Set sprite ID in hardware
     CALL sr.SetSpriteId
 
-    LD D, sr.MVX_IN_D_1PX_ROL
-    SET sr.MVX_IN_D_TOD_DIR_BIT, D              ; Move right
+    ; Copy move left/right from state
+    LD A, (IY + FE.STATE)
+    AND STATE_DIR_MASK
+    LD B, A
 
+    LD A, sr.MVX_IN_D_1PX_ROL
+    OR B
+    LD D, A
     CALL sr.MoveX
+
     CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
- 
 
     RET                                         ; ## END of the function ##
 
@@ -201,7 +215,7 @@ _TryRespawnNextFollowingEnemy
 .afterVisibilityCheck
     ; Sprite is hidden, check the dedicated delay before respawning.
 
-    ; Load extra sprite data (#ENP) to IY
+    ; Load extra sprite data (#FE) to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
     
@@ -238,9 +252,11 @@ _TryRespawnNextFollowingEnemy
     LD A, (IX + SPR.STATE)
     CALL sr.SetStateVisible
 
-    ; Reset counters and move pattern
+    ; Reset counters
     XOR A                                       ; Set A to 0
     LD (IY + FE.RESPAWN_DELAY_CNT), A
+
+    LD A, (IY + FE.MOVE_DELAY)
     LD (IY + FE.MOVE_DELAY_CNT), A
 
     ; Set Y (horizontal respawn)
@@ -248,18 +264,15 @@ _TryRespawnNextFollowingEnemy
     LD (IX + SPR.Y), A
 
     ; Set X to left or right side of the screen
-    LD A, R
-    CP DEPLOY_SIDE_RAND
-    JR C, .deployLeft
+    BIT STATE_DIR_BIT, (IY + FE.STATE)
+    JR NZ, .deployLeft
 
     ; Deploy right
     LD BC, _GSC_X_MAX_D315
-    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE) ; Mirror sprite, because it deploys on the right and moves to the left side
     JR .afterLR
 
     ; Deploy left
 .deployLeft
-    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE) ; Do not mirror sprite (this could be set if in another level it was moving right)
     LD BC, _GSC_X_MIN_D0
 
 .afterLR
