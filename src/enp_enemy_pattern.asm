@@ -111,7 +111,7 @@ DEC_MOVE_DELAY          = %0001'0000
 
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
-BOUNCE_H_MARG_D5        = 3
+BOUNCE_H_MARG_D3        = 3
 
 freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
@@ -708,8 +708,8 @@ _MoveEnemy
 
     ; Bounce is set, has sprite reached the bottom of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D5
-    JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D5)
+    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D3
+    JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3)
     ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down
     CALL _FlipReverseY
     LD A, sr.MOVE_Y_IN_UP
@@ -733,7 +733,7 @@ _MoveEnemy
 
     ; Bounce is set, has sprite reached top of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D5
+    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D3
     JR NC, .afterBounceMoveUp                   ; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15+_GSC_Y_MIN_D15)
 
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up

@@ -489,7 +489,7 @@ platformsL8
     pl.PLA {34*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
     pl.PLA {33*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
     pl.PLA {38*8/*X_LEFT*/, 38*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL8         DB 15
+platformsSizeL8         DB 1
 
 ; Level 9
 platformsL9

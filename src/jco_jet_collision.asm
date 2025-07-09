@@ -70,7 +70,7 @@ JetmanElementCollision
 .checkVertical
     
     ; We are here because Jetman's horizontal position matches that of the element, now check vertical
-    LD A, (jpo.jetY)                                ; Y of the Jetman.
+    LD A, (jpo.jetY)                            ; Y of the Jetman.
 
     ; Subtracts B from A and check whether the result is less than or equal to #PICK_MARGY_D16
     SUB D                                       ; D is method param (Y postion of rocket element)
@@ -346,11 +346,11 @@ _RET_YES_D1           = 1
 _CheckCollision
 
     ; Compare X coordinate of enemy and Jetman
-    LD BC, (IX + SPR.X)                      ; X of the enemy
+    LD BC, (IX + SPR.X)                         ; X of the enemy
     LD HL, (jpo.jetX)                           ; X of the Jetman
 
     ; Check whether Jetman is horizontal with the enemy
-    SBC HL, BC  
+    SBC HL, BC
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman
     LD A, H
     CP 0
@@ -367,7 +367,7 @@ _CheckCollision
 .checkVertical
 
     ; We are here because Jetman's horizontal position matches that of the enemy, now check vertical.
-    LD B, (IX + SPR.Y)                       ; Y of the enemy
+    LD B, (IX + SPR.Y)                          ; Y of the enemy
     LD A, (jpo.jetY)                            ; Y of the Jetman
 
     ; Is Jetman above or below the enemy?
@@ -386,7 +386,7 @@ _CheckCollision
     ; Swap A and B (compared to above) to avoid negative value
     LD A, (jpo.jetY)
     LD B, A                                     ; B: Y of the Jetman
-    LD A, (IX + SPR.Y)                       ; A: Y of the enemy
+    LD A, (IX + SPR.Y)                          ; A: Y of the enemy
     SUB B
     CP D
     JR C, .collision

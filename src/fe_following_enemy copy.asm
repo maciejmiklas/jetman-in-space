@@ -22,11 +22,11 @@ RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts 
     ENDS
 
 ; VALUES for #FE.STATE
-STATE_DIR_X_BIT          = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
-STATE_DIR_X_MASK         = %000'1'0000           ; Reset all but #STATE_DIR_BIT
+STATE_DIR_X_BIT        = 4                      ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
+STATE_DIR_X_MASK       = %000'1'0000            ; Reset all but #STATE_DIR_X_BIT
 
-STATE_DIR_Y_BIT         = 3                      ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
-STATE_DIR_Y_MASK        = %0000'1'000            ; Reset all but #STATE_DIR_Y_BIT
+STATE_DIR_Y_BIT        = 3                      ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
+STATE_DIR_X_MASK       = %0000'1'000            ; Reset all but #STATE_DIR_Y_BIT
 
 STATE_MOVE_RIGHT        = %000'1'0000           ; Deploy on the left side of the screen and move right
 STATE_MOVE_LEFT         = %000'0'0000           ; Deploy on the right side of the screen and move left
@@ -45,7 +45,7 @@ fEnemySprites
     SPR {105/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
     SPR {106/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
     SPR {107/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-fEnemySize              BYTE 1
+fEnemySize              BYTE 2
 
 fEnemy01
     FE {STATE_MOVE_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/}
@@ -178,6 +178,7 @@ MoveFollowingEnemies
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+tmp byte 0
 ;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
@@ -186,7 +187,7 @@ MoveFollowingEnemies
 ;  - IY: Pointer to #FE
 _MoveEnemy
 
-   CALL _UpdateMovementState
+    ;CALL _UpdateMovementState
 
     ; Set sprite ID in hardware
     CALL sr.SetSpriteId
@@ -205,6 +206,7 @@ _MoveEnemy
     CALL sr.MoveX
 
 
+/*
     ; ##########################################
     ; Move Y - up/down
     CALL _InvertYForBounce
@@ -222,10 +224,10 @@ _MoveEnemy
 
 .afterMoveY
     CALL sr.MoveY
+*/
 
 
     ; ##########################################
-
     CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
 
     RET                                         ; ## END of the function ##
@@ -259,8 +261,6 @@ _InvertYForBounce
 
     RET                                         ; ## END of the function ##
 
-tmp1 byte 0
-tmp2 byte 0
 ;----------------------------------------------------------;
 ;                 _UpdateMovementState                     ;
 ;----------------------------------------------------------;
@@ -280,40 +280,36 @@ _UpdateMovementState
     SBC HL, BC
     JP M, .decrementEnemyX
                                        ; Jump if Sign flag is set (M = Minus)
-    ; Increment enemy X (move right)
+    ; Increment X
     SET STATE_DIR_X_BIT, (IY + FE.STATE)
     JR .afterMoveX
 
-    ; Decrement enemy X (move left)
+    ; Decrement X
 .decrementEnemyX
-
     RES STATE_DIR_X_BIT, (IY + FE.STATE)
-
 .afterMoveX
 
     ; ##########################################
     ; Move Y
-
+/*
     ; Decide whether we should increment or decrement the Y position of the enemy to get closer to the Jetman
     ; (Jetman Y) - (Enemy Y) > 0 -> increment enemy Y
     ; (Jetman Y) - (Enemy Y) < 0 -> decrement enemy Y
-    LD B, (IX + SPR.Y)                         ; Y of the enemy
-    LD A, (jpo.jetY)                           ; Y of the Jetman
+    LD B, (IX + SPR.X)                         ; X of the enemy
+    LD A, (jpo.jetX)                           ; X of the Jetman
     SBC A, B
     JP M, .decrementEnemyY
                                        ; Jump if Sign flag is set (M = Minus)
-    ; Increment enemy Y (move down)
+    ; Increment Y (move down)
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)
-    ld a, (tmp1): inc a: ld (tmp1), a
     JR .afterMoveY
 
-    ; Decrement enemy Y (move up)
+    ; Decrement Y (move up)
 .decrementEnemyY
     SET STATE_DIR_Y_BIT, (IY + FE.STATE)
-    ld a, (tmp2): inc a: ld (tmp2), a
 
 .afterMoveY
-
+*/
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
