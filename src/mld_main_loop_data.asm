@@ -5,36 +5,32 @@
 
 counter000FliFLop   DB 0                        ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
 
-COUNTER002_MAX      = 2
+COUNTER002_MAX      = 2                         ; Tick rate: 1/25s
 counter002          DB 0
 counter002FliFLop   DB 0                        ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
 
-COUNTER004_MAX      = 4
-counter004          DB 0
-counter004FliFLop   DB 0                        ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
+COUNTER005_MAX      = 5                         ; Tick rate: 1/10s
+counter005          DB 0
+counter005FliFLop   DB 0                        ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
 
-COUNTER006_MAX      = 6
-counter006          DB 0
-counter006FliFLop   DB 0                        ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
-
-COUNTER008_MAX      = 8
+COUNTER008_MAX      = 8                         ; Tick rate: ±1/6s
 counter008          DB 0
 counter008FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
 
-COUNTER010_MAX      = 10
+COUNTER010_MAX      = 10                        ; Tick rate: 1/5s
 counter010          DB 0
 counter010FliFLop   DB 0                        ;  Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
 
-COUNTER015_MAX      = 15
-counter015          DB 0
+COUNTER025_MAX      = 25                        ; Tick rate: 0.5s
+counter025          DB 0
 
-COUNTER020_MAX      = 20
-counter020          DB 0
-
-COUNTER040_MAX      = 40
+COUNTER040_MAX      = 40                        ; Tick rate: 4/5s
 counter040          DB 0
 
-COUNTER080_MAX      = 80
+COUNTER050_MAX      = 50                        ; Tick rate: 1s
+counter050          DB 0
+
+COUNTER080_MAX      = 80                        ; Tick rate: 1.6s
 counter080          DB 0
 
 ;----------------------------------------------------------;

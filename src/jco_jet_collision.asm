@@ -179,7 +179,7 @@ JetInvincible
     JR NC, .blinkFast                           ; #invincibleCnt > #JM_INV_BLINK_D100 -> blink fast
 
     ;  #invincibleCnt < #JM_INV_BLINK_D100 -> blink slow (invincibility is almost over)
-    LD A, (mld.counter004FliFLop)
+    LD A, (mld.counter005FliFLop)
     JR .afterBlinkSet
 .blinkFast  
     LD A, (mld.counter002FliFLop)

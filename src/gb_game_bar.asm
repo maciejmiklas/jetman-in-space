@@ -53,6 +53,7 @@ PrintDebug
     LD A, (fe.tmp1)
     LD L, A
     CALL ut.PrintNumber
+    
 
     ; ##########################################
     LD BC, 50

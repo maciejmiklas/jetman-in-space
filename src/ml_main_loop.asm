@@ -10,13 +10,13 @@ MainLoop
 
     CALL _MainLoop000
     CALL _MainLoop002
-    CALL _MainLoop004
-    CALL _MainLoop006
+    CALL _MainLoop005
+
     CALL _MainLoop008
     CALL _MainLoop010
-    CALL _MainLoop015
-    CALL _MainLoop020
+    CALL _MainLoop025
     CALL _MainLoop040
+    CALL _MainLoop050
     CALL _MainLoop080
     CALL _LastLoop
 
@@ -219,6 +219,7 @@ _MainLoop000OnDisabledJoy
 ;----------------------------------------------------------;
 ;                        _MainLoop002                      ;
 ;----------------------------------------------------------;
+; Tick rate: 1/25s
 _MainLoop002
 
     ; Increment the counter
@@ -272,36 +273,37 @@ _MainLoop002OnActiveGame
 ;----------------------------------------------------------;
 ;                      _MainLoop004                        ;
 ;----------------------------------------------------------;
-_MainLoop004
+; Tick rate: 1/10s
+_MainLoop005
 
     ; Increment the counter
-    LD A, (mld.counter004)
+    LD A, (mld.counter005)
     INC A
-    LD (mld.counter004), A
-    CP mld.COUNTER004_MAX
+    LD (mld.counter005), A
+    CP mld.COUNTER005_MAX
     RET NZ
     
     ; Reset the counter
     XOR A                                       ; Set A to 0
-    LD (mld.counter004), A
+    LD (mld.counter005), A
 
     ; ##########################################
     ; 1 -> 0 and 0 -> 1
-    LD A, (mld.counter004FliFLop)
+    LD A, (mld.counter005FliFLop)
     XOR 1
-    LD (mld.counter004FliFLop), A
+    LD (mld.counter005FliFLop), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop004OnRocketExplosion
-    CALL _MainLoop004OnActiveGame
+    CALL _MainLoop005OnRocketExplosion
+    CALL _MainLoop005OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              _MainLoop004OnRocketExplosion               ;
+;              _MainLoop005OnRocketExplosion               ;
 ;----------------------------------------------------------;
-_MainLoop004OnRocketExplosion
+_MainLoop005OnRocketExplosion
     ; Is rocket exploding ?
     LD A, (ro.rocketState)
     CP ro.ROST_EXPLODE
@@ -313,9 +315,9 @@ _MainLoop004OnRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop004OnActiveGame                 ;
+;                 _MainLoop005OnActiveGame                 ;
 ;----------------------------------------------------------;
-_MainLoop004OnActiveGame
+_MainLoop005OnActiveGame
 
     ; Return if game is not active
     LD A, (ms.mainState)
@@ -330,35 +332,9 @@ _MainLoop004OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop006                       ;
-;----------------------------------------------------------;
-_MainLoop006
-
-    ; Increment the counter
-    LD A, (mld.counter006)
-    INC A
-    LD (mld.counter006), A
-    CP mld.COUNTER006_MAX
-    RET NZ
-
-    ; Reset the counter
-    XOR A                                       ; Set A to 0
-    LD (mld.counter006), A
-
-    ; ##########################################
-    ; 1 -> 0 and 0 -> 1
-    LD A, (mld.counter006FliFLop)
-    XOR 1
-    LD (mld.counter006FliFLop), A
-
-    ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                      _MainLoop008                        ;
 ;----------------------------------------------------------;
+; Tick rate: ±1/6s
 _MainLoop008
 
     ; Increment the counter
@@ -381,6 +357,7 @@ _MainLoop008
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
     CALL _MainLoop008OnActiveGame
+
     CALL _MainLoop008OnActiveGameOrFlyingRocket
     CALL _MainLoop008OnFlayingRocket
     CALL _MainLoop008OnActiveScoreMenu
@@ -483,6 +460,7 @@ _MainLoop008OnActiveGameOrFlyingRocket
 ;----------------------------------------------------------;
 ;                      _MainLoop010                        ;
 ;----------------------------------------------------------;
+; Tick rate: 1/5s
 _MainLoop010
 
     ; Increment the counter
@@ -529,53 +507,50 @@ _MainLoop010OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      _MainLoop015                        ;
+;                       _MainLoop025                       ;
 ;----------------------------------------------------------;
-_MainLoop015
+; Tick rate: 0.5s
+_MainLoop025
 
     ; Increment the counter
-    LD A, (mld.counter015)
+    LD A, (mld.counter025)
     INC A
-    LD (mld.counter015), A
-    CP mld.COUNTER015_MAX
+    LD (mld.counter025), A
+    CP mld.COUNTER025_MAX
     RET NZ
 
+    ; ##########################################
     ; Reset the counter
     XOR A                                       ; Set A to 0
-    LD (mld.counter015), A
+    LD (mld.counter025), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
+    CALL _MainLoop025nFlyingRocket
+    CALL _MainLoop025OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop020                       ;
+;                 _MainLoop025OnActiveGame                 ;
 ;----------------------------------------------------------;
-_MainLoop020
+_MainLoop025OnActiveGame
 
-    ; Increment the counter
-    LD A, (mld.counter020)
-    INC A
-    LD (mld.counter020), A
-    CP mld.COUNTER020_MAX
+    ; Return if game is inactive
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
     RET NZ
 
     ; ##########################################
-    ; Reset the counter
-    XOR A                                       ; Set A to 0
-    LD (mld.counter020), A
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.UpdateFollowingEnemies
 
-    ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop020nFlyingRocket
-    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                _MainLoop020nFlyingRocket                 ;
 ;----------------------------------------------------------;
-_MainLoop020nFlyingRocket
+_MainLoop025nFlyingRocket
 
     ; Return if rocket is not flying
     LD A, (ms.mainState)
@@ -591,6 +566,7 @@ _MainLoop020nFlyingRocket
 ;----------------------------------------------------------;
 ;                       _MainLoop040                       ;
 ;----------------------------------------------------------;
+; Tick rate: 4/5s
 _MainLoop040
 
     ; Increment the counter
@@ -631,8 +607,32 @@ _MainLoop040OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                       _MainLoop050                       ;
+;----------------------------------------------------------;
+; Tick rate: 1s
+_MainLoop050
+
+    ; Increment the counter
+    LD A, (mld.counter050)
+    INC A
+    LD (mld.counter050), A
+    CP mld.COUNTER050_MAX
+    RET NZ
+
+    ; ##########################################
+    ; Reset the counter
+    XOR A                                       ; Set A to 0
+    LD (mld.counter050), A
+
+    ; ##########################################
+    ; CALL functions that need to be updated every xx-th loop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       _MainLoop080                       ;
 ;----------------------------------------------------------;
+; Tick rate: 1,6s
 _MainLoop080
 
     ; Increment the counter

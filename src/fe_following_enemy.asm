@@ -7,9 +7,6 @@
 freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
 
-UPDATE_DIR_DELAY        = 10
-updateDirDelay          BYTE UPDATE_DIR_DELAY
-
     STRUCT FE
 STATE                   DB
 RESPAWN_Y               DB                      ; Respawn Y position
@@ -19,6 +16,7 @@ MOVE_DELAY              DB
 ; Values changed during runtime
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
+FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
     ENDS
 
 ; VALUES for #FE.STATE
@@ -31,7 +29,10 @@ STATE_DIR_Y_MASK        = %0000'1'000            ; Reset all but #STATE_DIR_Y_BI
 STATE_MOVE_RIGHT        = %000'1'0000           ; Deploy on the left side of the screen and move right
 STATE_MOVE_LEFT         = %000'0'0000           ; Deploy on the right side of the screen and move left
 
-BOUNCE_H_MARG_D3        = 3
+BOUNCE_H_MARG_D5        = 5
+
+FOLLOW_OFF_BOUNCE       = 8                     ; 8 = 4s
+FOLLOW_OFF_CHANGE       = 4                     ; 4 = 2s
 
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
@@ -48,10 +49,39 @@ fEnemySprites
 fEnemySize              BYTE 1
 
 fEnemy01
-    FE {STATE_MOVE_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/}
+    FE {STATE_MOVE_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/}
 
 fEnemy02
-    FE {STATE_MOVE_LEFT/*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/}
+    FE {STATE_MOVE_LEFT  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/}
+
+;----------------------------------------------------------;
+;                UpdateFollowingEnemies                    ;
+;----------------------------------------------------------;
+UpdateFollowingEnemies
+
+    ; Iterate over all enemies to find the first hidden, respawn it, and exit function.
+    LD IX, fEnemySprites
+    LD A, (fEnemySize)
+    LD B, A
+
+.sprLoop
+    PUSH BC                                     ; Preserve B for loop counter
+
+    ; Load extra data for this sprite to IY
+    LD BC, (IX + SPR.EXT_DATA_POINTER)
+    LD IY, BC
+
+    CALL _UpdateFollowingEnemy
+
+    POP BC
+
+    ; Move IX to the beginning of the next #fEnemySprites
+    LD DE, SPR
+    ADD IX, DE
+    DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
+
+    RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                FreezeFollowingEnemies                    ;
@@ -179,14 +209,96 @@ MoveFollowingEnemies
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                _UpdateFollowingEnemy                     ;
+;----------------------------------------------------------;
+; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Jetman's position
+; Input
+;  - IX: Pointer to #SPR holding data for single sprite that will be moved
+;  - IY: Pointer to #FE
+_UpdateFollowingEnemy
+
+    ; Is following disabled?
+    LD A, (IY + FE.FOLLOW_OFF_CNT)
+    CP 0
+    JR Z, .afterFollowOff
+    DEC A
+    LD (IY + FE.FOLLOW_OFF_CNT), A
+    RET
+.afterFollowOff
+
+    LD D, (IY + FE.STATE)                       ; Keep the state in D to check whether it will change later on
+    ; ##########################################
+    ; Move X
+
+    ; Decide whether we should increment or decrement the X position of the enemy to get closer to the Jetman
+    ; (Jetman X) - (Enemy X) > 0 -> increment enemy X
+    ; (Jetman X) - (Enemy X) < 0 -> decrement enemy X
+    LD BC, (IX + SPR.X)                         ; X of the enemy
+    LD HL, (jpo.jetX)                           ; X of the Jetman
+    SBC HL, BC
+    JP M, .decrementEnemyX                      ; Jump if Sign flag is set (M = Minus)
+ 
+    ; Increment enemy X (move right)
+
+    SET STATE_DIR_X_BIT, (IY + FE.STATE)
+    LD A, D: CP (IY + FE.STATE)
+    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+    JR .afterMoveX
+
+    ; Decrement enemy X (move left)
+.decrementEnemyX
+
+    RES STATE_DIR_X_BIT, (IY + FE.STATE)
+    LD A, D: CP (IY + FE.STATE)
+    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+
+.afterMoveX
+
+    ; ##########################################
+    ; Move Y
+
+    ; Decide whether we should increment or decrement the Y position of the enemy to get closer to the Jetman
+    ; (Jetman Y) - (Enemy Y) > 0 -> increment enemy Y
+    ; (Jetman Y) - (Enemy Y) < 0 -> decrement enemy Y
+    LD B, (IX + SPR.Y)                         ; Y of the enemy
+    LD A, (jpo.jetY)                           ; Y of the Jetman
+    SBC A, B
+    JP M, .decrementEnemyY                     ; Jump if Sign flag is set (M = Minus)
+
+    ; Increment enemy Y (move down)
+    RES STATE_DIR_Y_BIT, (IY + FE.STATE)
+    LD A, D: CP (IY + FE.STATE)
+    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+    RET
+
+    ; Decrement enemy Y (move up)
+.decrementEnemyY
+    SET STATE_DIR_Y_BIT, (IY + FE.STATE)
+    LD A, D: CP (IY + FE.STATE)
+    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                _FollowingEnemyUpdated                    ;
+;----------------------------------------------------------;
+; Input
+;  - IX: Pointer to #SPR holding data for single sprite that will be moved
+;  - IY: Pointer to #FE
+_FollowingEnemyUpdated
+
+    LD A, FOLLOW_OFF_CHANGE
+    LD (IY + FE.FOLLOW_OFF_CNT), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: Pointer to #FE
 _MoveEnemy
-
-   CALL _UpdateMovementState
 
     ; Set sprite ID in hardware
     CALL sr.SetSpriteId
@@ -204,7 +316,6 @@ _MoveEnemy
     LD D, A
     CALL sr.MoveX
 
-
     ; ##########################################
     ; Move Y - up/down
     CALL _InvertYForBounce
@@ -221,11 +332,8 @@ _MoveEnemy
     LD A, sr.MOVE_Y_IN_UP
 
 .afterMoveY
-    CALL sr.MoveY
-
-
     ; ##########################################
-
+    CALL sr.MoveY
     CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
 
     RET                                         ; ## END of the function ##
@@ -241,78 +349,27 @@ _InvertYForBounce
 
     ; Has enemy reached the bottom of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D3
+    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D5
     JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3)
 
     ; Yes - we are at the bottom of the screen, set y to go up
     SET STATE_DIR_Y_BIT, (IY + FE.STATE)
+    JR .afterBounced
 .afterBounceMoveDown
 
     ; ##########################################
     ; Has enemy reached top of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D3
+    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D5
     RET NC                                       ; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15+_GSC_Y_MIN_D15)
 
     ; Yes - we are at the top of the screen, set y to go down
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)
 
-    RET                                         ; ## END of the function ##
-
-tmp1 byte 0
-tmp2 byte 0
-;----------------------------------------------------------;
-;                 _UpdateMovementState                     ;
-;----------------------------------------------------------;
-; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Jetman's position
-; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
-;  - IY: Pointer to #FE
-_UpdateMovementState
-
-    ; Move X
-
-    ; Decide whether we should increment or decrement the X position of the enemy to get closer to the Jetman
-    ; (Jetman X) - (Enemy X) > 0 -> increment enemy X
-    ; (Jetman X) - (Enemy X) < 0 -> decrement enemy X
-    LD BC, (IX + SPR.X)                         ; X of the enemy
-    LD HL, (jpo.jetX)                           ; X of the Jetman
-    SBC HL, BC
-    JP M, .decrementEnemyX
-                                       ; Jump if Sign flag is set (M = Minus)
-    ; Increment enemy X (move right)
-    SET STATE_DIR_X_BIT, (IY + FE.STATE)
-    JR .afterMoveX
-
-    ; Decrement enemy X (move left)
-.decrementEnemyX
-
-    RES STATE_DIR_X_BIT, (IY + FE.STATE)
-
-.afterMoveX
-
-    ; ##########################################
-    ; Move Y
-
-    ; Decide whether we should increment or decrement the Y position of the enemy to get closer to the Jetman
-    ; (Jetman Y) - (Enemy Y) > 0 -> increment enemy Y
-    ; (Jetman Y) - (Enemy Y) < 0 -> decrement enemy Y
-    LD B, (IX + SPR.Y)                         ; Y of the enemy
-    LD A, (jpo.jetY)                           ; Y of the Jetman
-    SBC A, B
-    JP M, .decrementEnemyY
-                                       ; Jump if Sign flag is set (M = Minus)
-    ; Increment enemy Y (move down)
-    RES STATE_DIR_Y_BIT, (IY + FE.STATE)
-    ld a, (tmp1): inc a: ld (tmp1), a
-    JR .afterMoveY
-
-    ; Decrement enemy Y (move up)
-.decrementEnemyY
-    SET STATE_DIR_Y_BIT, (IY + FE.STATE)
-    ld a, (tmp2): inc a: ld (tmp2), a
-
-.afterMoveY
+.afterBounced
+    ; Turn off following the Jetman for a few frames because the enemy bounces off
+    LD A, FOLLOW_OFF_BOUNCE
+    LD (IY + FE.FOLLOW_OFF_CNT), A
 
     RET                                         ; ## END of the function ##
 
