@@ -8,7 +8,7 @@ freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
 
     STRUCT FE
-STATE                   DB
+STATE                   DB                      ; See: #STATE_XXX
 RESPAWN_Y               DB                      ; Respawn Y position
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn
 MOVE_DELAY              DB
@@ -17,22 +17,25 @@ MOVE_DELAY              DB
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
 FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
+BOUNCE_OFF_CNT          DB
     ENDS
 
 ; VALUES for #FE.STATE
-STATE_DIR_X_BIT          = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
-STATE_DIR_X_MASK         = %000'1'0000           ; Reset all but #STATE_DIR_BIT
+STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
+STATE_DIR_X_MASK        = %000'1'0000           ; Reset all but #STATE_DIR_BIT
 
-STATE_DIR_Y_BIT         = 3                      ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
-STATE_DIR_Y_MASK        = %0000'1'000            ; Reset all but #STATE_DIR_Y_BIT
+STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
+STATE_DIR_Y_MASK        = %0000'1'000           ; Reset all but #STATE_DIR_Y_BIT
 
-STATE_MOVE_RIGHT        = %000'1'0000           ; Deploy on the left side of the screen and move right
-STATE_MOVE_LEFT         = %000'0'0000           ; Deploy on the right side of the screen and move left
+STATE_MOVE_RD           = %000'1'0'000          ; Deploy on the left side of the screen and move right-down 
+STATE_MOVE_RU           = %000'1'1'000          ; Deploy on the left side of the screen and move right-up 
+STATE_MOVE_LD           = %000'0'0'000          ; Deploy on the right side of the screen and move left-down 
+STATE_MOVE_LU           = %000'0'1'000          ; Deploy on the right side of the screen and move left-up 
 
-BOUNCE_H_MARG_D5        = 5
+BOUNCE_H_MARG_D2        = 2
+BOUNCE_OFF_D10          = 10
 
-FOLLOW_OFF_BOUNCE       = 8                     ; 8 = 4s
-FOLLOW_OFF_CHANGE       = 4                     ; 4 = 2s
+FOLLOW_OFF_CHANGE_D4    = 4                     ; 4 = 2s (_MainLoop025 -> UpdateFollowingEnemies)
 
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
@@ -49,10 +52,10 @@ fEnemySprites
 fEnemySize              BYTE 1
 
 fEnemy01
-    FE {STATE_MOVE_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/}
+    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*BOUNCE_OFF_CNT*/}
 
 fEnemy02
-    FE {STATE_MOVE_LEFT  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/}
+    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*BOUNCE_OFF_CNT*/}
 
 ;----------------------------------------------------------;
 ;                UpdateFollowingEnemies                    ;
@@ -81,7 +84,6 @@ UpdateFollowingEnemies
     DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                FreezeFollowingEnemies                    ;
@@ -230,68 +232,150 @@ _UpdateFollowingEnemy
     ; ##########################################
     ; Move X
 
-    ; Decide whether we should increment or decrement the X position of the enemy to get closer to the Jetman
-    ; (Jetman X) - (Enemy X) > 0 -> increment enemy X
-    ; (Jetman X) - (Enemy X) < 0 -> decrement enemy X
+    ; Decide whether we should move enemy lef/right to get closer to the Jetman
+    ; (Jetman X) - (Enemy X) > 0 -> move enemy left
+    ; (Jetman X) - (Enemy X) < 0 -> move enemy right
     LD BC, (IX + SPR.X)                         ; X of the enemy
     LD HL, (jpo.jetX)                           ; X of the Jetman
-    SBC HL, BC
-    JP M, .decrementEnemyX                      ; Jump if Sign flag is set (M = Minus)
+    OR A: SBC HL, BC
+    JP M, .moveEnemyLeft                        ; #jetY -#SPR.X < 0 -> move enemy left
  
     ; Increment enemy X (move right)
-
     SET STATE_DIR_X_BIT, (IY + FE.STATE)
+
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+    CALL NZ, _DelayFollowing             ; Call only if state has changed
     JR .afterMoveX
 
     ; Decrement enemy X (move left)
-.decrementEnemyX
-
+.moveEnemyLeft
     RES STATE_DIR_X_BIT, (IY + FE.STATE)
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+    CALL NZ, _DelayFollowing             ; Call only if state has changed
 
 .afterMoveX
 
     ; ##########################################
     ; Move Y
 
-    ; Decide whether we should increment or decrement the Y position of the enemy to get closer to the Jetman
-    ; (Jetman Y) - (Enemy Y) > 0 -> increment enemy Y
-    ; (Jetman Y) - (Enemy Y) < 0 -> decrement enemy Y
-    LD B, (IX + SPR.Y)                         ; Y of the enemy
-    LD A, (jpo.jetY)                           ; Y of the Jetman
-    SBC A, B
-    JP M, .decrementEnemyY                     ; Jump if Sign flag is set (M = Minus)
+    ; Decide whether we should move enemy up/down to get closer to the Jetman
+    ; (Jetman Y)  > (Enemy Y) -> move enemy down
+    ; (Jetman Y)  < (Enemy Y) -> move enemy up
+    LD B, (IX + SPR.Y)                          ; Y of the enemy
+    LD A, (jpo.jetY)                            ; Y of the Jetman
+    CP B
+    JP C, .moveEnemyUp                          ; Jump if  #jetY - #SPR.Y < 0
 
-    ; Increment enemy Y (move down)
+    ; Move enemy down (increment Y)
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)
+
+    ; Delay following only if state has changed
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+    CALL NZ, _DelayFollowing
     RET
 
-    ; Decrement enemy Y (move up)
-.decrementEnemyY
+    ; Move enemy up (decrement Y)
+.moveEnemyUp
+
+    LD B, (IX + SPR.Y)                          ; Y of the enemy 3e
+    LD A, (jpo.jetY)                            ; Y of the Jetman e1
+
     SET STATE_DIR_Y_BIT, (IY + FE.STATE)
+
+    ; Delay following only if state has changed
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _FollowingEnemyUpdated             ; Call only if state has changed
+    CALL NZ, _DelayFollowing                    
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _FollowingEnemyUpdated                    ;
+;                  _DelayFollowing                         ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: Pointer to #FE
-_FollowingEnemyUpdated
+_DelayFollowing
 
-    LD A, FOLLOW_OFF_CHANGE
+    LD A, FOLLOW_OFF_CHANGE_D4
     LD (IY + FE.FOLLOW_OFF_CNT), A
 
     RET                                         ; ## END of the function ##
 
+tmp db 0
+;----------------------------------------------------------;
+;                  _BounceOfPlatform                       ;
+;----------------------------------------------------------;
+; Input
+;  - IX: Pointer to #SPR holding data for single sprite that will be moved
+;  - IY: Pointer to #FE
+_BounceOfPlatform
+
+    LD A, (IY + FE.BOUNCE_OFF_CNT)
+    ld (tmp),a
+    CP 0
+    JR Z, .afterDelay
+    DEC A
+    LD (IY + FE.BOUNCE_OFF_CNT), A
+    RET
+.afterDelay
+
+    ; Check the collision with the platform
+    PUSH IX, IY, HL
+    LD HL, IX
+    ADD HL, SPR.X                               ; Param next method
+
+    CALL pl.PlatformBounceOff
+    POP HL, IY, IX
+
+    CP pl.PL_DHIT_NO
+    RET Z
+
+    CP pl.PL_DHIT_LEFT
+    JR Z, .bounceHorizontal
+
+    CP pl.PL_DHIT_RIGHT
+    JR Z, .bounceHorizontal
+
+    CP pl.PL_DHIT_TOP
+    JR Z, .bounceVertical
+
+    CP pl.PL_DHIT_BOTTOM
+    JR Z, .bounceVertical
+
+.bounceHorizontal
+    ; Enemy bounces from the platform's left/right, reverse movement
+
+    ; Flip X direction
+    LD A, (IY + FE.STATE)
+    XOR STATE_DIR_X_MASK
+    LD (IY + FE.STATE), A
+    LD A, sr.SDB_BOUNCE_SIDE                    ; Bounce animation for #sr.LoadSpritePattern
+    JR .bounced
+
+    RET
+
+.bounceVertical
+  
+    ; Enemy bounces from the platform's top/bottom, reverse movement
+
+    ; Flip Y direction
+    LD A, (IY + FE.STATE)
+    XOR STATE_DIR_Y_MASK
+    LD (IY + FE.STATE), A
+    LD A, sr.SDB_BOUNCE_TOP                     ; Bounce animation for #sr.LoadSpritePattern
+
+.bounced
+
+    CALL sr.LoadSpritePattern
+
+    LD A, BOUNCE_OFF_D10
+    LD (IY + FE.BOUNCE_OFF_CNT), A
+
+    CALL _DelayFollowing
+
+    RET                                         ; ## END of the function ##
+
+tmp1 db 0
 ;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
@@ -300,13 +384,14 @@ _FollowingEnemyUpdated
 ;  - IY: Pointer to #FE
 _MoveEnemy
 
-    ; Set sprite ID in hardware
-    CALL sr.SetSpriteId
+     LD A, (IY + FE.STATE)
+    ld (tmp1), a
+
+    CALL _BounceOfPlatform                     ; Should enemy bounce of the platform?
 
     ; ##########################################
     ; Move X - left/right
 
-    ; Copy move left/right from state
     LD A, (IY + FE.STATE)
     AND STATE_DIR_X_MASK
     LD B, A
@@ -333,8 +418,10 @@ _MoveEnemy
 
 .afterMoveY
     ; ##########################################
-    CALL sr.MoveY
-    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
+    CALL sr.MoveY                               ; A contains #MOVE_Y_IN_DOWN/UP
+
+    CALL sr.SetSpriteId
+    CALL sr.UpdateSpritePosition
 
     RET                                         ; ## END of the function ##
 
@@ -349,7 +436,7 @@ _InvertYForBounce
 
     ; Has enemy reached the bottom of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D5
+    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D2
     JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3)
 
     ; Yes - we are at the bottom of the screen, set y to go up
@@ -360,16 +447,14 @@ _InvertYForBounce
     ; ##########################################
     ; Has enemy reached top of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D5
+    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D2
     RET NC                                       ; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15+_GSC_Y_MIN_D15)
 
     ; Yes - we are at the top of the screen, set y to go down
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)
-
 .afterBounced
     ; Turn off following the Jetman for a few frames because the enemy bounces off
-    LD A, FOLLOW_OFF_BOUNCE
-    LD (IY + FE.FOLLOW_OFF_CNT), A
+    CALL _DelayFollowing
 
     RET                                         ; ## END of the function ##
 

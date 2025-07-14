@@ -50,21 +50,21 @@ SDB_SEARCH_LIMIT        = 200
 ; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
 ; containing another animation or a command like #SDB_HIDE that will hide the sprite.
 srSpriteDB
-    sr.SPR_REC {sr.SDB_EXPLODE, sr.SDB_HIDE-sr.SDB_SUB, 04}
+    SPR_REC {SDB_EXPLODE, SDB_HIDE-SDB_SUB, 04}
             DB 30, 31, 32, 33
-    sr.SPR_REC {sr.SDB_FIRE,sr.SDB_FIRE-sr.SDB_SUB, 02}
+    SPR_REC {SDB_FIRE,SDB_FIRE-SDB_SUB, 02}
             DB 54, 55
-    sr.SPR_REC {sr.SDB_ENEMY1, sr.SDB_ENEMY1-sr.SDB_SUB, 24}
+    SPR_REC {SDB_ENEMY1, SDB_ENEMY1-SDB_SUB, 24}
             DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
-    sr.SPR_REC {sr.SDB_ENEMY2, sr.SDB_ENEMY2-sr.SDB_SUB, 03}
+    SPR_REC {SDB_ENEMY2, SDB_ENEMY2-SDB_SUB, 03}
             DB 48, 49, 50
-    sr.SPR_REC {sr.SDB_ENEMY3, sr.SDB_ENEMY3-sr.SDB_SUB, 03}
+    SPR_REC {SDB_ENEMY3, SDB_ENEMY3-SDB_SUB, 03}
             DB 34, 35, 36
-    sr.SPR_REC {sr.SDB_FUEL_THIEF, sr.SDB_FUEL_THIEF-sr.SDB_SUB, 03}
+    SPR_REC {SDB_FUEL_THIEF, SDB_FUEL_THIEF-SDB_SUB, 03}
             DB 58, 59, 63
-    sr.SPR_REC {sr.SDB_BOUNCE_SIDE, sr.SDB_ENEMY1-sr.SDB_SUB, 7}
+    SPR_REC {SDB_BOUNCE_SIDE, SDB_ENEMY1-SDB_SUB, 7}
             DB 34, 35, 36, 35, 34, 35, 36
-    sr.SPR_REC {sr.SDB_BOUNCE_TOP, sr.SDB_ENEMY1-sr.SDB_SUB, 7}
+    SPR_REC {SDB_BOUNCE_TOP, SDB_ENEMY1-SDB_SUB, 7}
             DB 48, 49, 50, 49, 48, 49, 50
             
 ;----------------------------------------------------------;
@@ -81,7 +81,7 @@ CheckSpriteVisible
 
 .sprLoop
     LD A, (IX + SPR.STATE)
-    BIT sr.SPRITE_ST_VISIBLE_BIT, A
+    BIT SPRITE_ST_VISIBLE_BIT, A
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden)
 
     ; Sprite is visible!
@@ -157,7 +157,7 @@ KillOneSprite
 ;  - IX:    Pointer to #SPR
 SpriteHit
 
-    CALL sr.SetSpriteId
+    CALL SetSpriteId
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection
 
     LD A, SDB_EXPLODE
