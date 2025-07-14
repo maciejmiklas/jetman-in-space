@@ -47,14 +47,21 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-/*
+
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (fe.tmp)
+    LD A, (fe.tmp1)
     LD L, A
     CALL ut.PrintNumber
-*/
+
+    ; ##########################################
+    LD BC, 50
+    LD H, 0
+    LD A, (fe.tmp2)
+    LD L, A
+    CALL ut.PrintNumber
+
 
     RET                                         ; ## END of the function ##
 

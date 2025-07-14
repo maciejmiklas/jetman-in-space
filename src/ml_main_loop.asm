@@ -543,7 +543,7 @@ _MainLoop025OnActiveGame
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
-    CALL fe.UpdateFollowingEnemies
+    CALL fe.UpdateFollowingJetman
 
     RET                                         ; ## END of the function ##
 
@@ -667,6 +667,7 @@ _MainLoop080OnActiveGame
     ; ##########################################
     CALL jo.JetpackOverheatFx
     CALL gc.PlayFuelThiefFx
+    CALL fe.RandomizeFollowingAngle
 
     RET                                         ; ## END of the function ##
 
