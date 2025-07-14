@@ -301,7 +301,6 @@ _DelayFollowing
 
     RET                                         ; ## END of the function ##
 
-tmp db 0
 ;----------------------------------------------------------;
 ;                  _BounceOfPlatform                       ;
 ;----------------------------------------------------------;
@@ -311,7 +310,6 @@ tmp db 0
 _BounceOfPlatform
 
     LD A, (IY + FE.BOUNCE_OFF_CNT)
-    ld (tmp),a
     CP 0
     JR Z, .afterDelay
     DEC A
@@ -375,7 +373,6 @@ _BounceOfPlatform
 
     RET                                         ; ## END of the function ##
 
-tmp1 db 0
 ;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
@@ -383,9 +380,6 @@ tmp1 db 0
 ;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: Pointer to #FE
 _MoveEnemy
-
-     LD A, (IY + FE.STATE)
-    ld (tmp1), a
 
     CALL _BounceOfPlatform                     ; Should enemy bounce of the platform?
 
