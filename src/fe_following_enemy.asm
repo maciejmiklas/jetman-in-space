@@ -7,6 +7,8 @@
 freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
 
+moveFliFLop             DB 0
+
     STRUCT FE
 STATE                   DB                      ; See: #STATE_XXX
 RESPAWN_Y               DB                      ; Respawn Y position
@@ -20,11 +22,20 @@ FOLLOW_OFF_CNT          DB                      ; Disables following (direction 
     ENDS
 
 ; VALUES for #FE.STATE
-STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
-STATE_DIR_X_MASK        = %000'1'0000           ; Reset all but #STATE_DIR_BIT
-
+; Bits:
+;  - 0: not used
+;  - 1: #SKIP_X_BIT
+;  - 2: #SKIP_Y_BIT
+;  - 3: #STATE_DIR_Y_BIT
+;  - 4: #STATE_DIR_X_BIT
+;  - 5-8: not used
+SKIP_X_BIT              = 1                     ; Skip every second movement in X direction changing angle from 45 to 22 deg
+SKIP_Y_BIT              = 2                     ; Skip every second movement in X direction changing angle from 45 to 22 deg
 STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
 STATE_DIR_Y_MASK        = %0000'1'000           ; Reset all but #STATE_DIR_Y_BIT
+
+STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
+STATE_DIR_X_MASK        = %000'1'0000           ; Reset all but #STATE_DIR_BIT
 
 STATE_MOVE_RD           = %000'1'0'000          ; Deploy on the left side of the screen and move right-down 
 STATE_MOVE_RU           = %000'1'1'000          ; Deploy on the left side of the screen and move right-up 
@@ -370,9 +381,33 @@ _MoveEnemy
 
     CALL _BounceOfPlatform                     ; Should enemy bounce of the platform?
 
+/*
+    BIT SKIP_Y_BIT, (IY + FE.STATE)
+    JR NZ, .aaaa
+    LD A, (IY + FE.STATE)
+    nextreg 2,8
+
+.aaaa
+*/
+    ; ##########################################
+    ; 1 -> 0 and 0 -> 1
+    LD A, (moveFliFLop)
+    XOR 1
+    LD (moveFliFLop), A
+
     ; ##########################################
     ; Move X - left/right
 
+    ; Should we skip every second horizontal movement (to change the angle)?
+    LD A, (moveFliFLop)
+    CP 1
+    JR Z, .afterSkipX
+  
+    BIT SKIP_X_BIT, (IY + FE.STATE)
+    JR NZ, .afterMoveX
+.afterSkipX
+
+    ; Move on X left or right. The direction is being copied from FE.STATE to D as a parameter for #sr.MoveX
     LD A, (IY + FE.STATE)
     AND STATE_DIR_X_MASK
     LD B, A
@@ -381,25 +416,36 @@ _MoveEnemy
     OR B
     LD D, A
     CALL sr.MoveX
+.afterMoveX
 
     ; ##########################################
     ; Move Y - up/down
-    CALL _InvertYForBounce
+    CALL _BounceOfTop
 
+    ; Should we skip every second vertical movement (to change the angle)?
+    LD A, (moveFliFLop)
+    CP 1
+    JR Z, .afterSkipY
+    BIT SKIP_Y_BIT, (IY + FE.STATE)
+    JR NZ, .afterMoveY
+.afterSkipY
+
+    ; Is move Y state set?
     BIT STATE_DIR_Y_BIT, (IY + FE.STATE)
-    JR NZ, .moveUp                              ; Jump if bit 3 == 1
+    JR NZ, .moveUp                              ; Jump if bit #STATE_DIR_Y_BIT == 1
 
     ; Move down
-    JR .afterMoveY
     LD A, sr.MOVE_Y_IN_DOWN
+    JR .afterMoveYDir
 
     ; Move up
 .moveUp
     LD A, sr.MOVE_Y_IN_UP
 
-.afterMoveY
+.afterMoveYDir
     ; ##########################################
     CALL sr.MoveY                               ; A contains #MOVE_Y_IN_DOWN/UP
+.afterMoveY
 
     CALL sr.SetSpriteId
     CALL sr.UpdateSpritePosition
@@ -407,13 +453,13 @@ _MoveEnemy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    _InvertYForBounce                     ;
+;                     _BounceOfTop                         ;
 ;----------------------------------------------------------;
 ; Invert Y (#STATE_DIR_Y_BIT) if the enemy is close to the top/bottom of the screen
 ; Input
 ;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: Pointer to #FE
-_InvertYForBounce
+_BounceOfTop
 
     ; Has enemy reached the bottom of the screen?
     LD A, (IX + SPR.Y)
