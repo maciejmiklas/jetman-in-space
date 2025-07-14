@@ -17,7 +17,6 @@ MOVE_DELAY              DB
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
 FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
-BOUNCE_OFF_CNT          DB
     ENDS
 
 ; VALUES for #FE.STATE
@@ -33,7 +32,6 @@ STATE_MOVE_LD           = %000'0'0'000          ; Deploy on the right side of th
 STATE_MOVE_LU           = %000'0'1'000          ; Deploy on the right side of the screen and move left-up 
 
 BOUNCE_H_MARG_D2        = 2
-BOUNCE_OFF_D10          = 10
 
 FOLLOW_OFF_CHANGE_D4    = 4                     ; 4 = 2s (_MainLoop025 -> UpdateFollowingEnemies)
 
@@ -52,10 +50,10 @@ fEnemySprites
 fEnemySize              BYTE 1
 
 fEnemy01
-    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*BOUNCE_OFF_CNT*/}
+    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/}
 
 fEnemy02
-    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*BOUNCE_OFF_CNT*/}
+    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/}
 
 ;----------------------------------------------------------;
 ;                UpdateFollowingEnemies                    ;
@@ -309,14 +307,6 @@ _DelayFollowing
 ;  - IY: Pointer to #FE
 _BounceOfPlatform
 
-    LD A, (IY + FE.BOUNCE_OFF_CNT)
-    CP 0
-    JR Z, .afterDelay
-    DEC A
-    LD (IY + FE.BOUNCE_OFF_CNT), A
-    RET
-.afterDelay
-
     ; Check the collision with the platform
     PUSH IX, IY, HL
     LD HL, IX
@@ -365,9 +355,6 @@ _BounceOfPlatform
 .bounced
 
     CALL sr.LoadSpritePattern
-
-    LD A, BOUNCE_OFF_D10
-    LD (IY + FE.BOUNCE_OFF_CNT), A
 
     CALL _DelayFollowing
 
