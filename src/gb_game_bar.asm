@@ -47,20 +47,39 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (fe.tmp1)
+    LD A, (fe.tmp4) ; state
     LD L, A
     CALL ut.PrintNumber
 
     ; ##########################################
-    LD BC, 50
+    LD BC, 46
     LD H, 0
-    LD A, (fe.tmp2)
+    LD A, (fe.tmp5) ;_DelayFollowing
     LD L, A
     CALL ut.PrintNumber
+
+/*
+    ; ##########################################
+    LD BC, 40
+    LD H, 0
+    LD A, (fe.tmp1) ; FOLLOW_OFF_CNT
+    LD L, A
+    CALL ut.PrintNumber
+*/
+    ; ##########################################
+
+
+/*
+    ; ##########################################
+    LD BC, 60
+    LD H, 0
+    LD A, (fe.tmp3) ; RandomizeFollowingAngle
+    LD L, A
+    CALL ut.PrintNumber
+*/
 
 
     RET                                         ; ## END of the function ##

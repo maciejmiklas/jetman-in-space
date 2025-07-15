@@ -19,31 +19,34 @@ MOVE_DELAY              DB
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
 FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
-BOUNCE_OFF_CNT          DB
+SKIP_XY_CNT             DB                      ; Counter for #SKIP_X_MASK (#STATE_CNT_X_MASK) and #SKIP_Y_MASK (#STATE_CNT_Y_MASK)
     ENDS
 
+; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6)
 ; VALUES for #FE.STATE
 ; Bits:
-;  - 0: not used
-;  - 1: #SKIP_X_BIT
-;  - 2: #SKIP_Y_BIT
-;  - 3: #STATE_DIR_Y_BIT
-;  - 4: #STATE_DIR_X_BIT
-;  - 5-8: not used
-SKIP_X_BIT              = 1                     ; Skip every second movement in X direction changing angle from 45 to 22 deg
-SKIP_Y_BIT              = 2                     ; Skip every second movement in X direction changing angle from 45 to 22 deg
-STATE_SKIP_XY_MASK      = %00000'11'0
+;  - 0:   Not used
+;  - 1-2: Number of pixels (0-3) to skip when moving on the x-axis
+;  - 3:   #STATE_DIR_Y_BIT
+;  - 4:   #STATE_DIR_X_BIT
+;  - 5-6: Number of pixels (0-3) to skip when moving on the y-axis
+;  - 7:   Not used
+SKIP_X_MASK             = %0'00'00'11'0
+SKIP_Y_MASK             = %0'11'00'11'0
+STATE_SKIP_XY_MASK      = %0'00'00'11'0
+STATE_CNT_X_MASK        = %00'000'111 
+STATE_CNT_Y_MASK        = %00'111'000 
+
 STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
-STATE_DIR_Y_MASK        = %0000'1'000           ; Reset all but #STATE_DIR_Y_BIT
+STATE_DIR_Y_MASK        = %000'0'1'000          ; Reset all but #STATE_DIR_Y_BIT 
 
 STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
-STATE_DIR_X_MASK        = %000'1'0000           ; Reset all but #STATE_DIR_BIT
+STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT
 STATE_MOVE_RD           = %000'1'0'000          ; Deploy on the left side of the screen and move right-down 
 STATE_MOVE_RU           = %000'1'1'000          ; Deploy on the left side of the screen and move right-up 
 STATE_MOVE_LD           = %000'0'0'000          ; Deploy on the right side of the screen and move left-down 
 STATE_MOVE_LU           = %000'0'1'000          ; Deploy on the right side of the screen and move left-up 
 
-BOUNCE_OFF_D10          = 10
 BOUNCE_H_MARG_D2        = 2
 FOLLOW_OFF_CHANGE_D4    = 4                     ; 4 = 2s (_MainLoop025 -> UpdateFollowingJetman)
 
@@ -62,17 +65,17 @@ fEnemySprites
 fEnemySize              BYTE 1
 
 fEnemy01
-    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*BOUNCE_OFF_CNT*/}
+    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/}
 
 fEnemy02
-    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*BOUNCE_OFF_CNT*/}
+    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/}
 
+tmp3 db 0
 ;----------------------------------------------------------;
 ;                 RandomizeFollowingAngle                  ;
 ;----------------------------------------------------------;
 RandomizeFollowingAngle
-    ret
-
+/*
     ; Iterate over all enemies
     LD IX, fEnemySprites
     LD A, (fEnemySize)
@@ -90,18 +93,17 @@ RandomizeFollowingAngle
     CP 0
     JR NZ, .continue
 
-    LD A, (IY + FE.BOUNCE_OFF_CNT)
-    CP 0
-    JR NZ, .continue
-
     ; Load R into A and reset all bits except 2 and 3 (skip X/Y). Then, flip those bits in the state for a particular enemy
     LD A, R
     AND STATE_SKIP_XY_MASK
     LD B, A
-    nextreg 2,8
     LD A, (IY + FE.STATE)
     XOR B
     LD (IY + FE.STATE), A
+
+    ld a, (tmp3)
+    inc a
+    ld (tmp3),a
 
 .continue
     POP BC
@@ -110,7 +112,7 @@ RandomizeFollowingAngle
     LD DE, SPR
     ADD IX, DE
     DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
-
+*/
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -341,10 +343,11 @@ _UpdateFollowingEnemy
 
     ; Delay following only if state has changed
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _DelayFollowing                    
+    CALL NZ, _DelayFollowing
 
     RET                                         ; ## END of the function ##
 
+tmp5 db 0
 ;----------------------------------------------------------;
 ;                  _DelayFollowing                         ;
 ;----------------------------------------------------------;
@@ -356,6 +359,10 @@ _DelayFollowing
     LD A, FOLLOW_OFF_CHANGE_D4
     LD (IY + FE.FOLLOW_OFF_CNT), A
 
+    ld a, (tmp5)
+    inc a
+    ld (tmp5),a
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -365,13 +372,6 @@ _DelayFollowing
 ;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: Pointer to #FE
 _BounceOfPlatform
-
-    LD A, (IY + FE.BOUNCE_OFF_CNT)
-    CP 0
-    JR Z, .afterBounceOff
-    DEC A
-    LD (IY + FE.BOUNCE_OFF_CNT), A
-.afterBounceOff
 
     ; Check the collision with the platform
     PUSH IX, IY, HL
@@ -385,53 +385,46 @@ _BounceOfPlatform
     RET Z
 
     CP pl.PL_DHIT_LEFT
-    JR Z, .bounceHorizontal
+    JR Z, .hitLeft
 
     CP pl.PL_DHIT_RIGHT
-    JR Z, .bounceHorizontal
+    JR Z, .hitRight
 
     CP pl.PL_DHIT_TOP
-    JR Z, .bounceVertical
+    JR Z, .hitTop
 
     CP pl.PL_DHIT_BOTTOM
-    JR Z, .bounceVertical
+    JR Z, .hitBottom
 
-.bounceHorizontal
-    ; Enemy bounces from the platform's left/right, reverse movement
-
-    ; Flip X direction
-    LD A, (IY + FE.STATE)
-    XOR STATE_DIR_X_MASK
-    LD (IY + FE.STATE), A
-    LD A, sr.SDB_BOUNCE_SIDE                    ; Bounce animation for #sr.LoadSpritePattern
+.hitLeft
+    RES STATE_DIR_X_BIT, (IY + FE.STATE)        ; Move left, because enemy was moving right to hit platform from the left side
+    LD A, sr.SDB_BOUNCE_SIDE                    ; Bounce animation for #sr.LoadSpritePattern at .bounced
     JR .bounced
 
-    RET
+.hitRight
+    SET STATE_DIR_X_BIT, (IY + FE.STATE)        ; Move right, because enemy was moving left to hit platform from the right side
+    LD A, sr.SDB_BOUNCE_SIDE                    ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    JR .bounced
 
-.bounceVertical
-  
-    ; Enemy bounces from the platform's top/bottom, reverse movement
+.hitTop
+    SET STATE_DIR_Y_BIT, (IY + FE.STATE)        ; Move up, because enemy was moving down to hit platform from the top
+    LD A, sr.SDB_BOUNCE_TOP                     ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    JR .bounced
 
-    ; Flip Y direction
-    LD A, (IY + FE.STATE)
-    XOR STATE_DIR_Y_MASK
-    LD (IY + FE.STATE), A
-    LD A, sr.SDB_BOUNCE_TOP                     ; Bounce animation for #sr.LoadSpritePattern
+.hitBottom
+    RES STATE_DIR_Y_BIT, (IY + FE.STATE)        ; Move down, because enemy was moving up to hit the platform from the bottom
+    LD A, sr.SDB_BOUNCE_TOP                     ; Bounce animation for #sr.LoadSpritePattern below
 
 .bounced
-
     CALL sr.LoadSpritePattern
 
-    ; Disable following and bouncing until the enemy is far from the platform
+    ; Disable following until the enemy is far from the platform
     CALL _DelayFollowing
-
-    LD A, BOUNCE_OFF_D10
-    LD (IY + FE.BOUNCE_OFF_CNT), A
 
     RET                                         ; ## END of the function ##
 
 tmp1 db 0
-tmp2 db 0
+tmp4 db 0
 ;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
@@ -440,13 +433,11 @@ tmp2 db 0
 ;  - IY: Pointer to #FE
 _MoveEnemy
 
-
     LD A, (IY + FE.FOLLOW_OFF_CNT)
     ld (tmp1), a
 
-    LD A, (IY + FE.BOUNCE_OFF_CNT)
-   ld (tmp2),a
-
+    LD A, (IY + FE.STATE)
+   ld (tmp4),a
 
     CALL _BounceOfPlatform                     ; Should enemy bounce of the platform?
 
@@ -458,7 +449,7 @@ _MoveEnemy
 
     ; ##########################################
     ; Move X - left/right
-
+/*
     ; Should we skip every second horizontal movement (to change the angle)?
     LD A, (moveFliFLop)
     CP 1
@@ -467,7 +458,7 @@ _MoveEnemy
     BIT SKIP_X_BIT, (IY + FE.STATE)
     JR NZ, .afterMoveX
 .afterSkipX
-
+*/
     ; Move on X left or right. The direction is being copied from FE.STATE to D as a parameter for #sr.MoveX
     LD A, (IY + FE.STATE)
     AND STATE_DIR_X_MASK
@@ -482,7 +473,7 @@ _MoveEnemy
     ; ##########################################
     ; Move Y - up/down
     CALL _BounceOfTop
-
+/*
     ; Should we skip every second vertical movement (to change the angle)?
     LD A, (moveFliFLop)
     CP 1
@@ -490,7 +481,7 @@ _MoveEnemy
     BIT SKIP_Y_BIT, (IY + FE.STATE)
     JR NZ, .afterMoveY
 .afterSkipY
-
+*/
     ; Is move Y state set?
     BIT STATE_DIR_Y_BIT, (IY + FE.STATE)
     JR NZ, .moveUp                              ; Jump if bit #STATE_DIR_Y_BIT == 1
@@ -542,9 +533,6 @@ _BounceOfTop
     ; Yes - we are at the top of the screen, set y to go down
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)
 .afterBounced
-
-    ; Turn off following the Jetman for a few frames because the enemy bounces off
-    CALL _DelayFollowing
 
     ; Bounce animation
     LD A, sr.SDB_BOUNCE_TOP
