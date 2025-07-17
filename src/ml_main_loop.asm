@@ -17,7 +17,8 @@ MainLoop
     CALL _MainLoop025
     CALL _MainLoop040
     CALL _MainLoop050
-    CALL _MainLoop080
+    CALL _MainLoop075
+    CALL _MainLoop150
     CALL _LastLoop
 
     RET                                         ; ## END of the function ##
@@ -118,6 +119,9 @@ _MainLoop000OnActiveGame
     CALL dbs.SetupPatternEnemyBank
     CALL enu.MoveFuelThief
     CALL enu.ThiefWeaponHit
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.UpdateFollowingJetman
 
     ; ##########################################
     ; Move enemies for normal or hard
@@ -527,23 +531,6 @@ _MainLoop025
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
     CALL _MainLoop025nFlyingRocket
-    CALL _MainLoop025OnActiveGame
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _MainLoop025OnActiveGame                 ;
-;----------------------------------------------------------;
-_MainLoop025OnActiveGame
-
-    ; Return if game is inactive
-    LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
-    RET NZ
-
-    ; ##########################################
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.UpdateFollowingJetman
 
     RET                                         ; ## END of the function ##
 
@@ -630,34 +617,34 @@ _MainLoop050
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop080                       ;
+;                       _MainLoop075                       ;
 ;----------------------------------------------------------;
-; Tick rate: 1,6s
-_MainLoop080
+; Tick rate: 1,5s
+_MainLoop075
 
     ; Increment the counter
-    LD A, (mld.counter080)
+    LD A, (mld.counter075)
     INC A
-    LD (mld.counter080), A
-    CP mld.COUNTER080_MAX
+    LD (mld.counter075), A
+    CP mld.COUNTER075_MAX
     RET NZ
 
     ; ##########################################
     ; Reset the counter
     XOR A                                       ; Set A to 0
-    LD (mld.counter080), A
+    LD (mld.counter075), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop080OnActiveGame
-    CALL _MainLoop080OnActiveGameOver
+    CALL _MainLoop075OnActiveGame
+    CALL _MainLoop075OnActiveGameOver
     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop080OnActiveGame                  ;
+;                _MainLoop075OnActiveGame                  ;
 ;----------------------------------------------------------;
-_MainLoop080OnActiveGame
+_MainLoop075OnActiveGame
 
     ; Return if game is inactive
     LD A, (ms.mainState)
@@ -667,14 +654,13 @@ _MainLoop080OnActiveGame
     ; ##########################################
     CALL jo.JetpackOverheatFx
     CALL gc.PlayFuelThiefFx
-    CALL fe.RandomizeFollowingAngle
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;            _MainLoop080OnActiveGameOver                  ;
+;            _MainLoop075OnActiveGameOver                  ;
 ;----------------------------------------------------------;
-_MainLoop080OnActiveGameOver
+_MainLoop075OnActiveGameOver
 
     ; Return if game is inactive
     LD A, (ms.mainState)
@@ -683,6 +669,45 @@ _MainLoop080OnActiveGameOver
 
     ; ##########################################
     CALL go.GameOverLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       _MainLoop150                       ;
+;----------------------------------------------------------;
+; Tick rate: 3s
+_MainLoop150
+
+    ; Increment the counter
+    LD A, (mld.counter150)
+    INC A
+    LD (mld.counter150), A
+    CP mld.COUNTER150_MAX
+    RET NZ
+
+    ; ##########################################
+    ; Reset the counter
+    XOR A                                       ; Set A to 0
+    LD (mld.counter150), A
+
+    ; ##########################################
+    ; CALL functions that need to be updated every xx-th loop
+    CALL _MainLoop150OnActiveGame
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                _MainLoop150OnActiveGame                  ;
+;----------------------------------------------------------;
+_MainLoop150OnActiveGame
+
+    ; Return if game is inactive
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.ChangeFollowingAngle
 
     RET                                         ; ## END of the function ##
 

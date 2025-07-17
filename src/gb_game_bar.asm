@@ -48,39 +48,21 @@ PrintDebug
     RET NZ
 
     ; ##########################################
+    CALL dbs.SetupFollowingEnemyBank
     LD BC, 40
     LD H, 0
-    LD A, (fe.tmp4) ; state
+    LD A, (fe.tmp) 
     LD L, A
     CALL ut.PrintNumber
-
+/*
     ; ##########################################
+    CALL dbs.SetupFollowingEnemyBank
     LD BC, 46
     LD H, 0
-    LD A, (fe.tmp5) ;_DelayFollowing
-    LD L, A
-    CALL ut.PrintNumber
-
-/*
-    ; ##########################################
-    LD BC, 40
-    LD H, 0
-    LD A, (fe.tmp1) ; FOLLOW_OFF_CNT
+    LD A, (fe.tmp2)
     LD L, A
     CALL ut.PrintNumber
 */
-    ; ##########################################
-
-
-/*
-    ; ##########################################
-    LD BC, 60
-    LD H, 0
-    LD A, (fe.tmp3) ; RandomizeFollowingAngle
-    LD L, A
-    CALL ut.PrintNumber
-*/
-
 
     RET                                         ; ## END of the function ##
 

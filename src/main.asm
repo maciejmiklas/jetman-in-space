@@ -81,7 +81,6 @@ mainLoop
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
-    INCLUDE "fe_following_enemy.asm"
 
     ; Imports below use ORG and dedicated memory bank!
 
@@ -130,7 +129,13 @@ mainLoop
     INCLUDE "ens_enemy_single.asm"
     INCLUDE "enu_enemy_fuel_thief.asm"
     ASSERT $$ == dbs.P_ENEMY_BANK_S6_B34
-    
+
+    ; ################ BANK  35 ################
+    ; TO USE THIS MODULE: CALL dbs.SetupFollowingEnemyBank
+    MMU _RAM_SLOT6, dbs.F_ENEMY_BANK_S6_B35
+    ORG _RAM_SLOT6_STA_HC000
+    INCLUDE "fe_following_enemy.asm"
+
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;

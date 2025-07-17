@@ -7,8 +7,6 @@
 freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
 
-moveFliFLop             DB 0
-
     STRUCT FE
 STATE                   DB                      ; See: #STATE_XXX
 RESPAWN_Y               DB                      ; Respawn Y position
@@ -19,10 +17,16 @@ MOVE_DELAY              DB
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
 FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
-SKIP_XY_CNT             DB                      ; Counter for #SKIP_X_MASK (#STATE_CNT_X_MASK) and #SKIP_Y_MASK (#STATE_CNT_Y_MASK)
+SKIP_XY_CNT             DB                      ; Holds skip counters for x/y, same bits as on #FE.STATE (1-2 for x and 5-6 for y)
+ANGLE_CNT               DB                      ; Counts from 0 to #ANGLES_SIZE
     ENDS
 
-; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6)
+; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6).
+; Generally, enemies follow the Jetman at a 45-degree angle. To randomize this angle, we skip pixels in one direction. For example, when
+; the enemy moves one pixel in the X and Y direction, this gives us a perfect 45-degree angle. However, when we move one pixel on the X-axis
+; and two on the Y-axis, this changes the angle to 67 degrees. Instead of adding pixels, we skip pixels. The current setup for skipping
+; pixels is stored in the state as #STATE_SKIP_X_MASK and #STATE_SKIP_Y_MASK. It allows us to skip up to 3 pixels in one direction.
+; The counter for this is stored on each enemy as #FE.SKIP_XY_CNT.
 ; VALUES for #FE.STATE
 ; Bits:
 ;  - 0:   Not used
@@ -31,24 +35,25 @@ SKIP_XY_CNT             DB                      ; Counter for #SKIP_X_MASK (#STA
 ;  - 4:   #STATE_DIR_X_BIT
 ;  - 5-6: Number of pixels (0-3) to skip when moving on the y-axis
 ;  - 7:   Not used
-SKIP_X_MASK             = %0'00'00'11'0
-SKIP_Y_MASK             = %0'11'00'11'0
-STATE_SKIP_XY_MASK      = %0'00'00'11'0
-STATE_CNT_X_MASK        = %00'000'111 
-STATE_CNT_Y_MASK        = %00'111'000 
+STATE_SKIP_X_MASK       = %0'00'00'11'0
+STATE_SKIP_Y_MASK       = %0'11'00'00'0
+STATE_SKIP_XY_MASK      = %0'11'00'11'0
+STATE_SKIP_RESET_MASK   = %1'00'11'00'1
+
+SKIP_XY_DEC_X           = %0'00'00'01'0
+SKIP_XY_DEC_Y           = %0'01'00'00'0
 
 STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
 STATE_DIR_Y_MASK        = %000'0'1'000          ; Reset all but #STATE_DIR_Y_BIT 
 
 STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
-STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT
+STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT 
 STATE_MOVE_RD           = %000'1'0'000          ; Deploy on the left side of the screen and move right-down 
 STATE_MOVE_RU           = %000'1'1'000          ; Deploy on the left side of the screen and move right-up 
 STATE_MOVE_LD           = %000'0'0'000          ; Deploy on the right side of the screen and move left-down 
 STATE_MOVE_LU           = %000'0'1'000          ; Deploy on the right side of the screen and move left-up 
 
 BOUNCE_H_MARG_D2        = 2
-FOLLOW_OFF_CHANGE_D4    = 4                     ; 4 = 2s (_MainLoop025 -> UpdateFollowingJetman)
 
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
@@ -65,17 +70,24 @@ fEnemySprites
 fEnemySize              BYTE 1
 
 fEnemy01
-    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/}
+    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/, 0/*ANGLE_CNT*/}
 
 fEnemy02
-    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/}
+    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/, 0/*ANGLE_CNT*/}
 
-tmp3 db 0
+
+angles
+    DB %0'01'00'00'0, %0'10'00'00'0, %0'11'00'00'0, %0'10'00'00'0, %0'01'00'00'0, %0'00'00'01'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'01'0
+    DB %0'00'00'01'0, %0'00'00'10'0, %0'00'00'10'0, %0'00'00'11'0, %0'00'00'11'0, %0'01'00'11'0, %0'01'00'10'0, %0'10'00'10'0, %0'01'00'01'0
+    DB %0'10'00'00'0, %0'10'00'00'0, %0'01'00'01'0, %0'00'00'10'0, %0'01'00'01'0, %0'00'00'01'0, %0'00'00'10'0, %0'00'00'11'0, %0'00'00'10'0
+    DB %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0
+ANGLES_SIZE = 36
+
 ;----------------------------------------------------------;
-;                 RandomizeFollowingAngle                  ;
+;                   ChangeFollowingAngle                   ;
 ;----------------------------------------------------------;
-RandomizeFollowingAngle
-/*
+ChangeFollowingAngle
+
     ; Iterate over all enemies
     LD IX, fEnemySprites
     LD A, (fEnemySize)
@@ -88,22 +100,31 @@ RandomizeFollowingAngle
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
 
-    ; Do not randomize movement when following/bouncing is disabled, because the enemy could be close to the platform and should move away from it
-    LD A, (IY + FE.FOLLOW_OFF_CNT)
-    CP 0
-    JR NZ, .continue
+    ; Read the next position in #angles for this particular enemy
+    LD A, (IY + FE.ANGLE_CNT)
+    CP ANGLES_SIZE
+    JR NZ, .nextAngle
 
-    ; Load R into A and reset all bits except 2 and 3 (skip X/Y). Then, flip those bits in the state for a particular enemy
-    LD A, R
-    AND STATE_SKIP_XY_MASK
+    ; Reset angle
+    XOR A
+    JR .afterAngle
+.nextAngle
+    INC A
+
+.afterAngle
+    LD (IY + FE.ANGLE_CNT), A
+
+    ; Now A holds the offset for #angles, read the RAM address pointing to the next angle into HL
+    LD HL, angles
+    ADD HL, A
+    LD A, (HL)                                  ; A holds next angle
     LD B, A
+    
+    ; Load state into A, reset all skip bits, and set new values from B
     LD A, (IY + FE.STATE)
+    AND STATE_SKIP_RESET_MASK
     XOR B
     LD (IY + FE.STATE), A
-
-    ld a, (tmp3)
-    inc a
-    ld (tmp3),a
 
 .continue
     POP BC
@@ -112,7 +133,7 @@ RandomizeFollowingAngle
     LD DE, SPR
     ADD IX, DE
     DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
-*/
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -347,7 +368,7 @@ _UpdateFollowingEnemy
 
     RET                                         ; ## END of the function ##
 
-tmp5 db 0
+tmp db 0
 ;----------------------------------------------------------;
 ;                  _DelayFollowing                         ;
 ;----------------------------------------------------------;
@@ -356,12 +377,9 @@ tmp5 db 0
 ;  - IY: Pointer to #FE
 _DelayFollowing
 
-    LD A, FOLLOW_OFF_CHANGE_D4
+    LD A, R
+    ld (tmp), a
     LD (IY + FE.FOLLOW_OFF_CNT), A
-
-    ld a, (tmp5)
-    inc a
-    ld (tmp5),a
 
     RET                                         ; ## END of the function ##
 
@@ -423,8 +441,6 @@ _BounceOfPlatform
 
     RET                                         ; ## END of the function ##
 
-tmp1 db 0
-tmp4 db 0
 ;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
@@ -433,32 +449,40 @@ tmp4 db 0
 ;  - IY: Pointer to #FE
 _MoveEnemy
 
-    LD A, (IY + FE.FOLLOW_OFF_CNT)
-    ld (tmp1), a
-
-    LD A, (IY + FE.STATE)
-   ld (tmp4),a
-
     CALL _BounceOfPlatform                     ; Should enemy bounce of the platform?
 
     ; ##########################################
-    ; 1 -> 0 and 0 -> 1
-    LD A, (moveFliFLop)
-    XOR 1
-    LD (moveFliFLop), A
+    ; Move X - left/right
+
+    ; Should we skip movement on x-axis (to change the angle)?
+    LD A, (IY + FE.STATE)
+    AND STATE_SKIP_X_MASK
+    CP 0
+    JR Z, .afterSkipX
+
+    ; Check counter
+    LD A, (IY + FE.SKIP_XY_CNT)                 ; Has counter reached 0?
+    AND STATE_SKIP_X_MASK
+    CP 0
+    JR Z, .resetSkipX
+
+    ; Decrement the counter and skip movement in this direction
+    LD A, (IY + FE.SKIP_XY_CNT)
+    SUB SKIP_XY_DEC_X
+    LD (IY + FE.SKIP_XY_CNT), A
+    JR .afterMoveX                              ; Skip movement
+
+.resetSkipX
+    ; Counter reached 0, reset it by copying value max value from state
+    LD A, (IY + FE.STATE)
+    AND STATE_SKIP_X_MASK
+    LD B, A
+    LD A, (IY + FE.SKIP_XY_CNT)
+    OR B
+    LD (IY + FE.SKIP_XY_CNT), A
+.afterSkipX
 
     ; ##########################################
-    ; Move X - left/right
-/*
-    ; Should we skip every second horizontal movement (to change the angle)?
-    LD A, (moveFliFLop)
-    CP 1
-    JR Z, .afterSkipX
-  
-    BIT SKIP_X_BIT, (IY + FE.STATE)
-    JR NZ, .afterMoveX
-.afterSkipX
-*/
     ; Move on X left or right. The direction is being copied from FE.STATE to D as a parameter for #sr.MoveX
     LD A, (IY + FE.STATE)
     AND STATE_DIR_X_MASK
@@ -468,21 +492,43 @@ _MoveEnemy
     OR B
     LD D, A
     CALL sr.MoveX
+
 .afterMoveX
 
     ; ##########################################
     ; Move Y - up/down
     CALL _BounceOfTop
-/*
-    ; Should we skip every second vertical movement (to change the angle)?
-    LD A, (moveFliFLop)
-    CP 1
+
+    ; Should we skip movement on y-axis (to change the angle)?
+    LD A, (IY + FE.STATE)
+    AND STATE_SKIP_Y_MASK
+    CP 0
     JR Z, .afterSkipY
-    BIT SKIP_Y_BIT, (IY + FE.STATE)
-    JR NZ, .afterMoveY
+
+    ; Check counter
+    LD A, (IY + FE.SKIP_XY_CNT)                 ; Has counter reached 0?
+    AND STATE_SKIP_Y_MASK
+    CP 0
+    JR Z, .resetSkipY
+
+    ; Decrement the counter and skip movement in this direction
+    LD A, (IY + FE.SKIP_XY_CNT)
+    SUB SKIP_XY_DEC_Y
+    LD (IY + FE.SKIP_XY_CNT), A
+    JR .afterMoveY                              ; Skip movement
+
+.resetSkipY
+    ; Counter reached 0, reset it by copying value max value from state
+    LD A, (IY + FE.STATE)
+    AND STATE_SKIP_Y_MASK
+    LD B, A
+    LD A, (IY + FE.SKIP_XY_CNT)
+    OR B
+    LD (IY + FE.SKIP_XY_CNT), A
 .afterSkipY
-*/
-    ; Is move Y state set?
+
+    ; ##########################################
+    ; Move up/down based on state
     BIT STATE_DIR_Y_BIT, (IY + FE.STATE)
     JR NZ, .moveUp                              ; Jump if bit #STATE_DIR_Y_BIT == 1
 
