@@ -18,7 +18,8 @@ MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELA
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
 FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
 SKIP_XY_CNT             DB                      ; Holds skip counters for x/y, same bits as on #FE.STATE (1-2 for x and 5-6 for y)
-ANGLE_CNT               DB                      ; Counts from 0 to #ANGLES_SIZE
+ANGLES_IDX              DB                      ; Current offset to #angles, set after direction change
+ANGLES_IDX_END          DB                      ; End offset to #angles, inclusive
     ENDS
 
 ; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6).
@@ -70,61 +71,52 @@ fEnemySprites
 fEnemySize              BYTE 1
 
 fEnemy01
-    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/, 0/*ANGLE_CNT*/}
+    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy02
-    FE {STATE_MOVE_LD  /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY_CNT*/, 0/*FOLLOW_OFF_CNT*/, 0/*SKIP_XY_CNT*/, 0/*ANGLE_CNT*/}
+    FE {STATE_MOVE_LD /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
-
+; Each line contains a single set of 4 "angles", which will be applied to the enemy when it changes direction. Each angle lasts for 
+; 0.5 seconds (_MainLoop025OnActiveGame -> NextFollowingAngle), and afterwards, the next one is taken until we reach the last one. 
+; The last one remains active until the enemy changes direction again and a new line is applied. It gives us the effect of changing angle
+; when changing direction, as well as acceleration.
+; The bit pattern for each angle byte is a mask that can be directly applied to #FE.STATE. The state will set pixels that will be skipped 
+; in the x/y direction.
+ANGLE_LINE_SIZE         = 3
+ANGLE_LINE_MAX          = ANGLE_LINE_SIZE - 1
+ANGLE_LINES             = 11
 angles
-    DB %0'01'00'00'0, %0'10'00'00'0, %0'11'00'00'0, %0'10'00'00'0, %0'01'00'00'0, %0'00'00'01'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'01'0
-    DB %0'00'00'01'0, %0'00'00'10'0, %0'00'00'10'0, %0'00'00'11'0, %0'00'00'11'0, %0'01'00'11'0, %0'01'00'10'0, %0'10'00'10'0, %0'01'00'01'0
-    DB %0'10'00'00'0, %0'10'00'00'0, %0'01'00'01'0, %0'00'00'10'0, %0'01'00'01'0, %0'00'00'01'0, %0'00'00'10'0, %0'00'00'11'0, %0'00'00'10'0
-    DB %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0, %0'00'00'00'0
-ANGLES_SIZE = 36
+    DB %0'10'00'11'0, %0'01'00'10'0, %0'00'00'10'0
+    DB %0'11'00'10'0, %0'10'00'01'0, %0'10'00'00'0
+    DB %0'01'00'10'0, %0'01'00'01'0, %0'00'00'00'0
+    DB %0'10'00'11'0, %0'01'00'11'0, %0'00'00'11'0
+    DB %0'10'00'11'0, %0'01'00'11'0, %0'00'00'11'0
+    DB %0'11'00'10'0, %0'11'00'01'0, %0'11'00'00'0
+    DB %0'10'00'10'0, %0'01'00'10'0, %0'00'00'01'0
+    DB %0'10'00'10'0, %0'10'00'01'0, %0'01'00'00'0
+    DB %0'10'00'10'0, %0'01'00'01'0, %0'00'00'01'0
+    DB %0'01'00'01'0, %0'10'00'10'0, %0'00'00'01'0
+    DB %0'10'00'01'0, %0'01'00'00'0, %0'00'00'00'0
+anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
 
 ;----------------------------------------------------------;
-;                   ChangeFollowingAngle                   ;
+;                   NextFollowingAngle                     ;
 ;----------------------------------------------------------;
-ChangeFollowingAngle
+NextFollowingAngle
 
     ; Iterate over all enemies
     LD IX, fEnemySprites
     LD A, (fEnemySize)
     LD B, A
 
-.sprLoop
+.enemyLoop
     PUSH BC                                     ; Preserve B for loop counter
 
     ; Load extra data for this sprite to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
 
-    ; Read the next position in #angles for this particular enemy
-    LD A, (IY + FE.ANGLE_CNT)
-    CP ANGLES_SIZE
-    JR NZ, .nextAngle
-
-    ; Reset angle
-    XOR A
-    JR .afterAngle
-.nextAngle
-    INC A
-
-.afterAngle
-    LD (IY + FE.ANGLE_CNT), A
-
-    ; Now A holds the offset for #angles, read the RAM address pointing to the next angle into HL
-    LD HL, angles
-    ADD HL, A
-    LD A, (HL)                                  ; A holds next angle
-    LD B, A
-    
-    ; Load state into A, reset all skip bits, and set new values from B
-    LD A, (IY + FE.STATE)
-    AND STATE_SKIP_RESET_MASK
-    XOR B
-    LD (IY + FE.STATE), A
+    CALL _NextFollowingAngle
 
 .continue
     POP BC
@@ -132,7 +124,7 @@ ChangeFollowingAngle
     ; Move IX to the beginning of the next #fEnemySprites
     LD DE, SPR
     ADD IX, DE
-    DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
+    DJNZ .enemyLoop                             ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
 
     RET                                         ; ## END of the function ##
 
@@ -218,7 +210,6 @@ AnimateFollowingEnemies
 ;                 MoveFollowingEnemies                     ;
 ;----------------------------------------------------------;
 MoveFollowingEnemies
-
     ; Enemies frozen and cannot move?
     LD A, (freezeCnt)
     CP 0
@@ -251,25 +242,32 @@ MoveFollowingEnemies
     LD IY, BC
 
     ; ##########################################
-    ; Slow down movement by decrementing the counter until it reaches 0
+    ; Slow down movement by decrementing the counter until it reaches 0, at 0 enemy moves
+
+    ; Delay disabled?
     LD A, (IY + FE.MOVE_DELAY)
     CP 0                                        ; No delay? -> move at full speed
     JR Z, .afterMoveDelay
 
     LD A, (IY + FE.MOVE_DELAY_CNT)
+    CP 0
+    JR Z, .resetDelay
+
+    ; Decrement the counter and skip the movement
     DEC A
     LD (IY + FE.MOVE_DELAY_CNT), A
 
-    CP 0
-    JR NZ, .continue                            ; Skip enemy if the delay counter > 0
+    JR .continue
 
-    ; Reset the counter
+.resetDelay
+    ; Reset the counter and move
     LD A, (IY + FE.MOVE_DELAY)
     LD (IY + FE.MOVE_DELAY_CNT), A
 .afterMoveDelay
 
     ; ##########################################
     ; Sprite is visible, move it!
+
     CALL _MoveEnemy
 
 .continue
@@ -324,14 +322,14 @@ _UpdateFollowingEnemy
     SET STATE_DIR_X_BIT, (IY + FE.STATE)
 
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _DelayFollowing             ; Call only if state has changed
+    CALL NZ, _EnemyDirectionChanged             ; Call only if state has changed
     JR .afterMoveX
 
     ; Decrement enemy X (move left)
 .moveEnemyLeft
     RES STATE_DIR_X_BIT, (IY + FE.STATE)
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _DelayFollowing             ; Call only if state has changed
+    CALL NZ, _EnemyDirectionChanged             ; Call only if state has changed
 
 .afterMoveX
 
@@ -349,9 +347,9 @@ _UpdateFollowingEnemy
     ; Move enemy down (increment Y)
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)
 
-    ; Delay following only if state has changed
+    ; Call direction change only if state has changed
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _DelayFollowing
+    CALL NZ, _EnemyDirectionChanged
     RET
 
     ; Move enemy up (decrement Y)
@@ -364,22 +362,77 @@ _UpdateFollowingEnemy
 
     ; Delay following only if state has changed
     LD A, D: CP (IY + FE.STATE)
-    CALL NZ, _DelayFollowing
+    CALL NZ, _EnemyDirectionChanged
 
     RET                                         ; ## END of the function ##
 
-tmp db 0
 ;----------------------------------------------------------;
-;                  _DelayFollowing                         ;
+;                 _NextFollowingAngle                      ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: Pointer to #FE
-_DelayFollowing
+_NextFollowingAngle
 
+    ; Set index to the next angle, assuming that we still have not reached the last one
+    LD B, (IY + FE.ANGLES_IDX_END)
+    LD A, (IY + FE.ANGLES_IDX)
+    CP B
+    RET Z                                       ; Already at last angle, keep it
+
+    ; HL will point to angle that has to be loaded into the state, B will hold next angle value
+    LD HL, angles
+    ADD HL, A
+    LD A, (HL)
+    LD B, A
+
+    ; Load state into A, reset all skip bits, and set new values from B
+    LD A, (IY + FE.STATE)
+    AND STATE_SKIP_RESET_MASK
+    XOR B
+    LD (IY + FE.STATE), A
+
+    ; Next index value
+    INC (IY + FE.ANGLES_IDX)
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                _EnemyDirectionChanged                    ;
+;----------------------------------------------------------;
+; Input
+;  - IX: Pointer to #SPR holding data for single sprite that will be moved
+;  - IY: Pointer to #FE
+_EnemyDirectionChanged
+
+    ; Set following off counter to random value
     LD A, R
-    ld (tmp), a
     LD (IY + FE.FOLLOW_OFF_CNT), A
+
+    ; ##########################################
+    ; Load new angle line and set the angle on enemy's status
+    LD A, (anglesLineIdx)
+    CP ANGLE_LINES
+    JR Z, .resetLines
+    INC A
+    JR .afterResetLines
+.resetLines
+    XOR A
+.afterResetLines
+    LD (anglesLineIdx), A
+    
+    ; A now holds the current line in #angles, change it to offset by multiplying by 4
+    LD D, A
+    LD E, ANGLE_LINE_SIZE
+    MUL D, E
+    LD A, E                                      ; A has offset to the current line
+    
+    LD (IY + FE.ANGLES_IDX), A
+    ADD ANGLE_LINE_SIZE
+    LD (IY + FE.ANGLES_IDX_END), A
+
+    ; Load new angle immediately
+    CALL _NextFollowingAngle
 
     RET                                         ; ## END of the function ##
 
@@ -437,7 +490,7 @@ _BounceOfPlatform
     CALL sr.LoadSpritePattern
 
     ; Disable following until the enemy is far from the platform
-    CALL _DelayFollowing
+    CALL _EnemyDirectionChanged
 
     RET                                         ; ## END of the function ##
 

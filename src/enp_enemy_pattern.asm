@@ -316,7 +316,7 @@ MovePatternEnemies
     SUB MOVE_DELAY_CNT_INC
     LD (IY + ENP.MOVE_DELAY_CNT), A
 
-    CP 0                                        
+    CP 0
     JR NZ, .continue                            ; Skip enemy if the delay counter > 0
 
     CALL _LoadMoveDelay

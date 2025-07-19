@@ -47,23 +47,15 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
+/*
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
     LD BC, 40
     LD H, 0
-    LD A, (fe.tmp) 
-    LD L, A
-    CALL ut.PrintNumber
-/*
-    ; ##########################################
-    CALL dbs.SetupFollowingEnemyBank
-    LD BC, 46
-    LD H, 0
-    LD A, (fe.tmp2)
+    LD A, (fe.tmp1) 
     LD L, A
     CALL ut.PrintNumber
 */
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

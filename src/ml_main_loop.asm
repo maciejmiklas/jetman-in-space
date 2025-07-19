@@ -531,7 +531,7 @@ _MainLoop025
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
     CALL _MainLoop025nFlyingRocket
-
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -549,6 +549,7 @@ _MainLoop025nFlyingRocket
     CALL enp.KillOnePatternEnemy
 
     RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                       _MainLoop040                       ;
@@ -613,6 +614,22 @@ _MainLoop050
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
+    CALL _MainLoop050OnActiveGame
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                _MainLoop050OnActiveGame                  ;
+;----------------------------------------------------------;
+_MainLoop050OnActiveGame
+
+    ; Return if game is inactive
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.NextFollowingAngle
 
     RET                                         ; ## END of the function ##
 
@@ -692,24 +709,9 @@ _MainLoop150
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop150OnActiveGame
     
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                _MainLoop150OnActiveGame                  ;
-;----------------------------------------------------------;
-_MainLoop150OnActiveGame
-
-    ; Return if game is inactive
-    LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
-    RET NZ
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.ChangeFollowingAngle
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                         _LastLoop                        ;
