@@ -510,14 +510,19 @@ WeaponHitEnemies
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
     LD IX, ena.singleEnemySprites
-    LD A, (ens.singleEnemySize)
-    LD B, A
+    LD B, (ens.singleEnemySize)
     CALL jw.CheckHitEnemies
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
     LD IX, ena.formationEnemySprites
     LD B, ena.ENEMY_FORMATION_SIZE
+    CALL jw.CheckHitEnemies
+
+    ; ##########################################
+    CALL dbs.SetupFollowingEnemyBank
+    LD IX, fe.fEnemySprites
+    LD B, (fe.fEnemySize)
     CALL jw.CheckHitEnemies
 
     RET                                         ; ## END of the function ##

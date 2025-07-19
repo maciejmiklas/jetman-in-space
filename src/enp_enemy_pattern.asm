@@ -171,7 +171,7 @@ ResetPatternEnemies
 
 .enemyLoop
     CALL sr.ResetSprite
-    
+
     ; Load extra data for this sprite to IY.
     LD DE, (IX + SPR.EXT_DATA_POINTER)
     LD IY, DE

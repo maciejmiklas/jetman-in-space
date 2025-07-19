@@ -22,6 +22,14 @@ ANGLES_IDX              DB                      ; Current offset to #angles, set
 ANGLES_IDX_END          DB                      ; End offset to #angles, inclusive
     ENDS
 
+; Definition for each level
+    STRUCT FES
+STATE                   DB                      ; Value for FE.STATE
+RESPAWN_Y               DB                      ; Value for FE.RESPAWN_Y
+RESPAWN_DELAY           DB                      ; Value for FE.RESPAWN_DELAY
+MOVE_DELAY              DB                      ; Value for FE.MOVE_DELAY
+    ENDS
+
 ; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6).
 ; Generally, enemies follow the Jetman at a 45-degree angle. To randomize this angle, we skip pixels in one direction. For example, when
 ; the enemy moves one pixel in the X and Y direction, this gives us a perfect 45-degree angle. However, when we move one pixel on the X-axis
@@ -49,10 +57,9 @@ STATE_DIR_Y_MASK        = %000'0'1'000          ; Reset all but #STATE_DIR_Y_BIT
 
 STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
 STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT 
-STATE_MOVE_RD           = %000'1'0'000          ; Deploy on the left side of the screen and move right-down 
-STATE_MOVE_RU           = %000'1'1'000          ; Deploy on the left side of the screen and move right-up 
-STATE_MOVE_LD           = %000'0'0'000          ; Deploy on the right side of the screen and move left-down 
-STATE_MOVE_LU           = %000'0'1'000          ; Deploy on the right side of the screen and move left-up 
+
+STATE_DEPLOY_RIGHT      = %000'0'0000           ; Deploy on the right side of the screen and move left 
+STATE_DEPLOY_LEFT       = %000'1'0000           ; Deploy on the left side of the screen and move right 
 
 BOUNCE_H_MARG_D2        = 2
 
@@ -60,21 +67,46 @@ BOUNCE_H_MARG_D2        = 2
 fEnemySprites
     SPR {089/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
     SPR {099/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
-    SPR {100/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {101/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {102/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {103/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {104/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {105/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {106/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {107/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
+    SPR {100/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
+    SPR {101/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
+    SPR {102/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy05/*EXT_DATA_POINTER*/}
+    SPR {103/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy06/*EXT_DATA_POINTER*/}
+    SPR {104/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy07/*EXT_DATA_POINTER*/}
+    SPR {105/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy08/*EXT_DATA_POINTER*/}
+    SPR {106/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy09/*EXT_DATA_POINTER*/}
+    SPR {107/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy10/*EXT_DATA_POINTER*/}
 fEnemySize              BYTE 1
+FENEMY_SIZE              = 10
 
 fEnemy01
-    FE {STATE_MOVE_RD /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy02
-    FE {STATE_MOVE_LD /*STATE*/, 120/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 03/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_LEFT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy03
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy04
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy05
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy06
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy07
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy08
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy09
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+
+fEnemy10
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 ; Each line contains a single set of 4 "angles", which will be applied to the enemy when it changes direction. Each angle lasts for 
 ; 0.5 seconds (_MainLoop025OnActiveGame -> NextFollowingAngle), and afterwards, the next one is taken until we reach the last one. 
@@ -100,6 +132,68 @@ angles
 anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
 
 ;----------------------------------------------------------;
+;                DisableFollowingEnemies                   ;
+;----------------------------------------------------------;
+DisableFollowingEnemies
+    CALL _ResetSprites
+
+    XOR A
+    LD (freezeCnt), A
+    LD (anglesLineIdx), A
+    LD (fEnemySize), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 SetupFollowingEnemies                    ;
+;----------------------------------------------------------;
+; Input:
+;   - A:  Number of enemies (size of #FES)
+;  - IX: Pointer to #FES
+SetupFollowingEnemies
+    CALL _ResetSprites
+
+    XOR A
+    LD (freezeCnt), A
+    LD (anglesLineIdx), A
+
+    ; ##########################################
+    ; Copy #FES to #FE for each active enemy
+    LD (fEnemySize), A
+
+    LD B, A
+.enemyLoop
+
+    LD IY, fEnemy01
+
+    LD A, (IX + FES.STATE)
+    LD (IY + FES.STATE), A
+
+    LD A, (IX + FES.RESPAWN_Y)
+    LD (IY + FES.RESPAWN_Y), A
+
+    LD A, (IX + FES.RESPAWN_DELAY)
+    LD (IY + FES.RESPAWN_DELAY), A
+
+    LD A, (IX + FES.MOVE_DELAY)
+    LD (IY + FES.MOVE_DELAY), A
+
+    ; ##########################################
+    ; Move pointer to next #FES
+    LD DE, IX
+    ADD DE, FES
+    LD IX, DE
+
+    ; Move pointer to next #FE
+    LD DE, IY
+    ADD DE, FE
+    LD IY, DE
+
+    DJNZ .enemyLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                   NextFollowingAngle                     ;
 ;----------------------------------------------------------;
 NextFollowingAngle
@@ -107,6 +201,11 @@ NextFollowingAngle
     ; Iterate over all enemies
     LD IX, fEnemySprites
     LD A, (fEnemySize)
+ 
+    ; Do not execute if there are no active enemies (disabled)
+    CP 0
+    RET Z
+
     LD B, A
 
 .enemyLoop
@@ -129,7 +228,7 @@ NextFollowingAngle
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                UpdateFollowingJetman                     ;
+;                  UpdateFollowingJetman                   ;
 ;----------------------------------------------------------;
 ; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Jetman's position
 UpdateFollowingJetman
@@ -137,6 +236,11 @@ UpdateFollowingJetman
     ; Iterate over all enemies
     LD IX, fEnemySprites
     LD A, (fEnemySize)
+
+    ; Do not execute if there are no active enemies (disabled)
+    CP 0
+    RET Z
+
     LD B, A
 
 .sprLoop
@@ -176,6 +280,11 @@ RespawnFollowingEnemy
     ; Iterate over all enemies to find the first hidden, respawn it, and exit function.
     LD IX, fEnemySprites
     LD A, (fEnemySize)
+
+    ; Do not execute if there are no active enemies (disabled)
+    CP 0
+    RET Z
+
     LD B, A
 
 .sprLoop
@@ -201,6 +310,11 @@ AnimateFollowingEnemies
     ; Animate single enemy
     LD IX, fEnemySprites
     LD A, (fEnemySize)
+
+    ; Do not execute if there are no active enemies (disabled)
+    CP 0
+    RET Z
+
     LD B, A
     CALL sr.AnimateSprites
 
@@ -223,6 +337,11 @@ MoveFollowingEnemies
     ; Loop ever all enemies skipping hidden
     LD IX, fEnemySprites
     LD A, (fEnemySize)
+
+    ; Do not execute if there are no active enemies (disabled)
+    CP 0
+    RET Z
+
     LD B, A
 
 .enemyLoop
@@ -230,6 +349,10 @@ MoveFollowingEnemies
 
     ; ##########################################
     ; Move single enemy
+
+    ; Ignore if enemy is not visible
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    JR Z, .continue
 
     ; Ignore this sprite if it's hidden
     LD A, (IX + SPR.STATE)
@@ -289,6 +412,24 @@ MoveFollowingEnemies
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                    _ResetSprites                         ;
+;----------------------------------------------------------;
+_ResetSprites
+    LD IX, (fEnemySprites)
+    LD B, (FENEMY_SIZE)
+
+.spriteLoop
+    CALL sr.ResetSprite
+
+    ; Move IX to the next sprite
+    LD DE, IX
+    ADD DE, SPR
+    LD IX, DE
+    DJNZ .spriteLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                _UpdateFollowingEnemy                     ;
 ;----------------------------------------------------------;
 ; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Jetman's position
@@ -297,6 +438,11 @@ MoveFollowingEnemies
 ;  - IY: Pointer to #FE
 _UpdateFollowingEnemy
 
+    ; Return if enemy is not visible
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    RET Z
+
+    ; ##########################################
     ; Is following disabled?
     LD A, (IY + FE.FOLLOW_OFF_CNT)
     CP 0
@@ -373,6 +519,10 @@ _UpdateFollowingEnemy
 ;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: Pointer to #FE
 _NextFollowingAngle
+
+    ; Return if enemy is not visible
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    RET Z
 
     ; Set index to the next angle, assuming that we still have not reached the last one
     LD B, (IY + FE.ANGLES_IDX_END)
@@ -648,9 +798,10 @@ _BounceOfTop
 ;  - A:  _RET_YES_D1/_RET_NO_D0
 _TryRespawnNextFollowingEnemy
 
+    ; Skip this sprite if it's already visible
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
-    JR Z, .afterVisibilityCheck                 ; Skip this sprite if it's already visible
-    
+    JR Z, .afterVisibilityCheck                 ; Jump if not visible
+
     LD A, _RET_NO_D0
     RET
 .afterVisibilityCheck
@@ -659,7 +810,7 @@ _TryRespawnNextFollowingEnemy
     ; Load extra sprite data (#FE) to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
-    
+
     ; There are two respawn delay timers. The first is global (#respawnDelayCnt) and ensures that multiple enemies do not respawn at the 
     ; same time. The second timer can be configured for a single enemy, which further delays its comeback.
     LD A, (IY + FE.RESPAWN_DELAY)
