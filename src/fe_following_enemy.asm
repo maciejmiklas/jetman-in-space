@@ -135,6 +135,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
 ;                DisableFollowingEnemies                   ;
 ;----------------------------------------------------------;
 DisableFollowingEnemies
+
     CALL _ResetSprites
 
     XOR A
@@ -419,6 +420,10 @@ _ResetSprites
     LD B, (FENEMY_SIZE)
 
 .spriteLoop
+
+    LD A, (IX + SPR.ID)
+    CALL sp.SetIdAndHideSprite
+
     CALL sr.ResetSprite
 
     ; Move IX to the next sprite

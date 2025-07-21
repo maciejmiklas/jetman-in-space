@@ -1047,6 +1047,8 @@ _HideGame
     CALL enp.HidePatternEnemies
     CALL enu.DisableFuelThief
 
+    CALL dbs.SetupFollowingEnemyBank: CALL fe.DisableFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

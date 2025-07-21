@@ -82,6 +82,11 @@ LoadLevel1Data
     LD IX, ena.enemyFormationL1
     CALL enf.SetupEnemyFormation
 
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -163,6 +168,11 @@ LoadLevel2Data
     LD IX, ena.enemyFormationL2
     CALL enf.SetupEnemyFormation
 
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -243,6 +253,11 @@ LoadLevel3Data
     LD A, 150
     LD IX, ena.enemyFormationL3
     CALL enf.SetupEnemyFormation
+
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -327,6 +342,11 @@ LoadLevel4Data
     LD IX, ena.enemyFormationL4
     CALL enf.SetupEnemyFormation
 
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -407,6 +427,11 @@ LoadLevel5Data
     LD A, 0
     LD IX, ena.enemyFormationL5
     CALL enf.SetupEnemyFormation
+
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -489,6 +514,11 @@ LoadLevel6Data
     LD IX, ena.enemyFormationL6
     CALL enf.SetupEnemyFormation
 
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -569,6 +599,11 @@ LoadLevel7Data
     LD A, 100
     LD IX, ena.enemyFormationL7
     CALL enf.SetupEnemyFormation
+
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -651,6 +686,11 @@ LoadLevel8Data
     LD IX, ena.enemyFormationL8
     CALL enf.SetupEnemyFormation
 
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -732,6 +772,11 @@ LoadLevel9Data
     LD IX, ena.enemyFormationL9
     CALL enf.SetupEnemyFormation
 
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -811,6 +856,11 @@ LoadLevel10Data
     LD A, 0
     LD IX, ena.enemyFormationL10
     CALL enf.SetupEnemyFormation
+
+    ; ##########################################
+    ; Load following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
 
     RET                                         ; ## END of the function ##
 
