@@ -689,7 +689,10 @@ LoadLevel8Data
     ; ##########################################
     ; Load following enemies
     CALL dbs.SetupFollowingEnemyBank
-    CALL fe.DisableFollowingEnemies
+
+    LD IX, fed.fEnemyL08
+    LD A, fed.FENEMY_SIZE_L8
+    CALL fe.SetupFollowingEnemies
 
     RET                                         ; ## END of the function ##
 

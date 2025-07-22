@@ -16,6 +16,8 @@ level                   DB LEVEL_MIN
 JM_RESPAWN_X_D100       = 100
 JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off
 
+KILL_FEW                = 7
+
 ;----------------------------------------------------------;
 ;                    MainLoopCmd                           ;
 ;----------------------------------------------------------;
@@ -501,32 +503,102 @@ PlayFuelThiefFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    WeaponHitEnemies                      ;
+;                     WeaponHitEnemy                       ;
 ;----------------------------------------------------------;
-WeaponHitEnemies
+WeaponHitEnemy
 
     CALL dbs.SetupArraysBank
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
+
+    LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
-    LD B, (ens.singleEnemySize)
     CALL jw.CheckHitEnemies
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
+    LD A, ena.ENEMY_FORMATION_SIZE
     LD IX, ena.formationEnemySprites
-    LD B, ena.ENEMY_FORMATION_SIZE
     CALL jw.CheckHitEnemies
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
+
     LD IX, fe.fEnemySprites
-    LD B, (fe.fEnemySize)
+    LD A, (fe.fEnemySize)
     CALL jw.CheckHitEnemies
 
     RET                                         ; ## END of the function ##
-    
+
+;----------------------------------------------------------;
+;                     AnimateEnemies                       ;
+;----------------------------------------------------------;
+AnimateEnemies
+
+    ; Animate single enemy
+    CALL dbs.SetupPatternEnemyBank
+
+    LD A, (ens.singleEnemySize)
+    LD IX, ena.singleEnemySprites
+    CALL sr.AnimateSprites
+
+    ; ##########################################
+    ; Animate formation enemy
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL sr.AnimateSprites
+
+    ; ##########################################
+    CALL dbs.SetupFollowingEnemyBank
+
+    LD A, (fe.fEnemySize)
+    LD IX, fe.fEnemySprites
+    CALL sr.AnimateSprites
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      KillOneEnemy                        ;
+;----------------------------------------------------------;
+KillOneEnemy
+
+    ; Kill single enemy
+    CALL dbs.SetupPatternEnemyBank
+    LD A, (ens.singleEnemySize)
+    LD IX, ena.singleEnemySprites
+    CALL sr.KillOneSprite
+
+    ; ##########################################
+    ; Kill formation enemy
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL sr.KillOneSprite
+
+    ; ##########################################
+    ; Kill following enemy
+    CALL dbs.SetupFollowingEnemyBank
+    LD A, (fe.fEnemySize)
+    LD IX, fe.fEnemySprites
+    CALL sr.KillOneSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     KillFewEnemies                       ;
+;----------------------------------------------------------;
+KillFewEnemies
+
+    LD B, KILL_FEW
+.killLoop
+    PUSH BC
+
+    CALL KillOneEnemy
+
+    POP BC
+    DJNZ .killLoop
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                      EnemyHit                            ;
 ;----------------------------------------------------------;
@@ -554,7 +626,7 @@ EnemyHit
 
     CALL sc.HitEnemy1
 
-    JR .afterHitEnemy
+    RET
 .afterHitEnemy1
 
     ; Enemy 2?
@@ -568,14 +640,14 @@ EnemyHit
     CALL af.AfxPlay
 
     CALL sc.HitEnemy2
-    
-    JR .afterHitEnemy
+    RET
+
 .afterHitEnemy2
 
     ; Enemy 3?
     LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY3
-    JR NZ, .afterHitEnemy3
+    RET NZ
 
     ; Yes, enemy 3 hot git.
     LD A, af.FX_EXPLODE_ENEMY_3
@@ -583,11 +655,6 @@ EnemyHit
     CALL af.AfxPlay
 
     CALL sc.HitEnemy3
-
-    JR .afterHitEnemy
-.afterHitEnemy3
-
-.afterHitEnemy
 
     RET                                         ; ## END of the function ##
 
@@ -957,7 +1024,6 @@ JoyWillEnable
 
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                         NightEnds                        ;
 ;----------------------------------------------------------;
@@ -1042,12 +1108,13 @@ _HideGame
     CALL ti.CleanAllTiles
     CALL pi.ResetPickups
     CALL ki.ResetKeyboard
-
+    CALL _HideEnemies
+    
     CALL dbs.SetupPatternEnemyBank
-    CALL enp.HidePatternEnemies
     CALL enu.DisableFuelThief
 
-    CALL dbs.SetupFollowingEnemyBank: CALL fe.DisableFollowingEnemies
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.DisableFollowingEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -1090,6 +1157,34 @@ _StartLevel
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data
     CALL RespawnJet
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     _HideEnemies                         ;
+;----------------------------------------------------------;
+_HideEnemies
+
+    ; Hide single enemies
+    CALL dbs.SetupPatternEnemyBank
+
+    LD A, ena.ENEMY_SINGLE_SIZE
+    LD IX, ena.singleEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+    ; ##########################################
+    ; Hide formation enemies
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+    ; ##########################################
+    ; Hide following enemies
+    CALL dbs.SetupFollowingEnemyBank
+    
+    LD A, fe.FOLLOWING_FENEMY_SIZE
+    LD IX, fe.fEnemySprites
+    CALL sr.HideAllSimpleSprites
 
     RET                                         ; ## END of the function ##
 

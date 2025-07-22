@@ -216,7 +216,7 @@ _EnemyCollision
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     RET Z
 
-    ; Exit if enemy is visible
+    ; Exit if enemy is not visible
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     RET Z   
 

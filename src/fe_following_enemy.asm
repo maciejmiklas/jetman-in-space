@@ -7,28 +7,6 @@
 freezeCnt               DB 0
 FREEZE_ENEMIES_CNT      = 250
 
-    STRUCT FE
-STATE                   DB                      ; See: #STATE_XXX
-RESPAWN_Y               DB                      ; Respawn Y position
-RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn
-MOVE_DELAY              DB
-
-; Values changed during runtime
-MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
-RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
-FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
-SKIP_XY_CNT             DB                      ; Holds skip counters for x/y, same bits as on #FE.STATE (1-2 for x and 5-6 for y)
-ANGLES_IDX              DB                      ; Current offset to #angles, set after direction change
-ANGLES_IDX_END          DB                      ; End offset to #angles, inclusive
-    ENDS
-
-; Definition for each level
-    STRUCT FES
-STATE                   DB                      ; Value for FE.STATE
-RESPAWN_Y               DB                      ; Value for FE.RESPAWN_Y
-RESPAWN_DELAY           DB                      ; Value for FE.RESPAWN_DELAY
-MOVE_DELAY              DB                      ; Value for FE.MOVE_DELAY
-    ENDS
 
 ; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6).
 ; Generally, enemies follow the Jetman at a 45-degree angle. To randomize this angle, we skip pixels in one direction. For example, when
@@ -58,14 +36,12 @@ STATE_DIR_Y_MASK        = %000'0'1'000          ; Reset all but #STATE_DIR_Y_BIT
 STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
 STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT 
 
-STATE_DEPLOY_RIGHT      = %000'0'0000           ; Deploy on the right side of the screen and move left 
-STATE_DEPLOY_LEFT       = %000'1'0000           ; Deploy on the left side of the screen and move right 
-
 BOUNCE_H_MARG_D2        = 2
 
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
     SPR {089/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
+fEnemySprites2
     SPR {099/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
     SPR {100/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
     SPR {101/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
@@ -76,7 +52,7 @@ fEnemySprites
     SPR {106/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy09/*EXT_DATA_POINTER*/}
     SPR {107/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy10/*EXT_DATA_POINTER*/}
 fEnemySize              BYTE 1
-FENEMY_SIZE              = 10
+FOLLOWING_FENEMY_SIZE   = 10
 
 fEnemy01
     FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
@@ -149,10 +125,12 @@ DisableFollowingEnemies
 ;                 SetupFollowingEnemies                    ;
 ;----------------------------------------------------------;
 ; Input:
-;   - A:  Number of enemies (size of #FES)
+;  - A:  Number of enemies (size of #FES)
 ;  - IX: Pointer to #FES
 SetupFollowingEnemies
-    CALL _ResetSprites
+
+    LD B, A             ; Counter for .enemyLoop
+    LD (fEnemySize), A
 
     XOR A
     LD (freezeCnt), A
@@ -160,12 +138,9 @@ SetupFollowingEnemies
 
     ; ##########################################
     ; Copy #FES to #FE for each active enemy
-    LD (fEnemySize), A
-
-    LD B, A
-.enemyLoop
 
     LD IY, fEnemy01
+.enemyLoop
 
     LD A, (IX + FES.STATE)
     LD (IY + FES.STATE), A
@@ -192,6 +167,8 @@ SetupFollowingEnemies
 
     DJNZ .enemyLoop
 
+    CALL _ResetSprites
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -208,7 +185,6 @@ NextFollowingAngle
     RET Z
 
     LD B, A
-
 .enemyLoop
     PUSH BC                                     ; Preserve B for loop counter
 
@@ -218,7 +194,6 @@ NextFollowingAngle
 
     CALL _NextFollowingAngle
 
-.continue
     POP BC
 
     ; Move IX to the beginning of the next #fEnemySprites
@@ -304,27 +279,10 @@ RespawnFollowingEnemy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               AnimateFollowingEnemies                    ;
-;----------------------------------------------------------;
-AnimateFollowingEnemies
-
-    ; Animate single enemy
-    LD IX, fEnemySprites
-    LD A, (fEnemySize)
-
-    ; Do not execute if there are no active enemies (disabled)
-    CP 0
-    RET Z
-
-    LD B, A
-    CALL sr.AnimateSprites
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 MoveFollowingEnemies                     ;
 ;----------------------------------------------------------;
 MoveFollowingEnemies
+
     ; Enemies frozen and cannot move?
     LD A, (freezeCnt)
     CP 0
@@ -417,7 +375,7 @@ MoveFollowingEnemies
 ;----------------------------------------------------------;
 _ResetSprites
     LD IX, (fEnemySprites)
-    LD B, (FENEMY_SIZE)
+    LD B, (FOLLOWING_FENEMY_SIZE)
 
 .spriteLoop
 
@@ -803,14 +761,18 @@ _BounceOfTop
 ;  - A:  _RET_YES_D1/_RET_NO_D0
 _TryRespawnNextFollowingEnemy
 
-    ; Skip this sprite if it's already visible
+    ; Skip this sprite if it's already visible/active
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
-    JR Z, .afterVisibilityCheck                 ; Jump if not visible
+    JR Z, .afterAliveCheck                      ; Jump if not visible
+
+    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
+    JR Z, .afterAliveCheck                      ; Jump if not active
 
     LD A, _RET_NO_D0
     RET
-.afterVisibilityCheck
-    ; Sprite is hidden, check the dedicated delay before respawning.
+.afterAliveCheck
+
+    ; Sprite is hidden, check the dedicated delay before respawning
 
     ; Load extra sprite data (#FE) to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
@@ -837,7 +799,7 @@ _TryRespawnNextFollowingEnemy
     CP B
     JR Z, .afterEnemyRespawnDelay               ; Jump if the timer reaches respawn delay
 
-    LD (IY + FE.RESPAWN_DELAY_CNT), A          ; The delay timer for the enemy is still ticking
+    LD (IY + FE.RESPAWN_DELAY_CNT), A           ; The delay timer for the enemy is still ticking
 
     LD A, _RET_NO_D0
     RET
@@ -847,6 +809,7 @@ _TryRespawnNextFollowingEnemy
     ; Respawn enemy
 
     LD A, (IX + SPR.STATE)
+
     CALL sr.SetStateVisible
 
     ; Reset counters

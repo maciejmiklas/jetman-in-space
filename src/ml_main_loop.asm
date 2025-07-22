@@ -107,7 +107,7 @@ _MainLoop000OnActiveGame
     CALL ro.CheckHitTank
     CALL jco.JetRip
     CALL jw.MoveShots
-    CALL gc.WeaponHitEnemies
+    CALL gc.WeaponHitEnemy
     CALL jw.FireDelayCounter
     CALL gi.GameKeyboardInput
     CALL jco.JetmanEnemiesCollision
@@ -453,11 +453,7 @@ _MainLoop008OnActiveGameOrFlyingRocket
 
 .execute
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL enp.AnimatePatternEnemies
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.AnimateFollowingEnemies
+    CALL gc.AnimateEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -545,8 +541,7 @@ _MainLoop025nFlyingRocket
     RET NZ
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL enp.KillOnePatternEnemy
+    CALL gc.KillOneEnemy
 
     RET                                         ; ## END of the function ##
 

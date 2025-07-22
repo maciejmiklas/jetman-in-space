@@ -14,7 +14,7 @@ movePattern01D0
 
 ; Horizontal, delay 2
 movePattern01D1
-    DB 2, %0'000'1'111,$10  
+    DB 2, %0'000'1'111,$10
 
 ; Horizontal, delay 2
 movePattern01D2
@@ -30,7 +30,7 @@ movePattern02D0
 
 ; 18deg down, delay 1
 movePattern02D1
-    DB 2, %1'001'1'111,$10 
+    DB 2, %1'001'1'111,$10
 
 ; 18deg down, delay 2
 movePattern02D2
@@ -38,7 +38,7 @@ movePattern02D2
 
 ; 18deg down, delay 3
 movePattern02D3
-    DB 2, %1'001'1'111,$30 
+    DB 2, %1'001'1'111,$30
 
 ; 18deg up, delay 0
 movePattern03D0

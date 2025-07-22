@@ -135,6 +135,7 @@ mainLoop
     MMU _RAM_SLOT6, dbs.F_ENEMY_BANK_S6_B35
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "fe_following_enemy.asm"
+    INCLUDE "fed_following_enemy_data.asm"
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;

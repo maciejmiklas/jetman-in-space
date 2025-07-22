@@ -47,15 +47,27 @@ PrintDebug
     CP GB_VISIBLE
     RET NZ
 
-/*
+
     ; ##########################################
+    LD IX, fe.fEnemySprites
+
     CALL dbs.SetupFollowingEnemyBank
     LD BC, 40
     LD H, 0
-    LD A, (fe.tmp1) 
+    LD A, (IX + SPR.STATE) 
     LD L, A
     CALL ut.PrintNumber
-*/
+
+    ; ##########################################
+    LD IX, fe.fEnemySprites2
+
+    CALL dbs.SetupFollowingEnemyBank
+    LD BC, 46
+    LD H, 0
+    LD A, (IX + SPR.STATE) 
+    LD L, A
+    CALL ut.PrintNumber
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

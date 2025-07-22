@@ -47,8 +47,6 @@ MOVE_DELAY_CNT_INC      = %0001'0000
 
 RESPAWN_OFF             = 255
 
-KILL_FEW                = 7
-
 ; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
 ; Each pattern step takes 2 bytes so that the size will be 24 for movement consisting of 12 patterns.
 ; The byte indicating size is being followed by move patterns, each of which consists of two bytes: the first for the pattern itself 
@@ -187,79 +185,6 @@ ResetPatternEnemies
     ADD DE, SPR
     LD IX, DE
     DJNZ .enemyLoop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 AnimatePatternEnemies                    ;
-;----------------------------------------------------------;
-AnimatePatternEnemies
-
-    ; Animate single enemy
-    LD IX, ena.singleEnemySprites
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD B, A
-    CALL sr.AnimateSprites
-
-    ; ##########################################
-    ; Animate formation enemy
-    LD IX, ena.formationEnemySprites
-    LD B, ena.ENEMY_FORMATION_SIZE
-    CALL sr.AnimateSprites
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  KillFewPatternEnemies                   ;
-;----------------------------------------------------------;
-KillFewPatternEnemies
-
-    LD B, KILL_FEW
-.killLoop
-    PUSH BC
-    CALL enp.KillOnePatternEnemy
-    POP BC
-    DJNZ .killLoop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  KillOnePatternEnemy                     ;
-;----------------------------------------------------------;
-KillOnePatternEnemy
-
-    ; Kill single enemy
-    LD IX, ena.singleEnemySprites
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD B, A
-    CALL sr.KillOneSprite
-
-    ; ##########################################
-    ; Kill formation enemy
-    LD IX, ena.formationEnemySprites
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD B, A
-    CALL sr.KillOneSprite
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  HidePatternEnemies                      ;
-;----------------------------------------------------------;
-HidePatternEnemies
-
-    ; Hide single enemies
-    LD IX, ena.singleEnemySprites
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD B, A 
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide formation enemies
-    LD IX, ena.formationEnemySprites
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD B, A
-    CALL sr.HideAllSimpleSprites
 
     RET                                         ; ## END of the function ##
 
