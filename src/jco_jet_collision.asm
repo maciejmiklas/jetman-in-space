@@ -89,24 +89,28 @@ JetmanElementCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                JetmanEnemiesCollision                    ;
+;                    EnemiesCollision                      ;
 ;----------------------------------------------------------;
-JetmanEnemiesCollision
+; Checks all active enemies given by IX for collision with leaser beam.
+; Input
+;  - IX: Pointer to #SPR, the enemies
+;  - A:  Number of enemies in IX
+; Modifies: ALL
+EnemiesCollision
 
-    CALL dbs.SetupArraysBank
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    LD IX, ena.singleEnemySprites
-    LD A, (ens.singleEnemySize)
+    CP 0
+    RET Z
+    
     LD B, A
-    CALL _EnemiesCollision
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    LD IX, ena.formationEnemySprites
-    LD B, ena.ENEMY_FORMATION_SIZE
-    CALL _EnemiesCollision
+.loop
+    PUSH BC                                     ; Preserve B for loop counter
+    CALL _EnemyCollision
+.continue
+    ; Move HL to the beginning of the next #shotsX
+    LD DE, SPR
+    ADD IX, DE
+    POP BC
+    DJNZ .loop                                  ; Jump if B > 0
 
     RET                                         ; ## END of the function ##
 
@@ -398,28 +402,6 @@ _CheckCollision
 .collision
     LD A, _RET_YES_D1
     
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _EnemiesCollision                    ;
-;----------------------------------------------------------;
-; Checks all active enemies given by IX for collision with leaser beam.
-; Input
-;  - IX:    Pointer to #SPR, the enemies
-;  - B:     Number of enemies in IX
-; Modifies: ALL
-_EnemiesCollision
-
-.loop
-    PUSH BC                                     ; Preserve B for loop counter
-    CALL _EnemyCollision
-.continue
-    ; Move HL to the beginning of the next #shotsX
-    LD DE, SPR
-    ADD IX, DE
-    POP BC
-    DJNZ .loop                                  ; Jump if B > 0
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

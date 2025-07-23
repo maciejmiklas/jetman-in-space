@@ -110,7 +110,7 @@ _MainLoop000OnActiveGame
     CALL gc.WeaponHitEnemy
     CALL jw.FireDelayCounter
     CALL gi.GameKeyboardInput
-    CALL jco.JetmanEnemiesCollision
+    CALL gc.JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
     CALL jco.JetInvincible
@@ -128,12 +128,8 @@ _MainLoop000OnActiveGame
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
     JR Z, .onEasy
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
 
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
+    CALL gc.MoveEnemies
 .onEasy
 
     ; ##########################################
@@ -263,13 +259,8 @@ _MainLoop002OnActiveGame
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
     JR NZ, .notEasy
-    
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
 
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
+    CALL gc.MoveEnemies
 .notEasy
 
     RET                                         ; ## END of the function ##
@@ -331,6 +322,8 @@ _MainLoop005OnActiveGame
     ; ##########################################
     CALL ro.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
+
+    CALL dbs.SetupArraysBank
     CALL pi.AnimateFallingPickup
 
     RET                                         ; ## END of the function ##
@@ -424,12 +417,12 @@ _MainLoop008OnActiveGame
     CP jt.DIF_HARD
     JR NZ, .notHard
 
+    CALL gc.MoveEnemies
+
     CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
     CALL ens.RespawnNextSingleEnemy
 
     CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
     CALL fe.RespawnFollowingEnemy
 .notHard
 
@@ -583,9 +576,13 @@ _MainLoop040OnActiveGame
     ; ##########################################
     CALL ro.DropNextRocketElement
     CALL td.NextTimeOfDayTrigger
-    CALL pi.PickupDropCounter
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
-    CALL dbs.SetupPatternEnemyBank: CALL enu.RespawnFuelThief
+
+    CALL dbs.SetupArraysBank
+    CALL pi.PickupDropCounter
+
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.RespawnFuelThief
 
     RET                                         ; ## END of the function ##
 

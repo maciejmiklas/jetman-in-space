@@ -13,14 +13,20 @@
 spritesCnt              DB 0                    ; Counter for #ENEMY_FORMATION_SIZE
 respawnDelay            DB 0                    ; Delay to respawn the whole formation
 respawnDelayCnt         DB 0                    ; Counter for #respawnDelay
+formationSize           DB 0
 
 ;----------------------------------------------------------;
 ;                 MoveFormationEnemies                     ;
 ;----------------------------------------------------------;
 MoveFormationEnemies
 
+    ; Check whether formation is disabled
+    LD A, (formationSize)
+    CP 0
+    RET Z
+
+    LD B, A
     LD IX, ena.formationEnemySprites
-    LD B, ena.ENEMY_FORMATION_SIZE
     CALL enp.MovePatternEnemies
 
     RET                                         ; ## END of the function ##
@@ -29,10 +35,16 @@ MoveFormationEnemies
 ;                    SetupEnemyFormation                   ;
 ;----------------------------------------------------------;
 ;Input:
-;  - A:  Delay to respawn the whole formation
+;  - A:  Size of the formation
+;  - B:  Delay to respawn the whole formation
 ;  - IX: Pointer to setup (#enf.ENPS)
 SetupEnemyFormation
 
+    LD (formationSize), A
+    CP 0
+    RET Z
+
+    LD A, B
     LD (respawnDelay), A
 
     ; ##########################################
@@ -83,10 +95,10 @@ SetupEnemyFormation
 RespawnFormation
 
     ; Check whether formation is disabled
-    LD A, (respawnDelay)
-    CP enp.RESPAWN_OFF
+    LD A, (formationSize)
+    CP 0
     RET Z
-    
+
     ; ##########################################
     ; Check whether the respawn delay timer is 0, indicating that deployment is over.
     LD A, (respawnDelayCnt)
@@ -97,7 +109,7 @@ RespawnFormation
     ; deployment are still visible.
     LD IX, ena.formationEnemySprites
     LD B, ena.ENEMY_FORMATION_SIZE
-    CALL sr.CheckSpriteVisible
+    CALL sr.CheckAnySpriteVisible
     CP _RET_YES_D1                              ; Return if at least one sprite is visible
     RET Z
 

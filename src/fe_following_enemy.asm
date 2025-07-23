@@ -4,10 +4,6 @@
     MODULE fe
     ; ### TO USE THIS MODULE: CALL dbs.SetupFollowingEnemyBank ###
 
-freezeCnt               DB 0
-FREEZE_ENEMIES_CNT      = 250
-
-
 ; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6).
 ; Generally, enemies follow the Jetman at a 45-degree angle. To randomize this angle, we skip pixels in one direction. For example, when
 ; the enemy moves one pixel in the X and Y direction, this gives us a perfect 45-degree angle. However, when we move one pixel on the X-axis
@@ -115,7 +111,6 @@ DisableFollowingEnemies
     CALL _ResetSprites
 
     XOR A
-    LD (freezeCnt), A
     LD (anglesLineIdx), A
     LD (fEnemySize), A
 
@@ -133,7 +128,6 @@ SetupFollowingEnemies
     LD (fEnemySize), A
 
     XOR A
-    LD (freezeCnt), A
     LD (anglesLineIdx), A
 
     ; ##########################################
@@ -238,16 +232,6 @@ UpdateFollowingJetman
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                FreezeFollowingEnemies                    ;
-;----------------------------------------------------------;
-FreezeFollowingEnemies
-
-    LD A, FREEZE_ENEMIES_CNT
-    LD (freezeCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 RespawnFollowingEnemy                    ;
 ;----------------------------------------------------------;
 ; Respawns next single enemy. To respawn next from formation use enf.RespawnFormation
@@ -282,15 +266,6 @@ RespawnFollowingEnemy
 ;                 MoveFollowingEnemies                     ;
 ;----------------------------------------------------------;
 MoveFollowingEnemies
-
-    ; Enemies frozen and cannot move?
-    LD A, (freezeCnt)
-    CP 0
-    JR Z, .afterFreeze
-    DEC A
-    LD (freezeCnt),A
-    RET
-.afterFreeze
 
     ; ##########################################
     ; Loop ever all enemies skipping hidden

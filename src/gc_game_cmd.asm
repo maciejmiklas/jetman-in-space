@@ -18,27 +18,8 @@ JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standin
 
 KILL_FEW                = 7
 
-;----------------------------------------------------------;
-;                    MainLoopCmd                           ;
-;----------------------------------------------------------;
-    //DEFINE  PERFORMANCE_BORDER 
-MainLoopCmd
-
-    IFDEF PERFORMANCE_BORDER
-        LD  A, _COL_GREEN_D4
-        OUT (_BORDER_IO_HFE), A
-    ENDIF
-
-    CALL sc.WaitForScanline
-
-    IFDEF PERFORMANCE_BORDER
-        LD  A, _COL_RED_D2
-        OUT (_BORDER_IO_HFE), A
-    ENDIF   
-
-    CALL ml.MainLoop
-
-    RET                                         ; ## END of the function ##
+freezeEnemiesCnt        DW 0
+FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
 
 ;----------------------------------------------------------;
 ;                  StartGameWithIntro                      ;
@@ -244,7 +225,10 @@ RocketTakesOff
     CALL js.HideJetSprite
     CALL gb.HideGameBar
     CALL ti.SetTilesClipHorizontal
+
+    CALL dbs.SetupArraysBank
     CALL pi.ResetPickups
+
     CALL ki.ResetKeyboard
     CALL dbs.SetupPatternEnemyBank: CALL enu.DisableFuelThief
     CALL jw.HideShots
@@ -577,9 +561,38 @@ KillOneEnemy
     ; ##########################################
     ; Kill following enemy
     CALL dbs.SetupFollowingEnemyBank
+
     LD A, (fe.fEnemySize)
     LD IX, fe.fEnemySprites
     CALL sr.KillOneSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                JetmanEnemiesCollision                    ;
+;----------------------------------------------------------;
+JetmanEnemiesCollision
+
+    CALL dbs.SetupArraysBank
+
+    ; ##########################################
+    CALL dbs.SetupPatternEnemyBank
+
+    LD A, (ens.singleEnemySize)
+    LD IX, ena.singleEnemySprites
+    CALL jco.EnemiesCollision
+
+    ; ##########################################
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL jco.EnemiesCollision
+
+    ; ##########################################
+    CALL dbs.SetupFollowingEnemyBank
+
+    LD A, (fe.fEnemySize)
+    LD IX, fe.fEnemySprites
+    CALL jco.EnemiesCollision
 
     RET                                         ; ## END of the function ##
 
@@ -804,24 +817,6 @@ JetPicksGrenade
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     FreezeEnemies                        ;
-;----------------------------------------------------------;
-FreezeEnemies
-
-    LD A, af.FX_FREEZE_ENEMIES
-    CALL dbs.SetupAyFxsBank
-    CALL af.AfxPlay
-
-    CALL dbs.SetupPatternEnemyBank
-    CALL enp.FreezePatternEnemies
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.FreezeFollowingEnemies
-
-    RET                                         ; ## END of the function ##
-
-
-;----------------------------------------------------------;
 ;                   JetPicksStrawberry                     ;
 ;----------------------------------------------------------;
 JetPicksStrawberry
@@ -864,6 +859,53 @@ JetPicksJar
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   FreezeEnemies                          ;
+;----------------------------------------------------------;
+FreezeEnemies
+
+    LD A, af.FX_FREEZE_ENEMIES
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    LD DE, FREEZE_ENEMIES_CNT
+    LD (freezeEnemiesCnt), DE
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      MoveEnemies                         ;
+;----------------------------------------------------------;
+MoveEnemies
+
+    ; Enemies frozen and cannot move?
+    LD DE, (freezeEnemiesCnt)
+    
+    ; DE == 0 ?
+    LD A, D
+    CP 0
+    JR NZ, .decFreezeCnt
+
+    ; D == 0, now check E
+    LD A, E
+    CP 0
+    JR Z, .afterFreeze
+
+.decFreezeCnt
+    DEC DE
+    LD (freezeEnemiesCnt), DE
+    RET
+.afterFreeze
+
+    CALL dbs.SetupPatternEnemyBank
+    CALL ens.MoveSingleEnemies
+    CALL enf.MoveFormationEnemies
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.MoveFollowingEnemies
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
@@ -881,8 +923,10 @@ JetLanding
 JetMoves
 
     CALL ro.UpdateRocketOnJetmanMove
-    CALL pi.UpdatePickupsOnJetmanMove
     CALL jl.UpdateLifeFaceOnJetMove
+
+    CALL dbs.SetupArraysBank
+    CALL pi.UpdatePickupsOnJetmanMove
 
     RET                                         ; ## END of the function ##
 
@@ -1106,10 +1150,12 @@ _HideGame
     CALL jt.SetJetStateInactive
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
-    CALL pi.ResetPickups
     CALL ki.ResetKeyboard
     CALL _HideEnemies
-    
+
+    CALL dbs.SetupArraysBank
+    CALL pi.ResetPickups
+
     CALL dbs.SetupPatternEnemyBank
     CALL enu.DisableFuelThief
 
@@ -1127,7 +1173,12 @@ _InitLevelLoad
     CALL gi.ResetKeysState
     CALL td.ResetTimeOfDay
     CALL ros.ResetRocketStars
-    CALL dbs.SetupPatternEnemyBank: CALL enu.EnableFuelThief
+
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.EnableFuelThief
+
+    XOR A
+    LD (freezeEnemiesCnt), A
 
     RET                                         ; ## END of the function ##
 

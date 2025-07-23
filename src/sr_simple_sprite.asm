@@ -69,7 +69,7 @@ srSpriteDB
             DB 48, 49, 50, 49, 48, 49, 50
             
 ;----------------------------------------------------------;
-;                   #CheckSpriteVisible                    ;
+;                 #CheckAnySpriteVisible                   ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to #SPR
@@ -78,7 +78,7 @@ srSpriteDB
 ;  - A:
 ;      - _RET_YES_D1: At least one sprite visible
 ;      - _RET_NO_D0:  All sprites are hidden
-CheckSpriteVisible
+CheckAnySpriteVisible
 
 .sprLoop
     LD A, (IX + SPR.STATE)
