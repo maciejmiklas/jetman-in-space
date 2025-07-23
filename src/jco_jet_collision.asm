@@ -70,7 +70,7 @@ JetmanElementCollision
 .checkVertical
     
     ; We are here because Jetman's horizontal position matches that of the element, now check vertical
-    LD A, (jpo.jetY)                                ; Y of the Jetman.
+    LD A, (jpo.jetY)                            ; Y of the Jetman.
 
     ; Subtracts B from A and check whether the result is less than or equal to #PICK_MARGY_D16
     SUB D                                       ; D is method param (Y postion of rocket element)
@@ -89,24 +89,28 @@ JetmanElementCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                JetmanEnemiesCollision                    ;
+;                    EnemiesCollision                      ;
 ;----------------------------------------------------------;
-JetmanEnemiesCollision
+; Checks all active enemies given by IX for collision with leaser beam.
+; Input
+;  - IX: Pointer to #SPR, the enemies
+;  - A:  Number of enemies in IX
+; Modifies: ALL
+EnemiesCollision
 
-    CALL dbs.SetupArraysBank
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    LD IX, ena.singleEnemySprites
-    LD A, (ens.singleEnemySize)
+    CP 0
+    RET Z
+    
     LD B, A
-    CALL _EnemiesCollision
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    LD IX, ena.formationEnemySprites
-    LD B, ena.ENEMY_FORMATION_SIZE
-    CALL _EnemiesCollision
+.loop
+    PUSH BC                                     ; Preserve B for loop counter
+    CALL _EnemyCollision
+.continue
+    ; Move HL to the beginning of the next #shotsX
+    LD DE, SPR
+    ADD IX, DE
+    POP BC
+    DJNZ .loop                                  ; Jump if B > 0
 
     RET                                         ; ## END of the function ##
 
@@ -179,7 +183,7 @@ JetInvincible
     JR NC, .blinkFast                           ; #invincibleCnt > #JM_INV_BLINK_D100 -> blink fast
 
     ;  #invincibleCnt < #JM_INV_BLINK_D100 -> blink slow (invincibility is almost over)
-    LD A, (mld.counter004FliFLop)
+    LD A, (mld.counter005FliFLop)
     JR .afterBlinkSet
 .blinkFast  
     LD A, (mld.counter002FliFLop)
@@ -216,7 +220,7 @@ _EnemyCollision
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     RET Z
 
-    ; Exit if enemy is visible
+    ; Exit if enemy is not visible
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     RET Z   
 
@@ -346,11 +350,11 @@ _RET_YES_D1           = 1
 _CheckCollision
 
     ; Compare X coordinate of enemy and Jetman
-    LD BC, (IX + SPR.X)                      ; X of the enemy
+    LD BC, (IX + SPR.X)                         ; X of the enemy
     LD HL, (jpo.jetX)                           ; X of the Jetman
 
     ; Check whether Jetman is horizontal with the enemy
-    SBC HL, BC  
+    SBC HL, BC
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman
     LD A, H
     CP 0
@@ -367,7 +371,7 @@ _CheckCollision
 .checkVertical
 
     ; We are here because Jetman's horizontal position matches that of the enemy, now check vertical.
-    LD B, (IX + SPR.Y)                       ; Y of the enemy
+    LD B, (IX + SPR.Y)                          ; Y of the enemy
     LD A, (jpo.jetY)                            ; Y of the Jetman
 
     ; Is Jetman above or below the enemy?
@@ -386,7 +390,7 @@ _CheckCollision
     ; Swap A and B (compared to above) to avoid negative value
     LD A, (jpo.jetY)
     LD B, A                                     ; B: Y of the Jetman
-    LD A, (IX + SPR.Y)                       ; A: Y of the enemy
+    LD A, (IX + SPR.Y)                          ; A: Y of the enemy
     SUB B
     CP D
     JR C, .collision
@@ -398,28 +402,6 @@ _CheckCollision
 .collision
     LD A, _RET_YES_D1
     
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _EnemiesCollision                    ;
-;----------------------------------------------------------;
-; Checks all active enemies given by IX for collision with leaser beam.
-; Input
-;  - IX:    Pointer to #SPR, the enemies
-;  - B:     Number of enemies in IX
-; Modifies: ALL
-_EnemiesCollision
-
-.loop
-    PUSH BC                                     ; Preserve B for loop counter
-    CALL _EnemyCollision
-.continue
-    ; Move HL to the beginning of the next #shotsX
-    LD DE, SPR
-    ADD IX, DE
-    POP BC
-    DJNZ .loop                                  ; Jump if B > 0
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

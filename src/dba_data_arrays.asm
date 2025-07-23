@@ -300,20 +300,20 @@ rocketElL8
     ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 9
-rocketAssemblyXL9       DB 15*8
+rocketAssemblyXL9       DB 17*8
 rocketElL9
 ; Rocket element.
-    ro.RO {11*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {03*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
     ro.RO {25*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-    ro.RO {04*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    ro.RO {27*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
     
 ; Fuel tank.
-    ro.RO {04*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {14*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {06*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {08*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
     ro.RO {27*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {06*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
     ro.RO {02*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {23*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {30*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 10
 rocketAssemblyXL10      DB 19*8
@@ -371,7 +371,7 @@ SHOTS_SIZE              = 15                   ; Amount of shots that can be sim
 
 deployOrderPos          DB 0
 deployOrder
-    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_STRAWBERRY, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_JAR, pi.PI_SPR_GUN, pi.PI_SPR_JAR
+    DB pi.PI_SPR_DIAMOND, pi.PI_FREEZE_ENEMIES, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_JAR, pi.PI_SPR_GUN, pi.PI_SPR_JAR
     DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN
     DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_JAR, pi.PI_SPR_STRAWBERRY, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY
 DEPLOY_ORDER_SIZE       = 23
@@ -474,22 +474,10 @@ platformsSizeL7         DB 11
 
 ; Level 8
 platformsL8
-    pl.PLA {01*8/*X_LEFT*/, 01*8/*X_RIGHT*/, 01*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-    pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-    pl.PLA {04*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
-    pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
-    pl.PLA {08*8/*X_LEFT*/, 09*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-    pl.PLA {17*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 18*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
-    pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-    pl.PLA {23*8/*X_LEFT*/, 24*8/*X_RIGHT*/, 26*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-    pl.PLA {26*8/*X_LEFT*/, 27*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
-    pl.PLA {31*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
-    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
-    pl.PLA {34*8/*X_LEFT*/, 35*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-    pl.PLA {33*8/*X_LEFT*/, 34*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-    pl.PLA {38*8/*X_LEFT*/, 38*8/*X_RIGHT*/, 00*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-platformsSizeL8         DB 15
+    pl.PLA {02*8/*X_LEFT*/, 12*8/*X_RIGHT*/, 21*8/*Y_TOP*/, 21*8/*Y_BOTTOM*/}
+    pl.PLA {24*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+
+platformsSizeL8         DB 2
 
 ; Level 9
 platformsL9

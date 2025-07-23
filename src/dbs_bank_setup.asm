@@ -41,7 +41,7 @@ AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is i
 ;----------------------------------------------------------;
 SetupFollowingEnemyBank
 
-    NEXTREG F_ENEMY_BANK_S6_B35, P_ENEMY_BANK_S6_B34
+    NEXTREG _MMU_REG_SLOT6_H56, F_ENEMY_BANK_S6_B35
 
     RET                                         ; ## END of the function ## 
 

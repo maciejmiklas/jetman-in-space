@@ -10,14 +10,15 @@ MainLoop
 
     CALL _MainLoop000
     CALL _MainLoop002
-    CALL _MainLoop004
-    CALL _MainLoop006
+    CALL _MainLoop005
+
     CALL _MainLoop008
     CALL _MainLoop010
-    CALL _MainLoop015
-    CALL _MainLoop020
+    CALL _MainLoop025
     CALL _MainLoop040
-    CALL _MainLoop080
+    CALL _MainLoop050
+    CALL _MainLoop075
+    CALL _MainLoop150
     CALL _LastLoop
 
     RET                                         ; ## END of the function ##
@@ -106,10 +107,10 @@ _MainLoop000OnActiveGame
     CALL ro.CheckHitTank
     CALL jco.JetRip
     CALL jw.MoveShots
-    CALL gc.WeaponHitEnemies
+    CALL gc.WeaponHitEnemy
     CALL jw.FireDelayCounter
     CALL gi.GameKeyboardInput
-    CALL jco.JetmanEnemiesCollision
+    CALL gc.JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
     CALL jco.JetInvincible
@@ -119,17 +120,16 @@ _MainLoop000OnActiveGame
     CALL enu.MoveFuelThief
     CALL enu.ThiefWeaponHit
 
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.UpdateFollowingJetman
+
     ; ##########################################
     ; Move enemies for normal or hard
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
     JR Z, .onEasy
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
 
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
+    CALL gc.MoveEnemies
 .onEasy
 
     ; ##########################################
@@ -219,6 +219,7 @@ _MainLoop000OnDisabledJoy
 ;----------------------------------------------------------;
 ;                        _MainLoop002                      ;
 ;----------------------------------------------------------;
+; Tick rate: 1/25s
 _MainLoop002
 
     ; Increment the counter
@@ -258,13 +259,8 @@ _MainLoop002OnActiveGame
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
     JR NZ, .notEasy
-    
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
 
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
+    CALL gc.MoveEnemies
 .notEasy
 
     RET                                         ; ## END of the function ##
@@ -272,36 +268,37 @@ _MainLoop002OnActiveGame
 ;----------------------------------------------------------;
 ;                      _MainLoop004                        ;
 ;----------------------------------------------------------;
-_MainLoop004
+; Tick rate: 1/10s
+_MainLoop005
 
     ; Increment the counter
-    LD A, (mld.counter004)
+    LD A, (mld.counter005)
     INC A
-    LD (mld.counter004), A
-    CP mld.COUNTER004_MAX
+    LD (mld.counter005), A
+    CP mld.COUNTER005_MAX
     RET NZ
     
     ; Reset the counter
     XOR A                                       ; Set A to 0
-    LD (mld.counter004), A
+    LD (mld.counter005), A
 
     ; ##########################################
     ; 1 -> 0 and 0 -> 1
-    LD A, (mld.counter004FliFLop)
+    LD A, (mld.counter005FliFLop)
     XOR 1
-    LD (mld.counter004FliFLop), A
+    LD (mld.counter005FliFLop), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop004OnRocketExplosion
-    CALL _MainLoop004OnActiveGame
+    CALL _MainLoop005OnRocketExplosion
+    CALL _MainLoop005OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              _MainLoop004OnRocketExplosion               ;
+;              _MainLoop005OnRocketExplosion               ;
 ;----------------------------------------------------------;
-_MainLoop004OnRocketExplosion
+_MainLoop005OnRocketExplosion
     ; Is rocket exploding ?
     LD A, (ro.rocketState)
     CP ro.ROST_EXPLODE
@@ -313,9 +310,9 @@ _MainLoop004OnRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop004OnActiveGame                 ;
+;                 _MainLoop005OnActiveGame                 ;
 ;----------------------------------------------------------;
-_MainLoop004OnActiveGame
+_MainLoop005OnActiveGame
 
     ; Return if game is not active
     LD A, (ms.mainState)
@@ -325,40 +322,16 @@ _MainLoop004OnActiveGame
     ; ##########################################
     CALL ro.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
+
+    CALL dbs.SetupArraysBank
     CALL pi.AnimateFallingPickup
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       _MainLoop006                       ;
-;----------------------------------------------------------;
-_MainLoop006
-
-    ; Increment the counter
-    LD A, (mld.counter006)
-    INC A
-    LD (mld.counter006), A
-    CP mld.COUNTER006_MAX
-    RET NZ
-
-    ; Reset the counter
-    XOR A                                       ; Set A to 0
-    LD (mld.counter006), A
-
-    ; ##########################################
-    ; 1 -> 0 and 0 -> 1
-    LD A, (mld.counter006FliFLop)
-    XOR 1
-    LD (mld.counter006FliFLop), A
-
-    ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      _MainLoop008                        ;
 ;----------------------------------------------------------;
+; Tick rate: ±1/6s
 _MainLoop008
 
     ; Increment the counter
@@ -381,6 +354,7 @@ _MainLoop008
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
     CALL _MainLoop008OnActiveGame
+
     CALL _MainLoop008OnActiveGameOrFlyingRocket
     CALL _MainLoop008OnFlayingRocket
     CALL _MainLoop008OnActiveScoreMenu
@@ -443,12 +417,12 @@ _MainLoop008OnActiveGame
     CP jt.DIF_HARD
     JR NZ, .notHard
 
+    CALL gc.MoveEnemies
+
     CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
     CALL ens.RespawnNextSingleEnemy
 
     CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
     CALL fe.RespawnFollowingEnemy
 .notHard
 
@@ -472,17 +446,14 @@ _MainLoop008OnActiveGameOrFlyingRocket
 
 .execute
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL enp.AnimatePatternEnemies
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.AnimateFollowingEnemies
+    CALL gc.AnimateEnemies
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      _MainLoop010                        ;
 ;----------------------------------------------------------;
+; Tick rate: 1/5s
 _MainLoop010
 
     ; Increment the counter
@@ -529,53 +500,33 @@ _MainLoop010OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      _MainLoop015                        ;
+;                       _MainLoop025                       ;
 ;----------------------------------------------------------;
-_MainLoop015
+; Tick rate: 0.5s
+_MainLoop025
 
     ; Increment the counter
-    LD A, (mld.counter015)
+    LD A, (mld.counter025)
     INC A
-    LD (mld.counter015), A
-    CP mld.COUNTER015_MAX
-    RET NZ
-
-    ; Reset the counter
-    XOR A                                       ; Set A to 0
-    LD (mld.counter015), A
-
-    ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       _MainLoop020                       ;
-;----------------------------------------------------------;
-_MainLoop020
-
-    ; Increment the counter
-    LD A, (mld.counter020)
-    INC A
-    LD (mld.counter020), A
-    CP mld.COUNTER020_MAX
+    LD (mld.counter025), A
+    CP mld.COUNTER025_MAX
     RET NZ
 
     ; ##########################################
     ; Reset the counter
     XOR A                                       ; Set A to 0
-    LD (mld.counter020), A
+    LD (mld.counter025), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop020nFlyingRocket
+    CALL _MainLoop025nFlyingRocket
     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                _MainLoop020nFlyingRocket                 ;
 ;----------------------------------------------------------;
-_MainLoop020nFlyingRocket
+_MainLoop025nFlyingRocket
 
     ; Return if rocket is not flying
     LD A, (ms.mainState)
@@ -583,14 +534,15 @@ _MainLoop020nFlyingRocket
     RET NZ
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL enp.KillOnePatternEnemy
+    CALL gc.KillOneEnemy
 
     RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                       _MainLoop040                       ;
 ;----------------------------------------------------------;
+; Tick rate: 4/5s
 _MainLoop040
 
     ; Increment the counter
@@ -624,40 +576,84 @@ _MainLoop040OnActiveGame
     ; ##########################################
     CALL ro.DropNextRocketElement
     CALL td.NextTimeOfDayTrigger
-    CALL pi.PickupDropCounter
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
-    CALL dbs.SetupPatternEnemyBank: CALL enu.RespawnFuelThief
+
+    CALL dbs.SetupArraysBank
+    CALL pi.PickupDropCounter
+
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.RespawnFuelThief
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop080                       ;
+;                       _MainLoop050                       ;
 ;----------------------------------------------------------;
-_MainLoop080
+; Tick rate: 1s
+_MainLoop050
 
     ; Increment the counter
-    LD A, (mld.counter080)
+    LD A, (mld.counter050)
     INC A
-    LD (mld.counter080), A
-    CP mld.COUNTER080_MAX
+    LD (mld.counter050), A
+    CP mld.COUNTER050_MAX
     RET NZ
 
     ; ##########################################
     ; Reset the counter
     XOR A                                       ; Set A to 0
-    LD (mld.counter080), A
+    LD (mld.counter050), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    CALL _MainLoop080OnActiveGame
-    CALL _MainLoop080OnActiveGameOver
+    CALL _MainLoop050OnActiveGame
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                _MainLoop050OnActiveGame                  ;
+;----------------------------------------------------------;
+_MainLoop050OnActiveGame
+
+    ; Return if game is inactive
+    LD A, (ms.mainState)
+    CP ms.GAME_ACTIVE
+    RET NZ
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.NextFollowingAngle
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       _MainLoop075                       ;
+;----------------------------------------------------------;
+; Tick rate: 1,5s
+_MainLoop075
+
+    ; Increment the counter
+    LD A, (mld.counter075)
+    INC A
+    LD (mld.counter075), A
+    CP mld.COUNTER075_MAX
+    RET NZ
+
+    ; ##########################################
+    ; Reset the counter
+    XOR A                                       ; Set A to 0
+    LD (mld.counter075), A
+
+    ; ##########################################
+    ; CALL functions that need to be updated every xx-th loop
+    CALL _MainLoop075OnActiveGame
+    CALL _MainLoop075OnActiveGameOver
     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop080OnActiveGame                  ;
+;                _MainLoop075OnActiveGame                  ;
 ;----------------------------------------------------------;
-_MainLoop080OnActiveGame
+_MainLoop075OnActiveGame
 
     ; Return if game is inactive
     LD A, (ms.mainState)
@@ -671,9 +667,9 @@ _MainLoop080OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;            _MainLoop080OnActiveGameOver                  ;
+;            _MainLoop075OnActiveGameOver                  ;
 ;----------------------------------------------------------;
-_MainLoop080OnActiveGameOver
+_MainLoop075OnActiveGameOver
 
     ; Return if game is inactive
     LD A, (ms.mainState)
@@ -684,6 +680,30 @@ _MainLoop080OnActiveGameOver
     CALL go.GameOverLoop
 
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       _MainLoop150                       ;
+;----------------------------------------------------------;
+; Tick rate: 3s
+_MainLoop150
+
+    ; Increment the counter
+    LD A, (mld.counter150)
+    INC A
+    LD (mld.counter150), A
+    CP mld.COUNTER150_MAX
+    RET NZ
+
+    ; ##########################################
+    ; Reset the counter
+    XOR A                                       ; Set A to 0
+    LD (mld.counter150), A
+
+    ; ##########################################
+    ; CALL functions that need to be updated every xx-th loop
+    
+    RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                         _LastLoop                        ;

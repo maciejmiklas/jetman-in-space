@@ -54,3 +54,10 @@ To make movement less predictable, add a small random offset to the enemy's dire
 a random direction and adding it to the movement vector, or just flipping direction with a small probability.
 
 With a 1/8 chance per frame, add +1 or -1 to the enemy's vertical or horizontal direction.
+
+
+
+
+
+https://spiraledout.itch.io/shineontilemap
+https://v3x3d.itch.io/retro-lines

@@ -14,7 +14,7 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    CALL gc.LoadLevel8
+    CALL gc.LoadLevel5
     ;CALL gc.LoadMainMenu
 
     ; ##########################################
@@ -27,7 +27,21 @@ start
 ;                      Main Loop                           ;
 ;----------------------------------------------------------;
 mainLoop
-    CALL gc.MainLoopCmd
+
+    IFDEF PERFORMANCE_BORDER
+        LD  A, _COL_GREEN_D4
+        OUT (_BORDER_IO_HFE), A
+    ENDIF
+
+    CALL sc.WaitForScanline
+
+    IFDEF PERFORMANCE_BORDER
+        LD  A, _COL_RED_D2
+        OUT (_BORDER_IO_HFE), A
+    ENDIF   
+
+    CALL ml.MainLoop
+
     JR mainLoop
 
 ;----------------------------------------------------------;
@@ -81,7 +95,6 @@ mainLoop
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
-    INCLUDE "fe_following_enemy.asm"
 
     ; Imports below use ORG and dedicated memory bank!
 
@@ -130,7 +143,14 @@ mainLoop
     INCLUDE "ens_enemy_single.asm"
     INCLUDE "enu_enemy_fuel_thief.asm"
     ASSERT $$ == dbs.P_ENEMY_BANK_S6_B34
-    
+
+    ; ################ BANK  35 ################
+    ; TO USE THIS MODULE: CALL dbs.SetupFollowingEnemyBank
+    MMU _RAM_SLOT6, dbs.F_ENEMY_BANK_S6_B35
+    ORG _RAM_SLOT6_STA_HC000
+    INCLUDE "fe_following_enemy.asm"
+    INCLUDE "fed_following_enemy_data.asm"
+
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
 ;----------------------------------------------------------;

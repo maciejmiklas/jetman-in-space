@@ -99,11 +99,15 @@ FireSpeedUp
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
-;  - IX:    Pointer to #SPR, the enemies
-;  - B:     Number of enemies in IX
+;  - IX: Pointer to #SPR, the enemies
+;  - A:  Number of enemies in IX
 ; Modifies: ALL
 CheckHitEnemies
 
+    CP 0
+    RET Z
+
+    LD B, A
 .loop                                           ; Loop over every enemy
     PUSH BC                                     ; Preserve B for loop counter
     LD A, (IX + SPR.STATE)

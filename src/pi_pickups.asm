@@ -2,6 +2,7 @@
 ;                       Game Pickups                       ;
 ;----------------------------------------------------------;
     MODULE pi
+    ; Before using it CALL dbs.SetupArraysBank
 
 PI_SPR_DIAMOND          = 39
 PI_SPR_JAR              = 40
@@ -33,7 +34,6 @@ PICKUP_SPRITE_ID        = 90
 ;----------------------------------------------------------;
 ResetPickups
 
-    CALL dbs.SetupArraysBank
     XOR A
     LD (deployed), A
     LD (lifeDeployed), A
@@ -213,8 +213,6 @@ LifeDropCounter
 ;                    PickupDropCounter                     ;
 ;----------------------------------------------------------;
 PickupDropCounter
-
-    CALL dbs.SetupArraysBank
 
     ; Do not deploy next pickup if there is one out there
     LD A, (deployed)

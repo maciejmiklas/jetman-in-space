@@ -5,7 +5,7 @@
 
 ; When a weapon hits something, the sprite first gets status #SPRITE_ST_ACTIVE_BIT. After it stops exploding, it becomes status #SPRITE_ST_VISIBLE_BIT.
 
-; Active flag, 1 - sprite is alive/active, 0 - sprite is dying (not active), disabled for collision detection, but visible (exploding/dying)
+; Active flag, 1 - sprite is alive/active, 0 - sprite is dying (not active), disabled for collision detection, but could visible (exploding)
 SPRITE_ST_ACTIVE_BIT    = 1
 SPRITE_ST_ACTIVE        = %00000010
 
@@ -13,7 +13,8 @@ SPRITE_ST_ACTIVE        = %00000010
 SPRITE_ST_VISIBLE_BIT   = 0
 SPRITE_ST_VISIBLE       = %00000001
 
-SPRITE_ST_ALIVE         = %00000011             ; Alive and visible
+SPRITE_ST_ALIVE         = %00000011             ; Active and visible
+
 ; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37
 SPRITE_ST_MIRROR_X_BIT  = 3
 
@@ -50,38 +51,38 @@ SDB_SEARCH_LIMIT        = 200
 ; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
 ; containing another animation or a command like #SDB_HIDE that will hide the sprite.
 srSpriteDB
-    sr.SPR_REC {sr.SDB_EXPLODE, sr.SDB_HIDE-sr.SDB_SUB, 04}
+    SPR_REC {SDB_EXPLODE, SDB_HIDE-SDB_SUB, 04}
             DB 30, 31, 32, 33
-    sr.SPR_REC {sr.SDB_FIRE,sr.SDB_FIRE-sr.SDB_SUB, 02}
+    SPR_REC {SDB_FIRE,SDB_FIRE-SDB_SUB, 02}
             DB 54, 55
-    sr.SPR_REC {sr.SDB_ENEMY1, sr.SDB_ENEMY1-sr.SDB_SUB, 24}
+    SPR_REC {SDB_ENEMY1, SDB_ENEMY1-SDB_SUB, 24}
             DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
-    sr.SPR_REC {sr.SDB_ENEMY2, sr.SDB_ENEMY2-sr.SDB_SUB, 03}
+    SPR_REC {SDB_ENEMY2, SDB_ENEMY2-SDB_SUB, 03}
             DB 48, 49, 50
-    sr.SPR_REC {sr.SDB_ENEMY3, sr.SDB_ENEMY3-sr.SDB_SUB, 03}
+    SPR_REC {SDB_ENEMY3, SDB_ENEMY3-SDB_SUB, 03}
             DB 34, 35, 36
-    sr.SPR_REC {sr.SDB_FUEL_THIEF, sr.SDB_FUEL_THIEF-sr.SDB_SUB, 03}
+    SPR_REC {SDB_FUEL_THIEF, SDB_FUEL_THIEF-SDB_SUB, 03}
             DB 58, 59, 63
-    sr.SPR_REC {sr.SDB_BOUNCE_SIDE, sr.SDB_ENEMY1-sr.SDB_SUB, 7}
+    SPR_REC {SDB_BOUNCE_SIDE, SDB_ENEMY1-SDB_SUB, 7}
             DB 34, 35, 36, 35, 34, 35, 36
-    sr.SPR_REC {sr.SDB_BOUNCE_TOP, sr.SDB_ENEMY1-sr.SDB_SUB, 7}
+    SPR_REC {SDB_BOUNCE_TOP, SDB_ENEMY1-SDB_SUB, 7}
             DB 48, 49, 50, 49, 48, 49, 50
             
 ;----------------------------------------------------------;
-;                   #CheckSpriteVisible                    ;
+;                 #CheckAnySpriteVisible                   ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:  Pointer to #SPR
-;  - B:   Number of sprites
+;  - IX: Pointer to #SPR
+;  - B:  Number of sprites
 ; Output:
 ;  - A:
 ;      - _RET_YES_D1: At least one sprite visible
 ;      - _RET_NO_D0:  All sprites are hidden
-CheckSpriteVisible
+CheckAnySpriteVisible
 
 .sprLoop
     LD A, (IX + SPR.STATE)
-    BIT sr.SPRITE_ST_VISIBLE_BIT, A
+    BIT SPRITE_ST_VISIBLE_BIT, A
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden)
 
     ; Sprite is visible!
@@ -104,7 +105,7 @@ CheckSpriteVisible
 ;                        ResetSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Pointer to #SPR.
+;  - IX: Pointer to #SPR.
 ResetSprite
 
     XOR A
@@ -121,10 +122,14 @@ ResetSprite
 ;                      KillOneSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Pointer to #SPR
-;  - B:     Sprites size
+;  - IX: Pointer to #SPR
+;  - A:  Sprites size
 KillOneSprite
 
+    CP 0
+    RET Z
+
+    LD B, A
     ; Loop ever all sprites skipping hidden
 .loop
 
@@ -154,10 +159,10 @@ KillOneSprite
 ;                          SpriteHit                       ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:    Pointer to #SPR
+;  - IX: Pointer to #SPR
 SpriteHit
 
-    CALL sr.SetSpriteId
+    CALL SetSpriteId
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection
 
     LD A, SDB_EXPLODE
@@ -169,11 +174,15 @@ SpriteHit
 ;                      AnimateSprites                      ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:    Pointer to #SPR
-;  - B:     Number of sprites
+;  - IX: Pointer to #SPR
+;  - A:  Number of sprites
 ; Modifies: A, BC, HL
 AnimateSprites
 
+    CP 0
+    RET Z
+
+    LD B, A
 .loop
     PUSH BC                                     ; Preserve B for loop counter
 
@@ -183,6 +192,11 @@ AnimateSprites
     ; Sprite is visible
     CALL SetSpriteId                            ; Set the ID of the sprite for the following commands
     CALL UpdateSpritePattern
+
+    ; Move #SPR.SDB_POINTER to the next sprite pattern
+    LD HL, (IX + SPR.SDB_POINTER)
+    INC HL
+    LD (IX + SPR.SDB_POINTER), HL
 
 .continue
     ; Move HL to the beginning of the next #shotsX
@@ -210,7 +224,7 @@ SetSpriteId
 ;                  UpdateSpritePosition                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    pointer to #SPR
+;  - IX: Pointer to #SPR
 ; Modifies: A, BC
 UpdateSpritePosition
 
@@ -245,18 +259,23 @@ UpdateSpritePosition
 ;                 HideAllSimpleSprites                     ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Pointer to #SPR
-;  - B:     Sprites size
+;  - IX: Pointer to #SPR
+;  - A:  Sprites size
 HideAllSimpleSprites
 
-.spriteLoop
+    CP 0
+    RET Z
 
+    LD B, A
+.spriteLoop
+    PUSH BC
     CALL HideSimpleSprite
 
     ; Move IX to the beginning of the next #SPR
     LD DE, SPR
     ADD IX, DE
 
+    POP BC
     DJNZ .spriteLoop
 
     RET                                         ; ## END of the function ## 
@@ -266,8 +285,7 @@ HideAllSimpleSprites
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX
 ; Input
-;  - IX:    Pointer to #SPR
-; Modifies: A
+;  - IX: Pointer to #SPR
 HideSimpleSprite
 
     CALL SetSpriteId
@@ -285,7 +303,7 @@ HideSimpleSprite
 ;                        ShowSprite                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Pointer to #SPR.
+;  - IX: Pointer to #SPR.
 ShowSprite
 
     LD A, (IX + SPR.SDB_INIT)
@@ -300,8 +318,8 @@ ShowSprite
 ;                     SetStateVisible                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Pointer to #SPR.
-;  - A:     Prepared state.
+;  - IX: Pointer to #SPR.
+;  - A:  Prepared state.
 ; Modifies: A
 SetStateVisible
 
@@ -314,9 +332,9 @@ SetStateVisible
 ;----------------------------------------------------------;
 ;                  UpdateSpritePattern                     ;
 ;----------------------------------------------------------;
-; Show the current sprite pattern and switch the pointer to the next one so the following method CALL will display it.
+; Show the current sprite pattern.
 ; Input:
-;  - IX:    Pointer to #SPR
+;  - IX: Pointer to #SPR
 ; Modifies: A, BC, HL
 UpdateSpritePattern
 
@@ -352,12 +370,6 @@ UpdateSpritePattern
     OR _SPR_PATTERN_SHOW                        ; Store pattern number into Sprite Attribute
     NEXTREG _SPR_REG_ATR3_H38, A
 
-    ; ##########################################
-    ; Move #SPR.SDB_POINTER to the next sprite pattern
-    LD HL, (IX + SPR.SDB_POINTER)
-    INC HL
-    LD (IX + SPR.SDB_POINTER), HL
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -369,15 +381,15 @@ UpdateSpritePattern
 ;  - D:  Do not confuse this parameter with #SPR.STATE, they are different parameters
 ;        Configuration, bits:
 ;         - 0-2: Number of pixels to move sprite
-;         - 3:  #MVX_IN_D_HIDE_BIT
-;         - 4:  #MVX_IN_D_TOD_DIR_BIT
+;         - 3:   #MVX_IN_D_HIDE_BIT
+;         - 4:   #MVX_IN_D_TOD_DIR_BIT
 MVX_IN_D_HIDE_BIT           = 3                 ; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen
-MVX_IN_D_TOD_DIR_BIT        = 4                 ; 1 - to move right, 0 - to move left
-MVX_IN_D_1PX_HIDE           = %0000'1'001       ; Move the sprite by 1 pixel and hide on the screen end
-MVX_IN_D_6PX_HIDE           = %0000'1'110       ; Move the sprite by 6 pixels and hide on the screen end
-MVX_IN_D_1PX_ROL            = %0000'0'001       ; Move the sprite by 1 pixel and roll over sprite when off-screen
-MVX_IN_D_2PX_ROL            = %0000'0'010       ; Move the sprite by 2 pixels and roll over sprite when off-screen
-MVX_IN_D_MASK_CNT           = %00000'111
+MVX_IN_D_TOD_DIR_BIT        = 4                 ; 1 - move from right side of the screen to the left, 0 - move left -> right
+MVX_IN_D_1PX_HIDE           = %0000'1001        ; Move the sprite by 1 pixel and hide on the screen end
+MVX_IN_D_6PX_HIDE           = %0000'1110        ; Move the sprite by 6 pixels and hide on the screen end
+MVX_IN_D_1PX_ROL            = %0000'0001        ; Move the sprite by 1 pixel and roll over sprite when off-screen
+MVX_IN_D_2PX_ROL            = %0000'0010        ; Move the sprite by 2 pixels and roll over sprite when off-screen
+MVX_IN_D_MASK_CNT           = %0000'0111 
 ; Modifies; A, B, HL
 MoveX
     ; Load counter for .moveLeftLoop/.moveRightLoop into B
@@ -391,7 +403,7 @@ MoveX
     JR NZ, .moveRight
 
     ; ##########################################
-    ; Move left.
+    ; Move from left side of the screen to the right
 .moveLeftLoop
 
     ; ##########################################
@@ -447,7 +459,7 @@ MoveX
     RET
 
     ; ##########################################
-    ; Move right
+    ; Move from right side of the screen to the left
 .moveRight
     ; Moving right - increment X coordinate
     LD HL, (IX + SPR.X) 
@@ -491,8 +503,8 @@ MoveX
 ;----------------------------------------------------------;
 ; Move the sprite one pixel up or down, depending on the A.
 ; Input
-;  - IX:    Pointer to #SPR.
-;  - A:     MOVE_Y_IN_XXX
+;  - IX: Pointer to #SPR.
+;  - A:  MOVE_Y_IN_XXX
 MOVE_Y_IN_UP                = 1                 ; Move up
 MOVE_Y_IN_DOWN              = 0                 ; Move down
 ; Output:
@@ -543,8 +555,8 @@ MoveY
 ;----------------------------------------------------------;
 ; Set given pointer IX to animation pattern from #srSpriteDB given by B.
 ; Input:
-;  - IX:    Pointer to #SPR
-;  - A:     ID in #srSpriteDB
+;  - IX: Pointer to #SPR
+;  - A:  ID in #srSpriteDB
 ; Modifies: A, BC, HL
 LoadSpritePattern
 

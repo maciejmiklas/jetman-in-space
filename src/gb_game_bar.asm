@@ -49,9 +49,7 @@ PrintDebug
 /*
     ; ##########################################
     LD BC, 40
-    LD H, 0
-    LD A, (ms.mainState)
-    LD L, A
+    LD HL, (gc.freezeEnemiesCnt)
     CALL ut.PrintNumber
 */
     RET                                         ; ## END of the function ##

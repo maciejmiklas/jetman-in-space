@@ -516,10 +516,39 @@ Y                       DB                      ; Y position of the sprite
 ;   - 1:    #SPRITE_ST_ACTIVE_BIT
 ;   - 2:    Not used, but reserved for simple sprite (sr)
 ;   - 3:    #SPRITE_ST_MIRROR_X_BIT
-;   - 4:    Not used, but reserved for simple sprite (sr)
-;   - 5-8:  Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT
+;   - 4-8:  Not used by simple sprite (sr), can be used by others, for example: jw.STATE_SHOT_TOD_DIR_BIT
 STATE                   DB
 NEXT                    DB                      ; ID in #ssSpriteDB for next animation record/state
 REMAINING               DB                      ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record
 EXT_DATA_POINTER        DW                      ; Pointer to additional data structure for this sprite
     ENDS
+
+;----------------------------------------------------------;
+;         Memory Structure for Following Enemy             ;
+;----------------------------------------------------------;
+
+    STRUCT FE
+STATE                   DB                      ; See: #fe.STATE_XXX
+RESPAWN_Y               DB                      ; Respawn Y position
+RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn
+MOVE_DELAY              DB
+
+; Values changed during runtime
+MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0
+RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY
+FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops
+SKIP_XY_CNT             DB                      ; Holds skip counters for x/y, same bits as on #FE.STATE (1-2 for x and 5-6 for y)
+ANGLES_IDX              DB                      ; Current offset to #angles, set after direction change
+ANGLES_IDX_END          DB                      ; End offset to #angles, inclusive
+    ENDS
+
+; Definition for each level
+    STRUCT FES
+STATE                   DB                      ; Value for FE.STATE
+RESPAWN_Y               DB                      ; Value for FE.RESPAWN_Y
+RESPAWN_DELAY           DB                      ; Value for FE.RESPAWN_DELAY
+MOVE_DELAY              DB                      ; Value for FE.MOVE_DELAY
+    ENDS
+
+STATE_DEPLOY_RIGHT      = %000'0'0000           ; Deploy on the right side of the screen and move left 
+STATE_DEPLOY_LEFT       = %000'1'0000           ; Deploy on the left side of the screen and move right 

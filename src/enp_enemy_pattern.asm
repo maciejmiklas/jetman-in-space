@@ -47,8 +47,6 @@ MOVE_DELAY_CNT_INC      = %0001'0000
 
 RESPAWN_OFF             = 255
 
-KILL_FEW                = 7
-
 ; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
 ; Each pattern step takes 2 bytes so that the size will be 24 for movement consisting of 12 patterns.
 ; The byte indicating size is being followed by move patterns, each of which consists of two bytes: the first for the pattern itself 
@@ -105,16 +103,13 @@ MOVE_PAT_STEP_OFFSET    = 1                     ; Data for move pattern starts a
 MOVE_PAT_REPEAT_MASK    = %0000'1111 
 MOVE_PAT_DELAY_MASK     = %1111'0000 
 
-MOVE_DELAY_3X           = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame.
-MOVE_DELAY_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame.
+MOVE_DELAY_3X           = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
+MOVE_DELAY_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
 DEC_MOVE_DELAY          = %0001'0000 
 
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end
 
-BOUNCE_H_MARG_D5        = 3
-
-freezeCnt               DB 0
-FREEZE_ENEMIES_CNT      = 250
+BOUNCE_H_MARG_D3        = 3
 
 ;----------------------------------------------------------;
 ;                    CopyEnpsToEnp                         ;
@@ -146,7 +141,6 @@ CopyEnpsToEnp
 ResetEnp
 
     XOR A
-    LD (freezeCnt), A
     LD (IY + ENP.MOVE_DELAY_CNT), A
     LD (IY + ENP.MOVE_PAT_STEP), A
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
@@ -171,7 +165,7 @@ ResetPatternEnemies
 
 .enemyLoop
     CALL sr.ResetSprite
-    
+
     ; Load extra data for this sprite to IY.
     LD DE, (IX + SPR.EXT_DATA_POINTER)
     LD IY, DE
@@ -191,89 +185,6 @@ ResetPatternEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 AnimatePatternEnemies                    ;
-;----------------------------------------------------------;
-AnimatePatternEnemies
-
-    ; Animate single enemy
-    LD IX, ena.singleEnemySprites
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD B, A
-    CALL sr.AnimateSprites
-
-    ; ##########################################
-    ; Animate formation enemy
-    LD IX, ena.formationEnemySprites
-    LD B, ena.ENEMY_FORMATION_SIZE
-    CALL sr.AnimateSprites
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  KillFewPatternEnemies                   ;
-;----------------------------------------------------------;
-KillFewPatternEnemies
-
-    LD B, KILL_FEW
-.killLoop
-    PUSH BC
-    CALL enp.KillOnePatternEnemy
-    POP BC
-    DJNZ .killLoop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  KillOnePatternEnemy                     ;
-;----------------------------------------------------------;
-KillOnePatternEnemy
-
-    ; Kill single enemy
-    LD IX, ena.singleEnemySprites
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD B, A
-    CALL sr.KillOneSprite
-
-    ; ##########################################
-    ; Kill formation enemy
-    LD IX, ena.formationEnemySprites
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD B, A
-    CALL sr.KillOneSprite
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  HidePatternEnemies                      ;
-;----------------------------------------------------------;
-HidePatternEnemies
-
-    ; Hide single enemies
-    LD IX, ena.singleEnemySprites
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD B, A 
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide formation enemies
-    LD IX, ena.formationEnemySprites
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD B, A
-    CALL sr.HideAllSimpleSprites
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                FreezePatternEnemies                      ;
-;----------------------------------------------------------;
-FreezePatternEnemies
-
-    LD A, FREEZE_ENEMIES_CNT
-    LD (freezeCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                  MovePatternEnemies                      ;
 ;----------------------------------------------------------;
 ; Input:
@@ -282,15 +193,6 @@ FreezePatternEnemies
 ; Moves single enemies and those in formation
 ; Modifies: ALL
 MovePatternEnemies
-
-    ; Enemies frozen and cannot move?
-    LD A, (freezeCnt)
-    CP 0
-    JR Z, .afterFreeze
-    DEC A
-    LD (freezeCnt),A
-    RET
-.afterFreeze
 
     ; ##########################################
     ; Loop ever all enemies skipping hidden 
@@ -310,19 +212,19 @@ MovePatternEnemies
     ; Slow down movement by decrementing the counter until it reaches 0
     LD A, (IY + ENP.MOVE_DELAY_CNT)
     CP 0                                        ; No delay? -> move at full speed
-    JR Z, .afterDelayMove
+    JR Z, .afterMoveDelay
 
     ; Delaying movement, decrement delay counter
     SUB MOVE_DELAY_CNT_INC
     LD (IY + ENP.MOVE_DELAY_CNT), A
 
-    CP 0                                        
+    CP 0
     JR NZ, .continue                            ; Skip enemy if the delay counter > 0
 
     CALL _LoadMoveDelay
     LD (IY + ENP.MOVE_DELAY_CNT), A             ; Reset counter, A has the max value of delay counter
 
-.afterDelayMove
+.afterMoveDelay
 
     ; ##########################################
     ; Sprite is visible, move it!
@@ -339,7 +241,7 @@ MovePatternEnemies
     POP IY
     CALL _MoveEnemy
     JR .continue
-.after3x    
+.after3x
 
     ; Double movement speed if move delay is 1
     CP MOVE_DELAY_2X
@@ -562,14 +464,12 @@ _MoveEnemyX
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX:    Pointer to #SPR holding data for single sprite that will be moved
-; Modifies: all
+;  - IX: Pointer to #SPR holding data for single sprite that will be moved
 _MoveEnemy
 
-    ; Move the Sprite horizontally if it has been hit and it's dying
-    LD A, (IX + SPR.STATE)
-    CALL sr.SetSpriteId                         ; Set sprite ID in hardware
-    
+    ; Set sprite ID in hardware
+    CALL sr.SetSpriteId
+
     ; Load #ENP for this sprite to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
@@ -710,8 +610,8 @@ _MoveEnemy
 
     ; Bounce is set, has sprite reached the bottom of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D5
-    JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D5)
+    CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D3
+    JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3)
     ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down
     CALL _FlipReverseY
     LD A, sr.MOVE_Y_IN_UP
@@ -735,7 +635,7 @@ _MoveEnemy
 
     ; Bounce is set, has sprite reached top of the screen?
     LD A, (IX + SPR.Y)
-    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D5
+    CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D3
     JR NC, .afterBounceMoveUp                   ; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15+_GSC_Y_MIN_D15)
 
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up

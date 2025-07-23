@@ -22,9 +22,13 @@ nextRespDel             DB NEXT_RESP_DEL
 ;----------------------------------------------------------;
 MoveSingleEnemies
 
-    LD IX, ena.singleEnemySprites
+    ; Single enemies disabled?
     LD A, (singleEnemySize)
+    CP 0
+    RET Z
+
     LD B, A
+    LD IX, ena.singleEnemySprites
     CALL enp.MovePatternEnemies
 
     RET                                         ; ## END of the function ##
@@ -32,7 +36,7 @@ MoveSingleEnemies
 ;----------------------------------------------------------;
 ;                   SetupSingleEnemies                     ;
 ;----------------------------------------------------------;
-; Resets single enemies and loads given #ENPS array into #ENP and #SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
+; Resets single enemies and loads given #ENPS array into #ENP and #SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE
 ; Input:
 ;   - A:  Number of single enemies (size of #ENPS)
 ;   - B:  Respawn delay for #nextRespDel
@@ -40,6 +44,9 @@ MoveSingleEnemies
 SetupSingleEnemies
 
     LD (singleEnemySize), A
+    CP 0
+    RET Z
+
     LD A, B
     LD (nextRespDel), A
 
@@ -56,7 +63,6 @@ SetupSingleEnemies
     LD IY, ena.spriteEx01                       ; Pointer to #ENP array
     LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#ENP arrays)
     LD B, A
-
 .enpLoop
 
     CALL enp.CopyEnpsToEnp
@@ -105,6 +111,11 @@ SetupSingleEnemies
 ;----------------------------------------------------------;
 ; Respawns next single enemy. To respawn next from formation use enf.RespawnFormation
 RespawnNextSingleEnemy
+
+    ; Single enemies disabled?
+    LD A, (singleEnemySize)
+    CP 0
+    RET Z
 
     ; Increment respawn timer and exit function if it's not time to respawn a new enemy.
     LD A, (nextRespDel)
