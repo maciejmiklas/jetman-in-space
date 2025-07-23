@@ -873,9 +873,38 @@ FreezeEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     RespawnEnemy                         ;
+;----------------------------------------------------------;
+RespawnEnemy
+
+    ; Enemies frozen and cannot move/respawn?
+    LD DE, (freezeEnemiesCnt)
+
+    LD A, D
+    CP 0
+    RET NZ
+
+    LD A, E
+    CP 0
+    RET NZ
+
+    ; ##########################################
+    CALL dbs.SetupPatternEnemyBank
+    CALL ens.RespawnNextSingleEnemy
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.RespawnFollowingEnemy
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      MoveEnemies                         ;
 ;----------------------------------------------------------;
 MoveEnemies
+
+    ; Pattern enemies are immune to freeze
+    CALL dbs.SetupPatternEnemyBank
+    CALL enf.MoveFormationEnemies
 
     ; Enemies frozen and cannot move?
     LD DE, (freezeEnemiesCnt)
@@ -896,6 +925,7 @@ MoveEnemies
     RET
 .afterFreeze
 
+    ; ##########################################
     CALL dbs.SetupPatternEnemyBank
     CALL ens.MoveSingleEnemies
     CALL enf.MoveFormationEnemies

@@ -418,12 +418,8 @@ _MainLoop008OnActiveGame
     JR NZ, .notHard
 
     CALL gc.MoveEnemies
+    CALL gc.RespawnEnemy
 
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.RespawnNextSingleEnemy
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.RespawnFollowingEnemy
 .notHard
 
     RET                                         ; ## END of the function ##
@@ -492,11 +488,9 @@ _MainLoop010OnActiveGame
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
     CALL enf.RespawnFormation
-    CALL ens.RespawnNextSingleEnemy
 
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.RespawnFollowingEnemy
-
+    CALL gc.RespawnEnemy
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
