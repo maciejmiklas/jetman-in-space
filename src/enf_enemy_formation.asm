@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE enf
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
     
 ; The enemy formation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #ENEMY_FORMATION_SIZE
 ; determines the amount. The deployment starts when #respawnDelayCnt will reach #respawnDelay. 
@@ -146,7 +146,7 @@ RespawnFormation
     ADD IX, DE                                  ; Now IX points to the current #SPR that should be deployed
 
     CALL enp.RespawnPatternEnemy
-    CP enp.RES_SE_OUT_YES                       ; Has the enemy respawned?
+    CP _RET_YES_D1                              ; Has the enemy respawned?
     RET NZ                                      ; Enemy did not respawn, probably still waiting for #ENP.RESPAWN_DELAY_CNT
 
     ; ##########################################

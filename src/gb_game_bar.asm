@@ -46,14 +46,14 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-
+/*
     ; ##########################################
     LD BC, 40
     LD H, 0
     LD A, (ms.mainState)
     LD L, A
     CALL ut.PrintNumber
-
+*/
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
