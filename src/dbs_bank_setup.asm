@@ -28,13 +28,12 @@ BMB_END_BANK_S7_D27     = 27                    ; Last background bank (inclusiv
 
 ARR1_BANK_S7_D28        = 28                    ; Slot 7. Bank for arrays, slot 6
 ARR2_BANK_S7_D29        = 29                    ; Slot 7. Bank for arrays, slot 6
-PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
+F_ENEMY_BANK_S6_B30     = 30                    ; Slot 6, Following Enemies
+P_ENEMY_BANK_S6_B31     = 31                    ; Slot 6, Pattern Enemies
 AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
 AY_MCODE_S6_D33         = 33                    ; Slot 6. music code, music binary is in AY_MCODE_S6_D33
-P_ENEMY_BANK_S6_B34     = 34                    ; Slot 6, Pattern Enemies
-F_ENEMY_BANK_S6_B35     = 35                    ; Slot 6, Following Enemies
 
-PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D31
+PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D87
 SPR_BANK1_S6_D71        = 71
 SPR_BANK2_S7_D72        = 72
 
@@ -48,13 +47,14 @@ LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB
 LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7
 EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image
 AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33
+PAL2_BANK_S6_D87        = 87                    ; Slot 6. Layer 2 pallettes
 
 ;----------------------------------------------------------;
 ;                SetupFollowingEnemyBank                   ;
 ;----------------------------------------------------------;
 SetupFollowingEnemyBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, F_ENEMY_BANK_S6_B35
+    NEXTREG _MMU_REG_SLOT6_H56, F_ENEMY_BANK_S6_B30
 
     RET                                         ; ## END of the function ## 
 
@@ -63,7 +63,7 @@ SetupFollowingEnemyBank
 ;----------------------------------------------------------;
 SetupPatternEnemyBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, P_ENEMY_BANK_S6_B34
+    NEXTREG _MMU_REG_SLOT6_H56, P_ENEMY_BANK_S6_B31
 
     RET                                         ; ## END of the function ## 
 
@@ -149,7 +149,7 @@ SetupArrays2Bank
 SetupPaletteBank
 
     ; Memory bank (8KiB) containing layer 2 palette data
-    NEXTREG _MMU_REG_SLOT6_H56, PAL2_BANK_S6_D31
+    NEXTREG _MMU_REG_SLOT6_H56, PAL2_BANK_S6_D87
 
     ; Memory bank (8KiB) containing layer 2 palettes with brightness for times of the day
     NEXTREG _MMU_REG_SLOT7_H57, PAL2_BR_BANK_S7_D70
