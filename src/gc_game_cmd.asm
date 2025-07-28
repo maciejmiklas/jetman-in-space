@@ -226,7 +226,7 @@ RocketTakesOff
     CALL gb.HideGameBar
     CALL ti.SetTilesClipHorizontal
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
     CALL ki.ResetKeyboard
@@ -491,7 +491,7 @@ PlayFuelThiefFx
 ;----------------------------------------------------------;
 WeaponHitEnemy
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
@@ -573,7 +573,7 @@ KillOneEnemy
 ;----------------------------------------------------------;
 JetmanEnemiesCollision
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
@@ -620,7 +620,7 @@ KillFewEnemies
 ;  - IX: Pointer to enemy's #SPR.
 EnemyHit
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     CALL sr.SpriteHit
 
@@ -678,7 +678,7 @@ EnemyHit
 ;  - IX:    Pointer enemy's #SPR
 EnemyHitsJet
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     
     ; Destroy the enemy.
     CALL sr.SpriteHit
@@ -955,7 +955,7 @@ JetMoves
     CALL ro.UpdateRocketOnJetmanMove
     CALL jl.UpdateLifeFaceOnJetMove
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.UpdatePickupsOnJetmanMove
 
     RET                                         ; ## END of the function ##
@@ -1183,7 +1183,7 @@ _HideGame
     CALL ki.ResetKeyboard
     CALL _HideEnemies
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
     CALL dbs.SetupPatternEnemyBank

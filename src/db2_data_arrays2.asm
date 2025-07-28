@@ -1,9 +1,9 @@
 ;----------------------------------------------------------;
-;                    Arrays (Bank 29)                      ;
+;                    Arrays 2 (Bank 29)                    ;
 ;----------------------------------------------------------;
-    module dba
+    module db2
 
-    ; Before using it CALL dbs.SetupArraysBank
+    ; Before using it CALL dbs.SetupArrays2Bank
 spritesBankStart
 
 ;----------------------------------------------------------;
@@ -284,20 +284,20 @@ rocketElL7
     ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 8
-rocketAssemblyXL8       DB 29*8
+rocketAssemblyXL8       DB 17*8
 rocketElL8
 ; Rocket element.
-    ro.RO {08*8/*DROP_X*/, 10*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
-    ro.RO {15*8/*DROP_X*/, 21*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
-    ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
+    ro.RO {05*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
+    ro.RO {31*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, 218/*ASSEMBLY_Y*/, 81/*SPRITE_ID*/, 56/*SPRITE_REF*/, 0/*Y*/}  ; middle element
+    ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 202/*ASSEMBLY_Y*/, 82/*SPRITE_ID*/, 52/*SPRITE_REF*/, 0/*Y*/}  ; top of the rocket
     
 ; Fuel tank.
-    ro.RO {27*8/*DROP_X*/, 18*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {31*8/*DROP_X*/, 12*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {12*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {03*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
-    ro.RO {17*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {03*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {10*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {20*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {30*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
+    ro.RO {11*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 9
 rocketAssemblyXL9       DB 17*8
@@ -539,36 +539,39 @@ platformsSizeL10        DB 30
 ;----------------------------------------------------------;
 ;                           Files                          ;
 ;----------------------------------------------------------;
+
+LEVEL_FILE_POS          = 7                     ; Position of a level number (00-99) in the file name
+
 ; Tiles for level intro
 introTilesFileName      DB "assets/00/intro_0.map",0
 introSecondFileSize     DW 0                    ; Will be set when loading particular level, now is 0
 
 stTilesFileName         DB "assets/00/stars_0.map",0
-TI16K_FILE_LEVEL_POS    = 7 
 TI16K_FILE_NR_POS       = 8
 
 ; Tiles for in-game platforms
 plTileFileName          DB "assets/00/tiles.map",0
-PL_FILE_LEVEL_POS       = 7                     ; Position of a level number (00-99) in the file name
 
-; Sprite file.
-sprTileFileName         DB "assets/00/sprites_0.spr",0
-SPR_FILE_LEVEL_POS      = 7
+; Sprite file
+sprFileName             DB "assets/00/sprites_0.spr",0
 SPR_FILE_NR_POS         = 10
 SPR_FILE_BYT_D8192      = _BANK_BYTES_D8192
 
+; Tile sprite file
+sprTileFileName         DB "assets/00/tiles.spr",0
+SPR_TILE_BYT_D6400      = 6400
+    assert SPR_TILE_BYT_D6400 < ti.TI_DEF_MAX_D6910
+
 ; Level background file
 lbFileName              DB "assets/00/bg_0.nxi",0
-LB_FILE_LEVEL_POS       = 7                     ; Position of a level number (00-99) in the file name
 LB_FILE_IMG_POS         = 13                    ; Position of a image part number (0-9) in the file name
 
 ; Level music file
-sndFileName              DB "assets/snd/00.pt3",0
-SND_NR_POS               = 11                    ; Position of song number (01-99) in the file name
+sndFileName             DB "assets/snd/00.pt3",0
+SND_NR_POS              = 11                    ; Position of song number (01-99) in the file name
 
 ; Level intro file
 liBgFileName            DB "assets/00/intro_0.nxi",0
-LI_BG_FILE_LEVEL_POS    = 7                     ; Position of a level number (00-99) in the file name
 LI_BG_FILE_IMG_POS      = 16                    ; Position of a image part number (0-9) in the file name
 
 menuEasyBgFileName      DB "assets/ma/easy_0.nxi",0
@@ -584,8 +587,8 @@ mmkTileFileName         DB "assets/mk/keys.map",0
 ;                        Final Checks                      ;
 ;----------------------------------------------------------;
 
-    ASSERT $$ == dbs.ARR_BANK_S7_D29            ; Data should remain in the same bank
-    ASSERT $$spritesBankStart == dbs.ARR_BANK_S7_D29 ; Make sure that we have configured the right bank
+    ASSERT $$ == dbs.ARR2_BANK_S7_D29            ; Data should remain in the same bank
+    ASSERT $$spritesBankStart == dbs.ARR2_BANK_S7_D29 ; Make sure that we have configured the right bank
     ASSERT $ < _RAM_SLOT7_END_HFFFF             ; Data should remain within slot 7 address space
 
 ;----------------------------------------------------------;

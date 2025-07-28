@@ -14,7 +14,7 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    CALL gc.LoadLevel5
+    CALL gc.LoadLevel8
     ;CALL gc.LoadMainMenu
 
     ; ##########################################
@@ -99,24 +99,25 @@ mainLoop
     ; Imports below use ORG and dedicated memory bank!
 
     ; ################ BANK 28 ################
-    ; Before using it call #dbs.SetupStarsBank
-    MMU _RAM_SLOT7, dbs.ST_BANK_S7_D28
+    ; Before using it call #dbs.SetupArrays1Bank
+    MMU _RAM_SLOT7, dbs.ARR1_BANK_S7_D28
     ORG _RAM_SLOT7_STA_HE000
-    INCLUDE "dbs_data_starts.asm"
-    ASSERT $$ == dbs.ST_BANK_S7_D28
+    INCLUDE "db1_data_arrays1.asm"
+    ASSERT $$ == dbs.ARR1_BANK_S7_D28
 
     ; ################ BANK 29 ################
-    ; Before using it call #dbs.SetupArraysBank
-    MMU _RAM_SLOT7, dbs.ARR_BANK_S7_D29
+    ; Before using it call #dbs.SetupArrays2Bank
+    MMU _RAM_SLOT7, dbs.ARR2_BANK_S7_D29
     ORG _RAM_SLOT7_STA_HE000
-    INCLUDE "dba_data_arrays.asm"
-    ASSERT $$ == dbs.ARR_BANK_S7_D29
+    INCLUDE "db2_data_arrays2.asm"
+    ASSERT $$ == dbs.ARR2_BANK_S7_D29
 
     ; ################ BANK 30 #################
-    MMU _RAM_SLOT7, dbs.TI_SPR_BANK_S7_D30      ; Assign slots 7 to bank 30
-    ORG _RAM_SLOT7_STA_HE000                    ; Set memory pointer to start of the slot 6
+    ; TO USE THIS MODULE: CALL dbs.SetupPaletteBank
+    MMU _RAM_SLOT6, dbs.PAL2_BANK_S6_D31
+    ORG _RAM_SLOT6_STA_HC000
     INCLUDE "db_data_bin.asm"
-    ;ASSERT $$ == dbs.TI_SPR_BANK_S7_D30
+    ASSERT $$ == dbs.PAL2_BANK_S6_D31
 
     ; ################ BANK 32 #################
     ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank

@@ -31,11 +31,14 @@ SIZE                    DB                    ; Amount of frames/sprite patterns
 SDB_EXPLODE             = 201                   ; Explosion
 SDB_FIRE                = 202                   ; Fire
 SDB_ENEMY1              = 203                   ; Enemy 1
-SDB_ENEMY2              = 204                   ; Enemy 2
-SDB_ENEMY3              = 205                   ; Enemy 3
-SDB_FUEL_THIEF          = 206                   ; Fuel thief
-SDB_BOUNCE_SIDE         = 207                   ; Play bounce animation by side hit and go back to #SDB_ENEMY1
-SDB_BOUNCE_TOP          = 208                   ; Play bounce animation by top/bottom hit and go back to #SDB_ENEMY1
+SDB_ENEMY1A             = 204                   ; Enemy 1
+SDB_ENEMY2              = 205                   ; Enemy 2
+SDB_ENEMY3              = 206                   ; Enemy 3
+SDB_FUEL_THIEF          = 207                   ; Fuel thief
+SDB_BOUNCE_SIDE         = 208                   ; Play bounce animation by side hit and go back to #SDB_ENEMY1
+SDB_BOUNCE_TOP          = 209                   ; Play bounce animation by top/bottom hit and go back to #SDB_ENEMY1
+SDB_BOUNCE_SIDEA        = 210                   ; Play bounce animation by side hit and go back to #SDB_ENEMY1A
+SDB_BOUNCE_TOPA         = 211                   ; Play bounce animation by top/bottom hit and go back to #SDB_ENEMY1A
 
 SDB_HIDE                = 255                   ; Hides Sprite
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX)
@@ -57,6 +60,8 @@ srSpriteDB
             DB 54, 55
     SPR_REC {SDB_ENEMY1, SDB_ENEMY1-SDB_SUB, 24}
             DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
+    SPR_REC {SDB_ENEMY1A, SDB_ENEMY1A-SDB_SUB, 03}
+            DB 45,46, 47
     SPR_REC {SDB_ENEMY2, SDB_ENEMY2-SDB_SUB, 03}
             DB 48, 49, 50
     SPR_REC {SDB_ENEMY3, SDB_ENEMY3-SDB_SUB, 03}
@@ -67,7 +72,12 @@ srSpriteDB
             DB 34, 35, 36, 35, 34, 35, 36
     SPR_REC {SDB_BOUNCE_TOP, SDB_ENEMY1-SDB_SUB, 7}
             DB 48, 49, 50, 49, 48, 49, 50
-            
+    SPR_REC {SDB_BOUNCE_SIDEA, SDB_ENEMY1A-SDB_SUB, 6}
+            DB 34, 35, 36, 34, 35, 36
+    SPR_REC {SDB_BOUNCE_TOPA, SDB_ENEMY1A-SDB_SUB, 6}
+            DB 48, 49, 50, 48, 49, 50
+
+
 ;----------------------------------------------------------;
 ;                 #CheckAnySpriteVisible                   ;
 ;----------------------------------------------------------;

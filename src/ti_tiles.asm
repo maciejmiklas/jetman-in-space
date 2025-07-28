@@ -51,7 +51,7 @@ TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
 TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels
 TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertical screen size)
     ASSERT TI_VTILES_D32 =  32
-
+xxg
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
 ; Time map for single screen at 320x200 requires 2650 bytes:
@@ -190,7 +190,7 @@ CleanTiles
 ;----------------------------------------------------------;
 SetupTiles
 
-    CALL dbs.SetupTilesBank
+    CALL dbs.SetupArrays1Bank
 
     ; ##########################################    
     ; Enable tilemap mode.
@@ -208,21 +208,14 @@ SetupTiles
 
     ; ##########################################
     ; Setup palette
-    LD HL, db.tilePaletteBin                    ; Address of palette data in memory
-    LD B, db.tilePaletteBinLength               ; Number of colors to copy
+    LD HL, db1.tilePaletteBin                    ; Address of palette data in memory
+    LD B, db1.tilePaletteBinLength               ; Number of colors to copy
     CALL _LoadTilemapPalette
 
     CALL SetTilesClipOff
 
-    ; ##########################################
-    ; Copy tile definitions (sprite file) to expected memory
-    LD DE, TI_DEF_RAM_H6500
-    LD HL, db.tileSprBin                        ; Address of tiles in memory
-    LD BC, db.tileSprBinLength                  ; Number of bytes to copy
-    LDIR
-
     RET                                         ; ## END of the function ##
-    
+
 ;----------------------------------------------------------;
 ;                     SetTilesClipOff                      ;
 ;----------------------------------------------------------;

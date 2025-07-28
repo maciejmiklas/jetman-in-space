@@ -31,8 +31,8 @@ LoadLevelIntro
 
     ; ##########################################
     PUSH DE
-    CALL dbs.SetupArraysBank
-    LD (dba.introSecondFileSize), HL
+    CALL dbs.SetupArrays2Bank
+    LD (db2.introSecondFileSize), HL
     CALL ti.SetTilesClipHorizontal
 
     ; ##########################################

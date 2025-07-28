@@ -145,15 +145,15 @@ CheckHitEnemies
 ;                        HideShots                         ;
 ;----------------------------------------------------------;
 HideShots
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     XOR A
     LD (fireDelayCnt), A
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Loop ever all #shots skipping hidden shots
-    LD IX, dba.shots                            ; IX points to the shot
-    LD B, dba.SHOTS_SIZE 
+    LD IX, db2.shots                            ; IX points to the shot
+    LD B, db2.SHOTS_SIZE 
 .shotsLoop
 
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
@@ -183,9 +183,9 @@ SHOT_MISS                   = 0
 ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots
-    CALL dbs.SetupArraysBank
-    LD IX, dba.shots                            ; IX points to the shot
-    LD B, dba.SHOTS_SIZE
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.shots                            ; IX points to the shot
+    LD B, db2.SHOTS_SIZE
 .shotsLoop
     PUSH BC, DE
     LD A, (IX + SPR.STATE)
@@ -252,9 +252,9 @@ ShotsCollision
 MoveShots
 
     ; Loop ever all shots# skipping hidden sprites
-    CALL dbs.SetupArraysBank
-    LD IX, dba.shots
-    LD B, dba.SHOTS_SIZE
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.shots
+    LD B, db2.SHOTS_SIZE
 
 .shootsLoop
     PUSH BC                                     ; Preserve B for loop counter
@@ -328,9 +328,9 @@ FireDelayCounter
 ;----------------------------------------------------------;
 AnimateShots
 
-    CALL dbs.SetupArraysBank
-    LD IX, dba.shots
-    LD B, dba.SHOTS_SIZE
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.shots
+    LD B, db2.SHOTS_SIZE
     CALL sr.AnimateSprites
 
     RET                                         ; ## END of the function ##
@@ -351,7 +351,7 @@ FireReleased
 ;----------------------------------------------------------;
 Fire
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     
     ; Check delay to limit fire speed
     LD A, (fireDelay)
@@ -365,10 +365,10 @@ Fire
     LD (fireDelayCnt), A
 
     ; Find the first inactive (sprite hidden) shot
-    CALL dbs.SetupArraysBank
-    LD IX, dba.shots
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.shots
     LD DE, SPR
-    LD B, dba.SHOTS_SIZE
+    LD B, db2.SHOTS_SIZE
 .findLoop
 
     ; Check whether the current #shotsX is not visible and can be reused

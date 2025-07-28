@@ -323,7 +323,7 @@ _MainLoop005OnActiveGame
     CALL ro.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.AnimateFallingPickup
 
     RET                                         ; ## END of the function ##
@@ -572,7 +572,7 @@ _MainLoop040OnActiveGame
     CALL td.NextTimeOfDayTrigger
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.PickupDropCounter
 
     CALL dbs.SetupPatternEnemyBank

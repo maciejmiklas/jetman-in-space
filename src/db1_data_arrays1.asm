@@ -1,12 +1,45 @@
 ;----------------------------------------------------------;
-;                  Star Data (Bank 28)                     ;
+;                  Arrays 1 (Bank 28)                      ;
 ;----------------------------------------------------------;
-    module dbs
+    module db1
 
-; Before using it call #dbs.SetupStarsBank
+; Before using it call #dbs.SetupArrays1Bank
+db1BankStart
 
-starsBankStart
+;----------------------------------------------------------;
+;                         Palettes                         ;
+;----------------------------------------------------------;
+; Palettes:
+;   0: Text
+;   1: Ground and brown platforms
+;   2: Trees
+;   3: Jetpack overheat
+;   4-5: Colored platforms
+;   6: Rocket progress bar
 
+;  Values for Remy's editor:
+/*
+  $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
+  $1C7    $8   $40   $41   $40   $21   $2D   $2F   $1B   $1D   $35   $37   $3B   $18   $3D   $80
+  $1C7   $80   $18   $41   $A8   $10   $40   $60    $0  $1C1   $80  $1C1  $1C1  $1C1  $1C1   $DF
+  $1C7  $1F8  $1F3  $1AB  $1A3  $19B  $193  $18B  $183  $1C0   $B0  $1F0   $4D   $55   $38  $1C7
+  $1C7  $1F8  $1F0  $1E8  $1E0  $1D8  $1D0  $1C8  $1C0  $1C0  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+  $1C7   $85   $7D   $75   $6D   $65   $5D   $55   $4D    $5  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+  $1C7  $1BB  $1BA  $1B3  $1A3  $1B0  $193  $18B  $1AB  $1C0  $1B3  $1FB   $4D   $55  $1B5  $1C7
+*/
+tilePaletteBin                                  ; RGB332, 8 bit
+    DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
+	DB $E3, $04, $20, $20, $20, $10, $16, $17, $0D, $0E, $1A, $1B, $1D, $0C, $1E, $40
+	DB $E3, $40, $0C, $20, $54, $08, $20, $30, $00, $E0, $40, $E0, $E0, $E0, $E0, $6F
+	DB $E3, $FC, $F9, $D5, $D1, $CD, $C9, $C5, $C1, $E0, $58, $F8, $26, $2A, $1C, $E3
+	DB $E3, $FC, $F8, $F4, $F0, $EC, $E8, $E4, $E0, $E0, $E3, $E3, $E3, $E3, $E3, $E3
+	DB $E3, $42, $3E, $3A, $36, $32, $2E, $2A, $26, $02, $E3, $E3, $E3, $E3, $E3, $E3
+	DB $E3, $DD, $DD, $D9, $D1, $D8, $C9, $C5, $D5, $E0, $D9, $FD, $26, $2A, $DA, $E3
+tilePaletteBinLength = $ - tilePaletteBin
+    
+;----------------------------------------------------------;
+;                          Stars                           ;
+;----------------------------------------------------------;
 starsData1
     st.SC {0/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}    ; X=2
     DB 12,1, 15,4, 70,5, 94,15, 160,8, 250,19
@@ -226,8 +259,8 @@ starsPalL2
     DB  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
 
     ; ##########################################
-    ASSERT $$ == dbs.ST_BANK_S7_D28                ; Data should remain in the same bank
-    ASSERT $$starsBankStart == dbs.ST_BANK_S7_D28  ; Make sure that we have configured the right bank.
+    ASSERT $$ == dbs.ARR1_BANK_S7_D28                ; Data should remain in the same bank
+    ASSERT $$db1BankStart == dbs.ARR1_BANK_S7_D28  ; Make sure that we have configured the right bank.
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

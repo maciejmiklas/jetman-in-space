@@ -2,7 +2,7 @@
 ;                       Game Pickups                       ;
 ;----------------------------------------------------------;
     MODULE pi
-    ; Before using it CALL dbs.SetupArraysBank
+    ; Before using it CALL dbs.SetupArrays2Bank
 
 PI_SPR_DIAMOND          = 39
 PI_SPR_JAR              = 40
@@ -38,7 +38,7 @@ ResetPickups
     LD (deployed), A
     LD (lifeDeployed), A
     LD (deployCnt), A
-    LD (dba.deployOrderPos), A
+    LD (db2.deployOrderPos), A
     LD (deployedX), A
     LD (deployedY), A
 
@@ -236,16 +236,16 @@ PickupDropCounter
     ; Load into A the value of next deployment sprite (#PI_SPR_XXXX)
 
     ; Determine the index for #deployOrder
-    LD A, (dba.deployOrderPos)
+    LD A, (db2.deployOrderPos)
     INC A 
-    CP dba.DEPLOY_ORDER_SIZE
+    CP db2.DEPLOY_ORDER_SIZE
     JR NZ, .afterDeployOrderPos
     XOR A
 .afterDeployOrderPos
-    LD (dba.deployOrderPos), A
+    LD (db2.deployOrderPos), A
 
     ; Load ID of next pickup
-    LD HL, dba.deployOrder
+    LD HL, db2.deployOrder
     ADD HL, A                                   ; HL points to next deployment sprite id
     LD A, (HL)
     LD (deployed), A

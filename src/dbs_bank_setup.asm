@@ -8,12 +8,26 @@
 ; This is necessary because Image B moves with Jetman and hides behind the horizon. We replace image lines with black. Once Jetman moves in 
 ; the opposite direction, we have to copy the original image line from A to B.
 
+; Bank organization:
+;  - 18-27: Game background image
+;  - 28:    Arrays 1
+;  - 29:    Arrays 2
+;  - 30:    FREE
+;  - 31:    Layer 2 Palettes
+;  - 32:    AY FX sound
+;  - 33:    AY music code
+;  - 70:    Layer 2 brightness palettes
+;  - 71-72: Game sprites. Load sprites (16KB) into 2 banks mapping it to slot 6,7
+;  - 73-82: Game background
+;  - 83-84: 16KiB tilemap
+;  - 85:    Empty image
+;  - 86:    Music binary
+
 BMB_ST_BANK_S7_D18      = 18                    ; Slot 7. Start of displayed Layer 2 image
 BMB_END_BANK_S7_D27     = 27                    ; Last background bank (inclusive)
 
-ST_BANK_S7_D28          = 28                    ; Slot 7. Bank for stars, slot 6
-ARR_BANK_S7_D29         = 29                    ; Slot 7. Bank for arrays, slot 6
-TI_SPR_BANK_S7_D30      = 30
+ARR1_BANK_S7_D28        = 28                    ; Slot 7. Bank for arrays, slot 6
+ARR2_BANK_S7_D29        = 29                    ; Slot 7. Bank for arrays, slot 6
 PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
 AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
 AY_MCODE_S6_D33         = 33                    ; Slot 6. music code, music binary is in AY_MCODE_S6_D33
@@ -34,7 +48,6 @@ LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB
 LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7
 EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image
 AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33
-
 
 ;----------------------------------------------------------;
 ;                SetupFollowingEnemyBank                   ;
@@ -83,15 +96,6 @@ SetupAyFxsBank
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                     SetupTilesBank                       ;
-;----------------------------------------------------------;
-SetupTilesBank
-
-    NEXTREG _MMU_REG_SLOT7_H57, TI_SPR_BANK_S7_D30
-
-    RET                                         ; ## END of the function ## 
-
-;----------------------------------------------------------;
 ;                 Setup16KTilemapBank                      ;
 ;----------------------------------------------------------;
 Setup16KTilemapBank
@@ -122,20 +126,20 @@ SetupSpritesBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     SetupStarsBank                       ;
+;                     SetupArrays1Bank                     ;
 ;----------------------------------------------------------;
-SetupStarsBank
+SetupArrays1Bank
 
-    NEXTREG _MMU_REG_SLOT7_H57, ST_BANK_S7_D28
+    NEXTREG _MMU_REG_SLOT7_H57, ARR1_BANK_S7_D28
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    SetupArraysBank                       ;
+;                   SetupArrays2Bank                       ;
 ;----------------------------------------------------------;
-SetupArraysBank
+SetupArrays2Bank
 
-    NEXTREG _MMU_REG_SLOT7_H57, ARR_BANK_S7_D29
+    NEXTREG _MMU_REG_SLOT7_H57, ARR2_BANK_S7_D29
 
     RET                                         ; ## END of the function ##
 

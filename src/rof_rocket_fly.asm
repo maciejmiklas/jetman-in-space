@@ -27,7 +27,7 @@ soundRepeatDelay        DB FLY_SOUND_REPEAT
 ;               ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
 ResetAndDisableFlyRocket
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     XOR A
     LD (rocketExplodeCnt), A
@@ -76,7 +76,7 @@ FlyRocketSound
 ;----------------------------------------------------------;
 FlyRocket
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     CALL _ShakeTilemapOnFlyingRocket
     CALL _MoveFlyingRocket
@@ -106,7 +106,7 @@ FlyRocket
 ;                    BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
 BlinkFlyingRocket
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
         
     LD A, ro.EL_LOW_D1
     CALL ro.MoveIXtoGivenRocketElement
@@ -130,7 +130,7 @@ BlinkFlyingRocket
 ;----------------------------------------------------------;
 AnimateRocketExplosion
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     ; Is the exploding sequence over?
@@ -154,7 +154,7 @@ AnimateRocketExplosion
     ; Move HL to current frame
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here
-    LD HL, dba.rocketExplodeDB3
+    LD HL, db2.rocketExplodeDB3
     DEC DE                                      ; Counter starts at 1
     ADD HL, DE
     LD D, (HL)
@@ -169,7 +169,7 @@ AnimateRocketExplosion
     ; Move HL to current frame
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here
-    LD HL, dba.rocketExplodeDB2
+    LD HL, db2.rocketExplodeDB2
     DEC DE                                      ; Counter starts at 1
     ADD HL, DE
     LD D, (HL)
@@ -184,7 +184,7 @@ AnimateRocketExplosion
     ; Move HL to current frame
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here
-    LD HL, dba.rocketExplodeDB1
+    LD HL, db2.rocketExplodeDB1
     DEC DE                                      ; Counter starts at 1
     ADD HL, DE
     LD D, (HL)
@@ -209,12 +209,12 @@ AnimateRocketExplosion
 ;----------------------------------------------------------;
 AnimateRocketExhaust
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Increment sprite pattern counter
     LD A, (rocketExhaustCnt)
     INC A
-    CP dba.RO_EXHAUST_MAX
+    CP db2.RO_EXHAUST_MAX
     JP NZ, .afterIncrement
     XOR A                                       ; Reset counter
 .afterIncrement 
@@ -226,7 +226,7 @@ AnimateRocketExhaust
     NEXTREG _SPR_REG_NR_H34, A
 
     ; Load sprite pattern to A
-    LD HL, dba.rocketExhaustDB
+    LD HL, db2.rocketExhaustDB
     LD A, (rocketExhaustCnt)
     ADD HL, A
     LD A, (HL)
@@ -247,7 +247,7 @@ AnimateRocketExhaust
 ;                  _MoveFlyingRocket                       ;
 ;----------------------------------------------------------;
 _MoveFlyingRocket
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Slow down rocket movement speed while taking off.
     ; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
@@ -290,7 +290,7 @@ _MoveFlyingRocket
 .afterDelay
 
     CALL gc.RocketFlying
-    CALL dbs.SetupArraysBank                    ; gc-call can change bank!
+    CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
 
     ; ##########################################
     ; Increment total distance
