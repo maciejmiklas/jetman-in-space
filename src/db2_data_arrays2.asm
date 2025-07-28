@@ -566,6 +566,9 @@ SPR_TILE_BYT_D6400      = 6400
 lbFileName              DB "assets/00/bg_0.nxi",0
 LB_FILE_IMG_POS         = 13                    ; Position of a image part number (0-9) in the file name
 
+; Level background palette file
+lbpFileName             DB "assets/00/bg.nxp",0
+
 ; Level music file
 sndFileName             DB "assets/snd/00.pt3",0
 SND_NR_POS              = 11                    ; Position of song number (01-99) in the file name

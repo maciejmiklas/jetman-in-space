@@ -8,21 +8,7 @@
 ;----------------------------------------------------------;
 LoadLevel1Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-    
-    ; Load palette size into a global variable
-    LD HL, db.bgrL1PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL1PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image.
+    ; Load data for level
     LD D, "0"
     LD E, "1"
     CALL _LoadDataByLevelNumber
@@ -74,21 +60,7 @@ LoadLevel1Data
 ;----------------------------------------------------------;
 LoadLevel2Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL2PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL2PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "0"
     LD E, "2"
     CALL _LoadDataByLevelNumber
@@ -140,21 +112,7 @@ LoadLevel2Data
 ;----------------------------------------------------------;
 LoadLevel3Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL3PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL3PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "0"
     LD E, "3"
     CALL _LoadDataByLevelNumber
@@ -208,23 +166,7 @@ LoadLevel3Data
 ;----------------------------------------------------------;
 LoadLevel4Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL4PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL4PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image.
-
-    ; Load the address of the image into a global variable. LoadImage will be called on #RespawnJet
+    ; Load data for level
     LD D, "0"
     LD E, "4"
     CALL _LoadDataByLevelNumber
@@ -278,21 +220,7 @@ LoadLevel4Data
 ;----------------------------------------------------------;
 LoadLevel5Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL5PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL5PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "0"
     LD E, "5"
     CALL _LoadDataByLevelNumber
@@ -344,21 +272,7 @@ LoadLevel5Data
 ;----------------------------------------------------------;
 LoadLevel6Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL6PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL6PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "0"
     LD E, "6"
     CALL _LoadDataByLevelNumber
@@ -410,21 +324,7 @@ LoadLevel6Data
 ;----------------------------------------------------------;
 LoadLevel7Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL7PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL7PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "0"
     LD E, "7"
     CALL _LoadDataByLevelNumber
@@ -478,21 +378,7 @@ LoadLevel7Data
 ;----------------------------------------------------------;
 LoadLevel8Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-    
-    ; Load palette size into a global variable
-    LD HL, db.bgrL8PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL8PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "0"
     LD E, "8"
     CALL _LoadDataByLevelNumber
@@ -545,21 +431,7 @@ LoadLevel8Data
 ;----------------------------------------------------------;
 LoadLevel9Data
 
-    ; Load palettes
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL9PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL9PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "0"
     LD E, "9"
     CALL _LoadDataByLevelNumber
@@ -612,20 +484,7 @@ LoadLevel9Data
 ;----------------------------------------------------------;
 LoadLevel10Data
 
-    CALL dbs.SetupPaletteBank
-
-    ; Load palette size into a global variable
-    LD HL, db.bgrL10PaletteBytes
-    LD (btd.palBytes), HL
-
-    ; Load the address of the original palette into a global variable
-    LD HL, db.bgrL10PaletteAdr
-    LD (btd.palAdr), HL
-
-    CALL btd.CreateTodPalettes
-
-    ; ##########################################
-    ; Load background image
+    ; Load data for level
     LD D, "1"
     LD E, "0"
     CALL _LoadDataByLevelNumber
@@ -710,8 +569,26 @@ _LoadDataByLevelNumber
 
     ; ##########################################
     ; Load tile map. DE is set to level number
+    PUSH DE
     CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
+    POP DE
+
+    ; ##########################################
+    ; Load palettes
+    CALL fi.LoadBgPaletteFile
+
+    CALL dbs.SetupPaletteBank
+
+    ; Load palette size into a global variable
+    LD DE, btd.PAL_BG_BYTES_D300
+    LD (btd.palBytes),DE
+
+    ; Load the address of the original palette into a global variable
+    LD DE, btd.ORIGINAL_PAL_ADDR
+    LD (btd.palAdr), DE
+
+    CALL btd.CreateTodPalettes
 
     RET                                         ; ## END of the function ##
 

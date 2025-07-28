@@ -147,6 +147,35 @@ LoadBgImageFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   LoadBgPaletteFile                      ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadBgPaletteFile
+
+    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
+
+    CALL dbs.SetupArrays2Bank
+
+    LD HL, db2.lbpFileName
+    PUSH HL
+    CALL _SetFileLevelNumber
+    POP HL
+    
+    CALL _CopyFileName
+
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupPaletteBank
+
+    LD IX, btd.ORIGINAL_PAL_ADDR
+    LD BC, btd.PAL_BYTES_D512
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;               LoadPlatformsTilemapFile                   ;
 ;----------------------------------------------------------;
 ; Input:

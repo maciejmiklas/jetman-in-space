@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                   Time of Day Palette                    ;
+;                   Time of Day Palette                    ; ; -> Background Palette
 ;----------------------------------------------------------;
     MODULE btd
 
@@ -10,13 +10,15 @@ palColors               DB 0                    ; Amount of colors in background
 palAdr                  DW 0                    ; Address of the original palette data
 todPalAddr              DW 0                    ; Pointer to current brightness palette
 
-PAL2_BYTES_D512         = 512
+PAL_BYTES_D512         = 512
+
+PAL_BG_BYTES_D300      = 312                    ; Background palette has max 300 bytes to have 100 bytes (50 colors) for stars
 
 ; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000. #todPalAddr points to the current palette.
 TOD_PALETTES_ADDR      = _RAM_SLOT7_STA_HE000
 
 ; The original palette loaded from disk
-ORIGINAL_PAL_ADDR      = TOD_PALETTES_ADDR + 7*PAL2_BYTES_D512
+ORIGINAL_PAL_ADDR      = TOD_PALETTES_ADDR + 7*PAL_BYTES_D512
 
 ;----------------------------------------------------------;
 ;                      NextTodPalette                      ;
@@ -32,7 +34,7 @@ NextTodPalette
     POP HL
 
     ; Moves #todPalAddr to the next palette
-    ADD HL, PAL2_BYTES_D512
+    ADD HL, PAL_BYTES_D512
     LD (todPalAddr), HL
 
     RET                                         ; ## END of the function ##
@@ -59,7 +61,7 @@ PrevTodPaletteAddr
     
     ; Moves #todPalAddr to the previous palette
     LD HL, (todPalAddr) 
-    ADD HL, -PAL2_BYTES_D512
+    ADD HL, -PAL_BYTES_D512
     LD (todPalAddr), HL
 
     RET                                         ; ## END of the function ##
@@ -171,7 +173,7 @@ _NextBrightnessPalette
     ; Moves #todPalAddr to the next palette 
     LD HL, (todPalAddr)                         ; Use HL for LDIR below
     LD DE, HL
-    ADD DE, PAL2_BYTES_D512                     ; Move DE to the next (destination) palette
+    ADD DE, PAL_BYTES_D512                     ; Move DE to the next (destination) palette
     LD (todPalAddr), DE                         ; Move palette pointer to copied palette
 
     ; ##########################################
