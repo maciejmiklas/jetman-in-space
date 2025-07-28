@@ -221,15 +221,19 @@ _SetupMenuScore
 
     ; ###########################################
     ; Load palette
-    LD HL, db.menuScoreBgPaletteAdr
-    LD A, (db.menuScoreBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    LD D, "m"
+    LD E, "s"
+    PUSH DE
+
+    CALL fi.LoadBgPaletteFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
+
+    POP DE
 
     ; ###########################################
     ; Load background image
-    LD D, "m"
-    LD E, "s"
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 

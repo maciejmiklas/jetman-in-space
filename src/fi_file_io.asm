@@ -109,7 +109,6 @@ LoadMusicFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroImageFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/...".
     CALL dbs.SetupArrays2Bank
 
     LD HL, db2.liBgFileName
@@ -131,7 +130,6 @@ LoadLevelIntroImageFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadBgImageFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
     CALL dbs.SetupArrays2Bank
 
     LD HL, db2.lbFileName
@@ -147,13 +145,41 @@ LoadBgImageFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     LoadIntroPalFile                     ;
+;----------------------------------------------------------;
+LoadIntroPalFile
+
+    LD HL, db2.introPalFileName
+    CALL _LoadPalFileByName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      LoadEasyPalFile                     ;
+;----------------------------------------------------------;
+LoadEasyPalFile
+
+    LD HL, db2.easyPalFileName
+    CALL _LoadPalFileByName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     LoadHardPalFile                      ;
+;----------------------------------------------------------;
+LoadHardPalFile
+
+    LD HL, db2.hardPalFileName
+    CALL _LoadPalFileByName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                   LoadBgPaletteFile                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadBgPaletteFile
-
-    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
 
     CALL dbs.SetupArrays2Bank
 
@@ -170,7 +196,7 @@ LoadBgPaletteFile
     CALL dbs.SetupPaletteBank
 
     LD IX, btd.ORIGINAL_PAL_ADDR
-    LD BC, btd.PAL_BYTES_D512
+    LD BC, bp.PAL_BYTES_D512
     CALL _FileRead
 
     RET                                         ; ## END of the function ##
@@ -182,7 +208,6 @@ LoadBgPaletteFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadPlatformsTilemapFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
     CALL dbs.SetupArrays2Bank
 
     LD HL, db2.plTileFileName
@@ -444,6 +469,27 @@ _LoadImageToTempRam
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  _LoadPalFileByName                      ;
+;----------------------------------------------------------;
+; Input:
+;  - HL: Pointer to file name
+_LoadPalFileByName
+
+    CALL dbs.SetupArrays2Bank
+
+    CALL _CopyFileName
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupPaletteBank
+
+    LD IX, btd.ORIGINAL_PAL_ADDR
+    LD BC, bp.PAL_BYTES_D512
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                   _Load16KTilemap                        ;
 ;----------------------------------------------------------;
 ; Input:
@@ -508,7 +554,6 @@ _Prepare16KTilemapFile
 
     LD HL, fileName
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/stars_0.map" -> "assets/35/stars_0.map"
     CALL _SetFileLevelNumber
 
     ADD HL, db2.TI16K_FILE_NR_POS               ; Move HL to "assets/35/stars_"
@@ -536,6 +581,7 @@ _PrepareFileOpenForSprites
 ;----------------------------------------------------------;
 ;                  _SetFileLevelNumber                     ;
 ;----------------------------------------------------------;
+; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
 ; Input:
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 ;  - HL: pointer to file starting with: "assets/XX"
@@ -544,7 +590,6 @@ _PrepareFileOpenForSprites
 ; Modifies: HL, IX
 _SetFileLevelNumber
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/sprites_0.map" -> "assets/35/sprites_0.map"
     LD IX, HL                                   ; Param for _FileOpen
     ADD HL, db2.LEVEL_FILE_POS                  ; Move HL to "assets/"
     LD (HL), D                                  ; Set first number

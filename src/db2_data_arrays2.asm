@@ -566,6 +566,10 @@ SPR_TILE_BYT_D6400      = 6400
 lbFileName              DB "assets/00/bg_0.nxi",0
 LB_FILE_IMG_POS         = 13                    ; Position of a image part number (0-9) in the file name
 
+introPalFileName        DB "assets/01/intro.nxp",0
+easyPalFileName         DB "assets/ma/easy.nxp",0
+hardPalFileName         DB "assets/ma/hard.nxp",0
+
 ; Level background palette file
 lbpFileName             DB "assets/00/bg.nxp",0
 

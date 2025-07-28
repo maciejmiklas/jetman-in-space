@@ -37,10 +37,10 @@ LoadLevelIntro
 
     ; ##########################################
     ; Load palette
-    LD HL, db.gameIntroPaletteAdr
-    LD A, (db.gameIntroPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    CALL fi.LoadIntroPalFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
 
     ; ##########################################
     ; Load background image

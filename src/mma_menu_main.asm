@@ -128,10 +128,10 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Load palette
-    LD HL, db.menuEasyBgPaletteAdr
-    LD A, (db.menuEasyBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    CALL fi.LoadEasyPalFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
 
     ; ##########################################
     ; Load background image
@@ -168,15 +168,19 @@ _LoadMenuNormal
 
     ; ##########################################
     ; Load palette
-    LD HL, db.menuMainBgPaletteAdr
-    LD A, (db.menuMainBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    LD D, "m"
+    LD E, "a"
+    PUSH DE
+
+    CALL fi.LoadBgPaletteFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
+
+    POP DE
 
     ; ##########################################
     ; Load background image
-    LD D, "m"
-    LD E, "a"
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
@@ -211,10 +215,10 @@ _LoadMenuHard
 
     ; ##########################################
     ; Load palette
-    LD HL, db.menuHardBgPaletteAdr
-    LD A, (db.menuHardBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    CALL fi.LoadHardPalFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
 
     ; ##########################################
     ; Load background image

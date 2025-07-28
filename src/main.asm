@@ -14,8 +14,8 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    CALL gc.LoadLevel8
-    ;CALL gc.LoadMainMenu
+    ;CALL gc.LoadLevel8
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
@@ -112,12 +112,10 @@ mainLoop
     INCLUDE "db2_data_arrays2.asm"
     ASSERT $$ == dbs.ARR2_BANK_S7_D29
 
-    ; ################ BANK 30 #################
-    ; TO USE THIS MODULE: CALL dbs.SetupPaletteBank
-    MMU _RAM_SLOT6, dbs.PAL2_BANK_S6_D31
-    ORG _RAM_SLOT6_STA_HC000
-    INCLUDE "db_data_bin.asm"
-    ASSERT $$ == dbs.PAL2_BANK_S6_D31
+
+
+
+    
 
     ; ################ BANK 32 #################
     ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
