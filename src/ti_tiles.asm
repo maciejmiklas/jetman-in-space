@@ -209,24 +209,9 @@ SetupTiles
     ; ##########################################
     ; Setup palette
 
-    ; Black for tilemap transparency
-    NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
-
-    ; Bits
-    ;  - 0:   1 = Enable ULANext mode
-    ;  - 1-3: 0 = First palette
-    ;  - 6-4: 011 = Tilemap first palette
-    ;  - 7:   0 = enable auto increment on write
-    NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
-    NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0
-
-    LD HL, db1.tilePaletteBin1                  ; Address of palette data in memory
-    LD B, db1.tilePaletteBinLength1             ; Number of colors to copy
+    LD HL, db1.tilePaletteBin                   ; Address of palette data in memory
+    LD B, db1.tilePaletteBinLength              ; Number of colors to copy
     CALL _LoadTilemapPalette
-
-    ;LD HL, db1.tilePaletteBin2                  ; Address of palette data in memory
-   ; LD B, db1.tilePaletteBinLength2             ; Number of colors to copy
-    ;CALL _LoadTilemapPalette
 
     ; ##########################################
     CALL SetTilesClipOff
@@ -281,21 +266,29 @@ SetTilesClipHorizontal
 ;----------------------------------------------------------;
 ; Copy 9 bit palette.
 ; Input:
-; - B:  Number bytes to copy (each color takes two bytes)
+; - B:  Number colors to copy (one color = one byte)
 ; - HL: Address of layer 2 palette data
 _LoadTilemapPalette
 
-.loop
-   ; LD A, (HL)                                  ; Load RRRGGGBB into A
-  //  INC HL                                      ; Increment to next entry
-   // NEXTREG _DC_REG_LA2_PAL_VAL_H44, A          ; First byte of palette
+    ; Black for tilemap transparency
+    NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
 
-    LD A, (HL)                                  ; Load 0000000B into A
-    INC HL 
-    NEXTREG $40, A          ; Second byte of palette
+    ; Bits
+    ;  - 0:   1 = Enable ULANext mode
+    ;  - 1-3: 0 = First palette
+    ;  - 6-4: 011 = Tilemap first palette
+    ;  - 7:   0 = enable auto increment on write
+    NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
+    NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0
+    
+.loop
+    LD A, (HL)                                  ; Load RRRGGGBB into A
+    INC HL                                      ; Increment to next entry
+    NEXTREG _DC_REG_LA2_PAL_VAL_H41, A          ; Send entry to Next HW
     DJNZ .loop                                  ; Repeat until B=0
 
     RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
