@@ -39,11 +39,11 @@ TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - TI_PIXELS_D8
 
 TX_ASCII_OFFSET_D34     = 34                    ; Tiles containing characters beginning with '!' - this is 33 in the ASCII table
 TX_PALETTE_D0           = 0                     ; Palette byte for tile characters
-TI_EMPTY_D57            = 57                    ; Empty tile
+TI_EMPTY_D198           = 198                    ; Empty tile
 TI_ENTER                = 191
 
 ; TX - Text, ASCII codes
-TX_IDX_EMPTY            = TX_ASCII_OFFSET_D34 + TI_EMPTY_D57
+TX_IDX_EMPTY            = TX_ASCII_OFFSET_D34 + TI_EMPTY_D198
 TX_IDX_ARROWS           = TX_ASCII_OFFSET_D34 + 190
 TX_IDX_ENTER            = TX_ASCII_OFFSET_D34 + TI_ENTER
 TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
@@ -143,7 +143,7 @@ CleanAllTiles
     DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
 
     ; ##########################################
-    LD A, TI_EMPTY_D57
+    LD A, TI_EMPTY_D198
     LD B, H_D40
     ; Number of loops: 40*32
 .loopH
@@ -172,7 +172,7 @@ CleanTiles
     DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
 
     ; ##########################################
-    LD A, TI_EMPTY_D57
+    LD A, TI_EMPTY_D198
 .loop
     
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile
@@ -263,26 +263,29 @@ SetTilesClipHorizontal
 ;                   _LoadTilemapPalette                    ;
 ;----------------------------------------------------------;
 ; Input:
-; - B:      Number of colors to copy
-; - HL:     Address of layer 2 palette data
+; - B:  Number bytes to copy (each color takes two bytes)
+; - HL: Address of layer 2 palette data
 _LoadTilemapPalette
 
     ; Black for tilemap transparency
     NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
 
     ; Bits
-    ;  - 0: 1 = Enable ULANext mode
+    ;  - 0:   1 = Enable ULANext mode
     ;  - 1-3: 0 = First palette
     ;  - 6-4: 011 = Tilemap first palette
-    ;  - 7: 0 = enable auto increment on write
+    ;  - 7:   0 = enable auto increment on write
     NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
     NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0
 
-    ; Copy 8 bit palette.
+    ; Copy 9 bit palette.
 .loop
     LD A, (HL)                                  ; Load RRRGGGBB into A
     INC HL                                      ; Increment to next entry
-    NEXTREG _DC_REG_LA2_PAL_VAL_H41, A          ; Send entry to Next HW
+    NEXTREG $44, A                              ; First byte of palette
+    LD A, (HL)                                  ; Load P000000B into A 
+    INC HL 
+    NEXTREG $44, A                              ; Second byte of palette
     DJNZ .loop                                  ; Repeat until B=0
 
     RET                                         ; ## END of the function ##

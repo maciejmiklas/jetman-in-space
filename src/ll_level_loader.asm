@@ -552,7 +552,7 @@ _LoadDataByLevelNumber
     ; ##########################################
     ; Load tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemapFile 
+    CALL fi.LoadPlatformsTilemapFile
     POP DE
 
     ; ##########################################

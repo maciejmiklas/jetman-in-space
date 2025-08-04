@@ -105,7 +105,7 @@ CreateTodPalettes
 ;----------------------------------------------------------;
 ;                   ResetPaletteArrd                       ;
 ;----------------------------------------------------------;
-; Set the palette address to the beginning of the bank 70
+; Set the palette address to the beginning of the bank 70.
 ResetPaletteArrd
 
     LD DE, TOD_PALETTES_ADDR

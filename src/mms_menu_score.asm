@@ -406,7 +406,7 @@ _SetScoreToReadOnly
     LD (DE), A
     INC DE
     
-    LD A, ti.TI_EMPTY_D57
+    LD A, ti.TI_EMPTY_D198
     LD (DE), A
 
     ; Set to read only

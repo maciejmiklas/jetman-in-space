@@ -105,7 +105,7 @@ RespawnFormation
     CP 0
     JR NZ, .afterStillAliveCheck
 
-    ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous.
+    ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous
     ; deployment are still visible.
     LD IX, ena.formationEnemySprites
     LD B, ena.ENEMY_FORMATION_SIZE

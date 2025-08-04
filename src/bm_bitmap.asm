@@ -56,7 +56,7 @@ CopyImageData
 ;----------------------------------------------------------;
 ;                   CreateEmptyImageBank                   ;
 ;----------------------------------------------------------;
-; Copies 10x bank with black color over displayed image
+; Copies 10x bank with black color over displayed image.
 CreateEmptyImageBank
 
     CALL dbs.SetupEmptyImageBank
@@ -82,7 +82,7 @@ CreateEmptyImageBank
 ;----------------------------------------------------------;
 ;                         HideImage                        ;
 ;----------------------------------------------------------;
-; Copies 10x bank with black color over displayed image
+; Copies 10x bank with black color over displayed image.
 HideImage
 
     CALL dbs.SetupEmptyImageBank
