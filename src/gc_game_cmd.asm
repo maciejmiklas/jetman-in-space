@@ -619,14 +619,14 @@ KillFewEnemies
 ;    A:  Sprite ID of the enemy.
 ;  - IX: Pointer to enemy's #SPR.
 EnemyHit
-
     CALL dbs.SetupArrays2Bank
 
     CALL sr.SpriteHit
 
-    ; ##########################################
+   
     ; Checkt what enemy has been hit.
 
+    ; ##########################################
     ; Enemy 1?
     LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY1
@@ -642,6 +642,7 @@ EnemyHit
     RET
 .afterHitEnemy1
 
+     ; ##########################################
     ; Enemy 2?
     LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY2
@@ -657,11 +658,16 @@ EnemyHit
 
 .afterHitEnemy2
 
-    ; Enemy 3?
+    ; ##########################################
+    ; Enemy 3/1A?
     LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY3
+    JR Z, .hit3
+
+    CP sr.SDB_ENEMY1A 
     RET NZ
 
+.hit3
     ; Yes, enemy 3 hot git.
     LD A, af.FX_EXPLODE_ENEMY_3
     CALL dbs.SetupAyFxsBank

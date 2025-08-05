@@ -727,6 +727,7 @@ _BounceOfTop
 
     RET                                         ; ## END of the function ##
 
+tmp db 0
 ;----------------------------------------------------------;
 ;            _TryRespawnNextFollowingEnemy                 ;
 ;----------------------------------------------------------;
@@ -775,7 +776,8 @@ _TryRespawnNextFollowingEnemy
     JR Z, .afterEnemyRespawnDelay               ; Jump if the timer reaches respawn delay
 
     LD (IY + FE.RESPAWN_DELAY_CNT), A           ; The delay timer for the enemy is still ticking
-
+    ld (tmp),a
+    
     LD A, _RET_NO_D0
     RET
 .afterEnemyRespawnDelay
