@@ -39,11 +39,11 @@ TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - TI_PIXELS_D8
 
 TX_ASCII_OFFSET_D34     = 34                    ; Tiles containing characters beginning with '!' - this is 33 in the ASCII table
 TX_PALETTE_D0           = 0                     ; Palette byte for tile characters
-TI_EMPTY_D57            = 57                    ; Empty tile
+TI_EMPTY_D198           = 198                    ; Empty tile
 TI_ENTER                = 191
 
 ; TX - Text, ASCII codes
-TX_IDX_EMPTY            = TX_ASCII_OFFSET_D34 + TI_EMPTY_D57
+TX_IDX_EMPTY            = TX_ASCII_OFFSET_D34 + TI_EMPTY_D198
 TX_IDX_ARROWS           = TX_ASCII_OFFSET_D34 + 190
 TX_IDX_ENTER            = TX_ASCII_OFFSET_D34 + TI_ENTER
 TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
@@ -51,7 +51,7 @@ TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
 TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels
 TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertical screen size)
     ASSERT TI_VTILES_D32 =  32
-
+xxg
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
 ; Time map for single screen at 320x200 requires 2650 bytes:
@@ -143,7 +143,7 @@ CleanAllTiles
     DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
 
     ; ##########################################
-    LD A, TI_EMPTY_D57
+    LD A, TI_EMPTY_D198
     LD B, H_D40
     ; Number of loops: 40*32
 .loopH
@@ -172,7 +172,7 @@ CleanTiles
     DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
 
     ; ##########################################
-    LD A, TI_EMPTY_D57
+    LD A, TI_EMPTY_D198
 .loop
     
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile
@@ -190,7 +190,7 @@ CleanTiles
 ;----------------------------------------------------------;
 SetupTiles
 
-    CALL dbs.SetupTilesBank
+    CALL dbs.SetupArrays1Bank
 
     ; ##########################################    
     ; Enable tilemap mode.
@@ -208,21 +208,16 @@ SetupTiles
 
     ; ##########################################
     ; Setup palette
-    LD HL, db.tilePaletteBin                    ; Address of palette data in memory
-    LD B, db.tilePaletteBinLength               ; Number of colors to copy
+
+    LD HL, db1.tilePaletteBin                   ; Address of palette data in memory
+    LD B, db1.tilePaletteBinLength              ; Number of colors to copy
     CALL _LoadTilemapPalette
 
+    ; ##########################################
     CALL SetTilesClipOff
 
-    ; ##########################################
-    ; Copy tile definitions (sprite file) to expected memory
-    LD DE, TI_DEF_RAM_H6500
-    LD HL, db.tileSprBin                        ; Address of tiles in memory
-    LD BC, db.tileSprBinLength                  ; Number of bytes to copy
-    LDIR
-
     RET                                         ; ## END of the function ##
-    
+
 ;----------------------------------------------------------;
 ;                     SetTilesClipOff                      ;
 ;----------------------------------------------------------;
@@ -269,23 +264,23 @@ SetTilesClipHorizontal
 ;----------------------------------------------------------;
 ;                   _LoadTilemapPalette                    ;
 ;----------------------------------------------------------;
+; Copy 9 bit palette.
 ; Input:
-; - B:      Number of colors to copy
-; - HL:     Address of layer 2 palette data
+; - B:  Number colors to copy (one color = one byte)
+; - HL: Address of layer 2 palette data
 _LoadTilemapPalette
 
     ; Black for tilemap transparency
     NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
 
     ; Bits
-    ;  - 0: 1 = Enable ULANext mode
+    ;  - 0:   1 = Enable ULANext mode
     ;  - 1-3: 0 = First palette
     ;  - 6-4: 011 = Tilemap first palette
-    ;  - 7: 0 = enable auto increment on write
+    ;  - 7:   0 = enable auto increment on write
     NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
     NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0
-
-    ; Copy 8 bit palette.
+    
 .loop
     LD A, (HL)                                  ; Load RRRGGGBB into A
     INC HL                                      ; Increment to next entry
@@ -293,6 +288,7 @@ _LoadTilemapPalette
     DJNZ .loop                                  ; Repeat until B=0
 
     RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

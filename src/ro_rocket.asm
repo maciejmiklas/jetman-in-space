@@ -102,7 +102,7 @@ SetupRocket
 ;                AssemblyRocketForDebug                    ;
 ;----------------------------------------------------------;
 AssemblyRocketForDebug
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     LD A, EL_TANK6_D9
     LD (rocketElementCnt), A
@@ -135,7 +135,7 @@ AssemblyRocketForDebug
 ;                   StartRocketAssembly                    ;
 ;----------------------------------------------------------;
 StartRocketAssembly
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     LD A, ROST_WAIT_DROP
     LD (rocketState), A
@@ -146,7 +146,7 @@ StartRocketAssembly
 ;                 ResetAndDisableRocket                    ;
 ;----------------------------------------------------------;
 ResetAndDisableRocket
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     XOR A
     LD (rocketAssemblyX), A
@@ -180,7 +180,7 @@ ResetAndDisableRocket
 ;                 UpdateRocketOnJetmanMove                 ;
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     CALL _PickupRocketElement
     CALL _CarryRocketElement
@@ -233,7 +233,7 @@ CheckHitTank
     CP jt.DIF_EASY
     RET Z
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Is the thank out there?
     CALL IsFuelDeployed
@@ -288,7 +288,7 @@ CheckHitTank
 ;                   AnimateTankExplode                     ;
 ;----------------------------------------------------------;
 AnimateTankExplode
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Return if tank is not exploding
     LD A, (rocketState)
@@ -318,7 +318,7 @@ AnimateTankExplode
     ; Move #rocketExplodeTankDB by #explodeTankCnt, so that A points to current explosion frame
     LD A, (explodeTankCnt)
     LD B, A
-    LD A, (dba.rocketExplodeTankDB)
+    LD A, (db2.rocketExplodeTankDB)
     ADD B
 
     ; Set sprite pattern.
@@ -337,7 +337,7 @@ AnimateTankExplode
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Return if the state does not match carry
     LD A, (rocketState)
@@ -353,7 +353,7 @@ ResetCarryingRocketElement
 ;----------------------------------------------------------;
 RocketElementFallsForPickup
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Return if there is no fall
     LD A, (rocketState)
@@ -419,7 +419,7 @@ UpdateElementPosition
 ;----------------------------------------------------------;
 BlinkRocketReady
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Return if rocket is not ready
     LD A, (rocketState)
@@ -449,7 +449,7 @@ BlinkRocketReady
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Return if there is no assembly
     LD A, (rocketState)
@@ -511,7 +511,7 @@ RocketElementFallsForAssembly
 ;                  DropNextRocketElement                   ;
 ;----------------------------------------------------------;
 DropNextRocketElement
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     
     ; Check state.
     LD A, (rocketState)
@@ -809,7 +809,7 @@ _ResetRocketElement
 ;                     _BoardRocket                         ;
 ;----------------------------------------------------------;
 _BoardRocket
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     
     ; Return if rocket is not ready for boarding
     LD A, (rocketState)

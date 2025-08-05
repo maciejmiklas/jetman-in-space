@@ -76,14 +76,14 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
 ;  - A: song number from "assets/snd/xx.pt3"
 LoadMusicFile
 
-    CALL dbs.SetupArraysBank                    ; Setup slot 7 to load arrays
+    CALL dbs.SetupArrays2Bank                    ; Setup slot 7 to load arrays
 
     CALL ut.NumTo99Str                          ; DE now contains ASCII of value from A
 
-    LD HL, dba.sndFileName
+    LD HL, db2.sndFileName
     PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
     LD IX, HL                                   ; Param for #_LoadImageToTempRam
-    ADD HL, dba.SND_NR_POS                      ; Move HL to ""assets/snd/"
+    ADD HL, db2.SND_NR_POS                      ; Move HL to ""assets/snd/"
 
     LD (HL), D                                  ; Set first number
     INC HL
@@ -109,20 +109,15 @@ LoadMusicFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroImageFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/...".
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.liBgFileName
+    LD HL, db2.liBgFileName
     PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
-    LD IX, HL                                   ; Param for #_LoadImageToTempRam
-    ADD HL, dba.LI_BG_FILE_LEVEL_POS            ; Move HL to "assets/"
-    LD (HL), D                                  ; Set first number
-    INC HL
-    LD (HL), E                                  ; Set second number
+    CALL _SetFileLevelNumber
     POP HL
     CALL _CopyFileName
 
-    LD C, dba.LI_BG_FILE_IMG_POS
+    LD C, db2.LI_BG_FILE_IMG_POS
     CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
@@ -135,22 +130,74 @@ LoadLevelIntroImageFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadBgImageFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/...." -> "assets/35/....".
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.lbFileName
+    LD HL, db2.lbFileName
     PUSH HL
-    LD IX, HL                                   ; Param for #_LoadImageToTempRam
-    ADD HL, dba.LB_FILE_LEVEL_POS               ; Move HL to "assets/"
-    LD (HL), D                                  ; Set first number.
-    INC HL
-    LD (HL), E                                  ; Set second number
+    CALL _SetFileLevelNumber
     POP HL
     
     CALL _CopyFileName
 
-    LD C, dba.LB_FILE_IMG_POS
+    LD C, db2.LB_FILE_IMG_POS
     CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     LoadIntroPalFile                     ;
+;----------------------------------------------------------;
+LoadIntroPalFile
+
+    LD HL, db2.introPalFileName
+    CALL _LoadPalFileByName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      LoadEasyPalFile                     ;
+;----------------------------------------------------------;
+LoadEasyPalFile
+
+    LD HL, db2.easyPalFileName
+    CALL _LoadPalFileByName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     LoadHardPalFile                      ;
+;----------------------------------------------------------;
+LoadHardPalFile
+
+    LD HL, db2.hardPalFileName
+    CALL _LoadPalFileByName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   LoadBgPaletteFile                      ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadBgPaletteFile
+
+    CALL dbs.SetupArrays2Bank
+
+    LD HL, db2.lbpFileName
+    PUSH HL
+    CALL _SetFileLevelNumber
+    POP HL
+    
+    CALL _CopyFileName
+
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupPaletteBank
+
+    LD IX, btd.ORIGINAL_PAL_ADDR
+    LD BC, bp.PAL_BYTES_D512
+    CALL _FileRead
 
     RET                                         ; ## END of the function ##
 
@@ -161,24 +208,43 @@ LoadBgImageFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadPlatformsTilemapFile
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.plTileFileName
+    LD HL, db2.plTileFileName
     PUSH HL
-    LD IX, HL                                   ; Param for _FileOpen
-    ADD HL, dba.PL_FILE_LEVEL_POS               ; Move HL to "assets/"
-    LD (HL), D                                  ; Set first number
-    INC HL
-    LD (HL), E                                  ; Set second number
+    CALL _SetFileLevelNumber
     POP HL
-
     CALL _CopyFileName
+
     CALL _FileOpen
 
     ; Read file
     LD IX, ti.TI_MAP_RAM_H5B00
     LD BC, ti.TI_MAP_BYTES_D2560
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   LoadTileSprFile                        ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+LoadTileSprFile
+
+    CALL dbs.SetupArrays2Bank
+
+    LD HL, db2.sprTileFileName
+    PUSH DE
+    CALL _CopyFileName
+    POP DE
+
+    LD HL, fileName
+    CALL _SetFileLevelNumber
+    CALL _FileOpen
+
+    LD IX, ti.TI_DEF_RAM_H6500
+    LD BC, db2.SPR_TILE_BYT_D6400
     CALL _FileRead
 
     RET                                         ; ## END of the function ##
@@ -190,11 +256,11 @@ LoadPlatformsTilemapFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadSpritesFile
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Load first file
     PUSH DE
-    LD HL, dba.sprTileFileName
+    LD HL, db2.sprFileName
     CALL _CopyFileName
 
     CALL dbs.SetupSpritesBank
@@ -205,7 +271,7 @@ LoadSpritesFile
 
     ; Read file.
     LD IX, sp.SP_ADDR_HC000
-    LD BC, dba.SPR_FILE_BYT_D8192
+    LD BC, db2.SPR_FILE_BYT_D8192
     CALL _FileRead
     POP DE
     
@@ -218,7 +284,7 @@ LoadSpritesFile
 
     ; Read file
     LD IX, _RAM_SLOT7_STA_HE000
-    LD BC, dba.SPR_FILE_BYT_D8192
+    LD BC, db2.SPR_FILE_BYT_D8192
     CALL _FileRead
 
     RET                                         ; ## END of the function ##
@@ -230,9 +296,9 @@ LoadSpritesFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadRocketStarsTilemapFile
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.stTilesFileName
+    LD HL, db2.stTilesFileName
     CALL _CopyFileName
 
     LD BC, ST_FILE2_BYT_D2048
@@ -247,12 +313,12 @@ LoadRocketStarsTilemapFile
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroTilemapFile
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.introTilesFileName
+    LD HL, db2.introTilesFileName
     CALL _CopyFileName
 
-    LD BC, (dba.introSecondFileSize)
+    LD BC, (db2.introSecondFileSize)
     CALL _Load16KTilemap
 
     RET                                         ; ## END of the function ##
@@ -262,9 +328,9 @@ LoadLevelIntroTilemapFile
 ;----------------------------------------------------------;
 LoadMenuGameplayTilemapFile
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.mmgTileFileName
+    LD HL, db2.mmgTileFileName
     CALL _CopyFileName
 
     ; Open file
@@ -283,11 +349,10 @@ LoadMenuGameplayTilemapFile
 LoadMenuKeysTilemapFile
 
     ; Open file
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.mmkTileFileName
+    LD HL, db2.mmkTileFileName
     CALL _CopyFileName
-
     CALL _FileOpen
 
     ; Read file
@@ -302,12 +367,12 @@ LoadMenuKeysTilemapFile
 ;----------------------------------------------------------;
 LoadMenuEasyImageFile
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.menuEasyBgFileName
+    LD HL, db2.menuEasyBgFileName
     CALL _CopyFileName
 
-    LD C, dba.MENU_EASY_BG_POS
+    LD C, db2.MENU_EASY_BG_POS
     CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
@@ -317,12 +382,12 @@ LoadMenuEasyImageFile
 ;----------------------------------------------------------;
 LoadMenuHardImageFile
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD HL, dba.menuHardBgFileName
+    LD HL, db2.menuHardBgFileName
     CALL _CopyFileName
 
-    LD C, dba.MENU_HARD_BG_POS
+    LD C, db2.MENU_HARD_BG_POS
     CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
@@ -404,6 +469,27 @@ _LoadImageToTempRam
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  _LoadPalFileByName                      ;
+;----------------------------------------------------------;
+; Input:
+;  - HL: Pointer to file name
+_LoadPalFileByName
+
+    CALL dbs.SetupArrays2Bank
+
+    CALL _CopyFileName
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupPaletteBank
+
+    LD IX, btd.ORIGINAL_PAL_ADDR
+    LD BC, bp.PAL_BYTES_D512
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                   _Load16KTilemap                        ;
 ;----------------------------------------------------------;
 ; Input:
@@ -466,16 +552,11 @@ _Load16KTilemap
 ;  - #stTilesFileName with correct name
 _Prepare16KTilemapFile
 
-    LD IX, fileName
+    LD HL, fileName
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/stars_0.map" -> "assets/35/stars_0.map"
-    LD HL, IX
-    ADD HL, dba.TI16K_FILE_LEVEL_POS            ; Move HL to "assets/0"
-    LD (HL), D                                  ; Set first number
-    INC HL
-    LD (HL), E                                  ; Set second number
+    CALL _SetFileLevelNumber
 
-    ADD HL, dba.TI16K_FILE_NR_POS               ; Move HL to "assets/35/stars_"
+    ADD HL, db2.TI16K_FILE_NR_POS               ; Move HL to "assets/35/stars_"
     LD (HL), A
 
     RET                                         ; ## END of the function ##
@@ -490,16 +571,30 @@ _Prepare16KTilemapFile
 ;  - #fileName with correct name
 _PrepareFileOpenForSprites
 
-    ; Set the level number in the file name, DE="35" will give: "assets/00/sprites_0.map" -> "assets/35/sprites_0.map"
     LD HL, fileName
+    CALL _SetFileLevelNumber
+    ADD HL, db2.SPR_FILE_NR_POS                 ; Move HL to "assets/35/sprites_"
+    LD (HL), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  _SetFileLevelNumber                     ;
+;----------------------------------------------------------;
+; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - HL: pointer to file starting with: "assets/XX"
+; Output:
+;  - HL: just after "assets/xx"
+; Modifies: HL, IX
+_SetFileLevelNumber
+
     LD IX, HL                                   ; Param for _FileOpen
-    ADD HL, dba.SPR_FILE_LEVEL_POS              ; Move HL to "assets/"
+    ADD HL, db2.LEVEL_FILE_POS                  ; Move HL to "assets/"
     LD (HL), D                                  ; Set first number
     INC HL
     LD (HL), E                                  ; Set second number
-
-    ADD HL, dba.SPR_FILE_NR_POS                 ; Move HL to "assets/35/sprites_"
-    LD (HL), A
 
     RET                                         ; ## END of the function ##
 

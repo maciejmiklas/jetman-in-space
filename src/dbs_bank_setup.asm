@@ -8,19 +8,32 @@
 ; This is necessary because Image B moves with Jetman and hides behind the horizon. We replace image lines with black. Once Jetman moves in 
 ; the opposite direction, we have to copy the original image line from A to B.
 
+; Bank organization:
+;  - 18-27: Game background image
+;  - 28:    Arrays 1
+;  - 29:    Arrays 2
+;  - 30:    FREE
+;  - 31:    Layer 2 Palettes
+;  - 32:    AY FX sound
+;  - 33:    AY music code
+;  - 70:    Layer 2 brightness palettes
+;  - 71-72: Game sprites. Load sprites (16KB) into 2 banks mapping it to slot 6,7
+;  - 73-82: Game background
+;  - 83-84: 16KiB tilemap
+;  - 85:    Empty image
+;  - 86:    Music binary
+
 BMB_ST_BANK_S7_D18      = 18                    ; Slot 7. Start of displayed Layer 2 image
 BMB_END_BANK_S7_D27     = 27                    ; Last background bank (inclusive)
 
-ST_BANK_S7_D28          = 28                    ; Slot 7. Bank for stars, slot 6
-ARR_BANK_S7_D29         = 29                    ; Slot 7. Bank for arrays, slot 6
-TI_SPR_BANK_S7_D30      = 30
-PAL2_BANK_S6_D31        = 31                    ; Slot 6. Layer 2 pallettes
+ARR1_BANK_S7_D28        = 28                    ; Slot 7. Bank for arrays, slot 6
+ARR2_BANK_S7_D29        = 29                    ; Slot 7. Bank for arrays, slot 6
+F_ENEMY_BANK_S6_B30     = 30                    ; Slot 6, Following Enemies
+P_ENEMY_BANK_S6_B31     = 31                    ; Slot 6, Pattern Enemies
 AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
 AY_MCODE_S6_D33         = 33                    ; Slot 6. music code, music binary is in AY_MCODE_S6_D33
-P_ENEMY_BANK_S6_B34     = 34                    ; Slot 6, Pattern Enemies
-F_ENEMY_BANK_S6_B35     = 35                    ; Slot 6, Following Enemies
 
-PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D31
+PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D87
 SPR_BANK1_S6_D71        = 71
 SPR_BANK2_S7_D72        = 72
 
@@ -34,14 +47,14 @@ LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB
 LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7
 EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image
 AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33
-
+PAL2_BANK_S6_D87        = 87                    ; Slot 6. Layer 2 pallettes
 
 ;----------------------------------------------------------;
 ;                SetupFollowingEnemyBank                   ;
 ;----------------------------------------------------------;
 SetupFollowingEnemyBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, F_ENEMY_BANK_S6_B35
+    NEXTREG _MMU_REG_SLOT6_H56, F_ENEMY_BANK_S6_B30
 
     RET                                         ; ## END of the function ## 
 
@@ -50,7 +63,7 @@ SetupFollowingEnemyBank
 ;----------------------------------------------------------;
 SetupPatternEnemyBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, P_ENEMY_BANK_S6_B34
+    NEXTREG _MMU_REG_SLOT6_H56, P_ENEMY_BANK_S6_B31
 
     RET                                         ; ## END of the function ## 
 
@@ -79,15 +92,6 @@ SetupMusicBank
 SetupAyFxsBank
 
     NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D32    ; Code and effects.afb
-
-    RET                                         ; ## END of the function ## 
-
-;----------------------------------------------------------;
-;                     SetupTilesBank                       ;
-;----------------------------------------------------------;
-SetupTilesBank
-
-    NEXTREG _MMU_REG_SLOT7_H57, TI_SPR_BANK_S7_D30
 
     RET                                         ; ## END of the function ## 
 
@@ -122,20 +126,20 @@ SetupSpritesBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     SetupStarsBank                       ;
+;                     SetupArrays1Bank                     ;
 ;----------------------------------------------------------;
-SetupStarsBank
+SetupArrays1Bank
 
-    NEXTREG _MMU_REG_SLOT7_H57, ST_BANK_S7_D28
+    NEXTREG _MMU_REG_SLOT7_H57, ARR1_BANK_S7_D28
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    SetupArraysBank                       ;
+;                   SetupArrays2Bank                       ;
 ;----------------------------------------------------------;
-SetupArraysBank
+SetupArrays2Bank
 
-    NEXTREG _MMU_REG_SLOT7_H57, ARR_BANK_S7_D29
+    NEXTREG _MMU_REG_SLOT7_H57, ARR2_BANK_S7_D29
 
     RET                                         ; ## END of the function ##
 
@@ -145,7 +149,7 @@ SetupArraysBank
 SetupPaletteBank
 
     ; Memory bank (8KiB) containing layer 2 palette data
-    NEXTREG _MMU_REG_SLOT6_H56, PAL2_BANK_S6_D31
+    NEXTREG _MMU_REG_SLOT6_H56, PAL2_BANK_S6_D87
 
     ; Memory bank (8KiB) containing layer 2 palettes with brightness for times of the day
     NEXTREG _MMU_REG_SLOT7_H57, PAL2_BR_BANK_S7_D70

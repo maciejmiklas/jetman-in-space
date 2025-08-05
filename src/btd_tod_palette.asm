@@ -1,47 +1,67 @@
 ;----------------------------------------------------------;
-;                   Time of Day Palette                    ;
+;                   Time of Day Palette                    ; ; -> Background Palette
 ;----------------------------------------------------------;
     MODULE btd
-    
+
+    ; ### TO USE THIS MODULE: CALL dbs.SetupPaletteBank ###
+
 palBytes                DW 0                    ; Size in bytes of background palette, max 512
 palColors               DB 0                    ; Amount of colors in background palette, max 255
 palAdr                  DW 0                    ; Address of the original palette data
 todPalAddr              DW 0                    ; Pointer to current brightness palette
 
-PAL2_BYTES_D512         = 512
+PAL_BG_BYTES_D300      = 312                    ; Background palette has max 300 bytes to have 100 bytes (50 colors) for stars
+
+; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000. #todPalAddr points to the current palette.
+TOD_PALETTES_ADDR      = _RAM_SLOT7_STA_HE000
+
+; The original palette loaded from disk
+ORIGINAL_PAL_ADDR      = TOD_PALETTES_ADDR + 7*bp.PAL_BYTES_D512
+
+
+;----------------------------------------------------------;
+;                    LoadOriginalPalette                   ;
+;----------------------------------------------------------;
+LoadOriginalPalette
+
+    LD HL, btd.ORIGINAL_PAL_ADDR
+    LD B, bp.PAL_COLORS_D256
+    CALL bp.LoadPalette
+    
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      NextTodPalette                      ;
 ;----------------------------------------------------------;
 NextTodPalette
-    
+
     LD HL, (todPalAddr)
     LD A, (palColors)
     LD B, A 
     PUSH HL
     CALL bp.LoadPalette
-    CALL gc.BackgroundPaletteLoaded
+    CALL gc.BackgroundPaletteLoaded : CALL dbs.SetupPaletteBank
     POP HL
 
     ; Moves #todPalAddr to the next palette
-    ADD HL, PAL2_BYTES_D512
+    ADD HL, bp.PAL_BYTES_D512
     LD (todPalAddr), HL
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      PrevTodPalette                      ;
 ;----------------------------------------------------------;
 PrevTodPalette
-    
+
     LD HL, (todPalAddr)
     LD A, (palColors)
     LD B, A
     CALL bp.LoadPalette
-    CALL gc.BackgroundPaletteLoaded
+    CALL gc.BackgroundPaletteLoaded : CALL dbs.SetupPaletteBank
 
     CALL PrevTodPaletteAddr
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -51,7 +71,7 @@ PrevTodPaletteAddr
     
     ; Moves #todPalAddr to the previous palette
     LD HL, (todPalAddr) 
-    ADD HL, -PAL2_BYTES_D512
+    ADD HL, -bp.PAL_BYTES_D512
     LD (todPalAddr), HL
 
     RET                                         ; ## END of the function ##
@@ -60,7 +80,7 @@ PrevTodPaletteAddr
 ;                  LoadCurrentTodPalette                   ;
 ;----------------------------------------------------------;
 LoadCurrentTodPalette
-    
+
     CALL bp.SetupPaletteLoad
 
     LD HL, (palAdr)
@@ -85,12 +105,10 @@ CreateTodPalettes
 ;----------------------------------------------------------;
 ;                   ResetPaletteArrd                       ;
 ;----------------------------------------------------------;
+; Set the palette address to the beginning of the bank 70.
 ResetPaletteArrd
 
-    CALL dbs.SetupPaletteBank
-    
-    ; Set the palette address to the beginning of the bank holding it.
-    LD DE, _RAM_SLOT7_STA_HE000
+    LD DE, TOD_PALETTES_ADDR
     LD (todPalAddr), DE
 
     RET                                         ; ## END of the function ##
@@ -105,8 +123,7 @@ ResetPaletteArrd
 ;                  _CreateTodPalettes                      ;
 ;----------------------------------------------------------;
 ; This function creates up to 6 palettes for the transition from day to night from the palette given by HL.
-; Palettes are stored in #todL2Palettes; each one has up to 512 bytes. #todPalAddr points to the first palette.
-; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000
+; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000. #todPalAddr points to the current palette.
 _CreateTodPalettes
 
     CALL bp.SetupPaletteLoad
@@ -114,7 +131,7 @@ _CreateTodPalettes
     ; ##########################################
     ; Copy the original palette into the address given by #todPalAddr, creating the first palette to be modified by the loop below.
 
-    ; Set the palette address to the beginning of the bank holding it.
+    ; Set the palette address to the beginning of the bank holding it
     CALL ResetPaletteArrd
     
     ; Copy initial palette. HL (source) and BC (amount), DE (destination).
@@ -166,7 +183,7 @@ _NextBrightnessPalette
     ; Moves #todPalAddr to the next palette 
     LD HL, (todPalAddr)                         ; Use HL for LDIR below
     LD DE, HL
-    ADD DE, PAL2_BYTES_D512                     ; Move DE to the next (destination) palette
+    ADD DE, bp.PAL_BYTES_D512                     ; Move DE to the next (destination) palette
     LD (todPalAddr), DE                         ; Move palette pointer to copied palette
 
     ; ##########################################
@@ -232,7 +249,8 @@ _LoadTodPalette
 
     DJNZ .loopCopyColor
 
-    CALL gc.BackgroundPaletteLoaded
+    CALL gc.BackgroundPaletteLoaded : CALL dbs.SetupPaletteBank
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

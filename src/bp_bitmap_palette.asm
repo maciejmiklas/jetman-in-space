@@ -16,7 +16,10 @@ _BM_PAL2_GGG_INC        = %000'001'00           ; Increment/decrement green colo
 _BM_PAL2_BB_MASK        = %000'000'11
 _BM_PAL2_BB_MASKN       = %111'111'00
 
-_BM_PAL2_B_MASK         = %0000000'1 
+_BM_PAL2_B_MASK         = %0000000'1
+
+PAL_BYTES_D512         = 512
+PAL_COLORS_D256        = 256
 
 ;----------------------------------------------------------;
 ;                      BytesToColors                       ;
@@ -26,7 +29,7 @@ _BM_PAL2_B_MASK         = %0000000'1
 ; Output:
 ;  - B: Number of colors
 BytesToColors
-    
+
     ; Divide BC by 2 -> one color takes two bytes
     SRL B                                       ; Shift the higher byte (B) right by 1 bit
     RR C                                        ; Rotate right through carry the lower byte (C)
@@ -50,7 +53,7 @@ BytesToColors
 ;  - HL: Contains the current palette address
 ;  - B:  Number of colors
 LoadPalette
-    
+
     CALL SetupPaletteLoad
     CALL WritePalette
 
@@ -77,8 +80,6 @@ WritePalette
 ;                    SetupPaletteLoad                      ;
 ;----------------------------------------------------------;
 SetupPaletteLoad
-
-    CALL dbs.SetupPaletteBank
 
     ; Setup palette that is going to be written, bits:
     ;  - 0:   0 = Disable ULANext mode

@@ -226,7 +226,7 @@ RocketTakesOff
     CALL gb.HideGameBar
     CALL ti.SetTilesClipHorizontal
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
     CALL ki.ResetKeyboard
@@ -491,7 +491,7 @@ PlayFuelThiefFx
 ;----------------------------------------------------------;
 WeaponHitEnemy
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
@@ -573,7 +573,7 @@ KillOneEnemy
 ;----------------------------------------------------------;
 JetmanEnemiesCollision
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
@@ -619,14 +619,14 @@ KillFewEnemies
 ;    A:  Sprite ID of the enemy.
 ;  - IX: Pointer to enemy's #SPR.
 EnemyHit
-
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     CALL sr.SpriteHit
 
-    ; ##########################################
+   
     ; Checkt what enemy has been hit.
 
+    ; ##########################################
     ; Enemy 1?
     LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY1
@@ -642,6 +642,7 @@ EnemyHit
     RET
 .afterHitEnemy1
 
+     ; ##########################################
     ; Enemy 2?
     LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY2
@@ -657,11 +658,16 @@ EnemyHit
 
 .afterHitEnemy2
 
-    ; Enemy 3?
+    ; ##########################################
+    ; Enemy 3/1A?
     LD A, (IX + SPR.SDB_INIT)
     CP sr.SDB_ENEMY3
+    JR Z, .hit3
+
+    CP sr.SDB_ENEMY1A 
     RET NZ
 
+.hit3
     ; Yes, enemy 3 hot git.
     LD A, af.FX_EXPLODE_ENEMY_3
     CALL dbs.SetupAyFxsBank
@@ -678,7 +684,7 @@ EnemyHit
 ;  - IX:    Pointer enemy's #SPR
 EnemyHitsJet
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     
     ; Destroy the enemy.
     CALL sr.SpriteHit
@@ -955,7 +961,7 @@ JetMoves
     CALL ro.UpdateRocketOnJetmanMove
     CALL jl.UpdateLifeFaceOnJetMove
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.UpdatePickupsOnJetmanMove
 
     RET                                         ; ## END of the function ##
@@ -1107,6 +1113,8 @@ NightEnds
     ; transition step from day to night (night to day will start), and the palette address points to the memory containing the next step, 
     ; but there is no palette on that address. We have to move the back palette addresses by one palette so that it points to the last 
     ; palette containing colors for the darkest night.
+
+    CALL dbs.SetupPaletteBank
     CALL btd.PrevTodPaletteAddr
 
     RET                                         ; ## END of the function ##
@@ -1120,6 +1128,7 @@ NightEnds
 ; B) NextNightToDay -> NextNightToDay -> .... -> NextNightToDay -> ChangeToFullDay -> GOTO A)
 NextDayToNight
 
+    CALL dbs.SetupPaletteBank
     CALL btd.NextTodPalette
 
     RET                                         ; ## END of the function ##
@@ -1130,6 +1139,7 @@ NextDayToNight
 ; The function will be called when a day shifts to a night.
 NextNightToDay
 
+    CALL dbs.SetupPaletteBank
     CALL btd.PrevTodPalette
 
     RET                                         ; ## END of the function ##
@@ -1140,6 +1150,7 @@ NextNightToDay
 ; Called when the lighting condition has changed to a full day.
 ChangeToFullDay
 
+    CALL dbs.SetupPaletteBank
     CALL btd.ResetPaletteArrd
     CALL btd.LoadCurrentTodPalette
 
@@ -1183,7 +1194,7 @@ _HideGame
     CALL ki.ResetKeyboard
     CALL _HideEnemies
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
     CALL dbs.SetupPatternEnemyBank

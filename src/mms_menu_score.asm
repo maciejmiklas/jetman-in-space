@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE mms
 
-LINES_D10               = 10                    ; There are 10 score lines, but we display only 9, skipping first one in #dba.menuScore
+LINES_D10               = 10                    ; There are 10 score lines, but we display only 9, skipping first one in #db2.menuScore
 LINE_INDICATION_TI_D10  = 10
 
 ASCII_A                 = 64                    ; 64 is space, it's not proper ASCII code, but tiles are set so
@@ -98,8 +98,8 @@ AnimateCursor
     CP NAME_CH_POS_OFF
     RET Z
 
-    CALL dbs.SetupArraysBank
-    LD IX, dba.menuScoreCursor
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.menuScoreCursor
     CALL sr.SetSpriteId
     CALL sr.UpdateSpritePattern
 
@@ -118,7 +118,7 @@ AnimateCursor
 ;  A: Contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
 _CalculateScoreLine
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Compare the new score starting from the bottom line (nr 9) until we find a line in the score that is larger than the current score.
     LD B, LINES_D10-1
@@ -134,7 +134,7 @@ _CalculateScoreLine
     LD IY, sc.scoreHi
     ; Compare score byte: [THIS][DB][DB][DB]
     LD A, (IY+1)                                ; #sc.scoreHi:          [THIS][DB]
-    LD D, (IX+1)                                ; #dba.menuScore[line]: [THIS][DB][DB][DB]
+    LD D, (IX+1)                                ; #db2.menuScore[line]: [THIS][DB][DB][DB]
     CP D
     JR Z, .byte1                                ; Bytes from the current line and the new score are equal -> check the next byte
     JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
@@ -143,7 +143,7 @@ _CalculateScoreLine
 .byte1
     ; Compare score byte: [DB][THIS][DB][DB]
     LD A, (IY)                                  ; #sc.scoreHi:          [DB][THIS]
-    LD D, (IX)                                  ; #dba.menuScore[line]: [DB][THIS][DB][DB]
+    LD D, (IX)                                  ; #db2.menuScore[line]: [DB][THIS][DB][DB]
     CP D
     JR Z, .byte2                                ; Bytes from the current line and the new score are equal -> check the next byte
     JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
@@ -153,7 +153,7 @@ _CalculateScoreLine
      LD IY, sc.scoreLo
     ; Compare score byte: [DB][DB][THIS][DB]
     LD A, (IY+1)                                ; #sc.scoreLo:                  [THIS][DB]
-    LD D, (IX+3)                                ; #dba.menuScore[line]: [DB][DB][THIS][DB]
+    LD D, (IX+3)                                ; #db2.menuScore[line]: [DB][DB][THIS][DB]
     CP D
     JR Z, .byte3                                ; Bytes from the current line and the new score are equal -> check the next byte
     JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
@@ -221,15 +221,19 @@ _SetupMenuScore
 
     ; ###########################################
     ; Load palette
-    LD HL, db.menuScoreBgPaletteAdr
-    LD A, (db.menuScoreBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    LD D, "m"
+    LD E, "s"
+    PUSH DE
+
+    CALL fi.LoadBgPaletteFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
+
+    POP DE
 
     ; ###########################################
     ; Load background image
-    LD D, "m"
-    LD E, "s"
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
@@ -402,7 +406,7 @@ _SetScoreToReadOnly
     LD (DE), A
     INC DE
     
-    LD A, ti.TI_EMPTY_D57
+    LD A, ti.TI_EMPTY_D198
     LD (DE), A
 
     ; Set to read only
@@ -416,8 +420,8 @@ _SetScoreToReadOnly
     LD (ki.callbackFire), DE
 
     ; Hide cursor
-    CALL dbs.SetupArraysBank
-    LD IX, dba.menuScoreCursor
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.menuScoreCursor
     CALL sr.HideSimpleSprite
 
     RET                                         ; ## END of the function ##
@@ -427,7 +431,7 @@ _SetScoreToReadOnly
 ;----------------------------------------------------------;
 _UpdateCursor
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Calculate X postion
     LD DE, (nameChPos)
@@ -463,7 +467,7 @@ _UpdateCursor
 
     ; ##########################################
     ; Store X, Y position to sprite
-    LD IX, dba.menuScoreCursor
+    LD IX, db2.menuScoreCursor
     LD (IX + SPR.X), HL
     LD (IX + SPR.Y), E
 
@@ -475,10 +479,10 @@ _UpdateCursor
 ;----------------------------------------------------------;
 ;                     _PrintWholeScore                     ;
 ;----------------------------------------------------------;
-; Prints structure from #dba.menuScore
+; Prints structure from #db2.menuScore
 _PrintWholeScore
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     LD B, LINES_D10
 .placesLoop
@@ -495,12 +499,12 @@ _PrintWholeScore
 ;----------------------------------------------------------;
 ;                    _PrintScoreLine                       ;
 ;----------------------------------------------------------;
-; Remember to "CALL dbs.SetupArraysBank"
+; Remember to "CALL dbs.SetupArrays2Bank"
 ; Input:
-;  A:  Line from #dba.menuScore to print as tilemap, 0 to 9 inklusive
+;  A:  Line from #db2.menuScore to print as tilemap, 0 to 9 inklusive
 _PrintScoreLine
 
-    CALL _LineToIX                              ; IX points to #dba.menuScore that will be updated
+    CALL _LineToIX                              ; IX points to #db2.menuScore that will be updated
 
     ; ##########################################
     ; DE will point to the position when we print line given by A
@@ -550,12 +554,12 @@ _PrintScoreLine
 ;                       _LineToIX                          ;
 ;----------------------------------------------------------;
 ; Input:
-;  A: Score line in #dba.menuScore, 0 (first entry in #dba.menuScore) to 9 (bottom, lowest score) inklusive
+;  A: Score line in #db2.menuScore, 0 (first entry in #db2.menuScore) to 9 (bottom, lowest score) inklusive
 ; Output:
 ;  IX: Points to score line
 _LineToIX
 
-    LD IX, dba.menuScore                        ; Pointer to high score data.
+    LD IX, db2.menuScore                        ; Pointer to high score data.
 
     LD E, LINE_BYTES_D15
     LD D, A
@@ -567,11 +571,11 @@ _LineToIX
 ;----------------------------------------------------------;
 ;                    _StoreNewScore                        ;
 ;----------------------------------------------------------;
-; Store the last user's high score into #dba.menuScore, position is given by #scoreLine
+; Store the last user's high score into #db2.menuScore, position is given by #scoreLine
 _StoreNewScore
 
-    ; Set IX to #dba.menuScore that will be updated 
-    CALL dbs.SetupArraysBank
+    ; Set IX to #db2.menuScore that will be updated 
+    CALL dbs.SetupArrays2Bank
     LD A, (scoreLine)
 
     ; Does the user qualify for the scoreboard?
@@ -608,7 +612,7 @@ _StoreNewScore
     CALL _UpdateCursor
 
     XOR A
-    LD IX, dba.menuScoreCursor
+    LD IX, db2.menuScoreCursor
 
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
     CALL sr.SetStateVisible
@@ -650,11 +654,11 @@ _SetDeToEnterTiRam
 ;----------------------------------------------------------;
 _StoreCurrentChar
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
      ; DE will point to RAM containing the character the user currently enters.
     LD A, (scoreLine)
-    CALL _LineToIX                                 ; IX points to #dba.menuScore that will be updated
+    CALL _LineToIX                                 ; IX points to #db2.menuScore that will be updated
     LD DE, IX
     ADD DE, SCORE_TX_START_BYT_D7                    ; Move DE to start of user name
     LD A, (nameChPos)

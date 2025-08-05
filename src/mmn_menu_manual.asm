@@ -15,10 +15,16 @@ LoadMenuGameplay
     CALL fi.LoadMenuGameplayTilemapFile
     
     ; Load palette
-    LD HL, db.menuGameplayBgPaletteAdr
-    LD A, (db.menuGameplayBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    LD D, "m"
+    LD E, "g"
+    PUSH DE
+
+    CALL fi.LoadBgPaletteFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
+
+    POP DE
 
     ; Load background image
     LD D, "m"
@@ -51,14 +57,18 @@ LoadMenuKeys
     CALL fi.LoadMenuKeysTilemapFile
 
     ; Load palette
-    LD HL, db.menuKeysBgPaletteAdr
-    LD A, (db.menuKeysBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
-
-    ; Load background image
     LD D, "m"
     LD E, "k"
+    PUSH DE
+
+    CALL fi.LoadBgPaletteFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
+    POP DE
+
+    ; Load background image
+
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 

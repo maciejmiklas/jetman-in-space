@@ -4,6 +4,9 @@ BMP must have 320x256 with 8bit palette (Image -> Mode -> Indexed)
 if palette is broken try this:
 ./gfx2next -bitmap -preview -bitmap-y  -pal-std .\bg.bmp
 
+Tilemap sprites:
+.\gfx2next.exe -tile-size=8x8 -colors-4bit -sprites -preview .\chroma-noir.bmp
+
 
 AI text for title:
 Headline text "Jetman in Space". Jetman flying from one planet to another. Carries backpack shooting down flamens. Carries laser gun that shuts blue beam. Background contains space and planets, highly detailed retro graphics, dynamic movement across space

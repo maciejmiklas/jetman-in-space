@@ -31,16 +31,16 @@ LoadLevelIntro
 
     ; ##########################################
     PUSH DE
-    CALL dbs.SetupArraysBank
-    LD (dba.introSecondFileSize), HL
+    CALL dbs.SetupArrays2Bank
+    LD (db2.introSecondFileSize), HL
     CALL ti.SetTilesClipHorizontal
 
     ; ##########################################
     ; Load palette
-    LD HL, db.gameIntroPaletteAdr
-    LD A, (db.gameIntroPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    CALL fi.LoadIntroPalFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
 
     ; ##########################################
     ; Load background image

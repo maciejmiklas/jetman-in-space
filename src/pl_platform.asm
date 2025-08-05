@@ -70,7 +70,7 @@ JetPlatformHitOnJoyMove
     CP MAX_PLATFORM_Y
     RET NC
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     ; Collision only possible when flying
@@ -89,7 +89,7 @@ JetPlatformHitOnJoyMove
     LD A, (platformsSize)
     LD B, A
 
-    LD IX, dba.jetHitMargin
+    LD IX, db2.jetHitMargin
     CALL PlatformDirectionHit
 
     CP PL_DHIT_NO
@@ -225,7 +225,7 @@ JetPlatformHitOnJoyMove
 ;----------------------------------------------------------;
 ResetJoyOffBump
     
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Do not reset if already done
     LD A, (joyOffBump)
@@ -247,7 +247,7 @@ ResetJoyOffBump
     LD A, (platformsSize)
     LD B, A
 
-    LD IX, dba.jetAwayMargin
+    LD IX, db2.jetAwayMargin
     CALL _PlatformHit
     CP PL_HIT_YES                         ; Jetman is close to platform - do not reset the bump
     RET Z   
@@ -269,7 +269,7 @@ ResetJoyOffBump
 ;  - A:     #PL_HIT_YES/ #PL_HIT_NO
 PlatformSpriteHit
 
-    LD IY, dba.spriteHitMargin
+    LD IY, db2.spriteHitMargin
     JP _PlatformSpriteHit
 
 ;----------------------------------------------------------;
@@ -282,7 +282,7 @@ PlatformSpriteHit
 ;  - A:     #PL_HIT_YES/ #PL_HIT_NO
 PlatformSpriteClose
 
-    LD IY, dba.closeMargin
+    LD IY, db2.closeMargin
     JP _PlatformSpriteHit
 
 ;----------------------------------------------------------;
@@ -295,7 +295,7 @@ PlatformSpriteClose
 ;  - A:     #PL_HIT_YES/ #PL_HIT_NO
 CheckPlatformWeaponHit
 
-    LD IY, dba.shotHitMargin
+    LD IY, db2.shotHitMargin
     JP _PlatformSpriteHit
 
 ;----------------------------------------------------------;
@@ -414,7 +414,7 @@ PlatformBounceOff
     LD A, (platformsSize)
     LD B, A
 
-    LD IX, dba.bounceMargin
+    LD IX, db2.bounceMargin
 
 ;----------------------------------------------------------;
 ;                 PlatformDirectionHit                     ;
@@ -437,7 +437,7 @@ PL_DHIT_BOTTOM          = 4                     ; Sprite hits the platform from 
 
 PlatformDirectionHit
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 .loopOverPlatforms
 
     ; ##########################################
@@ -566,7 +566,7 @@ JetFallingFromPlatform
     CP MAX_PLATFORM_Y
     RET NC
     
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Does Jetman walk on any platform?
     LD A, (platformWalkNumber)
@@ -656,7 +656,7 @@ PL_HIT_YES              = 1                     ; Sprite hits the platform
 ; Unchanged: HL, IX
 _PlatformHit
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 .loopOverPlatforms
 
     ; ##########################################
@@ -1083,7 +1083,7 @@ _CheckPlatformHitVertical
 ; Output:
 ;  - A:     #PL_HIT_YES/ #PL_HIT_NO
 _PlatformSpriteHit
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
     
     ; Exit if sprite is not alive
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)

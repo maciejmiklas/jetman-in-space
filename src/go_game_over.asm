@@ -32,14 +32,18 @@ ShowGameOver
     CALL bm.HideImage
 
     ; Load palette
-    LD HL, db.gameOverBgPaletteAdr
-    LD A, (db.gameOverBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
-
-    ; Load background image
     LD D, "g"
     LD E, "o"
+    PUSH DE
+
+    CALL fi.LoadBgPaletteFile
+    
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
+
+    POP DE
+
+    ; Load background image
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 

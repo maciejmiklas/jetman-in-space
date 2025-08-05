@@ -36,17 +36,17 @@ BOUNCE_H_MARG_D2        = 2
 
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
-    SPR {089/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
+    SPR {089/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
 fEnemySprites2
-    SPR {099/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
-    SPR {100/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
-    SPR {101/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
-    SPR {102/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy05/*EXT_DATA_POINTER*/}
-    SPR {103/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy06/*EXT_DATA_POINTER*/}
-    SPR {104/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy07/*EXT_DATA_POINTER*/}
-    SPR {105/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy08/*EXT_DATA_POINTER*/}
-    SPR {106/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy09/*EXT_DATA_POINTER*/}
-    SPR {107/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy10/*EXT_DATA_POINTER*/}
+    SPR {099/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
+    SPR {100/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
+    SPR {101/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
+    SPR {102/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy05/*EXT_DATA_POINTER*/}
+    SPR {103/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy06/*EXT_DATA_POINTER*/}
+    SPR {104/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy07/*EXT_DATA_POINTER*/}
+    SPR {105/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy08/*EXT_DATA_POINTER*/}
+    SPR {106/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy09/*EXT_DATA_POINTER*/}
+    SPR {107/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy10/*EXT_DATA_POINTER*/}
 fEnemySize              BYTE 1
 FOLLOWING_FENEMY_SIZE   = 10
 
@@ -557,22 +557,22 @@ _BounceOfPlatform
 
 .hitLeft
     RES STATE_DIR_X_BIT, (IY + FE.STATE)        ; Move left, because enemy was moving right to hit platform from the left side
-    LD A, sr.SDB_BOUNCE_SIDE                    ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    LD A, sr.SDB_BOUNCE_SIDEA                   ; Bounce animation for #sr.LoadSpritePattern at .bounced
     JR .bounced
 
 .hitRight
     SET STATE_DIR_X_BIT, (IY + FE.STATE)        ; Move right, because enemy was moving left to hit platform from the right side
-    LD A, sr.SDB_BOUNCE_SIDE                    ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    LD A, sr.SDB_BOUNCE_SIDEA                   ; Bounce animation for #sr.LoadSpritePattern at .bounced
     JR .bounced
 
 .hitTop
     SET STATE_DIR_Y_BIT, (IY + FE.STATE)        ; Move up, because enemy was moving down to hit platform from the top
-    LD A, sr.SDB_BOUNCE_TOP                     ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    LD A, sr.SDB_BOUNCE_TOPA                    ; Bounce animation for #sr.LoadSpritePattern at .bounced
     JR .bounced
 
 .hitBottom
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)        ; Move down, because enemy was moving up to hit the platform from the bottom
-    LD A, sr.SDB_BOUNCE_TOP                     ; Bounce animation for #sr.LoadSpritePattern below
+    LD A, sr.SDB_BOUNCE_TOPA                    ; Bounce animation for #sr.LoadSpritePattern below
 
 .bounced
     CALL sr.LoadSpritePattern
@@ -727,6 +727,7 @@ _BounceOfTop
 
     RET                                         ; ## END of the function ##
 
+tmp db 0
 ;----------------------------------------------------------;
 ;            _TryRespawnNextFollowingEnemy                 ;
 ;----------------------------------------------------------;
@@ -775,7 +776,8 @@ _TryRespawnNextFollowingEnemy
     JR Z, .afterEnemyRespawnDelay               ; Jump if the timer reaches respawn delay
 
     LD (IY + FE.RESPAWN_DELAY_CNT), A           ; The delay timer for the enemy is still ticking
-
+    ld (tmp),a
+    
     LD A, _RET_NO_D0
     RET
 .afterEnemyRespawnDelay

@@ -99,6 +99,12 @@ LoadMainMenu
     CALL dbs.SetupMusicBank
     CALL aml.MusicOn
 
+    ; ##########################################
+    ; Copy tile definitions (sprite file) to expected memory
+    LD D, "m"
+    LD E, "a"
+    CALL fi.LoadTileSprFile
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -122,10 +128,10 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Load palette
-    LD HL, db.menuEasyBgPaletteAdr
-    LD A, (db.menuEasyBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    CALL fi.LoadEasyPalFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
 
     ; ##########################################
     ; Load background image
@@ -137,8 +143,8 @@ _LoadMenuEasy
     LD (jt.difLevel), A
 
     ; ##########################################
-    CALL dbs.SetupArraysBank
-    LD IX, dba.menuDifEasy
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.menuDifEasy
     CALL _PrintMenu
 
     ; ##########################################
@@ -162,15 +168,19 @@ _LoadMenuNormal
 
     ; ##########################################
     ; Load palette
-    LD HL, db.menuMainBgPaletteAdr
-    LD A, (db.menuMainBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    LD D, "m"
+    LD E, "a"
+    PUSH DE
+
+    CALL fi.LoadBgPaletteFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
+
+    POP DE
 
     ; ##########################################
     ; Load background image
-    LD D, "m"
-    LD E, "a"
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
@@ -179,8 +189,8 @@ _LoadMenuNormal
     LD (jt.difLevel), A
 
     ; ##########################################
-    CALL dbs.SetupArraysBank
-    LD IX, dba.menuDifNorm
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.menuDifNorm
     CALL _PrintMenu
 
 
@@ -205,10 +215,10 @@ _LoadMenuHard
 
     ; ##########################################
     ; Load palette
-    LD HL, db.menuHardBgPaletteAdr
-    LD A, (db.menuHardBgPaletteBytes)
-    LD B, A
-    CALL bp.LoadPalette
+    CALL fi.LoadHardPalFile
+
+    CALL dbs.SetupPaletteBank
+    CALL btd.LoadOriginalPalette
 
     ; ##########################################
     ; Load background image
@@ -220,8 +230,8 @@ _LoadMenuHard
     LD (jt.difLevel), A
 
     ; ##########################################
-    CALL dbs.SetupArraysBank
-    LD IX, dba.menuDifHard
+    CALL dbs.SetupArrays2Bank
+    LD IX, db2.menuDifHard
     CALL _PrintMenu
 
     ; ##########################################
@@ -249,7 +259,7 @@ _PrintMenu
 ;                   _SetIXToActiveMenu                     ;
 ;----------------------------------------------------------;
 _SetIXToActiveMenu
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
     ; Load into DE "current position" * "menu size"
     LD A, (menuPos)
@@ -258,7 +268,7 @@ _SetIXToActiveMenu
     LD E, MENU
     MUL D, E
     
-    LD IX, dba.menuEl
+    LD IX, db2.menuEl
     ADD IX, DE                                  ; Move IX to current menu position (IX + #menuPos * #MENU)
 
     RET                                         ; ## END of the function ##
@@ -303,10 +313,10 @@ _UpdateJetPostion
 ;----------------------------------------------------------;
 _LoadStaticMenuText
 
-    CALL dbs.SetupArraysBank
+    CALL dbs.SetupArrays2Bank
 
-    LD B, dba.MENU_EL_SIZE
-    LD IX, dba.menuEl
+    LD B, db2.MENU_EL_SIZE
+    LD IX, db2.menuEl
 .elementLoop
     PUSH BC
 

@@ -4,7 +4,7 @@
     MODULE enf
 
     ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
-    
+
 ; The enemy formation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #ENEMY_FORMATION_SIZE
 ; determines the amount. The deployment starts when #respawnDelayCnt will reach #respawnDelay. 
 ; There is also a delay in respawning each enemy in the formation (#enf.ENPS.RESPAWN_DELAY). It will define the distance between single
@@ -105,7 +105,7 @@ RespawnFormation
     CP 0
     JR NZ, .afterStillAliveCheck
 
-    ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous.
+    ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous
     ; deployment are still visible.
     LD IX, ena.formationEnemySprites
     LD B, ena.ENEMY_FORMATION_SIZE
