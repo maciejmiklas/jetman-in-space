@@ -4,7 +4,7 @@
 > [DOWNLOAD SECTION](https://github.com/maciejmiklas/jetman-in-space/releases)
 
 > [!NOTE]
-> Click on the image below to play video
+> Click on the image below to play the video
 
 [![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
    
@@ -19,7 +19,7 @@
 <img src="/img/scr5.jpg" width="640px"/>
    
 
-I would like to give a shout-out to the following, without them, I would have been lost in space!
+I want to give a shout-out to the following, without them, I would have been lost in space!
 * [Ilya Abrosimov](https://zxart.ee/eng/authors/e/ea)
 * [Oleg Nikitin](https://zxart.ee/eng/authors/n/nq)
 * [ZX Spectrum Next Assembly Developer Guide](https://github.com/tomaz/zx-next-dev-guide)
