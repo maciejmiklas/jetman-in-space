@@ -698,9 +698,6 @@ _MainLoop150
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
 
-    ;CALL dbs.SetupTileAnimationBank
-    ;CALL ta.NextTileAnimationFrame 
-
     RET                                         ; ## END of the function ##
 
 
