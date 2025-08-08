@@ -75,7 +75,7 @@ LoadSong
 ;----------------------------------------------------------;
 NextGameSong
 
-    ; Increase music counter, or overflow to min value
+    ; Increase music counter, or overflow to min value.
     LD A, (gameMusicCnt)
     CP GAME_MUSIC_MAX
     JR NZ, .incMusicCnt

@@ -424,6 +424,13 @@ LoadLevel8Data
     LD A, fed.FENEMY_SIZE_L8
     CALL fe.SetupFollowingEnemies
 
+    ; ##########################################
+    ; Load tile animation
+    CALL dbs.SetupTileAnimationBank
+    LD A, tad.TILEMAP_ANIM_ROWS_L8
+    LD HL, tad.tilemapAnimationRowsL8
+    CALL ta.SetupTileAnimation
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

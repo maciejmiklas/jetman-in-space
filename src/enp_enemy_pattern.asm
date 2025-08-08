@@ -199,22 +199,22 @@ MovePatternEnemies
 .enemyLoop
     PUSH BC                                     ; Preserve B for loop counter
 
-    ; Ignore this sprite if it's hidden
+    ; Ignore this sprite if it's hidden.
     LD A, (IX + SPR.STATE)
     AND sr.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility
     CP 0
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden)
 
-    ; Load extra data for this sprite to IY
+    ; Load extra data for this sprite to IY.
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
 
-    ; Slow down movement by decrementing the counter until it reaches 0
+    ; Slow down movement by decrementing the counter until it reaches 0.
     LD A, (IY + ENP.MOVE_DELAY_CNT)
     CP 0                                        ; No delay? -> move at full speed
     JR Z, .afterMoveDelay
 
-    ; Delaying movement, decrement delay counter
+    ; Delaying movement, decrement delay counter.
     SUB MOVE_DELAY_CNT_INC
     LD (IY + ENP.MOVE_DELAY_CNT), A
 
@@ -232,7 +232,7 @@ MovePatternEnemies
     CALL _MoveEnemy
     POP IY
 
-    ; Tripple movement speed if move delay is 0
+    ; Tripple movement speed if move delay is 0.
     CALL _LoadMoveDelay
     CP MOVE_DELAY_3X
     JR NZ, .after3x
@@ -243,14 +243,14 @@ MovePatternEnemies
     JR .continue
 .after3x
 
-    ; Double movement speed if move delay is 1
+    ; Double movement speed if move delay is 1.
     CP MOVE_DELAY_2X
     JR NZ, .continue
     CALL _MoveEnemy
 
 .continue   
     ; ##########################################
-    ; Move IX to the beginning of the next #SPR
+    ; Move IX to the beginning of the next #SPR.
     LD DE, SPR
     ADD IX, DE
 
@@ -332,7 +332,7 @@ RespawnPatternEnemy
     LD A,  (IY + ENP.RESPAWN_Y)
     LD (IX + SPR.Y), A
 
-    ; Set X to left or right side of the screen
+    ; Set X to left or right side of the screen.
     BIT ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
     JR NZ, .deployLeft                          ; Jump if bit is 0 -> deploy left
 

@@ -131,10 +131,10 @@ BrightnessDown
     CP _BM_PAL2_MIN                             ; Do not decrement if green is already at 0
     JR Z, .afterDecrementGreen
 
-    ; Green is above 0, decrement it
+    ; Green is above 0, decrement it.
     SUB _BM_PAL2_GGG_INC 
 
-    ; Update original color in DE
+    ; Update original color in DE.
     LD B, A                                     ; Keep A in B, A contains new GGG value
 
     LD A, E                                     ; Load RRR'GGG'BB into A and reset GGG, because we will set it to new value with XOR

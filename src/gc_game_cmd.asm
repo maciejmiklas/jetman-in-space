@@ -1218,6 +1218,9 @@ _InitLevelLoad
     CALL dbs.SetupPatternEnemyBank
     CALL enu.EnableFuelThief
 
+    CALL dbs.SetupTileAnimationBank
+    CALL ta.DisableTileAnimation
+
     XOR A
     LD (freezeEnemiesCnt), A
 

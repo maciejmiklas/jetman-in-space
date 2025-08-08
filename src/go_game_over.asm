@@ -31,6 +31,11 @@ ShowGameOver
 
     CALL bm.HideImage
 
+    ; Copy tile definitions (sprite file) to expected memory
+    LD D, "m"
+    LD E, "a"
+    CALL fi.LoadTileSprFile
+
     ; Load palette
     LD D, "g"
     LD E, "o"

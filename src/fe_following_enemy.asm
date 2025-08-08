@@ -34,10 +34,11 @@ STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT
 
 BOUNCE_H_MARG_D2        = 2
 
+FOLLOW_OFF_MIN_D40      = 40
+
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
     SPR {089/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-fEnemySprites2
     SPR {099/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
     SPR {100/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
     SPR {101/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
@@ -496,6 +497,10 @@ _EnemyDirectionChanged
     ; Set following off counter to random value
     LD A, R
     LD (IY + FE.FOLLOW_OFF_CNT), A
+    CP FOLLOW_OFF_MIN_D40
+    JR NC, .afterCntMin
+    LD A, FOLLOW_OFF_MIN_D40
+.afterCntMin
 
     ; ##########################################
     ; Load new angle line and set the angle on enemy's status

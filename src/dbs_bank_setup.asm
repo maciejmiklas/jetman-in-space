@@ -30,8 +30,9 @@ ARR1_BANK_S7_D28        = 28                    ; Slot 7. Bank for arrays, slot 
 ARR2_BANK_S7_D29        = 29                    ; Slot 7. Bank for arrays, slot 6
 F_ENEMY_BANK_S6_B30     = 30                    ; Slot 6, Following Enemies
 P_ENEMY_BANK_S6_B31     = 31                    ; Slot 6, Pattern Enemies
-AY_FX_S6_D32            = 32                    ; Slot 6. FX sound
-AY_MCODE_S6_D33         = 33                    ; Slot 6. music code, music binary is in AY_MCODE_S6_D33
+AY_FX_S6_D32            = 32                    ; Slot 6, FX sound
+AY_MCODE_S6_D33         = 33                    ; Slot 6, music code, music binary is in AY_MCODE_S6_D33
+TILE_ANIMATION_D34      = 34                    ; Slot 6, tile animation
 
 PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D87
 SPR_BANK1_S6_D71        = 71
@@ -77,12 +78,21 @@ SetupEmptyImageBank
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    SetupMusicBank                        ;
+;                      SetupMusicBank                      ;
 ;----------------------------------------------------------;
 SetupMusicBank
 
     NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
     NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D86  ; Binary loaded from file
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                  SetupTileAnimationBank                  ;
+;----------------------------------------------------------;
+SetupTileAnimationBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, TILE_ANIMATION_D34
 
     RET                                         ; ## END of the function ## 
 
@@ -104,7 +114,6 @@ Setup16KTilemapBank
     NEXTREG _MMU_REG_SLOT7_H57, LONG_TI_BANK2_S7_D84
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                  Setup8KTilemapBank                      ;
