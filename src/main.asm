@@ -14,7 +14,7 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    CALL gc.LoadLevel1
+    CALL gc.LoadLevel2
     ;CALL gc.LoadMainMenu
 
     ; ##########################################

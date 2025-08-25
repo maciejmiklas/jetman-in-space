@@ -53,6 +53,13 @@ LoadLevel1Data
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
 
+    ; ##########################################
+    ; Load tile animation
+    CALL dbs.SetupTileAnimationBank
+    LD A, tad.TILEMAP_ANIM_ROWS_L1
+    LD HL, tad.tilemapAnimationRowsL1
+    CALL ta.SetupTileAnimation
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -104,6 +111,13 @@ LoadLevel2Data
     ; Load following enemies
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
+
+    ; ##########################################
+    ; Load tile animation
+    CALL dbs.SetupTileAnimationBank
+    LD A, tad.TILEMAP_ANIM_ROWS_L2
+    LD HL, tad.tilemapAnimationRowsL2
+    CALL ta.SetupTileAnimation
 
     RET                                         ; ## END of the function ##
 
