@@ -173,6 +173,13 @@ LoadLevel3Data
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
 
+    ; ##########################################
+    ; Load tile animation
+    CALL dbs.SetupTileAnimationBank
+    LD A, tad.TILEMAP_ANIM_ROWS_L3
+    LD HL, tad.tilemapAnimationRowsL3
+    CALL ta.SetupTileAnimation
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
