@@ -14,7 +14,7 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    ;CALL gc.LoadLevel8
+    ;CALL gc.LoadLevel1
     CALL gc.LoadMainMenu
 
     ; ##########################################
@@ -96,6 +96,10 @@ mainLoop
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
 
+    DB "If you read this text, it means that you have reached forbidden memory space."
+    DB "The script stored here will format the SD Card in the next 60 seconds!"
+    DB "I would suggest a quick reset ;)"
+
     ; Imports below use ORG and dedicated memory bank!
 
     ; ################ BANK 28 ################
@@ -144,6 +148,14 @@ mainLoop
     INCLUDE "am_audio_music.asm"
     INCLUDE "aml_audio_music_loader.asm"
     ASSERT $$ == dbs.AY_MCODE_S6_D33
+
+    ; ################ BANK  34 ################
+    ; TO USE THIS MODULE: CALL dbs.SetupTileAnimationBank
+    MMU _RAM_SLOT6, dbs.TILE_ANIMATION_D34
+    ORG _RAM_SLOT6_STA_HC000
+    INCLUDE "ta_tile_animation.asm"
+    INCLUDE "tad_tile_animation_data.asm"
+    ASSERT $$ == dbs.TILE_ANIMATION_D34
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;

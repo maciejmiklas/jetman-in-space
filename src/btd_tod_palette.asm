@@ -15,7 +15,7 @@ PAL_BG_BYTES_D300      = 312                    ; Background palette has max 300
 ; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000. #todPalAddr points to the current palette.
 TOD_PALETTES_ADDR      = _RAM_SLOT7_STA_HE000
 
-; The original palette loaded from disk
+; The original palette loaded from disk.
 ORIGINAL_PAL_ADDR      = TOD_PALETTES_ADDR + 7*bp.PAL_BYTES_D512
 
 
@@ -131,7 +131,7 @@ _CreateTodPalettes
     ; ##########################################
     ; Copy the original palette into the address given by #todPalAddr, creating the first palette to be modified by the loop below.
 
-    ; Set the palette address to the beginning of the bank holding it
+    ; Set the palette address to the beginning of the bank holding it.
     CALL ResetPaletteArrd
     
     ; Copy initial palette. HL (source) and BC (amount), DE (destination).
@@ -180,14 +180,14 @@ _VariablesSet
 _NextBrightnessPalette
 
     ; ##########################################
-    ; Moves #todPalAddr to the next palette 
+    ; Moves #todPalAddr to the next palette.
     LD HL, (todPalAddr)                         ; Use HL for LDIR below
     LD DE, HL
     ADD DE, bp.PAL_BYTES_D512                     ; Move DE to the next (destination) palette
     LD (todPalAddr), DE                         ; Move palette pointer to copied palette
 
     ; ##########################################
-    ; Copy current palette to new address given by #todPalAddr
+    ; Copy current palette to new address given by #todPalAddr.
     LD BC, (palBytes)                           ; Number of bytes to be copied by LDIR
     LDIR                                        ; Copy palette from HL to DE
 
@@ -196,7 +196,7 @@ _NextBrightnessPalette
 ;----------------------------------------------------------;
 ;                 _DecrementPaletteColors                  ;
 ;----------------------------------------------------------;
-; This function will decrease palette brighteners given by #todPalAddr
+; This function will decrease palette brighteners given by #todPalAddr.
 _DecrementPaletteColors
 
     ; ##########################################

@@ -67,21 +67,21 @@ SetupEnemyFormation
     CALL enp.ResetEnp
     CALL enp.CopyEnpsToEnp
 
-    ; Move IY to next array position
+    ; Move IY to next array position.
     LD DE, IY
     ADD DE, ENP
     LD IY, DE
     DJNZ .enpLoop
 
     ; ##########################################
-    ; Copy one given #ENPS to all #SPR 
+    ; Copy one given #ENPS to all #SPR.
     LD IY, ena.formationEnemySprites             ; Pointer to #SPR array
     LD B, ena.ENEMY_FORMATION_SIZE               ; Enemies size (number of #SPR structs)
 .sprLoop
     LD A, (IX + ENPS.SDB_INIT)
     LD (IY + SPR.SDB_INIT), A
 
-    ; Move IY to next array position
+    ; Move IY to next array position.
     LD DE, IY
     ADD DE, SPR
     LD IY, DE

@@ -206,7 +206,7 @@ KeyboardInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  CanProcessKeyInput                     ;
+;                   CanProcessKeyInput                     ;
 ;----------------------------------------------------------;
 ; Output:
 ;  A: _RET_YES_D1 or _RET_NO_D0

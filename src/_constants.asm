@@ -552,3 +552,15 @@ MOVE_DELAY              DB                      ; Value for FE.MOVE_DELAY
 
 STATE_DEPLOY_RIGHT      = %000'0'0000           ; Deploy on the right side of the screen and move left 
 STATE_DEPLOY_LEFT       = %000'1'0000           ; Deploy on the left side of the screen and move right 
+
+
+;----------------------------------------------------------;
+;         Memory Structure for Tile Animation              ;
+;----------------------------------------------------------;
+
+; Single tile frame
+    STRUCT TF
+POS                     DW                      ; Tile offset as byte starting from #ti.TI_MAP_RAM_H5B00
+TID                     DB                      ; Tile ID from "tile.spr"
+PAL                     DB                      ; Palette offset
+    ENDS

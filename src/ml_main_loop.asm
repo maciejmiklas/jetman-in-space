@@ -354,7 +354,6 @@ _MainLoop008
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
     CALL _MainLoop008OnActiveGame
-
     CALL _MainLoop008OnActiveGameOrFlyingRocket
     CALL _MainLoop008OnFlayingRocket
     CALL _MainLoop008OnActiveScoreMenu
@@ -407,6 +406,9 @@ _MainLoop008OnActiveGame
     CALL ro.AnimateTankExplode
     CALL st.BlinkStarsL1
     CALL jo.AnimateJetpackOverheat
+
+    CALL dbs.SetupTileAnimationBank
+    CALL ta.NextTileAnimationFrame 
 
     CALL dbs.SetupPatternEnemyBank
     CALL enu.AnimateFuelThief
@@ -695,7 +697,7 @@ _MainLoop150
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop
-    
+
     RET                                         ; ## END of the function ##
 
 

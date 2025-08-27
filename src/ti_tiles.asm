@@ -96,7 +96,7 @@ ShakeTilemap
 ResetTilemapOffset
 
     XOR A
-    NEXTREG _DC_REG_TI_X_LSB_H30, A             ; X tile offset.roc
+    NEXTREG _DC_REG_TI_X_LSB_H30, A
     NEXTREG _DC_REG_TI_Y_H31, A
 
     RET                                         ; ## END of the function ##
@@ -113,7 +113,7 @@ ResetTilemapOffset
 PrintText
 
     LD HL, TI_MAP_RAM_H5B00                      ; HL points to screen memory containing tilemap
-    DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
+    DEC HL
 
     ; HL will point to the memory location containing the data of the first character (tile)
     ADD HL, BC                                  ; *2 because each tile has 2 bytes
@@ -140,7 +140,7 @@ PrintText
 CleanAllTiles
 
     LD HL, TI_MAP_RAM_H5B00                     ; HL points to screen memory containing tilemap
-    DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
+    DEC HL
 
     ; ##########################################
     LD A, TI_EMPTY_D198
@@ -169,7 +169,7 @@ CleanAllTiles
 ;  - B:     Amount of tiles to clean 
 CleanTiles
     LD HL, TI_MAP_RAM_H5B00                     ; HL points to screen memory containing tilemap
-    DEC HL                                      ; TODO why -1 (verify TI_MAP_RAM_H5B00)?
+    DEC HL
 
     ; ##########################################
     LD A, TI_EMPTY_D198

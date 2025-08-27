@@ -198,12 +198,12 @@ ReplaceImageLine
     LD D, 0                                     ; E contains the line number, reset only D to use DE for 16-bit math
 .linesLoop
 
-    ; Copy a pixel from the source image into C
+    ; Copy a pixel from the source image into C.
     LD HL, _RAM_SLOT6_STA_HC000
     ADD HL, DE                                  ; Move DE from the beginning of the bank to the current pixel
     LD C, (HL)                                  ; C contains pixel value
     
-    ; Copy pixel value from C into the destination image
+    ; Copy pixel value from C into the destination image.
     LD HL, _RAM_SLOT7_STA_HE000
     ADD HL, DE                                  ; Move DE from the beginning of the bank to the current pixel
     LD (HL), C                                  ; Store pixel value
