@@ -34,6 +34,7 @@ I want to give a shout-out to the following, without them, I would have been los
 * [500 Pixel Bullet 24x24]( https://bit.ly/4aiZHZ4)
 * [Corey Archer] (https://opengameart.org/content/top-down-pokemon-esque-sprites)
 * [Chroma Noir] (https://v3x3d.itch.io/chroma-noir)
+* [Industrial Tileset] (https://atomicrealm.itch.io/industrial-tileset)
 
 
 https://github.com/maciejmiklas/jetman-in-space

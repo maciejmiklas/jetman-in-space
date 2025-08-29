@@ -5,7 +5,8 @@ if palette is broken try this:
 ./gfx2next -bitmap -preview -bitmap-y  -pal-std .\bg.bmp
 
 Tilemap sprites:
-.\gfx2next.exe -tile-size=8x8 -colors-4bit -sprites -preview .\chroma-noir.bmp
+gfx2next.exe -tile-size=8x8 -colors-4bit -preview -map-y .\chroma-noir.bmp
+python ntx_to_tilemap_spr.py chroma-noir.nxt
 
 
 AI text for title:
