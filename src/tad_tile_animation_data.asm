@@ -325,6 +325,431 @@ tilemapAnimationRowsL3
 TILEMAP_ANIM_ROWS_L3    = 3
 
 ; ##############################################
+; Level 5
+
+tilemapAnimationRow1L5
+    DB 19
+    TF{1217*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 1
+    TF{1220*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 1
+    TF{1202*2/*POS*/, 082/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 1
+    TF{1203*2/*POS*/, 083/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 1
+    TF{1204*2/*POS*/, 086/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 1
+    TF{1205*2/*POS*/, 087/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 1
+    TF{1162*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 1
+    TF{1163*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 1
+    TF{1164*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 1
+    TF{1165*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 1
+
+    TF{1232*2/*POS*/, 122/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 6
+    TF{1233*2/*POS*/, 123/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 6
+    TF{1234*2/*POS*/, 126/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 6
+    TF{1235*2/*POS*/, 127/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 6
+    TF{1192*2/*POS*/, 120/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 1 - frame 6
+    TF{1193*2/*POS*/, 121/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 2 - frame 6
+    TF{1194*2/*POS*/, 124/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 6
+    TF{1195*2/*POS*/, 125/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 6
+    TF{0650*2/*POS*/, 039/*TID*/, $10/*PAL*/}   ; Tool A - Frame 1
+
+tilemapAnimationRow2L5
+    DB 14
+    TF{1217*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 2
+    TF{1220*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 2
+    TF{1202*2/*POS*/, 090/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 2
+    TF{1203*2/*POS*/, 091/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 2
+    TF{1204*2/*POS*/, 094/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 2
+    TF{1205*2/*POS*/, 095/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 2
+    TF{1232*2/*POS*/, 130/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 7
+    TF{1233*2/*POS*/, 131/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 7
+    TF{1234*2/*POS*/, 134/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 7
+    TF{1235*2/*POS*/, 135/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 7
+
+    TF{1192*2/*POS*/, 128/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 1 - frame 7
+    TF{1193*2/*POS*/, 129/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 2 - frame 7
+    TF{1194*2/*POS*/, 132/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 7
+    TF{1195*2/*POS*/, 133/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 7
+
+tilemapAnimationRow3L5
+    DB 19
+    TF{1217*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 3
+    TF{1220*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 3
+    TF{1202*2/*POS*/, 098/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 3
+    TF{1203*2/*POS*/, 099/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 3
+    TF{1204*2/*POS*/, 102/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 3
+    TF{1205*2/*POS*/, 103/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 3
+    TF{1162*2/*POS*/, 096/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 3
+    TF{1163*2/*POS*/, 097/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 3
+    TF{1164*2/*POS*/, 100/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 3
+    TF{1165*2/*POS*/, 101/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 3
+
+    TF{1232*2/*POS*/, 138/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 8
+    TF{1233*2/*POS*/, 139/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 8
+    TF{1234*2/*POS*/, 142/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 8
+    TF{1235*2/*POS*/, 143/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 8
+    TF{1192*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 1 - frame 8
+    TF{1193*2/*POS*/, 137/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 2 - frame 8
+    TF{1194*2/*POS*/, 140/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 8
+    TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 8
+    TF{0650*2/*POS*/, 052/*TID*/, $10/*PAL*/}   ; Tool A - Frame 2
+
+tilemapAnimationRow4L5
+    DB 19
+    TF{1217*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 4
+    TF{1220*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 4
+    TF{1202*2/*POS*/, 106/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 4
+    TF{1203*2/*POS*/, 107/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 4
+    TF{1204*2/*POS*/, 110/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 4
+    TF{1205*2/*POS*/, 111/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 4
+    TF{1162*2/*POS*/, 104/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 4
+    TF{1163*2/*POS*/, 105/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 4
+    TF{1164*2/*POS*/, 108/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 4
+    TF{1165*2/*POS*/, 109/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 4
+
+    TF{1232*2/*POS*/, 082/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 1
+    TF{1233*2/*POS*/, 083/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 1
+    TF{1234*2/*POS*/, 086/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 1
+    TF{1235*2/*POS*/, 087/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 1
+    TF{1192*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 1 - frame 1
+    TF{1193*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 2 - frame 1
+    TF{1194*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 1
+    TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 1
+    TF{0945*2/*POS*/, 039/*TID*/, $10/*PAL*/}   ; Tool B - Frame 1
+
+tilemapAnimationRow5L5
+    DB 15
+    TF{1217*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 5
+    TF{1220*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 5
+    TF{1202*2/*POS*/, 114/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 5
+    TF{1203*2/*POS*/, 115/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 5
+    TF{1204*2/*POS*/, 118/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 5
+    TF{1205*2/*POS*/, 119/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 5
+    TF{1162*2/*POS*/, 112/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 5
+    TF{1163*2/*POS*/, 113/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 5
+    TF{1164*2/*POS*/, 116/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 5
+    TF{1165*2/*POS*/, 117/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 5
+
+    TF{1232*2/*POS*/, 090/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 2
+    TF{1233*2/*POS*/, 091/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 2
+    TF{1234*2/*POS*/, 094/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 2
+    TF{1235*2/*POS*/, 095/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 2
+    TF{0650*2/*POS*/, 042/*TID*/, $10/*PAL*/}   ; Tool A - Frame 3
+
+tilemapAnimationRow6L5
+    DB 19
+    TF{1217*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 6
+    TF{1220*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 6
+    TF{1202*2/*POS*/, 122/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 6
+    TF{1203*2/*POS*/, 123/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 6
+    TF{1204*2/*POS*/, 126/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 6
+    TF{1205*2/*POS*/, 127/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 6
+    TF{1162*2/*POS*/, 120/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 6
+    TF{1163*2/*POS*/, 121/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 6
+    TF{1164*2/*POS*/, 124/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 6
+    TF{1165*2/*POS*/, 125/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 6
+
+    TF{1232*2/*POS*/, 098/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 3
+    TF{1233*2/*POS*/, 099/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 3
+    TF{1234*2/*POS*/, 102/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 3
+    TF{1235*2/*POS*/, 103/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 3
+    TF{1192*2/*POS*/, 096/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 1 - frame 3
+    TF{1193*2/*POS*/, 097/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 2 - frame 3
+    TF{1194*2/*POS*/, 100/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 3
+    TF{1195*2/*POS*/, 101/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 3
+    TF{0945*2/*POS*/, 052/*TID*/, $10/*PAL*/}   ; Tool B - Frame 2
+
+tilemapAnimationRow7L5
+    DB 18
+    TF{1217*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 7
+    TF{1220*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 7
+    TF{1202*2/*POS*/, 130/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 7
+    TF{1203*2/*POS*/, 131/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 7
+    TF{1204*2/*POS*/, 134/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 7
+    TF{1205*2/*POS*/, 135/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 7
+    TF{1162*2/*POS*/, 128/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 7
+    TF{1163*2/*POS*/, 129/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 7
+    TF{1164*2/*POS*/, 132/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 7
+    TF{1165*2/*POS*/, 133/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 7
+
+    TF{1232*2/*POS*/, 106/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 4
+    TF{1233*2/*POS*/, 107/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 4
+    TF{1234*2/*POS*/, 110/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 4
+    TF{1235*2/*POS*/, 111/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 4
+    TF{1192*2/*POS*/, 104/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 1 - frame 4
+    TF{1193*2/*POS*/, 105/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 2 - frame 4
+    TF{1194*2/*POS*/, 108/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 4
+    TF{1195*2/*POS*/, 109/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 4
+
+tilemapAnimationRow8L5
+    DB 19
+    TF{1217*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 8
+    TF{1220*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 8
+    TF{1202*2/*POS*/, 138/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 8
+    TF{1203*2/*POS*/, 139/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 8
+    TF{1204*2/*POS*/, 142/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 8
+    TF{1205*2/*POS*/, 143/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 8
+    TF{1162*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 8
+    TF{1163*2/*POS*/, 137/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 8
+    TF{1164*2/*POS*/, 140/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 8
+    TF{1165*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 8
+
+    TF{1232*2/*POS*/, 114/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 1 - frame 5
+    TF{1233*2/*POS*/, 115/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 2 - frame 5
+    TF{1234*2/*POS*/, 118/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 3 - frame 5
+    TF{1235*2/*POS*/, 119/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 5
+    TF{1192*2/*POS*/, 112/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 1 - frame 5
+    TF{1193*2/*POS*/, 113/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 2 - frame 5
+    TF{1194*2/*POS*/, 116/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 5
+    TF{1195*2/*POS*/, 117/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 5
+    TF{0945*2/*POS*/, 042/*TID*/, $10/*PAL*/}   ; Tool B - Frame 3
+
+tilemapAnimationRowsL5
+    DW tilemapAnimationRow1L5, tilemapAnimationRow2L5, tilemapAnimationRow3L5, tilemapAnimationRow4L5, tilemapAnimationRow5L5, tilemapAnimationRow6L5, tilemapAnimationRow7L5, tilemapAnimationRow8L5
+
+TILEMAP_ANIM_ROWS_L5    = 8
+
+
+; ##############################################
+; Level 6
+tilemapAnimationRow1L6
+    DB 25
+    TF{0885*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 1
+    TF{0886*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 1
+    TF{0485*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 1
+    TF{0486*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 1
+    TF{0165*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 3
+    TF{0166*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 3
+    TF{0195*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 2
+    TF{0196*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 2
+    TF{0715*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 4
+    TF{0716*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 4
+
+    TF{0945*2/*POS*/, 039/*TID*/, $10/*PAL*/}   ; Tool A - Frame 1
+    TF{1207*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 1
+    TF{1210*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 1
+    TF{0347*2/*POS*/, 050/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 051/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{0307*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Post Left Up A - Frame 1
+    TF{0308*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Post Right Up A - Frame 1
+    TF{1232*2/*POS*/, 122/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 6
+    TF{1233*2/*POS*/, 123/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 6
+    TF{1234*2/*POS*/, 126/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 6
+
+    TF{1235*2/*POS*/, 127/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 6
+    TF{1192*2/*POS*/, 120/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 6
+    TF{1193*2/*POS*/, 121/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 6
+    TF{1194*2/*POS*/, 124/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 6
+    TF{1195*2/*POS*/, 125/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 6
+
+tilemapAnimationRow2L6
+    DB 23
+
+    TF{0885*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 2
+    TF{0886*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 2
+    TF{0485*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 2
+    TF{0486*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 2
+    TF{0165*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 4
+    TF{0166*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 4
+    TF{0195*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 3
+    TF{0196*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 3
+    TF{0715*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 1
+    TF{0716*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 1
+
+    TF{0945*2/*POS*/, 052/*TID*/, $10/*PAL*/}   ; Tool A - Frame 2
+    TF{1207*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 2
+    TF{1210*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 2
+    TF{0347*2/*POS*/, 054/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 055/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{1232*2/*POS*/, 130/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 7
+    TF{1233*2/*POS*/, 131/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 7
+    TF{1234*2/*POS*/, 134/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 7
+    TF{1235*2/*POS*/, 135/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 7
+    TF{1192*2/*POS*/, 128/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 7
+
+    TF{1193*2/*POS*/, 129/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 7
+    TF{1194*2/*POS*/, 132/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 7
+    TF{1195*2/*POS*/, 133/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 7
+
+tilemapAnimationRow3L6
+    DB 25
+    TF{0885*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 3
+    TF{0886*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 3
+    TF{0485*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 3
+    TF{0486*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 3
+    TF{0165*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 1
+    TF{0166*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 1
+    TF{0195*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 4
+    TF{0196*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 4
+    TF{0715*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 2
+    TF{0716*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 2
+
+    TF{0945*2/*POS*/, 042/*TID*/, $10/*PAL*/}   ; Tool A - Frame 3
+    TF{1207*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 3
+    TF{1210*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 3
+    TF{0347*2/*POS*/, 058/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 059/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{0307*2/*POS*/, 056/*TID*/, $10/*PAL*/}   ; Post Left Up A - Frame 1
+    TF{0308*2/*POS*/, 057/*TID*/, $10/*PAL*/}   ; Post Right Up A - Frame 1
+    TF{1232*2/*POS*/, 138/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 8
+    TF{1233*2/*POS*/, 139/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 8
+    TF{1234*2/*POS*/, 142/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 8
+
+    TF{1235*2/*POS*/, 143/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 8
+    TF{1192*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 8
+    TF{1193*2/*POS*/, 137/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 8
+    TF{1194*2/*POS*/, 140/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 8
+    TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 8
+
+tilemapAnimationRow4L6
+    DB 25
+    TF{0885*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 4
+    TF{0886*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 4
+    TF{0485*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 4
+    TF{0486*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 4
+    TF{0165*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 2
+    TF{0166*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 2
+    TF{0195*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 1
+    TF{0196*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 1
+    TF{0715*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 3
+    TF{0716*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 3
+
+    TF{0945*2/*POS*/, 039/*TID*/, $10/*PAL*/}   ; Tool A - Frame 1
+    TF{1207*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 4
+    TF{1210*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 4
+    TF{0347*2/*POS*/, 062/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 063/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{0307*2/*POS*/, 060/*TID*/, $10/*PAL*/}   ; Post Left Up A - Frame 1
+    TF{0308*2/*POS*/, 061/*TID*/, $10/*PAL*/}   ; Post Right Up A - Frame 1
+    TF{1232*2/*POS*/, 082/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 1
+    TF{1233*2/*POS*/, 083/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 1
+    TF{1234*2/*POS*/, 086/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 1
+
+    TF{1235*2/*POS*/, 087/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 1
+    TF{1192*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 1
+    TF{1193*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 1
+    TF{1194*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 1
+    TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 1
+
+tilemapAnimationRow5L6
+    DB 21
+    TF{0885*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 1
+    TF{0886*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 1
+    TF{0485*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 1
+    TF{0486*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 1
+    TF{0165*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 3
+    TF{0166*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 3
+    TF{0195*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 2
+    TF{0196*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 2
+    TF{0715*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 4
+    TF{0716*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 4
+
+    TF{0945*2/*POS*/, 052/*TID*/, $10/*PAL*/}   ; Tool A - Frame 2
+    TF{1207*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 5
+    TF{1210*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 5
+    TF{0347*2/*POS*/, 066/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 067/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{0307*2/*POS*/, 064/*TID*/, $10/*PAL*/}   ; Post Left Up A - Frame 1
+    TF{0308*2/*POS*/, 065/*TID*/, $10/*PAL*/}   ; Post Right Up A - Frame 1
+    TF{1232*2/*POS*/, 090/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 2
+    TF{1233*2/*POS*/, 091/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 2
+    TF{1234*2/*POS*/, 094/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 2
+
+    TF{1235*2/*POS*/, 095/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 2
+
+tilemapAnimationRow6L6
+    DB 25
+    TF{0885*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 2
+    TF{0886*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 2
+    TF{0485*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 2
+    TF{0486*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 2
+    TF{0165*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 4
+    TF{0166*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 4
+    TF{0195*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 3
+    TF{0196*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 3
+    TF{0715*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 1
+    TF{0716*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 1
+
+    TF{0945*2/*POS*/, 042/*TID*/, $10/*PAL*/}   ; Tool A - Frame 3
+    TF{1207*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 6
+    TF{1210*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 6
+    TF{0347*2/*POS*/, 070/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 071/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{0307*2/*POS*/, 068/*TID*/, $10/*PAL*/}   ; Post Left Up A - Frame 1
+    TF{0308*2/*POS*/, 069/*TID*/, $10/*PAL*/}   ; Post Right Up A - Frame 1
+    TF{1232*2/*POS*/, 098/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 3
+    TF{1233*2/*POS*/, 099/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 3
+    TF{1234*2/*POS*/, 102/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 3
+
+    TF{1235*2/*POS*/, 103/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 3
+    TF{1192*2/*POS*/, 096/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 3
+    TF{1193*2/*POS*/, 097/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 3
+    TF{1194*2/*POS*/, 100/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 3
+    TF{1195*2/*POS*/, 101/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 3
+
+tilemapAnimationRow7L6
+    DB 25
+    TF{0885*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 3
+    TF{0886*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 3
+    TF{0485*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 3
+    TF{0486*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 3
+    TF{0165*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 1
+    TF{0166*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 1
+    TF{0195*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 4
+    TF{0196*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 4
+    TF{0715*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 2
+    TF{0716*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 2
+
+    TF{0945*2/*POS*/, 039/*TID*/, $10/*PAL*/}   ; Tool A - Frame 1
+    TF{1207*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 7
+    TF{1210*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 7
+    TF{0347*2/*POS*/, 074/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 075/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{0307*2/*POS*/, 072/*TID*/, $10/*PAL*/}   ; Post Left Up A - Frame 1
+    TF{0308*2/*POS*/, 073/*TID*/, $10/*PAL*/}   ; Post Right Up A - Frame 1
+    TF{1232*2/*POS*/, 106/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 4
+    TF{1233*2/*POS*/, 107/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 4
+    TF{1234*2/*POS*/, 110/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 4
+
+    TF{1235*2/*POS*/, 111/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 4
+    TF{1192*2/*POS*/, 104/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 4
+    TF{1193*2/*POS*/, 105/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 4
+    TF{1194*2/*POS*/, 108/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 4
+    TF{1195*2/*POS*/, 109/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 4
+
+tilemapAnimationRow8L6
+    DB 25
+    TF{0885*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 4
+    TF{0886*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 4
+    TF{0485*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left B - frame 4
+    TF{0486*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right B - frame 4
+    TF{0165*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left A - frame 2
+    TF{0166*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right A - frame 2
+    TF{0195*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left D - frame 1
+    TF{0196*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right D - frame 1
+    TF{0715*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left E - frame 3
+    TF{0716*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right E - frame 3
+
+    TF{0945*2/*POS*/, 052/*TID*/, $10/*PAL*/}   ; Tool A - Frame 2
+    TF{1207*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Rocket Light Left - Frame 8
+    TF{1210*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Rocket Right Left - Frame 8
+    TF{0347*2/*POS*/, 078/*TID*/, $10/*PAL*/}   ; Post Left Down A - Frame 1
+    TF{0348*2/*POS*/, 079/*TID*/, $10/*PAL*/}   ; Post Right Down A - Frame 1
+    TF{0307*2/*POS*/, 076/*TID*/, $10/*PAL*/}   ; Post Left Up A - Frame 1
+    TF{0308*2/*POS*/, 077/*TID*/, $10/*PAL*/}   ; Post Right Up A - Frame 1
+    TF{1232*2/*POS*/, 114/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 1 - frame 5
+    TF{1233*2/*POS*/, 115/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 2 - frame 5
+    TF{1234*2/*POS*/, 118/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 3 - frame 5
+
+    TF{1235*2/*POS*/, 119/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 5
+    TF{1192*2/*POS*/, 112/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 1 - frame 5
+    TF{1193*2/*POS*/, 113/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 2 - frame 5
+    TF{1194*2/*POS*/, 116/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 5
+    TF{1195*2/*POS*/, 117/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 5
+
+tilemapAnimationRowsL6
+    DW tilemapAnimationRow1L6, tilemapAnimationRow2L6, tilemapAnimationRow3L6, tilemapAnimationRow4L6, tilemapAnimationRow5L6, tilemapAnimationRow6L6, tilemapAnimationRow7L6, tilemapAnimationRow8L6
+
+TILEMAP_ANIM_ROWS_L6    = 8
+
+; ##############################################
 ; Level 8
 tilemapAnimationRow1L8
     DB 35
@@ -452,6 +877,9 @@ tilemapAnimationRowsL8
     DW tilemapAnimationRow1L8, tilemapAnimationRow2L8, tilemapAnimationRow3L8
 
 TILEMAP_ANIM_ROWS_L8    = 3
+
+    ; ##########################################
+    ASSERT $$ == dbs.TILE_ANIMATION_D34         ; Data should remain in the same bank
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

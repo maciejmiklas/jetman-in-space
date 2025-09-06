@@ -60,6 +60,13 @@ LoadLevel1Data
     LD HL, tad.tilemapAnimationRowsL1
     CALL ta.SetupTileAnimation
 
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -118,6 +125,13 @@ LoadLevel2Data
     LD A, tad.TILEMAP_ANIM_ROWS_L2
     LD HL, tad.tilemapAnimationRowsL2
     CALL ta.SetupTileAnimation
+
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
 
     RET                                         ; ## END of the function ##
 
@@ -180,6 +194,13 @@ LoadLevel3Data
     LD HL, tad.tilemapAnimationRowsL3
     CALL ta.SetupTileAnimation
 
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -234,6 +255,13 @@ LoadLevel4Data
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
 
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -286,6 +314,20 @@ LoadLevel5Data
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
 
+    ; ##########################################
+    ; Load tile animation
+    CALL dbs.SetupTileAnimationBank
+    LD A, tad.TILEMAP_ANIM_ROWS_L5
+    LD HL, tad.tilemapAnimationRowsL5
+    CALL ta.SetupTileAnimation
+
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePalette5Bin
+    LD B, db1.tilePalette5BinLength
+    CALL ti.LoadTilemapPalette
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -337,6 +379,20 @@ LoadLevel6Data
     ; Load following enemies
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
+
+    ; ##########################################
+    ; Load tile animation
+    CALL dbs.SetupTileAnimationBank
+    LD A, tad.TILEMAP_ANIM_ROWS_L6
+    LD HL, tad.tilemapAnimationRowsL6
+    CALL ta.SetupTileAnimation
+
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePalette5Bin
+    LD B, db1.tilePalette5BinLength
+    CALL ti.LoadTilemapPalette
 
     RET                                         ; ## END of the function ##
 
@@ -391,6 +447,13 @@ LoadLevel7Data
     ; Load following enemies
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
+    
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
 
     RET                                         ; ## END of the function ##
 
@@ -452,6 +515,13 @@ LoadLevel8Data
     LD HL, tad.tilemapAnimationRowsL8
     CALL ta.SetupTileAnimation
 
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -505,6 +575,13 @@ LoadLevel9Data
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
 
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -557,6 +634,13 @@ LoadLevel10Data
     ; Load following enemies
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
+
+    ; ##########################################
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
 
     RET                                         ; ## END of the function ##
 

@@ -51,6 +51,12 @@ SetupSystem
     CALL sc.SetupScreen
     CALL ti.SetupTiles
 
+    ; Load tilemap menu palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
+
     ; Load sprites from any level for mein menu
     LD D, "0"
     LD E, "1"
@@ -63,7 +69,7 @@ SetupSystem
 ;                      LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
-
+    
     LD A, ms.MENU_MAIN
     CALL ms.SetMainState
 
@@ -72,6 +78,12 @@ LoadMainMenu
     CALL ti.SetTilesClipFull
     CALL mma.LoadMainMenu
     CALL jl.ResetLives
+
+    ; Load tilemap menu palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePaletteBin
+    LD B, db1.tilePaletteBinLength
+    CALL ti.LoadTilemap8bitPalette
 
     RET                                         ; ## END of the function ##
 
