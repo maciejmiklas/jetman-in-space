@@ -226,8 +226,6 @@ _SetupMenuScore
     PUSH DE
 
     CALL fi.LoadBgPaletteFile
-
-    CALL dbs.SetupPaletteBank
     CALL btd.LoadOriginalPalette
 
     POP DE

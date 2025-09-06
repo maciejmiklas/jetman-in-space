@@ -1125,8 +1125,6 @@ NightEnds
     ; transition step from day to night (night to day will start), and the palette address points to the memory containing the next step, 
     ; but there is no palette on that address. We have to move the back palette addresses by one palette so that it points to the last 
     ; palette containing colors for the darkest night.
-
-    CALL dbs.SetupPaletteBank
     CALL btd.PrevTodPaletteAddr
 
     RET                                         ; ## END of the function ##
@@ -1140,7 +1138,6 @@ NightEnds
 ; B) NextNightToDay -> NextNightToDay -> .... -> NextNightToDay -> ChangeToFullDay -> GOTO A)
 NextDayToNight
 
-    CALL dbs.SetupPaletteBank
     CALL btd.NextTodPalette
 
     RET                                         ; ## END of the function ##
@@ -1151,7 +1148,6 @@ NextDayToNight
 ; The function will be called when a day shifts to a night.
 NextNightToDay
 
-    CALL dbs.SetupPaletteBank
     CALL btd.PrevTodPalette
 
     RET                                         ; ## END of the function ##
@@ -1161,8 +1157,6 @@ NextNightToDay
 ;----------------------------------------------------------;
 ; Called when the lighting condition has changed to a full day.
 ChangeToFullDay
-
-    CALL dbs.SetupPaletteBank
     CALL btd.ResetPaletteArrd
     CALL btd.LoadCurrentTodPalette
 

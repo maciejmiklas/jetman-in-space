@@ -39,7 +39,6 @@ LoadLevelIntro
     ; Load palette
     CALL fi.LoadIntroPalFile
 
-    CALL dbs.SetupPaletteBank
     CALL btd.LoadOriginalPalette
 
     ; ##########################################
