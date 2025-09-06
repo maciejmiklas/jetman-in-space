@@ -689,11 +689,10 @@ _LoadDataByLevelNumber
     ; ##########################################
     ; Load palettes
     CALL fi.LoadBgPaletteFile
-
     CALL dbs.SetupPaletteBank
 
     ; Load palette size into a global variable
-    LD DE, btd.PAL_BG_BYTES_D300
+    LD DE, btd.PAL_BG_BYTES_D430
     LD (btd.palBytes),DE
 
     ; Load the address of the original palette into a global variable

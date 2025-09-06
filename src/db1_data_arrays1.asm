@@ -93,135 +93,135 @@ tilePalette5BinLength = $ - tilePalette5Bin
 ;                          Stars                           ;
 ;----------------------------------------------------------;
 starsData1
-    st.SC {0/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}    ; X=2
-    DB 12,1, 15,4, 70,5, 94,15, 160,8, 250,19
+    SC {0/*BANK*/, 02/*X_OFFSET*/, 6/*SIZE*/}    ; X=2
+    DB 12,1, 15,13, 70,12, 94,1, 160,18, 250,21
 
-    st.SC {0/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}    ; X=8
-    DB 5,3, 38,6, 120,10, 158,4, 245,18
+    SC {0/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}    ; X=8
+    DB 5,1, 38,13, 120,18, 158,5, 245,9
 
-    st.SC {0/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}    ; X=20
-    DB 4,4, 42,8, 133,1, 245,15
+    SC {0/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}    ; X=20
+    DB 4,4, 42,21, 133,30, 245,7
 
-    st.SC {1/*BANK*/, 05/*X_OFFSET*/, 5/*SIZE*/}    ; X=37
-    DB 20,3, 80,8, 104,12, 150,9, 255,5
+    SC {1/*BANK*/, 05/*X_OFFSET*/, 5/*SIZE*/}    ; X=37
+    DB 20,8, 80,3, 104,9, 150,19, 255,25
 
-    st.SC {1/*BANK*/, 15/*X_OFFSET*/, 5/*SIZE*/}    ; X=47
+    SC {1/*BANK*/, 15/*X_OFFSET*/, 5/*SIZE*/}    ; X=47
     DB 10,1, 115,4, 130,9, 155,2, 230,15
 
-    st.SC {1/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}    ; X=55
-    DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,16
+    SC {1/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}    ; X=55
+    DB 4,4, 90,13, 144,8, 148,2, 202,5, 251,16
 
-    st.SC {2/*BANK*/, 04/*X_OFFSET*/, 5/*SIZE*/}    ; X=68
-    DB 14,2, 52,4, 113,6, 189,8, 241,16
+    SC {2/*BANK*/, 04/*X_OFFSET*/, 5/*SIZE*/}    ; X=68
+    DB 14,2, 52,15, 113,6, 189,8, 241,16
 
-    st.SC {2/*BANK*/, 11/*X_OFFSET*/, 4/*SIZE*/}    ; X=75
-    DB 21,1, 92,6, 158,9, 221,19
+    SC {2/*BANK*/, 11/*X_OFFSET*/, 4/*SIZE*/}    ; X=75
+    DB 21,1, 92,16, 158,9, 221,19
 
-    st.SC {2/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=84
+    SC {2/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=84
     DB 31,5, 93,4, 159,13, 178,8, 248,19
 
-    st.SC {3/*BANK*/, 01/*X_OFFSET*/, 6/*SIZE*/}    ; X=97
-    DB 26,3, 45,8, 125,4, 138,11, 160,9, 193,12
+    SC {3/*BANK*/, 01/*X_OFFSET*/, 6/*SIZE*/}    ; X=97
+    DB 26,23, 45,8, 125,4, 138,11, 160,9, 193,12
 
-    st.SC {3/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=116
-    DB 10,4, 104,5, 145,6, 190,8, 249,12
+    SC {3/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=116
+    DB 10,24, 104,5, 145,6, 190,18, 249,12
 
-    st.SC {3/*BANK*/, 28/*X_OFFSET*/, 4/*SIZE*/}    ; X=124
-    DB 86,11, 123,7, 158,1, 233,19
+    SC {3/*BANK*/, 28/*X_OFFSET*/, 4/*SIZE*/}    ; X=124
+    DB 86,21, 123,7, 158,1, 233,19
 
-    st.SC {4/*BANK*/, 05/*X_OFFSET*/, 6/*SIZE*/}    ; X=133
-    DB 21,19, 55,11, 80,8, 144,3, 148,13, 243,2
+    SC {4/*BANK*/, 05/*X_OFFSET*/, 6/*SIZE*/}    ; X=133
+    DB 21,19, 55,11, 80,28, 144,31, 148,13, 243,2
 
-    st.SC {4/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}    ; X=143
-    DB 47,13, 77,2, 93,18, 139,1, 188,5, 233,7
+    SC {4/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}    ; X=143
+    DB 47,13, 77,23, 93,18, 139,1, 188,5, 233,7
 
-    st.SC {4/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}    ; X=151
-    DB 5,3, 84,5, 98,9, 142,12, 168,11, 201,10
+    SC {4/*BANK*/, 23/*X_OFFSET*/, 6/*SIZE*/}    ; X=151
+    DB 5,3, 84,5, 98,19, 142,12, 168,11, 201,10
 
-    st.SC {5/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}    ; X=171
-    DB 38,1, 78,5, 132,9, 149,12, 231,11
+    SC {5/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}    ; X=171
+    DB 38,1, 78,15, 132,9, 149,12, 231,11
 
-    st.SC {5/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=180
-    DB 24,2, 44,9, 126,3, 160,7, 243,17
+    SC {5/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=180
+    DB 24,2, 44,19, 126,3, 160,7, 243,17
 
-    st.SC {6/*BANK*/, 05/*X_OFFSET*/, 3/*SIZE*/}    ; X=197
+    SC {6/*BANK*/, 05/*X_OFFSET*/, 3/*SIZE*/}    ; X=197
     DB 64,11, 116,3, 174,15
 
-    st.SC {6/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=212
+    SC {6/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=212
     DB 13,15, 44,3, 100,5, 143,7, 199,2
 
-    st.SC {7/*BANK*/, 03/*X_OFFSET*/, 5/*SIZE*/}    ; X=227
+    SC {7/*BANK*/, 03/*X_OFFSET*/, 5/*SIZE*/}    ; X=227
     DB 55,2, 98,3, 120,7, 187,11, 255,19
 
-    st.SC {7/*BANK*/, 12/*X_OFFSET*/, 4/*SIZE*/}    ; X=236
-    DB 11,14, 82,16, 148,11, 213,9
+    SC {7/*BANK*/, 12/*X_OFFSET*/, 4/*SIZE*/}    ; X=236
+    DB 11,14, 82,16, 148,11, 213,19
 
-    st.SC {7/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=254
+    SC {7/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=254
     DB 44,1, 113,12, 192,15, 253,12
 
-    st.SC {8/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}    ; X=264
+    SC {8/*BANK*/, 08/*X_OFFSET*/, 5/*SIZE*/}    ; X=264
     DB 4,3, 39,1, 88,13, 133,2, 152,15
 
-    st.SC {8/*BANK*/, 16/*X_OFFSET*/, 3/*SIZE*/}    ; X=272
-    DB 3,1, 142,4, 241,9
+    SC {8/*BANK*/, 16/*X_OFFSET*/, 3/*SIZE*/}    ; X=272
+    DB 3,1, 142,4, 241,19
 
-    st.SC {8/*BANK*/, 31/*X_OFFSET*/, 4/*SIZE*/}    ; X=287
-    DB 30,12, 103,3, 150,8, 189,2
+    SC {8/*BANK*/, 31/*X_OFFSET*/, 4/*SIZE*/}    ; X=287
+    DB 30,12, 103,13, 150,8, 189,2
 
-    st.SC {9/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}    ; X=308
+    SC {9/*BANK*/, 20/*X_OFFSET*/, 4/*SIZE*/}    ; X=308
     DB 5,4, 36,11, 120,14, 211,2
 
-    st.SC {9/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=318
-    DB 5,3, 102,6, 142,9, 240,12
+    SC {9/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=318
+    DB 5,23, 102,6, 142,9, 240,12
 
 starsData2
-    st.SC {0/*BANK*/, 15/*X_OFFSET*/, 4/*SIZE*/}    ; X=15
-    DB 4,4, 42,8, 133,1, 245,9
+    SC {0/*BANK*/, 15/*X_OFFSET*/, 4/*SIZE*/}    ; X=15
+    DB 4,1, 42,2, 133,3, 245,7
 
-    st.SC {1/*BANK*/, 10/*X_OFFSET*/, 6/*SIZE*/}    ; X=42
-    DB 26,3, 45,8, 125,4, 138,3, 160,9, 193,2
+    SC {1/*BANK*/, 10/*X_OFFSET*/, 6/*SIZE*/}    ; X=42
+    DB 26,4, 45,1, 125,2, 138,4, 160,5, 193,2
 
-    st.SC {1/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=52
-    DB 14,2, 52,4, 113,6, 189,8, 241,1
+    SC {1/*BANK*/, 20/*X_OFFSET*/, 5/*SIZE*/}    ; X=52
+    DB 14,1, 52,1, 113,3, 189,5, 241,2
 
-    st.SC {2/*BANK*/, 06/*X_OFFSET*/, 5/*SIZE*/}    ; X=70
-    DB 10,1, 115,4, 130,9, 155,2, 230,4
+    SC {2/*BANK*/, 06/*X_OFFSET*/, 5/*SIZE*/}    ; X=70
+    DB 10,1, 115,3, 130,4, 155,5, 230,6
 
-    st.SC {2/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}    ; X=82
-    DB 38,1, 78,5, 132,9, 149,2, 231,5
+    SC {2/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}    ; X=82
+    DB 38,2, 78,3, 132,4, 149,5, 231,6
 
-    st.SC {3/*BANK*/, 12/*X_OFFSET*/, 5/*SIZE*/}    ; X=108
-    DB 5,3, 38,6, 120,9, 158,4, 245,1
+    SC {3/*BANK*/, 12/*X_OFFSET*/, 5/*SIZE*/}    ; X=108
+    DB 5,5, 38,4, 120,3, 158,2, 245,1
 
-    st.SC {3/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}    ; X=114
-    DB 31,5, 93,4, 159,1, 178,8, 248,4
+    SC {3/*BANK*/, 18/*X_OFFSET*/, 5/*SIZE*/}    ; X=114
+    DB 31,1, 93,2, 159,4, 178,6, 248,7
 
-    st.SC {4/*BANK*/, 1/*X_OFFSET*/, 5/*SIZE*/}     ; X=129
-    DB 10,4, 104,5, 145,6, 190,8, 249,3
+    SC {4/*BANK*/, 1/*X_OFFSET*/, 5/*SIZE*/}     ; X=129
+    DB 10,1, 104,2, 145,4, 190,5, 249,7
 
-    st.SC {4/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=158
-    DB 21,1, 92,6, 158,9, 221,6
+    SC {4/*BANK*/, 30/*X_OFFSET*/, 4/*SIZE*/}    ; X=158
+    DB 21,7, 92,4, 158,3, 221,1
 
-    st.SC {5/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}    ; X=175
-    DB 4,4, 90,1, 144,8, 148,2, 202,5, 251,7
+    SC {5/*BANK*/, 15/*X_OFFSET*/, 6/*SIZE*/}    ; X=175
+    DB 4,1, 90,3, 144,4, 148,5, 202,6, 251,7
 
-    st.SC {6/*BANK*/, 04/*X_OFFSET*/, 6/*SIZE*/}    ; X=194
-    DB 12,1, 15,4, 70,5, 94,3, 160,8, 250,2
+    SC {6/*BANK*/, 04/*X_OFFSET*/, 6/*SIZE*/}    ; X=194
+    DB 12,3, 15,4, 70,5, 94,2, 160,3, 250,1
 
-    st.SC {6/*BANK*/, 10/*X_OFFSET*/, 4/*SIZE*/}    ; X=202
-    DB 86,3, 123,7, 158,1, 233,9
+    SC {6/*BANK*/, 10/*X_OFFSET*/, 4/*SIZE*/}    ; X=202
+    DB 86,3, 123,1, 158,2, 233,5
 
-    st.SC {7/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}    ; X=235
-    DB 20,3, 80,8, 104,2, 150,9, 255,5
+    SC {7/*BANK*/, 11/*X_OFFSET*/, 5/*SIZE*/}    ; X=235
+    DB 20,1, 80,2, 104,4, 150,2, 255,6
 
-    st.SC {8/*BANK*/, 12/*X_OFFSET*/, 6/*SIZE*/}    ; X=268
-    DB 21,3, 55,4, 80,8, 144,5, 148,8, 243,6
+    SC {8/*BANK*/, 12/*X_OFFSET*/, 6/*SIZE*/}    ; X=268
+    DB 21,2, 55,3, 80,5, 144,6, 148,7, 243,2
 
-    st.SC {8/*BANK*/, 25/*X_OFFSET*/, 6/*SIZE*/}    ; X=281
-    DB 47,3, 77,2, 93,5, 139,7, 188,4, 233,1
+    SC {8/*BANK*/, 25/*X_OFFSET*/, 6/*SIZE*/}    ; X=281
+    DB 47,2, 77,3, 93,4, 139,5, 188,6, 233,7
 
-    st.SC {9/*BANK*/, 13/*X_OFFSET*/, 6/*SIZE*/}    ; X=301
-    DB 5,3, 84,5, 98,9, 142,1, 168,4, 201,5
+    SC {9/*BANK*/, 13/*X_OFFSET*/, 6/*SIZE*/}    ; X=301
+    DB 5,3, 84,4, 98,5, 142,6, 168,7, 201,3
 
 ; Max horizontal star position for each column (#SC). Starts reaching it will be hidden.
 starsData1MaxYL1
@@ -304,11 +304,27 @@ starsData2MaxYL10
     DB 016/*X=015*/, 028/*X=042*/, 030/*X=052*/, 045/*X=070*/, 062/*X=082*/, 051/*X=108*/, 061/*X=114*/, 075/*X=129*/, 127/*X=158*/
     DB 214/*X=175*/, 221/*X=194*/, 221/*X=202*/, 229/*X=235*/, 052/*X=268*/, 042/*X=281*/, 024/*X=301*/
 
+; Stars on L1 have 32 colors, 64 bytes. A few last bytes are transparent to simulate blinking, where the star disappears.
+; Values for Remy's editor:
+/*
+   $A0   $A1   $A2   $A3   $A4   $A5   $A6   $A7   $D0   $D1   $D2   $D3   $D4   $D5   $D6   $D7
+  $140  $141  $142  $143  $144  $145  $146  $147   $4C   $4B   $49   $48  $1C7  $1C7  $1C7  $1C7
+*/
 starsPalL1
-    DW $1FF, $1FF, $1FF, $120, $123, $125, $127, $128, $12B, $12D, $12F, $130, $133, $135, $137, $138, $13B, $13D, $13F, $0, $0, $0, $0, $0, $0
+	DB $50, $00, $50, $01, $51, $00, $51, $01, $52, $00, $52, $01, $53, $00, $53, $01
+	DB $68, $00, $68, $01, $69, $00, $69, $01, $6A, $00, $6A, $01, $6B, $00, $6B, $01
+	DB $A0, $00, $A0, $01, $A1, $00, $A1, $01, $A2, $00, $A2, $01, $A3, $00, $A3, $01
+	DB $26, $00, $25, $01, $24, $01, $24, $00, $E3, $01, $E3, $01, $E3, $01, $E3, $01
+ST_PAL_L1_SIZE          = 32                    ; Number of colors for stars on layer 1 (each color takes 2 bytes)
 
+; Stars on L1 have 8 colors, 16 bytes.
+; Values for Remy's editor:
+/*
+ $90   $91  $92   $93   $94    $95    $DB    $DC   $0    $0    $0    $0    $0    $0    $0    $0
+*/
 starsPalL2
-    DB  $40, $36, $48, $8, $B, $0, $0, $0, $0, $0
+    db $d8, $00, $d8, $01, $d9, $00, $d9, $01, $da, $00, $da, $01, $db, $00, $db, $01
+ST_PAL_L2_SIZE          = 8                     ; Number of colors for stars on layer 2 (each color takes 2 bytes)
 
     ; ##########################################
     ASSERT $$ == dbs.ARR1_BANK_S7_D28           ; Data should remain in the same bank

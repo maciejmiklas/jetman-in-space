@@ -387,6 +387,7 @@ _MainLoop008OnFlayingRocket
     CALL rof.AnimateRocketExhaust
     CALL rof.BlinkFlyingRocket
     CALL st.BlinkStarsL1
+    CALL st.BlinkStarsL2
 
     RET                                         ; ## END of the function ##
 
@@ -492,7 +493,8 @@ _MainLoop010OnActiveGame
     CALL enf.RespawnFormation
 
     CALL gc.RespawnEnemy
-    
+    CALL st.BlinkStarsL2
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

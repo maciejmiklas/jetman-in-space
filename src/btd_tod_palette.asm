@@ -10,8 +10,10 @@ palColors               DB 0                    ; Amount of colors in background
 palAdr                  DW 0                    ; Address of the original palette data
 todPalAddr              DW 0                    ; Pointer to current brightness palette
 
-PAL_BG_BYTES_D300      = 312                    ; Background palette has max 300 bytes to have 100 bytes (50 colors) for stars
-
+; We use 40 colors (41 with margin) for the stars palette, which leaves 512-(41*2) = 430 bytes, or 215 colors for the L2 image.
+PAL_BG_BYTES_D430      = 512-(41*2)
+    ASSERT PAL_BG_BYTES_D430 = 430
+    
 ; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000. #todPalAddr points to the current palette.
 TOD_PALETTES_ADDR      = _RAM_SLOT7_STA_HE000
 

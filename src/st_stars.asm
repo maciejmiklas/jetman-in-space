@@ -20,17 +20,8 @@ ST_PAL_FIRST_D1         = 1                     ; Offset for the first color use
 
 ST_PAL_TRANSP_D0        = 0                     ; Index of transparent color
 
-ST_PAL_L1_SIZE          = 25                    ; Number of colors for stars on layer 1
-ST_PAL_L2_SIZE          = 10                    ; Number of colors for stars on layer 2
-
-ST_L1_SIZE              = 27                    ; Number stars on layer 1
-ST_L2_SIZE              = 16                    ; Number stars on layer 2
-
-    STRUCT SC                                   ; Stars column
-BANK                    DB                      ; Image bank number from 0 to 9
-X_OFFSET                DB                      ; X offset from the beginning of the bank, max 32 (32=8192/256)
-SIZE                    DB                      ; Amount of stars
-    ENDS
+ST_L1_SIZE              = 27                    ; Number start columns on layer 1
+ST_L2_SIZE              = 16                    ; Number start columns on layer 2
 
 SC_BLINK_OFF            = 0
 
@@ -45,24 +36,23 @@ starsState              DB ST_SHOW
 ST_L1_MOVE_DEL_D4       = 2                     ; Stars move delay for layer 1
 ST_L2_MOVE_DEL_D4       = 10                    ; Stars move delay for layer 2
 
-starsMoveL1Delay        DB ST_L1_MOVE_DEL_D4 ; Delay counter for stars on layer 1 (there are 2 layers of stars)
-starsMoveL2Delay        DB ST_L2_MOVE_DEL_D4 ; Delay counter for stars on layer 2
+starsMoveL1Delay        DB ST_L1_MOVE_DEL_D4    ; Delay counter for stars on layer 1 (there are 2 layers of stars)
+starsMoveL2Delay        DB ST_L2_MOVE_DEL_D4    ; Delay counter for stars on layer 2
 
 randColor               DB 0                  ; Rand value from the previous call
 
-; Currently rendered palette.
+; Currently rendered palette
 starsPal                DW 0
 starsPalSize            DB 0
 starsPalOffset          DB 0
 
-; Currently rendered stars.
-starsDataSize           DB 27
+; Currently rendered stars
+starsDataSize           DB 0
 starsData               DW 0                ; Before using: CALL ut.SetupDataArraysBank
 starsDataMaxY           DW 0                ; Before using: CALL ut.SetupDataArraysBank
 
 starsData1MaxY          DW 0
 starsData2MaxY          DW 0
-
 
 ;----------------------------------------------------------;
 ;                       SetupStars                         ;
@@ -82,19 +72,10 @@ SetupStars
 ;----------------------------------------------------------;
 LoadStarsPalette
 
-    ; Do not load the stars palette if the layer 2 image has too many colors and no more free space in the palette.
-    ; Add an amount of colors in the image to the colors required by the stars, and return if the carry flag is set.
-    LD A, ST_PAL_L1_SIZE + ST_PAL_L2_SIZE
-    LD B, A
-    LD A, (btd.palColors)
-    ADD B
-    RET C                                       ; Return if (image colors) + (stars colors ) > 256
-    
-    ; ##########################################
     ; Load colors for the stars on layer 1
     CALL dbs.SetupArrays1Bank
     LD HL, db1.starsPalL1
-    LD A, ST_PAL_L1_SIZE
+    LD A, db1.ST_PAL_L1_SIZE
     LD B, A
     CALL bp.WritePalette
 
@@ -102,7 +83,7 @@ LoadStarsPalette
     ; Load colors for the stars on layer 2
     CALL dbs.SetupArrays1Bank
     LD HL, db1.starsPalL2
-    LD A, ST_PAL_L2_SIZE
+    LD A, db1.ST_PAL_L2_SIZE
     LD B, A
     CALL bp.WritePalette
 
@@ -132,13 +113,6 @@ HideStars
 
     LD A, ST_HIDDEN
     LD (starsState), A
-
-    ; Render
-    CALL _SetupLayer1
-    CALL _RenderStars
-
-    CALL _SetupLayer2
-    CALL _RenderStars
 
     RET                                         ; ## END of the function ##
 
@@ -189,6 +163,11 @@ MoveStarsDown
 ;----------------------------------------------------------;
 BlinkStarsL1
 
+    ; Execute stars only if enabled
+    LD A, (starsState)
+    CP ST_C_HIDDEN
+    RET C
+
     CALL _SetupLayer1
     CALL _NextStarsColor
 
@@ -197,15 +176,18 @@ BlinkStarsL1
 ;----------------------------------------------------------;
 ;                       BlinkStarsL2                       ;
 ;----------------------------------------------------------;
-; It is not used for now because it dominates the parallax effect. 
-/*
+; It is not used for now because it alters the parallax effect.
 BlinkStarsL2
+
+    ; Execute stars only if enabled
+    LD A, (starsState)
+    CP ST_C_HIDDEN
+    RET C
 
     CALL _SetupLayer2
     CALL _NextStarsColor
 
     RET                                         ; ## END of the function ##
-*/
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -252,7 +234,6 @@ _MoveStarsL2Down
     ; Reset delay
     LD A, ST_L2_MOVE_DEL_D4
     LD (starsMoveL2Delay), A
-
 
     ;###########################################
     ; Render
@@ -316,7 +297,7 @@ _SetupLayer1
     LD DE, db1.starsPalL1
     LD (starsPal), DE
 
-    LD A, ST_PAL_L1_SIZE
+    LD A, db1.ST_PAL_L1_SIZE
     LD (starsPalSize), A
 
     ; The colors for the first layer do not have offset; they are directly after the palette for the image.
@@ -344,17 +325,18 @@ _SetupLayer2
     LD DE, db1.starsPalL2
     LD (starsPal), DE
     
-    LD A, ST_PAL_L2_SIZE
+    LD A, db1.ST_PAL_L2_SIZE
     LD (starsPalSize), A
 
     ; The colors for stars on layer 2 are stored after those for layer 1
-    LD A, ST_PAL_L1_SIZE
+    LD A, db1.ST_PAL_L1_SIZE
     LD (starsPalOffset), A
 
     ; ##########################################
     ; Data
     LD DE, db1.starsData2
     LD (starsData), DE
+
     LD A, ST_L2_SIZE
     LD (starsDataSize), A
 
@@ -400,7 +382,7 @@ _NextStarsColor
     JR C, .nextStarPixel
 
     ; ##########################################
-    ; Change the color.
+    ; Change the color
     LD A, (starsPalSize)
     LD C, A
     LD A, (HL)                                  ; A contains star color
@@ -657,6 +639,7 @@ _GetStarColor
     LD A, (btd.palColors)
     ADD B
     ADD C
+
 
     RET                                         ; ## END of the function ##
 
