@@ -27,7 +27,7 @@ ST_L1_SIZE              = 27                    ; Number stars on layer 1
 ST_L2_SIZE              = 16                    ; Number stars on layer 2
 
     STRUCT SC                                   ; Stars column
-BANK                    DB                      ; Bank number from 0 to 9
+BANK                    DB                      ; Image bank number from 0 to 9
 X_OFFSET                DB                      ; X offset from the beginning of the bank, max 32 (32=8192/256)
 SIZE                    DB                      ; Amount of stars
     ENDS
