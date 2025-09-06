@@ -252,7 +252,7 @@ rocketElL5
     ro.RO {27*8/*DROP_X*/, 23*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/, 0/*Y*/}
 
 ; Level 6
-rocketAssemblyXL6       DB 09*8
+rocketAssemblyXL6       DB 08*8
 rocketElL6
 ; Rocket element.
     ro.RO {17*8/*DROP_X*/, 16*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/, 0/*Y*/}  ; bottom element
@@ -440,16 +440,16 @@ platformsSizeL5         DB 4
 
 ; Level 6
 platformsL6
-    pl.PLA {05*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-    pl.PLA {05*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
-    pl.PLA {05*8/*X_LEFT*/, 05*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 
     pl.PLA {16*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
     pl.PLA {27*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 09*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
     pl.PLA {24*8/*X_LEFT*/, 28*8/*X_RIGHT*/, 24*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
 
-    pl.PLA {36*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-    pl.PLA {36*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
+    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 platformsSizeL6         DB 8
 
 ; Level 7
