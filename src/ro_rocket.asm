@@ -67,9 +67,9 @@ EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
 EL_PROGRESS_START       = EL_TANK1_D4+1
 CARRY_ADJUSTY_D10       = 10
 
-rocketEl                DW 0                  ; Pointer to 9x ro.RO
+rocketEl                DW 0                    ; Pointer to 9x ro.RO
 
-BAR_TILE_START         = 25*2                  ; *2 because each tile takes 2 bytes
+BAR_TILE_START         = 25*2                   ; *2 because each tile takes 2 bytes
 BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap
 BAR_TILE_PAL           = $60
 
