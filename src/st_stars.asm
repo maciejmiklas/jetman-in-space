@@ -20,8 +20,8 @@ ST_PAL_FIRST_D1         = 1                     ; Offset for the first color use
 
 ST_PAL_TRANSP_D0        = 0                     ; Index of transparent color
 
-ST_L1_SIZE              = 27                    ; Number start columns on layer 1
-ST_L2_SIZE              = 16                    ; Number start columns on layer 2
+ST_L1_SIZE_D27          = 27                    ; Number start columns on layer 1
+ST_L2_SIZE_D16          = 16                    ; Number start columns on layer 2
 
 SC_BLINK_OFF            = 0
 
@@ -39,20 +39,32 @@ ST_L2_MOVE_DEL_D4       = 10                    ; Stars move delay for layer 2
 starsMoveL1Delay        DB ST_L1_MOVE_DEL_D4    ; Delay counter for stars on layer 1 (there are 2 layers of stars)
 starsMoveL2Delay        DB ST_L2_MOVE_DEL_D4    ; Delay counter for stars on layer 2
 
-randColor               DB 0                  ; Rand value from the previous call
+randColor               DB 0                    ; Rand value from the previous call
 
 ; Currently rendered palette
-starsPal                DW 0
+starsPalPoint           DW 0
 starsPalSize            DB 0
 starsPalOffset          DB 0
 
 ; Currently rendered stars
 starsDataSize           DB 0
-starsData               DW 0                ; Before using: CALL ut.SetupDataArraysBank
-starsDataMaxY           DW 0                ; Before using: CALL ut.SetupDataArraysBank
+starsDataPoint          DW 0                    ; Before using: CALL ut.SetupDataArraysBank
+starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDataArraysBank
 
 starsData1MaxY          DW 0
 starsData2MaxY          DW 0
+
+paletteLoadCnt          DB 0
+PALETTE_CNT             = 4
+
+ST_PAL_L1_SIZE_D32      = 32                    ; Number of colors for stars on layer 1 (each color takes 2 bytes)
+ST_PAL_L2_SIZE_D8       = 8                     ; Number of colors for stars on layer 2 (each color takes 2 bytes)
+
+ST_PAL_L1_BYTES_D64     = ST_PAL_L1_SIZE_D32 *2
+ST_PAL_L2_BYTES_D16     = ST_PAL_L2_SIZE_D8 *2
+
+starsPalL1Point         DW 0
+starsPalL2Point         DW 0
 
 ;----------------------------------------------------------;
 ;                       SetupStars                         ;
@@ -67,23 +79,50 @@ SetupStars
     
     RET                                         ; ## END of the function ##
 
+
 ;----------------------------------------------------------;
 ;                    LoadStarsPalette                      ;
 ;----------------------------------------------------------;
 LoadStarsPalette
 
-    ; Load colors for the stars on layer 1
+    ; Increment/reset #paletteLoadCnt
+    LD A, (paletteLoadCnt)
+    INC A
+    CP PALETTE_CNT
+    JR NZ, .afterResetCnt
+    XOR A
+.afterResetCnt
+    LD (paletteLoadCnt), A
+    PUSH AF
+    
     CALL dbs.SetupArrays1Bank
+
+    ; ##########################################
+    ; Palettes for L1/L2 are stored as a continuous array. Pointer to the start of this array is given by #starsPalL1/L2 and 
+    ; counter #paletteLoadCnt is used to load next palette, ie: #starsPalL1 + #paletteLoadCnt * 32
+
+    ; Load colors for the stars on layer 1
+    LD D, A
+    LD E, ST_PAL_L1_BYTES_D64
+    MUL D, E                                    ; DE contains palette offset
     LD HL, db1.starsPalL1
-    LD A, db1.ST_PAL_L1_SIZE
+    ADD HL, DE                                  ; HL points to data with palette colors
+    LD (starsPalL1Point), HL
+    LD A, ST_PAL_L1_SIZE_D32
     LD B, A
     CALL bp.WritePalette
 
     ; ##########################################
     ; Load colors for the stars on layer 2
-    CALL dbs.SetupArrays1Bank
+    POP AF
+    LD D, A
+    LD E, ST_PAL_L2_BYTES_D16
+    MUL D, E                                    ; DE contains palette offset
     LD HL, db1.starsPalL2
-    LD A, db1.ST_PAL_L2_SIZE
+    ADD HL, DE                                  ; HL points to data with palette colors
+    
+    LD (starsPalL2Point), HL
+    LD A, ST_PAL_L2_SIZE_D8
     LD B, A
     CALL bp.WritePalette
 
@@ -294,10 +333,10 @@ _MoveStarsL2Up
 _SetupLayer1
 
     ; Palette
-    LD DE, db1.starsPalL1
-    LD (starsPal), DE
+    LD DE, (starsPalL1Point)
+    LD (starsPalPoint), DE
 
-    LD A, db1.ST_PAL_L1_SIZE
+    LD A, ST_PAL_L1_SIZE_D32
     LD (starsPalSize), A
 
     ; The colors for the first layer do not have offset; they are directly after the palette for the image.
@@ -307,12 +346,13 @@ _SetupLayer1
     ; ##########################################
     ; Data
     LD DE, db1.starsData1
-    LD (starsData), DE
-    LD A, ST_L1_SIZE
+    LD (starsDataPoint), DE
+
+    LD A, ST_L1_SIZE_D27
     LD (starsDataSize), A
 
     LD DE, (starsData1MaxY)
-    LD (starsDataMaxY), DE
+    LD (starsDataMaxYPoint), DE
 
     RET                                         ; ## END of the function ##
 
@@ -322,26 +362,26 @@ _SetupLayer1
 _SetupLayer2
 
     ; Palette
-    LD DE, db1.starsPalL2
-    LD (starsPal), DE
+    LD DE, (starsPalL2Point)
+    LD (starsPalPoint), DE
     
-    LD A, db1.ST_PAL_L2_SIZE
+    LD A, ST_PAL_L2_SIZE_D8
     LD (starsPalSize), A
 
     ; The colors for stars on layer 2 are stored after those for layer 1
-    LD A, db1.ST_PAL_L1_SIZE
+    LD A, ST_PAL_L1_SIZE_D32
     LD (starsPalOffset), A
 
     ; ##########################################
     ; Data
     LD DE, db1.starsData2
-    LD (starsData), DE
+    LD (starsDataPoint), DE
 
-    LD A, ST_L2_SIZE
+    LD A, ST_L2_SIZE_D16
     LD (starsDataSize), A
 
     LD DE, (starsData2MaxY)
-    LD (starsDataMaxY), DE
+    LD (starsDataMaxYPoint), DE
 
     RET                                         ; ## END of the function ##
 
@@ -351,7 +391,7 @@ _SetupLayer2
 _NextStarsColor
 
     CALL dbs.SetupArrays1Bank
-    LD HL, (starsData)
+    LD HL, (starsDataPoint)
     LD A, (starsDataSize)
     LD B, A
 
@@ -416,10 +456,10 @@ _RenderStars
     CALL dbs.SetupArrays1Bank
     LD A, (starsDataSize)
     LD B, A
-    LD HL, (starsData)
+    LD HL, (starsDataPoint)
 
     ; Loop over all stars
-    LD IY, (starsDataMaxY)
+    LD IY, (starsDataMaxYPoint)
 .columnsLoop
 
     LD IX, HL
@@ -628,7 +668,7 @@ _GetStarColor
     LD DE, HL                                   ; DE points to the star position in the column
     INC DE                                      ; DE points to the color info
 
-    ; DE points to the color offset from #starsPal. Now, we have to move it to the offset in the layer two palette.
+    ; DE points to the color offset from #starsPalPoint. Now, we have to move it to the offset in the layer two palette.
     ; #btd.palColors points right after the colors registered for the image.
     LD A, (DE)
     LD B, A
