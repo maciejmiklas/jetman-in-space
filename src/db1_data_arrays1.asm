@@ -304,8 +304,8 @@ starsData2MaxYL10
     DB 016/*X=015*/, 028/*X=042*/, 030/*X=052*/, 045/*X=070*/, 062/*X=082*/, 051/*X=108*/, 061/*X=114*/, 075/*X=129*/, 127/*X=158*/
     DB 214/*X=175*/, 221/*X=194*/, 221/*X=202*/, 229/*X=235*/, 052/*X=268*/, 042/*X=281*/, 024/*X=301*/
 
-; Stars on L1 have 32 colors, 64 bytes. A few last bytes are transparent to simulate blinking, where the star disappears.
-; Palette 0
+; Stars on L1 have 32 colors, 64 bytes, 9-bit color. A few last bytes are transparent to simulate blinking, where the star disappears.
+; L1 - Palette 0
 /* Values for Remy's editor:
     $A0   $A1   $A2   $A3   $A4   $A5   $A6   $A7   $D0   $D1   $D2   $D3   $D4   $D5   $D6   $D7
     $140  $141  $142  $143  $144  $145  $146  $147   $4C   $4B   $49   $48  $1C7  $1C7  $1C7  $1C7
@@ -316,17 +316,39 @@ starsPalL1
 	DB $A0, $00, $A0, $01, $A1, $00, $A1, $01, $A2, $00, $A2, $01, $A3, $00, $A3, $01
 	DB $26, $00, $25, $01, $24, $01, $24, $00, $E3, $01, $E3, $01, $E3, $01, $E3, $01
 
-; Palette 1
-/* Values for Remy's editor:
-   $30   $32   $34   $36   $38   $3C   $3E   $3F   $130   $134   $138   $13B   $13D   $13F   $1FA   $1FF
-   $F0   $F1   $F2   $F3   $F4   $F5   $F6   $F7   $78   $79   $7A   $7B   $1C7  $1C7  $1C7  $1C7
-*/
-	DB $18, $00, $19, $00, $1A, $00, $1B, $00, $1C, $00, $1E, $00, $1F, $00, $1F, $01
-	DB $98, $00, $39, $01, $9C, $00, $9D, $01, $9E, $01, $9F, $01, $FD, $00, $FF, $01
-	DB $78, $00, $72, $00, $79, $00, $35, $00, $7A, $00, $56, $01, $7B, $00, $7B, $01
-	DB $3C, $00, $17, $00, $3D, $00, $12, $00, $E3, $01, $E3, $01, $E3, $01, $E3, $01
 
-; Palette 2
+
+
+
+
+
+
+
+
+
+; L1 - Palette 1
+/* Values for Remy's editor:
+  $1FF  $1FF   $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF
+  $1FF  $1FF   $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+*/
+	db $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01
+	db $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01
+	db $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01
+	db $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01, $ff, $01
+
+
+
+
+
+
+
+
+
+
+
+
+
+; L1 - Palette 2
 /* Values for Remy's editor:
     $1C0   $1C2   $1C4   $1C8   $1CA   $1CD   $1CF   $1D0   $1D2   $1D4   $1D6   $1D8   $1DA   $1DC   $1DE   $1DF
     $1A0  $1A2  $1A4  $1A6  $1A8  $1AA  $1AC  $1AF   $148   $150   $152   $154  $1C7  $1C7  $1C7  $1C7
@@ -336,7 +358,7 @@ starsPalL1
 	DB $D0, $00, $D1, $00, $D2, $00, $D3, $00, $D4, $00, $D5, $00, $D6, $00, $D7, $01
 	DB $A4, $00, $A8, $00, $A9, $00, $AA, $00, $E3, $01, $E3, $01, $E3, $01, $E3, $01
 
-; Palette 3
+; L1 - Palette 3
 /* Values for Remy's editor:
    $10   $66   $E2   $91  $13A   $DD  $184   $3B   $61    $7  $1C1  $16C  $1A1   $E3   $85   $FF
   $1A4  $169  $1A4  $1A6   $55   $E4  $1FF  $1F1   $B9  $1F9   $BC  $1B2  $12C  $172   $F1  $1F1
@@ -346,30 +368,56 @@ starsPalL1
 	DB $D2, $00, $B4, $01, $D2, $00, $D3, $00, $2A, $01, $72, $00, $FF, $01, $F8, $01
 	DB $5C, $01, $FC, $01, $5E, $00, $D9, $00, $96, $00, $B9, $00, $78, $01, $F8, $01
 
-; Stars on L1 have 8 colors, 16 bytes.
+; Stars on L1 have 8 colors, 16 bytes,  9-bit color.
 
-; Palette 0
+; L2 - Palette 0
 /* Values for Remy's editor:
    $1F0   $1F1   $1F2   $1F3   $1F4   $1F5   $1F6   $1F7   $1F8    $1F9    $0    $0    $0    $0    $0    $0
 */
 starsPalL2
     DB $F8, $00, $F8, $01, $F9, $00, $F9, $01, $FA, $00, $FA, $01, $FB, $00, $FB, $01
 
-; Palette 1
-/* Values for Remy's editor:
-    $1B0   $1B1   $1B2   $1B3   $1B4   $1B5   $1B6   $1B7   $82  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF  $1FF
-*/
-starsPalL2A
-    DB $D8, $00, $D8, $01, $D9, $00, $D9, $01, $DA, $00, $DA, $01, $DB, $00, $DB, $01
 
-; Palette 2
+
+
+
+
+
+
+
+
+
+
+
+
+; L2 - Palette 1
+/* Values for Remy's editor:
+    $124  $124  $124  $124  $124  $124  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7  $1C7
+*/
+    DB $92, $00, $92, $00, $92, $00, $92, $00, $92, $00, $92, $00, $92, $00, $92, $00
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; L2 - Palette 2
 /* Values for Remy's editor:
      $1F0  $1FA  $1B9  $174  $13A  $131   $FC   $B3   $0  $0  $0  $0  $0  $0  $0  $0
 */
-starsPalL2B
     DB $F8, $00, $FD, $00, $DC, $01, $BA, $00, $9D, $00, $98, $01, $7E, $00, $59, $01
 
-; Palette 3
+; L2 - Palette 3
 /* Values for Remy's editor:
      $1FF  $1FB  $1F3  $1F0  $1BD  $1B8  $1B3  $17A    $0    $0    $0    $0    $0    $0    $0    $0
 */

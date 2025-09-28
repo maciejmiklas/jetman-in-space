@@ -903,17 +903,14 @@ _CheckPlatformHitLeft
     LD HL, (IY + PLA.X_LEFT)
     LD DE, (IX + PLAM.X_LEFT)
     SBC HL, DE                                  ; HL contains [#PLA.X_LEFT - #PLAM.X_LEFT]
-    ;push af: ld a, $a1: nextreg 2,8: pop af
     SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0
 
     POP HL
     JP M, .hit
 
     LD A, _RET_NO_D0
-    ;push af: ld a, $f0: nextreg 2,8: pop af
     RET
 .hit
-   ; push af: ld a, $f1: nextreg 2,8: pop af
     LD A, _RET_YES_D1
 
     RET                                         ; ## END of the function ##

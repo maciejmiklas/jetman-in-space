@@ -599,7 +599,6 @@ _MoveEnemy
 
     ; Yes, reverse bit is set, up -> down, down -> up
     XOR MOVE_PAT_Y_TOD_DIR_MASK
-    ;push af: ld b, $F2: nextreg 2,8: pop af
 .doNotReverseY
 
     BIT MOVE_PAT_Y_TOD_DIR_BIT, A

@@ -54,14 +54,14 @@ starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDat
 starsData1MaxY          DW 0
 starsData2MaxY          DW 0
 
-paletteNumber          DB 0                    ; Values from 0-3
+paletteNumber          DB 1                    ; Values from 0-3
 PALETTE_CNT             = 4
 
 ST_PAL_L1_SIZE_D32      = 32                    ; Number of colors for stars on layer 1 (each color takes 2 bytes)
 ST_PAL_L2_SIZE_D8       = 8                     ; Number of colors for stars on layer 2 (each color takes 2 bytes)
 
-ST_PAL_L1_BYTES_D64     = ST_PAL_L1_SIZE_D32 *2
-ST_PAL_L2_BYTES_D16     = ST_PAL_L2_SIZE_D8 *2
+ST_PAL_L1_BYTES_D64     = ST_PAL_L1_SIZE_D32*2
+ST_PAL_L2_BYTES_D16     = ST_PAL_L2_SIZE_D8*2
 
 starsPalL1Point         DW 0
 starsPalL2Point         DW 0
@@ -94,8 +94,8 @@ LoadStarsPalette
     LD (paletteNumber), A
     PUSH AF
     */
-    
     LD A, (paletteNumber)
+
     CALL dbs.SetupArrays1Bank
 
     ; ##########################################

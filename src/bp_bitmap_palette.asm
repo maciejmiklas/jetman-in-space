@@ -64,7 +64,7 @@ LoadPalette
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: address of the palette that will be copied
-;  - B:  number of colors
+;  - B:  number of 9-bit colors
 WritePalette
 
 .loop
@@ -177,7 +177,7 @@ BrightnessDown
 ;                       WriteColor                         ;
 ;----------------------------------------------------------;
 ; Input
-;  - DE - contains given color, E: RRRGGGBB, D: xxxxxxxB
+;  - DE - contains given 9-bit color, E: RRRGGGBB, D: xxxxxxxB
 WriteColor
 
     ; - Two consecutive writes are needed to write the 9 bit color:
