@@ -40,12 +40,9 @@ NextTodPalette
 
     LD HL, (todPalAddr)
     LD A, (palColors)
-    nextreg 2,8
-    LD B, A 
+    LD B, A
     PUSH HL
     CALL bp.LoadPalette
-    CALL gc.BackgroundPaletteLoaded
-    CALL dbs.SetupPaletteBank
     POP HL
 
     ; Moves #todPalAddr to the next palette
@@ -64,9 +61,6 @@ PrevTodPalette
     LD A, (palColors)
     LD B, A
     CALL bp.LoadPalette
-    CALL gc.BackgroundPaletteLoaded
-    CALL dbs.SetupPaletteBank
-
     CALL PrevTodPaletteAddr
 
     RET                                         ; ## END of the function ##

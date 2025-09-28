@@ -48,7 +48,7 @@ BytesToColors
 ;----------------------------------------------------------;
 ;                      LoadPalette                         ;
 ;----------------------------------------------------------;
-; Load palette address, set bank, and finally load colors into hardware.
+; Load 9-bit palette address, set bank, and finally load colors into hardware.
 ; Input:
 ;  - HL: contains the current palette address
 ;  - B:  number of colors

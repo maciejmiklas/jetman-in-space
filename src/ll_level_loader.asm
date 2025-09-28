@@ -23,6 +23,7 @@ LoadLevel1Data
     ; ##########################################
     ; Load stars
     CALL dbs.SetupArrays1Bank
+    LD A, 1
     LD DE, db1.starsData1MaxYL1
     LD HL, db1.starsData2MaxYL1
     CALL st.SetupStars

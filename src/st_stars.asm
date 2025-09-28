@@ -54,7 +54,7 @@ starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDat
 starsData1MaxY          DW 0
 starsData2MaxY          DW 0
 
-paletteNumber          DB 1                    ; Values from 0-3
+paletteNumber          DB 1                     ; Palette number, values from 0-3
 PALETTE_CNT             = 4
 
 ST_PAL_L1_SIZE_D32      = 32                    ; Number of colors for stars on layer 1 (each color takes 2 bytes)
@@ -70,10 +70,12 @@ starsPalL2Point         DW 0
 ;                       SetupStars                         ;
 ;----------------------------------------------------------;
 ; Input:
+;  - A: palette number, values from 0-3
 ;  - DE: max horizontal star position for each column (#SC) for Level 1
 ;  - HL: max horizontal star position for each column (#SC) for Level 2
 SetupStars
 
+    LD (paletteNumber), A
     LD (st.starsData1MaxY), DE
     LD (st.starsData2MaxY), HL
     
@@ -83,26 +85,15 @@ SetupStars
 ;                    LoadStarsPalette                      ;
 ;----------------------------------------------------------;
 LoadStarsPalette
-/*
-    ; Increment/reset #paletteNumber
-    LD A, (paletteNumber)
-    INC A
-    CP PALETTE_CNT
-    JR NZ, .afterResetCnt
-    XOR A
-.afterResetCnt
-    LD (paletteNumber), A
-    PUSH AF
-    */
-    LD A, (paletteNumber)
 
     CALL dbs.SetupArrays1Bank
 
-    ; ##########################################
-    ; Palettes for L1/L2 are stored as a continuous array. Pointer to the start of this array is given by #starsPalL1/L2 and 
-    ; counter #paletteNumber is used to load next palette, ie: #starsPalL1 + #paletteNumber * 32
+    ; Palettes for L1/L2 are stored as a continuous array. The pointer to the start of this array is given by #starsPalL1/L2.
+    ; A gives the palette number. To load L1: #starsPalL1+A*32.
 
     ; Load colors for the stars on layer 1
+    LD A, (paletteNumber)
+    PUSH AF
     LD D, A
     LD E, ST_PAL_L1_BYTES_D64
     MUL D, E                                    ; DE contains palette offset
@@ -115,8 +106,7 @@ LoadStarsPalette
 
     ; ##########################################
     ; Load colors for the stars on layer 2
-    ;POP AF
-    LD A, (paletteNumber)
+    POP AF                                      ; A contains palette number
     LD D, A
     LD E, ST_PAL_L2_BYTES_D16
     MUL D, E                                    ; DE contains palette offset
@@ -217,7 +207,6 @@ BlinkStarsL1
 ;----------------------------------------------------------;
 ;                       BlinkStarsL2                       ;
 ;----------------------------------------------------------;
-; It is not used for now because it alters the parallax effect.
 BlinkStarsL2
 
     ; Execute stars only if enabled
@@ -478,7 +467,7 @@ _RenderStars
     ADD HL, A
 
     INC IY                                      ; Move to the next max-y
-    DJNZ .columnsLoop   
+    DJNZ .columnsLoop
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -681,7 +670,6 @@ _GetStarColor
     LD A, (btd.palColors)
     ADD B
     ADD C
-
 
     RET                                         ; ## END of the function ##
 
