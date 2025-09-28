@@ -106,7 +106,7 @@ LoadMusicFile
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB)
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroImageFile
 
     CALL dbs.SetupArrays2Bank
@@ -127,7 +127,7 @@ LoadLevelIntroImageFile
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadBgImageFile
 
     CALL dbs.SetupArrays2Bank
@@ -178,7 +178,7 @@ LoadHardPalFile
 ;                   LoadBgPaletteFile                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadBgPaletteFile
 
     CALL dbs.SetupArrays2Bank
@@ -205,7 +205,7 @@ LoadBgPaletteFile
 ;               LoadPlatformsTilemapFile                   ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadPlatformsTilemapFile
 
     CALL dbs.SetupArrays2Bank
@@ -229,7 +229,7 @@ LoadPlatformsTilemapFile
 ;                   LoadTileSprFile                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadTileSprFile
 
     CALL dbs.SetupArrays2Bank
@@ -253,7 +253,7 @@ LoadTileSprFile
 ;                    LoadSpritesFile                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadSpritesFile
 
     CALL dbs.SetupArrays2Bank
@@ -293,7 +293,7 @@ LoadSpritesFile
 ;              LoadRocketStarsTilemapFile                  ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadRocketStarsTilemapFile
 
     CALL dbs.SetupArrays2Bank
@@ -310,7 +310,7 @@ LoadRocketStarsTilemapFile
 ;               LoadLevelIntroTilemapFile                  ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroTilemapFile
 
     CALL dbs.SetupArrays2Bank
@@ -402,7 +402,7 @@ LoadMenuHardImageFile
 ;                      _CopyFileName                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Pointer to file name
+;  - HL: pointer to file name
 _CopyFileName
 
     PUSH BC, DE
@@ -425,7 +425,7 @@ _CopyFileName
 
 ; This function loads the image into temp RAM, in order to show it call #bm.CopyImageData
 ; Input:
-;  - C:  Position of a image part number (0-9) in the file name of the background image
+;  - C:  position of a image part number (0-9) in the file name of the background image
 _LoadImageToTempRam
 
     ; Iterate over banks, loading one after another, form 0 to 9 inclusive.
@@ -472,7 +472,7 @@ _LoadImageToTempRam
 ;                  _LoadPalFileByName                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Pointer to file name
+;  - HL: pointer to file name
 _LoadPalFileByName
 
     CALL dbs.SetupArrays2Bank
@@ -493,8 +493,8 @@ _LoadPalFileByName
 ;                   _Load16KTilemap                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-;  - BC: Size in bytes of second tilemap 8K file
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - BC: size in bytes of second tilemap 8K file
 _Load16KTilemap
 
     CALL dbs.Setup16KTilemapBank
@@ -546,8 +546,8 @@ _Load16KTilemap
 ;                 _Prepare16KTilemapFile                   ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: Stars file number 0 for stars0.map, and 1 for stars1.map
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - A: stars file number 0 for stars0.map, and 1 for stars1.map
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 ; Output:
 ;  - #stTilesFileName with correct name
 _Prepare16KTilemapFile
@@ -565,8 +565,8 @@ _Prepare16KTilemapFile
 ;               _PrepareFileOpenForSprites                 ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: Sprites file number 0 for sprites0.spr, and 1 for sprites1.spr
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - A:  sprites file number 0 for sprites0.spr, and 1 for sprites1.spr
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 ; Output:
 ;  - #fileName with correct name
 _PrepareFileOpenForSprites
@@ -583,7 +583,7 @@ _PrepareFileOpenForSprites
 ;----------------------------------------------------------;
 ; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
 ; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 ;  - HL: pointer to file starting with: "assets/XX"
 ; Output:
 ;  - HL: just after "assets/xx"
@@ -603,8 +603,8 @@ _SetFileLevelNumber
 ;----------------------------------------------------------;
 ; Read bytes from a file.
 ; Input:
-;  - IX: Address to load into
-;  - BC: Number of bytes to read
+;  - IX: address to load into
+;  - BC: number of bytes to read
 _FileRead
 
     LD A, (fileHandle)

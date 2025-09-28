@@ -4,10 +4,10 @@
     MODULE jco
 
 ; Margins for collision Jetman - enemy
-MARG_HOR_D12        = 12
-MARG_VERT_UP_D18    = 18
-MARG_VERT_LOW_D15   = 15
-MARG_VERT_KICK_D25  = 25
+MARG_HOR_D12            = 12
+MARG_VERT_UP_D18        = 18
+MARG_VERT_LOW_D15       = 15
+MARG_VERT_KICK_D25      = 25
 
 RIP_MOVE_LEFT           = 0
 RIP_MOVE_RIGHT          = 1
@@ -93,8 +93,8 @@ JetmanElementCollision
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam.
 ; Input
-;  - IX: Pointer to #SPR, the enemies
-;  - A:  Number of enemies in IX
+;  - IX: pointer to #SPR, the enemies
+;  - A:  number of enemies in IX
 ; Modifies: ALL
 EnemiesCollision
 
@@ -213,7 +213,7 @@ JetInvincible
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
 ; Input:
-;  - IX:    Pointer to concrete single enemy, single #SPR
+;  - IX: pointer to concrete single enemy, single #SPR
 _EnemyCollision
 
     ; Exit if enemy is not alive
@@ -339,9 +339,9 @@ _RipMove
 ;----------------------------------------------------------;
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
 ; Input:
-;  - IX:    Pointer to concrete single enemy, single #SPR
-;  - D:     Upper thickness of the enemy (enemy above Jetman)
-;  - E:     Lower thickness of the enemy (enemy below Jetman)
+;  - IX: pointer to concrete single enemy, single #SPR
+;  - D:  upper thickness of the enemy (enemy above Jetman)
+;  - E:  lower thickness of the enemy (enemy below Jetman)
 ; Return:
 ;  - A:     _RET_NO_D0 or _RET_YES_D1.
 _RET_NO_D0            = 0

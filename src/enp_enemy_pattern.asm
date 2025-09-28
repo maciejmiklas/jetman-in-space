@@ -115,8 +115,8 @@ BOUNCE_H_MARG_D3        = 3
 ;                    CopyEnpsToEnp                         ;
 ;----------------------------------------------------------;
 ; Input:
-;   - IX: Pointer to #ENPS array
-;   - IY: Pointer to #ENP array
+;   - IX: pointer to #ENPS array
+;   - IY: pointer to #ENP array
 CopyEnpsToEnp
 
     LD A, (IX + ENPS.RESPAWN_Y)
@@ -137,7 +137,7 @@ CopyEnpsToEnp
 ;                       ResetEnp                           ;
 ;----------------------------------------------------------;
 ; Input:
-;   - IY: Pointer to #ENP array.
+;   - IY: pointer to #ENP array
 ResetEnp
 
     XOR A
@@ -159,8 +159,8 @@ ResetEnp
 ;----------------------------------------------------------;
 ; Resets #SPR and linked #ENP
 ; Input:
-;  - IX: Pointer to the #SPR array
-;  - B:  Size of the #SPR and #ENP array (both will be modified)
+;  - IX: pointer to the #SPR array
+;  - B:  size of the #SPR and #ENP array (both will be modified)
 ResetPatternEnemies
 
 .enemyLoop
@@ -188,8 +188,8 @@ ResetPatternEnemies
 ;                  MovePatternEnemies                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to array #SPR
-;  - B:  Number of elements in array given by IX
+;  - IX: pointer to array #SPR
+;  - B:  number of elements in array given by IX
 ; Moves single enemies and those in formation
 ; Modifies: ALL
 MovePatternEnemies
@@ -265,7 +265,7 @@ MovePatternEnemies
 ;----------------------------------------------------------;
 ; Respawn single or formation
 ; Input:
-;  - IX: Pointer to #SPR holding data for single enemy
+;  - IX: pointer to #SPR holding data for single enemy
 ; Output:
 ;  - A:  _RET_YES_D1/_RET_NO_D0
 
@@ -313,7 +313,7 @@ RespawnPatternEnemy
 .afterEnemyRespawnDelay
 
     ; ##########################################
-    ; Respawn enemy, first mark it as visible.
+    ; Respawn enemy, first mark it as visible
     LD A, (IX + SPR.STATE)
     CALL sr.SetStateVisible
 
@@ -379,7 +379,7 @@ _FlipReverseY
 ;                 _PlayBounceAnimation                     ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: Hit side sr.SDB_BOUNCE_SIDE or sr.SDB_BOUNCE_TOP
+;  - A: hit side sr.SDB_BOUNCE_SIDE or sr.SDB_BOUNCE_TOP
 _PlayBounceAnimation
 
     BIT ENP_S_BIT_BOUNCE_ANIM, (IY + ENP.SETUP)
@@ -395,9 +395,9 @@ _PlayBounceAnimation
 ;                      _LoadMoveDelay                      ;
 ;----------------------------------------------------------;
 ; Input
-;  - IY:    Pointer to #ENP holding data for single sprite
+;  - IY: pointer to #ENP holding data for single sprite
 ; Output:
-;  - A;     Value of move delay counter for this pattern (bits 8-5)
+;  - A: value of move delay counter for this pattern (bits 8-5)
 ; Modifies: A, HL
 _LoadMoveDelay
 
@@ -413,9 +413,9 @@ _LoadMoveDelay
 ;----------------------------------------------------------;
 ; Move enemy one step left or right
 ; Input
-;  - IX:    Pointer to #SPR
-;  - IY:    Pointer to #ENP
-;  - HL:    Points to the current move pattern
+;  - IX: pointer to #SPR
+;  - IY: pointer to #ENP
+;  - HL: points to the current move pattern
 ; Modifies: A, BC
 _MoveEnemyX
 
@@ -464,7 +464,7 @@ _MoveEnemyX
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
 _MoveEnemy
 
     ; Set sprite ID in hardware
@@ -738,9 +738,9 @@ _MoveEnemy
 ;----------------------------------------------------------;
 ; Load HL that points to the current move pattern
 ; Input
-;  - IY:    Pointer to #ENP for current sprite
+;  - IY: pointer to #ENP for current sprite
 ; Output:
-;  - HL:    Points to the current move pattern
+;  - HL: points to the current move pattern
 ; Modifies: A
 _LoadCurrentMoveStep
 
@@ -755,8 +755,8 @@ _LoadCurrentMoveStep
 ;----------------------------------------------------------;
 ; This method resets the move pattern (#ENP) so animation can start from the first move pattern. It does not modify #SPR.
 ; Input
-;  - IX:    Pointer to #SPR holding data for single sprite that will be moved
-;  - IY:    Pointer to #ENP for current sprite
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
+;  - IY: pointer to #ENP for current sprite
 ; Modifies: A, IY, BC, HL
 _RestartMovePattern
     
@@ -792,7 +792,7 @@ _RestartMovePattern
 ;                      _SetDelayCnt                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: Delay counter from configuration.
+;  - A: delay counter from configuration.
 _SetDelayCnt
 
     AND MOVE_PAT_DELAY_MASK                     ; Leave only delay counter bits

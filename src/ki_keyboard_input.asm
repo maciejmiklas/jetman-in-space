@@ -47,7 +47,7 @@ KeyboardInputLastLoop
 ;                      ResetKeyboard                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: User input delay
+;  - A: user input delay
 ResetKeyboard
 
     XOR A

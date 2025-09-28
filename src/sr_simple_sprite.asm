@@ -82,8 +82,8 @@ srSpriteDB
 ;                 #CheckAnySpriteVisible                   ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to #SPR
-;  - B:  Number of sprites
+;  - IX: pointer to #SPR
+;  - B:  number of sprites
 ; Output:
 ;  - A:
 ;      - _RET_YES_D1: At least one sprite visible
@@ -132,8 +132,8 @@ ResetSprite
 ;                      KillOneSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to #SPR
-;  - A:  Sprites size
+;  - IX: pointer to #SPR
+;  - A:  sprites size
 KillOneSprite
 
     CP 0
@@ -169,7 +169,7 @@ KillOneSprite
 ;                          SpriteHit                       ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX: Pointer to #SPR
+;  - IX: pointer to #SPR
 SpriteHit
 
     CALL SetSpriteId
@@ -184,8 +184,8 @@ SpriteHit
 ;                      AnimateSprites                      ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX: Pointer to #SPR
-;  - A:  Number of sprites
+;  - IX: pointer to #SPR
+;  - A:  number of sprites
 ; Modifies: A, BC, HL
 AnimateSprites
 
@@ -221,7 +221,7 @@ AnimateSprites
 ;                      SetSpriteId                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Pointer to #SPR
+;  - IX: pointer to #SPR
 ; Modifies: A
 SetSpriteId
 
@@ -234,7 +234,7 @@ SetSpriteId
 ;                  UpdateSpritePosition                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to #SPR
+;  - IX: pointer to #SPR
 ; Modifies: A, BC
 UpdateSpritePosition
 
@@ -269,8 +269,8 @@ UpdateSpritePosition
 ;                 HideAllSimpleSprites                     ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to #SPR
-;  - A:  Sprites size
+;  - IX: pointer to #SPR
+;  - A:  sprites size
 HideAllSimpleSprites
 
     CP 0
@@ -295,7 +295,7 @@ HideAllSimpleSprites
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX
 ; Input
-;  - IX: Pointer to #SPR
+;  - IX: pointer to #SPR
 HideSimpleSprite
 
     CALL SetSpriteId
@@ -313,7 +313,7 @@ HideSimpleSprite
 ;                        ShowSprite                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to #SPR.
+;  - IX: pointer to #SPR
 ShowSprite
 
     LD A, (IX + SPR.SDB_INIT)
@@ -328,8 +328,8 @@ ShowSprite
 ;                     SetStateVisible                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to #SPR.
-;  - A:  Prepared state.
+;  - IX: pointer to #SPR
+;  - A:  prepared state
 ; Modifies: A
 SetStateVisible
 
@@ -344,7 +344,7 @@ SetStateVisible
 ;----------------------------------------------------------;
 ; Show the current sprite pattern.
 ; Input:
-;  - IX: Pointer to #SPR
+;  - IX: pointer to #SPR
 ; Modifies: A, BC, HL
 UpdateSpritePattern
 
@@ -387,8 +387,8 @@ UpdateSpritePattern
 ;----------------------------------------------------------;
 ; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on D.
 ; Input
-;  - IX: Pointer to #SPR
-;  - D:  Do not confuse this parameter with #SPR.STATE, they are different parameters
+;  - IX: pointer to #SPR
+;  - D:  do not confuse this parameter with #SPR.STATE, they are different parameters.
 ;        Configuration, bits:
 ;         - 0-2: Number of pixels to move sprite
 ;         - 3:   #MVX_IN_D_HIDE_BIT
@@ -513,7 +513,7 @@ MoveX
 ;----------------------------------------------------------;
 ; Move the sprite one pixel up or down, depending on the A.
 ; Input
-;  - IX: Pointer to #SPR.
+;  - IX: pointer to #SPR
 ;  - A:  MOVE_Y_IN_XXX
 MOVE_Y_IN_UP                = 1                 ; Move up
 MOVE_Y_IN_DOWN              = 0                 ; Move down
@@ -565,7 +565,7 @@ MoveY
 ;----------------------------------------------------------;
 ; Set given pointer IX to animation pattern from #srSpriteDB given by B.
 ; Input:
-;  - IX: Pointer to #SPR
+;  - IX: pointer to #SPR
 ;  - A:  ID in #srSpriteDB
 ; Modifies: A, BC, HL
 LoadSpritePattern

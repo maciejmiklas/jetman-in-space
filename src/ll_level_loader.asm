@@ -22,7 +22,7 @@ LoadLevel1Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL1
     LD HL, db1.starsData2MaxYL1
     CALL st.SetupStars
@@ -67,6 +67,9 @@ LoadLevel1Data
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
 
+    LD A, 0
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -88,7 +91,7 @@ LoadLevel2Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL2
     LD HL, db1.starsData2MaxYL2
     CALL st.SetupStars
@@ -133,6 +136,9 @@ LoadLevel2Data
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
 
+    LD A, 1
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -154,7 +160,7 @@ LoadLevel3Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL3
     LD HL, db1.starsData2MaxYL3
     CALL st.SetupStars
@@ -201,6 +207,9 @@ LoadLevel3Data
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
 
+    LD A, 2
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -222,7 +231,7 @@ LoadLevel4Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL4
     LD HL, db1.starsData2MaxYL4
     CALL st.SetupStars
@@ -262,6 +271,9 @@ LoadLevel4Data
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
 
+    LD A, 3
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -283,7 +295,7 @@ LoadLevel5Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL5
     LD HL, db1.starsData2MaxYL5
     CALL st.SetupStars
@@ -328,6 +340,9 @@ LoadLevel5Data
     LD B, db1.tilePalette5BinLength
     CALL ti.LoadTilemapPalette
 
+    LD A, 0
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -349,7 +364,7 @@ LoadLevel6Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL6
     LD HL, db1.starsData2MaxYL6
     CALL st.SetupStars
@@ -394,6 +409,9 @@ LoadLevel6Data
     LD B, db1.tilePalette5BinLength
     CALL ti.LoadTilemapPalette
 
+    LD A, 1
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -415,7 +433,7 @@ LoadLevel7Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL7
     LD HL, db1.starsData2MaxYL7
     CALL st.SetupStars
@@ -455,6 +473,9 @@ LoadLevel7Data
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
 
+    LD A, 2
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -476,7 +497,7 @@ LoadLevel8Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL8
     LD HL, db1.starsData2MaxYL8
     CALL st.SetupStars
@@ -522,6 +543,9 @@ LoadLevel8Data
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
 
+    LD A, 3
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -543,7 +567,7 @@ LoadLevel9Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL9
     LD HL, db1.starsData2MaxYL9
     CALL st.SetupStars
@@ -582,6 +606,9 @@ LoadLevel9Data
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
 
+    LD A, 0
+    LD (st.paletteNumber), A
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -603,7 +630,7 @@ LoadLevel10Data
 
     ; ##########################################
     ; Load stars
-    CALL dbs.SetupArrays2Bank
+    CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL10
     LD HL, db1.starsData2MaxYL10
     CALL st.SetupStars
@@ -641,6 +668,9 @@ LoadLevel10Data
     LD HL, db1.tilePaletteBin
     LD B, db1.tilePaletteBinLength
     CALL ti.LoadTilemap8bitPalette
+
+    LD A, 1
+    LD (st.paletteNumber), A
 
     RET                                         ; ## END of the function ##
 

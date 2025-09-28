@@ -270,7 +270,7 @@ afxNseMix
 ;
 ; Launch the effect on a free channel. If no free channels, the longest sounding is selected.
 ; Input: 
-;  - A: Effect number 0..255
+;  - A:  effect number 0..255
 ;  - BC: ReleaseAddrCh[N]
 AfxPlay
 
@@ -377,7 +377,7 @@ _CheckRelease
 ;----------------------------------------------------------;
 ; Initialize the effects player. Turns off all channels, sets variables.
 ; Input: 
-;  -  HL: Address with effects
+;  -  HL: address with effects
 _AfxInit
 
     INC HL

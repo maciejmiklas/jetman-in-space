@@ -12,9 +12,9 @@ FORMATTED16_SIZE        = 5
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels
 ;Input:
-;  - HL:    16-bit number to print
-;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
-;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
+;  - HL: 16-bit number to print
+;  - BC:  character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;         For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
 PrintNum16
 
     ; Print number from HL into #formatted16
@@ -34,8 +34,8 @@ PrintNum16
 ;                   PrintCharacterAt                       ;
 ;----------------------------------------------------------;
 ;  - A: ASCII code to print
-;  - BC: Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
-;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
+;  - BC: character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
 PrintCharacterAt
 
     LD HL, formatted16
@@ -53,8 +53,8 @@ PrintCharacterAt
 ; Print 8 bit number from A, but only up to 99
 ;Input:
 ;  - A:  8-bit number to print
-;  - BC: Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
-;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
+;  - BC: Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
 PrintNum99
 
     PUSH BC
@@ -76,8 +76,8 @@ PrintNum99
 ;----------------------------------------------------------;
 ; Converts a given 16-bit number into a 5-character string with padding zeros.
 ; Input:
-;   - HL: 16-bit number to convert.
-;   - DE: Pointer to RAM that will contain formatted text, 5-characters long, 0 padded
+;   - HL: 16-bit number to convert
+;   - DE: pointer to RAM that will contain formatted text, 5-characters long, 0 padded
 ; Output: ASCII string at memory address given by DE, 5-characters long, 0 padded
 Num16ToString
 

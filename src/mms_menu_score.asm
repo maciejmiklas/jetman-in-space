@@ -115,7 +115,7 @@ AnimateCursor
 ;                  _CalculateScoreLine                     ;
 ;----------------------------------------------------------;
 ; Output:
-;  A: Contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
+;  A: contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
 _CalculateScoreLine
 
     CALL dbs.SetupArrays2Bank
@@ -499,7 +499,7 @@ _PrintWholeScore
 ;----------------------------------------------------------;
 ; Remember to "CALL dbs.SetupArrays2Bank"
 ; Input:
-;  A:  Line from #db2.menuScore to print as tilemap, 0 to 9 inklusive
+;  A:  line from #db2.menuScore to print as tilemap, 0 to 9 inklusive
 _PrintScoreLine
 
     CALL _LineToIX                              ; IX points to #db2.menuScore that will be updated

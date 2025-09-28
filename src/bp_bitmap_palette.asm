@@ -25,9 +25,9 @@ PAL_COLORS_D256        = 256
 ;                      BytesToColors                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - BC: Sieze of the palette in bytes
+;  - BC: sieze of the palette in bytes
 ; Output:
-;  - B: Number of colors
+;  - B: number of colors
 BytesToColors
 
     ; Divide BC by 2 -> one color takes two bytes
@@ -50,8 +50,8 @@ BytesToColors
 ;----------------------------------------------------------;
 ; Load palette address, set bank, and finally load colors into hardware.
 ; Input:
-;  - HL: Contains the current palette address
-;  - B:  Number of colors
+;  - HL: contains the current palette address
+;  - B:  number of colors
 LoadPalette
 
     CALL SetupPaletteLoad
@@ -63,8 +63,8 @@ LoadPalette
 ;                       WritePalette                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Address of the palette that will be copied
-;  - B:  Number of colors
+;  - HL: address of the palette that will be copied
+;  - B:  number of colors
 WritePalette
 
 .loop
@@ -96,9 +96,9 @@ SetupPaletteLoad
 ;                     BrightnessDown                       ;
 ;----------------------------------------------------------;
 ; Input
-;  - DE: Contains 9-bit color. D = xxxxxxx'B, E = RRR'GGG'BB
+;  - DE: contains 9-bit color. D = xxxxxxx'B, E = RRR'GGG'BB
 ; Output:
-;  - DE: Given color with decremented brightness
+;  - DE: given color with decremented brightness
 BrightnessDown
 
     ; ##########################################

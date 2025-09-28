@@ -15,7 +15,7 @@ ERR_003                 = $E3                   ; Sprite in #srSpriteDB not foun
 ;                      ReportError                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: Error code: ERR_XXX
+;  - A: error code: ERR_XXX
 ReportError
 
     ; Limit the number of errors shown to the player

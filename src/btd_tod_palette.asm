@@ -204,7 +204,7 @@ _NextBrightnessPalette
 ;----------------------------------------------------------;
 ;                 _DecrementPaletteColors                  ;
 ;----------------------------------------------------------;
-; This function will decrease palette brighteners given by #todPalAddr.
+; This function will decrease palette brighteners given by #todPalAddr
 _DecrementPaletteColors
 
     ; ##########################################

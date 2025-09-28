@@ -54,7 +54,7 @@ starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDat
 starsData1MaxY          DW 0
 starsData2MaxY          DW 0
 
-paletteLoadCnt          DB 0
+paletteNumber          DB 0                    ; Values from 0-3
 PALETTE_CNT             = 4
 
 ST_PAL_L1_SIZE_D32      = 32                    ; Number of colors for stars on layer 1 (each color takes 2 bytes)
@@ -70,8 +70,8 @@ starsPalL2Point         DW 0
 ;                       SetupStars                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: Max horizontal star position for each column (#SC) for Level 1
-;  - HL: Max horizontal star position for each column (#SC) for Level 2
+;  - DE: max horizontal star position for each column (#SC) for Level 1
+;  - HL: max horizontal star position for each column (#SC) for Level 2
 SetupStars
 
     LD (st.starsData1MaxY), DE
@@ -79,27 +79,28 @@ SetupStars
     
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                    LoadStarsPalette                      ;
 ;----------------------------------------------------------;
 LoadStarsPalette
-
-    ; Increment/reset #paletteLoadCnt
-    LD A, (paletteLoadCnt)
+/*
+    ; Increment/reset #paletteNumber
+    LD A, (paletteNumber)
     INC A
     CP PALETTE_CNT
     JR NZ, .afterResetCnt
     XOR A
 .afterResetCnt
-    LD (paletteLoadCnt), A
+    LD (paletteNumber), A
     PUSH AF
+    */
     
+    LD A, (paletteNumber)
     CALL dbs.SetupArrays1Bank
 
     ; ##########################################
     ; Palettes for L1/L2 are stored as a continuous array. Pointer to the start of this array is given by #starsPalL1/L2 and 
-    ; counter #paletteLoadCnt is used to load next palette, ie: #starsPalL1 + #paletteLoadCnt * 32
+    ; counter #paletteNumber is used to load next palette, ie: #starsPalL1 + #paletteNumber * 32
 
     ; Load colors for the stars on layer 1
     LD D, A
@@ -114,7 +115,8 @@ LoadStarsPalette
 
     ; ##########################################
     ; Load colors for the stars on layer 2
-    POP AF
+    ;POP AF
+    LD A, (paletteNumber)
     LD D, A
     LD E, ST_PAL_L2_BYTES_D16
     MUL D, E                                    ; DE contains palette offset
@@ -659,7 +661,7 @@ _CanShowStar
 ;                      _GetStarColor                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Points to the source pixel from stars column.
+;  - HL: Points to the source pixel from stars column
 ; Output:
 ;  A: contains next star color
 ; Modifies: A, B, C, DE

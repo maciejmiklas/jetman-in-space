@@ -35,9 +35,9 @@ MoveFormationEnemies
 ;                    SetupEnemyFormation                   ;
 ;----------------------------------------------------------;
 ;Input:
-;  - A:  Size of the formation
-;  - B:  Delay to respawn the whole formation
-;  - IX: Pointer to setup (#enf.ENPS)
+;  - A:  size of the formation
+;  - B:  delay to respawn the whole formation
+;  - IX: pointer to setup (#enf.ENPS)
 SetupEnemyFormation
 
     LD (formationSize), A

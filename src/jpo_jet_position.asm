@@ -91,7 +91,7 @@ DecJetXbyB
 ;----------------------------------------------------------;
 IncJetY
 
-    LD A, (jpo.jetY)    
+    LD A, (jpo.jetY)
     INC A
     LD (jpo.jetY), A
 
@@ -105,7 +105,7 @@ IncJetY
 ;----------------------------------------------------------;
 DecJetY
 
-    LD A, (jpo.jetY)    
+    LD A, (jpo.jetY)
     DEC A
     LD (jpo.jetY), A
 

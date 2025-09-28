@@ -215,7 +215,7 @@ AnimateJetSprite
 ;                     BlinkJetSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
-; - A:  Flip Flop counter, ie: #counter002FliFLop
+; - A: flip flop counter, ie: #counter002FliFLop
 BlinkJetSprite
 
     CP _GC_FLIP_ON_D1

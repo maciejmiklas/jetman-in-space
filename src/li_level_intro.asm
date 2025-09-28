@@ -18,9 +18,9 @@ ANIMATE_DELAY           = 50
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Number of horizontal lines in source tilemap (40xA)
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-;  - HL: Size of second tiles file (first one has 8KiB)
+;  - A:  number of horizontal lines in source tilemap (40xA)
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - HL: size of second tiles file (first one has 8KiB)
 LoadLevelIntro
 
     CALL _ResetLevelIntro

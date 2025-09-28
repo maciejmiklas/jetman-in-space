@@ -81,8 +81,8 @@ CopyRam:
 ;                       Add8To32                           ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: Points to the start of the two DW (LO,HI) elements in RAM
-;  - A:  Contains the 8-bit value to add
+;  - HL: points to the start of the two DW (LO,HI) elements in RAM
+;  - A:  contains the 8-bit value to add
 Add8To32
 
     ; Add 8-bit value to the second DW, LO byte.
@@ -194,9 +194,9 @@ AbsA
 ;----------------------------------------------------------;
 ; Print 16 bit number from HL. Each character takes 8x8 pixels.
 ;Input:
-;  - HL:    16-bit number to print
-;  - BC:    Character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters
-;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line
+;  - HL: 16-bit number to print
+;  - BC: character offset from top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
 PrintNumber
 
     PUSH BC, DE, IX, IY
@@ -212,9 +212,9 @@ PrintNumber
 ;----------------------------------------------------------;
 ; Check if both H and L are 0
 ; Input:
-;  - HL:    Value to compare to B
+;  - HL: value to compare to B
 ; Return:
-;  - A:     #_RET_YES_D1 or #_RET_NO_D0
+;  - A:  #_RET_YES_D1 or #_RET_NO_D0
 HlEqual0
 
     LD A, H                                     ; Check if H == B
@@ -237,9 +237,9 @@ HlEqual0
 ;                       ReadNextReg                        ;
 ;----------------------------------------------------------;
 ; Input:
-;   - A: Nextreg to read.
+;   - A: nextreg to read
 ; Output:
-;   - A: Value in nextreg.
+;   - A: value in nextreg
 ReadNextReg
 
     PUSH    BC
@@ -286,7 +286,7 @@ Pause
 ;                        CountdownBC                       ;
 ;----------------------------------------------------------;
 ; Input: 
-;  - BC: Loop amount.
+;  - BC: loop amount
 CountdownBC
 
     PUSH AF, BC, DE, HL, IX, IY
@@ -305,9 +305,9 @@ CountdownBC
 ;                         FillBank                         ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Destination bank
-;  - D:  Value to fill banks with
-;  - HL: Start address
+;  - A: destination bank
+;  - D: value to fill banks with
+;  - HL: start address
 ; Modifies: AF,BC,HL
 FillBank
 
