@@ -45,7 +45,7 @@ class app:
                 if event.key == pygame.K_s: # drawing the curve form points
                     self.draw_map()
                     print(self.points)
-                    curve = bezier.bezier_curve(self.points, 8)
+                    curve = bezier.bezier_curve(self.points)
                     pygame.draw.lines(screen, (0, 255, 0), False, curve, 2)
                     for i in range(len(self.points)):
                         pygame.draw.rect(self.screen, (0, 255, 0), (self.points[i][0], self.points[i][1], 5, 5))
