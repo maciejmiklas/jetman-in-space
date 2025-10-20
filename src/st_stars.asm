@@ -33,11 +33,11 @@ ST_MOVE_DOWN            = 4
 
 starsState              DB ST_SHOW
 
-ST_L1_MOVE_DEL_D4       = 2                     ; Stars move delay for layer 1
-ST_L2_MOVE_DEL_D4       = 10                    ; Stars move delay for layer 2
+ST_L1_MOVE_DEL_D10      = 10                     ; Stars move delay for layer 1
+ST_L2_MOVE_DEL_D2       = 2                      ; Stars move delay for layer 2
 
-starsMoveL1Delay        DB ST_L1_MOVE_DEL_D4    ; Delay counter for stars on layer 1 (there are 2 layers of stars)
-starsMoveL2Delay        DB ST_L2_MOVE_DEL_D4    ; Delay counter for stars on layer 2
+starsMoveL1Delay        DB ST_L1_MOVE_DEL_D10    ; Delay counter for stars on layer 1 (there are 2 layers of stars)
+starsMoveL2Delay        DB ST_L2_MOVE_DEL_D2    ; Delay counter for stars on layer 2
 
 randColor               DB 0                    ; Rand value from the previous call
 
@@ -54,7 +54,7 @@ starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDat
 starsData1MaxY          DW 0
 starsData2MaxY          DW 0
 
-paletteNumber          DB 1                     ; Palette number, values from 0-3
+paletteNumber           DB 0                     ; Palette number, values from 0-3
 PALETTE_CNT             = 4
 
 ST_PAL_L1_SIZE_D32      = 32                    ; Number of colors for stars on layer 1 (each color takes 2 bytes)
@@ -93,6 +93,7 @@ LoadStarsPalette
 
     ; Load colors for the stars on layer 1
     LD A, (paletteNumber)
+  
     PUSH AF
     LD D, A
     LD E, ST_PAL_L1_BYTES_D64
@@ -238,7 +239,7 @@ _MoveStarsL1Down
     RET NZ                                      ; Do not move yet, wait for 0.
     
     ; Reset delay
-    LD A, ST_L1_MOVE_DEL_D4
+    LD A, ST_L1_MOVE_DEL_D10
     LD (starsMoveL1Delay), A
 
 
@@ -262,7 +263,7 @@ _MoveStarsL2Down
     RET NZ                                      ; Do not move yet, wait for 0.
     
     ; Reset delay
-    LD A, ST_L2_MOVE_DEL_D4
+    LD A, ST_L2_MOVE_DEL_D2
     LD (starsMoveL2Delay), A
 
     ;###########################################
@@ -285,7 +286,7 @@ _MoveStarsL1Up
     RET NZ                                      ; Do not move yet, wait for 0.
     
     ; Reset delay
-    LD A, ST_L1_MOVE_DEL_D4
+    LD A, ST_L1_MOVE_DEL_D10
     LD (starsMoveL1Delay), A
 
     ;###########################################
@@ -308,7 +309,7 @@ _MoveStarsL2Up
     RET NZ                                      ; Do not move yet, wait for 0.
     
     ; Reset delay
-    LD A, ST_L2_MOVE_DEL_D4
+    LD A, ST_L2_MOVE_DEL_D2
     LD (starsMoveL2Delay), A
 
     ;###########################################

@@ -8,6 +8,14 @@
 ;----------------------------------------------------------;
 LoadLevel1Data
 
+    ; Load stars
+    CALL dbs.SetupArrays1Bank
+    LD A, 0
+    LD DE, db1.starsData1MaxYL1
+    LD HL, db1.starsData2MaxYL1
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "1"
@@ -19,14 +27,6 @@ LoadLevel1Data
     LD HL, db2.platformsL1
     LD A, (db2.platformsSizeL1)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD A, 1
-    LD DE, db1.starsData1MaxYL1
-    LD HL, db1.starsData2MaxYL1
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -78,6 +78,14 @@ LoadLevel1Data
 ;----------------------------------------------------------;
 LoadLevel2Data
 
+    ; Load stars
+    CALL dbs.SetupArrays1Bank
+    LD A, 0
+    LD DE, db1.starsData1MaxYL2
+    LD HL, db1.starsData2MaxYL2
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "2"
@@ -89,13 +97,6 @@ LoadLevel2Data
     LD HL, db2.platformsL2
     LD A, (db2.platformsSizeL2)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL2
-    LD HL, db1.starsData2MaxYL2
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -147,6 +148,14 @@ LoadLevel2Data
 ;----------------------------------------------------------;
 LoadLevel3Data
 
+    ; Load stars
+    LD A, 2
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL3
+    LD HL, db1.starsData2MaxYL3
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "3"
@@ -158,13 +167,6 @@ LoadLevel3Data
     LD HL, db2.platformsL3
     LD A, (db2.platformsSizeL3)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL3
-    LD HL, db1.starsData2MaxYL3
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -218,6 +220,14 @@ LoadLevel3Data
 ;----------------------------------------------------------;
 LoadLevel4Data
 
+    ; Load stars
+    LD A, 3
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL4
+    LD HL, db1.starsData2MaxYL4
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "4"
@@ -229,13 +239,6 @@ LoadLevel4Data
     LD HL, db2.platformsL4
     LD A, (db2.platformsSizeL4)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL4
-    LD HL, db1.starsData2MaxYL4
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -282,6 +285,14 @@ LoadLevel4Data
 ;----------------------------------------------------------;
 LoadLevel5Data
 
+    ; Load stars
+    LD A, 0
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL5
+    LD HL, db1.starsData2MaxYL5
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "5"
@@ -293,13 +304,6 @@ LoadLevel5Data
     LD HL, db2.platformsL5
     LD A, (db2.platformsSizeL5)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL5
-    LD HL, db1.starsData2MaxYL5
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -351,6 +355,14 @@ LoadLevel5Data
 ;----------------------------------------------------------;
 LoadLevel6Data
 
+    ; Load stars
+    LD A, 1
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL6
+    LD HL, db1.starsData2MaxYL6
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "6"
@@ -362,13 +374,6 @@ LoadLevel6Data
     LD HL, db2.platformsL6
     LD A, (db2.platformsSizeL6)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL6
-    LD HL, db1.starsData2MaxYL6
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -420,6 +425,14 @@ LoadLevel6Data
 ;----------------------------------------------------------;
 LoadLevel7Data
 
+    ; Load stars
+    LD A, 2
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL7
+    LD HL, db1.starsData2MaxYL7
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "7"
@@ -431,13 +444,6 @@ LoadLevel7Data
     LD HL, db2.platformsL7
     LD A, (db2.platformsSizeL7)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL7
-    LD HL, db1.starsData2MaxYL7
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -484,6 +490,14 @@ LoadLevel7Data
 ;----------------------------------------------------------;
 LoadLevel8Data
 
+    ; Load stars
+    LD A, 3
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL8
+    LD HL, db1.starsData2MaxYL8
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "8"
@@ -495,13 +509,6 @@ LoadLevel8Data
     LD HL, db2.platformsL8
     LD A, (db2.platformsSizeL8)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL8
-    LD HL, db1.starsData2MaxYL8
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -554,6 +561,14 @@ LoadLevel8Data
 ;----------------------------------------------------------;
 LoadLevel9Data
 
+    ; Load stars
+    LD A, 0
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL9
+    LD HL, db1.starsData2MaxYL9
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "0"
     LD E, "9"
@@ -565,13 +580,6 @@ LoadLevel9Data
     LD HL, db2.platformsL9
     LD A, (db2.platformsSizeL9)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL9
-    LD HL, db1.starsData2MaxYL9
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
@@ -617,6 +625,14 @@ LoadLevel9Data
 ;----------------------------------------------------------;
 LoadLevel10Data
 
+    ; Load stars
+    LD A, 1
+    CALL dbs.SetupArrays1Bank
+    LD DE, db1.starsData1MaxYL10
+    LD HL, db1.starsData2MaxYL10
+    CALL st.SetupStars
+
+    ; ##########################################
     ; Load data for level
     LD D, "1"
     LD E, "0"
@@ -628,13 +644,6 @@ LoadLevel10Data
     LD HL, db2.platformsL10
     LD A, (db2.platformsSizeL10)
     CALL pl.SetupPlatforms
-
-    ; ##########################################
-    ; Load stars
-    CALL dbs.SetupArrays1Bank
-    LD DE, db1.starsData1MaxYL10
-    LD HL, db1.starsData2MaxYL10
-    CALL st.SetupStars
 
     ; ##########################################
     ; Load rocket
