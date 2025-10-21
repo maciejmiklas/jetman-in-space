@@ -9,8 +9,8 @@ import math
 class app:
     def __init__(self):
         self.grid = [40, 32]
-        self.screenSizeMultiply = 2
-        self.box_size = (320 / 40) * 2
+        self.screenSizeMultiply = 3
+        self.box_size = (320 / 40) * self.screenSizeMultiply
         self.points = []
         self.mouseTogrid = [pygame.mouse.get_pos()[0] // self.box_size, pygame.mouse.get_pos()[1] // self.box_size]
         self.curve = [[0,0], [0,0]]
@@ -49,20 +49,17 @@ class app:
                 if event.key == pygame.K_a: # adding a point for the curve
                     self.points.append(pygame.mouse.get_pos())
                 if event.key == pygame.K_s: # drawing the curve form points
-                    self.curve = bezier.bezier_curve(self.points, 10)
-                    self.draw_map()
-                    self.drawCurve(self.curve)
+                    self.curve = bezier.bezier_curve(self.points)
                     self.curveToMove(self.curve)
                     
                 if event.key == pygame.K_c:
-                    self.draw_map()
                     self.points = []
 
         if pygame.mouse.get_pressed()[0] and self.mouseTogrid[0] < self.grid[0] and self.mouseTogrid[1] < self.grid[1]:
             self.map[int(self.mouseTogrid[0] + self.mouseTogrid[1] * self.grid[0])] = 0
-            self.draw_map()
-            self.drawCurve(self.curve)
             print(pygame.mouse.get_pos()[0] // self.screenSizeMultiply, pygame.mouse.get_pos()[1] // self.screenSizeMultiply)
+        self.draw_map()
+        self.drawCurve(self.curve)
             
   
         pygame.display.flip()
@@ -99,49 +96,49 @@ class app:
         return ('0' * (3 - len(wynik))) + wynik
 
     def fixCurve(self, curve, tab=[]):
-        tab.append(curve[0])
-        if len(curve) <= 1:
-            tab.append(curve[0])
-            return tab
-        x = (int(curve[1][0]) // self.screenSizeMultiply) - (int(curve[0][0]) // self.screenSizeMultiply)
-        y = (curve[1][1] // self.screenSizeMultiply) - (curve[0][1] // self.screenSizeMultiply)
-        
 
-        if x > 7:
-            x = 7
-        elif y > 7:
-            y = 7
+        if len(curve) > 0:
+            for i in range(1,len(curve)):
+                x, y = curve[i][0] - curve[0][0], curve[i][1] - curve[0][1]
+                if x > 7 or y > 7:
+                    tab.append((curve[i-1][0],curve[i-1][1]))
+                    break
+
+                
         else:
-            return self.fixCurve(curve[1:], tab)
-        return self.fixCurve([(curve[0][0] + x, curve[0][1] + y)] + curve[1:],tab)
+            return tab
+        return self.fixCurve(curve[1:], tab)
 
 
     def curveToMove(self, curve): # converting the curve into enemy trajectory
 
         curve = self.fixCurve(curve)
-        for i in range(len(curve) - 1):
-            movement = ""
-            c1 = [curve[i+1][0] // self.screenSizeMultiply, curve[i+1][1] // self.screenSizeMultiply]
-            c0 = [curve[i][0] // self.screenSizeMultiply, curve[i][1] // self.screenSizeMultiply]
-            pygame.draw.rect(self.screen, (0, 0, 255), (c0[0], c0[1], 2, 2))
-            x = int(c1[0] - c0[0])
-            y = int(c1[1] - c0[1])
+        with open("tools/enemyTrajectoryEditor/plik.txt", "w")as file:
+            for i in range(len(curve) - 1):
+                movement = ""
+                c1 = [curve[i+1][0] // self.screenSizeMultiply, curve[i+1][1] // self.screenSizeMultiply]
+                c0 = [curve[i][0] // self.screenSizeMultiply, curve[i][1] // self.screenSizeMultiply]
+                pygame.draw.rect(self.screen, (0, 0, 255), (c0[0], c0[1], 2, 2))
+                x = int(c1[0] - c0[0])
+                y = int(c1[1] - c0[1])
 
 
-            if y < 0:
-                movement += "1"
-            else:
-                movement += "0"
-            movement += self.ToBase2(y)
+                if y < 0:
+                    movement += "1"
+                    y = -y
+                else:
+                    movement += "0"
+                movement += self.ToBase2(y)
+                if x < 0:
+                    x=-x
+                    movement += "1"
+                else:
+                    movement += "0"
+                movement += self.ToBase2(x)
+                file.write(movement + "\n")
 
-            movement += " | "
-
-            if x < 0:
-                movement += "1"
-            else:
-                movement += "0"
-            movement += self.ToBase2(x)
-            # print(movement)
+            
+                
 
 
 if __name__ == "__main__":
