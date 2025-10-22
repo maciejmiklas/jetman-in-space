@@ -15,6 +15,8 @@ class app:
         self.mouseTogrid = [pygame.mouse.get_pos()[0] // self.box_size, pygame.mouse.get_pos()[1] // self.box_size]
         self.curve = [[0,0], [0,0]]
 
+        self.pointToMove = None
+
         self.screen = pygame.display.set_mode((320 * self.screenSizeMultiply,256 * self.screenSizeMultiply))
 
         self.startApp()
@@ -54,6 +56,15 @@ class app:
                     
                 if event.key == pygame.K_c:
                     self.points = []
+                if event.key == pygame.K_e:
+                    if self.pointToMove != None:
+                        self.pointToMove = None
+                    else:
+                        for i in range(len(self.points)):
+                            if pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 1,1).colliderect(pygame.Rect(self.points[i][0], self.points[i][1],15,15)):
+                                self.pointToMove = i
+            if self.pointToMove != None:
+                self.points[self.pointToMove] = pygame.mouse.get_pos()
 
         if pygame.mouse.get_pressed()[0] and self.mouseTogrid[0] < self.grid[0] and self.mouseTogrid[1] < self.grid[1]:
             self.map[int(self.mouseTogrid[0] + self.mouseTogrid[1] * self.grid[0])] = 0
