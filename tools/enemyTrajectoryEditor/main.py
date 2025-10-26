@@ -3,7 +3,7 @@ import sys
 import fileReader
 import bezier
 import math
-
+import os
 
 
 class app:
@@ -39,11 +39,13 @@ class app:
             self.mainLoop()
 
     def drawCurve(self, c1):
-        pygame.draw.lines(self.screen, (0, 255, 0), False, c1, 2)
+        if len(c1) > 1:
+            pygame.draw.lines(self.screen, (0, 255, 0), False, c1, 2)
         for i in range(len(self.points)):
             pygame.draw.rect(self.screen, (0, 255, 0), (self.points[i][0], self.points[i][1], 5, 5))
     def mainLoop(self): # makes a main loop for the program
         for event in pygame.event.get(): # event handling 
+            self.draw_map()
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -52,10 +54,14 @@ class app:
                     self.points.append(pygame.mouse.get_pos())
                 if event.key == pygame.K_s: # drawing the curve form points
                     self.curve = bezier.bezier_curve(self.points)
+                    print(len(self.curve))
+                    print(self.points)
                     self.curveToMove(self.curve)
+                    
                     
                 if event.key == pygame.K_c:
                     self.points = []
+                    self.curve = []
                 if event.key == pygame.K_e:
                     if self.pointToMove != None:
                         self.pointToMove = None
@@ -69,7 +75,7 @@ class app:
         if pygame.mouse.get_pressed()[0] and self.mouseTogrid[0] < self.grid[0] and self.mouseTogrid[1] < self.grid[1]:
             self.map[int(self.mouseTogrid[0] + self.mouseTogrid[1] * self.grid[0])] = 0
             print(pygame.mouse.get_pos()[0] // self.screenSizeMultiply, pygame.mouse.get_pos()[1] // self.screenSizeMultiply)
-        self.draw_map()
+        
         self.drawCurve(self.curve)
             
   
@@ -107,32 +113,31 @@ class app:
         return ('0' * (3 - len(wynik))) + wynik
 
     def fixCurve(self, curve, tab=[]):
-
+        maxi = 0
         if len(curve) > 0:
             for i in range(1,len(curve)):
                 x, y = curve[i][0] - curve[0][0], curve[i][1] - curve[0][1]
                 if x > 7 or y > 7:
+                    maxi = i-1
                     tab.append((curve[i-1][0],curve[i-1][1]))
                     break
-
-                
         else:
             return tab
-        return self.fixCurve(curve[1:], tab)
+        return self.fixCurve(curve[maxi + 1:], tab)
 
 
-    def curveToMove(self, curve): # converting the curve into enemy trajectory
-
-        curve = self.fixCurve(curve)
-        with open("tools/enemyTrajectoryEditor/plik.txt", "w")as file:
+    def curveToMove(self, curven):
+        curve = self.fixCurve(curven, [])
+        os.remove("tools/enemyTrajectoryEditor/plik.txt")
+        with open("tools/enemyTrajectoryEditor/plik.txt", "w") as file:
             for i in range(len(curve) - 1):
                 movement = ""
                 c1 = [curve[i+1][0] // self.screenSizeMultiply, curve[i+1][1] // self.screenSizeMultiply]
                 c0 = [curve[i][0] // self.screenSizeMultiply, curve[i][1] // self.screenSizeMultiply]
-                pygame.draw.rect(self.screen, (0, 0, 255), (c0[0], c0[1], 2, 2))
+                pygame.draw.rect(self.screen, (0, 0, 255), (c0[0], c0[1], 5, 5))
+
                 x = int(c1[0] - c0[0])
                 y = int(c1[1] - c0[1])
-
 
                 if y < 0:
                     movement += "1"
@@ -140,13 +145,16 @@ class app:
                 else:
                     movement += "0"
                 movement += self.ToBase2(y)
+
                 if x < 0:
-                    x=-x
                     movement += "1"
+                    x = -x
                 else:
                     movement += "0"
                 movement += self.ToBase2(x)
+
                 file.write(movement + "\n")
+
 
             
                 
