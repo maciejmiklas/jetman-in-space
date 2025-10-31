@@ -54,8 +54,6 @@ class app:
                     self.points.append(pygame.mouse.get_pos())
                 if event.key == pygame.K_s: # drawing the curve form points
                     self.curve = bezier.bezier_curve(self.points)
-                    print(len(self.curve))
-                    print(self.points)
                     self.curveToMove(self.curve)
                     
                     
@@ -74,7 +72,6 @@ class app:
 
         if pygame.mouse.get_pressed()[0] and self.mouseTogrid[0] < self.grid[0] and self.mouseTogrid[1] < self.grid[1]:
             self.map[int(self.mouseTogrid[0] + self.mouseTogrid[1] * self.grid[0])] = 0
-            print(pygame.mouse.get_pos()[0] // self.screenSizeMultiply, pygame.mouse.get_pos()[1] // self.screenSizeMultiply)
         
         self.drawCurve(self.curve)
             
@@ -97,7 +94,7 @@ class app:
         self.drawGrid()
     
 
-    def ToBase2(self, num):
+    def ToBase2(self, num,b=3):
         if num > 7:
             num = 7
         if (num < 0):
@@ -110,7 +107,7 @@ class app:
         while test > 0:
             wynik = str(int(test % 2)) + wynik
             test = test//2
-        return ('0' * (3 - len(wynik))) + wynik
+        return ('0' * (b - len(wynik))) + wynik
 
     def fixCurve(self, curve, tab=[]):
         maxi = 0
@@ -119,41 +116,65 @@ class app:
                 x, y = curve[i][0] - curve[0][0], curve[i][1] - curve[0][1]
                 if x > 7 or y > 7:
                     maxi = i-1
-                    tab.append((curve[i-1][0],curve[i-1][1]))
+                    tab.append([curve[i-1][0],curve[i-1][1]])
                     break
         else:
             return tab
         return self.fixCurve(curve[maxi + 1:], tab)
+    
 
 
     def curveToMove(self, curven):
         curve = self.fixCurve(curven, [])
+        tab = []
+        for i in range(len(curve) - 1):
+            movement = ""
+            c1 = [curve[i+1][0] // self.screenSizeMultiply, curve[i+1][1] // self.screenSizeMultiply]
+            c0 = [curve[i][0] // self.screenSizeMultiply, curve[i][1] // self.screenSizeMultiply]
+            pygame.draw.rect(self.screen, (0, 0, 255), (c0[0], c0[1], 5, 5))
+
+            x = int(c1[0] - c0[0])
+            y = int(c1[1] - c0[1])
+
+            if y < 0:
+                movement += "1"
+                y = -y
+            else:
+                movement += "0"
+            movement += self.ToBase2(y)
+
+            if x < 0:
+                movement += "1"
+                x = -x
+            else:
+                movement += "0"
+            movement += self.ToBase2(x)
+
+            tab.append(movement)
+        newtab = []
+        for i in range(len(tab)-1):
+            x = 0
+            if tab[i] == tab[i+1]:
+                if len(tab) - 1 - i> 15:
+                    for j in range(i,16 + i):
+                        if tab[i] == tab[j]:
+                            x+=1
+                        else:
+                            break 
+                else:
+                    for j in range(i,len(tab)):
+                        if tab[i] == tab[j]:
+                            x+=1
+                        else:
+                            break
+                
+            newtab.append([tab[i], "0000"+str(self.ToBase2(x, 3))])
         os.remove("tools/enemyTrajectoryEditor/plik.txt")
         with open("tools/enemyTrajectoryEditor/plik.txt", "w") as file:
-            for i in range(len(curve) - 1):
-                movement = ""
-                c1 = [curve[i+1][0] // self.screenSizeMultiply, curve[i+1][1] // self.screenSizeMultiply]
-                c0 = [curve[i][0] // self.screenSizeMultiply, curve[i][1] // self.screenSizeMultiply]
-                pygame.draw.rect(self.screen, (0, 0, 255), (c0[0], c0[1], 5, 5))
-
-                x = int(c1[0] - c0[0])
-                y = int(c1[1] - c0[1])
-
-                if y < 0:
-                    movement += "1"
-                    y = -y
-                else:
-                    movement += "0"
-                movement += self.ToBase2(y)
-
-                if x < 0:
-                    movement += "1"
-                    x = -x
-                else:
-                    movement += "0"
-                movement += self.ToBase2(x)
-
-                file.write(movement + "\n")
+            for i in newtab:
+                file.write(i[0] + " " + str(i[1]))
+                file.write("\n")
+        
 
 
             
