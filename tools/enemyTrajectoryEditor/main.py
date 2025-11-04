@@ -129,12 +129,14 @@ class app:
         tab = []
         for i in range(len(curve) - 1):
             movement = ""
-            c1 = [curve[i+1][0] // self.screenSizeMultiply, curve[i+1][1] // self.screenSizeMultiply]
-            c0 = [curve[i][0] // self.screenSizeMultiply, curve[i][1] // self.screenSizeMultiply]
+            c1 = [curve[i+1][0] / self.screenSizeMultiply, curve[i+1][1] / self.screenSizeMultiply]
+            c0 = [curve[i][0] / self.screenSizeMultiply, curve[i][1] / self.screenSizeMultiply]
             pygame.draw.rect(self.screen, (0, 0, 255), (c0[0], c0[1], 5, 5))
 
             x = int(c1[0] - c0[0])
             y = int(c1[1] - c0[1])
+            
+            print(x, c1[0] - c0[0])
 
             if y < 0:
                 movement += "1"
@@ -151,28 +153,23 @@ class app:
             movement += self.ToBase2(x)
 
             tab.append(movement)
-        newtab = []
-        for i in range(len(tab)-1):
-            x = 0
-            if tab[i] == tab[i+1]:
-                if len(tab) - 1 - i> 15:
-                    for j in range(i,16 + i):
-                        if tab[i] == tab[j]:
-                            x+=1
-                        else:
-                            break 
-                else:
-                    for j in range(i,len(tab)):
-                        if tab[i] == tab[j]:
-                            x+=1
-                        else:
-                            break
-                
-            newtab.append([tab[i], "0000"+str(self.ToBase2(x, 3))])
+        result = []
+        count = 0
+
+        for i in range(1, len(tab)):
+            if tab[i] == tab[i - 1]:
+                count += 1
+                if count == 15:
+                    result.append([tab[i - 1], self.ToBase2(count, 4)])
+                    count = 0
+            else:
+                result.append([tab[i - 1], self.ToBase2(count, 4)])
+                count = 0
+            print('x', count, tab[i - 1], tab[i])
         os.remove("tools/enemyTrajectoryEditor/plik.txt")
         with open("tools/enemyTrajectoryEditor/plik.txt", "w") as file:
-            for i in newtab:
-                file.write(i[0] + " " + str(i[1]))
+            for i in result:
+                file.write(i[0] + " 0000" + str(i[1]))
                 file.write("\n")
         
 
