@@ -304,7 +304,6 @@ starsData2MaxYL10
     DB 016/*X=015*/, 028/*X=042*/, 030/*X=052*/, 045/*X=070*/, 062/*X=082*/, 051/*X=108*/, 061/*X=114*/, 075/*X=129*/, 127/*X=158*/
     DB 214/*X=175*/, 221/*X=194*/, 221/*X=202*/, 229/*X=235*/, 052/*X=268*/, 042/*X=281*/, 024/*X=301*/
 
-; Stars on L1 have 32 colors, 64 bytes, 9-bit color. A few last bytes are transparent to simulate blinking, where the star disappears.
 
 
 
@@ -313,6 +312,16 @@ starsData2MaxYL10
 
 
 
+
+
+
+
+
+
+
+
+
+; Stars on Layer 1 (L1) have 32 colors, 64 bytes, 9-bit color. A few last bytes are transparent to simulate blinking.
 
 ; L1 - Palette 0
 /* Values for Remy's editor:
@@ -324,16 +333,6 @@ starsPalL1
 	DB $68, $00, $68, $01, $69, $00, $69, $01, $6A, $00, $6A, $01, $6B, $00, $6B, $01
 	DB $A0, $00, $A0, $01, $A1, $00, $A1, $01, $A2, $00, $A2, $01, $A3, $00, $A3, $01
 	DB $26, $00, $25, $01, $24, $01, $24, $00, $E3, $01, $E3, $01, $E3, $01, $E3, $01
-
-
-
-
-
-
-
-
-
-
 
 
 ; L1 - Palette 1
@@ -367,20 +366,6 @@ starsPalL1
 	DB $5C, $01, $FC, $01, $5E, $00, $D9, $00, $96, $00, $B9, $00, $78, $01, $F8, $01
 
 ; Stars on L1 have 8 colors, 16 bytes,  9-bit color.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

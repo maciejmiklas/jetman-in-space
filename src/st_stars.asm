@@ -71,8 +71,8 @@ starsPalL2Point         DW 0
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: palette number, values from 0-3
-;  - DE: max horizontal star position for each column (#SC) for Level 1
-;  - HL: max horizontal star position for each column (#SC) for Level 2
+;  - DE: array containing max horizontal star position for each column (#SC) for Layer 1
+;  - HL: same as DE, but for Layer 2
 SetupStars
 
     LD (paletteNumber), A
@@ -476,7 +476,7 @@ _RenderStars
 ;----------------------------------------------------------;
 ; Input 
 ;  - IX: Pointer to SC
-;  - IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9])
+;  - IY: Points to the current max y postion for the star=
 _MoveAndRenderStarColumn
     
     ; ##########################################
@@ -512,7 +512,7 @@ _MoveAndRenderStarColumn
     ; B:  Number of stars in the row
     ; HL: Points to the first source pixel from stars column
     ; DE: Points to the top destination pixel (byte) in the column on the background (destination) image
-    ; IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9])
+    ; IY: Points to the current max y postion for the star
     ; In this loop, we will copy one column of the stars from the source data (HL) into the layer 2 image (DE) column
 
 .starsLoop
@@ -608,7 +608,7 @@ _MoveAndRenderStarColumn
 ;----------------------------------------------------------;
 ; Input 
 ;  - B:  Star postion to be checked
-;  - IY: Points to the current max y postion for the star (from #starsMaxYLevel[0-9])
+;  - IY: Points to the current max y postion for the star
 ; Output:
 ;  - A with value CANSS_XXX
 ; Modifies: A,C
@@ -618,7 +618,7 @@ CANSS_NO            = 0
 _CanShowStar
 
     ; Load into C max star y-postion
-    LD A, (IY)                                  ; C contains max y-pos from #starsMaxYLevel[0-9]
+    LD A, (IY)                                  ; C contains max y-pos from
 
     ; A holds max star y-position and B current
     CP B
