@@ -10,7 +10,7 @@ LoadLevel1Data
 
     ; Load stars
     CALL dbs.SetupArrays1Bank
-    LD A, 0
+    LD A, 0 
     LD DE, db1.starsData1MaxYL1
     LD HL, db1.starsData2MaxYL1
     CALL st.SetupStars
@@ -80,7 +80,7 @@ LoadLevel2Data
 
     ; Load stars
     CALL dbs.SetupArrays1Bank
-    LD A, 0
+    LD A, 1
     LD DE, db1.starsData1MaxYL2
     LD HL, db1.starsData2MaxYL2
     CALL st.SetupStars
@@ -286,7 +286,7 @@ LoadLevel4Data
 LoadLevel5Data
 
     ; Load stars
-    LD A, 0
+    LD A, 4
     CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL5
     LD HL, db1.starsData2MaxYL5
@@ -356,7 +356,7 @@ LoadLevel5Data
 LoadLevel6Data
 
     ; Load stars
-    LD A, 1
+    LD A, 5
     CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL6
     LD HL, db1.starsData2MaxYL6
@@ -426,7 +426,7 @@ LoadLevel6Data
 LoadLevel7Data
 
     ; Load stars
-    LD A, 2
+    LD A, 0
     CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL7
     LD HL, db1.starsData2MaxYL7
@@ -491,7 +491,7 @@ LoadLevel7Data
 LoadLevel8Data
 
     ; Load stars
-    LD A, 3
+    LD A, 1
     CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL8
     LD HL, db1.starsData2MaxYL8
@@ -562,7 +562,7 @@ LoadLevel8Data
 LoadLevel9Data
 
     ; Load stars
-    LD A, 0
+    LD A, 2
     CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL9
     LD HL, db1.starsData2MaxYL9
@@ -626,7 +626,7 @@ LoadLevel9Data
 LoadLevel10Data
 
     ; Load stars
-    LD A, 1
+    LD A, 3
     CALL dbs.SetupArrays1Bank
     LD DE, db1.starsData1MaxYL10
     LD HL, db1.starsData2MaxYL10

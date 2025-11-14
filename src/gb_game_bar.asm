@@ -48,12 +48,14 @@ PrintDebug
     RET NZ
 
     ; ##########################################
+    /*
     LD BC, 40
     LD H, 0
     CALL dbs.SetupPaletteBank
     LD A, (btd.palColors)
     LD L, A
     CALL ut.PrintNumber
+    */
 
 
     RET                                         ; ## END of the function ##

@@ -40,7 +40,7 @@ starsMoveL1Delay        DB ST_L1_MOVE_DEL_D10    ; Delay counter for stars on la
 starsMoveL2Delay        DB ST_L2_MOVE_DEL_D2    ; Delay counter for stars on layer 2
 
 randColor               DB 0                    ; Rand value from the previous call
-
+; A0 = 0000 1010
 ; Currently rendered palette
 starsPalPoint           DW 0
 starsPalSize            DB 0
@@ -54,7 +54,7 @@ starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDat
 starsData1MaxY          DW 0
 starsData2MaxY          DW 0
 
-paletteNumber           DB 0                     ; Palette number, values from 0-3
+paletteNumber           DB 0                    ; Palette number, values from 0-3
 PALETTE_CNT             = 4
 
 ST_PAL_L1_SIZE_D32      = 32                    ; Number of colors for stars on layer 1 (each color takes 2 bytes)
