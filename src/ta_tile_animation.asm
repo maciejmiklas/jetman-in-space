@@ -85,8 +85,8 @@ NextTileAnimationFrame
 ;                   SetupTileAnimation                     ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Max rows
-;  - HL: Pointer to a list containing pointers to concrete rows
+;  - A:  max rows
+;  - HL: pointer to a list containing pointers to concrete rows
 SetupTileAnimation
 
     LD (maxRows), A

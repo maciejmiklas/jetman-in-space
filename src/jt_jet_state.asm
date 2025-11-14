@@ -71,8 +71,6 @@ SetJetStateAir
 ;----------------------------------------------------------;
 ;                     SetJetStateGnd                       ;
 ;----------------------------------------------------------;
-; Input:
-;  - A:                                         ; Air State: #GND_XXX
 SetJetStateGnd
 
     LD (jetGnd), A

@@ -121,8 +121,8 @@ DisableFollowingEnemies
 ;                 SetupFollowingEnemies                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  Number of enemies (size of #FES)
-;  - IX: Pointer to #FES
+;  - A:  number of enemies (size of #FES)
+;  - IX: pointer to #FES
 SetupFollowingEnemies
 
     LD B, A             ; Counter for .enemyLoop
@@ -268,7 +268,6 @@ RespawnFollowingEnemy
 ;----------------------------------------------------------;
 MoveFollowingEnemies
 
-    ; ##########################################
     ; Loop ever all enemies skipping hidden
     LD IX, fEnemySprites
     LD A, (fEnemySize)
@@ -373,8 +372,8 @@ _ResetSprites
 ;----------------------------------------------------------;
 ; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Jetman's position
 ; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
-;  - IY: Pointer to #FE
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
+;  - IY: pointer to #FE
 _UpdateFollowingEnemy
 
     ; Return if enemy is not visible
@@ -455,8 +454,8 @@ _UpdateFollowingEnemy
 ;                 _NextFollowingAngle                      ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
-;  - IY: Pointer to #FE
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
+;  - IY: pointer to #FE
 _NextFollowingAngle
 
     ; Return if enemy is not visible
@@ -490,8 +489,8 @@ _NextFollowingAngle
 ;                _EnemyDirectionChanged                    ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
-;  - IY: Pointer to #FE
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
+;  - IY: pointer to #FE
 _EnemyDirectionChanged
 
     ; Set following off counter to random value
@@ -533,8 +532,8 @@ _EnemyDirectionChanged
 ;                  _BounceOfPlatform                       ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
-;  - IY: Pointer to #FE
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
+;  - IY: pointer to #FE
 _BounceOfPlatform
 
     ; Check the collision with the platform
@@ -591,8 +590,8 @@ _BounceOfPlatform
 ;                       _MoveEnemy                         ;
 ;----------------------------------------------------------;
 ; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
-;  - IY: Pointer to #FE
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
+;  - IY: pointer to #FE
 _MoveEnemy
 
     CALL _BounceOfPlatform                     ; Should enemy bounce of the platform?
@@ -701,8 +700,8 @@ _MoveEnemy
 ;----------------------------------------------------------;
 ; Invert Y (#STATE_DIR_Y_BIT) if the enemy is close to the top/bottom of the screen
 ; Input
-;  - IX: Pointer to #SPR holding data for single sprite that will be moved
-;  - IY: Pointer to #FE
+;  - IX: pointer to #SPR holding data for single sprite that will be moved
+;  - IY: pointer to #FE
 _BounceOfTop
 
     ; Has enemy reached the bottom of the screen?
@@ -737,7 +736,7 @@ tmp db 0
 ;            _TryRespawnNextFollowingEnemy                 ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: Pointer to #SPR holding data for single enemy
+;  - IX: pointer to #SPR holding data for single enemy
 ; Output:
 ;  - A:  _RET_YES_D1/_RET_NO_D0
 _TryRespawnNextFollowingEnemy

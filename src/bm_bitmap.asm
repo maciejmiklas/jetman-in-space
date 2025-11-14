@@ -132,7 +132,7 @@ HideImage
 ;----------------------------------------------------------;
 ; Replaces horizontal line of the image with transparent color.
 ; Input:
-;  - E:  Line number
+;  - E:  line number
 HideImageLine
 
     LD B, dbs.BM_BANKS_D10
@@ -171,7 +171,7 @@ HideImageLine
 ;----------------------------------------------------------;
 ; Replaces the line of the displayed layer 2 image with the corresponding line of the given image.
 ; Input:
-;  - E:  Line number.
+;  - E: line number
 ReplaceImageLine
 
     LD B, 0

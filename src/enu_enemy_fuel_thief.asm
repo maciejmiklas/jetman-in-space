@@ -344,8 +344,8 @@ _HideFuelThief
 ;                     _LoadSprToIxIy                       ;
 ;----------------------------------------------------------;
 ; Output:
-;  IX: Points to SPR
-;  IY: Points to ENP
+;  IX: points to SPR
+;  IY: points to ENP
 _LoadSprToIxIy
 
     LD IX, ena.fuelThiefSpr

@@ -390,8 +390,8 @@ RocketElementFallsForPickup
 ;                 UpdateElementPosition                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Current #RO pointer
-;  - A:     X postion
+;  - IX: current #RO pointer
+;  - A:  X postion
 UpdateElementPosition
 
     LD B, A                                     ; Backup A
@@ -594,8 +594,8 @@ MoveIXtoGivenRocketElement
 ;                UpdateRocketSpritePattern                 ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX:    Current #RO pointer
-;  - D:     sprite pattern
+;  - IX: current #RO pointer
+;  - D:  sprite pattern
 UpdateRocketSpritePattern
 
     ; Set the ID of the sprite for the following commands

@@ -564,3 +564,12 @@ POS                     DW                      ; Tile offset as byte starting f
 TID                     DB                      ; Tile ID from "tile.spr"
 PAL                     DB                      ; Palette offset
     ENDS
+
+;----------------------------------------------------------;
+;                        In Game Stars                     ;
+;----------------------------------------------------------;
+    STRUCT SC                                   ; Stars column
+BANK                    DB                      ; Image bank number from 0 to 9
+X_OFFSET                DB                      ; X offset from the beginning of the bank, max 32 (32=8192/256)
+SIZE                    DB                      ; Amount of stars
+    ENDS

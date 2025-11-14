@@ -20,8 +20,6 @@ LoadMenuGameplay
     PUSH DE
 
     CALL fi.LoadBgPaletteFile
-
-    CALL dbs.SetupPaletteBank
     CALL btd.LoadOriginalPalette
 
     POP DE
@@ -62,8 +60,6 @@ LoadMenuKeys
     PUSH DE
 
     CALL fi.LoadBgPaletteFile
-
-    CALL dbs.SetupPaletteBank
     CALL btd.LoadOriginalPalette
     POP DE
 

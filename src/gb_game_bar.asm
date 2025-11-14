@@ -46,14 +46,17 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-/*
+
     ; ##########################################
+    /*
     LD BC, 40
     LD H, 0
-    LD A, (fe.tmp)
+    CALL dbs.SetupPaletteBank
+    LD A, (btd.palColors)
     LD L, A
     CALL ut.PrintNumber
-*/
+    */
+
 
     RET                                         ; ## END of the function ##
 

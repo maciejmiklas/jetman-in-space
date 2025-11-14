@@ -103,8 +103,8 @@ SetupTiles
 ;----------------------------------------------------------;
 ; Copy 9 bit palette.
 ; Input:
-; - B:  Number bytes to copy (each color takes two bytes)
-; - HL: Address of layer 2 palette data
+; - B:  number bytes to copy (each color takes two bytes)
+; - HL: address of layer 2 palette data
 LoadTilemapPalette
 
     ; Bits
@@ -132,8 +132,8 @@ LoadTilemapPalette
 ;----------------------------------------------------------;
 ; Copy 8 bit palette.
 ; Input:
-; - B:  Number colors to copy (one color = one byte)
-; - HL: Address of layer 2 palette data
+; - B:  number colors to copy (one color = one byte)
+; - HL: address of layer 2 palette data
 LoadTilemap8bitPalette
 
     ; Bits
@@ -183,10 +183,10 @@ ResetTilemapOffset
 ;----------------------------------------------------------;
 ; Print given text using tiles.
 ; Input:
-;  - DE:    Pointer to the text
-;  - A:     Amount of characters in DE
-;  - BC:    Character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
-;           For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first character starts in second line.
+;  - DE: pointer to the text
+;  - A:  amount of characters in DE
+;  - BC: character offset from the top left corner. Each character takes 8 pixels, screen can contain 40x23 characters.
+;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first character starts in second line.
 PrintText
 
     LD HL, TI_MAP_RAM_H5B00                      ; HL points to screen memory containing tilemap
@@ -243,7 +243,7 @@ CleanAllTiles
 ;----------------------------------------------------------;
 ;                        CleanTiles                        ;
 ;----------------------------------------------------------;
-;  - B:     Amount of tiles to clean 
+;  - B: amount of tiles to clean 
 CleanTiles
     LD HL, TI_MAP_RAM_H5B00                     ; HL points to screen memory containing tilemap
     DEC HL

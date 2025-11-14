@@ -130,7 +130,6 @@ _LoadMenuEasy
     ; Load palette
     CALL fi.LoadEasyPalFile
 
-    CALL dbs.SetupPaletteBank
     CALL btd.LoadOriginalPalette
 
     ; ##########################################
@@ -173,8 +172,6 @@ _LoadMenuNormal
     PUSH DE
 
     CALL fi.LoadBgPaletteFile
-
-    CALL dbs.SetupPaletteBank
     CALL btd.LoadOriginalPalette
 
     POP DE
@@ -216,8 +213,6 @@ _LoadMenuHard
     ; ##########################################
     ; Load palette
     CALL fi.LoadHardPalFile
-
-    CALL dbs.SetupPaletteBank
     CALL btd.LoadOriginalPalette
 
     ; ##########################################

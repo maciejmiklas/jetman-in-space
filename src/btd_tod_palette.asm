@@ -6,11 +6,13 @@
     ; ### TO USE THIS MODULE: CALL dbs.SetupPaletteBank ###
 
 palBytes                DW 0                    ; Size in bytes of background palette, max 512
-palColors               DB 0                    ; Amount of colors in background palette, max 255
+palColors               DB 0                    ; Amount of colors in background palette, max 255-40 for stars
 palAdr                  DW 0                    ; Address of the original palette data
 todPalAddr              DW 0                    ; Pointer to current brightness palette
 
-PAL_BG_BYTES_D300      = 312                    ; Background palette has max 300 bytes to have 100 bytes (50 colors) for stars
+; We use 40 colors (41 with margin) for the stars palette, which leaves 512-(41*2) = 430 bytes, or 215 colors for the L2 image.
+PAL_BG_BYTES_D430      = 512-st.ST_PAL_L1_BYTES_D64-st.ST_PAL_L2_BYTES_D16-2
+    ASSERT PAL_BG_BYTES_D430 = 430
 
 ; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000. #todPalAddr points to the current palette.
 TOD_PALETTES_ADDR      = _RAM_SLOT7_STA_HE000
@@ -18,12 +20,12 @@ TOD_PALETTES_ADDR      = _RAM_SLOT7_STA_HE000
 ; The original palette loaded from disk.
 ORIGINAL_PAL_ADDR      = TOD_PALETTES_ADDR + 7*bp.PAL_BYTES_D512
 
-
 ;----------------------------------------------------------;
 ;                    LoadOriginalPalette                   ;
 ;----------------------------------------------------------;
 LoadOriginalPalette
 
+    CALL dbs.SetupPaletteBank
     LD HL, btd.ORIGINAL_PAL_ADDR
     LD B, bp.PAL_COLORS_D256
     CALL bp.LoadPalette
@@ -34,13 +36,13 @@ LoadOriginalPalette
 ;                      NextTodPalette                      ;
 ;----------------------------------------------------------;
 NextTodPalette
+    CALL dbs.SetupPaletteBank
 
     LD HL, (todPalAddr)
     LD A, (palColors)
-    LD B, A 
+    LD B, A
     PUSH HL
     CALL bp.LoadPalette
-    CALL gc.BackgroundPaletteLoaded : CALL dbs.SetupPaletteBank
     POP HL
 
     ; Moves #todPalAddr to the next palette
@@ -53,13 +55,12 @@ NextTodPalette
 ;                      PrevTodPalette                      ;
 ;----------------------------------------------------------;
 PrevTodPalette
-
+    CALL dbs.SetupPaletteBank
+    
     LD HL, (todPalAddr)
     LD A, (palColors)
     LD B, A
     CALL bp.LoadPalette
-    CALL gc.BackgroundPaletteLoaded : CALL dbs.SetupPaletteBank
-
     CALL PrevTodPaletteAddr
 
     RET                                         ; ## END of the function ##
@@ -69,6 +70,8 @@ PrevTodPalette
 ;----------------------------------------------------------;
 PrevTodPaletteAddr
     
+    CALL dbs.SetupPaletteBank
+
     ; Moves #todPalAddr to the previous palette
     LD HL, (todPalAddr) 
     ADD HL, -bp.PAL_BYTES_D512
@@ -81,6 +84,7 @@ PrevTodPaletteAddr
 ;----------------------------------------------------------;
 LoadCurrentTodPalette
 
+    CALL dbs.SetupPaletteBank
     CALL bp.SetupPaletteLoad
 
     LD HL, (palAdr)
@@ -196,7 +200,7 @@ _NextBrightnessPalette
 ;----------------------------------------------------------;
 ;                 _DecrementPaletteColors                  ;
 ;----------------------------------------------------------;
-; This function will decrease palette brighteners given by #todPalAddr.
+; This function will decrease palette brighteners given by #todPalAddr
 _DecrementPaletteColors
 
     ; ##########################################
@@ -249,7 +253,8 @@ _LoadTodPalette
 
     DJNZ .loopCopyColor
 
-    CALL gc.BackgroundPaletteLoaded : CALL dbs.SetupPaletteBank
+    CALL gc.BackgroundPaletteLoaded
+    CALL dbs.SetupPaletteBank
 
     RET                                         ; ## END of the function ##
 

@@ -110,7 +110,7 @@ _MoveBackground
 ;                  _GetGroundImageLine                     ;
 ;----------------------------------------------------------;
 ; Return:
-;  - A: Returns the line number of the background image at ground level based on the horizontal image movement given by #bgOffset.
+;  - A: returns the line number of the background image at ground level based on the horizontal image movement given by #bgOffset
 GBL_RET_A_GND               = _BM_YRES_D256-1
 
 _GetGroundImageLine

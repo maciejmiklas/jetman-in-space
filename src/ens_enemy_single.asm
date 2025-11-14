@@ -38,9 +38,9 @@ MoveSingleEnemies
 ;----------------------------------------------------------;
 ; Resets single enemies and loads given #ENPS array into #ENP and #SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE
 ; Input:
-;   - A:  Number of single enemies (size of #ENPS)
-;   - B:  Respawn delay for #nextRespDel
-;   - IX: Pointer to #ENPS array
+;   - A:  number of single enemies (size of #ENPS)
+;   - B:  respawn delay for #nextRespDel
+;   - IX: pointer to #ENPS array
 SetupSingleEnemies
 
     LD (singleEnemySize), A

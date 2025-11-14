@@ -99,8 +99,8 @@ FireSpeedUp
 ;----------------------------------------------------------;
 ; Checks all active enemies given by IX for collision with leaser beam
 ; Input
-;  - IX: Pointer to #SPR, the enemies
-;  - A:  Number of enemies in IX
+;  - IX: pointer to #SPR, the enemies
+;  - A:  number of enemies in IX
 ; Modifies: ALL
 CheckHitEnemies
 
@@ -173,8 +173,8 @@ HideShots
 ;----------------------------------------------------------;
 ; The method checks whether any active laser beam has hit the sprite given by X/Y.
 ; Input:
-; - DE:  X of the sprite
-; - C:   Y of the sprite
+; - DE: X of the sprite
+; - C:  Y of the sprite
 ; Output:
 ; - A:   values:
 ; Modifies: All

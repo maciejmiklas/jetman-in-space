@@ -14,7 +14,7 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    CALL gc.LoadLevel6
+    CALL gc.LoadLevel1
     ;CALL gc.LoadMainMenu
 
     ; ##########################################
@@ -63,6 +63,7 @@ mainLoop
     INCLUDE "fi_file_io.asm"
     INCLUDE "dbs_bank_setup.asm"
     INCLUDE "ll_level_loader.asm"
+    INCLUDE "st_stars.asm"
     INCLUDE "bm_bitmap.asm"
     INCLUDE "bp_bitmap_palette.asm"
     INCLUDE "btd_tod_palette.asm"
@@ -82,7 +83,6 @@ mainLoop
     INCLUDE "rof_rocket_fly.asm"
     INCLUDE "ros_rocket_stars.asm"
     INCLUDE "td_times_of_day.asm"
-    INCLUDE "st_stars.asm"
     INCLUDE "jo_jetpack_overheat.asm"
     INCLUDE "li_level_intro.asm"
     INCLUDE "ki_keyboard_input.asm"
