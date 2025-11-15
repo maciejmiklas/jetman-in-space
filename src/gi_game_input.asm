@@ -14,22 +14,34 @@ ResetKeysState
     LD (gid.joyDirection), A
     LD (gid.joyPrevDirection), A
     LD (gid.joyOverheatDelayCnt), A
-    LD (gid.buttonState), A
-    LD (gid.buttonPrevState), A
+    LD (gid.gameInputState), A
+    LD (gid.gameInputPrevState), A
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   GameJoystickInput                      ;
+;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
-GameJoystickInput
+; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement. 
+; Keys are always processed at the same speed.
+JetMovementInput
 
     XOR A
-    LD (gid.buttonState), A
     LD (gid.joyDirection), A
 
     ; ##########################################
-    ; Key right pressed ?
+    ; Row: 1, 2, 3, 4, & 5 and to left arrow key
+
+    ; Key Left
+    LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1)
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    BIT 4, A                                    ; Bit 4 reset -> Left pressed
+    CALL Z, _JoyLeft
+
+    ; ##########################################
+    ; Row: 6, 7, 8 ,9, 0 and to read arrow keys: up/down/right
+
+    ; Key right
     LD A, _KB_6_TO_0_HEF                        ; $EF -> A (6...0)
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
@@ -37,20 +49,20 @@ GameJoystickInput
     CALL Z, _JoyRight
     POP AF
 
-    ; ##########################################
-    ; Key up pressed ?
+    ; Key up
     PUSH AF
     BIT 3, A                                    ; Bit 3 reset -> Up pressed
     CALL Z, _JoyUp
     POP AF
     
-    ; ##########################################
-    ; Key down pressed ?
+    ; Key down
     BIT 4, A                                    ; Bit 4 reset -> Down pressed
     CALL Z, _JoyDown
 
     ; ##########################################
-    ; Joystick right pressed ?
+    ; Read Kempston input
+
+    ; Joystick right
     LD A, _JOY_MASK_H20                         ; Activate joystick register
     IN A, (_JOY_REG_H1F)                        ; Read joystick input into A
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
@@ -58,70 +70,77 @@ GameJoystickInput
     CALL NZ, _JoyRight  
     POP AF
 
-    ; ##########################################
-    ; Joystick left pressed ?
+    ; Joystick left
     PUSH AF
     BIT 1, A                                    ; Bit 1 set -> Left pressed
     CALL NZ, _JoyLeft
     POP AF
 
-    ; ##########################################
-    ; Joystick down pressed ?
+    ; Joystick down
     PUSH AF
     BIT 2, A                                    ; Bit 2 set -> Down pressed
     CALL NZ, _JoyDown
     POP AF
 
-    ; ##########################################
-    ; Joystick fire pressed ?
-    PUSH AF
-    AND %01110000                               ; Any of three fires pressed?
-    CALL NZ, _JoyFire
-    POP AF
-
-    ; ##########################################
-    ; Joystick up pressed ?
+    ; Joystick up
     BIT 3, A                                    ; Bit 3 set -> Up pressed
     CALL NZ, _JoyUp
 
-    ; ##########################################
-    ; Key Fire (Z) pressed ?
-    LD A, _KB_V_TO_SH_HFE                       ; $FD -> A (5...1)
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed
-    CALL Z, _JoyFire
-
-    ; ##########################################
-    ; Key SPACE pressed ?
-    LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
-    CALL Z, _JoyGrenade
-
-    ; ##########################################
-    ; Key ENTER pressed ?
-    LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
-    CALL Z, _JoyFire
-    
-    ; ##########################################
-    ; Key Left pressed ?
-    LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1)
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 4, A                                    ; Bit 4 reset -> Left pressed
-    CALL Z, _JoyLeft
-
-    CALL _JoyEnd
+    CALL _JoyMoveEnd
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    GameKeyboardInput                     ;
+;                       GameInput                          ;
 ;----------------------------------------------------------;
-GameKeyboardInput
+; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement. 
+; Keys are always processed at the same speed.
+GameInput
 
-    ; Handle row T...Q
+    XOR A
+    LD (gid.gameInputState), A
+    
+    ; ##########################################
+    ; Read Kempston input
+    LD A, _JOY_MASK_H20                         ; Activate joystick register
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A
+
+    ; Joystick fire A
+    PUSH AF
+    AND %01000000                               ; Any of three fires pressed?
+    CALL NZ, _JoyFireA
+    POP AF
+
+    ; Joystick fire B
+    PUSH AF
+    AND %00010000                               ; Any of three fires pressed?
+    CALL NZ, _JoyFireB
+    POP AF
+
+    ; Joystick fire C
+    AND %00100000                               ; Any of three fires pressed?
+    CALL NZ, _JoyFireC
+
+    ; ##########################################
+    ; Row: V, C, X, Z, SHIFT
+    
+    ; Key Fire (Z)
+    LD A, _KB_V_TO_SH_HFE                       ; $FD -> A (5...1)
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    BIT 1, A                                    ; Bit 1 reset -> Z pressed
+    CALL Z, _JoyFireA
+
+    ; ##########################################
+    ; Row: H, J, K, L, ENTER
+
+    ; Key ENTER
+    LD A, _KB_H_TO_ENT_HBF
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
+    CALL Z, _JoyFireA
+
+    ; ##########################################
+    ; Row T...Q
     LD A, _KB_T_TO_Q_HFB
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
@@ -129,32 +148,32 @@ GameKeyboardInput
     CALL Z, _Key_Q
     POP AF
 
-    ; ##########################################
+    ; Key W
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 1, A                                    ; W
     CALL Z, _Key_W
     POP AF  
 
-    ; ##########################################
+    ; Key E
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 2, A                                    ; E
     CALL Z, _Key_E
     POP AF
 
-    ; ##########################################
+    ; Key R
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 3, A                                    ; R
     CALL Z, _Key_R
     POP AF
 
-    ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
+    ; Key T
     BIT 4, A                                    ; T
     CALL Z, _Key_T
-    POP AF
 
     ; ##########################################
-    ; Handle row Y...P
+    ; Row: Y...P
+
+    ; Key P
     LD A, _KB_P_TO_Y_HDF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
@@ -162,32 +181,32 @@ GameKeyboardInput
     CALL Z, _Key_P
     POP AF
 
-    ; ##########################################
+    ; Key O
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     BIT 1, A                                    ; O
     CALL Z, _Key_O
     POP AF
 
-    ; ##########################################
+    ; Key I
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 2, A                                    ; I
     CALL Z, _Key_I
     POP AF
 
-    ; ##########################################
+    ; Key U
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 3, A                                    ; U
     CALL Z, _Key_U
     POP AF
 
-    ; ##########################################
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
+    ; Key Y
     BIT 4, A                                    ; Y
     CALL Z, _Key_Y
-    POP AF  
 
     ; ##########################################
-    ; G...A
+    ; Row: G...A
+
+    ; Key F
     LD A, _KB_G_TO_A_HFD
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
@@ -197,6 +216,7 @@ GameKeyboardInput
 
     ; ##########################################
     ; B...M
+    ; Key N
     LD A, _KB_B_TO_SPC_H7F
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
@@ -204,11 +224,18 @@ GameKeyboardInput
     CALL Z, _Key_N
     POP AF
 
-    ; ##########################################
+    ; Key M
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input
     BIT 2, A                                    ; M
     CALL Z, _Key_M
     POP AF
+
+    ; Key SPACE
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
+    CALL Z, _ThrowGranade
+
+    ; ##########################################
+    CALL _GameInputEnd
 
     RET                                         ; ## END of the function ##
 
@@ -223,12 +250,7 @@ GameKeyboardInput
 ;----------------------------------------------------------;
 _Key_N
 
-    CALL ki.CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
-
-    CALL dbs.SetupMusicBank
-    CALL aml.NextGameSong
+    CALL _NextSong
 
     RET                                         ; ## END of the function ##
 
@@ -369,10 +391,36 @@ _Key_F
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   _GameInputEnd                          ;
+;----------------------------------------------------------;
+_GameInputEnd
+
+    ; Fire key has been released?
+    LD A, (gid.gameInputState)
+    BIT gid.BS_FIRE_BIT, A
+    JR NZ, .afterFireRelease                 ; Jump if fire is pressed now
+
+    ; Fire is not pressed, now check whether it was pressed during the last loop
+    LD A, (gid.gameInputPrevState)
+    BIT gid.BS_FIRE_BIT, A
+    JR Z, .afterFireRelease                  ; Jump if down was not pressed
+
+    ; Fire is not pressed now, but was in previous loop
+    CALL _JoyFireRelease
+.afterFireRelease 
+
+    ; ##########################################
+    LD A, (gid.gameInputState)
+    LD (gid.gameInputPrevState), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        _JoyEnd                           ;
 ;----------------------------------------------------------;
-_JoyEnd
-    CALL jm.JoystickInputProcessed
+_JoyMoveEnd
+
+    CALL jm.JoystickMoveProcessed
 
     ; ##########################################
     ; Down key has been released?
@@ -390,29 +438,10 @@ _JoyEnd
 .afterJoyDownRelease
 
     ; ##########################################
-    ; Fire key has been released?
-    LD A, (gid.buttonState)
-    BIT gid.BS_FIRE_BIT, A
-    JR NZ, .afterFireRelease                 ; Jump if fire is pressed now
-
-    ; Fire is not pressed, now check whether it was pressed during the last loop
-    LD A, (gid.buttonPrevState)
-    BIT gid.BS_FIRE_BIT, A
-    JR Z, .afterFireRelease                  ; Jump if down was not pressed
-
-    ; Fire is not pressed now, but was in previous loop
-    CALL _JoyFireRelease
-
-.afterFireRelease 
-
-    ; ##########################################
     ; Update previous state
 
     LD A, (gid.joyDirection)
     LD (gid.joyPrevDirection), A
-
-    LD A, (gid.buttonState)
-    LD (gid.buttonPrevState), A
 
     RET                                         ; ## END of the function ##
 
@@ -485,24 +514,33 @@ _JoyDownRelease
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                        _JoyFire                          ;
+;                       _JoyFireA                          ;
 ;----------------------------------------------------------;
-_JoyFire
-    
-    LD A, (gid.buttonState)
-    SET gid.BS_FIRE_BIT, A
-    LD (gid.buttonState), A
+_JoyFireA
 
-    CALL jw.Fire
+    LD A, (gid.gameInputState)
+    SET gid.BS_FIRE_BIT, A
+    LD (gid.gameInputState), A
+
+    CALL jw.FirePress
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     _JoyGrenade                          ;
+;                       _JoyFireB                          ;
 ;----------------------------------------------------------;
-_JoyGrenade
+_JoyFireB
 
-    CALL gr.UseGrenade
+    CALL _ThrowGranade
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       _JoyFireC                          ;
+;----------------------------------------------------------;
+_JoyFireC
+
+    CALL _NextSong
 
     RET                                         ; ## END of the function ##
 
@@ -515,6 +553,32 @@ _JoyFireRelease
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                     _JoyGrenade                          ;
+;----------------------------------------------------------;
+_ThrowGranade
+
+    CALL ki.CanProcessKeyInput
+    CP _RET_NO_D0
+    RET Z
+
+    CALL gr.UseGrenade
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      _NextSong                           ;
+;----------------------------------------------------------;
+_NextSong
+
+    CALL ki.CanProcessKeyInput
+    CP _RET_NO_D0
+    RET Z
+
+    CALL dbs.SetupMusicBank
+    CALL aml.NextGameSong
+
+    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

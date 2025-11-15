@@ -71,6 +71,13 @@ LoadLevel1Data
     LD A, 0
     LD (st.paletteNumber), A
 
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L1_SIZE
+    LD DE, db2.pickupsL1
+    CALL pi.SetupPickups
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -140,6 +147,13 @@ LoadLevel2Data
 
     LD A, 1
     LD (st.paletteNumber), A
+
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L2_SIZE
+    LD DE, db2.pickupsL2
+    CALL pi.SetupPickups
 
     RET                                         ; ## END of the function ##
 
@@ -213,6 +227,14 @@ LoadLevel3Data
     LD A, 2
     LD (st.paletteNumber), A
 
+
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L3_SIZE
+    LD DE, db2.pickupsL3
+    CALL pi.SetupPickups
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -277,6 +299,13 @@ LoadLevel4Data
 
     LD A, 3
     LD (st.paletteNumber), A
+
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L4_SIZE
+    LD DE, db2.pickupsL4
+    CALL pi.SetupPickups
 
     RET                                         ; ## END of the function ##
 
@@ -348,6 +377,13 @@ LoadLevel5Data
     LD A, 0
     LD (st.paletteNumber), A
 
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L5_SIZE
+    LD DE, db2.pickupsL5
+    CALL pi.SetupPickups
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -418,6 +454,13 @@ LoadLevel6Data
     LD A, 1
     LD (st.paletteNumber), A
 
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L6_SIZE
+    LD DE, db2.pickupsL6
+    CALL pi.SetupPickups
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -482,6 +525,13 @@ LoadLevel7Data
 
     LD A, 2
     LD (st.paletteNumber), A
+
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L6_SIZE
+    LD DE, db2.pickupsL6
+    CALL pi.SetupPickups
 
     RET                                         ; ## END of the function ##
 
@@ -554,6 +604,13 @@ LoadLevel8Data
     LD A, 3
     LD (st.paletteNumber), A
 
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L6_SIZE
+    LD DE, db2.pickupsL6
+    CALL pi.SetupPickups
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -618,6 +675,13 @@ LoadLevel9Data
     LD A, 0
     LD (st.paletteNumber), A
 
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L6_SIZE
+    LD DE, db2.pickupsL6
+    CALL pi.SetupPickups
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -681,6 +745,13 @@ LoadLevel10Data
 
     LD A, 1
     LD (st.paletteNumber), A
+
+    ; ##########################################
+    ; Setup Pickups
+    CALL dbs.SetupArrays2Bank
+    LD A, db2.PICKUPS_L6_SIZE
+    LD DE, db2.pickupsL6
+    CALL pi.SetupPickups
 
     RET                                         ; ## END of the function ##
 

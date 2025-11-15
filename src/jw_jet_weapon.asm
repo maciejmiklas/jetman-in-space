@@ -87,7 +87,7 @@ FireSpeedUp
     LD (fireDelayCnt), A
 
     ; ##########################################
-    ; Slow down FX, yes slow down! Fire speed increases quickly, buy soot sound should not be that fast
+    ; Slow down FX, yes slow down! Fire speed increases quickly, buy sound should not be that fast (it's anoying)
     LD A, (fireFxDelay)
     INC A
     LD (fireFxDelay), A
@@ -335,21 +335,35 @@ AnimateShots
 
     RET                                         ; ## END of the function ##
 
+tmp db 0
 ;----------------------------------------------------------;
 ;                       FireReleased                       ;
 ;----------------------------------------------------------;
 FireReleased
 
-    ; Reset fire delay on fire button release so that FX plays immediately after pressing the subsequent fire.
+    push af:ld a, (tmp): inc a: ld (tmp), a:pop af
+    
+    ; Reset Fire-Fx delay, so that FX plays immediately after the fire has been pressed again.
     XOR A
     LD (fireFxDelayCnt), A
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                           Fire                           ;
+;                       FireRelease                        ;
 ;----------------------------------------------------------;
-Fire
+FireRelease
+
+    ; Reset Fire-Fx delay, so that FX plays imedatelly after the fire has been pressed again.
+    XOR A
+    LD (fireFxDelayCnt), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       FirePress                          ;
+;----------------------------------------------------------;
+FirePress
 
     CALL dbs.SetupArrays2Bank
     
@@ -443,6 +457,7 @@ Fire
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+
 ;----------------------------------------------------------;
 ;                        _WeaponFx                         ;
 ;----------------------------------------------------------;
@@ -470,6 +485,7 @@ _WeaponFx
 .newSound
     LD A, af.FX_FIRE2
 .afterNewSound
+
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 

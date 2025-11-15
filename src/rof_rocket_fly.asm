@@ -94,7 +94,7 @@ FlyRocket
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; Sprite Y coordinate
-    LD IX, (ro.rocketEl)
+    LD IX, (ro.rocketElPtr)
         
     LD A, (IX + ro.RO.Y)                           ; Lowest rocket element + 16px
     ADD A, FLAME_OFFSET_D16
@@ -147,7 +147,7 @@ AnimateRocketExplosion
     
     ; ##########################################
     ; Animation for the top rockets element
-    LD IX, (ro.rocketEl)
+    LD IX, (ro.rocketElPtr)
     LD A, ro.EL_TOP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
@@ -162,7 +162,7 @@ AnimateRocketExplosion
 
     ; ##########################################
     ; Animation for the middle rockets element
-    LD IX, (ro.rocketEl)
+    LD IX, (ro.rocketElPtr)
     LD A, ro.EL_MID_D2
     CALL ro.MoveIXtoGivenRocketElement
 
@@ -177,7 +177,7 @@ AnimateRocketExplosion
 
     ; ##########################################
     ; Animation for the bottom rockets element
-    LD IX, (ro.rocketEl)
+    LD IX, (ro.rocketElPtr)
     LD A, ro.EL_LOW_D1
     CALL ro.MoveIXtoGivenRocketElement
 
@@ -316,7 +316,7 @@ _MoveFlyingRocket
     ; The current position of rocket elements is stored in #rocketAssemblyX and #ro.RO.Y 
     ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 
-    LD IX, (ro.rocketEl)                               ; Load the pointer to #rocket into IX
+    LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX
 
     ; ##########################################
     ; Did the rocket reach the middle of the screen, and should it stop moving?
