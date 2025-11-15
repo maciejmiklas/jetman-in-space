@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
     MODULE gid
 
-; The counter turns off the joystick for a few iterations. Each call #GameJoystickInput decrements it by one
+; The counter turns off the joystick for a few iterations. Each call #JetMovementInput decrements it by one
 ; It's used for effects like bumping from the platform's edge or falling.
 joyOffCnt           DB 0
 
@@ -41,8 +41,8 @@ joyOverheatDelayCnt     DB 0                  ; The delay counter for joystick i
 
 ; Button state keeps state for 8 buttons.
 ; The button state for the current game loop is reset before the keys are processed in the current game loop.
-buttonState            DB 0
-buttonPrevState        DB 0                   ; Keeps state from the previous game loop
+gameInputState            DB 0
+gameInputPrevState        DB 0                   ; Keeps state from the previous game loop
 BS_FIRE_BIT             = 0
 
 ;----------------------------------------------------------;

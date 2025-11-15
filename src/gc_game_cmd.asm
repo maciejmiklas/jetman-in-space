@@ -108,7 +108,6 @@ LoadLevel1Intro
 LoadLevel1
 
     CALL _InitLevelLoad
-
     CALL ll.LoadLevel1Data
     CALL _StartLevel
 

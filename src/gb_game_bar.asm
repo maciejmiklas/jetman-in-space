@@ -48,15 +48,25 @@ PrintDebug
     RET NZ
 
     ; ##########################################
-    /*
     LD BC, 40
     LD H, 0
-    CALL dbs.SetupPaletteBank
-    LD A, (btd.palColors)
+    LD A, (jw.tmp)
     LD L, A
     CALL ut.PrintNumber
-    */
 
+    ; ##########################################
+    LD BC, 50
+    LD H, 0
+    LD A, (gid.gameInputState)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 60
+    LD H, 0
+    LD A, (gid.gameInputPrevState)
+    LD L, A
+    CALL ut.PrintNumber
 
     RET                                         ; ## END of the function ##
 

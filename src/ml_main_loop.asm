@@ -69,7 +69,7 @@ _MainLoop000OnPause
     CP ms.PAUSE
     RET NZ
 
-    CALL gi.GameKeyboardInput
+    CALL gi.GameInput
 
     RET                                         ; ## END of the function ##
 
@@ -103,13 +103,13 @@ _MainLoop000OnActiveGame
 
     ; ##########################################
     CALL _MainLoop000OnDisabledJoy
-    CALL gi.GameJoystickInput
+    CALL gi.JetMovementInput
+    CALL gi.GameInput
     CALL ro.CheckHitTank
     CALL jco.JetRip
     CALL jw.MoveShots
     CALL gc.WeaponHitEnemy
     CALL jw.FireDelayCounter
-    CALL gi.GameKeyboardInput
     CALL gc.JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
@@ -143,7 +143,7 @@ _MainLoop000OnActiveGame
     CP 0
     JR NZ, .notHard
 
-    CALL gi.GameJoystickInput
+    CALL gi.JetMovementInput
 .notHard
 
     RET                                         ; ## END of the function ##

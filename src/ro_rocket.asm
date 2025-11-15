@@ -67,7 +67,7 @@ EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
 EL_PROGRESS_START       = EL_TANK1_D4+1
 CARRY_ADJUSTY_D10       = 10
 
-rocketEl                DW 0                    ; Pointer to 9x ro.RO
+rocketElPtr            DW 0                    ; Pointer to 9x ro.RO
 
 BAR_TILE_START         = 25*2                   ; *2 because each tile takes 2 bytes
 BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap
@@ -87,7 +87,7 @@ DROP_MARGX_D8           = 8
 SetupRocket
 
     LD (rocketAssemblyX), A
-    LD (rocketEl), HL
+    LD (rocketElPtr), HL
 
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
@@ -111,20 +111,20 @@ AssemblyRocketForDebug
     LD (rocketState), A
 
     LD A, 1
-    LD IX, (rocketEl)
+    LD IX, (rocketElPtr)
     
     CALL MoveIXtoGivenRocketElement
     LD A, 233
     LD (IX + RO.Y), A
 
     LD A, 2
-    LD IX, (rocketEl)
+    LD IX, (rocketElPtr)
     CALL MoveIXtoGivenRocketElement
     LD A, 217
     LD (IX + RO.Y), A
 
     LD A, 3
-    LD IX, (rocketEl)
+    LD IX, (rocketElPtr)
     CALL MoveIXtoGivenRocketElement
     LD A, 217
     LD (IX + RO.Y), 201
@@ -158,7 +158,7 @@ ResetAndDisableRocket
     ; ##########################################
     ; Reset rocket elements
     LD B, EL_TANK6_D9
-    LD IX, (rocketEl)
+    LD IX, (rocketElPtr)
 .rocketElLoop
     
     XOR A
@@ -580,7 +580,7 @@ DropNextRocketElement
 MoveIXtoGivenRocketElement
 
     ; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
-    LD IX, (rocketEl)
+    LD IX, (rocketElPtr)
     
     SUB 1                                       ; A contains 0-2
     LD D, A
@@ -644,7 +644,7 @@ RemoveRocketElement
 _SetIXtoCurrentRocketElement
 
     ; Load the pointer to #rocket into IX and move the pointer to the actual rocket element
-    LD IX, (rocketEl)
+    LD IX, (rocketElPtr)
 
     ; Now, move IX so that it points to the #RO given by the deploy counter. First, load the counter into A (value 1-6)
     ; Afterward, load A info D and the size of the #RO into E, and multiply D by E
@@ -818,7 +818,7 @@ _BoardRocket
     
     ; ##########################################
     ; Jetman collision with first (lowest) rocket element triggers take off
-    LD IX, (rocketEl)
+    LD IX, (rocketElPtr)
 
     LD BC, (rocketAssemblyX)                    ; X of the element.
     LD B, 0

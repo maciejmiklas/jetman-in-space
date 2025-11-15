@@ -37,7 +37,7 @@ Y_BOTTOM                DB                    ; Y end of the platform
     ENDS
 
 ; [amount of platforms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels
-platforms               DW 0                  ; Pointer value to platforms
+platformsPtr            DW 0                  ; Pointer value to platforms
 platformsSize           DB 0
 
 ; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK
@@ -56,7 +56,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
 SetupPlatforms
 
     LD (platformsSize), A
-    LD (platforms), HL
+    LD (platformsPtr), HL
     
     RET                                         ; ## END of the function ##
 
@@ -84,7 +84,7 @@ JetPlatformHitOnJoyMove
     ; Params for _PlatformHit.
     LD HL, jpo.jetX
 
-    LD IY, (platforms)
+    LD IY, (platformsPtr)
 
     LD A, (platformsSize)
     LD B, A
@@ -242,7 +242,7 @@ ResetJoyOffBump
     ; Call _PlatformHit to check whether Jetman is close to the platform. now, we will load the params for this method
     LD HL, jpo.jetX
 
-    LD IY, (platforms)
+    LD IY, (platformsPtr)
 
     LD A, (platformsSize)
     LD B, A
@@ -409,7 +409,7 @@ JetLanding
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision
 PlatformBounceOff
 
-    LD IY, (platforms)
+    LD IY, (platformsPtr)
 
     LD A, (platformsSize)
     LD B, A
@@ -575,7 +575,7 @@ JetFallingFromPlatform
 
     ; #platform contains a list of all platforms, each with a size of #PLA. #platformWalkNumber contains offset to current platform.
     ; Now, we have to set IX so that it points to the platform on which the Jetman walks: IX = #platform + #PLA * #platformWalkNumber.
-    LD IX, (platforms)
+    LD IX, (platformsPtr)
     LD A, (platformWalkNumber)                  ; Jetman is walking on this platform
     LD D, A
     LD E, PLA
@@ -1097,7 +1097,7 @@ _PlatformSpriteHit
     ADD HL, SPR.X
 
     LD IX, IY
-    LD IY, (platforms)
+    LD IY, (platformsPtr)
 
     LD A, (platformsSize)
     LD B, A

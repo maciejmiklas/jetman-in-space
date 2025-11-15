@@ -4,30 +4,49 @@
     MODULE pi
     ; Before using it CALL dbs.SetupArrays2Bank
 
-PI_SPR_DIAMOND          = 39
-PI_SPR_JAR              = 40
-PI_SPR_STRAWBERRY       = 41
-PI_SPR_GRENADE          = 42
-PI_SPR_LIFE             = 3
-PI_SPR_GUN              = 44
-PI_FREEZE_ENEMIES       = 43
+PI_SPR_LIFE             = 3                 ; Live has extra logic, does not count for #PI_SPR_MIN
+
+PI_SPR_DIAMOND          = 39                ; Extra points
+PI_SPR_JAR              = 40                ; Colls down jetpack's rocket exhaust
+PI_SPR_STRAWBERRY       = 41                ; Jetman invincible
+PI_SPR_GRENADE          = 42                ; Collect and expolode
+PI_FREEZE_ENEMIES       = 43                ; Freeze enemies
+PI_SPR_GUN              = 44                ; Improve weapon
 
 PI_SPR_MIN              = PI_SPR_DIAMOND
 PI_SPR_MAX              = PI_SPR_GUN
+
+pickupsArrayPos          DB 0
 
 deployed                DB 0                    ; Currently deployed sprite reference from spr-file(#PI_SPR_XXX), 0 for none
 
 deployedX               DB 0                    ; Pickup X postion
 deployedY               DB 0                    ; Pickup Y postion
 
-deployCnt               DB 0
-DEPLOY_CNT_DELAY        = 10
+deployDelayCnt          DB 0
+DEPLOY_DELAY            = 2;15
+
+pickupsPtr              DW 0
+pickupsSize             DB 0
 
 lifeDeployed            DB 0
 LIVE_DEPLOYED_YES       = 1
 LIVE_DEPLOYED_NO        = 1
 
 PICKUP_SPRITE_ID        = 90
+
+;----------------------------------------------------------;
+;                    SetupPickups                          ;
+;----------------------------------------------------------;
+; Input:
+; - A:  Number of pickups
+; - DE: Pointer to pickups array, each entry of #PI_SPR_XXX
+SetupPickups
+
+    LD (pickupsSize), A
+    LD (pickupsPtr), DE
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    ResetPickups                          ;
@@ -37,10 +56,11 @@ ResetPickups
     XOR A
     LD (deployed), A
     LD (lifeDeployed), A
-    LD (deployCnt), A
-    LD (db2.deployOrderPos), A
+    LD (deployDelayCnt), A
+    LD (pickupsArrayPos), A
     LD (deployedX), A
     LD (deployedY), A
+    LD (pickupsSize), A
 
     LD A, PICKUP_SPRITE_ID
     CALL sp.SetIdAndHideSprite
@@ -139,7 +159,7 @@ UpdatePickupsOnJetmanMove
     ; Prep next pickup
     XOR A
     LD (deployed), A
-    LD (deployCnt), A
+    LD (deployDelayCnt), A
 
     ; Hide pickup
     LD A, PICKUP_SPRITE_ID
@@ -221,31 +241,33 @@ PickupDropCounter
 
     ; ##########################################
     ; Check deploy counter, deploy next only in case of overflow
-    LD A, (deployCnt)
+    LD A, (deployDelayCnt)
     INC A
-    LD (deployCnt), A
-    CP DEPLOY_CNT_DELAY
+    LD (deployDelayCnt), A
+    CP DEPLOY_DELAY
     RET NZ
 
     ; ##########################################
     ; Deploy next pickup, first reset counter
     XOR A
-    LD (deployCnt), A
+    LD (deployDelayCnt), A
 
     ; ##########################################
     ; Load into A the value of next deployment sprite (#PI_SPR_XXXX)
 
-    ; Determine the index for #deployOrder
-    LD A, (db2.deployOrderPos)
-    INC A 
-    CP db2.DEPLOY_ORDER_SIZE
-    JR NZ, .afterDeployOrderPos
+    ; Determine the index for #pickups
+    LD A, (pickupsSize)
+    LD B, A
+    LD A, (pickupsArrayPos)
+    INC A
+    CP B
+    JR NZ, .afterpickupsArrayPos
     XOR A
-.afterDeployOrderPos
-    LD (db2.deployOrderPos), A
+.afterpickupsArrayPos
+    LD (pickupsArrayPos), A
 
     ; Load ID of next pickup
-    LD HL, db2.deployOrder
+    LD HL, (pickupsPtr)
     ADD HL, A                                   ; HL points to next deployment sprite id
     LD A, (HL)
     LD (deployed), A

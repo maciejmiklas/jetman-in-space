@@ -4,7 +4,7 @@
     MODULE ki
 
 userInputDelayCnt       DB 0
-USER_INPUT_DELAY        = 10
+USER_INPUT_DELAY        = 15
 
 userInputInactiveCnt    DB 0
 USER_INPUT_RESET        = 5

@@ -195,10 +195,10 @@ JoyMoveDownRelease
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                JoystickInputProcessed                    ;
+;                JoystickMoveProcessed                    ;
 ;----------------------------------------------------------;
 ; It gets executed as a last procedure after the input has been processed, regardless of whether there was movement, or not
-JoystickInputProcessed
+JoystickMoveProcessed
 
     CALL jm._CanJetMove
     CP _RET_YES_D1
