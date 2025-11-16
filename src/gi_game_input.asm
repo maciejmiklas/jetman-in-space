@@ -518,11 +518,7 @@ _JoyDownRelease
 ;----------------------------------------------------------;
 _JoyFireA
 
-    LD A, (gid.gameInputState)
-    SET gid.BS_FIRE_BIT, A
-    LD (gid.gameInputState), A
-
-    CALL jw.FirePress
+    CALL _ThrowGranade
 
     RET                                         ; ## END of the function ##
 
@@ -531,7 +527,11 @@ _JoyFireA
 ;----------------------------------------------------------;
 _JoyFireB
 
-    CALL _ThrowGranade
+    LD A, (gid.gameInputState)
+    SET gid.BS_FIRE_BIT, A
+    LD (gid.gameInputState), A
+
+    CALL jw.FirePress
 
     RET                                         ; ## END of the function ##
 

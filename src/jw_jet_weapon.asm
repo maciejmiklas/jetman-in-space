@@ -73,6 +73,7 @@ ResetWeapon
 ;----------------------------------------------------------;
 FireSpeedUp
 
+    ; Do not speed up the fire (by decreasing the delay) if it's already at max firing speed.
     LD A, (fireDelay)
     CP JM_FIRE_DELAY_MIN
     RET Z

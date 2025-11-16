@@ -376,30 +376,33 @@ PICKUPS_L1_SIZE             = 1
 
 ; Pickups for Level 2
 pickupsL2
-    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND
-PICKUPS_L2_SIZE             = 6
+    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND
+PICKUPS_L2_SIZE             = 7
 
 ; Pickups for Level 3
 pickupsL3
-    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN
-PICKUPS_L3_SIZE             = 7
+    DB pi.PI_SPR_LIFE, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN
+    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN
+PICKUPS_L3_SIZE             = 10
 
 ; Pickups for Level 4
 pickupsL4
-    DB pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND
-PICKUPS_L4_SIZE             = 6
+    DB  pi.PI_SPR_LIFE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN
+    DB pi.PI_SPR_DIAMOND,  pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND
+PICKUPS_L4_SIZE             = 12
 
 ; Pickups for Level 5
 pickupsL5
-    DB pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN
-    DB pi.PI_SPR_GRENADE, pi.PI_SPR_JAR
-PICKUPS_L5_SIZE             = 8
+    DB pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN
+    DB pi.PI_SPR_GRENADE,  pi.PI_SPR_GUN, pi.PI_SPR_JAR
+PICKUPS_L5_SIZE             = 10
 
-; Pickups for Level 6
+; Pickups for Level 6-10
 pickupsL6
-    DB pi.PI_SPR_DIAMOND, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN
-    DB pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_JAR, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE
-PICKUPS_L6_SIZE             = 12
+    DB pi.PI_SPR_GUN, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN
+    DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_JAR
+    DB pi.PI_SPR_GUN, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE,  pi.PI_SPR_GUN, pi.PI_SPR_LIFE
+PICKUPS_L6_SIZE             = 21
 
 ;----------------------------------------------------------;
 ;                          Platforms                       ;

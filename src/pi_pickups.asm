@@ -20,7 +20,7 @@ deployedX               DB 0                ; Pickup X postion.
 deployedY               DB 0                ; Pickup Y postion.
 
 deployDelayCnt          DB 0
-DEPLOY_DELAY            = 15
+DEPLOY_DELAY            = 10
 
 pickupsPtr              DW 0
 pickupsSize             DB 0
@@ -151,15 +151,7 @@ UpdatePickupsOnJetmanMove
 .afterFreeze
 
 .nextPickup
-    ; ##########################################
-    ; Prep next pickup
-    XOR A
-    LD (deployed), A
-    LD (deployDelayCnt), A
-
-    ; Hide pickup
-    LD A, PICKUP_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    CALL _PrepareNextPixkup
 
     RET                                         ; ## END of the function ##
 
@@ -177,8 +169,17 @@ AnimateFallingPickup
     ; Update y postion (falling down).
     LD A, (deployedY)
     CP _GSC_Y_MAX2_D238
-    RET Z                                       ; Pickup is already on the ground, so moving it is unnecessary.
-    
+    JR NZ, .afterGroundCheck
+    ; Pickup is already on the ground, so moving it is unnecessary. In case of life, hide it once it has reached the ground.
+    LD A, (deployed)
+    CP PI_SPR_LIFE
+    RET NZ
+
+    ; Life has reached the ground - hide it.
+    CALL _PrepareNextPixkup
+    RET
+
+.afterGroundCheck
     ; Move pickup down.
     INC A
     LD (deployedY), A
@@ -261,12 +262,25 @@ PickupDropCounter
     CP LIVE_DEPLOYED_YES
     JR Z, .deployNext
 
-    ; Deplying life for the first time
+    ; Deplying life for the first time.
     LD A, LIVE_DEPLOYED_YES
     LD (lifeDeployed), A
-    
+    JR .setupDeply
 .afterLifeCheck
 
+    ; ##########################################
+    ; Do not deply gun if fire speed is already at max level.
+    LD A, (deployed)
+    CP PI_SPR_GUN
+    JR NZ, .afterGunCheck
+
+    LD A, (jw.fireDelay)
+    CP jw.JM_FIRE_DELAY_MIN
+    JR Z, .deployNext
+.afterGunCheck
+
+    ; ##########################################
+.setupDeply
     ; Setup X,Y postion
     XOR A
     LD (deployedY), A
@@ -276,6 +290,26 @@ PickupDropCounter
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  _PrepareNextPixkup                      ;
+;----------------------------------------------------------;
+_PrepareNextPixkup
+
+    XOR A
+    LD (deployed), A
+    LD (deployDelayCnt), A
+
+    ; Hide pickup
+    LD A, PICKUP_SPRITE_ID
+    CALL sp.SetIdAndHideSprite
+
+    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

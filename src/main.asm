@@ -14,8 +14,8 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    CALL gc.LoadLevel3
-    ;CALL gc.LoadMainMenu
+    ;CALL gc.LoadLevel3
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music

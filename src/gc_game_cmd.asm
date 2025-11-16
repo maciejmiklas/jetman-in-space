@@ -821,6 +821,8 @@ JetPicksLife
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
+    CALL jl.LifeUp
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -1246,8 +1248,7 @@ _StartLevel
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
     CALL jl.SetupLives
-    CALL jw.ResetWeapon
-    
+
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
 
