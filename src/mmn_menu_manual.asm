@@ -64,7 +64,6 @@ LoadMenuKeys
     POP DE
 
     ; Load background image
-
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 

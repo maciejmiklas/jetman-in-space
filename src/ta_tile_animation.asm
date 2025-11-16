@@ -48,11 +48,11 @@ NextTileAnimationFrame
     LD D, A
     LD E, 2
     MUL D, E
-    ADD HL, DE                                  ; HL points to value in #rowsPointer containing pointer to current row
-    LD DE, (HL)                                 ; DE points to current animation row
+    ADD HL, DE                                  ; HL points to value in #rowsPointer containing pointer to current row.
+    LD DE, (HL)                                 ; DE points to current animation row.
 
     ; ##########################################
-    ; Load number of #TF elements into B, this is the first byte pointed by DE
+    ; Load number of #TF elements into B, this is the first byte pointed by DE.
     LD A, (DE)
     LD B, A
     INC DE                                      ; Now DE points to first #TF
@@ -86,7 +86,7 @@ NextTileAnimationFrame
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:  max rows
-;  - HL: pointer to a list containing pointers to concrete rows
+;  - HL: pointer to a list containing pointers to concrete rows.
 SetupTileAnimation
 
     LD (maxRows), A

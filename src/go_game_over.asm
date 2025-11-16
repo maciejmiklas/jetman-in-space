@@ -31,7 +31,7 @@ ShowGameOver
 
     CALL bm.HideImage
 
-    ; Copy tile definitions (sprite file) to expected memory
+    ; Copy tile definitions (sprite file) to expected memory.
     LD D, "m"
     LD E, "a"
     CALL fi.LoadTileSprFile
@@ -77,7 +77,7 @@ ShowGameOver
 ;----------------------------------------------------------;
 _OnFirePressed
 
-    ; Player should not be able to exit the game over screen too quickly, for example, when the auto fire is enabled
+    ; Player should not be able to exit the game over screen too quickly, for example, when the auto fire is enabled.
     LD A, (fireCnt)
     CP GAME_OVER_CNT
     RET NZ

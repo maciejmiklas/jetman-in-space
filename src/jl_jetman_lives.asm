@@ -7,14 +7,14 @@ FACE_PAL                = $30
 FACE_NORM_LEFT          = 192
 FACE_NORM_STRAIGHT      = 193
 FACE_NORM_RIGHT         = 194
-FACE_RED_ADD            = 3                     ; Add this value to normal icon to get the same but in red
-FACE_TI_POS_BYTE        = 15*2                  ; *2 because each tile takes 2 bytes
+FACE_RED_ADD            = 3                     ; Add this value to normal icon to get the same but in red.
+FACE_TI_POS_BYTE        = 15*2                  ; *2 because each tile takes 2 bytes.
 SCORE_NR_TI_POS         = 16
 TI_RAM_START            = ti.TI_MAP_RAM_H5B00 + FACE_TI_POS_BYTE
 
-RED_FACE_LIVES          = 3                     ; Show face when #lives < than this value
-JET_POS_LEFT            = 100                   ; Face looks to the left, if Jetman postion is < 100
-JET_POS_RIGHT           = 200                   ; Face looks to the right, if Jetman postion is > 100
+RED_FACE_LIVES          = 3                     ; Show face when #lives < than this value.
+JET_POS_LEFT            = 100                   ; Face looks to the left, if Jetman postion is < 100.
+JET_POS_RIGHT           = 200                   ; Face looks to the right, if Jetman postion is > 100.
 JET_LIVES               = 10
 lives                   DB JET_LIVES
 
@@ -112,9 +112,9 @@ UpdateLifeFaceOnJetMove
     LD B, A
 .notRed
 
-    LD (HL), B                                  ; Set tile id
+    LD (HL), B                                  ; Set tile id.
     INC HL
-    LD (HL), FACE_PAL                           ; Set palette for tile
+    LD (HL), FACE_PAL                           ; Set palette for tile.
     INC HL
 
     RET                                         ; ## END of the function ##

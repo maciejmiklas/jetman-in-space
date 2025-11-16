@@ -117,7 +117,7 @@ HitRocketTank
 
     LD HL, (scoreLo)
     
-    ; Decrement H by 2 and set L to 0 (if possible)
+    ; Decrement H by 2 and set L to 0 (if possible).
     LD A, H
     CP 3
     RET C

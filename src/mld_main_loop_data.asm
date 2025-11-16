@@ -3,23 +3,23 @@
 ;----------------------------------------------------------;
     MODULE mld 
 
-counter000FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
+counter000FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
 COUNTER002_MAX      = 2                         ; Tick rate: 1/25s
 counter002          DB 0
-counter002FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
+counter002FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
 COUNTER005_MAX      = 5                         ; Tick rate: 1/10s
 counter005          DB 0
-counter005FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
+counter005FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
 COUNTER008_MAX      = 8                         ; Tick rate: ±1/6s
 counter008          DB 0
-counter008FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
+counter008FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
 COUNTER010_MAX      = 10                        ; Tick rate: 1/5s
 counter010          DB 0
-counter010FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on
+counter010FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
 COUNTER025_MAX      = 25                        ; Tick rate: 0.5s
 counter025          DB 0

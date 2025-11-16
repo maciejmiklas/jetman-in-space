@@ -2,10 +2,9 @@
 ;                   Vortex Tracker II                      ;
 ;----------------------------------------------------------;
     MODULE aml
-
     ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
 
-; Counter for game music from assets\snd
+; Counter for game music from assets\snd.
 gameMusicCnt            DB GAME_MUSIC_MIN
 GAME_MUSIC_MIN          = 1
 GAME_MUSIC_MAX          = 25
@@ -58,7 +57,7 @@ MusicOff
 ;----------------------------------------------------------;
 ;                       LoadSong                           ;
 ;----------------------------------------------------------;
-;  - A: song number from "assets/snd/xx.pt3", #GAME_MUSIC_MIN - #GAME_MUSIC_MAX
+;  - A: song number from "assets/snd/xx.pt3", #GAME_MUSIC_MIN - #GAME_MUSIC_MAX.
 LoadSong
 
     PUSH AF

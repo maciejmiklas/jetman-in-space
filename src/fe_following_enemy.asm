@@ -12,12 +12,12 @@
 ; The counter for this is stored on each enemy as #FE.SKIP_XY_CNT.
 ; VALUES for #FE.STATE
 ; Bits:
-;  - 0:   Not used
-;  - 1-2: Number of pixels (0-3) to skip when moving on the x-axis
+;  - 0:   Not used.
+;  - 1-2: Number of pixels (0-3) to skip when moving on the x-axis.
 ;  - 3:   #STATE_DIR_Y_BIT
 ;  - 4:   #STATE_DIR_X_BIT
-;  - 5-6: Number of pixels (0-3) to skip when moving on the y-axis
-;  - 7:   Not used
+;  - 5-6: Number of pixels (0-3) to skip when moving on the y-axis.
+;  - 7:   Not used.
 STATE_SKIP_X_MASK       = %0'00'00'11'0
 STATE_SKIP_Y_MASK       = %0'11'00'00'0
 STATE_SKIP_XY_MASK      = %0'11'00'11'0
@@ -26,10 +26,10 @@ STATE_SKIP_RESET_MASK   = %1'00'11'00'1
 SKIP_XY_DEC_X           = %0'00'00'01'0
 SKIP_XY_DEC_Y           = %0'01'00'00'0
 
-STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down
+STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down.
 STATE_DIR_Y_MASK        = %000'0'1'000          ; Reset all but #STATE_DIR_Y_BIT 
 
-STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right)
+STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right).
 STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT 
 
 BOUNCE_H_MARG_D2        = 2
@@ -81,11 +81,11 @@ fEnemy09
 fEnemy10
     FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
-; Each line contains a single set of 4 "angles", which will be applied to the enemy when it changes direction. Each angle lasts for 
-; 0.5 seconds (_MainLoop025OnActiveGame -> NextFollowingAngle), and afterwards, the next one is taken until we reach the last one. 
+; Each line contains a single set of 4 "angles", which will be applied to the enemy when it changes direction. Each angle lasts for
+; 0.5 seconds (_MainLoop025OnActiveGame -> NextFollowingAngle), and afterwards, the next one is taken until we reach the last one.
 ; The last one remains active until the enemy changes direction again and a new line is applied. It gives us the effect of changing angle
 ; when changing direction, as well as acceleration.
-; The bit pattern for each angle byte is a mask that can be directly applied to #FE.STATE. The state will set pixels that will be skipped 
+; The bit pattern for each angle byte is a mask that can be directly applied to #FE.STATE. The state will set pixels that will be skipped
 ; in the x/y direction.
 ANGLE_LINE_SIZE         = 3
 ANGLE_LINE_MAX          = ANGLE_LINE_SIZE - 1
@@ -121,8 +121,8 @@ DisableFollowingEnemies
 ;                 SetupFollowingEnemies                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  number of enemies (size of #FES)
-;  - IX: pointer to #FES
+;  - A:  number of enemies (size of #FES).
+;  - IX: pointer to #FES.
 SetupFollowingEnemies
 
     LD B, A             ; Counter for .enemyLoop
@@ -132,7 +132,7 @@ SetupFollowingEnemies
     LD (anglesLineIdx), A
 
     ; ##########################################
-    ; Copy #FES to #FE for each active enemy
+    ; Copy #FES to #FE for each active enemy.
 
     LD IY, fEnemy01
 .enemyLoop
@@ -150,12 +150,12 @@ SetupFollowingEnemies
     LD (IY + FES.MOVE_DELAY), A
 
     ; ##########################################
-    ; Move pointer to next #FES
+    ; Move pointer to next #FES.
     LD DE, IX
     ADD DE, FES
     LD IX, DE
 
-    ; Move pointer to next #FE
+    ; Move pointer to next #FE.
     LD DE, IY
     ADD DE, FE
     LD IY, DE
@@ -171,11 +171,11 @@ SetupFollowingEnemies
 ;----------------------------------------------------------;
 NextFollowingAngle
 
-    ; Iterate over all enemies
+    ; Iterate over all enemies.
     LD IX, fEnemySprites
     LD A, (fEnemySize)
  
-    ; Do not execute if there are no active enemies (disabled)
+    ; Do not execute if there are no active enemies (disabled).
     CP 0
     RET Z
 
@@ -183,7 +183,7 @@ NextFollowingAngle
 .enemyLoop
     PUSH BC                                     ; Preserve B for loop counter
 
-    ; Load extra data for this sprite to IY
+    ; Load extra data for this sprite to IY.
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
 
@@ -191,10 +191,10 @@ NextFollowingAngle
 
     POP BC
 
-    ; Move IX to the beginning of the next #fEnemySprites
+    ; Move IX to the beginning of the next #fEnemySprites.
     LD DE, SPR
     ADD IX, DE
-    DJNZ .enemyLoop                             ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
+    DJNZ .enemyLoop                             ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize).
 
     RET                                         ; ## END of the function ##
 

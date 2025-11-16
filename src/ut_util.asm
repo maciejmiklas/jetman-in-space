@@ -7,7 +7,7 @@ PAUSE_TIME_D10          = 10
 
 ; DMA Program to copy RAM from #dmaPortAAddress to #dmaPortBAddress, size is given by: dmaTransferLength
 dmaProgram
-    DB %1'00000'11                              ; WR6 - disable DMA
+    DB %1'00000'11                              ; WR6 - disable DMA.
 
     DB %0'11'11'1'01                            ; WR0 - append length + port A address, A->B
 dmaPortAAddress
@@ -86,19 +86,19 @@ CopyRam:
 Add8To32
 
     ; Add 8-bit value to the second DW, LO byte.
-    LD B, A                                     ; Copy the 8-bit value into B (used for carry handling)
-    LD A, (HL)                                  ; Load the least significant byte (LSB) of the second DW (LO)
-    ADD A, B                                    ; Add the 8-bit value to the LSB
-    LD (HL), A                                  ; Store the result back to memory
-    INC HL                                      ; Move to the next byte
+    LD B, A                                     ; Copy the 8-bit value into B (used for carry handling).
+    LD A, (HL)                                  ; Load the least significant byte (LSB) of the second DW (LO).
+    ADD A, B                                    ; Add the 8-bit value to the LSB.
+    LD (HL), A                                  ; Store the result back to memory.
+    INC HL                                      ; Move to the next byte.
 
     ; Populate overflow to remaining 3 bytes
     LD B, 3
 .loop
-    LD A, (HL)                                  ; Load next byte from 32bit word
-    ADC A, 0                                    ; Add the carry from the previous addition
-    LD (HL), A                                  ; Store the result back to memory
-    INC HL                                      ; Move to the next byte
+    LD A, (HL)                                  ; Load next byte from 32bit word.
+    ADC A, 0                                    ; Add the carry from the previous addition.
+    LD (HL), A                                  ; Store the result back to memory.
+    INC HL                                      ; Move to the next byte.
     DJNZ .loop
 
     RET                                         ; ## END of the function ##
@@ -311,7 +311,7 @@ CountdownBC
 ; Modifies: AF,BC,HL
 FillBank
 
-    LD BC, _BANK_BYTES_D8192                    ; 8192 bytes is a full bank
+    LD BC, _BANK_BYTES_D8192                    ; 8192 bytes is a full bank.
 .loop
     LD (HL), D
     INC HL
@@ -320,7 +320,7 @@ FillBank
     ; Check if BC is 0. OR returns 0 when both params are 0, it also sets ZF.
     LD A, B
     OR C
-    JR NZ, .loop                                ; Keep looping if ZF is not set (BC != 0)
+    JR NZ, .loop                                ; Keep looping if ZF is not set (BC != 0).
 
     RET                                         ; ## END of the function ##
 

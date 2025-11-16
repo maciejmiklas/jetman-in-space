@@ -40,13 +40,13 @@ _MainLoop000
     LD (mld.counter000FliFLop), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every loop
+    ; CALL functions that need to be updated every loop.
     ; First update graphics, logic follows afterwards!
 
     CALL gb.PrintDebug
 
     CALL dbs.SetupAyFxsBank
-    CALL af.AfxFrame                            ; Keep AYFX sound effect playing
+    CALL af.AfxFrame                            ; Keep AYFX sound effect playing.
     
     CALL dbs.SetupMusicBank
     CALL am.MusicLoop
@@ -79,7 +79,7 @@ _MainLoop000OnPause
 _MainLoop000OnFlayRocket
 
     ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
-    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY
+    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY.
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
     RET NZ
@@ -124,7 +124,7 @@ _MainLoop000OnActiveGame
     CALL fe.UpdateFollowingJetman
 
     ; ##########################################
-    ; Move enemies for normal or hard
+    ; Move enemies for normal or hard.
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
     JR Z, .onEasy
@@ -133,12 +133,12 @@ _MainLoop000OnActiveGame
 .onEasy
 
     ; ##########################################
-    ; Faster movement speed for Jetman on hard
+    ; Faster movement speed for Jetman on hard.
     LD A, (jt.difLevel)
     CP jt.DIF_HARD
     JR NZ, .notHard
 
-    ; Do not speed up animations, like falling from the platform
+    ; Do not speed up animations, like falling from the platform.
     LD A, (gid.joyOffCnt)
     CP 0
     JR NZ, .notHard
@@ -153,7 +153,7 @@ _MainLoop000OnActiveGame
 ;----------------------------------------------------------;
 _MainLoop000OnNotInGame
 
-    ; Return if main menu is inactive
+    ; Return if main menu is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET Z
@@ -168,7 +168,7 @@ _MainLoop000OnNotInGame
 ;----------------------------------------------------------;
 _MainLoop000OnActiveMenuMain
 
-    ; Return if main menu is inactive
+    ; Return if main menu is inactive.
     LD A, (ms.mainState)
     CP ms.MENU_MAIN
     RET NZ
@@ -184,7 +184,7 @@ _MainLoop000OnActiveMenuMain
 ;----------------------------------------------------------;
 _MainLoop000OnActiveLevelIntro
 
-    ; Return if intro is inactive
+    ; Return if intro is inactive.
     LD A, (ms.mainState)
     CP ms.LEVEL_INTRO
     RET NZ
@@ -199,12 +199,12 @@ _MainLoop000OnActiveLevelIntro
 ;----------------------------------------------------------;
 _MainLoop000OnDisabledJoy
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
 
-    ; Return if the joystick is about to enable
+    ; Return if the joystick is about to enable.
     LD A, (gid.joyOffCnt)
     CP pl.PL_BUMP_JOY_DEC_D1+1
     RET C                                       ; Return on the last off loop - this one is used to reset status and not to animate
@@ -222,14 +222,14 @@ _MainLoop000OnDisabledJoy
 ; Tick rate: 1/25s
 _MainLoop002
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter002)
     INC A
     LD (mld.counter002), A
     CP mld.COUNTER002_MAX
     RET NZ
 
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter002), A
 
@@ -240,7 +240,7 @@ _MainLoop002
     LD (mld.counter002FliFLop), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop002OnActiveGame
 
     RET                                         ; ## END of the function ##
@@ -250,7 +250,7 @@ _MainLoop002
 ;----------------------------------------------------------;
 _MainLoop002OnActiveGame
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -271,14 +271,14 @@ _MainLoop002OnActiveGame
 ; Tick rate: 1/10s
 _MainLoop005
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter005)
     INC A
     LD (mld.counter005), A
     CP mld.COUNTER005_MAX
     RET NZ
     
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter005), A
 
@@ -289,7 +289,7 @@ _MainLoop005
     LD (mld.counter005FliFLop), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop005OnRocketExplosion
     CALL _MainLoop005OnActiveGame
 
@@ -314,7 +314,7 @@ _MainLoop005OnRocketExplosion
 ;----------------------------------------------------------;
 _MainLoop005OnActiveGame
 
-    ; Return if game is not active
+    ; Return if game is not active.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -334,14 +334,14 @@ _MainLoop005OnActiveGame
 ; Tick rate: ±1/6s
 _MainLoop008
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter008)
     INC A
     LD (mld.counter008), A
     CP mld.COUNTER008_MAX
     RET NZ
 
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter008), A
 
@@ -352,7 +352,7 @@ _MainLoop008
     LD (mld.counter008FliFLop), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop008OnActiveGame
     CALL _MainLoop008OnActiveGameOrFlyingRocket
     CALL _MainLoop008OnFlayingRocket
@@ -378,7 +378,7 @@ _MainLoop008OnActiveScoreMenu
 ;               _MainLoop008OnFlayingRocket                ;
 ;----------------------------------------------------------;
 _MainLoop008OnFlayingRocket
-    ; Return if rocket is not flying
+    ; Return if rocket is not flying.
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
     RET NZ
@@ -396,7 +396,7 @@ _MainLoop008OnFlayingRocket
 ;----------------------------------------------------------;
 _MainLoop008OnActiveGame
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -441,7 +441,7 @@ _MainLoop008OnActiveGameOrFlyingRocket
     ; Game ist inactive, what about rocket?
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
-    RET NZ                                          ; Return if rocket is not flying
+    RET NZ                                          ; Return if rocket is not flying.
 
 .execute
     ; ##########################################
@@ -473,7 +473,7 @@ _MainLoop010
     LD (mld.counter010FliFLop), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop010OnActiveGame
 
     RET                                         ; ## END of the function ##
@@ -483,7 +483,7 @@ _MainLoop010
 ;----------------------------------------------------------;
 _MainLoop010OnActiveGame
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -503,7 +503,7 @@ _MainLoop010OnActiveGame
 ; Tick rate: 0.5s
 _MainLoop025
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter025)
     INC A
     LD (mld.counter025), A
@@ -511,12 +511,12 @@ _MainLoop025
     RET NZ
 
     ; ##########################################
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter025), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop025nFlyingRocket
     
     RET                                         ; ## END of the function ##
@@ -526,7 +526,7 @@ _MainLoop025
 ;----------------------------------------------------------;
 _MainLoop025nFlyingRocket
 
-    ; Return if rocket is not flying
+    ; Return if rocket is not flying.
     LD A, (ms.mainState)
     CP ms.FLY_ROCKET
     RET NZ
@@ -543,7 +543,7 @@ _MainLoop025nFlyingRocket
 ; Tick rate: 4/5s
 _MainLoop040
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter040)
     INC A
     LD (mld.counter040), A
@@ -551,12 +551,12 @@ _MainLoop040
     RET NZ
 
     ; ##########################################
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter040), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop040OnActiveGame
 
     RET                                         ; ## END of the function ##
@@ -566,7 +566,7 @@ _MainLoop040
 ;----------------------------------------------------------;
 _MainLoop040OnActiveGame
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -590,7 +590,7 @@ _MainLoop040OnActiveGame
 ; Tick rate: 1s
 _MainLoop050
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter050)
     INC A
     LD (mld.counter050), A
@@ -598,12 +598,12 @@ _MainLoop050
     RET NZ
 
     ; ##########################################
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter050), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop050OnActiveGame
 
     RET                                         ; ## END of the function ##
@@ -613,7 +613,7 @@ _MainLoop050
 ;----------------------------------------------------------;
 _MainLoop050OnActiveGame
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -629,7 +629,7 @@ _MainLoop050OnActiveGame
 ; Tick rate: 1,5s
 _MainLoop075
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter075)
     INC A
     LD (mld.counter075), A
@@ -637,12 +637,12 @@ _MainLoop075
     RET NZ
 
     ; ##########################################
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter075), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop075OnActiveGame
     CALL _MainLoop075OnActiveGameOver
     
@@ -653,7 +653,7 @@ _MainLoop075
 ;----------------------------------------------------------;
 _MainLoop075OnActiveGame
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
     RET NZ
@@ -669,7 +669,7 @@ _MainLoop075OnActiveGame
 ;----------------------------------------------------------;
 _MainLoop075OnActiveGameOver
 
-    ; Return if game is inactive
+    ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_OVER
     RET NZ
@@ -685,7 +685,7 @@ _MainLoop075OnActiveGameOver
 ; Tick rate: 3s
 _MainLoop150
 
-    ; Increment the counter
+    ; Increment the counter.
     LD A, (mld.counter150)
     INC A
     LD (mld.counter150), A
@@ -693,12 +693,12 @@ _MainLoop150
     RET NZ
 
     ; ##########################################
-    ; Reset the counter
+    ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter150), A
 
     ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop
+    ; CALL functions that need to be updated every xx-th loop.
 
     RET                                         ; ## END of the function ##
 

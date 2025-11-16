@@ -20,10 +20,10 @@ callbackFire            DW _DummyFunction
 ;----------------------------------------------------------;
 KeyboardInputLastLoop
 
-    ; Reset #userInputDelayCnt when timer #userInputInactiveCnt has reached #USER_INPUT_RESET. By doing it, the next button press will 
+    ; Reset #userInputDelayCnt when timer #userInputInactiveCnt has reached #USER_INPUT_RESET. By doing it, the next button press will.
     ; execute immediately.
 
-    ; Do not reset #userInputDelayCnt if already at #USER_INPUT_DELAY
+    ; Do not reset #userInputDelayCnt if already at #USER_INPUT_DELAY.
     LD A, (userInputDelayCnt)
     CP USER_INPUT_DELAY
     RET Z
@@ -70,35 +70,35 @@ KeyboardInput
 
     ; Key right pressed ?
     LD A, _KB_6_TO_0_HEF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 2, A                                    ; Bit 2 reset -> right pressed
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 2, A                                    ; Bit 2 reset -> right pressed.
     JR Z, .pressRight
 
     ; ##########################################
     ; Key up pressed ?
-    BIT 3, A                                    ; Bit 3 reset -> Up pressed
+    BIT 3, A                                    ; Bit 3 reset -> Up pressed.
     JR Z, .pressUp
     
     ; ##########################################
     ; Key down pressed ?
-    BIT 4, A                                    ; Bit 4 reset -> Down pressed
+    BIT 4, A                                    ; Bit 4 reset -> Down pressed.
     JR Z, .pressDown
 
     ; ##########################################
     ; Joystick right pressed ?
-    LD A, _JOY_MASK_H20                         ; Activate joystick register
-    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A
-    BIT 0, A                                    ; Bit 0 set -> Right pressed
+    LD A, _JOY_MASK_H20                         ; Activate joystick register.
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
+    BIT 0, A                                    ; Bit 0 set -> Right pressed.
     JR NZ, .pressRight
 
     ; ##########################################
     ; Joystick left pressed ?
-    BIT 1, A                                    ; Bit 1 set -> Left pressed
+    BIT 1, A                                    ; Bit 1 set -> Left pressed.
     JR NZ, .pressLeft
 
     ; ##########################################
     ; Joystick down pressed ?
-    BIT 2, A                                    ; Bit 2 set -> Down pressed
+    BIT 2, A                                    ; Bit 2 set -> Down pressed.
     JR NZ, .pressDown
 
     ; ##########################################
@@ -110,38 +110,38 @@ KeyboardInput
     
     ; ##########################################
     ; Joystick up pressed ?
-    BIT 3, A                                    ; Bit 3 set -> Up pressed
+    BIT 3, A                                    ; Bit 3 set -> Up pressed.
     JR NZ, .pressUp
 
     ; ##########################################
     ; Key Fire (Z) pressed ?
     LD A, _KB_V_TO_SH_HFE
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
     JR Z, .pressFire
 
     ; ##########################################
     ; Key SPACE pressed ?
     LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
     JR Z, .pressFire
 
     ; ##########################################
     ; Key ENTER pressed ?
     LD A, _KB_H_TO_ENT_HBF
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
     JR Z, .pressFire
     
     ; ##########################################
     ; Key Left pressed ?
     LD A, _KB_5_TO_1_HF7
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A
-    BIT 4, A                                    ; Bit 4 reset -> Left pressed
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 4, A                                    ; Bit 4 reset -> Left pressed.
     JR Z, .pressLeft
 
-    RET                                         ; None of the keys pressed
+    RET                                         ; None of the keys pressed.
 
 .pressRight
     CALL CanProcessKeyInput
