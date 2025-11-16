@@ -371,7 +371,7 @@ SHOTS_SIZE              = 15                   ; Amount of shots that can be sim
 
 ; Pickups for Level 1
 pickupsL1
-    DB pi.PI_SPR_GUN
+    DB pi.PI_SPR_DIAMOND
 PICKUPS_L1_SIZE             = 1
 
 ; Pickups for Level 2
