@@ -14,8 +14,8 @@ TS_CARRIES_FUEL         = 31
 thiefState              DB TS_DISABLED
 
 THIEF_SIZE              = 1
-FUEL_SPRITE_ID          = 97                    ; Sprite ID for the screen
-FUEL_SPRITE_REF         = 17                    ; Sprite id from sprite file
+FUEL_SPRITE_ID          = 97                    ; Sprite ID for the screen.
+FUEL_SPRITE_REF         = 17                    ; Sprite id from sprite file.
 FUEL_HEIGHT             = 226
 DEPLOY_SIDE_RND         = $30
 
@@ -58,7 +58,7 @@ EnableFuelThief
 ;----------------------------------------------------------;
 ThiefWeaponHit
 
-    ; Do not execute it thief is not moving
+    ; Do not execute it thief is not moving.
     LD A, (thiefState)
     CP TS_RUNS_EMPTY
     RET C
@@ -83,7 +83,7 @@ ThiefWeaponHit
     LD A, FUEL_SPRITE_ID
     CALL sp.SetIdAndHideSprite
 
-    ; Restart deploy countdown
+    ; Restart deploy countdown.
     XOR A
     LD (thiefRespawnDelayCnt), A
 
@@ -96,7 +96,7 @@ ThiefWeaponHit
 ;----------------------------------------------------------;
 RespawnFuelThief
 
-    ; Respawn if #TS_WAITING, #TS_DEPLOYING or #TS_EXPLODES
+    ; Respawn if #TS_WAITING, #TS_DEPLOYING or #TS_EXPLODES.
     LD A, (thiefState)
     CP TS_WAITING
     JR Z, .respawn
@@ -112,7 +112,7 @@ RespawnFuelThief
     ; Does the rocket have enough fuel?
     LD A, (ro.rocketElementCnt)
     CP MIN_FUEL_LEVEL
-    RET C                                       ; Return if rocket does not have enough fuel
+    RET C                                       ; Return if rocket does not have enough fuel.
 
     ; ##########################################
     ; Respawn thief only if no rocket tank is deployed for pickup. Otherwise, decrementing the element number would make picking up the 
@@ -122,26 +122,26 @@ RespawnFuelThief
     RET NZ
 
     ; ##########################################
-    ; Increment respawn delay counter
+    ; Increment respawn delay counter.
     LD A, (thiefRespawnDelayCnt)
     INC A
     LD (thiefRespawnDelayCnt), A
 
     ; ##########################################
-    ; Deploying starts few loops before running, and it's used to play sound before thief starts running
+    ; Deploying starts few loops before running, and it's used to play sound before thief starts running.
     CP RESPAWN_DEPLOYING
     JR NZ, .afterDeploying
 
     LD A, TS_DEPLOYING
     LD (thiefState), A
 
-    ; Reset the deployment countdown for the next fuel element because the thief is active
+    ; Reset the deployment countdown for the next fuel element because the thief is active.
     XOR A
     LD (ro.dropNextDelay), A
 .afterDeploying
 
     ; ##########################################
-    ; Respawn thief
+    ; Respawn thief.
 
     LD A, (thiefRespawnDelayCnt)
     CP RESPAWN_DELAY
@@ -152,7 +152,7 @@ RespawnFuelThief
 
     CALL _LoadSprToIxIy
 
-    ; Random left/right deployment
+    ; Random left/right deployment.
     LD A, R
     CP DEPLOY_SIDE_RND
     JR C, .deployRight
@@ -162,7 +162,7 @@ RespawnFuelThief
     LD (IY+ENP.SETUP),  enp.ENP_S_RIGHT_ALONG 
 .afterDeploySide
 
-    ; Reset the deployment countdown for the next fuel element because the thief is active
+    ; Reset the deployment countdown for the next fuel element because the thief is active.
     XOR A
     LD (ro.dropNextDelay), A
 
@@ -175,7 +175,7 @@ RespawnFuelThief
 ;----------------------------------------------------------;
 AnimateFuelThief
 
-    ; Do not execute it thief is not moving/exploding
+    ; Do not execute it thief is not moving/exploding.
     LD A, (thiefState)
     CP TS_EXPLODES
     RET C
@@ -192,17 +192,17 @@ AnimateFuelThief
 ;----------------------------------------------------------;
 MoveFuelThief
 
-    ; Do not execute it thief is not moving
+    ; Do not execute it thief is not moving.
     LD A, (thiefState)
     CP TS_RUNS_EMPTY
     RET C
 
     ; ##########################################
-    ; Load SPR to IX and ENP to IY
+    ; Load SPR to IX and ENP to IY.
     CALL _LoadSprToIxIy
 
     ; ##########################################
-    ; Move sprite
+    ; Move sprite.
     LD A, THIEF_SIZE
     LD B, A
     PUSH IX
@@ -210,9 +210,9 @@ MoveFuelThief
     POP IX
 
     ; ##########################################
-    ; Hide if the thief has reached the left side of the screen, if he deployed right
+    ; Hide if the thief has reached the left side of the screen, if he deployed right.
     BIT enp.ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
-    JR NZ, .notHideLeft                        ; Jump if bit is 0 -> deploy left
+    JR NZ, .notHideLeft                        ; Jump if bit is 0 -> deploy left.
 
     LD BC, (IX + SPR.X)
     LD A, B
@@ -221,15 +221,15 @@ MoveFuelThief
     LD A, C
     CP 5
     JR NC, .notHideLeft
-    ; Hide sprite, is on the left side
+    ; Hide sprite, is on the left side.
     CALL _HideFuelThief
     RET
 .notHideLeft
 
     ; ##########################################
-    ; Hide if the thief has reached the right side of the screen (315 =  $13B), if he deployed left
+    ; Hide if the thief has reached the right side of the screen (315 =  $13B), if he deployed left.
     BIT enp.ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
-    JR Z, .notHideRight                        ; Jump if bit is 1 -> deploy right
+    JR Z, .notHideRight                        ; Jump if bit is 1 -> deploy right.
 
     LD BC, (IX + SPR.X)
     LD A, B
@@ -244,22 +244,22 @@ MoveFuelThief
 .notHideRight
 
     ; ##########################################
-    ; Check if the thief has reached the rocket to steal fuel
+    ; Check if the thief has reached the rocket to steal fuel.
     LD A, (thiefState)                          ; Do not take fuel twice ;)
     CP TS_RUNS_EMPTY
     JR NZ, .notAtRocket
 
     LD BC, (IX + SPR.X)
-    LD A, B                                     ; Rocket postion is 8 bit, ignore X postion if > 256 (9bit)
+    LD A, B                                     ; Rocket postion is 8 bit, ignore X postion if > 256 (9bit).
     CP 1
     JR Z, .notAtRocket
     LD A, (ro.rocketAssemblyX)
-    SUB C                                       ; Ignore B because X < 255, rocket assembly X is 8bit
+    SUB C                                       ; Ignore B because X < 255, rocket assembly X is 8bit.
     CP ro.DROP_MARGX_D8
     JR NC, .notAtRocket
  
     ; ##########################################
-    ; Pickup fuel tank
+    ; Pickup fuel tank.
 
     CALL ro.RemoveRocketElement
     LD A, TS_CARRIES_FUEL
@@ -267,12 +267,12 @@ MoveFuelThief
 .notAtRocket
 
     ; ##########################################
-    ; Move fuel tank with thief
+    ; Move fuel tank with thief.
     LD A, (thiefState)
     CP TS_CARRIES_FUEL
     JR NZ, .notCarryFuel
 
-    ; Set the ID of the sprite for the following commands
+    ; Set the ID of the sprite for the following commands.
     LD A, FUEL_SPRITE_ID
     NEXTREG _SPR_REG_NR_H34, A
 
@@ -281,18 +281,18 @@ MoveFuelThief
     LD A, C     
     NEXTREG _SPR_REG_X_H35, A
     
-    ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position
-    LD A, B                                     ; Load MSB from X into A
-    AND %00000001                               ; Keep only an overflow bit
+    ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
+    LD A, B                                     ; Load MSB from X into A.
+    AND %00000001                               ; Keep only an overflow bit.
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; Set Y coordinate
     LD A, FUEL_HEIGHT
-    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
+    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position.
 
     ; Set sprite pattern
     LD A, FUEL_SPRITE_REF
-    OR _SPR_PATTERN_SHOW                        ; Set show bit
+    OR _SPR_PATTERN_SHOW                        ; Set show bit.
     NEXTREG _SPR_REG_ATR3_H38, A
 .notCarryFuel
 

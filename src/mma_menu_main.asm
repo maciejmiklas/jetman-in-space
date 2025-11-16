@@ -3,19 +3,19 @@
 ;----------------------------------------------------------;
     MODULE mma
 
-GAME_VERSION_OFFSET     = 40*30                 ; Version is in the last line
+GAME_VERSION_OFFSET     = 40*30                 ; Version is in the last line.
 
 EL_DIST                 = 40*3
 EL_SDIST                = 40*2
 TOP_OFS                 = 40*5
-LOF                     = 7                     ; Menu entry offset from the left
+LOF                     = 7                     ; Menu entry offset from the left.
 
     STRUCT MENU
-TILE_OFFSET             DW                      ; Tile offset
-TEXT_POINT              DW                      ; Text pointer
-TEXT_SIZE               DB                      ; Length of menu text
-JET_X                   DB                      ; X postion of Jetman pointing to active element
-JET_Y                   DB                      ; Y postion of Jetman pointing to active element
+TILE_OFFSET             DW                      ; Tile offset.
+TEXT_POINT              DW                      ; Text pointer.
+TEXT_SIZE               DB                      ; Length of menu text.
+JET_X                   DB                      ; X postion of Jetman pointing to active element.
+JET_Y                   DB                      ; Y postion of Jetman pointing to active element.
     ENDS
 
 menuPos                 DB MENU_EL_MIN
@@ -123,17 +123,17 @@ _LoadMenuEasy
     CALL aml.MusicOff
 
     ; ##########################################
-    ; Hide current image
+    ; Hide current image.
     CALL bm.HideImage
 
     ; ##########################################
-    ; Load palette
+    ; Load palette.
     CALL fi.LoadEasyPalFile
 
     CALL btd.LoadOriginalPalette
 
     ; ##########################################
-    ; Load background image
+    ; Load background image.
     CALL fi.LoadMenuEasyImageFile
     CALL bm.CopyImageData
 

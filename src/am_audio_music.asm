@@ -116,7 +116,7 @@ START
     JR MUTE
 
 ;Identifier
-	;DB "=VTII PT3 Player r."
+	;DB "=VTII PT3 Player r"
 	;DD Release
 	;DB "="
 

@@ -23,32 +23,32 @@
 ;  - 85:    Empty image
 ;  - 86:    Music binary
 
-BMB_ST_BANK_S7_D18      = 18                    ; Slot 7. Start of displayed Layer 2 image
-BMB_END_BANK_S7_D27     = 27                    ; Last background bank (inclusive)
+BMB_ST_BANK_S7_D18      = 18                    ; Slot 7. Start of displayed Layer 2 image.
+BMB_END_BANK_S7_D27     = 27                    ; Last background bank (inclusive).
 
-ARR1_BANK_S7_D28        = 28                    ; Slot 7. Bank for arrays, slot 6
-ARR2_BANK_S7_D29        = 29                    ; Slot 7. Bank for arrays, slot 6
-F_ENEMY_BANK_S6_B30     = 30                    ; Slot 6, Following Enemies
-P_ENEMY_BANK_S6_B31     = 31                    ; Slot 6, Pattern Enemies
-AY_FX_S6_D32            = 32                    ; Slot 6, FX sound
-AY_MCODE_S6_D33         = 33                    ; Slot 6, music code, music binary is in AY_MCODE_S6_D33
-TILE_ANIMATION_D34      = 34                    ; Slot 6, tile animation
+ARR1_BANK_S7_D28        = 28                    ; Slot 7. Bank for arrays, slot 6.
+ARR2_BANK_S7_D29        = 29                    ; Slot 7. Bank for arrays, slot 6.
+F_ENEMY_BANK_S6_B30     = 30                    ; Slot 6, Following Enemies.
+P_ENEMY_BANK_S6_B31     = 31                    ; Slot 6, Pattern Enemies.
+AY_FX_S6_D32            = 32                    ; Slot 6, FX sound.
+AY_MCODE_S6_D33         = 33                    ; Slot 6, music code, music binary is in AY_MCODE_S6_D33.
+TILE_ANIMATION_D34      = 34                    ; Slot 6, tile animation.
 
-PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D87
+PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D87.
 SPR_BANK1_S6_D71        = 71
 SPR_BANK2_S7_D72        = 72
 
 ; Original background image (all values inclusive), Slot 6, background image has 80KiB (320x256), taking 10 banks.
-BM_BANKS_D10            = 10                    ; Background image occupies 10 8K banks from 72 to 82 (starts on 16K bank 9, uses 5 16K banks)
+BM_BANKS_D10            = 10                    ; Background image occupies 10 8K banks from 72 to 82 (starts on 16K bank 9, uses 5 16K banks).
 BMA_ST_BANK_S6_D73      = 73
-BMA_EN_BANK_S6_D82  = BMA_ST_BANK_S6_D73+BM_BANKS_D10-1; -1 because inclusive
+BMA_EN_BANK_S6_D82  = BMA_ST_BANK_S6_D73+BM_BANKS_D10-1; -1 because inclusive.
     ASSERT BMA_EN_BANK_S6_D82 == 82
 
-LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB
-LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7
-EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image
-AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33
-PAL2_BANK_S6_D87        = 87                    ; Slot 6. Layer 2 pallettes
+LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB.
+LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7.
+EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image.
+AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
+PAL2_BANK_S6_D87        = 87                    ; Slot 6. Layer 2 pallettes.
 
 ;----------------------------------------------------------;
 ;                SetupFollowingEnemyBank                   ;

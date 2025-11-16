@@ -7,9 +7,9 @@
 
     MODULE bm
 
-imageBank               DB 0                    ; Bank containing the image
+imageBank               DB 0                    ; Bank containing the image.
 
-BM_16KBANK_D9           = 9                     ; 16K bank 9 = 8k bank 18
+BM_16KBANK_D9           = 9                     ; 16K bank 9 = 8k bank 18.
 
 ;----------------------------------------------------------;
 ;                     CopyImageData                        ;
@@ -23,13 +23,13 @@ CopyImageData
     LD DE, _RAM_SLOT6_STA_HC000 : LD (ut.dmaPortAAddress), DE
     LD DE, _RAM_SLOT7_STA_HE000 : LD (ut.dmaPortBAddress), DE
 
-    LD D, dbs.BMA_ST_BANK_S6_D73                ; Start bank containing background image source
-    LD E, dbs.BMB_ST_BANK_S7_D18                ; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
+    LD D, dbs.BMA_ST_BANK_S6_D73                ; Start bank containing background image source.
+    LD E, dbs.BMB_ST_BANK_S7_D18                ; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ....".
 
-    NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
+    NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default).
 
-    LD B, dbs.BM_BANKS_D10                      ; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4
-.bankLoop                                       ; Each loop copies single bank, there are 10 iterations
+    LD B, dbs.BM_BANKS_D10                      ; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4.
+.bankLoop                                       ; Each loop copies single bank, there are 10 iterations.
     PUSH BC
 
     ; ##########################################
@@ -46,8 +46,8 @@ CopyImageData
 
     ; ##########################################
     ; Next iteration
-    INC D                                       ; Next source bank
-    INC E                                       ; Next destination bank
+    INC D                                       ; Next source bank.
+    INC E                                       ; Next destination bank.
     POP BC
     DJNZ .bankLoop
 
@@ -62,13 +62,13 @@ CreateEmptyImageBank
     CALL dbs.SetupEmptyImageBank
 
     ; Fill this bank with 0 black color
-    LD HL, _RAM_SLOT6_STA_HC000                 ; Start of the RAM area to fill (adjust as needed)
-    LD DE, _RAM_SLOT6_STA_HC000 + _BANK_BYTES_D8192 ; End of the RAM area (start + 8192 bytes)
+    LD HL, _RAM_SLOT6_STA_HC000                 ; Start of the RAM area to fill (adjust as needed).
+    LD DE, _RAM_SLOT6_STA_HC000 + _BANK_BYTES_D8192 ; End of the RAM area (start + 8192 bytes).
     
 .fillLoop:
-    XOR A                                       ; _COL_BLACK_D0 is 0 and XOR is faster
-    LD (HL), A                                  ; Store 0 at the current address
-    INC HL                                      ; Move to the next address
+    XOR A                                       ; _COL_BLACK_D0 is 0 and XOR is faster.
+    LD (HL), A                                  ; Store 0 at the current address.
+    INC HL                                      ; Move to the next address.
 
     LD A, H                                     ; Check if HL reached DE
     CP E
@@ -98,13 +98,13 @@ HideImage
     LD DE, _RAM_SLOT6_STA_HC000 : LD (ut.dmaPortAAddress), DE
     LD DE, _RAM_SLOT7_STA_HE000 : LD (ut.dmaPortBAddress), DE
     
-    LD D, dbs.EMPTY_IMG_S6_D85                  ; Bank containing just black color
-    LD E, dbs.BMB_ST_BANK_S7_D18                ; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ...."
+    LD D, dbs.EMPTY_IMG_S6_D85                  ; Bank containing just black color.
+    LD E, dbs.BMB_ST_BANK_S7_D18                ; Destination bank where layer 2 image is expected. See "NEXTREG _DC_REG_L2_BANK_H12 ....".
 
-    NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default)
+    NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9 ; Layer 2 image (background) starts at 16k-bank 9 (default).
    
-    LD B, dbs.BM_BANKS_D10                      ; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4
-.bankLoop                                       ; Each loop copies single bank, there are 10 iterations
+    LD B, dbs.BM_BANKS_D10                      ; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4.
+.bankLoop                                       ; Each loop copies single bank, there are 10 iterations.
     PUSH BC
 
     ; ##########################################
@@ -121,7 +121,7 @@ HideImage
 
     ; ##########################################
     ; Next iteration
-    INC E                                       ; Next destination bank
+    INC E                                       ; Next destination bank.
     POP BC
     DJNZ .bankLoop
 
@@ -132,7 +132,7 @@ HideImage
 ;----------------------------------------------------------;
 ; Replaces horizontal line of the image with transparent color.
 ; Input:
-;  - E:  line number
+;  - E: line number.
 HideImageLine
 
     LD B, dbs.BM_BANKS_D10
@@ -140,15 +140,15 @@ HideImageLine
 
     ; We will iterate over 10 banks ascending from dbs.BMB_ST_BANK_S7_D18 to dbs.BMB_END_BANK_S7_D27.
     ; However, the loop starts at 10 (inclusive) and goes to 0 (exclusive).
-    LD A, dbs.BMB_END_BANK_S7_D27 + 1               ; 27 + 1 - 10 = 18 -> dbs.BMB_END_BANK_S7_D27 + 1 - dbs.BM_BANKS_D10 = dbs.BMB_ST_BANK_S7_D18
+    LD A, dbs.BMB_END_BANK_S7_D27 + 1               ; 27 + 1 - 10 = 18 -> dbs.BMB_END_BANK_S7_D27 + 1 - dbs.BM_BANKS_D10 = dbs.BMB_ST_BANK_S7_D18.
     SUB B
-    NEXTREG _MMU_REG_SLOT7_H57, A               ; Use slot 7 to modify displayed image
+    NEXTREG _MMU_REG_SLOT7_H57, A               ; Use slot 7 to modify displayed image.
 
     ; Each bank contains columns, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the 
     ; picture), we have to start at byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
     LD HL, _RAM_SLOT7_STA_HE000
-    LD D, 0                                     ; E contains the line number, reset only D to use DE for 16-bit math
-    ADD HL, DE                                  ; HL points at line that will be replaced
+    LD D, 0                                     ; E contains the line number, reset only D to use DE for 16-bit math.
+    ADD HL, DE                                  ; HL points at line that will be replaced.
 
     ; ##########################################
     ; Iterate over each picture line in the current bank. Each bank has 8*1024/256=32 lines.
@@ -157,7 +157,7 @@ HideImageLine
     LD B, _BANK_BYTES_D8192/_BM_YRES_D256       ; 8*1024/256=32
 .linesLoop
     LD (HL), _COL_BLACK_D0
-    ADD HL, _BM_YRES_D256                       ; Move HL to the next pixel to the right by adding 256 pixels
+    ADD HL, _BM_YRES_D256                       ; Move HL to the next pixel to the right by adding 256 pixels.
 
     DJNZ .linesLoop
     POP BC
@@ -182,33 +182,33 @@ ReplaceImageLine
 
     ; Setup slot 6 with source
     LD A, dbs.BMA_ST_BANK_S6_D73
-    ADD B                                       ; A points to current bank from the source image
-    NEXTREG _MMU_REG_SLOT6_H56, A               ; Slot 6 contains source of the image
+    ADD B                                       ; A points to current bank from the source image.
+    NEXTREG _MMU_REG_SLOT6_H56, A               ; Slot 6 contains source of the image.
 
     ; Setup slot 7 with destination
     LD A, dbs.BMB_ST_BANK_S7_D18
-    ADD B                                       ; A points to current bank of the source image
-    NEXTREG _MMU_REG_SLOT7_H57, A               ; Use slot 7 to modify displayed image
+    ADD B                                       ; A points to current bank of the source image.
+    NEXTREG _MMU_REG_SLOT7_H57, A               ; Use slot 7 to modify displayed image.
 
     ; ##########################################
     ; Copy line from source to destination image.  Iterate over each picture line's pixel in current bank. Each bank has 8*1024/256=32 lines.
     PUSH BC
 
     LD B, _BANK_BYTES_D8192/_BM_YRES_D256       ; 8*1024/256=32
-    LD D, 0                                     ; E contains the line number, reset only D to use DE for 16-bit math
+    LD D, 0                                     ; E contains the line number, reset only D to use DE for 16-bit math.
 .linesLoop
 
     ; Copy a pixel from the source image into C.
     LD HL, _RAM_SLOT6_STA_HC000
-    ADD HL, DE                                  ; Move DE from the beginning of the bank to the current pixel
-    LD C, (HL)                                  ; C contains pixel value
+    ADD HL, DE                                  ; Move DE from the beginning of the bank to the current pixel.
+    LD C, (HL)                                  ; C contains pixel value.
     
     ; Copy pixel value from C into the destination image.
     LD HL, _RAM_SLOT7_STA_HE000
-    ADD HL, DE                                  ; Move DE from the beginning of the bank to the current pixel
-    LD (HL), C                                  ; Store pixel value
+    ADD HL, DE                                  ; Move DE from the beginning of the bank to the current pixel.
+    LD (HL), C                                  ; Store pixel value.
 
-    ADD DE, _BM_YRES_D256                       ; Move DE to the next pixel to the right by adding 256 pixels
+    ADD DE, _BM_YRES_D256                       ; Move DE to the next pixel to the right by adding 256 pixels.
 
     DJNZ .linesLoop
     POP BC

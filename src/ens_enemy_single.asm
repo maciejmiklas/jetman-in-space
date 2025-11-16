@@ -5,15 +5,15 @@
 
     ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
 
-; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0, 
+; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0,
 ; counting again.
 singleRespDelayCnt      DB 0
 singleEnemySize         DB ena.ENEMY_SINGLE_SIZE
 
 NEXT_RESP_DEL           = 3
 
-; Each enemy has a dedicated respawn delay (#ENP.RESPAWN_DELAY_CNT). Enemies are respawned one after another from the enemies list. 
-; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay 
+; Each enemy has a dedicated respawn delay (#ENP.RESPAWN_DELAY_CNT). Enemies are respawned one after another from the enemies list.
+; An additional delay is defined here to avoid situations where multiple enemies are respawned simultaneously. It is used to delay
 ; the respawn of the next enemy from the enemies list. 
 nextRespDel             DB NEXT_RESP_DEL
 
@@ -36,11 +36,11 @@ MoveSingleEnemies
 ;----------------------------------------------------------;
 ;                   SetupSingleEnemies                     ;
 ;----------------------------------------------------------;
-; Resets single enemies and loads given #ENPS array into #ENP and #SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE
+; Resets single enemies and loads given #ENPS array into #ENP and #SPR. Expected size for both arrays is given by: _EN_SINGLE_SIZE.
 ; Input:
-;   - A:  number of single enemies (size of #ENPS)
-;   - B:  respawn delay for #nextRespDel
-;   - IX: pointer to #ENPS array
+;   - A:  number of single enemies (size of #ENPS).
+;   - B:  respawn delay for #nextRespDel.
+;   - IX: pointer to #ENPS array.
 SetupSingleEnemies
 
     LD (singleEnemySize), A
@@ -59,21 +59,21 @@ SetupSingleEnemies
 
     PUSH IX
     ; ##########################################
-    ; Load #ENPS int #ENP
-    LD IY, ena.spriteEx01                       ; Pointer to #ENP array
-    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#ENP arrays)
+    ; Load #ENPS into #ENP.
+    LD IY, ena.spriteEx01                       ; Pointer to #ENP array.
+    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#ENP arrays).
     LD B, A
 .enpLoop
 
     CALL enp.CopyEnpsToEnp
 
     ; ##########################################
-    ; Move IX to next array postion
+    ; Move IX to next array postion.
     LD DE, IX
     ADD DE, ENPS
     LD IX, DE
 
-    ; Move IY to next array postion
+    ; Move IY to next array postion.
     LD DE, IY
     ADD DE, ENP
     LD IY, DE
@@ -82,9 +82,9 @@ SetupSingleEnemies
     POP IX
 
     ; ##########################################
-    ; Load #ENPS int #SPR
-    LD IY, ena.singleEnemySprites               ; Pointer to #SPR array
-    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#SPR arrays)
+    ; Load #ENPS int #SPR.
+    LD IY, ena.singleEnemySprites               ; Pointer to #SPR array.
+    LD A, (singleEnemySize)                     ; Single enemies size (number of #ENPS/#SPR arrays).
     LD B, A
 .sprLoop
 
@@ -92,12 +92,12 @@ SetupSingleEnemies
     LD (IY + SPR.SDB_INIT), A
 
     ; ##########################################
-    ; Move IX to next array postion
+    ; Move IX to next array postion.
     LD DE, IX
     ADD DE, ENPS
     LD IX, DE
 
-    ; Move IY to next array postion
+    ; Move IY to next array postion.
     LD DE, IY
     ADD DE, SPR
     LD IY, DE
@@ -109,7 +109,7 @@ SetupSingleEnemies
 ;----------------------------------------------------------;
 ;                 RespawnNextSingleEnemy                   ;
 ;----------------------------------------------------------;
-; Respawns next single enemy. To respawn next from formation use enf.RespawnFormation
+; Respawns next single enemy. To respawn next from formation use enf.RespawnFormation.
 RespawnNextSingleEnemy
 
     ; Single enemies disabled?
@@ -125,13 +125,13 @@ RespawnNextSingleEnemy
     LD A, (singleRespDelayCnt)
     INC A
     CP D
-    JR Z, .startRespawn                         ; Jump if the timer reaches respawn delay
+    JR Z, .startRespawn                         ; Jump if the timer reaches respawn delay.
     LD (singleRespDelayCnt), A
 
     RET
 .startRespawn
-    XOR A                                       ; Set A to 0
-    LD (singleRespDelayCnt), A                  ; Reset delay timer
+    XOR A                                       ; Set A to 0.
+    LD (singleRespDelayCnt), A                  ; Reset delay timer.
 
     ; ##########################################
     ; Iterate over all enemies to find the first hidden, respawn it, and exit function.
@@ -140,17 +140,17 @@ RespawnNextSingleEnemy
     LD B, A
 
 .loop
-    PUSH BC                                     ; Preserve B for loop counter
+    PUSH BC                                     ; Preserve B for loop counter.
     CALL enp.RespawnPatternEnemy
     POP BC
 
     CP A, _RET_YES_D1
-    RET Z                                       ; Exit after respawning first enemy
+    RET Z                                       ; Exit after respawning first enemy.
 
-    ; Move IX to the beginning of the next #singleEnemySprites
+    ; Move IX to the beginning of the next #singleEnemySprites.
     LD DE, SPR
     ADD IX, DE
-    DJNZ .loop                                  ; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE)
+    DJNZ .loop                                  ; Jump if B > 0 (loop starts with B = _EN_SINGLE_SIZE).
 
     RET                                         ; ## END of the function ##
 

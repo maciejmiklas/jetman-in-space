@@ -3,24 +3,24 @@
 ;----------------------------------------------------------;
     MODULE li
 
-; The on-screen tilemap has 40x32 tiles, and into-tiles take a few horizontal screens (i.e., 40x120). Therefore, there are two different counters
-screenTilesRow          DB 0                    ; Current tiles row on the screen, runs from 0 to #ti.TI_VTILES_D32-1
-sourceTilesRow          DB 0                    ; Current tiles row in source file (RAM), runs from from 0 to sourceTilesRowMax
+; The on-screen tilemap has 40x32 tiles, and into-tiles take a few horizontal screens (i.e., 40x120). Therefore, there are two different counters.
+screenTilesRow          DB 0                    ; Current tiles row on the screen, runs from 0 to #ti.TI_VTILES_D32-1.
+sourceTilesRow          DB 0                    ; Current tiles row in source file (RAM), runs from from 0 to sourceTilesRowMax.
 sourceTilesRowMax       DB 0
 
-tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen
-tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1)
+tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
+tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
 
-animateDelayCnt         DB ANIMATE_DELAY        ; Start scrolling without a delay
+animateDelayCnt         DB ANIMATE_DELAY        ; Start scrolling without a delay.
 ANIMATE_DELAY           = 50
 
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  number of horizontal lines in source tilemap (40xA)
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
-;  - HL: size of second tiles file (first one has 8KiB)
+;  - A:  number of horizontal lines in source tilemap (40xA).
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+;  - HL: size of second tiles file (first one has 8KiB).
 LoadLevelIntro
 
     CALL _ResetLevelIntro
@@ -92,7 +92,7 @@ AnimateLevelIntroTextScroll
 .afterAnimateDelay
 
     ; ##########################################
-    ; Increment the tile counter to determine whether we should load the next tile row
+    ; Increment the tile counter to determine whether we should load the next tile row.
     LD A, (tilePixelCnt)
     INC A
     LD (tilePixelCnt), A
@@ -100,7 +100,7 @@ AnimateLevelIntroTextScroll
     CP ti.TI_PIXELS_D8
     JR NZ, .afterNextTile
     
-    ; Reset the counter and fetch the next tile row
+    ; Reset the counter and fetch the next tile row.
     XOR A
     LD (tilePixelCnt), A
     LD (animateDelayCnt), A
@@ -112,7 +112,7 @@ AnimateLevelIntroTextScroll
     LD A, (tileOffset)
     INC A
     LD (tileOffset), A
-    NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset
+    NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset.
 
     RET                                         ; ## END of the function ##
 
@@ -163,40 +163,40 @@ _NextTilesRow
     CALL dbs.Setup16KTilemapBank
 
     ; ##########################################
-    ; Prepare tile copy fom temp RAM to screen RAM
+    ; Prepare tile copy fom temp RAM to screen RAM.
 
-    ; Load the memory address of the tiles row to be copied into HL. HL = RS_ADDR_HC000 + sourceTilesRow * ti.TI_H_BYTES_D80
+    ; Load the memory address of the tiles row to be copied into HL. HL = RS_ADDR_HC000 + sourceTilesRow * ti.TI_H_BYTES_D80.
     LD A, (sourceTilesRow)
     LD D, A
     LD E, ti.TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains byte offset to current row
+    MUL D, E                                    ; DE contains byte offset to current row.
     LD HL, _RAM_SLOT6_STA_HC000
-    ADD HL, DE                                  ; Move RAM pointer to current row
+    ADD HL, DE                                  ; Move RAM pointer to current row.
 
     ; Load the bottom line of tilemap screen memory into DE. This row will be replaced with new lite line.
-    ; DE = ti.TI_MAP_RAM_H5B00 + screenTilesRow * ti.TI_H_BYTES_D80
+    ; DE = ti.TI_MAP_RAM_H5B00 + screenTilesRow * ti.TI_H_BYTES_D80.
     LD A, (screenTilesRow)
 
     LD D, A
     LD E, ti.TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains #screenTilesRow * ti.TI_H_BYTES_D80
-    PUSH HL                                     ; Keep HL because it already contains proper source tiles address
+    MUL D, E                                    ; DE contains #screenTilesRow * ti.TI_H_BYTES_D80.
+    PUSH HL                                     ; Keep HL because it already contains proper source tiles address.
     LD HL, ti.TI_MAP_RAM_H5B00                   ; Now HL contains memory offset to tiles.
     ADD HL, DE
     LD DE, HL
     POP HL
-    LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row
+    LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
     LDIR
 
     ; ##########################################
-    ; Increment and reset #sourceTilesRow counter
+    ; Increment and reset #sourceTilesRow counter.
     LD A, (sourceTilesRow)
     INC A
     LD (sourceTilesRow), A
     LD B, A
     LD A, (sourceTilesRowMax)
     CP B
-    JR NZ, .afterResetStarsRow                  ; Jump if #sourceTilesRow != #sourceTilesRowMax
+    JR NZ, .afterResetStarsRow                  ; Jump if #sourceTilesRow != #sourceTilesRowMax.
 
     ; Reset counter.
     XOR A
@@ -204,13 +204,13 @@ _NextTilesRow
 .afterResetStarsRow
 
     ; ##########################################
-    ; Increment and reset #screenTilesRow counter
+    ; Increment and reset #screenTilesRow counter.
     LD A, (screenTilesRow)
     INC A
     LD (screenTilesRow), A
 
     CP A, ti.TI_VTILES_D32
-    JR NZ, .afterResetTilesRow                  ; Jump if #screenTilesRow != #ti.TI_VTILES_D32
+    JR NZ, .afterResetTilesRow                  ; Jump if #screenTilesRow != #ti.TI_VTILES_D32.
 
     ; Reset tiles counter
     XOR A

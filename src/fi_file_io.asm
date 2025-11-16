@@ -9,19 +9,19 @@ FILE_SIZE               = 25
 
 ; Open a file.
 ; Input:
-;   - A:  Drive specifier ('*'=default, '$'=system) (overridden if filespec includes a drive)
-;   - IX: [HL from dot command]=filespec, null-terminated
+;   - A:  Drive specifier ('*'=default, '$'=system) (overridden if filespec includes a drive).
+;   - IX: [HL from dot command]=filespec, null-terminated.
 ;   - B:  Access modes, a combination of:
 ;      any/all of:
-;        - esx_mode_read $01 request read access
-;        - esx_mode_write $02 request write access
-;        - esx_mode_use_header $40 read/write +3DOS header
+;        - esx_mode_read $01 request read access.
+;        - esx_mode_write $02 request write access.
+;        - esx_mode_use_header $40 read/write +3DOS header.
 ;      plus one of:
-;        - esx_mode_open_exist $00 only open existing file
-;        - esx_mode_open_creat $08 open existing or create file
-;        - esx_mode_creat_noexist $04 create new file, error if exists
-;        - esx_mode_creat_trunc $0c create new file, delete existing
-;   - DE: 8-byte buffer with/for +3DOS header data (if specified in mode). NB: filetype will be set to $ff if headerless file was opened
+;        - esx_mode_open_exist $00 only open existing file.
+;        - esx_mode_open_creat $08 open existing or create file.
+;        - esx_mode_creat_noexist $04 create new file, error if exists.
+;        - esx_mode_creat_trunc $0c create new file, delete existing.
+;   - DE: 8-byte buffer with/for +3DOS header data (if specified in mode). NB: filetype will be set to $ff if headerless file was opened.
 ; Output (success):
 ;   - Fc: 0
 ;   - A: File handle
@@ -46,26 +46,26 @@ F_CLOSE                 = $9B
 ; NOTES:
 ; EOF is not an error, check BC to determine if all bytes requested were read
 ; Input:
-;   - A:  File handle
-;   - IX: [HL from dot command]=address
-;   - BC  Bytes to read
+;   - A:  File handle.
+;   - IX: [HL from dot command]=address.
+;   - BC  Bytes to read.
 ; Output (success):
 ;   - Fc:  0
-;   - BC:  Bytes actually read (also in DE)
-;   - HL:  Address following bytes read
+;   - BC:  Bytes actually read (also in DE).
+;   - HL:  Address following bytes read.
 ; Output (failure):
 ;   - Fc: 1
-;   - BC: Bytes actually read
-;   - A:  Error code
+;   - BC: Bytes actually read.
+;   - A:  Error code.
 F_READ                  = $9D
 
 F_CMD                   = $08
 ASCII_O                 = $30
 
-; Tiles for stars when rocket flaying
+; Tiles for stars when rocket flaying.
 ST_FILE1_BYT_D8192      = _BANK_BYTES_D8192
 ST_FILE2_BYT_D2048      = 2048
-ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles
+ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles.
     ASSERT ST_BYTES_D10240 =  10240
     ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
 
@@ -73,30 +73,30 @@ ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4
 ;                     LoadMusicFile                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: song number from "assets/snd/xx.pt3"
+;  - A: song number from "assets/snd/xx.pt3".
 LoadMusicFile
 
-    CALL dbs.SetupArrays2Bank                    ; Setup slot 7 to load arrays
+    CALL dbs.SetupArrays2Bank                    ; Setup slot 7 to load arrays.
 
-    CALL ut.NumTo99Str                          ; DE now contains ASCII of value from A
+    CALL ut.NumTo99Str                          ; DE now contains ASCII of value from A.
 
     LD HL, db2.sndFileName
-    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
-    LD IX, HL                                   ; Param for #_LoadImageToTempRam
-    ADD HL, db2.SND_NR_POS                      ; Move HL to ""assets/snd/"
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
+    LD IX, HL                                   ; Param for #_LoadImageToTempRam.
+    ADD HL, db2.SND_NR_POS                      ; Move HL to ""assets/snd/".
 
-    LD (HL), D                                  ; Set first number
+    LD (HL), D                                  ; Set first number.
     INC HL
-    LD (HL), E                                  ; Set second number
+    LD (HL), E                                  ; Set second number.
     POP HL
 
     CALL _CopyFileName
     CALL _FileOpen
 
     ; Read file
-    CALL dbs.SetupMusicBank                     ; Setup slot 7 to load music binary
-    LD IX, am.MUSIC_BIN_ADDR_HE000              ; Song bin takes whole bank
-    LD BC, _BANK_BYTES_D8192                    ; Read always 8KiB, this will read a whole song and some garbage
+    CALL dbs.SetupMusicBank                     ; Setup slot 7 to load music binary.
+    LD IX, am.MUSIC_BIN_ADDR_HE000              ; Song bin takes whole bank.
+    LD BC, _BANK_BYTES_D8192                    ; Read always 8KiB, this will read a whole song and some garbage.
     CALL _FileRead
 
     RET                                         ; ## END of the function ##
@@ -104,7 +104,7 @@ LoadMusicFile
 ;----------------------------------------------------------;
 ;               LoadLevelIntroImageFile                    ;
 ;----------------------------------------------------------;
-; The screen size is 320x256 (81920 bytes, 80KiB)
+; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroImageFile
@@ -112,7 +112,7 @@ LoadLevelIntroImageFile
     CALL dbs.SetupArrays2Bank
 
     LD HL, db2.liBgFileName
-    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName)
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
     CALL _SetFileLevelNumber
     POP HL
     CALL _CopyFileName
@@ -127,7 +127,7 @@ LoadLevelIntroImageFile
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
 ; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadBgImageFile
 
     CALL dbs.SetupArrays2Bank
@@ -229,7 +229,7 @@ LoadPlatformsTilemapFile
 ;                   LoadTileSprFile                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadTileSprFile
 
     CALL dbs.SetupArrays2Bank
@@ -253,7 +253,7 @@ LoadTileSprFile
 ;                    LoadSpritesFile                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadSpritesFile
 
     CALL dbs.SetupArrays2Bank
@@ -293,7 +293,7 @@ LoadSpritesFile
 ;              LoadRocketStarsTilemapFile                  ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadRocketStarsTilemapFile
 
     CALL dbs.SetupArrays2Bank
@@ -423,9 +423,9 @@ _CopyFileName
 ; if palette is broken try this:
 ; ./gfx2next -bitmap -preview -bitmap-y  -pal-std .\bg.bmp
 
-; This function loads the image into temp RAM, in order to show it call #bm.CopyImageData
+; This function loads the image into temp RAM, in order to show it call #bm.CopyImageData.
 ; Input:
-;  - C:  position of a image part number (0-9) in the file name of the background image
+;  - C:  position of a image part number (0-9) in the file name of the background image.
 _LoadImageToTempRam
 
     ; Iterate over banks, loading one after another, form 0 to 9 inclusive.
@@ -437,15 +437,15 @@ _LoadImageToTempRam
     ; Set the image part in the file name, for B=3  "...bg_0.nxi" -> "...bg_3.nxi"
     LD HL, fileName
     LD A, C
-    ADD HL, A                                   ; Move HL to "...00/bg_"
-    LD A, ASCII_O                               ; Map B to ASCII value 0 to 9
+    ADD HL, A                                   ; Move HL to "...00/bg_".
+    LD A, ASCII_O                               ; Map B to ASCII value 0 to 9.
     ADD B
     LD (HL), A
 
     ; ##########################################
-    ; Load file into RAM
+    ; Load file into RAM.
 
-    ; Set bank number for slot 6, we will read file into it
+    ; Set bank number for slot 6, we will read file into it.
     LD A, dbs.BMA_ST_BANK_S6_D73
     ADD B
     NEXTREG _MMU_REG_SLOT6_H56, A
@@ -459,7 +459,7 @@ _LoadImageToTempRam
     CALL _FileRead
 
     ; ##########################################
-    ; Loop up to B == 9
+    ; Loop up to B == 9.
     POP BC
     INC B
     LD A, B
@@ -472,7 +472,7 @@ _LoadImageToTempRam
 ;                  _LoadPalFileByName                      ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: pointer to file name
+;  - HL: pointer to file name.
 _LoadPalFileByName
 
     CALL dbs.SetupArrays2Bank
@@ -493,8 +493,8 @@ _LoadPalFileByName
 ;                   _Load16KTilemap                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
-;  - BC: size in bytes of second tilemap 8K file
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+;  - BC: size in bytes of second tilemap 8K file.
 _Load16KTilemap
 
     CALL dbs.Setup16KTilemapBank
@@ -515,7 +515,7 @@ _Load16KTilemap
     POP BC, IX, DE
 
     ; ##########################################
-    ; Load second file
+    ; Load second file.
     PUSH BC
 
     ; Should we load second file?
@@ -528,7 +528,7 @@ _Load16KTilemap
     JR NZ, .loadSecond
     
     POP BC
-    RET                                         ; B and C are 0, do not load second file
+    RET                                         ; B and C are 0, do not load second file.
 
 .loadSecond
     ; Read file.
@@ -546,17 +546,17 @@ _Load16KTilemap
 ;                 _Prepare16KTilemapFile                   ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: stars file number 0 for stars0.map, and 1 for stars1.map
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - A: stars file number 0 for stars0.map, and 1 for stars1.map.
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 ; Output:
-;  - #stTilesFileName with correct name
+;  - #stTilesFileName with correct name.
 _Prepare16KTilemapFile
 
     LD HL, fileName
 
     CALL _SetFileLevelNumber
 
-    ADD HL, db2.TI16K_FILE_NR_POS               ; Move HL to "assets/35/stars_"
+    ADD HL, db2.TI16K_FILE_NR_POS               ; Move HL to "assets/35/stars_".
     LD (HL), A
 
     RET                                         ; ## END of the function ##
@@ -565,15 +565,15 @@ _Prepare16KTilemapFile
 ;               _PrepareFileOpenForSprites                 ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:  sprites file number 0 for sprites0.spr, and 1 for sprites1.spr
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+;  - A:  sprites file number 0 for sprites0.spr, and 1 for sprites1.spr.
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 ; Output:
-;  - #fileName with correct name
+;  - #fileName with correct name.
 _PrepareFileOpenForSprites
 
     LD HL, fileName
     CALL _SetFileLevelNumber
-    ADD HL, db2.SPR_FILE_NR_POS                 ; Move HL to "assets/35/sprites_"
+    ADD HL, db2.SPR_FILE_NR_POS                 ; Move HL to "assets/35/sprites_".
     LD (HL), A
 
     RET                                         ; ## END of the function ##
@@ -583,18 +583,18 @@ _PrepareFileOpenForSprites
 ;----------------------------------------------------------;
 ; Set the level number in the file name, DE="35" will give: "assets/00/tiles.map" -> "assets/35/tiles.map".
 ; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
-;  - HL: pointer to file starting with: "assets/XX"
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+;  - HL: pointer to file starting with: "assets/XX".
 ; Output:
-;  - HL: just after "assets/xx"
+;  - HL: just after "assets/xx".
 ; Modifies: HL, IX
 _SetFileLevelNumber
 
-    LD IX, HL                                   ; Param for _FileOpen
-    ADD HL, db2.LEVEL_FILE_POS                  ; Move HL to "assets/"
-    LD (HL), D                                  ; Set first number
+    LD IX, HL                                   ; Param for _FileOpen.
+    ADD HL, db2.LEVEL_FILE_POS                  ; Move HL to "assets/".
+    LD (HL), D                                  ; Set first number.
     INC HL
-    LD (HL), E                                  ; Set second number
+    LD (HL), E                                  ; Set second number.
 
     RET                                         ; ## END of the function ##
 
@@ -603,13 +603,13 @@ _SetFileLevelNumber
 ;----------------------------------------------------------;
 ; Read bytes from a file.
 ; Input:
-;  - IX: address to load into
-;  - BC: number of bytes to read
+;  - IX: address to load into.
+;  - BC: number of bytes to read.
 _FileRead
 
     LD A, (fileHandle)
     RST F_CMD: DB F_READ
-    CALL C, _IOError                            ; Handle errors
+    CALL C, _IOError                            ; Handle errors.
     CALL _FileClose
 
     RET                                         ; ## END of the function ##
@@ -619,12 +619,12 @@ _FileRead
 ;----------------------------------------------------------;
 _FileOpen
 
-    ; Set params for F_OPEN
+    ; Set params for F_OPEN.
     LD IX, fileName
-    LD A, '*'                                   ; Read from default drive
-    LD B, F_OPEN_B_READ                         ; Open file
-    RST F_CMD: DB F_OPEN                        ; Execute command
-    CALL C, _IOError                            ; Handle errors
+    LD A, '*'                                   ; Read from default drive.
+    LD B, F_OPEN_B_READ                         ; Open file.
+    RST F_CMD: DB F_OPEN                        ; Execute command.
+    CALL C, _IOError                            ; Handle errors.
 
     LD (fileHandle), A
 
