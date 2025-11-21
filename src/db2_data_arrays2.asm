@@ -7,16 +7,16 @@
 spritesBankStart
 
 ;----------------------------------------------------------;
-;                           Menu                           ;
+;                      Main Menu                           ;
 ;----------------------------------------------------------;
-menuEl
+mainMenuEl
     mma.MENU {mma.TOP_OFS+mma.LOF+5                  /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 032/*JET_Y*/}  ; START GAME
     mma.MENU {mma.TOP_OFS+(1*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 055/*JET_Y*/}  ; LEVEL SELECT
     mma.MENU {mma.TOP_OFS+(2*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 080/*JET_Y*/}  ; HIGH SCORE
     mma.MENU {mma.TOP_OFS+(3*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextIg/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 206/*JET_X*/, 104/*JET_Y*/}  ; IN GAME KEYS
     mma.MENU {mma.TOP_OFS+(4*mma.EL_DIST)+mma.LOF+6  /*TILE_OFFSET*/, menuTextGp/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 192/*JET_X*/, 128/*JET_Y*/}  ; GAMEPLAY
     mma.MENU {mma.TOP_OFS+(5*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 152/*JET_Y*/}  ; DIFFICULTY
-MENU_EL_SIZE            = 6
+MAIN_MENU_EL_SIZE       = 6
 
 menuTextSg DB "START GAME ",ti.TX_IDX_ENTER
 menuTextLs DB "LEVEL SELECT ",ti.TX_IDX_MINUS
@@ -83,6 +83,21 @@ menuScore9
 
 menuScoreCursor
     SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+
+;----------------------------------------------------------;
+;                      Main Menu                           ;
+;----------------------------------------------------------;
+menuLevelEl
+    mml.MLS  {/*TILE_OFFSET*/, 045/*JET_X*/, 020/*JET_Y*/}  ; Level 1
+    mml.MLS  {/*TILE_OFFSET*/, 155/*JET_X*/, 020/*JET_Y*/}  ; Level 2
+    mml.MLS  {/*TILE_OFFSET*/, 095/*JET_X*/, 075/*JET_Y*/}  ; Level 3
+    mml.MLS  {/*TILE_OFFSET*/, 040/*JET_X*/, 120/*JET_Y*/}  ; Level 4
+    mml.MLS  {/*TILE_OFFSET*/, 155/*JET_X*/, 125/*JET_Y*/}  ; Level 5
+    mml.MLS  {/*TILE_OFFSET*/, 090/*JET_X*/, 210/*JET_Y*/}  ; Level 6
+    mml.MLS  {/*TILE_OFFSET*/, 255/*JET_X*/, 160/*JET_Y*/}  ; Level 7
+    mml.MLS  {/*TILE_OFFSET*/, 255/*JET_X*/, 020/*JET_Y*/}  ; Level 8
+    mml.MLS  {/*TILE_OFFSET*/, 205/*JET_X*/, 075/*JET_Y*/}  ; Level 9
+    mml.MLS  {/*TILE_OFFSET*/, 180/*JET_X*/, 215/*JET_Y*/}  ; Level 10
 
 ;----------------------------------------------------------;
 ;                     Jetman Sprite Data                   ;
@@ -613,6 +628,12 @@ MENU_HARD_BG_POS        = 15                    ; Position of a image part numbe
 
 mmgTileFileName         DB "assets/mg/gameplay.map",0
 mmkTileFileName         DB "assets/mk/keys.map",0
+
+; Level select background
+levelSelectBgFileName   DB "assets/ml/ls_00_0.nxi",0
+levelSelectPalFileName  DB "assets/ml/ls_00.nxp",0
+LS_BG_LEVEL_POS         = 13
+LS_BG_IMG_POS           = 16
 
 ;----------------------------------------------------------;
 ;                        Final Checks                      ;

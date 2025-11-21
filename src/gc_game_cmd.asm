@@ -8,9 +8,7 @@ HOVER_START_D250        = 250
 STAND_START_D30         = 30
 JSTAND_START_D15        = 15
 
-LEVEL_MIN               = 1
-LEVEL_MAX               = 10
-level                   DB LEVEL_MIN
+currentLevel            DB _LEVEL_MIN
 
 ; Respawn location.
 JM_RESPAWN_X_D100       = 100
@@ -30,6 +28,14 @@ StartGameWithIntro
     CALL dbs.SetupMusicBank
     CALL aml.MusicOff
 
+    ; Show intro only for the first level.
+    LD A, (currentLevel)
+    CP _LEVEL_MIN
+    JR Z, .intro
+    CALL LoadCurrentLevel
+    RET
+
+.intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
     CALL LoadLevel1Intro
@@ -241,8 +247,22 @@ RocketTakesOff
     CALL pi.ResetPickups
 
     CALL ki.ResetKeyboard
-    CALL dbs.SetupPatternEnemyBank: CALL enu.DisableFuelThief
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.DisableFuelThief
     CALL jw.HideShots
+
+    CALL dbs.SetupStorageBank
+    CALL so.SetLevelFinished
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    SetCurrentLevel                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A: new current level.
+SetCurrentLevel
+    LD (currentLevel), A
 
     RET                                         ; ## END of the function ##
 
@@ -252,15 +272,15 @@ RocketTakesOff
 LoadNextLevel
 
     ; Load level into A and eventually reset it (10 -> 1).
-    LD A, (level)
+    LD A, (currentLevel)
     INC A
-    LD (level),A
+    LD (currentLevel),A
 
     ; Restart level.
-    CP LEVEL_MAX+1
+    CP _LEVEL_MAX+1
     JR NZ, .afterResetLevel
-    LD A, (LEVEL_MIN)
-    LD (level),A
+    LD A, (_LEVEL_MIN)
+    LD (currentLevel),A
 .afterResetLevel
 
     CALL LoadCurrentLevel
@@ -273,7 +293,7 @@ LoadNextLevel
 LoadCurrentLevel
 
     ; Load level into A
-    LD A, (level)
+    LD A, (currentLevel)
 
     ; Load level 1
     CP 1

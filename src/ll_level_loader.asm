@@ -78,6 +78,12 @@ LoadLevel1Data
     LD DE, db2.pickupsL1
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 1
+    CALL so.SetLevelPlaying
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -155,6 +161,12 @@ LoadLevel2Data
     LD DE, db2.pickupsL2
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 2
+    CALL so.SetLevelPlaying
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -227,13 +239,18 @@ LoadLevel3Data
     LD A, 2
     LD (st.paletteNumber), A
 
-
     ; ##########################################
     ; Setup Pickups
     CALL dbs.SetupArrays2Bank
     LD A, db2.PICKUPS_L3_SIZE
     LD DE, db2.pickupsL3
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 3
+    CALL so.SetLevelPlaying
 
     RET                                         ; ## END of the function ##
 
@@ -306,6 +323,12 @@ LoadLevel4Data
     LD A, db2.PICKUPS_L4_SIZE
     LD DE, db2.pickupsL4
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 4
+    CALL so.SetLevelPlaying
 
     RET                                         ; ## END of the function ##
 
@@ -384,6 +407,12 @@ LoadLevel5Data
     LD DE, db2.pickupsL5
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 5
+    CALL so.SetLevelPlaying
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -461,6 +490,12 @@ LoadLevel6Data
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 6
+    CALL so.SetLevelPlaying
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -532,6 +567,12 @@ LoadLevel7Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 7
+    CALL so.SetLevelPlaying
 
     RET                                         ; ## END of the function ##
 
@@ -611,6 +652,12 @@ LoadLevel8Data
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 8
+    CALL so.SetLevelPlaying
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -681,6 +728,12 @@ LoadLevel9Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 9
+    CALL so.SetLevelPlaying
 
     RET                                         ; ## END of the function ##
 
@@ -753,6 +806,12 @@ LoadLevel10Data
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Level Unlock
+    CALL dbs.SetupStorageBank
+    LD A, 10
+    CALL so.SetLevelPlaying
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -806,7 +865,7 @@ _LoadDataByLevelNumber
     LD (btd.palBytes),DE
 
     ; Load the address of the original palette into a global variable
-    LD DE, btd.ORIGINAL_PAL_ADDR
+    LD DE, bp.DEFAULT_PAL_ADDR
     LD (btd.palAdr), DE
 
     CALL btd.CreateTodPalettes

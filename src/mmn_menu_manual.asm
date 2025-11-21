@@ -1,5 +1,5 @@
 ;----------------------------------------------------------;
-;                     Game Manual                          ;
+;                Menu Game Manual and Keys                 ;
 ;----------------------------------------------------------;
 ; Manual handles two menus: MENU_EL_KEYS (IN GAME KEYS) and MENU_EL_GAMEPLAY (GAMEPLAY)
     MODULE mmn
@@ -18,15 +18,11 @@ LoadMenuGameplay
     LD D, "m"
     LD E, "g"
     PUSH DE
-
     CALL fi.LoadBgPaletteFile
-    CALL btd.LoadOriginalPalette
-
+    CALL bp.LoadDefaultPalette
     POP DE
 
     ; Load background image
-    LD D, "m"
-    LD E, "g"
     CALL fi.LoadBgImageFile
     CALL bm.CopyImageData
 
@@ -58,9 +54,8 @@ LoadMenuKeys
     LD D, "m"
     LD E, "k"
     PUSH DE
-
     CALL fi.LoadBgPaletteFile
-    CALL btd.LoadOriginalPalette
+    CALL bp.LoadDefaultPalette
     POP DE
 
     ; Load background image

@@ -20,7 +20,7 @@ JET_Y                   DB                      ; Y postion of Jetman pointing t
 
 menuPos                 DB MENU_EL_MIN
 MENU_EL_START           = 1                     ; START GAME
-MENU_EL_LSELECT         = 2                     ; LEVEL SELECT
+MENU_EL_LEVEL           = 2                     ; LEVEL SELECT
 MENU_EL_SCORE           = 3                     ; HIGH SCORE
 MENU_EL_KEYS            = 4                     ; IN GAME KEYS
 MENU_EL_GAMEPLAY        = 5                     ; GAMEPLAY
@@ -129,8 +129,7 @@ _LoadMenuEasy
     ; ##########################################
     ; Load palette.
     CALL fi.LoadEasyPalFile
-
-    CALL btd.LoadOriginalPalette
+    CALL bp.LoadDefaultPalette
 
     ; ##########################################
     ; Load background image.
@@ -172,7 +171,7 @@ _LoadMenuNormal
     PUSH DE
 
     CALL fi.LoadBgPaletteFile
-    CALL btd.LoadOriginalPalette
+    CALL bp.LoadDefaultPalette
 
     POP DE
 
@@ -213,7 +212,7 @@ _LoadMenuHard
     ; ##########################################
     ; Load palette
     CALL fi.LoadHardPalFile
-    CALL btd.LoadOriginalPalette
+    CALL bp.LoadDefaultPalette
 
     ; ##########################################
     ; Load background image
@@ -263,7 +262,7 @@ _SetIXToActiveMenu
     LD E, MENU
     MUL D, E
     
-    LD IX, db2.menuEl
+    LD IX, db2.mainMenuEl
     ADD IX, DE                                  ; Move IX to current menu position (IX + #menuPos * #MENU)
 
     RET                                         ; ## END of the function ##
@@ -272,7 +271,7 @@ _SetIXToActiveMenu
 ;                   _UpdateSelection                       ;
 ;----------------------------------------------------------;
 _UpdateSelection
-    
+
     CALL _SetIXToActiveMenu
     CALL _UpdateJetPostion
 
@@ -310,8 +309,8 @@ _LoadStaticMenuText
 
     CALL dbs.SetupArrays2Bank
 
-    LD B, db2.MENU_EL_SIZE
-    LD IX, db2.menuEl
+    LD B, db2.MAIN_MENU_EL_SIZE
+    LD IX, db2.mainMenuEl
 .elementLoop
     PUSH BC
 
@@ -403,12 +402,20 @@ _JoyFire
 .notStartGame
 
     ; ##########################################
-    ; Show gameplay
-    CP MENU_EL_GAMEPLAY
-    JR NZ, .notShowGameplay
-    CALL mmn.LoadMenuGameplay
+    ; Start game
+    CP MENU_EL_LEVEL
+    JR NZ, .notLevelSelect
+    CALL mml.LoadMenuLevelSelect
     RET
-.notShowGameplay
+.notLevelSelect
+
+    ; ##########################################
+    ; Show high score
+    CP MENU_EL_SCORE
+    JR NZ, .notShowScore
+    CALL mms.LoadMenuScore
+    RET
+.notShowScore
 
     ; ##########################################
     ; Show game keys
@@ -419,20 +426,20 @@ _JoyFire
 .notShowKeys
 
     ; ##########################################
+    ; Show gameplay
+    CP MENU_EL_GAMEPLAY
+    JR NZ, .notShowGameplay
+    CALL mmn.LoadMenuGameplay
+    RET
+.notShowGameplay
+
+    ; ##########################################
     ; Difficulty up
     CP MENU_EL_DIFFICULTY
     JR NZ, .notDifficulty
     CALL _DifficultyUp
     RET
 .notDifficulty
-
-    ; ##########################################
-    ; Show high score
-    CP MENU_EL_SCORE
-    JR NZ, .notShowScore
-    CALL mms.LoadMenuScore
-    RET
-.notShowScore
 
     ; ##########################################
     ; Wrong key hit, play sound

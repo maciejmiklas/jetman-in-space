@@ -14,23 +14,9 @@ todPalAddr              DW 0                    ; Pointer to current brightness 
 PAL_BG_BYTES_D430      = 512-st.ST_PAL_L1_BYTES_D64-st.ST_PAL_L2_BYTES_D16-2
     ASSERT PAL_BG_BYTES_D430 = 430
 
-; Palettes are stored in: $E000,$E200,$E400,$E600,$E800,$EA000. #todPalAddr points to the current palette.
-TOD_PALETTES_ADDR      = _RAM_SLOT7_STA_HE000
-
-; The original palette loaded from disk.
-ORIGINAL_PAL_ADDR      = TOD_PALETTES_ADDR + 7*bp.PAL_BYTES_D512
-
-;----------------------------------------------------------;
-;                    LoadOriginalPalette                   ;
-;----------------------------------------------------------;
-LoadOriginalPalette
-
-    CALL dbs.SetupPaletteBank
-    LD HL, btd.ORIGINAL_PAL_ADDR
-    LD B, bp.PAL_COLORS_D256
-    CALL bp.LoadPalette
-    
-    RET                                         ; ## END of the function ##
+; Palettes are stored in: $E200,$E400,$E600,$E800,$EA000,... #todPalAddr points to the current palette.
+; $E000 holds default palette
+TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
 
 ;----------------------------------------------------------;
 ;                      NextTodPalette                      ;

@@ -53,7 +53,7 @@ _MainLoop000
 
     CALL _MainLoop000OnPause
     CALL _MainLoop000OnActiveGame
-    CALL _MainLoop000OnActiveMenuMain
+    CALL _MainLoop000OnActiveMain
     CALL _MainLoop000OnNotInGame
     CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
@@ -164,15 +164,22 @@ _MainLoop000OnNotInGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               _MainLoop000OnActiveMenuMain               ;
+;                 _MainLoop000OnActiveMain                 ;
 ;----------------------------------------------------------;
-_MainLoop000OnActiveMenuMain
+_MainLoop000OnActiveMain
 
-    ; Return if main menu is inactive.
+    ; Execute if main menu or level select menu is inactive.
     LD A, (ms.mainState)
+    
     CP ms.MENU_MAIN
-    RET NZ
+    JR Z, .execute
 
+    CP ms.MENU_LEVEL
+    JR Z, .execute
+
+    RET
+
+.execute
     ; ##########################################
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite

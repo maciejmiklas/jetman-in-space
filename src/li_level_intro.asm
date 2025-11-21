@@ -38,8 +38,7 @@ LoadLevelIntro
     ; ##########################################
     ; Load palette
     CALL fi.LoadIntroPalFile
-
-    CALL btd.LoadOriginalPalette
+    CALL bp.LoadDefaultPalette
 
     ; ##########################################
     ; Load background image

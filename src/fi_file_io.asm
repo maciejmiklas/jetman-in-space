@@ -4,7 +4,7 @@
     MODULE fi
 
 fileHandle              DEFB 0
-fileName                DB "0000000000000000000000000"
+fileNameBuf             DB "0000000000000000000000000"
 FILE_SIZE               = 25
 
 ; Open a file.
@@ -102,6 +102,68 @@ LoadMusicFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                LoadLevelSelectPalFile                    ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+LoadLevelSelectPalFile
+
+    CALL dbs.SetupArrays2Bank
+
+    ; Prepare file name for Level given by DE.
+    LD HL, db2.levelSelectPalFileName
+    CALL _SetupLevelIntroFileName
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupPaletteBank
+
+    LD IX, bp.DEFAULT_PAL_ADDR
+    LD BC, bp.PAL_BYTES_D512
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;              LoadLevelSelectImageFile                    ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
+LoadLevelSelectImageFile
+
+    CALL dbs.SetupArrays2Bank
+
+    ; Prepare file name for Level given by DE.
+    LD HL, db2.levelSelectBgFileName
+    CALL _SetupLevelIntroFileName
+  
+
+    ; Load the image.
+    LD C, db2.LS_BG_IMG_POS
+    CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               _SetupLevelIntroFileName                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+;  - HL: pointer to file name.
+_SetupLevelIntroFileName
+
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
+    LD IX, HL
+    ADD HL, db2.LS_BG_LEVEL_POS
+    LD (HL), D
+    INC HL
+    LD (HL), E
+    POP HL
+    CALL _CopyFileName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;               LoadLevelIntroImageFile                    ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
@@ -187,15 +249,14 @@ LoadBgPaletteFile
     PUSH HL
     CALL _SetFileLevelNumber
     POP HL
-    
-    CALL _CopyFileName
 
+    CALL _CopyFileName
     CALL _FileOpen
 
     ; Read file
     CALL dbs.SetupPaletteBank
 
-    LD IX, btd.ORIGINAL_PAL_ADDR
+    LD IX, bp.DEFAULT_PAL_ADDR
     LD BC, bp.PAL_BYTES_D512
     CALL _FileRead
 
@@ -239,7 +300,7 @@ LoadTileSprFile
     CALL _CopyFileName
     POP DE
 
-    LD HL, fileName
+    LD HL, fileNameBuf
     CALL _SetFileLevelNumber
     CALL _FileOpen
 
@@ -408,7 +469,7 @@ _CopyFileName
     PUSH BC, DE
 
     LD BC, FILE_SIZE
-    LD DE, fileName
+    LD DE, fileNameBuf
     LDIR
 
     POP DE, BC
@@ -435,7 +496,7 @@ _LoadImageToTempRam
 
     ; ##########################################
     ; Set the image part in the file name, for B=3  "...bg_0.nxi" -> "...bg_3.nxi"
-    LD HL, fileName
+    LD HL, fileNameBuf
     LD A, C
     ADD HL, A                                   ; Move HL to "...00/bg_".
     LD A, ASCII_O                               ; Map B to ASCII value 0 to 9.
@@ -483,7 +544,7 @@ _LoadPalFileByName
     ; Read file
     CALL dbs.SetupPaletteBank
 
-    LD IX, btd.ORIGINAL_PAL_ADDR
+    LD IX, bp.DEFAULT_PAL_ADDR
     LD BC, bp.PAL_BYTES_D512
     CALL _FileRead
 
@@ -552,7 +613,7 @@ _Load16KTilemap
 ;  - #stTilesFileName with correct name.
 _Prepare16KTilemapFile
 
-    LD HL, fileName
+    LD HL, fileNameBuf
 
     CALL _SetFileLevelNumber
 
@@ -571,7 +632,7 @@ _Prepare16KTilemapFile
 ;  - #fileName with correct name.
 _PrepareFileOpenForSprites
 
-    LD HL, fileName
+    LD HL, fileNameBuf
     CALL _SetFileLevelNumber
     ADD HL, db2.SPR_FILE_NR_POS                 ; Move HL to "assets/35/sprites_".
     LD (HL), A
@@ -620,7 +681,7 @@ _FileRead
 _FileOpen
 
     ; Set params for F_OPEN.
-    LD IX, fileName
+    LD IX, fileNameBuf
     LD A, '*'                                   ; Read from default drive.
     LD B, F_OPEN_B_READ                         ; Open file.
     RST F_CMD: DB F_OPEN                        ; Execute command.

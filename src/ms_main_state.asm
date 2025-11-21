@@ -10,8 +10,9 @@ LEVEL_INTRO             = 4
 MENU_MAIN               = 5
 MENU_MANUAL             = 6
 MENU_SCORE              = 7
-GAME_OVER               = 8
-PAUSE                   = 9
+MENU_LEVEL              = 8
+GAME_OVER               = 20
+PAUSE                   = 30
 
 mainState              DB MENU_MAIN
 mainStateBackup        DB MENU_MAIN

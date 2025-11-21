@@ -42,7 +42,7 @@ ShowGameOver
     PUSH DE
 
     CALL fi.LoadBgPaletteFile
-    CALL btd.LoadOriginalPalette
+    CALL bp.LoadDefaultPalette
 
     POP DE
 
