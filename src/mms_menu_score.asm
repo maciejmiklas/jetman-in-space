@@ -224,10 +224,8 @@ _SetupMenuScore
     LD D, "m"
     LD E, "s"
     PUSH DE
-
     CALL fi.LoadBgPaletteFile
-    CALL btd.LoadOriginalPalette
-
+    CALL bp.LoadDefaultPalette
     POP DE
 
     ; ###########################################

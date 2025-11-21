@@ -50,21 +50,7 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (jw.tmp)
-    LD L, A
-    CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 50
-    LD H, 0
-    LD A, (gid.gameInputState)
-    LD L, A
-    CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 60
-    LD H, 0
-    LD A, (gid.gameInputPrevState)
+    LD A, (mml.currentLevel)
     LD L, A
     CALL ut.PrintNumber
 */

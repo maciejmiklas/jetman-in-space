@@ -469,6 +469,11 @@ _BAR_RED_B1_SPR         = 188
 _BAR_RED_B2_SPR         = 189
 
 
+; ##############################################
+; Game Levels
+_LEVEL_MIN              = 1
+_LEVEL_MAX              = 10
+
 ;----------------------------------------------------------;
 ;       Single Enemy and Formation (Pattern Enemy)         ;
 ;----------------------------------------------------------;
@@ -573,3 +578,8 @@ BANK                    DB                      ; Image bank number from 0 to 9.
 X_OFFSET                DB                      ; X offset from the beginning of the bank, max 32 (32=8192/256).
 SIZE                    DB                      ; Amount of stars.
     ENDS
+
+
+;----------------------------------------------------------;
+;                          Palette                         ;
+;----------------------------------------------------------;

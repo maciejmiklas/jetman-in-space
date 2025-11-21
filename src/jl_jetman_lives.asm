@@ -16,8 +16,11 @@ RED_FACE_LIVES          = 3                     ; Show face when #lives < than t
 JET_POS_LEFT            = 100                   ; Face looks to the left, if Jetman postion is < 100.
 JET_POS_RIGHT           = 200                   ; Face looks to the right, if Jetman postion is > 100.
 JET_LIVES               = 10
-lives                   DB JET_LIVES
 
+    DB "If you read this text, it means that you have reached forbidden memory space."
+lives                   DB JET_LIVES
+    DB "The script stored here will format the SD Card in the next 60 seconds!"
+    DB "I would suggest a quick reset ;)"
 ;----------------------------------------------------------;
 ;                         LifeUp                           ;
 ;----------------------------------------------------------;

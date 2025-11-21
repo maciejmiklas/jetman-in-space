@@ -21,6 +21,21 @@ _BM_PAL2_B_MASK         = %0000000'1
 PAL_BYTES_D512         = 512
 PAL_COLORS_D256        = 256
 
+; The default palette loaded from disk.
+DEFAULT_PAL_ADDR      = _RAM_SLOT7_STA_HE000
+
+;----------------------------------------------------------;
+;                   LoadDefaultPalette                     ;
+;----------------------------------------------------------;
+LoadDefaultPalette
+
+    CALL dbs.SetupPaletteBank
+    LD HL, DEFAULT_PAL_ADDR
+    LD B, PAL_COLORS_D256
+    CALL LoadPalette
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                      BytesToColors                       ;
 ;----------------------------------------------------------;

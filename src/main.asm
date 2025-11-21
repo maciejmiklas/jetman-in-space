@@ -86,19 +86,16 @@ mainLoop
     INCLUDE "jo_jetpack_overheat.asm"
     INCLUDE "li_level_intro.asm"
     INCLUDE "ki_keyboard_input.asm"
+    INCLUDE "ms_main_state.asm"
     INCLUDE "mma_menu_main.asm"
     INCLUDE "mmn_menu_manual.asm"
+    INCLUDE "mml_menu_level.asm"
+    INCLUDE "mms_menu_score.asm"
     INCLUDE "sc_score.asm"
     INCLUDE "pi_pickups.asm"
-    INCLUDE "ms_main_state.asm"
-    INCLUDE "mms_menu_score.asm"
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
-
-    DB "If you read this text, it means that you have reached forbidden memory space."
-    DB "The script stored here will format the SD Card in the next 60 seconds!"
-    DB "I would suggest a quick reset ;)"
 
     ; Imports below use ORG and dedicated memory bank!
 
@@ -156,6 +153,13 @@ mainLoop
     INCLUDE "ta_tile_animation.asm"
     INCLUDE "tad_tile_animation_data.asm"
     ASSERT $$ == dbs.TILE_ANIMATION_D34
+
+    ; ################ BANK  35 ################
+    ; TO USE THIS MODULE: CALL dbs.SetupStorageBank
+    MMU _RAM_SLOT6, dbs.STORAGE_S6_D35
+    ORG _RAM_SLOT6_STA_HC000
+    INCLUDE "so_storage.asm"
+    ASSERT $$ == dbs.STORAGE_S6_D35
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;
