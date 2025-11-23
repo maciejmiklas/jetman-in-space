@@ -128,7 +128,7 @@ GameInput
     LD A, _KB_V_TO_SH_HFE                       ; $FD -> A (5...1).
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 1, A                                    ; Bit 1 reset -> Z pressed.
-    CALL Z, _JoyFireA
+    CALL Z, _JoyFireB
 
     ; ##########################################
     ; Row: H, J, K, L, ENTER
