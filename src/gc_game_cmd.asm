@@ -8,8 +8,6 @@ HOVER_START_D250        = 250
 STAND_START_D30         = 30
 JSTAND_START_D15        = 15
 
-currentLevel            DB _LEVEL_MIN
-
 ; Respawn location.
 JM_RESPAWN_X_D100       = 100
 JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
@@ -29,7 +27,7 @@ StartGameWithIntro
     CALL aml.MusicOff
 
     ; Show intro only for the first level.
-    LD A, (currentLevel)
+    LD A, (lu.currentLevel)
     CP _LEVEL_MIN
     JR Z, .intro
     CALL LoadCurrentLevel
@@ -251,19 +249,6 @@ RocketTakesOff
     CALL enu.DisableFuelThief
     CALL jw.HideShots
 
-    CALL dbs.SetupStorageBank
-    CALL so.SetLevelFinished
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    SetCurrentLevel                       ;
-;----------------------------------------------------------;
-; Input:
-;  - A: new current level.
-SetCurrentLevel
-    LD (currentLevel), A
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -271,18 +256,7 @@ SetCurrentLevel
 ;----------------------------------------------------------;
 LoadNextLevel
 
-    ; Load level into A and eventually reset it (10 -> 1).
-    LD A, (currentLevel)
-    INC A
-    LD (currentLevel),A
-
-    ; Restart level.
-    CP _LEVEL_MAX+1
-    JR NZ, .afterResetLevel
-    LD A, (_LEVEL_MIN)
-    LD (currentLevel),A
-.afterResetLevel
-
+    CALL lu.UnlockNextLevel
     CALL LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
@@ -293,7 +267,7 @@ LoadNextLevel
 LoadCurrentLevel
 
     ; Load level into A
-    LD A, (currentLevel)
+    LD A, (lu.currentLevel)
 
     ; Load level 1
     CP 1
@@ -390,6 +364,16 @@ FuelThiefHit
     CALL sc.HitEnemy3
 
     CALL dbs.SetupPatternEnemyBank              ; Stack jumps back to enemy.
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    DifficultyChange                      ;
+;----------------------------------------------------------;
+; Read curent dificluty from #jt.difLevel
+DifficultyChange
+
+    CALL lu.ResetLevelPlaying
 
     RET                                         ; ## END of the function ##
 

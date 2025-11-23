@@ -833,8 +833,7 @@ _BoardRocket
     LD (rocketState), A
 
     CALL gc.RocketTakesOff
-    CALL so.SetLevelFinished
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

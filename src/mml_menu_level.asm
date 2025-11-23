@@ -9,7 +9,7 @@ JET_X                   DB                      ; X postion of Jetman pointing t
 JET_Y                   DB                      ; Y postion of Jetman pointing to active element.
     ENDS
 
-currentLevel           DB 1
+currentLevel           DB _LEVEL_MIN
 
 ;----------------------------------------------------------;
 ;                   LoadMenuLevelSelect                    ;
@@ -28,9 +28,13 @@ LoadMenuLevelSelect
     CALL bm.HideImage
 
     ; ##########################################
+    LD A, _LEVEL_MIN
+    LD (currentLevel), A
+    
+    ; ##########################################
     ; Load background palette
     CALL dbs.SetupStorageBank
-    LD A, (so.unlockedLevel)
+    CALL lu.LoadUnlockLevel
     CALL ut.NumTo99Str                          ; Load A into DE as Text
 
     PUSH DE
@@ -71,7 +75,7 @@ LoadMenuLevelSelect
 
     CALL _UpdateJetPos
     CALL js.ShowJetSprite
-
+    
     ; ##########################################
     ; Music on
     CALL dbs.SetupMusicBank
@@ -91,7 +95,7 @@ LoadMenuLevelSelect
 _ConfirmSelection
 
     LD A, (currentLevel)
-    CALL gc.SetCurrentLevel
+    LD (lu.currentLevel), A
     
     CALL gc.LoadMainMenu
 
@@ -146,16 +150,14 @@ _MoveJet
 _NextLevel
 
     ; Increment #currentLevel by 1 up to #unlockedLevel.
-    CALL dbs.SetupStorageBank
-    LD A, (so.unlockedLevel)
-    INC A
+    CALL lu.LoadUnlockLevel
     LD B, A
-
+    
     LD A, (currentLevel)
-    INC A
     CP B
     RET Z
 
+    INC A
     LD (currentLevel), A
 
     ; ##########################################

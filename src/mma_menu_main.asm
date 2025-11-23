@@ -61,7 +61,15 @@ LoadMainMenu
     LD (ki.callbackRight), DE
 
     ; ##########################################
-    CALL _LoadMenuNormal
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY
+    CALL Z, _LoadMenuEasy
+
+    CP jt.DIF_NORMAL
+    CALL Z, _LoadMenuNormal
+
+    CP jt.DIF_HARD
+    CALL Z, _LoadMenuHard
 
     ; ##########################################
     ; Load game version
@@ -491,6 +499,7 @@ _DifficultyDown
 ;                   _SetupDifficulty                       ;
 ;----------------------------------------------------------;
 _SetupDifficulty
+    CALL gc.DifficultyChange
 
     LD A, js.SDB_T_KO
     CALL js.ChangeJetSpritePattern

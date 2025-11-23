@@ -46,14 +46,22 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-/*
+
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (mml.currentLevel)
+    LD A, (lu.currentLevel)
     LD L, A
     CALL ut.PrintNumber
-*/
+
+    ; ##########################################
+    LD BC, 50
+    LD H, 0
+    LD A, (jt.difLevel)
+    LD L, A
+    CALL ut.PrintNumber
+    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
