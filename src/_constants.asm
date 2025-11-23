@@ -3,7 +3,7 @@
 ;----------------------------------------------------------;
 ; Lots of documentation copied from https://wiki.specnext.dev
 
-gameVersion             DB "V0.67 UNDER CONSTRUCTION"
+gameVersion             DB "V0.68 UNDER CONSTRUCTION"
 GAME_VERSION_SIZE       = 25
 
 ;----------------------------------------------------------;
