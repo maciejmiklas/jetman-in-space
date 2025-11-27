@@ -83,6 +83,7 @@ _OnFirePressed
     RET NZ
 
     CALL mms.EnterNewScore
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

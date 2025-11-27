@@ -45,6 +45,9 @@ gameInputState          DB 0
 gameInputPrevState      DB 0                    ; Keeps state from the previous game loop.
 BS_FIRE_BIT             = 0
 
+breakCnt                DB 0
+BREAK_CNT               = 50
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
