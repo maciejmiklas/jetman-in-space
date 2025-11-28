@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
 ;----------------------------------------------------------;
 ;                      Game Command                        ;
 ;----------------------------------------------------------;
@@ -1119,6 +1123,16 @@ JoyWillEnable
 
     CALL jt.UpdateStateOnJoyWillEnable
 
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                   ExitGameToMainMenu                     ;
+;----------------------------------------------------------;
+ExitGameToMainMenu
+
+    CALL LoadMainMenu
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

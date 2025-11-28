@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
 ;----------------------------------------------------------;
 ;                      Jetman Data                         ;
 ;----------------------------------------------------------;
@@ -44,6 +48,9 @@ joyOverheatDelayCnt     DB 0                    ; The delay counter for joystick
 gameInputState          DB 0
 gameInputPrevState      DB 0                    ; Keeps state from the previous game loop.
 BS_FIRE_BIT             = 0
+
+breakCnt                DB 0
+BREAK_CNT               = 50
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

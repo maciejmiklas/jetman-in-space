@@ -1,0 +1,35 @@
+Game Assets License (No Redistribution or Reuse)
+
+Copyright (c) 2024 Maciej Miklas. All rights reserved.
+
+Scope
+- “Assets” means all files under /assets including but not limited to art, images, textures, models, animations, 
+  audio, music, voice, fonts, cinematics, story text, dialogue, level data, and any metadata that defines content.
+- This license applies only to the Assets. The game source code under /src is licensed separately under Apache-2.0.
+
+Grant
+- You are granted a non-exclusive, non-transferable, revocable license to download and use the Assets solely to build and run the game from 
+this repository for your own personal, non-commercial use.
+
+Restrictions
+- You may NOT distribute, sublicense, sell, rent, lease, or otherwise make available the Assets, or any derivative works of the Assets, to any third party.
+- You may NOT redistribute any compiled binary or package that includes or embeds the Assets.
+- You may NOT use the Assets in any other project or product.
+- You may NOT modify the Assets for the purpose of redistribution.
+- You may NOT use the Assets in any commercial context without prior written permission from the copyright holder.
+
+Ownership
+- The Assets are licensed, not sold. All rights, title, and interest remain with the copyright holder.
+
+Termination
+- Any breach of this license automatically terminates your rights. Upon termination, you must delete all copies of the Assets and any derived materials in your possession.
+
+Warranty Disclaimer
+- The Assets are provided “AS IS,” without warranty of any kind. To the maximum extent permitted by law, the copyright holder disclaims all warranties and conditions, express or implied.
+
+Limitation of Liability
+- In no event shall the copyright holder be liable for any damages arising from the use of the Assets.
+
+Contact
+- For permissions beyond this license, contact <your-email@example.com>.
+

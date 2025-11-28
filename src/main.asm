@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
 ;----------------------------------------------------------;
 ;                         Main File                        ;
 ;----------------------------------------------------------;
@@ -14,8 +18,8 @@ start
     CALL af.SetupAyFx
 
     CALL gc.SetupSystem
-    ;CALL gc.LoadLevel3
-    CALL gc.LoadMainMenu
+    CALL gc.LoadLevel1
+    ;CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music

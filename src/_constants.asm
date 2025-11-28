@@ -1,9 +1,13 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
 ;----------------------------------------------------------;
 ;                     Global Constants                     ;
 ;----------------------------------------------------------;
 ; Lots of documentation copied from https://wiki.specnext.dev
 
-gameVersion             DB "V0.68 UNDER CONSTRUCTION"
+gameVersion             DB "V0.70 UNDER CONSTRUCTION"
 GAME_VERSION_SIZE       = 25
 
 ;----------------------------------------------------------;
@@ -385,23 +389,24 @@ _COL_BLACK_D0           = 0
 ;                     Input processing                     ;
 ;----------------------------------------------------------;
 
-; Bit:          4   3   2   1   0
-; %11111110     V   C   X   Z   SHIFT
-; %11111101     G   F   D   S   A
-; %11111011     T   R   E   W   Q
-; %11110111     5   4   3   2   1
-; %11101111     6   7   8   9   0
-; %11011111     Y   U   I   O   P
-; %10111111     H   J   K   L   ENTER
-; %01111111     B   N   M   DEL SPC
-_KB_5_TO_1_HF7          = $F7                   ; Mask for row: 1, 2, 3, 4, & 5 and to read left arrow key.
-_KB_6_TO_0_HEF          = $EF                   ; Mask for row: 6, 7, 8 ,9, 0 and to read arrow keys: up/down/right.
-_KB_T_TO_Q_HFB          = $FB                   ; Mask for row: T, R, E, W, Q.
-_KB_P_TO_Y_HDF          = $DF                   ; Mask for row: P, O, I, U, Y.
-_KB_G_TO_A_HFD          = $FD                   ; Mask for row: G, F, D, S, T, A.
-_KB_H_TO_ENT_HBF        = $BF                   ; Mask for row: H, J, K, L, ENTER.
-_KB_V_TO_SH_HFE         = $FE                   ; Mask for row: V, C, X, Z, SHIFT.
-_KB_B_TO_SPC_H7F        = $7F                   ; Mask for row: B, M, M, FULL-STOP, SPACE.
+;            Bit:    4   3   2   1   0
+; %11111110 ($FE)    V   C   X   Z   SHIFT
+; %11111101 ($FD)    G   F   D   S   A
+; %11111011 ($FB)    T   R   E   W   Q
+; %11110111 ($F7)    5   4   3   2   1
+; %11101111 ($EF)    6   7   8   9   0
+; %11011111 ($DF)    Y   U   I   O   P
+; %10111111 ($BF)    H   J   K   L   ENTER
+; %01111111 ($7F)    B   N   M   DEL SPC
+
+_KB_V_TO_SH_HFE         = $FE                   ; Mask for row: V, C, X, Z, SHIFT
+_KB_G_TO_A_HFD          = $FD                   ; Mask for row: G, F, D, S, T, A
+_KB_T_TO_Q_HFB          = $FB                   ; Mask for row: T, R, E, W, Q
+_KB_5_TO_1_HF7          = $F7                   ; Mask for row: 1, 2, 3, 4, 5, read left arrow key
+_KB_6_TO_0_HEF          = $EF                   ; Mask for row: 6, 7, 8, 9, 0, arrow keys: up/down/right
+_KB_P_TO_Y_HDF          = $DF                   ; Mask for row: P, O, I, U, Y
+_KB_H_TO_ENT_HBF        = $BF                   ; Mask for row: H, J, K, L, ENTER
+_KB_B_TO_SPC_H7F        = $7F                   ; Mask for row: B, M, M, FULL-STOP, SPACE
 
 _KB_REG_HFE             = $FE                   ; Activate keyboard input.
 

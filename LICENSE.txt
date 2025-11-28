@@ -3,7 +3,10 @@
                         http://www.apache.org/licenses/
 						
 						Copyright [2024] Maciej Miklas
-						
+
+     This Apache-2.0 license applies only to the game source code located in /src. 
+     All assets under /assets are licensed separately under /assets/LICENSE-ASSETS.txt.
+
    TERMS and CONDITIONS FOR USE, REPRODUCTION, and DISTRIBUTION
 
    1. Definitions.

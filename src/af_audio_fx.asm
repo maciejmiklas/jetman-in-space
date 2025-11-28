@@ -1,3 +1,8 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
+
 ;----------------------------------------------------------;
 ;                        Audio FX                          ;
 ;----------------------------------------------------------;
@@ -422,7 +427,7 @@ _AfxInit
 ;                     Effects file                         ;
 ;----------------------------------------------------------;
 effectsFileAddr
-    INCBIN  "assets/com/effects.afb",0
+    INCBIN  "assets/assets/com/effects.afb",0
 effectsFileSize  = $ - effectsFileAddr
     ASSERT effectsFileSize <= 7 * 1024
 

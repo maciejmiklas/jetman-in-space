@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
 ;----------------------------------------------------------;
 ;                         Game Bar                         ;
 ;----------------------------------------------------------;
@@ -50,18 +54,10 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (lu.currentLevel)
+    LD A, (gi.breakCnt)
     LD L, A
     CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 50
-    LD H, 0
-    LD A, (jt.difLevel)
-    LD L, A
-    CALL ut.PrintNumber
-    */
-
+*/
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

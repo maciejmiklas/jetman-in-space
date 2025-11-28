@@ -1,4 +1,0 @@
-pygame
-Copyright (c) 2000-2023 Pete Shinners, Rene Dudfield, and others
-
-Licensed under the LGPL-2.1-or-later:

@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
 ;----------------------------------------------------------;
 ;                       Main Loop                          ;
 ;----------------------------------------------------------;
@@ -69,7 +73,7 @@ _MainLoop000OnPause
     CP ms.PAUSE
     RET NZ
 
-    CALL gi.GameInput
+    CALL gi.GameOptionsInput
 
     RET                                         ; ## END of the function ##
 
@@ -104,7 +108,7 @@ _MainLoop000OnActiveGame
     ; ##########################################
     CALL _MainLoop000OnDisabledJoy
     CALL gi.JetMovementInput
-    CALL gi.GameInput
+    CALL gi.GameOptionsInput
     CALL ro.CheckHitTank
     CALL jco.JetRip
     CALL jw.MoveShots

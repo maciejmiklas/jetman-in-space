@@ -1,3 +1,7 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
 ;----------------------------------------------------------;
 ;                Joystick and Keyboard input               ;
 ;----------------------------------------------------------;
@@ -16,6 +20,7 @@ ResetKeysState
     LD (gid.joyOverheatDelayCnt), A
     LD (gid.gameInputState), A
     LD (gid.gameInputPrevState), A
+    LD (gid.breakCnt), A
 
     RET                                         ; ## END of the function ##
 
@@ -30,7 +35,7 @@ JetMovementInput
     LD (gid.joyDirection), A
 
     ; ##########################################
-    ; Row: 1, 2, 3, 4, & 5 and to left arrow key
+    ; Row: 1, 2, 3, 4, 5, read left arrow key
 
     ; Key Left
     LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1).
@@ -91,11 +96,11 @@ JetMovementInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       GameInput                          ;
+;                   GameOptionsInput                       ;
 ;----------------------------------------------------------;
-; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement. 
-; Keys are always processed at the same speed.
-GameInput
+; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement.
+; Keys are always processed at the same speed. Also, only one option key is being processed during a single loop.
+GameOptionsInput
 
     XOR A
     LD (gid.gameInputState), A
@@ -125,8 +130,9 @@ GameInput
     ; Row: V, C, X, Z, SHIFT
     
     ; Key Fire (Z)
-    LD A, _KB_V_TO_SH_HFE                       ; $FD -> A (5...1).
+    LD A, _KB_V_TO_SH_HFE
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    
     BIT 1, A                                    ; Bit 1 reset -> Z pressed.
     CALL Z, _JoyFireB
 
@@ -136,7 +142,7 @@ GameInput
     ; Key ENTER
     LD A, _KB_H_TO_ENT_HBF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
+    BIT 0, A                                    ; Bit 0 reset -> ENTER pressed.
     CALL Z, _JoyFireA
 
     ; ##########################################
@@ -215,7 +221,8 @@ GameInput
     POP AF
 
     ; ##########################################
-    ; B...M
+    ; Row: B, M, M, FULL-STOP, SPACE
+
     ; Key N
     LD A, _KB_B_TO_SPC_H7F
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
@@ -232,7 +239,30 @@ GameInput
 
     ; Key SPACE
     BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    CALL Z, _ThrowGranade
+    JR NZ, .notSpace
+
+    CALL _ThrowGranade
+
+    ; ##########################################
+    ; Key Break = SPACE + SHIFT, space is down, now check SHIFT
+
+    ; Do not detect a break when Jetman is moving.
+    LD A, (gid.joyDirection)
+    CP 0
+    JR NZ, .notBreak
+
+    ; SHIFT pressed?
+    LD A, _KB_V_TO_SH_HFE                       ; Row: V, C, X, Z, SHIFT
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+
+    BIT 0, A                                    ; Bit 0 reset -> SHIFT pressed.
+    JR NZ, .notBreak
+
+    CALL _Key_Break
+
+.notSpace
+.notBreak
+
 
     ; ##########################################
     CALL _GameInputEnd
@@ -387,6 +417,23 @@ _Key_P
 _Key_F
 
     CALL jw.FlipFireFx
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      _Key_Break                          ;
+;----------------------------------------------------------;
+_Key_Break
+
+    LD A, (gid.breakCnt)
+    INC A
+    LD (gid.breakCnt), A
+
+    CP gid.BREAK_CNT
+    RET NZ
+
+    ; The break has been pressed long enough to exit the game.
+    CALL gc.ExitGameToMainMenu
 
     RET                                         ; ## END of the function ##
 
