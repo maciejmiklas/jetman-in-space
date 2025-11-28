@@ -17,7 +17,6 @@ ResetKeysState
     LD (gid.gameInputState), A
     LD (gid.gameInputPrevState), A
     LD (gid.breakCnt), A
-    
 
     RET                                         ; ## END of the function ##
 
