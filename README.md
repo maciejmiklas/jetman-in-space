@@ -8,15 +8,15 @@
 
 [![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
    
-<img src="/img/scr1.jpg" width="640px"/>
+<img src="/assets/img/scr1.jpg" width="640px"/>
    
-<img src="/img/scr2.jpg" width="640px"/>
+<img src="/assets/img/scr2.jpg" width="640px"/>
    
-<img src="/img/scr3.jpg" width="640px"/>
+<img src="/assets/img/scr3.jpg" width="640px"/>
    
-<img src="/img/scr4.jpg" width="640px"/>
+<img src="/assets/img/scr4.jpg" width="640px"/>
     
-<img src="/img/scr5.jpg" width="640px"/>
+<img src="/assets/img/scr5.jpg" width="640px"/>
    
 
 I want to give a shout-out to the following, without them, I would have been lost in space!
@@ -37,4 +37,9 @@ I want to give a shout-out to the following, without them, I would have been los
 * [Industrial Tileset] (https://atomicrealm.itch.io/industrial-tileset)
 
 
-https://github.com/maciejmiklas/jetman-in-space
+# Licensing
+- Source code in /src is licensed under Apache-2.0 (see LICENSE).
+- Game assets in /assets, /img and /templates are NOT open source. They are licensed under a restrictive license (see /assets/LICENSE-ASSETS.txt).
+- You may build the game for personal, non-commercial use.
+- You may not redistribute binaries or any assets from /assets without written permission.
+- For permissions beyond this license, contact jetman@miklas.biz
