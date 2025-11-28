@@ -106,6 +106,49 @@ LoadMusicFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   LoadMenuScorePalFile                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: difficulty number as ASCII, for example for level 4: D="0", E="1"
+LoadMenuScorePalFile
+
+    CALL dbs.SetupArrays2Bank
+
+    ; Prepare file name for Level given by DE.
+    LD HL, db2.menuScorePalFileName
+    CALL _SetupMenuScoreFileName
+    CALL _FileOpen
+
+    ; Read file
+    CALL dbs.SetupPaletteBank
+
+    LD IX, bp.DEFAULT_PAL_ADDR
+    LD BC, bp.PAL_BYTES_D512
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               LoadMenuScoreImageFile                     ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="2"
+LoadMenuScoreImageFile
+
+    CALL dbs.SetupArrays2Bank
+
+    ; Prepare file name for Level given by DE.
+    LD HL, db2.menuScoreBgFileName
+    CALL _SetupMenuScoreFileName
+  
+
+    ; Load the image.
+    LD C, db2.MS_BG_IMG_POS
+    CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                LoadLevelSelectPalFile                    ;
 ;----------------------------------------------------------;
 ; Input:
@@ -145,6 +188,25 @@ LoadLevelSelectImageFile
     ; Load the image.
     LD C, db2.LS_BG_IMG_POS
     CALL _LoadImageToTempRam
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                _SetupMenuScoreFileName                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: difficulty number as ASCII, for example for level 4: D="0", E="2".
+;  - HL: pointer to file name.
+_SetupMenuScoreFileName
+
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
+    LD IX, HL
+    ADD HL, db2.MS_BG_LEVEL_POS
+    LD (HL), D
+    INC HL
+    LD (HL), E
+    POP HL
+    CALL _CopyFileName
 
     RET                                         ; ## END of the function ##
 

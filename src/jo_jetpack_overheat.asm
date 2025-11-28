@@ -259,7 +259,7 @@ _JetpackTempDown
     LD A, jt.JETST_NORMAL
     LD (jt.jetState), A
 
-    CALL gc.JetpackNormal
+    CALL gc.JetpackTempNormal
 .afterNormTempCheck
 
     CALL _UpdateUiHeatBar
