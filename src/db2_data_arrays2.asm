@@ -43,51 +43,6 @@ menuTextEa DB " EASY "
 menuTextNo DB "NORMAL"
 menuTextHa DB " HARD "
 
-; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
-menuScore                                       ; This score does not show on screen, it's only there for the sorting ;)
-    DW $FFFF
-    DW $FFFF
-    DB "   FREDUS    "
-menuScore1
-    DW 00000
-    DW 09000
-    DB "   MACIEJ    "
-menuScore2
-    DW 00000
-    DW 08000
-    DB "   ARTUR     "
-menuScore3
-    DW 00000
-    DW 07000
-    DB "   MARCIN    "
-menuScore4
-    DW 00000
-    DW 06000
-    DB "   MACIEJ    "
-menuScore5
-    DW 00000
-    DW 05000
-    DB "   JUREK     "
-menuScore6
-    DW 00000
-    DW 04000
-    DB "   FRANEK    "
-menuScore7
-    DW 00000
-    DW 03000
-    DB "   ZUZA      "
-menuScore8
-    DW 00000
-    DW 02000
-    DB "   KAROL     "
-menuScore9
-    DW 00000
-    DW 01000
-    DB "   FRED      "
-
-menuScoreCursor
-    SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-
 ;----------------------------------------------------------;
 ;                      Main Menu                           ;
 ;----------------------------------------------------------;
@@ -634,10 +589,16 @@ mmgTileFileName         DB "assets/mg/gameplay.map",0
 mmkTileFileName         DB "assets/mk/keys.map",0
 
 ; Level select background
-levelSelectBgFileName   DB "assets/ml/ls_00_0.nxi",0
-levelSelectPalFileName  DB "assets/ml/ls_00.nxp",0
+levelSelectBgFileName   DB "assets/ml/bg_00_0.nxi",0
+levelSelectPalFileName  DB "assets/ml/bg_00.nxp",0
 LS_BG_LEVEL_POS         = 13
 LS_BG_IMG_POS           = 16
+
+; Dif level background
+menuScoreBgFileName      DB "assets/ms/bg_00_0.nxi",0
+menuScorePalFileName     DB "assets/ms/bg_00.nxp",0
+MS_BG_LEVEL_POS         = 13
+MS_BG_IMG_POS           = 16
 
 ;----------------------------------------------------------;
 ;                        Final Checks                      ;

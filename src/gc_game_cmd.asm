@@ -774,9 +774,9 @@ RespawnJet
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    JetpackOverHard                       ;
+;                    JetpackOverheat                       ;
 ;----------------------------------------------------------;
-JetpackOverHard
+JetpackOverheat
 
     LD A, af.FX_JET_OVERHEAT
     CALL dbs.SetupAyFxsBank
@@ -785,9 +785,9 @@ JetpackOverHard
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     JetpackNormal                        ;
+;                   JetpackTempNormal                      ;
 ;----------------------------------------------------------;
-JetpackNormal
+JetpackTempNormal
 
     LD A, af.FX_JET_NORMAL
     CALL dbs.SetupAyFxsBank
