@@ -68,10 +68,12 @@ LoadLevel1Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 0
     LD (st.paletteNumber), A
 
@@ -145,10 +147,12 @@ LoadLevel2Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 1
     LD (st.paletteNumber), A
 
@@ -224,10 +228,12 @@ LoadLevel3Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 2
     LD (st.paletteNumber), A
 
@@ -296,10 +302,12 @@ LoadLevel4Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 3
     LD (st.paletteNumber), A
 
@@ -373,10 +381,12 @@ LoadLevel5Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette5Bin
-    LD B, db1.tilePalette5BinLength
+    LD HL, db1.tilePalette3Bin
+    LD B, db1.tilePalette3Length
     CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 0
     LD (st.paletteNumber), A
 
@@ -450,10 +460,12 @@ LoadLevel6Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette5Bin
-    LD B, db1.tilePalette5BinLength
+    LD HL, db1.tilePalette3Bin
+    LD B, db1.tilePalette3Length
     CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 1
     LD (st.paletteNumber), A
 
@@ -522,10 +534,12 @@ LoadLevel7Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 2
     LD (st.paletteNumber), A
 
@@ -600,10 +614,12 @@ LoadLevel8Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
+    LD HL, db1.tilePalette4Bin
+    LD B, db1.tilePalette4Length
     CALL ti.LoadTilemap8bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 3
     LD (st.paletteNumber), A
 
@@ -671,10 +687,12 @@ LoadLevel9Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 0
     LD (st.paletteNumber), A
 
@@ -742,10 +760,12 @@ LoadLevel10Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 1
     LD (st.paletteNumber), A
 

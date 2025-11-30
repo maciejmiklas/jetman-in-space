@@ -61,9 +61,9 @@ SetupSystem
 
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
     ; Load sprites from any level for mein menu.
     LD D, "0"
@@ -89,9 +89,9 @@ LoadMainMenu
 
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
     RET                                         ; ## END of the function ##
 

@@ -14,7 +14,7 @@ TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts t
 TI_MOVE_FROM_D50        = 50                    ; Start moving stats when the rocket reaches the given height.
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
-ti.TI_H_BYTES_D80           = 320/8 * 2
+ti.TI_H_BYTES_D80       = 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow                DB ti.TI_VTILES_D32     ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
