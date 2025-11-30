@@ -375,7 +375,7 @@ LoadLevel5Data
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette5Bin
     LD B, db1.tilePalette5BinLength
-    CALL ti.LoadTilemapPalette
+    CALL ti.LoadTilemap9bitPalette
 
     LD A, 0
     LD (st.paletteNumber), A
@@ -452,7 +452,7 @@ LoadLevel6Data
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette5Bin
     LD B, db1.tilePalette5BinLength
-    CALL ti.LoadTilemapPalette
+    CALL ti.LoadTilemap9bitPalette
 
     LD A, 1
     LD (st.paletteNumber), A

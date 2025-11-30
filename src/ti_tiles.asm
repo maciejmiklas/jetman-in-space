@@ -55,7 +55,7 @@ TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
 TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
 TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertical screen size).
     ASSERT TI_VTILES_D32 =  32
-xxg
+
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
 ; Time map for single screen at 320x200 requires 2650 bytes:
@@ -103,13 +103,13 @@ SetupTiles
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      LoadTilemapPalette                  ;
+;                   LoadTilemap9bitPalette                 ;
 ;----------------------------------------------------------;
 ; Copy 9 bit palette.
 ; Input:
 ; - B:  number bytes to copy (each color takes two bytes).
 ; - HL: address of layer 2 palette data.
-LoadTilemapPalette
+LoadTilemap9bitPalette
 
     ; Bits
     ;  - 0:   1 = Enable ULANext mode.
