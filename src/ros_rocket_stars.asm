@@ -100,7 +100,7 @@ AnimateStarsOnFlyRocket
     ; Load start tiles when the last tile line has been printed
     CP 0
     RET NZ                                  ; Return if still printing black tiles.
-    CALL st.ShowStars
+    
     ; Load star tiles
     ; TODO !!!!
 

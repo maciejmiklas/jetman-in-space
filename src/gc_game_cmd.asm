@@ -232,33 +232,9 @@ BackgroundPaletteLoaded
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    RocketFLyPhase2                       ;
+;                     RocketLiftoff                        ;
 ;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
-RocketFLyPhase2
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    RocketFLyPhase3                       ;
-;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
-RocketFLyPhase3
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    RocketFLyPhase4                       ;
-;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
-RocketFLyPhase4
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     RocketLiftoff                       ;
-;----------------------------------------------------------;
-; This is also RocketFLyPhase1
+; This is also RocketFLyStartPhase1
 RocketLiftoff
 
     LD A, ms.FLY_ROCKET
@@ -275,9 +251,36 @@ RocketLiftoff
     CALL dbs.SetupPatternEnemyBank
     CALL enu.DisableFuelThief
     CALL jw.HideShots
+    CALL st.HideStars
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   RocketFLyStartPhase2                   ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase2
+
     CALL ti.SetTilesClipHorizontal
     CALL ti.ClearBottomTileLine
-    CALL st.HideStars
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  RocketFLyStartPhase3                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase3
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  RocketFLySrartPhase4                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLySrartPhase4
+
+    CALL st.ShowStars
 
     RET                                         ; ## END of the function ##
 

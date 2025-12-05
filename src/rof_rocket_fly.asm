@@ -17,7 +17,7 @@ Rocket fly phases:
   - Rocket: takes off, and it moves slowly.
   - Tilemap: is shaking but not moving down.
   - Background: no change.
-  - Stars: no change
+  - Stars: no change.
 
  PHASE 2:
   - Description: rocket is far away from the ground, the land is not shaking anymore, and it moves away.
@@ -28,19 +28,32 @@ Rocket fly phases:
   - Stars: are disabled. Otherwise, they would appear on the bottom tilemap row due to clipping.
  
  PHASE 3:
-  - Description: rocket has reached space, and there is a meteor shower.
-  - Rocket: moves at max speed.
-  - Tilemap: the whole tilemap has been replaced with transparent lines.  New tilemap with loads and starts rolling.
+  - Description: rocket has reached space.
+  - Rocket: no change from previous phase.
+  - Tilemap: no change from previous phase.
   - Background: is gone.
-  - Stars: stars are rendering again.
+  - Stars: no change from previous phase.
+ 
+ PHASE 4:
+  - Description: meteor shower starts, star animation resumes.
+  - Rocket: no change from previous phase.
+  - Tilemap: the whole tilemap has been replaced with transparent lines.  New tilemap with loads and starts rolling.
+  - Background: no change from previous phase.
+  - Stars: stars are rendering again (they were disabled in phase 2).
 */
 PHASE_0                 = 0                     ; Rocket is not flying.
 PHASE_1                 = 1                     ; Rocket takes off, the world is shaking.
 PHASE_2                 = 2                     ; Rocket is far away from the ground, the land is not shaking anymore, and it moves away.
 PHASE_2_ALTITUDE        = 30                    ; Altitude to trigger phase 2.
 PHASE_3                 = 3                     ; Rocket has reached space, and there is a meteor shower.
-PHASE_3_ALTITUDE        = 120                   ; Altitude to trigger phase 3.
+PHASE_3_ALTITUDE        = 100                   ; Altitude to trigger phase 3.
+PHASE_4                 = 4                     ; Meteor shower starts, star animation resumes.
+PHASE_4_ALTITUDE        = 200
+
 rocketFlyPhase          DB PHASE_0
+
+SHAKE_TILES_D30         = 30                    ; Rocket distance at which the shaking of the tilemap stops.
+RO_MOVE_STOP_D120       = 120                   ; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
 
 FLAME_OFFSET_D16        = 16
 RO_FLY_DELAY_D8         = 8
@@ -127,6 +140,7 @@ FlyRocket
     CALL dbs.SetupArrays2Bank
     CALL _MoveFlyingRocket
 
+
      ; ##########################################
      ; Shake tiles
      LD A, (rocketFlyPhase)
@@ -134,6 +148,7 @@ FlyRocket
      JR NZ, .afterShakeTiles
      CALL ti.ShakeTilemap
 .afterShakeTiles
+
 
     ; ##########################################
     ; Set X/Y coordinates for flames coming out of the exhaust.
@@ -342,8 +357,13 @@ _MoveFlyingRocket
     LD (rocketDelayDistance), A
 .afterDelay
 
+     ; ##########################################
+    LD A, (rocketFlyPhase)
+    CP PHASE_2
+    JR C, .afterGcFlyCallback
     CALL gc.RocketFlying
     CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
+.afterGcFlyCallback
 
     ; ##########################################
     ; Increment total distance.
@@ -351,48 +371,49 @@ _MoveFlyingRocket
     INC HL
     LD (rocketDistance), HL
 
+    PUSH HL
     CALL _UpdateRocketFlyPhase
+    POP HL
+    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     ; Has the rocket reached the asteroid, and should the explosion sequence begin?
     LD A, H
     CP EXPLODE_Y_HI_H4
-    JR NZ, .notAtAsteroid
+    JR NZ, .notAtExpolodeDistance
 
     LD A, L
     CP EXPLODE_Y_LO_H7E
-    JR C, .notAtAsteroid
+    JR C, .notAtExpolodeDistance
 
     CALL _StartRocketExplosion
     RET
-.notAtAsteroid
+.notAtExpolodeDistance
 
     ; ##########################################
     ; The current position of rocket elements is stored in #rocketAssemblyX and #ro.RO.Y 
     ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
+
     LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
 
     ; ##########################################
-    ; Did the rocket reach the middle of the screen (phase 4), and should it stop moving?
+    ; Did the rocket reach the middle of the screen, and should it stop moving?
     LD A, (rocketFlyPhase)
-    CP PHASE_2
-    JR Z, .keepMoving
     CP PHASE_3
-    JR Z, .keepMoving
+    JR C, .keepMoving
 
     ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
     LD A, (ro.rocketAssemblyX)
     CALL ro.UpdateElementPosition
+
     RET
-.keepMoving
+
     ; Keep moving
-    
+.keepMoving
+
     ; ##########################################
     ; Move bottom rocket element.
-    LD A, (IX + ro.RO.Y)
-
-    DEC A
-    LD (IX + ro.RO.Y), A
+    DEC (IX + ro.RO.Y)
 
     LD A, (ro.rocketAssemblyX)
     CALL ro.UpdateElementPosition
@@ -402,9 +423,7 @@ _MoveFlyingRocket
     LD A, ro.EL_MID_D2
     CALL ro.MoveIXtoGivenRocketElement
 
-    LD A, (IX + ro.RO.Y)
-    DEC A
-    LD (IX + ro.RO.Y), A
+    DEC (IX + ro.RO.Y)
 
     LD A, (ro.rocketAssemblyX)
     CALL ro.UpdateElementPosition
@@ -414,10 +433,8 @@ _MoveFlyingRocket
     LD A, ro.EL_TOP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
-    LD A, (IX + ro.RO.Y)
-    DEC A
-    LD (IX + ro.RO.Y), A
-    
+    DEC (IX + ro.RO.Y)
+
     LD A, (ro.rocketAssemblyX)
     CALL ro.UpdateElementPosition
 
@@ -464,7 +481,7 @@ _UpdateRocketFlyPhase
 
     LD A, PHASE_2
     LD (rocketFlyPhase), A
-    CALL gc.RocketFLyPhase2
+    CALL gc.RocketFLyStartPhase2
 .not2
 
     ; Phase 3?
@@ -473,8 +490,19 @@ _UpdateRocketFlyPhase
 
     LD A, PHASE_3
     LD (rocketFlyPhase), A
-    CALL gc.RocketFLyPhase3
+    
+    CALL gc.RocketFLyStartPhase3
 .not3
+
+    ; Phase 4?
+    CP PHASE_4_ALTITUDE
+    JR NZ, .not4
+
+    LD A, PHASE_4
+    LD (rocketFlyPhase), A
+    
+    CALL gc.RocketFLySrartPhase4
+.not4
 
     RET                                         ; ## END of the function ##
 
