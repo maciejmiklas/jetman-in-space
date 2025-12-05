@@ -13,7 +13,7 @@
 ; sprite file are being loaded. This tile map is animated in a loop. It has 4 screens, for a total of 4*32 = 192 tile lines.
 
 ; XXXXXXXX   $0  $176  $1FD  $16E  $12E  $177  $1F3  $16E  $1F0  $1BC  $1F9  $1FC  $12D  $1FC  $1FC  $1BF
-   
+
 ; Tile stars
 TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts takes 4 horizontal screens.
     ASSERT TI_ROWS_D128 =  128
@@ -57,16 +57,6 @@ ResetRocketStars
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     RocketTakesOff                       ;
-;----------------------------------------------------------;
-RocketTakesOff
-   // CALL ti.SetTilesClipHorizontal
-    LD A, ti.TI_VTILES_D32-1
-    CALL ti.ClearTileLine
-
-    RET                                         ; ## END of the function ##
-    
-;----------------------------------------------------------;
 ;                AnimateStarsOnFlyRocket                   ;
 ;----------------------------------------------------------;
 AnimateStarsOnFlyRocket
@@ -107,9 +97,10 @@ AnimateStarsOnFlyRocket
     PUSH AF
     CALL ti.ClearTileLine
     POP AF
-    ; Load start tiles when the last tile line has been printed 
+    ; Load start tiles when the last tile line has been printed
     CP 0
     RET NZ                                  ; Return if still printing black tiles.
+    CALL st.ShowStars
     ; Load star tiles
     ; TODO !!!!
 

@@ -34,7 +34,7 @@ ROST_CARRY              = 13                    ; Jetman carries rocket element 
 ROST_TANK_EXPLODE       = 14
 
 ROST_READY              = 100                   ; Rocket is ready to start and waits only for Jetman.
-ROST_FLY                = 101                   ; The rocket is flying towards an unknown planet.
+ROST_FLY                = 101                   ; The rocket is flying towards an unknown planet. See also #rof.rocketFlyPhase
 ROST_EXPLODE            = 102                   ; Rocket explodes after hitting something.
 
 DROP_LAND_Y_ADJ         = -5
@@ -821,7 +821,7 @@ _BoardRocket
     RET NZ
     
     ; ##########################################
-    ; Jetman collision with first (lowest) rocket element triggers take off.
+    ; Jetman collision with first (lowest) rocket element triggers liftoff.
     LD IX, (rocketElPtr)
 
     LD BC, (rocketAssemblyX)                    ; X of the element.
@@ -836,7 +836,7 @@ _BoardRocket
     LD A, ROST_FLY
     LD (rocketState), A
 
-    CALL gc.RocketTakesOff
+    CALL gc.RocketLiftoff
 
     RET                                         ; ## END of the function ##
 

@@ -214,6 +214,16 @@ PrintText
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   ClearBottomTileLine                    ;
+;----------------------------------------------------------;
+ClearBottomTileLine
+
+    LD A, TI_VTILES_D32-1
+    CALL ClearTileLine
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     ClearTileLine                        ;
 ;----------------------------------------------------------;
 ; Input:

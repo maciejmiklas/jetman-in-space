@@ -177,7 +177,7 @@ MoveStarsUp
 ;                      MoveStarsDown                       ;
 ;----------------------------------------------------------;
 MoveStarsDown
-    
+
     ; Move stars only if enabled.
     LD A, (starsState)
     CP ST_C_HIDDEN
@@ -311,7 +311,7 @@ _MoveStarsL2Up
     LD (starsMoveL2Delay), A
     CP 0
     RET NZ                                      ; Do not move yet, wait for 0.
-    
+
     ; Reset delay
     LD A, ST_L2_MOVE_DEL_D2
     LD (starsMoveL2Delay), A
@@ -482,8 +482,7 @@ _RenderStars
 ;  - IX: Pointer to SC.
 ;  - IY: Points to the current max y postion for the star.
 _MoveAndRenderStarColumn
-    
-    ; ##########################################
+
     ; Assign image bank that will be modified to slot 6.
     LD A, (IX + SC.BANK)
     LD B, A
@@ -492,7 +491,9 @@ _MoveAndRenderStarColumn
     NEXTREG _MMU_REG_SLOT6_H56, A               ; Assign image bank to slot 6.
 
     ; ##########################################
-    ; DE will point to the address of the column that will contain starts. X_OFFSET * 256 = X_OFFSET * 255 + X_OFFSET.
+    ; DE will point to the address of the column that will contain starts.
+    ; The picture is coded horizontally, and each column contains 256 pixels. DE should point to the column given by SC.X_OFFSET ->
+    ; DE = SC.X_OFFSET * 256. However, the byte max value is 255, therefore, DE = SC.X_OFFSET * 255 + SC.X_OFFSET.
     LD D, (IX + SC.X_OFFSET)
     LD E, _SC_RESY1_D255
     MUL D, E
@@ -509,7 +510,7 @@ _MoveAndRenderStarColumn
     ADD HL, A
 
     ; ##########################################
-    ; Loop over stats and inject those into the image's column.
+    ; Loop over stars and inject those into the image's column.
     LD B, (IX + SC.SIZE)                        ; Number of pixels in this column = number of iterations.
     
     ; Register values:

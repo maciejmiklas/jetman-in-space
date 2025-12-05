@@ -232,25 +232,52 @@ BackgroundPaletteLoaded
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     RocketTakesOff                       ;
+;                    RocketFLyPhase2                       ;
 ;----------------------------------------------------------;
-RocketTakesOff
+; See #rof.rocketFlyPhase
+RocketFLyPhase2
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    RocketFLyPhase3                       ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyPhase3
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    RocketFLyPhase4                       ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyPhase4
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     RocketLiftoff                       ;
+;----------------------------------------------------------;
+; This is also RocketFLyPhase1
+RocketLiftoff
 
     LD A, ms.FLY_ROCKET
     CALL ms.SetMainState
 
+    CALL rof.RocketLiftoff
     CALL sc.BoardRocket
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
     CALL gb.HideGameBar
-    CALL ros.RocketTakesOff
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
-
     CALL ki.ResetKeyboard
     CALL dbs.SetupPatternEnemyBank
     CALL enu.DisableFuelThief
     CALL jw.HideShots
+    CALL ti.SetTilesClipHorizontal
+    CALL ti.ClearBottomTileLine
+    CALL st.HideStars
 
     RET                                         ; ## END of the function ##
 

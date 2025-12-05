@@ -7,14 +7,47 @@
 ;----------------------------------------------------------;
     MODULE rof
 
+/*
+Rocket fly phases:
+
+ PHASE 0: not flying
+
+ PHASE 1:
+  - Description: rocket takes off, the world is shaking.
+  - Rocket: takes off, and it moves slowly.
+  - Tilemap: is shaking but not moving down.
+  - Background: no change.
+  - Stars: no change
+
+ PHASE 2:
+  - Description: rocket is far away from the ground, the land is not shaking anymore, and it moves away.
+  - Rocket: moves at max speed.
+  - Tilemap: does not shake, moves down. The bottom line of the tilemap is being replaced with a transparent line.
+             The clipping window cuts off the bottom of the tilemap.
+  - Background: moves down.
+  - Stars: are disabled. Otherwise, they would appear on the bottom tilemap row due to clipping.
+ 
+ PHASE 3:
+  - Description: rocket has reached space, and there is a meteor shower.
+  - Rocket: moves at max speed.
+  - Tilemap: the whole tilemap has been replaced with transparent lines.  New tilemap with loads and starts rolling.
+  - Background: is gone.
+  - Stars: stars are rendering again.
+*/
+PHASE_0                 = 0                     ; Rocket is not flying.
+PHASE_1                 = 1                     ; Rocket takes off, the world is shaking.
+PHASE_2                 = 2                     ; Rocket is far away from the ground, the land is not shaking anymore, and it moves away.
+PHASE_2_ALTITUDE        = 30                    ; Altitude to trigger phase 2.
+PHASE_3                 = 3                     ; Rocket has reached space, and there is a meteor shower.
+PHASE_3_ALTITUDE        = 120                   ; Altitude to trigger phase 3.
+rocketFlyPhase          DB PHASE_0
+
 FLAME_OFFSET_D16        = 16
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 EXPLODE_Y_HI_H4         = 4                     ; HI byte from #starsDistance to explode rocket,1070 = $42E.
 EXPLODE_Y_LO_H7E        = $2E                   ; LO byte from #starsDistance to explode rocket.
 EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
-RO_MOVE_STOP_D120       = 120                   ; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
-SHAKE_TILES_D30         = 30                    ; Rocket distance at which the shaking of the tilemap stops.
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
@@ -37,10 +70,11 @@ ResetAndDisableFlyRocket
     LD (rocketExplodeCnt), A
     LD (rocketDelayDistance), A
     LD (rocketExhaustCnt), A
+    LD (rocketFlyPhase), A
 
     LD HL, 0
     LD (rocketDistance), HL
-    
+
     ; ##########################################
     LD A, RO_FLY_DELAY_D8
     LD (rocketFlyDelay), A
@@ -76,15 +110,31 @@ FlyRocketSound
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     RocketLiftoff                        ;
+;----------------------------------------------------------;
+RocketLiftoff
+
+    LD A, rof.PHASE_1
+    LD (rof.rocketFlyPhase), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        FlyRocket                         ;
 ;----------------------------------------------------------;
 FlyRocket
 
     CALL dbs.SetupArrays2Bank
-
-    CALL _ShakeTilemapOnFlyingRocket
     CALL _MoveFlyingRocket
-    
+
+     ; ##########################################
+     ; Shake tiles
+     LD A, (rocketFlyPhase)
+     CP PHASE_1
+     JR NZ, .afterShakeTiles
+     CALL ti.ShakeTilemap
+.afterShakeTiles
+
     ; ##########################################
     ; Set X/Y coordinates for flames coming out of the exhaust.
     LD A, EXHAUST_SPRID_D83
@@ -279,7 +329,6 @@ _MoveFlyingRocket
     INC A
     LD (rocketDelayDistance), A
 
-    ; Has the traveled distance of the rocket with the current delay been reached?
     CP RO_FLY_DELAY_DIST_D5
     JR NZ, .afterDelay                          ; Jump if rocket should still move with current delay.
 
@@ -302,6 +351,8 @@ _MoveFlyingRocket
     INC HL
     LD (rocketDistance), HL
 
+    CALL _UpdateRocketFlyPhase
+
     ; ##########################################
     ; Has the rocket reached the asteroid, and should the explosion sequence begin?
     LD A, H
@@ -319,19 +370,19 @@ _MoveFlyingRocket
     ; ##########################################
     ; The current position of rocket elements is stored in #rocketAssemblyX and #ro.RO.Y 
     ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
-
     LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
 
     ; ##########################################
-    ; Did the rocket reach the middle of the screen, and should it stop moving?
-    LD A, (IX + ro.RO.Y)
-    CP RO_MOVE_STOP_D120
-    JR NC, .keepMoving
+    ; Did the rocket reach the middle of the screen (phase 4), and should it stop moving?
+    LD A, (rocketFlyPhase)
+    CP PHASE_2
+    JR Z, .keepMoving
+    CP PHASE_3
+    JR Z, .keepMoving
 
     ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
     LD A, (ro.rocketAssemblyX)
     CALL ro.UpdateElementPosition
-    
     RET
 .keepMoving
     ; Keep moving
@@ -394,21 +445,36 @@ _StartRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _ShakeTilemapOnFlyingRocket               ;
+;                  _UpdateRocketFlyPhase                   ;
 ;----------------------------------------------------------;
-_ShakeTilemapOnFlyingRocket
+; Input:
+;  - HL: current #rocketDistance value.
+_UpdateRocketFlyPhase
 
-    ; Execute function until the rocket has reached its destination, where it stops and only stars are moving.
-    LD HL, (rocketDistance)
+    ; Fly phases are limited to 255, we can ignore H
     LD A, H                                     ; H is 0 when distance < 255.
     CP 0
     RET NZ
 
     LD A, L
-    CP SHAKE_TILES_D30
-    RET NC
 
-    CALL ti.ShakeTilemap
+    ; Phase 2?
+    CP PHASE_2_ALTITUDE
+    JR NZ, .not2
+
+    LD A, PHASE_2
+    LD (rocketFlyPhase), A
+    CALL gc.RocketFLyPhase2
+.not2
+
+    ; Phase 3?
+    CP PHASE_3_ALTITUDE
+    JR NZ, .not3
+
+    LD A, PHASE_3
+    LD (rocketFlyPhase), A
+    CALL gc.RocketFLyPhase3
+.not3
 
     RET                                         ; ## END of the function ##
 
