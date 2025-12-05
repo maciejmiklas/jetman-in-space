@@ -7,11 +7,18 @@
 ;----------------------------------------------------------;
     MODULE ros
 
+; Tile animation is divided into several phases, each controlled by the rocket's height. In the first phase, the rocket moves, but the 
+; tile map remains stationary. When the rocket reaches TI_MOVE_FROM_D50, the tile map starts moving down, and the bottom line of the 
+; tile map is filled with black (#blackTilesRow). When the #blackTilesRow reaches 0, the new color palette for tile map with stars and the
+; sprite file are being loaded. This tile map is animated in a loop. It has 4 screens, for a total of 4*32 = 192 tile lines.
+
+; XXXXXXXX   $0  $176  $1FD  $16E  $12E  $177  $1F3  $16E  $1F0  $1BC  $1F9  $1FC  $12D  $1FC  $1FC  $1BF
+   
 ; Tile stars
 TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts takes 4 horizontal screens.
     ASSERT TI_ROWS_D128 =  128
 
-TI_MOVE_FROM_D50        = 50                    ; Start moving stats when the rocket reaches the given height.
+TI_MOVE_FROM_D50        = 50                    ; Start moving the tilemap when the rocket reaches the given height.
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
 ti.TI_H_BYTES_D80       = 320/8 * 2
@@ -23,12 +30,20 @@ sourceTilesRow          DB TI_ROWS_D128         ; Current tiles row in source fi
 tileOffset              DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tilePixelCnt            DB ti.TI_PIXELS_D8      ; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
 
+; There are 32 tile lines. We insert the black tile line starting from 32 to 1. However, the first black line is inserted when the rocket 
+; takes off, so this counter runs not from 32 but from 31.
+blackTilesRow           DB ti.TI_VTILES_D32-1 
+TI_BLACK_UNTIL_D250    = 250                    ; Fill the bottom tile line with black tiles until the rocket reaches the given height.
+
 ;----------------------------------------------------------;
 ;                    ResetRocketStars                      ;
 ;----------------------------------------------------------;
 ResetRocketStars
     LD A, ti.TI_VTILES_D32
     LD (tilesRow), A
+
+    DEC A
+    LD (blackTilesRow), A
 
     LD A, TI_ROWS_D128
     LD (sourceTilesRow), A
@@ -41,6 +56,16 @@ ResetRocketStars
     
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                     RocketTakesOff                       ;
+;----------------------------------------------------------;
+RocketTakesOff
+   // CALL ti.SetTilesClipHorizontal
+    LD A, ti.TI_VTILES_D32-1
+    CALL ti.ClearTileLine
+
+    RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;                AnimateStarsOnFlyRocket                   ;
 ;----------------------------------------------------------;
@@ -70,11 +95,32 @@ AnimateStarsOnFlyRocket
     XOR A
     LD (tilePixelCnt), A
 
-    CALL _NextTilesRow
+    ; Print black tile line, or when it's done, print the next star tile line.
+    ; ##########################################
+    LD A, (blackTilesRow)
+    CP 0
+    JR Z, .afterClearTileLine
+
+    DEC A
+    LD (blackTilesRow), A
+
+    PUSH AF
+    CALL ti.ClearTileLine
+    POP AF
+    ; Load start tiles when the last tile line has been printed 
+    CP 0
+    RET NZ                                  ; Return if still printing black tiles.
+    ; Load star tiles
+    ; TODO !!!!
+
+.afterClearTileLine
+
+    CALL _NextStarsTileRow
 .afterNextTile
 
     ; ##########################################
-    ; Move tiles.
+    ; Move tiles by 1 pixel.
+    
     LD A, (tileOffset)
     DEC A
     LD (tileOffset), A
@@ -89,12 +135,13 @@ AnimateStarsOnFlyRocket
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    _NextTilesRow                         ;
+;                 _NextStarsTileRow                        ;
 ;----------------------------------------------------------;
 ; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
-_NextTilesRow
+_NextStarsTileRow
+    ret
     CALL dbs.Setup16KTilemapBank
 
     ; ##########################################
@@ -130,7 +177,7 @@ _NextTilesRow
     POP HL
 
     LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
-    LDIR    
+    LDIR 
 
     ; ##########################################
     ; Reset stars counter ?

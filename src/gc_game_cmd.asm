@@ -243,8 +243,7 @@ RocketTakesOff
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
     CALL gb.HideGameBar
-    CALL ti.SetTilesClipHorizontal
-
+    CALL ros.RocketTakesOff
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
@@ -350,9 +349,10 @@ LoadCurrentLevel
 ;----------------------------------------------------------;
 RocketFlying
 
-    CALL st.MoveStarsDown
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
 
     RET                                         ; ## END of the function ##
 

@@ -11,10 +11,10 @@
 db1BankStart
 
 ;----------------------------------------------------------;
-;                         Palettes                         ;
+;                 Palette for Tilemap                      ;
 ;----------------------------------------------------------;
 ; Palette is limited to 256bytes! 
-; For 8-bit, we can have 256 colors (16 in a row * 16 rows), and for 9-bit, 128 colors (8 rows), because each color takes 2 bytes. 
+; For 8-bit, we can have 256 colors (16 in a row * 16 rows), and for 9-bit, 128 colors (8 rows), because each color takes 2 bytes.
 
 ; ##############################################
 ; Level: 1-4,7, Menu

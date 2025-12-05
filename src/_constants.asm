@@ -383,7 +383,6 @@ _COL_GREEN_D4           = 4
 _COL_CYAN_D5            = 5
 _COL_YELLOW_D6          = 6
 _COL_WHITE_D7           = 7
-_COL_BLACK_D0           = 0
 
 ;----------------------------------------------------------;
 ;                     Input processing                     ;

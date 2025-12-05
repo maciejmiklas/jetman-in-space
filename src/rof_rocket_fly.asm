@@ -14,7 +14,7 @@ EXPLODE_Y_HI_H4         = 4                     ; HI byte from #starsDistance to
 EXPLODE_Y_LO_H7E        = $2E                   ; LO byte from #starsDistance to explode rocket.
 EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
 RO_MOVE_STOP_D120       = 120                   ; After the takeoff, the rocket starts moving toward the middle of the screen and will stop at this position.
-
+SHAKE_TILES_D30         = 30                    ; Rocket distance at which the shaking of the tilemap stops.
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
@@ -400,15 +400,14 @@ _ShakeTilemapOnFlyingRocket
 
     ; Execute function until the rocket has reached its destination, where it stops and only stars are moving.
     LD HL, (rocketDistance)
-    LD A, H                                     ; H is always 0, because distance < 255.
+    LD A, H                                     ; H is 0 when distance < 255.
     CP 0
     RET NZ
 
     LD A, L
-    CP RO_MOVE_STOP_D120
+    CP SHAKE_TILES_D30
     RET NC
 
-    ; ##########################################
     CALL ti.ShakeTilemap
 
     RET                                         ; ## END of the function ##
