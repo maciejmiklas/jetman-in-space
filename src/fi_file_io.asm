@@ -352,12 +352,37 @@ LoadPlatformsTilemapFile
 
     RET                                         ; ## END of the function ##
 
+
 ;----------------------------------------------------------;
-;                   LoadTileSprFile                        ;
+;                  LoadTileStarsSprFile                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
-LoadTileSprFile
+LoadTileStarsSprFile
+
+    CALL dbs.SetupArrays2Bank
+
+    LD HL, db2.strTileFileName
+    PUSH DE
+    CALL _CopyFileName
+    POP DE
+
+    LD HL, fileNameBuf
+    CALL _SetFileLevelNumber
+    CALL _FileOpen
+
+    LD IX, ti.TI_DEF_RAM_H6500
+    LD BC, db2.SPR_TILE_BYT_D6400
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               LoadTilePlatformsSprFile                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+LoadTilePlatformsSprFile
 
     CALL dbs.SetupArrays2Bank
 

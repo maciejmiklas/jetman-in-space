@@ -88,8 +88,7 @@ tilePalette1Length = $ - tilePalette1Bin
     $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0
     $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0
 */
-
-tilePalette3Bin                              ; 9-bit
+tilePalette2Bin                              ; 9-bit
 	DB $E3, $01, $00, $00, $02, $01, $13, $01, $17, $01, $37, $01, $5B, $01, $9F, $01
 	DB $08, $00, $09, $01, $0A, $01, $0B, $01, $0C, $00, $0D, $01, $0E, $01, $0F, $01
 	DB $E3, $01, $29, $01, $FF, $01, $88, $00, $52, $01, $F1, $01, $EC, $00, $C0, $00
@@ -99,7 +98,7 @@ tilePalette3Bin                              ; 9-bit
 	DB $E3, $01, $FC, $00, $F9, $01, $D5, $01, $D1, $01, $CD, $01, $C9, $01, $C5, $01
 	DB $C1, $01, $E0, $00, $58, $00, $F8, $00, $26, $01, $2A, $01, $1C, $00, $E3, $01
 
-tilePalette3Length = $ - tilePalette3Bin
+tilePalette2Length = $ - tilePalette2Bin
 
 
 ; ##############################################
@@ -132,7 +131,7 @@ tilePalette3Length = $ - tilePalette3Bin
     $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0
     $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0    $0
 */
-tilePalette4Bin                                  ; RGB332, 8 bit
+tilePalette3Bin                                  ; RGB332, 8 bit
 	DB $E3, $00, $02, $13, $17, $37, $5B, $9F, $08, $09, $0A, $0B, $0C, $0D, $0E, $0F
 	DB $E3, $04, $20, $20, $6C, $10, $16, $17, $0D, $0E, $B0, $1B, $30, $0C, $1E, $68
 	DB $E3, $88, $0C, $20, $54, $08, $88, $30, $00, $E0, $64, $E0, $E0, $E0, $92, $6F
@@ -143,7 +142,7 @@ tilePalette4Bin                                  ; RGB332, 8 bit
 	DB $E3, $60, $A4, $96, $97, $03, $88, $B8, $F9, $FC, $00, $78, $9C, $2A, $4E, $E0
 	DB $E3, $00, $6D, $6C, $74, $10, $15, $4E, $68, $E0, $F8, $2F, $03, $FF, $B6, $00
 
-tilePalette4Length = $ - tilePalette4Bin
+tilePalette3Length = $ - tilePalette3Bin
 
 ;----------------------------------------------------------;
 ;                     Stars Position                       ;

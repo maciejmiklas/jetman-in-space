@@ -91,7 +91,6 @@ _MainLoop000OnFlayRocket
     ; ##########################################
     CALL rof.FlyRocket
     CALL rof.FlyRocketSound
-    CALL ros.AnimateStarsOnFlyRocket
 
     RET                                         ; ## END of the function ##
 

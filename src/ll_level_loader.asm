@@ -21,8 +21,7 @@ LoadLevel1Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "1"
+    LD DE, "01"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -100,8 +99,7 @@ LoadLevel2Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "2"
+    LD DE, "02"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -179,8 +177,7 @@ LoadLevel3Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "3"
+    LD DE, "03"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -260,8 +257,7 @@ LoadLevel4Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "4"
+    LD DE, "04"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -334,8 +330,7 @@ LoadLevel5Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "5"
+    LD DE, "05"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -381,8 +376,8 @@ LoadLevel5Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette3Bin
-    LD B, db1.tilePalette3Length
+    LD HL, db1.tilePalette2Bin
+    LD B, db1.tilePalette2Length
     CALL ti.LoadTilemap9bitPalette
 
     ; ##########################################
@@ -413,8 +408,7 @@ LoadLevel6Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "6"
+    LD DE, "06"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -460,8 +454,8 @@ LoadLevel6Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette3Bin
-    LD B, db1.tilePalette3Length
+    LD HL, db1.tilePalette2Bin
+    LD B, db1.tilePalette2Length
     CALL ti.LoadTilemap9bitPalette
 
     ; ##########################################
@@ -492,8 +486,7 @@ LoadLevel7Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "7"
+    LD DE, "07"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -566,8 +559,7 @@ LoadLevel8Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "8"
+    LD DE, "08"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -614,8 +606,8 @@ LoadLevel8Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette4Bin
-    LD B, db1.tilePalette4Length
+    LD HL, db1.tilePalette3Bin
+    LD B, db1.tilePalette3Length
     CALL ti.LoadTilemap8bitPalette
 
     ; ##########################################
@@ -646,8 +638,7 @@ LoadLevel9Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "9"
+    LD DE, "09"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -719,8 +710,7 @@ LoadLevel10Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "1"
-    LD E, "0"
+    LD DE, "10"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -791,18 +781,20 @@ LoadLevel10Data
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 _LoadDataByLevelNumber
 
+    LD (jt.levelNumber), DE
+
     PUSH DE
     CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
-    ; Load tile map. DE is set to level number
+    ; Load platform tile map. DE is set to level number
     PUSH DE
     CALL fi.LoadPlatformsTilemapFile
     POP DE
 
     ; ##########################################
-    ; Load tile map. DE is set to level number
+    ; Load stars tile map. DE is set to level number
     PUSH DE
     CALL fi.LoadRocketStarsTilemapFile
     POP DE
@@ -810,11 +802,11 @@ _LoadDataByLevelNumber
     ; ##########################################
     ; Copy tile definitions (sprite file) to expected memory
     PUSH DE
-    CALL fi.LoadTileSprFile
+    CALL fi.LoadTilePlatformsSprFile
     POP DE
 
     ; ##########################################
-    ; Load tile map. DE is set to level number
+    ; Load sprites. DE is set to level number
     PUSH DE
     CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA

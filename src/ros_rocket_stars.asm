@@ -6,19 +6,13 @@
 ;                     Rocket Stars                         ;
 ;----------------------------------------------------------;
     MODULE ros
-
-; Tile animation is divided into several phases, each controlled by the rocket's height. In the first phase, the rocket moves, but the 
-; tile map remains stationary. When the rocket reaches TI_MOVE_FROM_D50, the tile map starts moving down, and the bottom line of the 
-; tile map is filled with black (#blackTilesRow). When the #blackTilesRow reaches 0, the new color palette for tile map with stars and the
-; sprite file are being loaded. This tile map is animated in a loop. It has 4 screens, for a total of 4*32 = 192 tile lines.
+; Moves the tilemap with platforms, then animates the stars.
 
 ; XXXXXXXX   $0  $176  $1FD  $16E  $12E  $177  $1F3  $16E  $1F0  $1BC  $1F9  $1FC  $12D  $1FC  $1FC  $1BF
 
 ; Tile stars
 TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts takes 4 horizontal screens.
     ASSERT TI_ROWS_D128 =  128
-
-TI_MOVE_FROM_D50        = 50                    ; Start moving the tilemap when the rocket reaches the given height.
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
 ti.TI_H_BYTES_D80       = 320/8 * 2
@@ -61,16 +55,10 @@ ResetRocketStars
 ;----------------------------------------------------------;
 AnimateStarsOnFlyRocket
 
-    ; Start animation when the rocket reaches given height.
-    LD HL, (rof.rocketDistance)
-    LD A, H
-    CP 0                                        ; If H > 0 then distance is definitely > TI_MOVE_FROM_D50.
-    JR NZ, .afterAnimationStart
-
-    LD A, L
-    CP TI_MOVE_FROM_D50
-    RET C
-.afterAnimationStart
+    ; Start animation when the rocket reaches given phase.
+    LD A, (rof.rocketFlyPhase)
+    CP rof.PHASE_2
+    RET C                                       ; Do not animate when phase < 2
 
     ; ##########################################
     ; Increment the tile counter to determine whether we should load the next tile row.
@@ -85,25 +73,22 @@ AnimateStarsOnFlyRocket
     XOR A
     LD (tilePixelCnt), A
 
-    ; Print black tile line, or when it's done, print the next star tile line.
     ; ##########################################
+    ; Print black tile line until phase 4 is reached, or all black tiles have been printed.
+    LD A, (rof.rocketFlyPhase)
+    CP rof.PHASE_4
+    JR NC, .afterClearTileLine                  ; Jump if phase >= 4
+
+    ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.
     LD A, (blackTilesRow)
     CP 0
-    JR Z, .afterClearTileLine
+    RET Z
 
     DEC A
     LD (blackTilesRow), A
 
-    PUSH AF
     CALL ti.ClearTileLine
-    POP AF
-    ; Load start tiles when the last tile line has been printed
-    CP 0
-    RET NZ                                  ; Return if still printing black tiles.
-    
-    ; Load star tiles
-    ; TODO !!!!
-
+    JR .afterNextTile
 .afterClearTileLine
 
     CALL _NextStarsTileRow
@@ -111,7 +96,7 @@ AnimateStarsOnFlyRocket
 
     ; ##########################################
     ; Move tiles by 1 pixel.
-    
+
     LD A, (tileOffset)
     DEC A
     LD (tileOffset), A
@@ -132,7 +117,7 @@ AnimateStarsOnFlyRocket
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
 _NextStarsTileRow
-    ret
+
     CALL dbs.Setup16KTilemapBank
 
     ; ##########################################

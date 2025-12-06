@@ -836,7 +836,7 @@ _BoardRocket
     LD A, ROST_FLY
     LD (rocketState), A
 
-    CALL gc.RocketLiftoff
+    CALL gc.RocketFLyStartPhase1
 
     RET                                         ; ## END of the function ##
 

@@ -232,59 +232,6 @@ BackgroundPaletteLoaded
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     RocketLiftoff                        ;
-;----------------------------------------------------------;
-; This is also RocketFLyStartPhase1
-RocketLiftoff
-
-    LD A, ms.FLY_ROCKET
-    CALL ms.SetMainState
-
-    CALL rof.RocketLiftoff
-    CALL sc.BoardRocket
-    CALL jt.SetJetStateInactive
-    CALL js.HideJetSprite
-    CALL gb.HideGameBar
-    CALL dbs.SetupArrays2Bank
-    CALL pi.ResetPickups
-    CALL ki.ResetKeyboard
-    CALL dbs.SetupPatternEnemyBank
-    CALL enu.DisableFuelThief
-    CALL jw.HideShots
-    CALL st.HideStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   RocketFLyStartPhase2                   ;
-;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
-RocketFLyStartPhase2
-
-    CALL ti.SetTilesClipHorizontal
-    CALL ti.ClearBottomTileLine
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  RocketFLyStartPhase3                    ;
-;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
-RocketFLyStartPhase3
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  RocketFLySrartPhase4                    ;
-;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
-RocketFLySrartPhase4
-
-    CALL st.ShowStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                      LoadNextLevel                       ;
 ;----------------------------------------------------------;
 LoadNextLevel
@@ -375,18 +322,6 @@ LoadCurrentLevel
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      RocketFlying                        ;
-;----------------------------------------------------------;
-RocketFlying
-
-    CALL bg.UpdateBackgroundOnRocketMove
-    CALL bg.HideBackgroundBehindHorizon
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                     FuelThiefHit                         ;
 ;----------------------------------------------------------;
 FuelThiefHit
@@ -408,6 +343,112 @@ FuelThiefHit
 DifficultyChange
 
     CALL lu.ResetLevelPlaying
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      RocketBoosting                      ;
+;----------------------------------------------------------;
+RocketBoosting
+
+    CALL bg.UpdateBackgroundOnRocketMove
+    CALL bg.HideBackgroundBehindHorizon
+    CALL ros.AnimateStarsOnFlyRocket
+    CALL ros.AnimateStarsOnFlyRocket
+    CALL st.MoveStarsDown
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       RocketFlying                       ;
+;----------------------------------------------------------;
+RocketFlying
+
+    CALL ros.AnimateStarsOnFlyRocket
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
+;                  RocketFLyStartPhase1                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase1
+
+    LD A, ms.FLY_ROCKET
+    CALL ms.SetMainState
+
+    CALL rof.RocketFLyStartPhase1
+    CALL sc.BoardRocket
+    CALL jt.SetJetStateInactive
+    CALL js.HideJetSprite
+    CALL gb.HideGameBar
+    CALL dbs.SetupArrays2Bank
+    CALL pi.ResetPickups
+    CALL ki.ResetKeyboard
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.DisableFuelThief
+    CALL jw.HideShots
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   RocketFLyStartPhase2                   ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase2
+
+    CALL ti.SetTilesClipHorizontal
+    CALL ti.ClearBottomTileLine
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  RocketFLyStartPhase3                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase3
+
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  RocketFLyStartPhase4                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase4
+
+    CALL ti.CleanAllTiles
+
+    LD DE, (jt.levelNumber)
+    CALL fi.LoadTileStarsSprFile
+
+    CALL ros.ResetRocketStars
+
+    ; ##########################################
+    ; Load star tiles
+    ; TODO !!!!
+
+/*
+
+
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
+
+
+
+    CALL fi.LoadTilePlatformsSprFile
+
+
+
+*/
 
     RET                                         ; ## END of the function ##
 
