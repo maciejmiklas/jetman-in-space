@@ -58,6 +58,8 @@ PHASE_4_ALTITUDE_LO     = 50
 
 PHASE_5                 = %00010000
 
+PHASE_2_3               = %00000110
+
 rocketFlyPhase          DB PHASE_0
 
 FLAME_OFFSET_D16        = 16
@@ -128,7 +130,7 @@ FlyRocketSound
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     RocketFLyStartPhase1                        ;
+;                  RocketFLyStartPhase1                    ;
 ;----------------------------------------------------------;
 RocketFLyStartPhase1
 
@@ -364,12 +366,9 @@ _MoveFlyingRocket
      ; Execute #RocketBoosting when in phase 2 or 3
     LD A, (rocketFlyPhase)
     PUSH AF
-    CP PHASE_2
-    JR Z, .boosting
-    CP PHASE_3
-    JR Z, .boosting
-    JR .afterBoosting
-.boosting
+    AND PHASE_2_3
+    JR Z, .afterBoosting
+
     CALL gc.RocketBoosting
     CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
     POP AF
