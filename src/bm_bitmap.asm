@@ -136,9 +136,9 @@ HideImage
 ;----------------------------------------------------------;
 ; Replaces horizontal line of the image with transparent color.
 ; Input:
-;  - E: line number.
+;  - A: line number.
 HideImageLine
-
+    LD E, A
     LD B, dbs.BM_BANKS_D10
 .bankLoop                                       ; Loop from 10 (dbs.BM_BANKS_D10) to 0
 

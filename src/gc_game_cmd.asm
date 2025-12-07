@@ -351,11 +351,11 @@ DifficultyChange
 ;----------------------------------------------------------;
 RocketBoosting
 
-    CALL bg.UpdateBackgroundOnRocketMove
-    CALL bg.HideBackgroundBehindHorizon
     CALL ros.AnimateStarsOnFlyRocket
     CALL ros.AnimateStarsOnFlyRocket
     CALL st.MoveStarsDown
+    CALL bg.UpdateBackgroundOnRocketMove
+    CALL bg.HideBackgroundBehindHorizon
 
     RET                                         ; ## END of the function ##
 

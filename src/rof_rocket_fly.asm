@@ -41,22 +41,22 @@ Rocket fly phases:
   - Background: no change from previous phase.
   - Stars: stars are rendering again (they were disabled in phase 2).
 */
-PHASE_0                 = 0                     ; Rocket is not flying.
-PHASE_1                 = 1                     ; Rocket takes off, the world is shaking.
+PHASE_0                 = %00000000             ; Rocket is not flying.
+PHASE_1                 = %00000001             ; Rocket takes off, the world is shaking.
 
-PHASE_2                 = 2                     ; Rocket is far away from the ground, the land is not shaking anymore, and it moves away.
+PHASE_2                 = %00000010             ; Rocket is far away from the ground, the land is not shaking anymore, and it moves away.
 PHASE_2_ALTITUDE_HI     = 0                     ; Altitude to trigger phase 2.
 PHASE_2_ALTITUDE_LO     = 30
 
-PHASE_3                 = 3                     ; Rocket has reached space, and there is a meteor shower.
+PHASE_3                 = %00000100             ; Rocket has reached space, and there is a meteor shower.
 PHASE_3_ALTITUDE_HI     = 0                     ; Altitude to trigger phase 3.
 PHASE_3_ALTITUDE_LO     = 100
 
-PHASE_4                 = 4                     ; Meteor shower starts, star animation resumes.
+PHASE_4                 = %00001000             ; Meteor shower starts, star animation resumes.
 PHASE_4_ALTITUDE_HI     = 1                     ; Cannot be too short, or the background image will not entirely hide.
 PHASE_4_ALTITUDE_LO     = 50
 
-PHASE_5                 = 5
+PHASE_5                 = %00010000
 
 rocketFlyPhase          DB PHASE_0
 
