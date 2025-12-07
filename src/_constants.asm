@@ -436,7 +436,6 @@ _16BIT_CHARS_D5         = 5
 
 ; ##############################################
 ; Screen
-_SC_SYNC_SL_D192        = 192                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
 _SC_SHAKE_BY_D2         = 2                     ; Number of pixels to move the screen by shaking.
 
 _SC_RESX_D320           = 320

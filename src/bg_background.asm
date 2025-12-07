@@ -54,18 +54,22 @@ UpdateBackgroundOnRocketMove
     
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
-;              HideBottomBackgroundStripe                  ;
+;                  HideBackgroundBars                      ;
 ;----------------------------------------------------------;
-; Hide the bottom stripe of 8 pixels. 
-HideBottomBackgroundStripe
+; Hide the bottom/top stripe of 8 pixels.
+HideBackgroundBars
 
     CALL _GetGroundImageLine
-
+    LD C, A
     LD B, 8
 
 .loop
+    INC C
+    PUSH BC
+    LD A, C
+    CALL bm.HideImageLine
+    POP BC
     DJNZ .loop
 
     RET                                         ; ## END of the function ##

@@ -347,9 +347,9 @@ DifficultyChange
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      RocketBoosting                      ;
+;                   RocketFLyPhase2and3                    ;
 ;----------------------------------------------------------;
-RocketBoosting
+RocketFLyPhase2and3
 
     CALL ros.AnimateStarsOnFlyRocket
     CALL ros.AnimateStarsOnFlyRocket
@@ -412,7 +412,6 @@ RocketFLyStartPhase2
 ;----------------------------------------------------------;
 ; See #rof.rocketFlyPhase
 RocketFLyStartPhase3
-
 
     RET                                         ; ## END of the function ##
 

@@ -7,6 +7,8 @@
 ;----------------------------------------------------------;
     MODULE sc
 
+SYNC_SL_D192            = 255                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
+
 ;----------------------------------------------------------;
 ;                      #SetupScreen                        ;
 ;----------------------------------------------------------;
@@ -51,10 +53,10 @@ WaitForScanline
     OUT (C), A                                  ; Select NextReg $1F.
     INC B                                       ; TBBlue Register Access.
 
-; Wait for scanline (#_SC_SYNC_SL_D192).
+; Wait for scanline.
 .waitForScanline
     IN A, (C)                                   ; Read the raster line LSB into A.
-    CP _SC_SYNC_SL_D192
+    CP SYNC_SL_D192
     JR NZ, .waitForScanline
 
     RET                                         ; ## END of the function ##

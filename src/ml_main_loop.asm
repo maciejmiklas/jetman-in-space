@@ -59,8 +59,8 @@ _MainLoop000
     CALL _MainLoop000OnActiveGame
     CALL _MainLoop000OnActiveMain
     CALL _MainLoop000OnNotInGame
-    CALL _MainLoop000OnFlayRocket
     CALL _MainLoop000OnActiveLevelIntro
+    CALL _MainLoop000OnFlayRocket
 
     RET                                         ; ## END of the function ##
 
@@ -719,7 +719,22 @@ _MainLoop150
 _LastLoop
 
     CALL ki.KeyboardInputLastLoop
-    
+    CALL _LastLoopOnRocketPhase2_3
+
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;              _LastLoopOnRocketPhase2_3                   ;
+;----------------------------------------------------------;
+_LastLoopOnRocketPhase2_3
+
+    LD A, (rof.rocketFlyPhase)
+    AND rof.PHASE_2_3
+    RET Z
+
+    CALL bg.HideBackgroundBars
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

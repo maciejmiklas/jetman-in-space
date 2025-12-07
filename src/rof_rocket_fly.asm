@@ -13,46 +13,39 @@ Rocket fly phases:
  PHASE 0: not flying
 
  PHASE 1:
-  - Description: rocket takes off, the world is shaking.
-  - Rocket: takes off, and it moves slowly.
+  - Rocket: takes off, and it moves slowly towards middle of the screen.
   - Tilemap: is shaking but not moving down.
   - Background: no change.
-  - Stars: no change.
 
  PHASE 2:
-  - Description: rocket is far away from the ground, the land is not shaking anymore, and it moves away.
-  - Rocket: moves at max speed.
+  - Rocket: moves at towards the middle of the screen.
   - Tilemap: does not shake, moves down. The bottom line of the tilemap is being replaced with a transparent line.
              The clipping window cuts off the bottom of the tilemap.
   - Background: moves down.
-  - Stars: are disabled. Otherwise, they would appear on the bottom tilemap row due to clipping.
  
  PHASE 3:
-  - Description: rocket has reached space.
-  - Rocket: no change from previous phase.
+  - Rocket: has reached middle of the screen and stops moving.
   - Tilemap: no change from previous phase.
-  - Background: is gone.
-  - Stars: no change from previous phase.
+  - Background: moves down.
  
  PHASE 4:
-  - Description: meteor shower starts, star animation resumes.
-  - Rocket: no change from previous phase.
+  - Meteor shower starts.
+  - Rocket: player takes over the control.
   - Tilemap: the whole tilemap has been replaced with transparent lines.  New tilemap with loads and starts rolling.
-  - Background: no change from previous phase.
-  - Stars: stars are rendering again (they were disabled in phase 2).
+  - Background: is gone.
 */
 PHASE_0                 = %00000000             ; Rocket is not flying.
-PHASE_1                 = %00000001             ; Rocket takes off, the world is shaking.
+PHASE_1                 = %00000001             ; Rocket liftsoff, the world is shaking.
 
-PHASE_2                 = %00000010             ; Rocket is far away from the ground, the land is not shaking anymore, and it moves away.
+PHASE_2                 = %00000010             ; Rocket moves at towards the middle of the screen.
 PHASE_2_ALTITUDE_HI     = 0                     ; Altitude to trigger phase 2.
 PHASE_2_ALTITUDE_LO     = 30
 
-PHASE_3                 = %00000100             ; Rocket has reached space, and there is a meteor shower.
+PHASE_3                 = %00000100             ; Rocket has reached middle of the screen and stops moving.
 PHASE_3_ALTITUDE_HI     = 0                     ; Altitude to trigger phase 3.
 PHASE_3_ALTITUDE_LO     = 100
 
-PHASE_4                 = %00001000             ; Meteor shower starts, star animation resumes.
+PHASE_4                 = %00001000             ; Meteor shower starts, player takes control of the rocket.
 PHASE_4_ALTITUDE_HI     = 1                     ; Cannot be too short, or the background image will not entirely hide.
 PHASE_4_ALTITUDE_LO     = 50
 
@@ -363,13 +356,13 @@ _MoveFlyingRocket
 .afterDelay
 
      ; ##########################################
-     ; Execute #RocketBoosting when in phase 2 or 3
+     ; Execute when in phase 2 or 3
     LD A, (rocketFlyPhase)
     PUSH AF
     AND PHASE_2_3
     JR Z, .afterBoosting
 
-    CALL gc.RocketBoosting
+    CALL gc.RocketFLyPhase2and3
     CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
     POP AF
     JR .notFlygin
