@@ -8,8 +8,6 @@
     MODULE ros
 ; Moves the tilemap with platforms, then animates the stars.
 
-; XXXXXXXX   $0  $176  $1FD  $16E  $12E  $177  $1F3  $16E  $1F0  $1BC  $1F9  $1FC  $12D  $1FC  $1FC  $1BF
-
 ; Tile stars
 TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts takes 4 horizontal screens.
     ASSERT TI_ROWS_D128 =  128

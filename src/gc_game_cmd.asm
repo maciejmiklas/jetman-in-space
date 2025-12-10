@@ -21,6 +21,8 @@ KILL_FEW                = 7
 freezeEnemiesCnt        DW 0
 FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
 
+tilePaletteStarsAddr    DW 0
+
 ;----------------------------------------------------------;
 ;                  StartGameWithIntro                      ;
 ;----------------------------------------------------------;
@@ -422,32 +424,16 @@ RocketFLyStartPhase3
 RocketFLyStartPhase4
 
     CALL ti.CleanAllTiles
+    CALL ros.ResetRocketStars
 
     LD DE, (jt.levelNumber)
     CALL fi.LoadTileStarsSprFile
 
-    CALL ros.ResetRocketStars
-
-    ; ##########################################
-    ; Load star tiles
-    ; TODO !!!!
-
-/*
-
-
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette1Bin
-    LD B, db1.tilePalette1Length
+    LD HL, (tilePaletteStarsAddr)
+    LD B, db1.STARS_PAL_BYTES
     CALL ti.LoadTilemap9bitPalette
-
-
-
-    CALL fi.LoadTilePlatformsSprFile
-
-
-
-*/
 
     RET                                         ; ## END of the function ##
 

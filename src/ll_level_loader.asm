@@ -83,6 +83,11 @@ LoadLevel1Data
     LD DE, db2.pickupsL1
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars1Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -160,6 +165,12 @@ LoadLevel2Data
     LD A, db2.PICKUPS_L2_SIZE
     LD DE, db2.pickupsL2
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars2Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -241,6 +252,12 @@ LoadLevel3Data
     LD DE, db2.pickupsL3
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars3Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -313,6 +330,12 @@ LoadLevel4Data
     LD A, db2.PICKUPS_L4_SIZE
     LD DE, db2.pickupsL4
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars4Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -392,6 +415,12 @@ LoadLevel5Data
     LD DE, db2.pickupsL5
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars5Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -470,6 +499,12 @@ LoadLevel6Data
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars6Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -542,6 +577,12 @@ LoadLevel7Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars7Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -622,6 +663,11 @@ LoadLevel8Data
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars8Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -694,6 +740,12 @@ LoadLevel9Data
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
 
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars9Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -765,6 +817,12 @@ LoadLevel10Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars10Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
