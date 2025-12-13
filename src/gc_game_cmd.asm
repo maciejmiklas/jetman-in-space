@@ -95,6 +95,8 @@ LoadMainMenu
     LD B, db1.tilePalette1Length
     CALL ti.LoadTilemap9bitPalette
 
+    CALL sc.SetupLayersForGame
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -409,7 +411,7 @@ RocketFLyStartPhase2
 ;----------------------------------------------------------;
 ; See #rof.rocketFlyPhase
 RocketFLyStartPhase3
-
+    ; TODO remove??
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -418,6 +420,7 @@ RocketFLyStartPhase3
 ; See #rof.rocketFlyPhase
 RocketFLyStartPhase4
 
+    CALL sc.SetupLayersForFlyginRocket
     CALL ti.CleanAllTiles
     CALL ros.ResetRocketStars
 
@@ -1278,6 +1281,7 @@ _HideGame
 
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
+    CALL sc.SetupLayersForGame
 
     RET                                         ; ## END of the function ##
 
@@ -1309,7 +1313,8 @@ _StartLevel
 
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
-    
+
+    CALL sc.SetupLayersForGame
     CALL gb.ShowGameBar
     CALL sc.PrintScore
     CALL ro.StartRocketAssembly
