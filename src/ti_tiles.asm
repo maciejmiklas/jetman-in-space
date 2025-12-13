@@ -41,7 +41,7 @@ TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - TI_PIXELS_D8
 
 TX_ASCII_OFFSET_D34     = 34                    ; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
 TX_PALETTE_D0           = 0                     ; Palette byte for tile characters.
-    TI_EMPTY_D198           = 198                   ; Empty tile with palette 0, color 0.
+TI_EMPTY_D198           = 198                   ; Empty tile with palette 0, color 0.
 TI_ENTER                = 191
 
 ; TX - Text, ASCII codes

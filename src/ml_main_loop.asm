@@ -721,7 +721,6 @@ _LastLoop
     CALL ki.KeyboardInputLastLoop
     CALL _LastLoopOnRocketPhase2_3
 
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

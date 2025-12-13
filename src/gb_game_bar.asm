@@ -50,12 +50,11 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-
+/*
     ; ##########################################
-    /*
     LD BC, 40
     LD H, 0
-    LD A, (rof.rocketFlyPhase)
+    LD A, (gi.tmp1)
     LD L, A
     CALL ut.PrintNumber
 */

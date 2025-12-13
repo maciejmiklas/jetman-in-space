@@ -24,7 +24,7 @@ callbackFire            DW _DummyFunction
 ;----------------------------------------------------------;
 KeyboardInputLastLoop
 
-    ; Reset #userInputDelayCnt when timer #userInputInactiveCnt has reached #USER_INPUT_RESET. By doing it, the next button press will.
+    ; Reset #userInputDelayCnt when timer #userInputInactiveCnt has reached #USER_INPUT_RESET. By doing it, the next button press will
     ; execute immediately.
 
     ; Do not reset #userInputDelayCnt if already at #USER_INPUT_DELAY.
@@ -148,9 +148,8 @@ KeyboardInput
     RET                                         ; None of the keys pressed.
 
 .pressRight
-    CALL CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     LD HL, .pressRightReturn
     PUSH HL
@@ -160,9 +159,8 @@ KeyboardInput
     RET
 
 .pressLeft
-    CALL CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     LD HL, .pressLeftReturn
     PUSH HL
@@ -172,9 +170,8 @@ KeyboardInput
     RET
 
 .pressUp
-    CALL CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     LD HL, .pressUpReturn
     PUSH HL
@@ -184,9 +181,8 @@ KeyboardInput
     RET
 
 .pressDown
-    CALL CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     LD HL, .pressDownReturn
     PUSH HL
@@ -196,9 +192,8 @@ KeyboardInput
     RET
 
 .pressFire
-    CALL CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     LD HL, .pressFireReturn
     PUSH HL
@@ -209,11 +204,12 @@ KeyboardInput
 
     RET                                         ; ## END of the function ##
 
+
 ;----------------------------------------------------------;
 ;                   CanProcessKeyInput                     ;
 ;----------------------------------------------------------;
 ; Output:
-;  A: _RET_YES_D1 or _RET_NO_D0
+;  A: YES: Z is set (JP Z), NO: Z is reset (JP NZ)
 CanProcessKeyInput
 
     ; Reset inactivity count
@@ -227,13 +223,15 @@ CanProcessKeyInput
     INC A
     LD (userInputDelayCnt), A
 
-    LD A, _RET_NO_D0
+
+    ; Return NO, A!=0, Z is reset
     RET
 .processInput
 
-    XOR A
+    XOR A                                       ; A=0 and set Z for the return value from the function.
     LD (userInputDelayCnt), A
-    LD A, _RET_YES_D1
+
+    ; Return YES, A=0, Z is set
 
     RET                                         ; ## END of the function ##
 

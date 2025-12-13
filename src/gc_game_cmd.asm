@@ -354,7 +354,6 @@ DifficultyChange
 RocketFLyPhase2and3
 
     CALL ros.AnimateStarsOnFlyRocket
-    CALL ros.AnimateStarsOnFlyRocket
     CALL st.MoveStarsDown
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
@@ -368,13 +367,9 @@ RocketFlying
 
     CALL ros.AnimateStarsOnFlyRocket
     CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
 
     RET                                         ; ## END of the function ##
-    
+
 ;----------------------------------------------------------;
 ;                  RocketFLyStartPhase1                    ;
 ;----------------------------------------------------------;
