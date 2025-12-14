@@ -58,8 +58,10 @@ rocketFlyPhase          DB PHASE_0
 FLAME_OFFSET_D16        = 16
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
-EXPLODE_Y_HI_H4         = $F0
-EXPLODE_Y_LO_H7E        = $F0
+
+EXPLODE_Y_HI_H4         = $01
+EXPLODE_Y_LO_H7E        = $FF
+
 EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
