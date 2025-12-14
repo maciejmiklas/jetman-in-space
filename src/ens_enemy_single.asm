@@ -147,8 +147,6 @@ RespawnNextSingleEnemy
     PUSH BC                                     ; Preserve B for loop counter.
     CALL enp.RespawnPatternEnemy
     POP BC
-
-    CP A, _RET_YES_D1
     RET Z                                       ; Exit after respawning first enemy.
 
     ; Move IX to the beginning of the next #singleEnemySprites.
