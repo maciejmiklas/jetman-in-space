@@ -688,8 +688,7 @@ _PickupRocketElement
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
     CALL jco.JetmanElementCollision
-    CP _RET_NO_D0
-    RET Z
+    RET NZ
 
      ; ##########################################
     ; Call game command with pickup info.
@@ -828,8 +827,7 @@ _BoardRocket
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
     CALL jco.JetmanElementCollision
-    CP _RET_NO_D0
-    RET Z
+    RET NZ
 
     ; ##########################################
     ; Jetman boards the rocket!
