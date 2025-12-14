@@ -218,7 +218,8 @@ PrintNumber
 ; Input:
 ;  - HL: value to compare to B
 ; Return:
-;  - A:  #_RET_YES_D1 or #_RET_NO_D0
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 HlEqual0
 
     LD A, H                                     ; Check if H == B
@@ -231,7 +232,7 @@ HlEqual0
     ; H == 0 and L == 0
     XOR A                                       ; Return YES (Z is reset).
     RET
-    
+
 .notEqual
     OR 1                                        ; Return NO (Z set).
 
