@@ -257,7 +257,6 @@ RespawnFollowingEnemy
     CALL _TryRespawnNextFollowingEnemy
     POP BC
 
-    CP A, _RET_YES_D1
     RET Z                                       ; Exit after respawning first enemy
 
     ; Move IX to the beginning of the next #fEnemySprites
@@ -742,7 +741,8 @@ tmp db 0
 ; Input:
 ;  - IX: pointer to #SPR holding data for single enemy
 ; Output:
-;  - A:  _RET_YES_D1/_RET_NO_D0
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 _TryRespawnNextFollowingEnemy
 
     ; Skip this sprite if it's already visible/active
@@ -752,7 +752,7 @@ _TryRespawnNextFollowingEnemy
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .afterAliveCheck                      ; Jump if not active
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .afterAliveCheck
 
@@ -770,7 +770,7 @@ _TryRespawnNextFollowingEnemy
     CP enp.RESPAWN_OFF
     JR NZ, .respawnOn
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .respawnOn
 
@@ -785,8 +785,8 @@ _TryRespawnNextFollowingEnemy
 
     LD (IY + FE.RESPAWN_DELAY_CNT), A           ; The delay timer for the enemy is still ticking
     ld (tmp),a
-    
-    LD A, _RET_NO_D0
+
+    OR 1                                        ; Return NO (Z set).
     RET
 .afterEnemyRespawnDelay
 
@@ -825,7 +825,7 @@ _TryRespawnNextFollowingEnemy
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
     CALL sr.ShowSprite
 
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
