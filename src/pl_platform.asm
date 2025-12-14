@@ -467,7 +467,6 @@ PlatformDirectionHit
     CALL _CheckPlatformHitRight
     POP BC
 
-    CP _RET_YES_D1
     JR NZ, .afterHitRight
 
     ; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
@@ -925,7 +924,8 @@ _CheckPlatformHitLeft
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
 ; Return:
-;  - A:  #_RET_NO_D0/#_RET_YES_D1
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 ; Modifies: BC, DE
 _CheckPlatformHitRight
 
@@ -942,8 +942,9 @@ _CheckPlatformHitRight
     SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
     POP HL
     JP M, .keepChecking
-    
-    LD A, _RET_NO_D0                            ; HL(sprite X) - DE > 0 -> No collision.
+
+    ; HL(sprite X) - DE > 0 -> No collision.
+    OR 1                                        ; Return NO (Z set).`
     RET
 .keepChecking
 
@@ -963,10 +964,10 @@ _CheckPlatformHitRight
     POP HL
     JP M, .hit
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .hit
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
