@@ -206,7 +206,7 @@ PICKUPS_L6_SIZE             = 10
 ; hit it first.
 closeMargin     pl.PLAM { 12/*X_LEFT*/, 06/*X_RIGHT*/, 15/*Y_TOP*/, 06/*Y_BOTTOM*/}
 spriteHitMargin pl.PLAM { 13/*X_LEFT*/, 08/*X_RIGHT*/, 13/*Y_TOP*/, 04/*Y_BOTTOM*/}
-shotHitMargin   pl.PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 07/*Y_TOP*/, 00/*Y_BOTTOM*/}
+shotHitMargin   pl.PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 09/*Y_TOP*/, 02/*Y_BOTTOM*/}
 jetHitMargin    pl.PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
 bounceMargin    pl.PLAM { 15/*X_LEFT*/, 10/*X_RIGHT*/, 15/*Y_TOP*/, 06/*Y_BOTTOM*/}
 
