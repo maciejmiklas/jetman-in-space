@@ -740,7 +740,7 @@ tmp db 0
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: pointer to #SPR holding data for single enemy
-; Output:
+; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
 _TryRespawnNextFollowingEnemy

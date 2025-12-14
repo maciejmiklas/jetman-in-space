@@ -243,7 +243,7 @@ JoystickMoveProcessed
 ;                     _JoyCntEnabled                       ;
 ;----------------------------------------------------------;
 ; Disable joystick and, therefore, control over the Jetman.
-; Output:
+; Return:
 ;   A containing one of the values:
 ;     - _RET_YES_D1:        Process joystick input.
 ;     - _RET_NO_D0: Disable joystick input processing for this loop.
@@ -291,7 +291,7 @@ _JoyCntEnabled
 ;              _JoyJetpackOverheatSlowdown                 ;
 ;----------------------------------------------------------;
 ; Slow down joystick input and, therefore, the speed of Jetman's movement when jetpack has overheated.
-; Output:
+; Return:
 ;   A containing one of the values:
 ;     - _RET_YES_D1:        Process joystick input.
 ;     - _RET_NO_D0: Disable joystick input processing for this loop.
@@ -379,7 +379,7 @@ _StandToWalk
 ;----------------------------------------------------------;
 ;                      _CanJetMove                         ;
 ;----------------------------------------------------------;
-; Output:
+; Return:
 ;   A containing one of the values:
 ;     - _RET_YES_D1:        Process joystick input.
 ;     - _RET_NO_D0: Disable joystick input processing for this loop.

@@ -347,7 +347,7 @@ _HideFuelThief
 ;----------------------------------------------------------;
 ;                     _LoadSprToIxIy                       ;
 ;----------------------------------------------------------;
-; Output:
+; Return:
 ;  IX: points to SPR
 ;  IY: points to ENP
 _LoadSprToIxIy

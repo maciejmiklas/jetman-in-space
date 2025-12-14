@@ -208,7 +208,7 @@ KeyboardInput
 ;----------------------------------------------------------;
 ;                   CanProcessKeyInput                     ;
 ;----------------------------------------------------------;
-; Output:
+; Return:
 ;  A: YES: Z is set (JP Z), NO: Z is reset (JP NZ)
 CanProcessKeyInput
 

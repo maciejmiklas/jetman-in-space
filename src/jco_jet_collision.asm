@@ -46,7 +46,7 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
 ; Input:
 ;  - BC: X postion of the element.
 ;  - D:  Y postion of the element.
-; Output:
+; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
 JetmanElementCollision
@@ -172,7 +172,6 @@ JetInvincible
 
     ; End invincibility if count is 0.
     CALL ut.HlEqual0
-    CP _RET_YES_D1
     JR Z, .endInvincibility
 
     ; ##########################################

@@ -270,7 +270,7 @@ MovePatternEnemies
 ; Respawn single or formation
 ; Input:
 ;  - IX: pointer to #SPR holding data for single enemy.
-; Output:
+; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
 
@@ -401,7 +401,7 @@ _PlayBounceAnimation
 ;----------------------------------------------------------;
 ; Input
 ;  - IY: pointer to #ENP holding data for single sprite.
-; Output:
+; Return:
 ;  - A: value of move delay counter for this pattern (bits 8-5).
 ; Modifies: A, HL
 _LoadMoveDelay
@@ -743,7 +743,7 @@ _MoveEnemy
 ; Load HL that points to the current move pattern
 ; Input
 ;  - IY: pointer to #ENP for current sprite
-; Output:
+; Return:
 ;  - HL: points to the current move pattern
 ; Modifies: A
 _LoadCurrentMoveStep

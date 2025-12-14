@@ -195,7 +195,7 @@ UpdateRocketOnJetmanMove
 ;----------------------------------------------------------;
 ;                      IsFuelDeployed                    ;
 ;----------------------------------------------------------;
-; Output:
+; Return:
 ;  - A: _RET_YES_D1 or _RET_NO_D0
 
 ;_RET_YES_D1             = 1

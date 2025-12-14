@@ -82,7 +82,7 @@ PrintNum99
 ; Input:
 ;   - HL: 16-bit number to convert.
 ;   - DE: pointer to RAM that will contain formatted text, 5-characters long, 0 padded.
-; Output: ASCII string at memory address given by DE, 5-characters long, 0 padded.
+; Return: ASCII string at memory address given by DE, 5-characters long, 0 padded.
 Num16ToString
 
     ; Each line prints one digit into DE, starting with the most significant.

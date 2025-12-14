@@ -700,7 +700,7 @@ _Load16KTilemap
 ; Input:
 ;  - A: stars file number 0 for stars0.map, and 1 for stars1.map.
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
-; Output:
+; Return:
 ;  - #stTilesFileName with correct name.
 _Prepare16KTilemapFile
 
@@ -719,7 +719,7 @@ _Prepare16KTilemapFile
 ; Input:
 ;  - A:  sprites file number 0 for sprites0.spr, and 1 for sprites1.spr.
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
-; Output:
+; Return:
 ;  - #fileName with correct name.
 _PrepareFileOpenForSprites
 
@@ -737,7 +737,7 @@ _PrepareFileOpenForSprites
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 ;  - HL: pointer to file starting with: "assets/XX".
-; Output:
+; Return:
 ;  - HL: just after "assets/xx".
 ; Modifies: HL, IX
 _SetFileLevelNumber

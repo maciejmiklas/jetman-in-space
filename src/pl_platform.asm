@@ -269,7 +269,7 @@ ResetJoyOffBump
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
-; Output:
+; Return:
 ;  - A:  #PL_HIT_YES/ #PL_HIT_NO
 PlatformSpriteHit
 
@@ -282,7 +282,7 @@ PlatformSpriteHit
 ; Check whether the sprite (#SPR) given by IX gets close the platforms.
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
-; Output:
+; Return:
 ;  - A:  #PL_HIT_YES/ #PL_HIT_NO
 PlatformSpriteClose
 
@@ -295,7 +295,7 @@ PlatformSpriteClose
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
-; Output:
+; Return:
 ;  - A:  #PL_HIT_YES/ #PL_HIT_NO
 CheckPlatformWeaponHit
 
@@ -429,7 +429,7 @@ PlatformBounceOff
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA list
 ;  - B:  number of elements in #PLA list
-; Output:
+; Return:
 ;  - A:  #PL_DHIT_RET_XXX
 ;  - B:  platform counter set to the current platform. The counter starts with the number (inclusive) of platforms and counts toward 1 (inclusive).
 PL_DHIT_NO              = 0                     ; No collision.
@@ -647,7 +647,7 @@ JetFallingFromPlatform
 ;  - IY: pointer to #PLA list.
 ;  - B:  number of elements in #PLA list.
 ;  - IX: pointer to #PLAM.
-; Output:
+; Return:
 ;  - A:  PL_HIT_RET_XXX
 ;  - B:  the current value of the platform counter. It counts from the maximum amount of platforms to zero.
 ;  - IY: set to current platform.
@@ -749,7 +749,7 @@ _PlatformHit
 ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-; Output:
+; Return:
 ;  - A:  sprite's Y coordinate.
 ; Modifies: DE
 _LoadSpriteYtoA
@@ -769,7 +769,7 @@ _LoadSpriteYtoA
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
+; Return:
 ;  - A:  #_RET_NO_D0/#_RET_YES_D1
 ; Modifies: C
 _CheckPlatformHitTop
@@ -821,7 +821,7 @@ _CheckPlatformHitTop
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM.
 ;  - IY: pointer to #PLA.
-; Output:
+; Return:
 ;  - A:  #_RET_NO_D0/#_RET_YES_D1
 ; Modifies: C
 _CheckPlatformHitBottom
@@ -869,7 +869,7 @@ _CheckPlatformHitBottom
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
+; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
 ; Modifies: BC, DE
@@ -928,7 +928,7 @@ _CheckPlatformHitLeft
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
+; Return:
 ;  - A:  #_RET_NO_D0/#_RET_YES_D1
 ; Modifies: BC, DE
 _CheckPlatformHitRight
@@ -983,7 +983,7 @@ _CheckPlatformHitRight
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
+; Return:
 ;  - A:  #_RET_NO_D0/#_RET_YES_D1
 ; Modifies: BC, DE
 _CheckPlatformHitHorizontal
@@ -1036,7 +1036,7 @@ _CheckPlatformHitHorizontal
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
+; Return:
 ;  - A:     #_RET_NO_D0/#_RET_YES_D1
 _CheckPlatformHitVertical
 
@@ -1081,7 +1081,7 @@ _CheckPlatformHitVertical
 ; Input:
 ;  - IX: pointer to #SPR, single sprite to check collision for.
 ;  - IY: pointer to #PLAM
-; Output:
+; Return:
 ;  - A:     #PL_HIT_YES/ #PL_HIT_NO
 _PlatformSpriteHit
     CALL dbs.SetupArrays2Bank

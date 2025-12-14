@@ -12,7 +12,7 @@ currentLevel            DB _LEVEL_MIN
 ;----------------------------------------------------------;
 ;                   LoadUnlockLevel                        ;
 ;----------------------------------------------------------;
-; Output:
+; Return:
 ;  -A: Level number for current difficulty, 1-10.
 LoadUnlockLevel
 

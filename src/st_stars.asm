@@ -614,7 +614,7 @@ _MoveAndRenderStarColumn
 ; Input 
 ;  - B:  Star y-postion to be checked.
 ;  - IY: Points to the current max y postion for the star.
-; Output:
+; Return:
 ;  - A with value CANSS_XXX
 ; Modifies: A,C
 CANSS_YES           = 1
@@ -656,7 +656,7 @@ _CanShowStar
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: Points to the source pixel from stars column.
-; Output:
+; Return:
 ;  A: contains next star color.
 ; Modifies: A, B, C, DE
 _GetStarColor

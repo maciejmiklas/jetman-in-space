@@ -39,7 +39,7 @@ dmaProgramSize = $-dmaProgram
 ;----------------------------------------------------------;
 ; Input:  
 ;    - A: 8-bit value (0..99)
-; Output: 
+; Return: 
 ;    - D: ASCII tens digit
 ;    - E: ASCII units digit
 NumTo99Str
@@ -116,7 +116,7 @@ CdivD
 ; Input:
 ;  - C: numerator
 ;  - D: denominator
-; Output:
+; Return:
 ;  - A: remainder
 ;  - C: result C/D
     LD B,8
@@ -229,11 +229,11 @@ HlEqual0
     JR NZ, .notEqual                            ; Jump if L == B
     
     ; H == 0 and L == 0
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
     RET
     
 .notEqual
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
 
     RET                                         ; ## END of the function ##
 
@@ -242,7 +242,7 @@ HlEqual0
 ;----------------------------------------------------------;
 ; Input:
 ;   - A: nextreg to read
-; Output:
+; Return:
 ;   - A: value in nextreg
 ReadNextReg
 

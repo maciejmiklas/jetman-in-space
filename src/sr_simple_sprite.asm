@@ -87,7 +87,7 @@ srSpriteDB
 ; Input:
 ;  - IX: pointer to #SPR.
 ;  - B:  number of sprites.
-; Output:
+; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
 CheckAnySpriteVisible
@@ -518,7 +518,7 @@ MoveX
 ;  - A:  MOVE_Y_IN_XXX
 MOVE_Y_IN_UP                = 1                 ; Move up
 MOVE_Y_IN_DOWN              = 0                 ; Move down
-; Output:
+; Return:
 ;  - A:     MOVE_RET_XXX
 MOVE_RET_VISIBLE            = 1                 ; Sprite is still visible.
 MOVE_RET_HIDDEN             = 0                 ; Sprite outside screen, or hits ground.

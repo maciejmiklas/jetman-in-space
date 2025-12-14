@@ -121,7 +121,7 @@ AnimateCursor
 ;----------------------------------------------------------;
 ;                  _CalculateScoreLine                     ;
 ;----------------------------------------------------------;
-; Output:
+; Return:
 ;  A: contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
 _CalculateScoreLine
 
@@ -559,7 +559,7 @@ _PrintScoreLine
 ;----------------------------------------------------------;
 ; Input:
 ;  A: Score line in #db2.highScore, 0 (first entry in #db2.highScore) to 9 (bottom, lowest score) inklusive.
-; Output:
+; Return:
 ;  IX: Points to score line.
 _LineToIX
 
@@ -654,7 +654,7 @@ _StoreNewScore
 ;----------------------------------------------------------;
 ;                   _SetDeToEnterTiRam                     ;
 ;----------------------------------------------------------;
-; Output:
+; Return:
 ;  DE:  Points to the RAM position when enter-character should be printed. This is the end of the active score line.
 _SetDeToEnterTiRam
 

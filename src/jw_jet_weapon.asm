@@ -180,7 +180,7 @@ HideShots
 ; Input:
 ; - DE: X of the sprite.
 ; - C:  Y of the sprite.
-; Output:
+; Return:
 ; - A:   values:
 ; Modifies: All
 SHOT_HIT                    = 1
