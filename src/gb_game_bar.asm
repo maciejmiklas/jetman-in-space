@@ -54,7 +54,7 @@ PrintDebug
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (gi.breakCnt)
+    LD A, (gi.tmp1)
     LD L, A
     CALL ut.PrintNumber
 */

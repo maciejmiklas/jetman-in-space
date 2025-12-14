@@ -55,6 +55,26 @@ UpdateBackgroundOnRocketMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  HideBackgroundBars                      ;
+;----------------------------------------------------------;
+; Hide the bottom/top stripe of 8 pixels.
+HideBackgroundBars
+
+    CALL _GetGroundImageLine
+    LD C, A
+    LD B, 8
+
+.loop
+    INC C
+    PUSH BC
+    LD A, C
+    CALL bm.HideImageLine
+    POP BC
+    DJNZ .loop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;              HideBackgroundBehindHorizon                 ;
 ;----------------------------------------------------------;
 ; Hide picture line going behind the horizon
@@ -67,7 +87,6 @@ HideBackgroundBehindHorizon
     RET Z
 
     INC A                                       ; Move image one pixel down (TODO why is that necessary?).
-    LD E, A                                     ; E contains bottom line.
     CALL bm.HideImageLine
 
     RET                                         ; ## END of the function ##

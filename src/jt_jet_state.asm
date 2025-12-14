@@ -41,6 +41,8 @@ DIF_NORMAL              = 2
 DIF_HARD                = 3
 difLevel                DB DIF_NORMAL
 
+levelNumber             DW "00"                 ; ASCII level number from 01 to 10
+
 ;----------------------------------------------------------;
 ;               UpdateStateOnJoyWillEnable                 ;
 ;----------------------------------------------------------;
@@ -54,7 +56,7 @@ UpdateStateOnJoyWillEnable
     ; Reset!
     LD A, AIR_FLY
     LD (jetAir), A
-.afterResetAir  
+.afterResetAir
 
     RET                                         ; ## END of the function ##
 

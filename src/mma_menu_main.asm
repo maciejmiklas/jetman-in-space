@@ -115,7 +115,7 @@ LoadMainMenu
     ; Copy tile definitions (sprite file) to expected memory
     LD D, "m"
     LD E, "a"
-    CALL fi.LoadTileSprFile
+    CALL fi.LoadTilePlatformsSprFile
 
     RET                                         ; ## END of the function ##
 

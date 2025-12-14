@@ -14,12 +14,12 @@ ASCII_A                 = 64                    ; 64 is space, it's not proper A
 ASCII_Z                 = 90
 
 MARGIN_TOP_LI_D2        = 2                     ; Top margin has 3 lines.
-MARGIN_TOP_TI_D80       = MARGIN_TOP_LI_D2*ti.H_D40
+MARGIN_TOP_TI_D80       = MARGIN_TOP_LI_D2*ti.TI_H_D40
 
 SPACE_LINES_LI_D2       = 2                     ; Space between score lines is 2 lines.
-SPACE_LINES_TI_D80      = SPACE_LINES_LI_D2*ti.H_D40 ; Number of tiles taken by the space between score lines.
+SPACE_LINES_TI_D80      = SPACE_LINES_LI_D2*ti.TI_H_D40 ; Number of tiles taken by the space between score lines.
 SCORE_H_LI_D3           = 3                     ; Number of lines taken by the single score.
-SCORE_H_TI_D120         = SCORE_H_LI_D3*ti.H_D40; Number of tiles taken by the single score.
+SCORE_H_TI_D120         = SCORE_H_LI_D3*ti.TI_H_D40; Number of tiles taken by the single score.
 CURSOR_SPR_ADJ          = -4
 
 NAME_TI_SPACE_D3        = 3                     ; Before the name there are 3 spaces.

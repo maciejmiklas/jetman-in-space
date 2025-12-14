@@ -17,125 +17,125 @@ highScore                                       ; This score does not show on sc
 ; Easy
     DW $FFFF
     DW $FFFF
-    DB "E  FREDUS    "
+    DB "   FREDUS    "
    
     DW 00000
     DW 09000
-    DB "E  MACIEJ    "
+    DB "   MACIEJ    "
 
     DW 00000
     DW 08000
-    DB "E  ARTUR     "
+    DB "   ARTUR     "
 
     DW 00000
     DW 07000
-    DB "E  MARCIN    "
+    DB "   MARCIN    "
 
     DW 00000
     DW 06000
-    DB "E  MACIEJ    "
+    DB "   MACIEJ    "
 
     DW 00000
     DW 05000
-    DB "E  JUREK     "
+    DB "   JUREK     "
 
     DW 00000
     DW 04000
-    DB "E  FRANEK    "
+    DB "   FRANEK    "
 
     DW 00000
     DW 03000
-    DB "E  ZUZA      "
+    DB "   ZUZA      "
 
     DW 00000
     DW 02000
-    DB "E  KAROL     "
+    DB "   KAROL     "
 
     DW 00000
     DW 01000
-    DB "E  FRED      "
+    DB "   FRED      "
 
 ; Normal
     DW $FFFF
     DW $FFFF
-    DB "N  FREDUS    "
+    DB "   FREDUS    "
    
     DW 00000
     DW 09000
-    DB "N  MACIEJ    "
+    DB "   MACIEJ    "
 
     DW 00000
     DW 08000
-    DB "N  ARTUR     "
+    DB "   ARTUR     "
 
     DW 00000
     DW 07000
-    DB "N  MARCIN    "
+    DB "   MARCIN    "
 
     DW 00000
     DW 06000
-    DB "N  MACIEJ    "
+    DB "   MACIEJ    "
 
     DW 00000
     DW 05000
-    DB "N  JUREK     "
+    DB "   JUREK     "
 
     DW 00000
     DW 04000
-    DB "N  FRANEK    "
+    DB "   FRANEK    "
 
     DW 00000
     DW 03000
-    DB "N  ZUZA      "
+    DB "   ZUZA      "
 
     DW 00000
     DW 02000
-    DB "N  KAROL     "
+    DB "   KAROL     "
 
     DW 00000
     DW 01000
-    DB "N  FRED      "
+    DB "   FRED      "
 
 ; Hard
     DW $FFFF
     DW $FFFF
-    DB "H  FREDUS    "
+    DB "   FREDUS    "
    
     DW 00000
     DW 09000
-    DB "H  MACIEJ    "
+    DB "   MACIEJ    "
 
     DW 00000
     DW 08000
-    DB "H  ARTUR     "
+    DB "   ARTUR     "
 
     DW 00000
     DW 07000
-    DB "H  MARCIN    "
+    DB "   MARCIN    "
 
     DW 00000
     DW 06000
-    DB "H  MACIEJ    "
+    DB "   MACIEJ    "
 
     DW 00000
     DW 05000
-    DB "H  JUREK     "
+    DB "   JUREK     "
 
     DW 00000
     DW 04000
-    DB "H  FRANEK    "
+    DB "   FRANEK    "
 
     DW 00000
     DW 03000
-    DB "H  ZUZA      "
+    DB "   ZUZA      "
 
     DW 00000
     DW 02000
-    DB "H  KAROL     "
+    DB "   KAROL     "
 
     DW 00000
     DW 01000
-    DB "H  FRED      "
+    DB "   FRED      "
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

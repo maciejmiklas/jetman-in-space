@@ -6,15 +6,14 @@
 ;                     Rocket Stars                         ;
 ;----------------------------------------------------------;
     MODULE ros
+; Moves the tilemap with platforms, then animates the stars.
 
 ; Tile stars
 TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts takes 4 horizontal screens.
     ASSERT TI_ROWS_D128 =  128
 
-TI_MOVE_FROM_D50        = 50                    ; Start moving stats when the rocket reaches the given height.
-
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
-ti.TI_H_BYTES_D80           = 320/8 * 2
+ti.TI_H_BYTES_D80       = 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow                DB ti.TI_VTILES_D32     ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
@@ -23,12 +22,20 @@ sourceTilesRow          DB TI_ROWS_D128         ; Current tiles row in source fi
 tileOffset              DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tilePixelCnt            DB ti.TI_PIXELS_D8      ; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
 
+; There are 32 tile lines. We insert the black tile line starting from 32 to 1. However, the first black line is inserted when the rocket 
+; takes off, so this counter runs not from 32 but from 31.
+blackTilesRow           DB ti.TI_VTILES_D32-1 
+TI_BLACK_UNTIL_D250    = 250                    ; Fill the bottom tile line with black tiles until the rocket reaches the given height.
+
 ;----------------------------------------------------------;
 ;                    ResetRocketStars                      ;
 ;----------------------------------------------------------;
 ResetRocketStars
     LD A, ti.TI_VTILES_D32
     LD (tilesRow), A
+
+    DEC A
+    LD (blackTilesRow), A
 
     LD A, TI_ROWS_D128
     LD (sourceTilesRow), A
@@ -46,16 +53,10 @@ ResetRocketStars
 ;----------------------------------------------------------;
 AnimateStarsOnFlyRocket
 
-    ; Start animation when the rocket reaches given height.
-    LD HL, (rof.rocketDistance)
-    LD A, H
-    CP 0                                        ; If H > 0 then distance is definitely > TI_MOVE_FROM_D50.
-    JR NZ, .afterAnimationStart
-
-    LD A, L
-    CP TI_MOVE_FROM_D50
-    RET C
-.afterAnimationStart
+    ; Start animation when the rocket reaches given phase.
+    LD A, (rof.rocketFlyPhase)
+    CP rof.PHASE_2
+    RET C                                       ; Do not animate when phase < 2
 
     ; ##########################################
     ; Increment the tile counter to determine whether we should load the next tile row.
@@ -70,11 +71,30 @@ AnimateStarsOnFlyRocket
     XOR A
     LD (tilePixelCnt), A
 
-    CALL _NextTilesRow
+    ; ##########################################
+    ; Print black tile line until phase 4 is reached, or all black tiles have been printed.
+    LD A, (rof.rocketFlyPhase)
+    CP rof.PHASE_4
+    JR NC, .afterClearTileLine                  ; Jump if phase >= 4
+
+    ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.
+    LD A, (blackTilesRow)
+    CP 0
+    RET Z
+
+    DEC A
+    LD (blackTilesRow), A
+
+    CALL ti.ClearTileLine
+    JR .afterNextTile
+.afterClearTileLine
+
+    CALL _NextStarsTileRow
 .afterNextTile
 
     ; ##########################################
-    ; Move tiles.
+    ; Move tiles by 1 pixel.
+
     LD A, (tileOffset)
     DEC A
     LD (tileOffset), A
@@ -89,12 +109,13 @@ AnimateStarsOnFlyRocket
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    _NextTilesRow                         ;
+;                 _NextStarsTileRow                        ;
 ;----------------------------------------------------------;
 ; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
-_NextTilesRow
+_NextStarsTileRow
+
     CALL dbs.Setup16KTilemapBank
 
     ; ##########################################
@@ -130,7 +151,7 @@ _NextTilesRow
     POP HL
 
     LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
-    LDIR    
+    LDIR 
 
     ; ##########################################
     ; Reset stars counter ?

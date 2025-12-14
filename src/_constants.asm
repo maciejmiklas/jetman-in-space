@@ -383,7 +383,6 @@ _COL_GREEN_D4           = 4
 _COL_CYAN_D5            = 5
 _COL_YELLOW_D6          = 6
 _COL_WHITE_D7           = 7
-_COL_BLACK_D0           = 0
 
 ;----------------------------------------------------------;
 ;                     Input processing                     ;
@@ -437,7 +436,6 @@ _16BIT_CHARS_D5         = 5
 
 ; ##############################################
 ; Screen
-_SC_SYNC_SL_D192        = 192                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
 _SC_SHAKE_BY_D2         = 2                     ; Number of pixels to move the screen by shaking.
 
 _SC_RESX_D320           = 320
@@ -580,7 +578,7 @@ PAL                     DB                      ; Palette offset.
 ;----------------------------------------------------------;
     STRUCT SC                                   ; Stars column.
 BANK                    DB                      ; Image bank number from 0 to 9.
-X_OFFSET                DB                      ; X offset from the beginning of the bank, max 32 (32=8192/256).
+X_OFFSET                DB                      ; X offset (column) from the beginning of the bank, max 32 (32=8192/256).
 SIZE                    DB                      ; Amount of stars.
     ENDS
 

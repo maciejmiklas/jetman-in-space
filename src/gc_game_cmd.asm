@@ -21,6 +21,8 @@ KILL_FEW                = 7
 freezeEnemiesCnt        DW 0
 FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
 
+tilePaletteStarsAddr    DW 0
+
 ;----------------------------------------------------------;
 ;                  StartGameWithIntro                      ;
 ;----------------------------------------------------------;
@@ -61,9 +63,9 @@ SetupSystem
 
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
     ; Load sprites from any level for mein menu.
     LD D, "0"
@@ -89,9 +91,9 @@ LoadMainMenu
 
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
     RET                                         ; ## END of the function ##
 
@@ -232,30 +234,6 @@ BackgroundPaletteLoaded
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     RocketTakesOff                       ;
-;----------------------------------------------------------;
-RocketTakesOff
-
-    LD A, ms.FLY_ROCKET
-    CALL ms.SetMainState
-
-    CALL sc.BoardRocket
-    CALL jt.SetJetStateInactive
-    CALL js.HideJetSprite
-    CALL gb.HideGameBar
-    CALL ti.SetTilesClipHorizontal
-
-    CALL dbs.SetupArrays2Bank
-    CALL pi.ResetPickups
-
-    CALL ki.ResetKeyboard
-    CALL dbs.SetupPatternEnemyBank
-    CALL enu.DisableFuelThief
-    CALL jw.HideShots
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                      LoadNextLevel                       ;
 ;----------------------------------------------------------;
 LoadNextLevel
@@ -346,17 +324,6 @@ LoadCurrentLevel
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      RocketFlying                        ;
-;----------------------------------------------------------;
-RocketFlying
-
-    CALL st.MoveStarsDown
-    CALL bg.UpdateBackgroundOnRocketMove
-    CALL bg.HideBackgroundBehindHorizon
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                     FuelThiefHit                         ;
 ;----------------------------------------------------------;
 FuelThiefHit
@@ -378,6 +345,90 @@ FuelThiefHit
 DifficultyChange
 
     CALL lu.ResetLevelPlaying
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   RocketFLyPhase2and3                    ;
+;----------------------------------------------------------;
+RocketFLyPhase2and3
+
+    CALL ros.AnimateStarsOnFlyRocket
+    CALL st.MoveStarsDown
+    CALL bg.UpdateBackgroundOnRocketMove
+    CALL bg.HideBackgroundBehindHorizon
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       RocketFlying                       ;
+;----------------------------------------------------------;
+RocketFlying
+
+    CALL ros.AnimateStarsOnFlyRocket
+    CALL st.MoveStarsDown
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  RocketFLyStartPhase1                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase1
+
+    LD A, ms.FLY_ROCKET
+    CALL ms.SetMainState
+
+    CALL rof.RocketFLyStartPhase1
+    CALL sc.BoardRocket
+    CALL jt.SetJetStateInactive
+    CALL js.HideJetSprite
+    CALL gb.HideGameBar
+    CALL dbs.SetupArrays2Bank
+    CALL pi.ResetPickups
+    CALL ki.ResetKeyboard
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.DisableFuelThief
+    CALL jw.HideShots
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   RocketFLyStartPhase2                   ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase2
+
+    CALL ti.SetTilesClipHorizontal
+    CALL ti.ClearBottomTileLine
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  RocketFLyStartPhase3                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase3
+    ; TODO remove??
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  RocketFLyStartPhase4                    ;
+;----------------------------------------------------------;
+; See #rof.rocketFlyPhase
+RocketFLyStartPhase4
+
+    CALL ti.CleanAllTiles
+    CALL ros.ResetRocketStars
+
+    LD DE, (jt.levelNumber)
+    CALL fi.LoadTileStarsSprFile
+
+    ; Load tilemap palette
+    CALL dbs.SetupArrays1Bank
+    LD HL, (tilePaletteStarsAddr)
+    LD B, db1.STARS_PAL_BYTES
+    CALL ti.LoadTilemap9bitPalette
 
     RET                                         ; ## END of the function ##
 
@@ -1258,7 +1309,7 @@ _StartLevel
 
     LD A, ms.GAME_ACTIVE
     CALL ms.SetMainState
-    
+
     CALL gb.ShowGameBar
     CALL sc.PrintScore
     CALL ro.StartRocketAssembly

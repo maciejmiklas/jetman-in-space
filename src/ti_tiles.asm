@@ -7,13 +7,11 @@
 ;----------------------------------------------------------;
     MODULE ti
 
-TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
-
-H_D40                   = 40
-V_D32                   = 32
-
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
-TI_H_BYTES_D80          = 320/8 * 2 
+TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
+TI_H_D40                = 40
+TI_V_D32                = 32
+TI_H_BYTES_D80          = TI_H_D40 *2 
 
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
@@ -24,7 +22,7 @@ TI_MAP_RAM_H5B00        = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap.
 TI_MAP_BANK_OFFSET      = (TI_MAP_RAM_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
     ASSERT TI_MAP_BANK_OFFSET =  $1B
 
-TI_MAP_TILES            = H_D40*V_D32
+TI_MAP_TILES            = TI_H_D40*TI_V_D32
 TI_MAP_BYTES_D2560      = TI_MAP_TILES*2        ; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 
 ; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
@@ -43,7 +41,7 @@ TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - TI_PIXELS_D8
 
 TX_ASCII_OFFSET_D34     = 34                    ; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
 TX_PALETTE_D0           = 0                     ; Palette byte for tile characters.
-TI_EMPTY_D198           = 198                   ; Empty tile
+TI_EMPTY_D198           = 198                   ; Empty tile with palette 0, color 0.
 TI_ENTER                = 191
 
 ; TX - Text, ASCII codes
@@ -55,7 +53,7 @@ TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
 TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
 TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertical screen size).
     ASSERT TI_VTILES_D32 =  32
-xxg
+
 ; Tilemap settings: 8px, 40x32 (2 bytes pre pixel), disable "include header" when downloading, file is then usable as is.
 ;
 ; Time map for single screen at 320x200 requires 2650 bytes:
@@ -103,13 +101,13 @@ SetupTiles
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      LoadTilemapPalette                  ;
+;                   LoadTilemap9bitPalette                 ;
 ;----------------------------------------------------------;
 ; Copy 9 bit palette.
 ; Input:
 ; - B:  number bytes to copy (each color takes two bytes).
 ; - HL: address of layer 2 palette data.
-LoadTilemapPalette
+LoadTilemap9bitPalette
 
     ; Bits
     ;  - 0:   1 = Enable ULANext mode.
@@ -216,6 +214,46 @@ PrintText
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                   ClearBottomTileLine                    ;
+;----------------------------------------------------------;
+ClearBottomTileLine
+
+    LD A, TI_VTILES_D32-1
+    CALL ClearTileLine
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     ClearTileLine                        ;
+;----------------------------------------------------------;
+; Input:
+;  - A: tile line to be cleaned, from 0 (top of the screen) to 31 (bottom).
+ClearTileLine
+
+
+    ; DE will contain the tile memory offset to the tile line given by A.
+    LD E, A
+    LD D, TI_H_BYTES_D80
+    MUL D, E
+
+    LD HL, TI_MAP_RAM_H5B00                     ; HL points to screen memory containing tilemap.
+    DEC HL
+    ADD HL, DE                                  ; Move HL to tile line given by A.
+
+    LD A, TI_EMPTY_D198
+    LD B, TI_H_D40
+
+.loopV
+    LD (HL), TX_PALETTE_D0                      ; Set palette for tile.
+    INC HL
+
+    LD (HL), A                                  ; Set tile id.
+    INC HL
+    DJNZ .loopV
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     CleanAllTiles                        ;
 ;----------------------------------------------------------;
 CleanAllTiles
@@ -225,11 +263,12 @@ CleanAllTiles
 
     ; ##########################################
     LD A, TI_EMPTY_D198
-    LD B, H_D40
+    LD B, TI_H_D40
+
     ; Number of loops: 40*32
 .loopH
     PUSH BC
-    LD B, V_D32
+    LD B, TI_V_D32
 
 .loopV
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile.
@@ -255,7 +294,7 @@ CleanTiles
     ; ##########################################
     LD A, TI_EMPTY_D198
 .loop
-    
+
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile.
     INC HL
     

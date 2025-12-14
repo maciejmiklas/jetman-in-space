@@ -21,8 +21,7 @@ LoadLevel1Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "1"
+    LD DE, "01"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -68,10 +67,12 @@ LoadLevel1Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 0
     LD (st.paletteNumber), A
 
@@ -81,6 +82,11 @@ LoadLevel1Data
     LD A, db2.PICKUPS_L1_SIZE
     LD DE, db2.pickupsL1
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars1Bin
+    LD (gc.tilePaletteStarsAddr), DE
 
     RET                                         ; ## END of the function ##
 
@@ -98,8 +104,7 @@ LoadLevel2Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "2"
+    LD DE, "02"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -145,10 +150,12 @@ LoadLevel2Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 1
     LD (st.paletteNumber), A
 
@@ -158,6 +165,12 @@ LoadLevel2Data
     LD A, db2.PICKUPS_L2_SIZE
     LD DE, db2.pickupsL2
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars2Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -175,8 +188,7 @@ LoadLevel3Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "3"
+    LD DE, "03"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -224,10 +236,12 @@ LoadLevel3Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 2
     LD (st.paletteNumber), A
 
@@ -237,6 +251,12 @@ LoadLevel3Data
     LD A, db2.PICKUPS_L3_SIZE
     LD DE, db2.pickupsL3
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars3Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -254,8 +274,7 @@ LoadLevel4Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "4"
+    LD DE, "04"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -296,10 +315,12 @@ LoadLevel4Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 3
     LD (st.paletteNumber), A
 
@@ -309,6 +330,12 @@ LoadLevel4Data
     LD A, db2.PICKUPS_L4_SIZE
     LD DE, db2.pickupsL4
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars4Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -326,8 +353,7 @@ LoadLevel5Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "5"
+    LD DE, "05"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -373,10 +399,12 @@ LoadLevel5Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette5Bin
-    LD B, db1.tilePalette5BinLength
-    CALL ti.LoadTilemapPalette
+    LD HL, db1.tilePalette2Bin
+    LD B, db1.tilePalette2Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 0
     LD (st.paletteNumber), A
 
@@ -386,6 +414,12 @@ LoadLevel5Data
     LD A, db2.PICKUPS_L5_SIZE
     LD DE, db2.pickupsL5
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars5Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -403,8 +437,7 @@ LoadLevel6Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "6"
+    LD DE, "06"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -450,10 +483,12 @@ LoadLevel6Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette5Bin
-    LD B, db1.tilePalette5BinLength
-    CALL ti.LoadTilemapPalette
+    LD HL, db1.tilePalette2Bin
+    LD B, db1.tilePalette2Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 1
     LD (st.paletteNumber), A
 
@@ -463,6 +498,12 @@ LoadLevel6Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars6Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -480,8 +521,7 @@ LoadLevel7Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "7"
+    LD DE, "07"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -522,10 +562,12 @@ LoadLevel7Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 2
     LD (st.paletteNumber), A
 
@@ -535,6 +577,12 @@ LoadLevel7Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars7Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -552,8 +600,7 @@ LoadLevel8Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "8"
+    LD DE, "08"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -600,10 +647,12 @@ LoadLevel8Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
+    LD HL, db1.tilePalette3Bin
+    LD B, db1.tilePalette3Length
     CALL ti.LoadTilemap8bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 3
     LD (st.paletteNumber), A
 
@@ -613,6 +662,11 @@ LoadLevel8Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars8Bin
+    LD (gc.tilePaletteStarsAddr), DE
 
     RET                                         ; ## END of the function ##
 
@@ -630,8 +684,7 @@ LoadLevel9Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "0"
-    LD E, "9"
+    LD DE, "09"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -671,10 +724,12 @@ LoadLevel9Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 0
     LD (st.paletteNumber), A
 
@@ -684,6 +739,12 @@ LoadLevel9Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars9Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -701,8 +762,7 @@ LoadLevel10Data
 
     ; ##########################################
     ; Load data for level
-    LD D, "1"
-    LD E, "0"
+    LD DE, "10"
     CALL _LoadDataByLevelNumber
 
     ; ##########################################
@@ -742,10 +802,12 @@ LoadLevel10Data
     ; ##########################################
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePaletteBin
-    LD B, db1.tilePaletteBinLength
-    CALL ti.LoadTilemap8bitPalette
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.tilePalette1Length
+    CALL ti.LoadTilemap9bitPalette
 
+    ; ##########################################
+    ; Setup stars
     LD A, 1
     LD (st.paletteNumber), A
 
@@ -755,6 +817,12 @@ LoadLevel10Data
     LD A, db2.PICKUPS_L6_SIZE
     LD DE, db2.pickupsL6
     CALL pi.SetupPickups
+
+    ; ##########################################
+    ; Rocket stars
+    LD DE, db1.tilePaletteStars10Bin
+    LD (gc.tilePaletteStarsAddr), DE
+
 
     RET                                         ; ## END of the function ##
 
@@ -771,18 +839,20 @@ LoadLevel10Data
 ;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
 _LoadDataByLevelNumber
 
+    LD (jt.levelNumber), DE
+
     PUSH DE
     CALL fi.LoadBgImageFile
     POP DE
 
     ; ##########################################
-    ; Load tile map. DE is set to level number
+    ; Load platform tile map. DE is set to level number
     PUSH DE
     CALL fi.LoadPlatformsTilemapFile
     POP DE
 
     ; ##########################################
-    ; Load tile map. DE is set to level number
+    ; Load stars tile map. DE is set to level number
     PUSH DE
     CALL fi.LoadRocketStarsTilemapFile
     POP DE
@@ -790,11 +860,11 @@ _LoadDataByLevelNumber
     ; ##########################################
     ; Copy tile definitions (sprite file) to expected memory
     PUSH DE
-    CALL fi.LoadTileSprFile
+    CALL fi.LoadTilePlatformsSprFile
     POP DE
 
     ; ##########################################
-    ; Load tile map. DE is set to level number
+    ; Load sprites. DE is set to level number
     PUSH DE
     CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA

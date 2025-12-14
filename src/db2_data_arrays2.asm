@@ -555,8 +555,9 @@ sprFileName             DB "assets/00/sprites_0.spr",0
 SPR_FILE_NR_POS         = 10
 SPR_FILE_BYT_D8192      = _BANK_BYTES_D8192
 
-; Tile sprite file
+; Tile sprite file for platforms ans stars
 sprTileFileName         DB "assets/00/tiles.spr",0
+strTileFileName         DB "assets/00/stars.spr",0
 SPR_TILE_BYT_D6400      = 6400
     assert SPR_TILE_BYT_D6400 < ti.TI_DEF_MAX_D6910
 

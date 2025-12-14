@@ -27,8 +27,8 @@ ResetKeysState
 ;----------------------------------------------------------;
 ;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
-; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement. 
-; Keys are always processed at the same speed.
+; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from function keys (throw granade, music off)
+; Function keys are always processed at the same speed.
 JetMovementInput
 
     XOR A
@@ -87,10 +87,27 @@ JetMovementInput
     CALL NZ, _JoyDown
     POP AF
 
+    ; Joystick fire B
+    PUSH AF
+    AND %00010000                               ; Any of three fires pressed?
+    CALL NZ, _JoyFireB
+    POP AF
+
     ; Joystick up
     BIT 3, A                                    ; Bit 3 set -> Up pressed.
     CALL NZ, _JoyUp
 
+    ; ##########################################
+    ; Row: V, C, X, Z, SHIFT
+    
+    ; Key Fire (Z)
+    LD A, _KB_V_TO_SH_HFE
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    
+    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
+    CALL Z, _JoyFireB
+
+    ; ##########################################
     CALL _JoyMoveEnd
 
     RET                                         ; ## END of the function ##
@@ -104,7 +121,7 @@ GameOptionsInput
 
     XOR A
     LD (gid.gameInputState), A
-    
+
     ; ##########################################
     ; Read Kempston input
     LD A, _JOY_MASK_H20                         ; Activate joystick register.
@@ -116,25 +133,9 @@ GameOptionsInput
     CALL NZ, _JoyFireA
     POP AF
 
-    ; Joystick fire B
-    PUSH AF
-    AND %00010000                               ; Any of three fires pressed?
-    CALL NZ, _JoyFireB
-    POP AF
-
     ; Joystick fire C
     AND %00100000                               ; Any of three fires pressed?
     CALL NZ, _JoyFireC
-
-    ; ##########################################
-    ; Row: V, C, X, Z, SHIFT
-    
-    ; Key Fire (Z)
-    LD A, _KB_V_TO_SH_HFE
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
-    CALL Z, _JoyFireB
 
     ; ##########################################
     ; Row: H, J, K, L, ENTER
@@ -150,6 +151,8 @@ GameOptionsInput
     LD A, _KB_T_TO_Q_HFB
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+
+    ; Key Q
     BIT 0, A                                    ; Q
     CALL Z, _Key_Q
     POP AF
@@ -210,14 +213,27 @@ GameOptionsInput
     CALL Z, _Key_Y
 
     ; ##########################################
-    ; Row: G...A
+    ; Row: G, F, D, S, T, A
 
-    ; Key F
     LD A, _KB_G_TO_A_HFD
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+
+    ; Key F
     BIT 3, A                                    ; F
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     CALL Z, _Key_F
+    POP AF
+
+    ; Key D
+    BIT 2, A                                    ; D
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    CALL Z, _Key_D
+    POP AF
+
+    ; Key S
+    BIT 1, A                                    ; S
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    CALL Z, _Key_S
     POP AF
 
     ; ##########################################
@@ -276,9 +292,40 @@ GameOptionsInput
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                        _Key_D                            ;
+;----------------------------------------------------------;
+_Key_D
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
+    LD HL, (jco.invincibleCnt)
+    LD A, (jt.jetState)
+    LD A,B
+    LD A, (js.sprState)
+    nextreg 2,8
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        _Key_S                            ;
+;----------------------------------------------------------;
+_Key_S
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
+    CALL ro.AssemblyRocketForDebug
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        _Key_N                            ;
 ;----------------------------------------------------------;
 _Key_N
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     CALL _NextSong
 
@@ -290,9 +337,8 @@ _Key_N
 _Key_M
 
     CALL ki.CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
-    
+    RET NZ
+
     CALL dbs.SetupMusicBank
     CALL aml.FlipOnOff
 
@@ -303,14 +349,11 @@ _Key_M
 ;----------------------------------------------------------;
 _Key_Q
 
-  ;CALL gc.LoadLevel1
-   ;CALL ro.AssemblyRocketForDebug
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
-    LD HL, (jco.invincibleCnt)
-    LD A, (jt.jetState)
-    LD A,B
-    LD A, (js.sprState)
-    nextreg 2,8
+    CALL gc.LoadLevel1
+    CALL ro.AssemblyRocketForDebug
 
     RET                                         ; ## END of the function ##
 
@@ -318,6 +361,9 @@ _Key_Q
 ;                        _Key_W                            ;
 ;----------------------------------------------------------;
 _Key_W
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     CALL gc.LoadLevel2
 
@@ -328,6 +374,9 @@ _Key_W
 ;----------------------------------------------------------;
 _Key_E
 
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
     CALL gc.LoadLevel3
 
     RET                                         ; ## END of the function ##
@@ -336,6 +385,9 @@ _Key_E
 ;                        _Key_R                            ;
 ;----------------------------------------------------------;
 _Key_R
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     CALL gc.LoadLevel4
 
@@ -346,6 +398,9 @@ _Key_R
 ;----------------------------------------------------------;
 _Key_T
 
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
     CALL gc.LoadLevel5
 
     RET                                         ; ## END of the function ##
@@ -354,6 +409,9 @@ _Key_T
 ;                        _Key_Y                            ;
 ;----------------------------------------------------------;
 _Key_Y
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     CALL gc.LoadLevel6
 
@@ -364,6 +422,9 @@ _Key_Y
 ;----------------------------------------------------------;
 _Key_U
 
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
     CALL gc.LoadLevel7
 
     RET                                         ; ## END of the function ##
@@ -373,6 +434,9 @@ _Key_U
 ;----------------------------------------------------------;
 _Key_I
 
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
     CALL gc.LoadLevel8
 
     RET                                         ; ## END of the function ##
@@ -381,6 +445,9 @@ _Key_I
 ;                        _Key_O                            ;
 ;----------------------------------------------------------;
 _Key_O
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     CALL gc.LoadLevel9
 
@@ -393,9 +460,8 @@ _Key_O
 _Key_P
 
     CALL ki.CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
-    
+    RET NZ
+
     LD A, (ms.mainState)
 
     CP ms.PAUSE
@@ -416,6 +482,9 @@ _Key_P
 ;----------------------------------------------------------;
 _Key_F
 
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
     CALL jw.FlipFireFx
 
     RET                                         ; ## END of the function ##
@@ -424,6 +493,9 @@ _Key_F
 ;                      _Key_Break                          ;
 ;----------------------------------------------------------;
 _Key_Break
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     LD A, (gid.breakCnt)
     INC A
@@ -605,10 +677,6 @@ _JoyFireRelease
 ;----------------------------------------------------------;
 _ThrowGranade
 
-    CALL ki.CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
-
     CALL gr.UseGrenade
 
     RET                                         ; ## END of the function ##
@@ -617,10 +685,6 @@ _ThrowGranade
 ;                      _NextSong                           ;
 ;----------------------------------------------------------;
 _NextSong
-
-    CALL ki.CanProcessKeyInput
-    CP _RET_NO_D0
-    RET Z
 
     CALL dbs.SetupMusicBank
     CALL aml.NextGameSong

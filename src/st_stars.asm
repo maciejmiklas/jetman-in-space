@@ -7,18 +7,18 @@
 ;----------------------------------------------------------;
     module st
 
-; The starfield is grouped into columns (#SC). When Jetman moves, the whole starfield and, respectively, all columns move in the 
-; opposite direction. 
+; The starfield is grouped into columns (#SC). When Jetman moves, the whole starfield and, respectively, all columns move in the
+; opposite direction.
 ; The image on Layer 2 splits over 10 banks, each containing 32 columns, 256 pixels long. 
 ; Each star column (#SC) is assigned to a concrete bank and contains precisely one column with starts that will be injected into the picture.
-; This column can be 256 pixels long and contains #SC.SIZE stars. Each star's vertical (Y) position is given as an offset from the top of 
-; the screen. 
-; #SC.X_OFFSET defines the placement of a star column within the memory bank -  this is the image column within this particular bank where 
+; This column can be 256 pixels long and contains #SC.SIZE stars. Each star's vertical (Y) position is given as an offset from the top of
+; the screen.
+; #SC.X_OFFSET defines the placement of a star column within the memory bank -  this is the image column within this particular bank where
 ; stars will be injected.
-; Because starfield moves together with Jetman, a new position for each star in this row is calculated by adding an offset value to each 
-; start position with every move. 
-; Each column rolls from the bottom to the top when its position byte overflows. Each column also has a maximal horizontal position (#SC.Y_MAX),
-; after which the starts will not be painted to avoid overlapping with the background image.
+; Because starfield moves together with Jetman, a new position for each star in this row is calculated by adding an offset value to each
+; start position with every move.
+; Each column rolls from the bottom to the top when its position byte overflows. Each column also has a maximal horizontal position 
+; (#SC.Y_MAX), after which the starts will not be painted to avoid overlapping with the background image.
 
 ST_PAL_FIRST_D1         = 1                     ; Offset for the first color used to blink star.
 
@@ -177,7 +177,7 @@ MoveStarsUp
 ;                      MoveStarsDown                       ;
 ;----------------------------------------------------------;
 MoveStarsDown
-    
+
     ; Move stars only if enabled.
     LD A, (starsState)
     CP ST_C_HIDDEN
@@ -311,7 +311,7 @@ _MoveStarsL2Up
     LD (starsMoveL2Delay), A
     CP 0
     RET NZ                                      ; Do not move yet, wait for 0.
-    
+
     ; Reset delay
     LD A, ST_L2_MOVE_DEL_D2
     LD (starsMoveL2Delay), A
@@ -439,9 +439,9 @@ _NextStarsColor
     ; Move HL to the next stars column.
     POP BC
     DJNZ .columnsLoop
-    
+
     CALL ShowStars
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -482,8 +482,7 @@ _RenderStars
 ;  - IX: Pointer to SC.
 ;  - IY: Points to the current max y postion for the star.
 _MoveAndRenderStarColumn
-    
-    ; ##########################################
+
     ; Assign image bank that will be modified to slot 6.
     LD A, (IX + SC.BANK)
     LD B, A
@@ -492,7 +491,9 @@ _MoveAndRenderStarColumn
     NEXTREG _MMU_REG_SLOT6_H56, A               ; Assign image bank to slot 6.
 
     ; ##########################################
-    ; DE will point to the address of the column that will contain starts. X_OFFSET * 256 = X_OFFSET * 255 + X_OFFSET.
+    ; DE will point to the address of the column that will contain starts.
+    ; The picture is coded horizontally, and each column contains 256 pixels. DE should point to the column given by SC.X_OFFSET ->
+    ; DE = SC.X_OFFSET * 256. However, the byte max value is 255, therefore, DE = SC.X_OFFSET * 255 + SC.X_OFFSET.
     LD D, (IX + SC.X_OFFSET)
     LD E, _SC_RESY1_D255
     MUL D, E
@@ -509,7 +510,7 @@ _MoveAndRenderStarColumn
     ADD HL, A
 
     ; ##########################################
-    ; Loop over stats and inject those into the image's column.
+    ; Loop over stars and inject those into the image's column.
     LD B, (IX + SC.SIZE)                        ; Number of pixels in this column = number of iterations.
     
     ; Register values:
@@ -531,7 +532,7 @@ _MoveAndRenderStarColumn
     JR NZ, .moveStar
 
     ; Only show the current star without movement?
-    LD A, (HL)                                  ; A contains current star position.
+    LD A, (HL)                                  ; A contains current star y-position.
     JR .showStar
 
 .moveStar
@@ -541,16 +542,16 @@ _MoveAndRenderStarColumn
     JR NZ, .afterMoveUp
     
     ; Move star up
-    LD A, (HL)                                  ; A contains current star position.
+    LD A, (HL)                                  ; A contains current star y-position.
     LD B, A                                     ; Keep the original star position before movement because we have to paint transparent pixel.
     DEC A
-    LD (HL), A                                  ; Store new star position.
+    LD (HL), A                                  ; Store new star y-position.
     JR .afterMoveDown
 
 .afterMoveUp
     ; Move star down
-    LD A, (HL)                                  ; A contains current star position.
-    LD B, A                                     ; Keep the original star position before movement because we have to paint transparent pixel.
+    LD A, (HL)                                  ; A contains current star y-position.
+    LD B, A                                     ; Keep the original star y-position before movement because we have to paint transparent pixel.
     INC A
     LD (HL), A                                  ; Store new star position.
 .afterMoveDown
@@ -611,7 +612,7 @@ _MoveAndRenderStarColumn
 ;                     _CanShowStar                         ;
 ;----------------------------------------------------------;
 ; Input 
-;  - B:  Star postion to be checked.
+;  - B:  Star y-postion to be checked.
 ;  - IY: Points to the current max y postion for the star.
 ; Output:
 ;  - A with value CANSS_XXX
@@ -621,8 +622,7 @@ CANSS_NO            = 0
 
 _CanShowStar
 
-    ; Load into C max star y-postion
-    LD A, (IY)                                  ; C contains max y-pos from.
+    LD A, (IY)                                  ; Load into A max star y-postion
 
     ; A holds max star y-position and B current
     CP B
