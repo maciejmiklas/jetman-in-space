@@ -270,16 +270,17 @@ MovePatternEnemies
 ; Respawn single or formation
 ; Input:
 ;  - IX: pointer to #SPR holding data for single enemy.
-; Output:
-;  - A:  _RET_YES_D1/_RET_NO_D0
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 
 ; Modifies: all
 RespawnPatternEnemy
 
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterVisibilityCheck                 ; Skip this sprite if it's already visible.
-    
-    LD A, _RET_NO_D0
+
+    OR 1                                        ; Return NO (Z set).
     RET
 .afterVisibilityCheck
     ; Sprite is hidden, check the dedicated delay before respawning.
@@ -297,7 +298,7 @@ RespawnPatternEnemy
     CP enp.RESPAWN_OFF
     JR NZ, .respawnOn
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .respawnOn
 
@@ -312,7 +313,7 @@ RespawnPatternEnemy
 
     LD (IY + ENP.RESPAWN_DELAY_CNT), A          ; The delay timer for the enemy is still ticking.
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .afterEnemyRespawnDelay
 
@@ -355,7 +356,7 @@ RespawnPatternEnemy
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
     CALL sr.ShowSprite
 
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -400,7 +401,7 @@ _PlayBounceAnimation
 ;----------------------------------------------------------;
 ; Input
 ;  - IY: pointer to #ENP holding data for single sprite.
-; Output:
+; Return:
 ;  - A: value of move delay counter for this pattern (bits 8-5).
 ; Modifies: A, HL
 _LoadMoveDelay
@@ -742,7 +743,7 @@ _MoveEnemy
 ; Load HL that points to the current move pattern
 ; Input
 ;  - IY: pointer to #ENP for current sprite
-; Output:
+; Return:
 ;  - HL: points to the current move pattern
 ; Modifies: A
 _LoadCurrentMoveStep

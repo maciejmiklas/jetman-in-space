@@ -45,7 +45,7 @@ LoadDefaultPalette
 ;----------------------------------------------------------;
 ; Input:
 ;  - BC: sieze of the palette in bytes.
-; Output:
+; Return:
 ;  - B: number of colors.
 BytesToColors
 
@@ -116,7 +116,7 @@ SetupPaletteLoad
 ;----------------------------------------------------------;
 ; Input
 ;  - DE: contains 9-bit color. D = xxxxxxx'B, E = RRR'GGG'BB.
-; Output:
+; Return:
 ;  - DE: given color with decremented brightness.
 BrightnessDown
 

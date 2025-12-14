@@ -114,8 +114,7 @@ RespawnFormation
     LD IX, ena.formationEnemySprites
     LD B, ena.ENEMY_FORMATION_SIZE
     CALL sr.CheckAnySpriteVisible
-    CP _RET_YES_D1                              ; Return if at least one sprite is visible.
-    RET Z
+    RET Z                                       ; Return if at least one sprite is visible.
 
 .afterStillAliveCheck
 
@@ -161,8 +160,7 @@ RespawnFormation
     MUL D, E
     ADD IX, DE                                  ; Now IX points to the current #SPR that should be deployed.
 
-    CALL enp.RespawnPatternEnemy
-    CP _RET_YES_D1                              ; Has the enemy respawned?
+    CALL enp.RespawnPatternEnemy                ; Has the enemy respawned?
     RET NZ                                      ; Enemy did not respawn, probably still waiting for #ENP.RESPAWN_DELAY_CNT.
 
     ; ##########################################

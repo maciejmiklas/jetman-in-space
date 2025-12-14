@@ -18,7 +18,6 @@ jetInactivityCnt        DB 0
 JoyMoveUp
 
     CALL _CanJetMove
-    CP _RET_YES_D1
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -36,9 +35,8 @@ JoyMoveUp
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
 
     ; ##########################################
     CALL _JoystickMoves
@@ -62,7 +60,6 @@ JoyMoveUp
 JoyMoveRight
 
     CALL _CanJetMove
-    CP _RET_YES_D1
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -80,9 +77,8 @@ JoyMoveRight
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
 
     ; ##########################################
     CALL _JoystickMoves
@@ -101,7 +97,6 @@ JoyMoveRight
 JoyMoveLeft
 
     CALL _CanJetMove
-    CP _RET_YES_D1
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -119,9 +114,8 @@ JoyMoveLeft
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
 
     ; ##########################################
     CALL _JoystickMoves 
@@ -140,7 +134,6 @@ JoyMoveLeft
 JoyMoveDown
 
     CALL _CanJetMove
-    CP _RET_YES_D1
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -166,10 +159,9 @@ JoyMoveDown
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
-    
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
+
     ; ##########################################
     CALL _JoystickMoves
 
@@ -205,7 +197,6 @@ JoyMoveDownRelease
 JoystickMoveProcessed
 
     CALL jm._CanJetMove
-    CP _RET_YES_D1
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -243,10 +234,9 @@ JoystickMoveProcessed
 ;                     _JoyCntEnabled                       ;
 ;----------------------------------------------------------;
 ; Disable joystick and, therefore, control over the Jetman.
-; Output:
-;   A containing one of the values:
-;     - _RET_YES_D1:        Process joystick input.
-;     - _RET_NO_D0: Disable joystick input processing for this loop.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 _JoyCntEnabled
 
     LD A, (gid.joyOffCnt)
@@ -279,46 +269,48 @@ _JoyCntEnabled
     CP pl.PL_BUMP_JOY_DEC_D1+1
     JR C, .joyEnabled
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET                                         ; Do not process input, as the joystick is disabled.
 
 .joyEnabled                                     ; Process input.
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              _JoyJetpackOverheatSlowdown                 ;
+;               _SholdProcessJoyOnOverheat                 ;
 ;----------------------------------------------------------;
 ; Slow down joystick input and, therefore, the speed of Jetman's movement when jetpack has overheated.
-; Output:
-;   A containing one of the values:
-;     - _RET_YES_D1:        Process joystick input.
-;     - _RET_NO_D0: Disable joystick input processing for this loop.
-_JoyJetpackOverheatSlowdown
+; Return:
+;  - YES: Process joystick input, Z is reset (JP Z).
+;  - NO:  Disable joystick input processing for this loop, Z is set (JP NZ).
+_SholdProcessJoyOnOverheat
     LD A, (jt.jetState)
     CP jt.JETST_OVERHEAT
-    RET NZ
+    JR NZ, .yes
 
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE
-    RET NZ
-    
+    JR NZ, .yes
+
     LD A, (mld.counter000FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .delayReached
 
-    LD A, _RET_NO_D0                            ; Return because #joyDelayCnt !=  #pl.PL_JOY_DELAY
+    ; Return because #joyDelayCnt !=  #pl.PL_JOY_DELAY
+    OR 1                                        ; Return NO (Z set).
     RET
 .delayReached                                   ; Delay counter has been reached.
 
     XOR A                                       ; Set A to 0.
     LD (gid.joyOverheatDelayCnt), A             ; Reset delay counter.
-    LD A, _RET_YES_D1                           ; Process input, because counter has been reached.
+
+    ; Process input, because counter has been reached.
+
+.yes
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
-
-extraMove   DB 0
 
 ;----------------------------------------------------------;
 ;                     _JoystickMoves                       ;
@@ -379,15 +371,13 @@ _StandToWalk
 ;----------------------------------------------------------;
 ;                      _CanJetMove                         ;
 ;----------------------------------------------------------;
-; Output:
-;   A containing one of the values:
-;     - _RET_YES_D1:        Process joystick input.
-;     - _RET_NO_D0: Disable joystick input processing for this loop.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 _CanJetMove
 
     CALL _JoyCntEnabled
-    CP _RET_NO_D0
-    RET Z
+    RET NZ
 
     ; ##########################################
     ; Joystick disabled if Jetman is inactive.
@@ -396,9 +386,9 @@ _CanJetMove
     JR NZ, .jetActive
 
     ; Do not process input.
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
-.jetActive  
+.jetActive
 
     ; ##########################################
     LD A, (jt.jetState)
@@ -406,14 +396,13 @@ _CanJetMove
     JR NZ, .afterRip                            ; Do not process input if Jetman is dying.
 
     ; Do not process input, Jet is dying.
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .afterRip
 
     ; ##########################################
     ; Process input
-
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 

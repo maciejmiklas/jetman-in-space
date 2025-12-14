@@ -89,8 +89,7 @@ UpdatePickupsOnJetmanMove
     LD A, (deployedY)                           ; Y of the element.
     LD D, A
     CALL jco.JetmanElementCollision
-    CP _RET_NO_D0
-    RET Z
+    RET NZ
 
     ; ##########################################
     ; Jetman got a pickup! Now call the right callback.

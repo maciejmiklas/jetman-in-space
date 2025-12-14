@@ -193,13 +193,11 @@ UpdateRocketOnJetmanMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      IsFuelDeployed                    ;
+;                        IsFuelDeployed                    ;
 ;----------------------------------------------------------;
-; Output:
-;  - A: _RET_YES_D1 or _RET_NO_D0
-
-;_RET_YES_D1             = 1
-;_RET_NO_D0              = 0
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 IsFuelDeployed
 
     LD A, (rocketElementCnt)
@@ -218,11 +216,11 @@ IsFuelDeployed
     JR Z, .isFuel
 
 .notFuel
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 
 .isFuel
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -241,8 +239,7 @@ CheckHitTank
 
     ; Is the thank out there?
     CALL IsFuelDeployed
-    CP _RET_NO_D0
-    RET Z
+    RET NZ
 
     ; Is tank already exploding?
     LD A, (rocketState)
@@ -688,8 +685,7 @@ _PickupRocketElement
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
     CALL jco.JetmanElementCollision
-    CP _RET_NO_D0
-    RET Z
+    RET NZ
 
      ; ##########################################
     ; Call game command with pickup info.
@@ -828,8 +824,7 @@ _BoardRocket
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
     CALL jco.JetmanElementCollision
-    CP _RET_NO_D0
-    RET Z
+    RET NZ
 
     ; ##########################################
     ; Jetman boards the rocket!

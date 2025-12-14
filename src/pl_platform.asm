@@ -269,7 +269,7 @@ ResetJoyOffBump
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
-; Output:
+; Return:
 ;  - A:  #PL_HIT_YES/ #PL_HIT_NO
 PlatformSpriteHit
 
@@ -282,7 +282,7 @@ PlatformSpriteHit
 ; Check whether the sprite (#SPR) given by IX gets close the platforms.
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
-; Output:
+; Return:
 ;  - A:  #PL_HIT_YES/ #PL_HIT_NO
 PlatformSpriteClose
 
@@ -295,7 +295,7 @@ PlatformSpriteClose
 ; Check whether the sprite (#SPR) given by IX hits one of the platforms.
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
-; Output:
+; Return:
 ;  - A:  #PL_HIT_YES/ #PL_HIT_NO
 CheckPlatformWeaponHit
 
@@ -429,7 +429,7 @@ PlatformBounceOff
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA list
 ;  - B:  number of elements in #PLA list
-; Output:
+; Return:
 ;  - A:  #PL_DHIT_RET_XXX
 ;  - B:  platform counter set to the current platform. The counter starts with the number (inclusive) of platforms and counts toward 1 (inclusive).
 PL_DHIT_NO              = 0                     ; No collision.
@@ -450,13 +450,10 @@ PlatformDirectionHit
     CALL _CheckPlatformHitLeft
     POP BC
 
-    CP _RET_YES_D1
     JR NZ, .afterHitLeft
 
     ; We have a hit from the left side, now check whether Jetman is within the vertical bounds of the platform.
     CALL _CheckPlatformHitVertical
-
-    CP _RET_YES_D1
     JR NZ, .afterHitLeft
 
     LD A, PL_DHIT_LEFT
@@ -470,13 +467,10 @@ PlatformDirectionHit
     CALL _CheckPlatformHitRight
     POP BC
 
-    CP _RET_YES_D1
     JR NZ, .afterHitRight
 
     ; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
     CALL _CheckPlatformHitVertical
-
-    CP _RET_YES_D1
     JR NZ, .afterHitRight
 
     LD A, PL_DHIT_RIGHT
@@ -487,7 +481,6 @@ PlatformDirectionHit
     ; Check the collision from the top side of the platform.
 
     CALL _CheckPlatformHitTop
-    CP _RET_YES_D1
     JR NZ, .afterHitTop
 
     ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
@@ -495,7 +488,6 @@ PlatformDirectionHit
     CALL _CheckPlatformHitHorizontal
     POP BC
 
-    CP _RET_YES_D1
     JR NZ, .afterHitTop
 
     LD A, PL_DHIT_TOP
@@ -506,7 +498,6 @@ PlatformDirectionHit
     ; Check the collision from the bottom side of the platform.
 
     CALL _CheckPlatformHitBottom
-    CP _RET_YES_D1
     JR NZ, .afterHitBottom
 
     ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
@@ -514,7 +505,6 @@ PlatformDirectionHit
     CALL _CheckPlatformHitHorizontal
     POP BC
 
-    CP _RET_YES_D1
     JR NZ, .afterHitBottom
 
     LD A, PL_DHIT_BOTTOM
@@ -648,7 +638,7 @@ JetFallingFromPlatform
 ;  - IY: pointer to #PLA list.
 ;  - B:  number of elements in #PLA list.
 ;  - IX: pointer to #PLAM.
-; Output:
+; Return:
 ;  - A:  PL_HIT_RET_XXX
 ;  - B:  the current value of the platform counter. It counts from the maximum amount of platforms to zero.
 ;  - IY: set to current platform.
@@ -750,7 +740,7 @@ _PlatformHit
 ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-; Output:
+; Return:
 ;  - A:  sprite's Y coordinate.
 ; Modifies: DE
 _LoadSpriteYtoA
@@ -770,8 +760,9 @@ _LoadSpriteYtoA
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
-;  - A:  #_RET_NO_D0/#_RET_YES_D1
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 ; Modifies: C
 _CheckPlatformHitTop
 
@@ -788,10 +779,11 @@ _CheckPlatformHitTop
     CP C
     JR Z, .keepChecking                         ; Jump if A (sprite Y) == C.
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
-    
-    LD A, _RET_NO_D0                            ;  A (sprite Y) > C -> no collision.
+
+    ;  A (sprite Y) > C -> no collision.
+    OR 1                                        ; Return NO (Z set).
     RET
-    
+
 .keepChecking
 
     ; ##########################################
@@ -806,10 +798,10 @@ _CheckPlatformHitTop
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
     
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .hit
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -822,8 +814,9 @@ _CheckPlatformHitTop
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM.
 ;  - IY: pointer to #PLA.
-; Output:
-;  - A:  #_RET_NO_D0/#_RET_YES_D1
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 ; Modifies: C
 _CheckPlatformHitBottom
     
@@ -836,9 +829,10 @@ _CheckPlatformHitBottom
 
     CP C
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
-    
-    LD A, _RET_NO_D0                            ;  A (sprite Y) > C -> no collision.
-    RET 
+
+    ;  A (sprite Y) > C -> no collision.
+    OR 1                                        ; Return NO (Z set).
+    RET
 .keepChecking
 
     ; ##########################################
@@ -853,11 +847,11 @@ _CheckPlatformHitBottom
 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
-    
-    LD A, _RET_NO_D0
+
+    OR 1                                        ; Return NO (Z set).
     RET
 .hit
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -870,8 +864,9 @@ _CheckPlatformHitBottom
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
-;  - A:  #_RET_NO_D0/#_RET_YES_D1
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 ; Modifies: BC, DE
 _CheckPlatformHitLeft
 
@@ -893,7 +888,8 @@ _CheckPlatformHitLeft
     POP HL
     JP M, .keepChecking
 
-    LD A, _RET_NO_D0                            ; HL(sprite X) - DE > 0 -> No collision.
+    ; HL(sprite X) - DE > 0 -> No collision.
+    OR 1                                        ; Return NO (Z set).
     RET
 .keepChecking
 
@@ -911,10 +907,10 @@ _CheckPlatformHitLeft
     POP HL
     JP M, .hit
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .hit
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -927,8 +923,9 @@ _CheckPlatformHitLeft
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
-;  - A:  #_RET_NO_D0/#_RET_YES_D1
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 ; Modifies: BC, DE
 _CheckPlatformHitRight
 
@@ -945,8 +942,9 @@ _CheckPlatformHitRight
     SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
     POP HL
     JP M, .keepChecking
-    
-    LD A, _RET_NO_D0                            ; HL(sprite X) - DE > 0 -> No collision.
+
+    ; HL(sprite X) - DE > 0 -> No collision.
+    OR 1                                        ; Return NO (Z set).`
     RET
 .keepChecking
 
@@ -966,10 +964,10 @@ _CheckPlatformHitRight
     POP HL
     JP M, .hit
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .hit
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -982,8 +980,9 @@ _CheckPlatformHitRight
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
-;  - A:  #_RET_NO_D0/#_RET_YES_D1
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 ; Modifies: BC, DE
 _CheckPlatformHitHorizontal
 
@@ -1000,8 +999,9 @@ _CheckPlatformHitHorizontal
     SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
     POP HL
     JP M, .keepChecking
-    
-    LD A, _RET_NO_D0                            ; HL(sprite X) - DE > 0 -> No collision.
+
+    ; HL(sprite X) - DE > 0 -> No collision.
+    OR 1                                        ; Return NO (Z set).
     RET
 .keepChecking
 
@@ -1019,10 +1019,10 @@ _CheckPlatformHitHorizontal
     POP HL
     JP M, .hit
 
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .hit
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -1035,8 +1035,9 @@ _CheckPlatformHitHorizontal
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IX: pointer to #PLAM
 ;  - IY: pointer to #PLA
-; Output:
-;  - A:     #_RET_NO_D0/#_RET_YES_D1
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 _CheckPlatformHitVertical
 
     ; Check [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM] > [sprite Y] > [sprite Y]
@@ -1048,8 +1049,9 @@ _CheckPlatformHitVertical
 
     CP C
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
-    
-    LD A, _RET_NO_D0                            ; A (sprite Y) > C -> no collision.
+
+    ; A (sprite Y) > C -> no collision.
+    OR 1                                        ; Return NO (Z set).`
     RET
     
 .keepChecking
@@ -1065,11 +1067,11 @@ _CheckPlatformHitVertical
 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
-    
-    LD A, _RET_NO_D0
+
+    OR 1                                        ; Return NO (Z set).
     RET
 .hit
-    LD A, _RET_YES_D1
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 
@@ -1080,7 +1082,7 @@ _CheckPlatformHitVertical
 ; Input:
 ;  - IX: pointer to #SPR, single sprite to check collision for.
 ;  - IY: pointer to #PLAM
-; Output:
+; Return:
 ;  - A:     #PL_HIT_YES/ #PL_HIT_NO
 _PlatformSpriteHit
     CALL dbs.SetupArrays2Bank

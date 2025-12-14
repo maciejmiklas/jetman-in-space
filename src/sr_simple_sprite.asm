@@ -81,17 +81,15 @@ srSpriteDB
     SPR_REC {SDB_BOUNCE_TOPA, SDB_ENEMY1A-SDB_SUB, 6}
             DB 48, 49, 50, 48, 49, 50
 
-
 ;----------------------------------------------------------;
 ;                 #CheckAnySpriteVisible                   ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: pointer to #SPR.
 ;  - B:  number of sprites.
-; Output:
-;  - A:
-;      - _RET_YES_D1: At least one sprite visible.
-;      - _RET_NO_D0:  All sprites are hidden.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 CheckAnySpriteVisible
 
 .sprLoop
@@ -100,8 +98,7 @@ CheckAnySpriteVisible
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden).
 
     ; Sprite is visible!
-    LD A, _RET_YES_D1
-    
+    XOR A                                       ; Return YES (Z is reset).
     RET
 
 .continue
@@ -109,9 +106,9 @@ CheckAnySpriteVisible
     ADD DE, SPR
     LD IX, DE
     DJNZ .sprLoop
-    
+
     ; All sprites are hidden, otherwise, we would have found one in the loop.
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
 
     RET                                         ; ## END of the function ##
 
@@ -129,7 +126,7 @@ ResetSprite
     LD (IX + SPR.STATE), A
     LD (IX + SPR.NEXT), A
     LD (IX + SPR.REMAINING), A
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -521,7 +518,7 @@ MoveX
 ;  - A:  MOVE_Y_IN_XXX
 MOVE_Y_IN_UP                = 1                 ; Move up
 MOVE_Y_IN_DOWN              = 0                 ; Move down
-; Output:
+; Return:
 ;  - A:     MOVE_RET_XXX
 MOVE_RET_VISIBLE            = 1                 ; Sprite is still visible.
 MOVE_RET_HIDDEN             = 0                 ; Sprite outside screen, or hits ground.
