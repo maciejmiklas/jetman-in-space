@@ -234,7 +234,6 @@ _EnemyCollision
     LD E, 0
     LD D, MARG_VERT_KICK_D25
     CALL _CheckCollision
-    CP _RET_YES_D1
     JR NZ, .noKicking
     
     ; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already.
@@ -269,7 +268,6 @@ _EnemyCollision
     LD D, MARG_VERT_UP_D18
     LD E, MARG_VERT_LOW_D15
     CALL _CheckCollision
-    CP _RET_YES_D1
     RET NZ
 
     ; We have collision!
@@ -346,10 +344,8 @@ _RipMove
 ;  - D:  upper thickness of the enemy (enemy above Jetman).
 ;  - E:  lower thickness of the enemy (enemy below Jetman).
 ; Return:
-;  - A:     _RET_NO_D0 or _RET_YES_D1.
-_RET_NO_D0            = 0
-_RET_YES_D1           = 1
-
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 _CheckCollision
 
     ; Compare X coordinate of enemy and Jetman
@@ -362,14 +358,17 @@ _CheckCollision
     LD A, H
     CP 0
     JR Z, .keepCheckingHorizontal               ; HL > 256 -> no collision.
-    LD A, _RET_NO_D0
-    RET     
+
+    OR 1                                        ; Return NO (Z set).
+    RET
 .keepCheckingHorizontal 
     LD A, L
     LD B, MARG_HOR_D12
     CP B
     JR C, .checkVertical                        ; Jump if there is horizontal collision, check vertical.
-    LD A, _RET_NO_D0                            ; L >= D (Horizontal thickness of the enemy) -> no collision.
+
+    ; L >= D (Horizontal thickness of the enemy) -> no collision.
+    OR 1                                        ; Return NO (Z set).
     RET
 .checkVertical
 
@@ -400,11 +399,11 @@ _CheckCollision
     JR .noCollision
 
 .noCollision
-    LD A, _RET_NO_D0
+    OR 1                                        ; Return NO (Z set).
     RET
 .collision
-    LD A, _RET_YES_D1
-    
+    XOR A                                       ; Return YES (Z is reset).
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
