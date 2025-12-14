@@ -488,7 +488,6 @@ PlatformDirectionHit
     CALL _CheckPlatformHitHorizontal
     POP BC
 
-    CP _RET_YES_D1
     JR NZ, .afterHitTop
 
     LD A, PL_DHIT_TOP
@@ -507,7 +506,6 @@ PlatformDirectionHit
     CALL _CheckPlatformHitHorizontal
     POP BC
 
-    CP _RET_YES_D1
     JR NZ, .afterHitBottom
 
     LD A, PL_DHIT_BOTTOM
