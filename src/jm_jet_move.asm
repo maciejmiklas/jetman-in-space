@@ -35,9 +35,8 @@ JoyMoveUp
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
 
     ; ##########################################
     CALL _JoystickMoves
@@ -78,9 +77,8 @@ JoyMoveRight
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
 
     ; ##########################################
     CALL _JoystickMoves
@@ -116,9 +114,8 @@ JoyMoveLeft
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
 
     ; ##########################################
     CALL _JoystickMoves 
@@ -162,10 +159,9 @@ JoyMoveDown
 .afterDirectionChange
 
     ; ##########################################
-    CALL _JoyJetpackOverheatSlowdown
-    CP _RET_NO_D0
-    RET Z
-    
+    CALL _SholdProcessJoyOnOverheat
+    RET NZ
+
     ; ##########################################
     CALL _JoystickMoves
 
@@ -282,37 +278,39 @@ _JoyCntEnabled
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              _JoyJetpackOverheatSlowdown                 ;
+;               _SholdProcessJoyOnOverheat                 ;
 ;----------------------------------------------------------;
 ; Slow down joystick input and, therefore, the speed of Jetman's movement when jetpack has overheated.
 ; Return:
-;   A containing one of the values:
-;     - _RET_YES_D1:        Process joystick input.
-;     - _RET_NO_D0: Disable joystick input processing for this loop.
-_JoyJetpackOverheatSlowdown
+;  - YES: Process joystick input, Z is reset (JP Z).
+;  - NO:  Disable joystick input processing for this loop, Z is set (JP NZ).
+_SholdProcessJoyOnOverheat
     LD A, (jt.jetState)
     CP jt.JETST_OVERHEAT
-    RET NZ
+    JR NZ, .yes
 
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE
-    RET NZ
-    
+    JR NZ, .yes
+
     LD A, (mld.counter000FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .delayReached
 
-    LD A, _RET_NO_D0                            ; Return because #joyDelayCnt !=  #pl.PL_JOY_DELAY
+    ; Return because #joyDelayCnt !=  #pl.PL_JOY_DELAY
+    OR 1                                        ; Return NO (Z set).
     RET
 .delayReached                                   ; Delay counter has been reached.
 
     XOR A                                       ; Set A to 0.
     LD (gid.joyOverheatDelayCnt), A             ; Reset delay counter.
-    LD A, _RET_YES_D1                           ; Process input, because counter has been reached.
+
+    ; Process input, because counter has been reached.
+
+.yes
+    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
-
-extraMove   DB 0
 
 ;----------------------------------------------------------;
 ;                     _JoystickMoves                       ;
