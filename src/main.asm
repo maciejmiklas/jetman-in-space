@@ -84,6 +84,7 @@ mainLoop
     INCLUDE "jm_jet_move.asm"
     INCLUDE "jw_jet_weapon.asm"
     INCLUDE "ro_rocket.asm"
+    INCLUDE "roa_rocket_assembly.asm"
     INCLUDE "rof_rocket_fly.asm"
     INCLUDE "ros_rocket_stars.asm"
     INCLUDE "td_times_of_day.asm"

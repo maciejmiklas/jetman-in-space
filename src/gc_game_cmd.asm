@@ -454,7 +454,7 @@ RocketElementPickup
 
     ; ##########################################
     ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element.
-    CALL ro.IsFuelDeployed
+    CALL roa.IsFuelDeployed
     JR NZ, .notFuelTank
 
     LD A, af.FX_PICKUP_FUEL
@@ -808,7 +808,7 @@ RespawnJet
     CALL jco.MakeJetInvincible
 
     CALL bg.UpdateBackgroundOnJetmanMove
-    CALL ro.ResetCarryingRocketElement
+    CALL roa.ResetCarryingRocketElement
     CALL jw.HideShots
     CALL jo.ResetJetpackOverheating
 
@@ -1029,7 +1029,7 @@ JetLanding
 ; Called on any Jetman movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
 JetMoves
 
-    CALL ro.UpdateRocketOnJetmanMove
+    CALL roa.UpdateRocketOnJetmanMove
     CALL jl.UpdateLifeFaceOnJetMove
 
     CALL dbs.SetupArrays2Bank
@@ -1259,7 +1259,7 @@ _HideGame
 
     CALL bm.HideImage
     CALL js.HideJetSprite
-    CALL ro.ResetAndDisableRocket
+    CALL roa.ResetAndDisableRocket
     CALL rof.ResetAndDisableFlyRocket
     CALL st.HideStars
     CALL jw.HideShots
@@ -1311,7 +1311,7 @@ _StartLevel
 
     CALL gb.ShowGameBar
     CALL sc.PrintScore
-    CALL ro.StartRocketAssembly
+    CALL roa.StartRocketAssembly
     CALL ti.SetTilesClipFull
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
