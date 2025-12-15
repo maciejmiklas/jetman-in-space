@@ -75,6 +75,9 @@ rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to
 FLY_SOUND_REPEAT        = 20
 soundRepeatDelay        DB FLY_SOUND_REPEAT
 
+DELAY_TILE              = 5
+decTileDelayCnt         DB DELAY_TILE
+
 ;----------------------------------------------------------;
 ;               ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
@@ -349,7 +352,7 @@ _ControlFlyingRocket
     ; ##########################################
     CALL ro.UpdateRocketPosition
 
-    CALL gc.RocketFlying
+    CALL gc.RocketFLyPhase4
     CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
 
     RET                                         ; ## END of the function ##
@@ -417,7 +420,7 @@ _MoveFlyingRocket
 
     CP PHASE_4
     JR C, .notFlygin
-    CALL gc.RocketFlying
+    CALL gc.RocketFLyPhase4
     CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
 .notFlygin
 
@@ -462,7 +465,6 @@ _MoveFlyingRocket
     CALL ro.UpdateRocketPosition
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                _StartRocketExplosion                     ;
@@ -642,9 +644,13 @@ _JoyDown
 
     LD A, (ro.rocY)
     INC A
+    INC A
     LD (ro.rocY), A
 
+    CALL ros.PauseScrollStars
+
     RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                      _JoyLeft                            ;
@@ -654,6 +660,18 @@ _JoyLeft
     LD A, (ro.rocX)
     DEC A
     LD (ro.rocX), A
+
+    ; ##########################################
+    LD A, (decTileDelayCnt)
+    DEC A
+    CP 0
+    JR NZ, .afterDec
+
+    CALL ros.DecTileOffsetX
+
+    LD A, DELAY_TILE
+.afterDec
+    LD (decTileDelayCnt), A
 
     RET                                         ; ## END of the function ##
 
@@ -665,6 +683,18 @@ _JoyRight
     LD A, (ro.rocX)
     INC A
     LD (ro.rocX), A
+
+    ; ##########################################
+    LD A, (decTileDelayCnt)
+    DEC A
+    CP 0
+    JR NZ, .afterDec
+
+    CALL ros.IncTileOffsetX
+
+    LD A, DELAY_TILE
+.afterDec
+    LD (decTileDelayCnt), A
 
     RET                                         ; ## END of the function ##
 

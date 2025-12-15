@@ -129,7 +129,6 @@ SetRocketXSpriteCoordinate
 
     ; Set overflow bit from X position.
     LD A, B                                     ; Load MSB from X into A.
-    AND %00000001                               ; Keep only an overflow bit.
     NEXTREG _SPR_REG_ATR2_H37, A
 
     RET                                         ; ## END of the function ##

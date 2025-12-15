@@ -282,12 +282,12 @@ MoveFuelThief
 
     ; Set sprite X coordinate.
     LD BC, (IX + SPR.X)
-    LD A, C     
+    LD A, C
     NEXTREG _SPR_REG_X_H35, A
     
     ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
     LD A, B                                     ; Load MSB from X into A.
-    AND %00000001                               ; Keep only an overflow bit.
+    AND _OVERFLOW_BIT                           ; Keep only an overflow bit.
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; Set Y coordinate

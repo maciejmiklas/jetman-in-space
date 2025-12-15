@@ -37,7 +37,7 @@ ST_MOVE_DOWN            = 4
 
 starsState              DB ST_SHOW
 
-ST_L1_MOVE_DEL_D10      = 10                     ; Stars move delay for layer 1.
+ST_L1_MOVE_DEL_D10      = 8                      ; Stars move delay for layer 1.
 ST_L2_MOVE_DEL_D2       = 2                      ; Stars move delay for layer 2.
 
 starsMoveL1Delay        DB ST_L1_MOVE_DEL_D10    ; Delay counter for stars on layer 1 (there are 2 layers of stars).

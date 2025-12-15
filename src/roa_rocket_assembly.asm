@@ -613,7 +613,6 @@ _MoveWithJetman
     
     ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
     LD A, B                                     ; Load MSB from X into A.
-    AND %00000001                               ; Keep only an overflow bit.
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; ##########################################
