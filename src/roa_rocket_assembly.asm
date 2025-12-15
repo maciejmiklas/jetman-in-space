@@ -65,51 +65,6 @@ SetupRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                AssemblyRocketForDebug                    ;
-;----------------------------------------------------------;
-AssemblyRocketForDebug
-    CALL dbs.SetupArrays2Bank
-
-    LD A, EL_TANK6_D9
-    LD (rocketElementCnt), A
-
-    LD A, ro.ROST_READY
-    LD (ro.rocketState), A
-
-    LD A, 1
-    LD IX, (ro.rocketElPtr)
-
-    LD A, 201
-    LD (ro.rocY), A
-
-/*
-    CALL ro.MoveIXtoGivenRocketElement
-    LD (IX + ro.RO.Y), 233
-
-    LD A, 2
-    LD IX, (rocketElPtr)
-    CALL ro.MoveIXtoGivenRocketElement
-    LD (IX + ro.RO.Y), 217
-
-    LD A, 3
-    LD IX, (rocketElPtr)
-    CALL ro.MoveIXtoGivenRocketElement
-    LD (IX + ro.RO.Y), 201
-*/
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   StartRocketAssembly                    ;
-;----------------------------------------------------------;
-StartRocketAssembly
-    CALL dbs.SetupArrays2Bank
-
-    LD A, ro.ROST_WAIT_DROP
-    LD (ro.rocketState), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 ResetAndDisableRocket                    ;
 ;----------------------------------------------------------;
 ResetAndDisableRocket
@@ -119,8 +74,8 @@ ResetAndDisableRocket
     LD (rocAssemblyX), A
     LD (ro.rocX), A
     LD (ro.rocY), A
-    LD (dropNextDelay), A
     LD (ro.rocketState), A
+    LD (dropNextDelay), A
     LD (explodeTankCnt), A
     LD (rocketElementCnt), A
 
@@ -140,6 +95,34 @@ ResetAndDisableRocket
     ADD DE, ro.RO
     LD IX, DE
     DJNZ .rocketElLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                AssemblyRocketForDebug                    ;
+;----------------------------------------------------------;
+AssemblyRocketForDebug
+    CALL dbs.SetupArrays2Bank
+
+    LD A, EL_TANK6_D9
+    LD (rocketElementCnt), A
+
+    LD A, ro.ROST_READY
+    LD (ro.rocketState), A
+
+    LD A, 201
+    LD (ro.rocY), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   StartRocketAssembly                    ;
+;----------------------------------------------------------;
+StartRocketAssembly
+    CALL dbs.SetupArrays2Bank
+
+    LD A, ro.ROST_WAIT_DROP
+    LD (ro.rocketState), A
 
     RET                                         ; ## END of the function ##
 
@@ -507,9 +490,9 @@ DropNextRocketElement
     CALL _SetIXtoCurrentRocketElement
 
     ; Reset Y for element/tank to top of the screen.
-    XOR A                                       ; Set A to 0
-    LD (IX + ro.RO.Y), A
-    
+    XOR A
+    LD (ro.rocX), A
+
     RET                                         ; ## END of the function ##]
 
 ;----------------------------------------------------------;
@@ -710,6 +693,7 @@ _ResetRocketElement
 ;                     _BoardRocket                         ;
 ;----------------------------------------------------------;
 _BoardRocket
+
     CALL dbs.SetupArrays2Bank
 
     ; Return if rocket is not ready for boarding.
@@ -721,9 +705,9 @@ _BoardRocket
     ; Jetman collision with first (lowest) rocket element triggers liftoff.
     LD IX, (ro.rocketElPtr)
 
-    LD BC, (rocAssemblyX)                  ; X of the element.
+    LD BC, (rocAssemblyX)                       ; X of the element.
     LD B, 0
-    LD A, (ro.rocY)                           ; Y of the element.
+    LD A, (ro.rocY)                             ; Y of the element.
     LD D, A
     CALL jco.JetmanElementCollision
     RET NZ

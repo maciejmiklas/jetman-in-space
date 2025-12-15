@@ -51,7 +51,7 @@ UpdateJetSpritePositionRotation
     LD BC, (jpo.jetX)
 
     ; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion
-    LD A, C         
+    LD A, C
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     NEXTREG _SPR_REG_X_H35, A                   ; Set LSB from BC (X)
 

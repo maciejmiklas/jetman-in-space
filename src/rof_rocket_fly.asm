@@ -175,7 +175,7 @@ FlyRocket
 
     ; Sprite Y coordinate
     LD IX, (ro.rocketElPtr)
-    LD A, (IX + ro.RO.Y)                        ; Lowest rocket element + 16px.
+   ;!!! LD A, (IX + ro.RO.Y)                        ; Lowest rocket element + 16px.
     ADD A, FLAME_OFFSET_D16
     NEXTREG _SPR_REG_Y_H36, A
 
@@ -461,7 +461,7 @@ _MoveFlyingRocket
 
     ; ##########################################
     ; Move bottom rocket element.
-    DEC (IX + ro.RO.Y)
+    ;!!! DEC (IX + ro.RO.Y)
 
     ;!!! LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition
@@ -471,7 +471,7 @@ _MoveFlyingRocket
     LD A, ro.EL_MID_D2
     CALL ro.MoveIXtoGivenRocketElement
 
-    DEC (IX + ro.RO.Y)
+   ;!!!  DEC (IX + ro.RO.Y)
 
     ;!!! LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition
@@ -481,7 +481,7 @@ _MoveFlyingRocket
     LD A, ro.EL_TOP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
-    DEC (IX + ro.RO.Y)
+   ;!!!  DEC (IX + ro.RO.Y)
 
     ;!!! LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition

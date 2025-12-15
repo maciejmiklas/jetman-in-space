@@ -18,9 +18,6 @@ DROP_LAND_Y             DB                      ; Y coordinates where the droppe
 ASSEMBLY_Y              DB                      ; Height where given rocket element should land for assembly.
 SPRITE_ID               DB                      ; Hardware ID of the sprite.
 SPRITE_REF              DB                      ; Sprite pattern number from the sprite file.
-
-; Values set in program
-Y                       DB                      ; Current Y position
     ENDS
 
 rocketState             DB ROST_INACTIVE
@@ -51,7 +48,6 @@ rocX                    DW 0                    ; 0-320px
 rocY                    DB 0                    ; 0-256px
 
 rocketElPtr            DW 0                     ; Pointer to 9x ro.RO.
-
 
 ;----------------------------------------------------------;
 ;                 MoveIXtoGivenRocketElement               ;
@@ -102,11 +98,16 @@ UpdateElementPosition
     CALL UpdateRocketSpritePattern
 
     ; ##########################################
-    ; Sprite X coordinate from A param.
-    LD A, (rocX) ; TODO - MSB + FSB
+    ; Set Rocket sprite X coordinate.
+    LD BC, (rocX)
+
+    ; Set MSB from X position.
+    LD A, C
     NEXTREG _SPR_REG_X_H35, A
 
-    LD A, _SPR_REG_ATR2_EMPTY
+    ; Set overflow bit from X position.
+    LD A, B                                     ; Load MSB from X into A.
+    AND %00000001                               ; Keep only an overflow bit.
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; ##########################################
