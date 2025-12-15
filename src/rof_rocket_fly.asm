@@ -55,7 +55,6 @@ PHASE_2_3               = %00000110
 
 rocketFlyPhase          DB PHASE_0
 
-FLAME_OFFSET_D16        = 16
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
@@ -161,22 +160,18 @@ FlyRocket
      CALL ti.ShakeTilemap
 
 .afterPhaseCase
+
     ; ##########################################
     ; Set X/Y coordinates for flames coming out of the exhaust.
     LD A, EXHAUST_SPRID_D83
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
-    ; Sprite X coordinate from assembly location.
-   ;!!! LD A, (ro.rocAssemblyX)
-    NEXTREG _SPR_REG_X_H35, A
-
-    LD A, _SPR_REG_ATR2_EMPTY
-    NEXTREG _SPR_REG_ATR2_H37, A
+    ; Sprite X coordinate.
+    CALL ro.SetRocketXSpriteCoordinate
 
     ; Sprite Y coordinate
-    LD IX, (ro.rocketElPtr)
-   ;!!! LD A, (IX + ro.RO.Y)                        ; Lowest rocket element + 16px.
-    ADD A, FLAME_OFFSET_D16
+    LD A, (ro.rocY)
+    ADD ro.OFS_FLAME_D16
     NEXTREG _SPR_REG_Y_H36, A
 
     RET                                         ; ## END of the function ##
@@ -185,9 +180,10 @@ FlyRocket
 ;                    BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
 BlinkFlyingRocket
+
     CALL dbs.SetupArrays2Bank
 
-    LD A, ro.EL_LOW_D1
+    LD A, ro.EL_EXH_D1
     CALL ro.MoveIXtoGivenRocketElement
 
     ; Set sprite pattern - one for flip, one for flop -> rocket will blink.
@@ -216,6 +212,7 @@ AnimateRocketExplosion
     LD A, (rocketExplodeCnt)
     CP RO_EXPLODE_MAX
     JR Z, .explodingEnds
+
     ; Nope, keep exploding.
 
     ; ##########################################
@@ -227,7 +224,7 @@ AnimateRocketExplosion
     ; ##########################################
     ; Animation for the top rockets element.
     LD IX, (ro.rocketElPtr)
-    LD A, ro.EL_TOP_D3
+    LD A, ro.EL_TIP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
     ; Move HL to current frame.
@@ -257,7 +254,7 @@ AnimateRocketExplosion
     ; ##########################################
     ; Animation for the bottom rockets element.
     LD IX, (ro.rocketElPtr)
-    LD A, ro.EL_LOW_D1
+    LD A, ro.EL_EXH_D1
     CALL ro.MoveIXtoGivenRocketElement
 
     ; Move HL to current frame.
@@ -351,7 +348,7 @@ _ControlFlyingRocket
     LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
 
     ; Rocket did not move, but keep updating the lower part to keep blinking animation.
-    ;!!!! LD A, (ro.rocAssemblyX)
+    XOR A
     CALL ro.UpdateElementPosition
 
     ; ##########################################
@@ -451,8 +448,8 @@ _MoveFlyingRocket
     JR C, .keepMoving
 
     ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
-    ; !!!LD A, (ro.rocAssemblyX)
-    CALL ro.UpdateElementPosition
+    LD D, (IX + ro.RO.SPRITE_REF)
+    CALL ro.UpdateRocketSpritePattern
 
     RET
 
@@ -460,10 +457,14 @@ _MoveFlyingRocket
 .keepMoving
 
     ; ##########################################
-    ; Move bottom rocket element.
-    ;!!! DEC (IX + ro.RO.Y)
+    ; Update Y position.
+    LD A, (ro.rocY)
+    DEC A
+    LD (ro.rocY), A
 
-    ;!!! LD A, (ro.rocAssemblyX)
+    ; ##########################################
+    ; Move bottom rocket element.
+    XOR A
     CALL ro.UpdateElementPosition
 
     ; ##########################################
@@ -471,19 +472,15 @@ _MoveFlyingRocket
     LD A, ro.EL_MID_D2
     CALL ro.MoveIXtoGivenRocketElement
 
-   ;!!!  DEC (IX + ro.RO.Y)
-
-    ;!!! LD A, (ro.rocAssemblyX)
+    LD A, ro.OFS_MID_D16
     CALL ro.UpdateElementPosition
 
     ; ##########################################
     ; Move top rocket element.
-    LD A, ro.EL_TOP_D3
+    LD A, ro.EL_TIP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
-   ;!!!  DEC (IX + ro.RO.Y)
-
-    ;!!! LD A, (ro.rocAssemblyX)
+    LD A, ro.OFS_TIP_D16
     CALL ro.UpdateElementPosition
 
     RET                                         ; ## END of the function ##

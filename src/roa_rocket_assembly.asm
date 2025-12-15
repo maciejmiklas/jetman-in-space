@@ -18,7 +18,7 @@ RO_DOWN_SPR_ID_D80      = 80                    ; Sprite ID is used to lower the
 ; Number of _MainLoop040 cycles to drop next rocket module.
 dropNextDelay           DB 0
 
-; It counts from EL_LOW_D1 to EL_TANK6_D9, both inclusive. After the rocket is ready for takeoff, it is set to EL_TANK6_D9+1 to light up
+; It counts from EL_EXH_D1 to EL_TANK6_D9, both inclusive. After the rocket is ready for takeoff, it is set to EL_TANK6_D9+1 to light up
 ; the last progress bar section.
 rocketElementCnt        DB 0
 
@@ -40,7 +40,9 @@ BAR_TILE_PAL           = $60
 BAR_ICON               = 36
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
 BAR_ICON_PAL           = $00
-DROP_MARGX_D8           = 8
+DROP_MARGX_D8          = 8
+
+EL_EXH_Y_POS_D234      = 234                     ; Assembly height of the rocket's exhaust.
 
 rocAssemblyX           DB 0
 
@@ -71,8 +73,10 @@ ResetAndDisableRocket
     CALL dbs.SetupArrays2Bank
 
     XOR A
+    LD HL, 0
+
     LD (rocAssemblyX), A
-    LD (ro.rocX), A
+    LD (ro.rocX), HL
     LD (ro.rocY), A
     LD (ro.rocketState), A
     LD (dropNextDelay), A
@@ -110,7 +114,7 @@ AssemblyRocketForDebug
     LD A, ro.ROST_READY
     LD (ro.rocketState), A
 
-    LD A, 201
+    LD A, EL_EXH_Y_POS_D234
     LD (ro.rocY), A
 
     RET                                         ; ## END of the function ##
@@ -317,8 +321,11 @@ RocketElementFallsForPickup
     LD (ro.rocY), A
 
     ; Update rocket sprite.
-    LD A, (IX + ro.RO.DROP_X)                      ; Sprite X coordinate, do not change value - element is falling down.
-    LD (ro.rocX), A
+    LD HL, 0
+    LD L, (IX + ro.RO.DROP_X)                      ; Sprite X coordinate, do not change value - element is falling down.
+    LD (ro.rocX), HL
+
+    XOR A
     CALL ro.UpdateElementPosition
 
     ; Has the horizontal destination been reached?
@@ -490,8 +497,8 @@ DropNextRocketElement
     CALL _SetIXtoCurrentRocketElement
 
     ; Reset Y for element/tank to top of the screen.
-    XOR A
-    LD (ro.rocX), A
+    LD HL, 0
+    LD (ro.rocX), HL
 
     RET                                         ; ## END of the function ##]
 
@@ -700,15 +707,12 @@ _BoardRocket
     LD A, (ro.rocketState)
     CP ro.ROST_READY
     RET NZ
-    
+
     ; ##########################################
     ; Jetman collision with first (lowest) rocket element triggers liftoff.
-    LD IX, (ro.rocketElPtr)
-
     LD BC, (rocAssemblyX)                       ; X of the element.
     LD B, 0
-    LD A, (ro.rocY)                             ; Y of the element.
-    LD D, A
+    LD D, EL_EXH_Y_POS_D234                     ; Y of the element.
     CALL jco.JetmanElementCollision
     RET NZ
 
@@ -717,6 +721,16 @@ _BoardRocket
     LD A, ro.ROST_FLY
     LD (ro.rocketState), A
 
+    ; Update the rocket's coordinates to start flying from the proper location.
+    LD HL, 0
+    LD A, (rocAssemblyX)
+    LD L, A
+    LD (ro.rocX), HL
+    LD A, EL_EXH_Y_POS_D234
+    LD (ro.rocY), A
+
+    ; ##########################################
+    ; Lift off!
     CALL gc.RocketFLyStartPhase1
 
     RET                                         ; ## END of the function ##
