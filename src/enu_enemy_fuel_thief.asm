@@ -257,7 +257,7 @@ MoveFuelThief
     LD A, B                                     ; Rocket postion is 8 bit, ignore X postion if > 256 (9bit).
     CP 1
     JR Z, .notAtRocket
-    LD A, (ro.rocX)
+    LD A, (ro.rocAssemblyX)
     SUB C                                       ; Ignore B because X < 255, rocket assembly X is 8bit.
     CP ro.DROP_MARGX_D8
     JR NC, .notAtRocket

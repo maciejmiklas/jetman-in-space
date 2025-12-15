@@ -50,14 +50,35 @@ PrintDebug
     LD A, (gamebarState)
     CP GB_VISIBLE
     RET NZ
-/*
+
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (gi.tmp1)
+    LD A, (jpo.jetX)
     LD L, A
     CALL ut.PrintNumber
-*/
+
+    ; ##########################################
+    LD BC, 46
+    LD H, 0
+    LD A, (jpo.jetY)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 60
+    LD H, 0
+    LD A, (ro.rocX)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 66
+    LD H, 0
+    LD A, (ro.rocY)
+    LD L, A
+    CALL ut.PrintNumber
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

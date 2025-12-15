@@ -167,7 +167,7 @@ FlyRocket
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
     ; Sprite X coordinate from assembly location.
-    LD A, (ro.rocX)
+    LD A, (ro.rocAssemblyX)
     NEXTREG _SPR_REG_X_H35, A
 
     LD A, _SPR_REG_ATR2_EMPTY
@@ -186,7 +186,7 @@ FlyRocket
 ;----------------------------------------------------------;
 BlinkFlyingRocket
     CALL dbs.SetupArrays2Bank
-        
+
     LD A, ro.EL_LOW_D1
     CALL ro.MoveIXtoGivenRocketElement
 
@@ -196,7 +196,7 @@ BlinkFlyingRocket
     JR Z, .flip
     LD A, ro.SPR_PAT_READY1_D60
     JR .afterSet
-.flip   
+.flip
     LD A, ro.SPR_PAT_READY2_D61
 .afterSet
 
@@ -351,7 +351,7 @@ _ControlFlyingRocket
     LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
 
     ; Rocket did not move, but keep updating the lower part to keep blinking animation.
-    LD A, (ro.rocX)
+    LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition
 
     ; ##########################################
@@ -439,7 +439,7 @@ _MoveFlyingRocket
     CALL dbs.SetupArrays2Bank
 
     ; ##########################################
-    ; The current position of rocket elements is stored in #rocX and #ro.RO.Y 
+    ; The current position of rocket elements is stored in #rocAssemblyX and #ro.RO.Y 
     ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 
     LD IX, (ro.rocketElPtr)                               ; Load the pointer to rocket into IX.
@@ -451,7 +451,7 @@ _MoveFlyingRocket
     JR C, .keepMoving
 
     ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
-    LD A, (ro.rocX)
+    LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition
 
     RET
@@ -463,7 +463,7 @@ _MoveFlyingRocket
     ; Move bottom rocket element.
     DEC (IX + ro.RO.Y)
 
-    LD A, (ro.rocX)
+    LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition
 
     ; ##########################################
@@ -473,7 +473,7 @@ _MoveFlyingRocket
 
     DEC (IX + ro.RO.Y)
 
-    LD A, (ro.rocX)
+    LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition
 
     ; ##########################################
@@ -483,7 +483,7 @@ _MoveFlyingRocket
 
     DEC (IX + ro.RO.Y)
 
-    LD A, (ro.rocX)
+    LD A, (ro.rocAssemblyX)
     CALL ro.UpdateElementPosition
 
     RET                                         ; ## END of the function ##
