@@ -80,8 +80,8 @@ starsPalL2Point         DW 0
 SetupStars
 
     LD (paletteNumber), A
-    LD (st.starsData1MaxY), DE
-    LD (st.starsData2MaxY), HL
+    LD (starsData1MaxY), DE
+    LD (starsData2MaxY), HL
     
     RET                                         ; ## END of the function ##
 

@@ -295,7 +295,7 @@ RespawnPatternEnemy
     LD A, (IY + ENP.RESPAWN_DELAY)
 
     ; Enemy disabled?
-    CP enp.RESPAWN_OFF
+    CP RESPAWN_OFF
     JR NZ, .respawnOn
 
     OR 1                                        ; Return NO (Z set).

@@ -196,7 +196,7 @@ JoyMoveDownRelease
 ; It gets executed as a last procedure after the input has been processed, regardless of whether there was movement, or not.
 JoystickMoveProcessed
 
-    CALL jm._CanJetMove
+    CALL _CanJetMove
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################

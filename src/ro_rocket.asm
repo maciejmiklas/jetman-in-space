@@ -47,8 +47,37 @@ SPR_PAT_READY2_D61      = 61
 rocX                    DW 0                    ; 0-320px
 rocY                    DB 0                    ; 0-256px
 
-rocketElPtr            DW 0                     ; Pointer to 9x ro.RO.
+rocketElPtr            DW 0                     ; Pointer to 9x RO.
 
+;----------------------------------------------------------;
+;                 UpdateRocketPosition                     ;
+;----------------------------------------------------------;
+UpdateRocketPosition
+
+     LD IX, (rocketElPtr)                               ; Load the pointer to rocket into IX.
+     
+    ; Move bottom rocket element.
+    XOR A
+    CALL UpdateElementPosition
+
+    ; ##########################################
+    ; Move middle rocket element.
+    LD A, EL_MID_D2
+    CALL MoveIXtoGivenRocketElement
+
+    LD A, OFS_MID_D16
+    CALL UpdateElementPosition
+
+    ; ##########################################
+    ; Move top rocket element.
+    LD A, EL_TIP_D3
+    CALL MoveIXtoGivenRocketElement
+
+    LD A, OFS_TIP_D16
+    CALL UpdateElementPosition
+
+    RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;                 MoveIXtoGivenRocketElement               ;
 ;----------------------------------------------------------;
@@ -61,9 +90,9 @@ MoveIXtoGivenRocketElement
     
     SUB 1                                       ; A contains 0-2.
     LD D, A
-    LD E, RO                                    ; D contains A, E contains size of #ro.RO.
+    LD E, RO                                    ; D contains A, E contains size of #RO.
     MUL D, E                                    ; DE contains D * E.
-    ADD IX, DE                                  ; IX points to active #rocket (#ro.RO).
+    ADD IX, DE                                  ; IX points to active #rocket (#RO).
 
     RET                                         ; ## END of the function ##
 
@@ -71,7 +100,7 @@ MoveIXtoGivenRocketElement
 ;                UpdateRocketSpritePattern                 ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: current #ro.RO pointer.
+;  - IX: current #RO pointer.
 ;  - D:  sprite pattern.
 UpdateRocketSpritePattern
 
@@ -109,7 +138,7 @@ SetRocketXSpriteCoordinate
 ;                 UpdateElementPosition                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - IX: current #ro.RO pointer.
+;  - IX: current #RO pointer.
 ;  - A:  correction for Y.
 UpdateElementPosition
 

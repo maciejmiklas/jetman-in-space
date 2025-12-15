@@ -31,7 +31,7 @@ LoadSpritesFPGA
 
     CALL dbs.SetupSpritesBank
 
-    LD HL, sp.SP_ADDR_HC000             ; RAM address containing sprite binary data.
+    LD HL, SP_ADDR_HC000             ; RAM address containing sprite binary data.
     LD BC, SPR_BYT_D16384               ; Copy 63 sprites, each 16x16 pixels.
     
     ; ##########################################

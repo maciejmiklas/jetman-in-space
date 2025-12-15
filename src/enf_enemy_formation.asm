@@ -11,7 +11,7 @@
 
 ; The enemy formation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #ENEMY_FORMATION_SIZE
 ; determines the amount. The deployment starts when #respawnDelayCnt will reach #respawnDelay. 
-; There is also a delay in respawning each enemy in the formation (#enf.ENPS.RESPAWN_DELAY). It will define the distance between single
+; There is also a delay in respawning each enemy in the formation (#ENPS.RESPAWN_DELAY). It will define the distance between single
 ; enemies in the formation.
 
 spritesCnt              DB 0                    ; Counter for #ENEMY_FORMATION_SIZE.
@@ -41,7 +41,7 @@ MoveFormationEnemies
 ;Input:
 ;  - A:  size of the formation.
 ;  - B:  delay to respawn the whole formation.
-;  - IX: pointer to setup (#enf.ENPS).
+;  - IX: pointer to setup (#ENPS).
 SetupEnemyFormation
 
     LD (formationSize), A
@@ -139,7 +139,7 @@ RespawnFormation
     LD A, (spritesCnt)
     LD B, ena.ENEMY_FORMATION_SIZE
     CP B
-    JR C, .deployNextEnemy                      ; Jump if #spritesCnt < #enf.ENEMY_FORMATION_SIZE -> There are still enemies that need to be deployed.
+    JR C, .deployNextEnemy                      ; Jump if #spritesCnt < #ENEMY_FORMATION_SIZE -> There are still enemies that need to be deployed.
     
     ; Deployment is over, reset formation counters.
     XOR A

@@ -129,8 +129,8 @@ FlyRocketSound
 ;----------------------------------------------------------;
 RocketFLyStartPhase1
 
-    LD A, rof.PHASE_1
-    LD (rof.rocketFlyPhase), A
+    LD A, PHASE_1
+    LD (rocketFlyPhase), A
 
     RET                                         ; ## END of the function ##
 
@@ -324,6 +324,8 @@ AnimateRocketExhaust
 ;----------------------------------------------------------;
 _ControlFlyingRocket
 
+    CALL _ProcessJoystickInput
+
     ; ##########################################
     ; Increment total distance.
     LD HL, (rocketDistance)
@@ -345,13 +347,8 @@ _ControlFlyingRocket
 .notAtExpolodeDistance
 
     ; ##########################################
-    LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
+    CALL ro.UpdateRocketPosition
 
-    ; Rocket did not move, but keep updating the lower part to keep blinking animation.
-    XOR A
-    CALL ro.UpdateElementPosition
-
-    ; ##########################################
     CALL gc.RocketFlying
     CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
 
@@ -462,28 +459,10 @@ _MoveFlyingRocket
     DEC A
     LD (ro.rocY), A
 
-    ; ##########################################
-    ; Move bottom rocket element.
-    XOR A
-    CALL ro.UpdateElementPosition
-
-    ; ##########################################
-    ; Move middle rocket element.
-    LD A, ro.EL_MID_D2
-    CALL ro.MoveIXtoGivenRocketElement
-
-    LD A, ro.OFS_MID_D16
-    CALL ro.UpdateElementPosition
-
-    ; ##########################################
-    ; Move top rocket element.
-    LD A, ro.EL_TIP_D3
-    CALL ro.MoveIXtoGivenRocketElement
-
-    LD A, ro.OFS_TIP_D16
-    CALL ro.UpdateElementPosition
+    CALL ro.UpdateRocketPosition
 
     RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;                _StartRocketExplosion                     ;
@@ -541,7 +520,6 @@ _UpdateRocketFlyPhase
     ; Rocket has reached pahse 3.
     LD A, PHASE_3
     LD (rocketFlyPhase), A
-    CALL gc.RocketFLyStartPhase3
 .not3
 
     ; ##########################################
@@ -557,8 +535,136 @@ _UpdateRocketFlyPhase
     ; Rocket has reached pahse 4.
     LD A, PHASE_4
     LD (rocketFlyPhase), A
+    CALL _RocketFLyStartPhase4
     CALL gc.RocketFLyStartPhase4
 .not4
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 _RocketFLyStartPhase4                    ;
+;----------------------------------------------------------;
+_RocketFLyStartPhase4
+
+    ; Setup joystick
+    CALL ki.ResetKeyboard
+
+    LD DE, _JoyDown
+    LD (ki.callbackDown), DE
+
+    LD DE, _JoyUp
+    LD (ki.callbackUp), DE
+
+    LD DE, _JoyLeft
+    LD (ki.callbackLeft), DE
+
+    LD DE, _JoyRight
+    LD (ki.callbackRight), DE
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 _ProcessJoystickInput                    ;
+;----------------------------------------------------------;
+_ProcessJoystickInput
+
+    ; Key Left
+    LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1).
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 4, A                                    ; Bit 4 reset -> Left pressed.
+    CALL Z, _JoyLeft
+
+    ; ##########################################
+    ; Row: 6, 7, 8 ,9, 0 and to read arrow keys: up/down/right
+
+    ; Key right
+    LD A, _KB_6_TO_0_HEF                        ; $EF -> A (6...0).
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 2, A                                    ; Bit 2 reset -> right pressed.
+    CALL Z, _JoyRight
+    POP AF
+
+    ; Key up
+    PUSH AF
+    BIT 3, A                                    ; Bit 3 reset -> Up pressed.
+    CALL Z, _JoyUp
+    POP AF
+    
+    ; Key down
+    BIT 4, A                                    ; Bit 4 reset -> Down pressed.
+    CALL Z, _JoyDown
+
+    ; ##########################################
+    ; Read Kempston input
+
+    ; Joystick right
+    LD A, _JOY_MASK_H20                         ; Activate joystick register.
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 0, A                                    ; Bit 0 set -> Right pressed.
+    CALL NZ, _JoyRight
+    POP AF
+
+    ; Joystick left
+    PUSH AF
+    BIT 1, A                                    ; Bit 1 set -> Left pressed.
+    CALL NZ, _JoyLeft
+    POP AF
+
+    ; Joystick down
+    PUSH AF
+    BIT 2, A                                    ; Bit 2 set -> Down pressed.
+    CALL NZ, _JoyDown
+    POP AF
+
+    ; Joystick up
+    BIT 3, A                                    ; Bit 3 set -> Up pressed.
+    CALL NZ, _JoyUp
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                         _JoyUp                           ;
+;----------------------------------------------------------;
+_JoyUp
+
+    LD A, (ro.rocY)
+    DEC A
+    LD (ro.rocY), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       _JoyDown                           ;
+;----------------------------------------------------------;
+_JoyDown
+
+    LD A, (ro.rocY)
+    INC A
+    LD (ro.rocY), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      _JoyLeft                            ;
+;----------------------------------------------------------;
+_JoyLeft
+
+    LD A, (ro.rocX)
+    DEC A
+    LD (ro.rocX), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      _JoyRight                           ;
+;----------------------------------------------------------;
+_JoyRight
+
+    LD A, (ro.rocX)
+    INC A
+    LD (ro.rocX), A
 
     RET                                         ; ## END of the function ##
 

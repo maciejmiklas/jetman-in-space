@@ -405,14 +405,6 @@ RocketFLyStartPhase2
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  RocketFLyStartPhase3                    ;
-;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
-RocketFLyStartPhase3
-    ; TODO remove??
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                  RocketFLyStartPhase4                    ;
 ;----------------------------------------------------------;
 ; See #rof.rocketFlyPhase
