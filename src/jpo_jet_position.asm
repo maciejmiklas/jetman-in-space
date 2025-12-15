@@ -44,7 +44,7 @@ IncJetX
 ; - B: number of pixels to move Jetman Up.
 IncJetXbyB
 
-.loop   
+.loop
     PUSH BC
     CALL IncJetX
     POP BC
@@ -82,7 +82,7 @@ DecJetX
 ; - B: number of pixels to move Jetman up.
 DecJetXbyB
 
-.loop   
+.loop
     PUSH BC
     CALL DecJetX
     POP BC
@@ -101,7 +101,7 @@ IncJetY
 
     CALL gc.JetMoves
     CALL gc.JetMovesDown
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -124,7 +124,7 @@ DecJetY
 ; - B: number of pixels to move Jetman donw.
 IncJetYbyB
 
-.loop   
+.loop
     PUSH BC
     CALL IncJetY
     POP BC
@@ -139,7 +139,7 @@ IncJetYbyB
 ; - B: number of pixels to move Jetman up
 DecJetYbyB
 
-.loop   
+.loop
     PUSH BC
     CALL DecJetY
     POP BC

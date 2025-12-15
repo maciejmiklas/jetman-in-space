@@ -141,23 +141,33 @@ RocketFLyStartPhase1
 FlyRocket
 
     CALL dbs.SetupArrays2Bank
+    LD A, (rocketFlyPhase)
+    CP PHASE_4
+    JR NZ,.notPhase4
+
+    CALL _ControlFlyingRocket
+
+    JR .afterPhaseCase
+.notPhase4
+
+    PUSH AF
     CALL _MoveFlyingRocket
+    POP AF
 
      ; ##########################################
      ; Shake tiles
-     LD A, (rocketFlyPhase)
      CP PHASE_1
-     JR NZ, .afterShakeTiles
+     JR NZ, .afterPhaseCase
      CALL ti.ShakeTilemap
-.afterShakeTiles
 
+.afterPhaseCase
     ; ##########################################
     ; Set X/Y coordinates for flames coming out of the exhaust.
     LD A, EXHAUST_SPRID_D83
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
     ; Sprite X coordinate from assembly location.
-    LD A, (ro.rocketAssemblyX)
+    LD A, (ro.rocX)
     NEXTREG _SPR_REG_X_H35, A
 
     LD A, _SPR_REG_ATR2_EMPTY
@@ -165,8 +175,7 @@ FlyRocket
 
     ; Sprite Y coordinate
     LD IX, (ro.rocketElPtr)
-        
-    LD A, (IX + ro.RO.Y)                           ; Lowest rocket element + 16px.
+    LD A, (IX + ro.RO.Y)                        ; Lowest rocket element + 16px.
     ADD A, FLAME_OFFSET_D16
     NEXTREG _SPR_REG_Y_H36, A
 
@@ -314,9 +323,49 @@ AnimateRocketExhaust
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                _ControlFlyingRocket                      ;
+;----------------------------------------------------------;
+_ControlFlyingRocket
+
+    ; ##########################################
+    ; Increment total distance.
+    LD HL, (rocketDistance)
+    INC HL
+    LD (rocketDistance), HL
+
+    ; ##########################################
+    ; Has the rocket reached the asteroid, and should the explosion sequence begin?
+    LD A, H
+    CP EXPLODE_Y_HI_H4
+    JR NZ, .notAtExpolodeDistance
+
+    LD A, L
+    CP EXPLODE_Y_LO_H7E
+    JR C, .notAtExpolodeDistance
+
+    CALL _StartRocketExplosion
+    RET
+.notAtExpolodeDistance
+
+    ; ##########################################
+    LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
+
+    ; Rocket did not move, but keep updating the lower part to keep blinking animation.
+    LD A, (ro.rocX)
+    CALL ro.UpdateElementPosition
+
+    ; ##########################################
+    CALL gc.RocketFlying
+    CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  _MoveFlyingRocket                       ;
 ;----------------------------------------------------------;
 _MoveFlyingRocket
+
+    ; ##########################################
     CALL dbs.SetupArrays2Bank
 
     ; Slow down rocket movement speed while taking off.
@@ -390,24 +439,10 @@ _MoveFlyingRocket
     CALL dbs.SetupArrays2Bank
 
     ; ##########################################
-    ; Has the rocket reached the asteroid, and should the explosion sequence begin?
-    LD A, H
-    CP EXPLODE_Y_HI_H4
-    JR NZ, .notAtExpolodeDistance
-
-    LD A, L
-    CP EXPLODE_Y_LO_H7E
-    JR C, .notAtExpolodeDistance
-
-    CALL _StartRocketExplosion
-    RET
-.notAtExpolodeDistance
-
-    ; ##########################################
-    ; The current position of rocket elements is stored in #rocketAssemblyX and #ro.RO.Y 
+    ; The current position of rocket elements is stored in #rocX and #ro.RO.Y 
     ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 
-    LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
+    LD IX, (ro.rocketElPtr)                               ; Load the pointer to rocket into IX.
 
     ; ##########################################
     ; Did the rocket reach the middle of the screen, and should it stop moving?
@@ -416,7 +451,7 @@ _MoveFlyingRocket
     JR C, .keepMoving
 
     ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
-    LD A, (ro.rocketAssemblyX)
+    LD A, (ro.rocX)
     CALL ro.UpdateElementPosition
 
     RET
@@ -428,7 +463,7 @@ _MoveFlyingRocket
     ; Move bottom rocket element.
     DEC (IX + ro.RO.Y)
 
-    LD A, (ro.rocketAssemblyX)
+    LD A, (ro.rocX)
     CALL ro.UpdateElementPosition
 
     ; ##########################################
@@ -438,7 +473,7 @@ _MoveFlyingRocket
 
     DEC (IX + ro.RO.Y)
 
-    LD A, (ro.rocketAssemblyX)
+    LD A, (ro.rocX)
     CALL ro.UpdateElementPosition
 
     ; ##########################################
@@ -448,7 +483,7 @@ _MoveFlyingRocket
 
     DEC (IX + ro.RO.Y)
 
-    LD A, (ro.rocketAssemblyX)
+    LD A, (ro.rocX)
     CALL ro.UpdateElementPosition
 
     RET                                         ; ## END of the function ##

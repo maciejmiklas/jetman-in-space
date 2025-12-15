@@ -42,7 +42,7 @@ DROP_LAND_Y_ADJ         = -5
 ; The single rocket element or fuel tank.
 ; The X coordinate of the rocket element is stored in two locations: 
 ;  1) #RO.DROP_X: when elements drop for pickup by Jetman.
-;  2) #rocketAssemblyX when building the rocket.
+;  2) #roxX when building the rocket.
     STRUCT RO
 ; Configuration values  
 DROP_X                  DB                      ; X coordinate to drop the given element/tank, max 255.
@@ -54,8 +54,6 @@ SPRITE_REF              DB                      ; Sprite pattern number from the
 ; Values set in program
 Y                       DB                      ; Current Y position
     ENDS
-
-rocketAssemblyX         DB 0
 
 explodeTankCnt          DB 0                    ; Current position in #rocketExplodeTankDB.
 EXPLODE_TANK_MAX        = 4                     ; The amount of explosion sprites.
@@ -71,7 +69,7 @@ EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
 EL_PROGRESS_START       = EL_TANK1_D4+1
 CARRY_ADJUSTY_D10       = 10
 
-rocketElPtr            DW 0                    ; Pointer to 9x ro.RO.
+rocketElPtr            DW 0                     ; Pointer to 9x ro.RO.
 
 BAR_TILE_START         = 25*2                   ; *2 because each tile takes 2 bytes.
 BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap.
@@ -82,6 +80,8 @@ BAR_ICON_RAM_START     = BAR_RAM_START - 2
 BAR_ICON_PAL           = $00
 DROP_MARGX_D8           = 8
 
+rocX                    DW 0                    ; 0-320px
+
 ;----------------------------------------------------------;
 ;                        SetupRocket                       ;
 ;----------------------------------------------------------;
@@ -90,7 +90,7 @@ DROP_MARGX_D8           = 8
 ;  - HL: Array containing 9 #RO elements.
 SetupRocket
 
-    LD (rocketAssemblyX), A
+    LD (rocX), A
     LD (rocketElPtr), HL
 
     LD A, (jt.difLevel)
@@ -153,7 +153,8 @@ ResetAndDisableRocket
     CALL dbs.SetupArrays2Bank
 
     XOR A
-    LD (rocketAssemblyX), A
+    LD (rocX), A
+    LD (rocY), A
     LD (dropNextDelay), A
     LD (rocketState), A
     LD (explodeTankCnt), A
@@ -164,10 +165,10 @@ ResetAndDisableRocket
     LD B, EL_TANK6_D9
     LD IX, (rocketElPtr)
 .rocketElLoop
-    
+
     XOR A
     LD (IX + RO.Y), A
-    
+
     LD A, (IX + RO.SPRITE_ID)
     CALL sp.SetIdAndHideSprite
 
@@ -252,7 +253,7 @@ CheckHitTank
 
     ; The X coordinate of the rocket element is stored in two locations: 
     ;  1) #RO.DROP_X: when elements drop for pickup by Jetman.
-    ;  2) #rocketAssemblyX when building the rocket.
+    ;  2) #roxX when building the rocket.
     LD A, (rocketState)
     CP ROST_FALL_ASSEMBLY
     JR Z, .assembly
@@ -262,7 +263,7 @@ CheckHitTank
     JR .afterAssembly
 .assembly
     ; The rocket is already assembled and waiting for fuel.
-    LD DE, (rocketAssemblyX)                    ; X param for #ShotsCollision.
+    LD DE, (rocX)                    ; X param for #ShotsCollision.
 .afterAssembly
 
     LD D, 0                                     ; Reset D, X coordinate for drop is 8 bit.
@@ -468,7 +469,7 @@ RocketElementFallsForAssembly
 
     ; ##########################################
     ; Sprite X coordinate to assembly location.
-    LD A, (rocketAssemblyX)
+    LD A, (rocX)
     NEXTREG _SPR_REG_X_H35, A
 
     ; ##########################################
@@ -739,7 +740,7 @@ _JetmanDropsRocketElement
 
     ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
     LD BC, (jpo.jetX)
-    LD A, (rocketAssemblyX)
+    LD A, (rocX)
     SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit.
     CP DROP_MARGX_D8
     RET NC
@@ -820,7 +821,7 @@ _BoardRocket
     ; Jetman collision with first (lowest) rocket element triggers liftoff.
     LD IX, (rocketElPtr)
 
-    LD BC, (rocketAssemblyX)                    ; X of the element.
+    LD BC, (rocX)                               ; X of the element.
     LD B, 0
     LD D, (IX + RO.Y)                           ; Y of the element.
     CALL jco.JetmanElementCollision
