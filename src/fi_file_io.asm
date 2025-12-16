@@ -66,12 +66,14 @@ F_READ                  = $9D
 F_CMD                   = $08
 ASCII_O                 = $30
 
-; Tiles for stars when rocket flaying.
-ST_FILE1_BYT_D8192      = _BANK_BYTES_D8192
-ST_FILE2_BYT_D2048      = 2048
-ST_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles.
-    ASSERT ST_BYTES_D10240 =  10240
-    ASSERT ST_FILE1_BYT_D8192+ST_FILE2_BYT_D2048 = ST_BYTES_D10240
+TI8K_FILE_BYT_D7680      = 7680                     ; 40*32*2*3 = 7680
+
+; 16K tiles.
+TI16_FILE1_BYT_D8192      = _BANK_BYTES_D8192
+TI16_FILE2_BYT_D2048      = 2048
+TI16_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes, 4 screens. 40x128 tiles.
+    ASSERT TI16_BYTES_D10240 =  10240
+    ASSERT TI16_FILE1_BYT_D8192+TI16_FILE2_BYT_D2048 = TI16_BYTES_D10240
 
 ;----------------------------------------------------------;
 ;                     LoadMusicFile                        ;
@@ -172,7 +174,7 @@ LoadLevelSelectPalFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              LoadLevelSelectImageFile                    ;
+;                LoadLevelSelectImageFile                  ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
@@ -453,8 +455,7 @@ LoadRocketStarsTilemapFile
     LD HL, db2.stTilesFileName
     CALL _CopyFileName
 
-    LD BC, ST_FILE2_BYT_D2048
-    CALL _Load16KTilemap
+    CALL _Load8KTilemap
 
     RET                                         ; ## END of the function ##
 
@@ -642,6 +643,26 @@ _LoadPalFileByName
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                    _Load8KTilemap                        ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+_Load8KTilemap
+
+    CALL dbs.Setup16KTilemapBank
+
+    ; Read file.
+    LD HL, fileNameBuf
+    CALL _SetFileLevelNumber
+    CALL _FileOpen
+    
+    LD IX, _RAM_SLOT6_STA_HC000
+    LD BC, TI8K_FILE_BYT_D7680
+    CALL _FileRead
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                   _Load16KTilemap                        ;
 ;----------------------------------------------------------;
 ; Input:
@@ -661,7 +682,7 @@ _Load16KTilemap
     CALL _FileOpen
     
     LD IX, _RAM_SLOT6_STA_HC000
-    LD BC, ST_FILE1_BYT_D8192
+    LD BC, TI16_FILE1_BYT_D8192
     CALL _FileRead
 
     POP BC, IX, DE

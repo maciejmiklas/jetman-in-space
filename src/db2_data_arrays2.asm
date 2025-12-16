@@ -544,7 +544,8 @@ LEVEL_FILE_POS          = 7                     ; Position of a level number (00
 introTilesFileName      DB "assets/00/intro_0.map",0
 introSecondFileSize     DW 0                    ; Will be set when loading particular level, now is 0
 
-stTilesFileName         DB "assets/00/stars_0.map",0
+stTilesFileName         DB "assets/00/stars.map",0
+
 TI16K_FILE_NR_POS       = 8
 
 ; Tiles for in-game platforms

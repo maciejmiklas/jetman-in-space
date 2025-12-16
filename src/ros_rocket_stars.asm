@@ -9,15 +9,15 @@
 ; Moves the tilemap with platforms, then animates the stars.
 
 ; Tile stars
-TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts takes 4 horizontal screens.
-    ASSERT TI_ROWS_D128 =  128
+TI_ROWS_D96            = ti.TI_VTILES_D32*3    ; 128 rows (40*32), tile starts takes 4 horizontal screens.
+    ASSERT TI_ROWS_D96 =  96
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
 ti.TI_H_BYTES_D80       = 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow                DB ti.TI_VTILES_D32     ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
-sourceTilesRow          DB TI_ROWS_D128         ; Current tiles row in source file (RAM), runs from from TI_ROWS_D128 to 0.
+sourceTilesRow          DB TI_ROWS_D96         ; Current tiles row in source file (RAM), runs from from TI_ROWS_D96 to 0.
 
 tileOffsetY             DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tileOffsetX             DW 0
@@ -43,7 +43,7 @@ ResetRocketStars
     DEC A
     LD (blackTilesRow), A
 
-    LD A, TI_ROWS_D128
+    LD A, TI_ROWS_D96
     LD (sourceTilesRow), A
 
     LD A, _SC_RESY1_D255
@@ -211,7 +211,7 @@ IncTileOffsetX
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
 _NextStarsTileRow
 
-    CALL dbs.Setup16KTilemapBank
+    CALL dbs.Setup8KTilemapBank
 
     ; ##########################################
     ; Decrement counters
@@ -255,7 +255,7 @@ _NextStarsTileRow
     JR NZ, .afterResetStarsRow                  ; Jump if #starsLine > 0.
 
     ; Reset stars counter
-    LD A, TI_ROWS_D128
+    LD A, TI_ROWS_D96
     LD (sourceTilesRow), A
 .afterResetStarsRow
 
