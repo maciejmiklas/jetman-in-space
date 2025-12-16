@@ -27,7 +27,7 @@ thiefRespawnDelayCnt    DB 0
 RESPAWN_DELAY           = 22
 RESPAWN_DEPLOYING       = 16
 
-MIN_FUEL_LEVEL          = ro.EL_TANK1_D4 + 2
+MIN_FUEL_LEVEL          = roa.EL_TANK1_D4 + 2
 
 ;----------------------------------------------------------;
 ;                     DisableFuelThief                     ;
@@ -114,7 +114,7 @@ RespawnFuelThief
 
     ; ##########################################
     ; Does the rocket have enough fuel?
-    LD A, (ro.rocketElementCnt)
+    LD A, (roa.rocketElementCnt)
     CP MIN_FUEL_LEVEL
     RET C                                       ; Return if rocket does not have enough fuel.
 
@@ -141,7 +141,7 @@ RespawnFuelThief
 
     ; Reset the deployment countdown for the next fuel element because the thief is active.
     XOR A
-    LD (ro.dropNextDelay), A
+    LD (roa.dropNextDelay), A
 .afterDeploying
 
     ; ##########################################
@@ -168,7 +168,7 @@ RespawnFuelThief
 
     ; Reset the deployment countdown for the next fuel element because the thief is active.
     XOR A
-    LD (ro.dropNextDelay), A
+    LD (roa.dropNextDelay), A
 
     CALL enp.RespawnPatternEnemy
 
@@ -257,15 +257,15 @@ MoveFuelThief
     LD A, B                                     ; Rocket postion is 8 bit, ignore X postion if > 256 (9bit).
     CP 1
     JR Z, .notAtRocket
-    LD A, (ro.rocketAssemblyX)
+    LD A, (roa.rocAssemblyX)
     SUB C                                       ; Ignore B because X < 255, rocket assembly X is 8bit.
-    CP ro.DROP_MARGX_D8
+    CP roa.DROP_MARGX_D8
     JR NC, .notAtRocket
  
     ; ##########################################
     ; Pickup fuel tank.
 
-    CALL ro.RemoveRocketElement
+    CALL roa.RemoveRocketElement
     LD A, TS_CARRIES_FUEL
     LD (thiefState), A
 .notAtRocket
@@ -282,12 +282,12 @@ MoveFuelThief
 
     ; Set sprite X coordinate.
     LD BC, (IX + SPR.X)
-    LD A, C     
+    LD A, C
     NEXTREG _SPR_REG_X_H35, A
     
     ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
     LD A, B                                     ; Load MSB from X into A.
-    AND %00000001                               ; Keep only an overflow bit.
+    AND _OVERFLOW_BIT                           ; Keep only an overflow bit.
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; Set Y coordinate

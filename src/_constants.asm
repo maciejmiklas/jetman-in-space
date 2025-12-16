@@ -72,7 +72,7 @@ _DC_REG_L2_CLIP_H18     = $18
 ; Bits:
 ;  - 7-2 = Reserved, must be 0,
 ;  - 1-0 = MSB X Offset.
-_DC_REG_TI_X_MSB_H2f    = $2F
+_DC_REG_TI_X_MSB_H2F    = $2F
 
 ; Tilemap Offset X LSB.
 ; Bits:
@@ -320,6 +320,7 @@ _C_TI_CLIP_WINDOW_H1B   = $1B
 ; bits 1-0 = MSB X Offset.
 ; Meaningful Range is 0-319 in 40 char mode, 0-639 in 80 char mode.
 _TI_OFFSET_X_MSB_H2F    = $2F
+_TI_OFFSET_X_MAX        = 319
 
 ; Tilemap Offset X LSB.
 ; Meaningful range is 0-319 in 40 char mode, 0-639 in 80 char mode.
@@ -428,8 +429,8 @@ _ULA_COL_SIZE           = 768                   ; Size of color RAM: $5AFF - $58
 _BANK_BYTES_D8192       = 8*1024
 _GC_FLIP_ON_D1          = 1
 _GC_FLIP_OFF_D0         = 0
-
 _16BIT_CHARS_D5         = 5
+_OVERFLOW_BIT           =  %00000001
 
 ; ##############################################
 ; Screen

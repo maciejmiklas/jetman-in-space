@@ -36,7 +36,7 @@ LoadLevel1Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL1
     LD A, (db2.rocketAssemblyXL1)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -119,7 +119,7 @@ LoadLevel2Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL2
     LD A, (db2.rocketAssemblyXL2)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -203,7 +203,7 @@ LoadLevel3Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL3
     LD A, (db2.rocketAssemblyXL3)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -289,7 +289,7 @@ LoadLevel4Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL4
     LD A, (db2.rocketAssemblyXL4)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -368,7 +368,7 @@ LoadLevel5Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL5
     LD A, (db2.rocketAssemblyXL5)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -452,7 +452,7 @@ LoadLevel6Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL6
     LD A, (db2.rocketAssemblyXL6)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -536,7 +536,7 @@ LoadLevel7Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL7
     LD A, (db2.rocketAssemblyXL7)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -615,7 +615,7 @@ LoadLevel8Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL8
     LD A, (db2.rocketAssemblyXL8)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
     
     ; ##########################################
     ; Load single enemies
@@ -699,7 +699,7 @@ LoadLevel9Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL9
     LD A, (db2.rocketAssemblyXL9)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies
@@ -777,7 +777,7 @@ LoadLevel10Data
     CALL dbs.SetupArrays2Bank
     LD HL, db2.rocketElL10
     LD A, (db2.rocketAssemblyXL10)
-    CALL ro.SetupRocket
+    CALL roa.SetupRocket
 
     ; ##########################################
     ; Load single enemies

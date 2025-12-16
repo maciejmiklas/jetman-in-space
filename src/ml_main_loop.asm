@@ -108,7 +108,7 @@ _MainLoop000OnActiveGame
     CALL _MainLoop000OnDisabledJoy
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
-    CALL ro.CheckHitTank
+    CALL roa.CheckHitTank
     CALL jco.JetRip
     CALL jw.MoveShots
     CALL gc.WeaponHitEnemy
@@ -117,7 +117,7 @@ _MainLoop000OnActiveGame
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
     CALL jco.JetInvincible
-    CALL ro.RocketElementFallsForPickup
+    CALL roa.RocketElementFallsForPickup
 
     CALL dbs.SetupPatternEnemyBank
     CALL enu.MoveFuelThief
@@ -330,7 +330,7 @@ _MainLoop005OnActiveGame
     RET NZ
 
     ; ##########################################
-    CALL ro.RocketElementFallsForAssembly
+    CALL roa.RocketElementFallsForAssembly
     CALL jo.UpdateJetpackOverheating
 
     CALL dbs.SetupArrays2Bank
@@ -413,8 +413,8 @@ _MainLoop008OnActiveGame
 
     ; ##########################################
     CALL jw.AnimateShots
-    CALL ro.BlinkRocketReady
-    CALL ro.AnimateTankExplode
+    CALL roa.BlinkRocketReady
+    CALL roa.AnimateTankExplode
     CALL st.BlinkStarsL1
     CALL jo.AnimateJetpackOverheat
 
@@ -582,7 +582,7 @@ _MainLoop040OnActiveGame
     RET NZ
 
     ; ##########################################
-    CALL ro.DropNextRocketElement
+    CALL roa.DropNextRocketElement
     CALL td.NextTimeOfDayTrigger
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
 

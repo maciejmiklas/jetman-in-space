@@ -148,7 +148,7 @@ KeyboardInput
     RET                                         ; None of the keys pressed.
 
 .pressRight
-    CALL ki.CanProcessKeyInput
+    CALL CanProcessKeyInput
     RET NZ
 
     LD HL, .pressRightReturn
@@ -159,7 +159,7 @@ KeyboardInput
     RET
 
 .pressLeft
-    CALL ki.CanProcessKeyInput
+    CALL CanProcessKeyInput
     RET NZ
 
     LD HL, .pressLeftReturn
@@ -170,7 +170,7 @@ KeyboardInput
     RET
 
 .pressUp
-    CALL ki.CanProcessKeyInput
+    CALL CanProcessKeyInput
     RET NZ
 
     LD HL, .pressUpReturn
@@ -181,7 +181,7 @@ KeyboardInput
     RET
 
 .pressDown
-    CALL ki.CanProcessKeyInput
+    CALL CanProcessKeyInput
     RET NZ
 
     LD HL, .pressDownReturn
@@ -192,7 +192,7 @@ KeyboardInput
     RET
 
 .pressFire
-    CALL ki.CanProcessKeyInput
+    CALL CanProcessKeyInput
     RET NZ
 
     LD HL, .pressFireReturn

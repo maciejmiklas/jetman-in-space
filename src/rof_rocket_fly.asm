@@ -55,7 +55,6 @@ PHASE_2_3               = %00000110
 
 rocketFlyPhase          DB PHASE_0
 
-FLAME_OFFSET_D16        = 16
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
@@ -75,6 +74,9 @@ rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to
 
 FLY_SOUND_REPEAT        = 20
 soundRepeatDelay        DB FLY_SOUND_REPEAT
+
+DELAY_TILE              = 5
+decTileDelayCnt         DB DELAY_TILE
 
 ;----------------------------------------------------------;
 ;               ResetAndDisableFlyRocket                   ;
@@ -130,8 +132,8 @@ FlyRocketSound
 ;----------------------------------------------------------;
 RocketFLyStartPhase1
 
-    LD A, rof.PHASE_1
-    LD (rof.rocketFlyPhase), A
+    LD A, PHASE_1
+    LD (rocketFlyPhase), A
 
     RET                                         ; ## END of the function ##
 
@@ -141,33 +143,38 @@ RocketFLyStartPhase1
 FlyRocket
 
     CALL dbs.SetupArrays2Bank
+    LD A, (rocketFlyPhase)
+    CP PHASE_4
+    JR NZ,.notPhase4
+
+    CALL _ControlFlyingRocket
+
+    JR .afterPhaseCase
+.notPhase4
+
+    PUSH AF
     CALL _MoveFlyingRocket
+    POP AF
 
      ; ##########################################
      ; Shake tiles
-     LD A, (rocketFlyPhase)
      CP PHASE_1
-     JR NZ, .afterShakeTiles
+     JR NZ, .afterPhaseCase
      CALL ti.ShakeTilemap
-.afterShakeTiles
+
+.afterPhaseCase
 
     ; ##########################################
     ; Set X/Y coordinates for flames coming out of the exhaust.
     LD A, EXHAUST_SPRID_D83
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
-    ; Sprite X coordinate from assembly location.
-    LD A, (ro.rocketAssemblyX)
-    NEXTREG _SPR_REG_X_H35, A
-
-    LD A, _SPR_REG_ATR2_EMPTY
-    NEXTREG _SPR_REG_ATR2_H37, A
+    ; Sprite X coordinate.
+    CALL ro.SetRocketXSpriteCoordinate
 
     ; Sprite Y coordinate
-    LD IX, (ro.rocketElPtr)
-        
-    LD A, (IX + ro.RO.Y)                           ; Lowest rocket element + 16px.
-    ADD A, FLAME_OFFSET_D16
+    LD A, (ro.rocY)
+    ADD ro.OFS_FLAME_D16
     NEXTREG _SPR_REG_Y_H36, A
 
     RET                                         ; ## END of the function ##
@@ -176,9 +183,10 @@ FlyRocket
 ;                    BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
 BlinkFlyingRocket
+
     CALL dbs.SetupArrays2Bank
-        
-    LD A, ro.EL_LOW_D1
+
+    LD A, ro.EL_EXH_D1
     CALL ro.MoveIXtoGivenRocketElement
 
     ; Set sprite pattern - one for flip, one for flop -> rocket will blink.
@@ -187,7 +195,7 @@ BlinkFlyingRocket
     JR Z, .flip
     LD A, ro.SPR_PAT_READY1_D60
     JR .afterSet
-.flip   
+.flip
     LD A, ro.SPR_PAT_READY2_D61
 .afterSet
 
@@ -207,6 +215,7 @@ AnimateRocketExplosion
     LD A, (rocketExplodeCnt)
     CP RO_EXPLODE_MAX
     JR Z, .explodingEnds
+
     ; Nope, keep exploding.
 
     ; ##########################################
@@ -218,7 +227,7 @@ AnimateRocketExplosion
     ; ##########################################
     ; Animation for the top rockets element.
     LD IX, (ro.rocketElPtr)
-    LD A, ro.EL_TOP_D3
+    LD A, ro.EL_TIP_D3
     CALL ro.MoveIXtoGivenRocketElement
 
     ; Move HL to current frame.
@@ -248,7 +257,7 @@ AnimateRocketExplosion
     ; ##########################################
     ; Animation for the bottom rockets element.
     LD IX, (ro.rocketElPtr)
-    LD A, ro.EL_LOW_D1
+    LD A, ro.EL_EXH_D1
     CALL ro.MoveIXtoGivenRocketElement
 
     ; Move HL to current frame.
@@ -314,9 +323,46 @@ AnimateRocketExhaust
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                _ControlFlyingRocket                      ;
+;----------------------------------------------------------;
+_ControlFlyingRocket
+
+    CALL _ProcessJoystickInput
+
+    ; ##########################################
+    ; Increment total distance.
+    LD HL, (rocketDistance)
+    INC HL
+    LD (rocketDistance), HL
+
+    ; ##########################################
+    ; Has the rocket reached the asteroid, and should the explosion sequence begin?
+    LD A, H
+    CP EXPLODE_Y_HI_H4
+    JR NZ, .notAtExpolodeDistance
+
+    LD A, L
+    CP EXPLODE_Y_LO_H7E
+    JR C, .notAtExpolodeDistance
+
+    CALL _StartRocketExplosion
+    RET
+.notAtExpolodeDistance
+
+    ; ##########################################
+    CALL ro.UpdateRocketPosition
+
+    CALL gc.RocketFLyPhase4
+    CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  _MoveFlyingRocket                       ;
 ;----------------------------------------------------------;
 _MoveFlyingRocket
+
+    ; ##########################################
     CALL dbs.SetupArrays2Bank
 
     ; Slow down rocket movement speed while taking off.
@@ -374,7 +420,7 @@ _MoveFlyingRocket
 
     CP PHASE_4
     JR C, .notFlygin
-    CALL gc.RocketFlying
+    CALL gc.RocketFLyPhase4
     CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
 .notFlygin
 
@@ -390,24 +436,10 @@ _MoveFlyingRocket
     CALL dbs.SetupArrays2Bank
 
     ; ##########################################
-    ; Has the rocket reached the asteroid, and should the explosion sequence begin?
-    LD A, H
-    CP EXPLODE_Y_HI_H4
-    JR NZ, .notAtExpolodeDistance
-
-    LD A, L
-    CP EXPLODE_Y_LO_H7E
-    JR C, .notAtExpolodeDistance
-
-    CALL _StartRocketExplosion
-    RET
-.notAtExpolodeDistance
-
-    ; ##########################################
-    ; The current position of rocket elements is stored in #rocketAssemblyX and #ro.RO.Y 
+    ; The current position of rocket elements is stored in #ro.rocAssemblyX and #ro.RO.Y 
     ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 
-    LD IX, (ro.rocketElPtr)                               ; Load the pointer to #rocket into IX.
+    LD IX, (ro.rocketElPtr)                               ; Load the pointer to rocket into IX.
 
     ; ##########################################
     ; Did the rocket reach the middle of the screen, and should it stop moving?
@@ -416,8 +448,8 @@ _MoveFlyingRocket
     JR C, .keepMoving
 
     ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
-    LD A, (ro.rocketAssemblyX)
-    CALL ro.UpdateElementPosition
+    LD D, (IX + ro.RO.SPRITE_REF)
+    CALL ro.UpdateRocketSpritePattern
 
     RET
 
@@ -425,31 +457,12 @@ _MoveFlyingRocket
 .keepMoving
 
     ; ##########################################
-    ; Move bottom rocket element.
-    DEC (IX + ro.RO.Y)
+    ; Update Y position.
+    LD A, (ro.rocY)
+    DEC A
+    LD (ro.rocY), A
 
-    LD A, (ro.rocketAssemblyX)
-    CALL ro.UpdateElementPosition
-
-    ; ##########################################
-    ; Move middle rocket element.
-    LD A, ro.EL_MID_D2
-    CALL ro.MoveIXtoGivenRocketElement
-
-    DEC (IX + ro.RO.Y)
-
-    LD A, (ro.rocketAssemblyX)
-    CALL ro.UpdateElementPosition
-
-    ; ##########################################
-    ; Move top rocket element.
-    LD A, ro.EL_TOP_D3
-    CALL ro.MoveIXtoGivenRocketElement
-
-    DEC (IX + ro.RO.Y)
-
-    LD A, (ro.rocketAssemblyX)
-    CALL ro.UpdateElementPosition
+    CALL ro.UpdateRocketPosition
 
     RET                                         ; ## END of the function ##
 
@@ -509,7 +522,6 @@ _UpdateRocketFlyPhase
     ; Rocket has reached pahse 3.
     LD A, PHASE_3
     LD (rocketFlyPhase), A
-    CALL gc.RocketFLyStartPhase3
 .not3
 
     ; ##########################################
@@ -525,8 +537,164 @@ _UpdateRocketFlyPhase
     ; Rocket has reached pahse 4.
     LD A, PHASE_4
     LD (rocketFlyPhase), A
+    CALL _RocketFLyStartPhase4
     CALL gc.RocketFLyStartPhase4
 .not4
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 _RocketFLyStartPhase4                    ;
+;----------------------------------------------------------;
+_RocketFLyStartPhase4
+
+    ; Setup joystick
+    CALL ki.ResetKeyboard
+
+    LD DE, _JoyDown
+    LD (ki.callbackDown), DE
+
+    LD DE, _JoyUp
+    LD (ki.callbackUp), DE
+
+    LD DE, _JoyLeft
+    LD (ki.callbackLeft), DE
+
+    LD DE, _JoyRight
+    LD (ki.callbackRight), DE
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 _ProcessJoystickInput                    ;
+;----------------------------------------------------------;
+_ProcessJoystickInput
+
+    ; Key Left
+    LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1).
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 4, A                                    ; Bit 4 reset -> Left pressed.
+    CALL Z, _JoyLeft
+
+    ; ##########################################
+    ; Row: 6, 7, 8 ,9, 0 and to read arrow keys: up/down/right
+
+    ; Key right
+    LD A, _KB_6_TO_0_HEF                        ; $EF -> A (6...0).
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 2, A                                    ; Bit 2 reset -> right pressed.
+    CALL Z, _JoyRight
+    POP AF
+
+    ; Key up
+    PUSH AF
+    BIT 3, A                                    ; Bit 3 reset -> Up pressed.
+    CALL Z, _JoyUp
+    POP AF
+    
+    ; Key down
+    BIT 4, A                                    ; Bit 4 reset -> Down pressed.
+    CALL Z, _JoyDown
+
+    ; ##########################################
+    ; Read Kempston input
+
+    ; Joystick right
+    LD A, _JOY_MASK_H20                         ; Activate joystick register.
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 0, A                                    ; Bit 0 set -> Right pressed.
+    CALL NZ, _JoyRight
+    POP AF
+
+    ; Joystick left
+    PUSH AF
+    BIT 1, A                                    ; Bit 1 set -> Left pressed.
+    CALL NZ, _JoyLeft
+    POP AF
+
+    ; Joystick down
+    PUSH AF
+    BIT 2, A                                    ; Bit 2 set -> Down pressed.
+    CALL NZ, _JoyDown
+    POP AF
+
+    ; Joystick up
+    BIT 3, A                                    ; Bit 3 set -> Up pressed.
+    CALL NZ, _JoyUp
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                         _JoyUp                           ;
+;----------------------------------------------------------;
+_JoyUp
+
+    LD A, (ro.rocY)
+    DEC A
+    LD (ro.rocY), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       _JoyDown                           ;
+;----------------------------------------------------------;
+_JoyDown
+
+    LD A, (ro.rocY)
+    INC A
+    INC A
+    LD (ro.rocY), A
+
+    CALL ros.PauseScrollStars
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                      _JoyLeft                            ;
+;----------------------------------------------------------;
+_JoyLeft
+
+    LD A, (ro.rocX)
+    DEC A
+    LD (ro.rocX), A
+
+    ; ##########################################
+    LD A, (decTileDelayCnt)
+    DEC A
+    CP 0
+    JR NZ, .afterDec
+
+    CALL ros.DecTileOffsetX
+
+    LD A, DELAY_TILE
+.afterDec
+    LD (decTileDelayCnt), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      _JoyRight                           ;
+;----------------------------------------------------------;
+_JoyRight
+
+    LD A, (ro.rocX)
+    INC A
+    LD (ro.rocX), A
+
+    ; ##########################################
+    LD A, (decTileDelayCnt)
+    DEC A
+    CP 0
+    JR NZ, .afterDec
+
+    CALL ros.IncTileOffsetX
+
+    LD A, DELAY_TILE
+.afterDec
+    LD (decTileDelayCnt), A
 
     RET                                         ; ## END of the function ##
 

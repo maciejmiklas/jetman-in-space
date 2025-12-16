@@ -18,7 +18,7 @@ jetY                    DB 0                    ; 0-256px
 ;----------------------------------------------------------;
 IncJetX
 
-    LD BC, (jpo.jetX)
+    LD BC, (jetX)
     INC BC
 
     ; If X >= 315 then set it to 0. X is 9-bit value.
@@ -31,7 +31,7 @@ IncJetX
     JR C, .lessThanMaxX
     LD BC, 1                                    ; Jetman is above 315 -> set to 1.
 .lessThanMaxX
-    LD (jpo.jetX), BC                           ; Update new X position.
+    LD (jetX), BC                           ; Update new X position.
 
     CALL gc.JetMoves
 
@@ -44,7 +44,7 @@ IncJetX
 ; - B: number of pixels to move Jetman Up.
 IncJetXbyB
 
-.loop   
+.loop
     PUSH BC
     CALL IncJetX
     POP BC
@@ -57,7 +57,7 @@ IncJetXbyB
 ;----------------------------------------------------------;
 DecJetX
 
-    LD BC, (jpo.jetX)
+    LD BC, (jetX)
     DEC BC
 
     ; If X == 0 (_GSC_X_MIN_D0) then set it to 315. X == 0 when B and C are 0
@@ -69,7 +69,7 @@ DecJetX
     JR NZ, .afterResetX
     LD BC, _GSC_X_MAX_D315                      ; X == 0 (both A and B are 0) -> set X to 315.
 .afterResetX
-    LD (jpo.jetX), BC
+    LD (jetX), BC
 
     CALL gc.JetMoves
 
@@ -82,7 +82,7 @@ DecJetX
 ; - B: number of pixels to move Jetman up.
 DecJetXbyB
 
-.loop   
+.loop
     PUSH BC
     CALL DecJetX
     POP BC
@@ -95,13 +95,13 @@ DecJetXbyB
 ;----------------------------------------------------------;
 IncJetY
 
-    LD A, (jpo.jetY)
+    LD A, (jetY)
     INC A
-    LD (jpo.jetY), A
+    LD (jetY), A
 
     CALL gc.JetMoves
     CALL gc.JetMovesDown
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -109,9 +109,9 @@ IncJetY
 ;----------------------------------------------------------;
 DecJetY
 
-    LD A, (jpo.jetY)
+    LD A, (jetY)
     DEC A
-    LD (jpo.jetY), A
+    LD (jetY), A
 
     CALL gc.JetMoves
     CALL gc.JetMovesUp
@@ -124,7 +124,7 @@ DecJetY
 ; - B: number of pixels to move Jetman donw.
 IncJetYbyB
 
-.loop   
+.loop
     PUSH BC
     CALL IncJetY
     POP BC
@@ -139,7 +139,7 @@ IncJetYbyB
 ; - B: number of pixels to move Jetman up
 DecJetYbyB
 
-.loop   
+.loop
     PUSH BC
     CALL DecJetY
     POP BC
