@@ -655,7 +655,7 @@ _JoyLeft
     CP 0
     JR NZ, .afterDec
 
-   ; CALL ros.DecTileOffsetX
+    CALL ros.DecTileOffsetX
 
     LD A, DELAY_TILE
 .afterDec
@@ -678,7 +678,7 @@ _JoyRight
     CP 0
     JR NZ, .afterDec
 
-    ;CALL ros.IncTileOffsetX
+    CALL ros.IncTileOffsetX
 
     LD A, DELAY_TILE
 .afterDec
