@@ -6,6 +6,8 @@
 ;                     Rocket Stars                         ;
 ;----------------------------------------------------------;
     MODULE ros
+    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+
 ; Moves the tilemap with platforms, then animates the stars.
 
 ; Tile stars
@@ -139,20 +141,6 @@ ScrollStarsOnFlyRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   _UpdateTileXOffset                     ;
-;----------------------------------------------------------;
-_UpdateTileXOffset
-
-    LD HL, (tileOffsetX)
-    LD A, L
-    NEXTREG _DC_REG_TI_X_LSB_H30, A
-
-    LD A, H
-    NEXTREG _DC_REG_TI_X_MSB_H2F, A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                      DecTileOffsetX                      ;
 ;----------------------------------------------------------;
 DecTileOffsetX
@@ -204,6 +192,20 @@ IncTileOffsetX
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                   _UpdateTileXOffset                     ;
+;----------------------------------------------------------;
+_UpdateTileXOffset
+
+    LD HL, (tileOffsetX)
+    LD A, L
+    NEXTREG _DC_REG_TI_X_LSB_H30, A
+
+    LD A, H
+    NEXTREG _DC_REG_TI_X_MSB_H2F, A
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
 ;                 _NextStarsTileRow                        ;
 ;----------------------------------------------------------;
 ; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
@@ -230,7 +232,7 @@ _NextStarsTileRow
     LD D, A
     LD E, ti.TI_H_BYTES_D80
     MUL D, E                                    ; DE contains byte offset to current row.
-    LD HL, _RAM_SLOT6_STA_HC000
+    LD HL, _RAM_SLOT7_STA_HE000
     ADD HL, DE                                  ; Move RAM pointer to current row.
 
     ; Load the memory address of in-game tiles into DE. This row will be replaced with stars.

@@ -89,6 +89,7 @@ _MainLoop000OnFlayRocket
     RET NZ
 
     ; ##########################################
+    CALL dbs.SetupRocketBank
     CALL rof.FlyRocket
     CALL rof.FlyRocketSound
 
@@ -315,6 +316,7 @@ _MainLoop005OnRocketExplosion
     RET NZ
 
     ; ##########################################
+    CALL dbs.SetupRocketBank
     CALL rof.AnimateRocketExplosion
     
     RET                                         ; ## END of the function ##
@@ -394,10 +396,12 @@ _MainLoop008OnFlayingRocket
     RET NZ
 
     ; ##########################################
-    CALL rof.AnimateRocketExhaust
-    CALL rof.BlinkFlyingRocket
     CALL st.BlinkStarsL1
     CALL st.BlinkStarsL2
+
+    CALL dbs.SetupRocketBank
+    CALL rof.AnimateRocketExhaust
+    CALL rof.BlinkFlyingRocket
 
     RET                                         ; ## END of the function ##
 
@@ -728,6 +732,7 @@ _LastLoop
 ;----------------------------------------------------------;
 _LastLoopOnRocketPhase2_3
 
+    CALL dbs.SetupRocketBank
     LD A, (rof.rocketFlyPhase)
     AND rof.PHASE_2_3
     RET Z

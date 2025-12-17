@@ -349,32 +349,6 @@ DifficultyChange
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   RocketFLyPhase2and3                    ;
-;----------------------------------------------------------;
-RocketFLyPhase2and3
-
-    CALL ros.ScrollStarsOnFlyRocket
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL bg.UpdateBackgroundOnRocketMove
-    CALL bg.HideBackgroundBehindHorizon
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    RocketFLyPhase4                       ;
-;----------------------------------------------------------;
-RocketFLyPhase4
-
-    CALL ros.ScrollStarsOnFlyRocket
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                  RocketFLyStartPhase1                    ;
 ;----------------------------------------------------------;
 ; See #rof.rocketFlyPhase
@@ -383,7 +357,6 @@ RocketFLyStartPhase1
     LD A, ms.FLY_ROCKET
     CALL ms.SetMainState
 
-    CALL rof.RocketFLyStartPhase1
     CALL sc.BoardRocket
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
@@ -394,6 +367,9 @@ RocketFLyStartPhase1
     CALL dbs.SetupPatternEnemyBank
     CALL enu.DisableFuelThief
     CALL jw.HideShots
+
+    CALL dbs.SetupRocketBank
+    CALL rof.RocketFLyStartPhase1
 
     RET                                         ; ## END of the function ##
 
@@ -406,6 +382,8 @@ RocketFLyStartPhase2
     CALL ti.SetTilesClipHorizontal
     CALL ti.ClearBottomTileLine
 
+    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -414,8 +392,8 @@ RocketFLyStartPhase2
 ; See #rof.rocketFlyPhase
 RocketFLyStartPhase4
 
-    CALL ti.CleanAllTiles
     CALL ros.ResetRocketStars
+    CALL ti.CleanAllTiles
 
     LD DE, (jt.levelNumber)
     CALL fi.LoadTileStarsSprFile
@@ -426,8 +404,40 @@ RocketFLyStartPhase4
     LD B, db1.STARS_PAL_BYTES
     CALL ti.LoadTilemap9bitPalette
 
+    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                   RocketFLyPhase2and3                    ;
+;----------------------------------------------------------;
+RocketFLyPhase2and3
+
+    CALL ros.ScrollStarsOnFlyRocket
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+    CALL bg.UpdateBackgroundOnRocketMove
+    CALL bg.HideBackgroundBehindHorizon
+
+    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    RocketFLyPhase4                       ;
+;----------------------------------------------------------;
+RocketFLyPhase4
+
+    CALL ros.ScrollStarsOnFlyRocket
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+    CALL st.MoveStarsDown
+
+    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+
+    RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;                     RocketTankHit                        ;
 ;----------------------------------------------------------;
@@ -1256,7 +1266,6 @@ _HideGame
     CALL bm.HideImage
     CALL js.HideJetSprite
     CALL roa.ResetAndDisableRocket
-    CALL rof.ResetAndDisableFlyRocket
     CALL st.HideStars
     CALL jw.HideShots
     CALL jt.SetJetStateInactive
@@ -1274,6 +1283,9 @@ _HideGame
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
 
+    CALL dbs.SetupRocketBank
+    CALL rof.ResetAndDisableFlyRocket
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -1284,6 +1296,8 @@ _InitLevelLoad
     CALL _HideGame
     CALL gi.ResetKeysState
     CALL td.ResetTimeOfDay
+
+    CALL dbs.SetupRocketBank
     CALL ros.ResetRocketStars
 
     CALL dbs.SetupPatternEnemyBank

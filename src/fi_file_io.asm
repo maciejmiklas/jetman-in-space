@@ -649,14 +649,14 @@ _LoadPalFileByName
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 _Load8KTilemap
 
-    CALL dbs.Setup16KTilemapBank
+    CALL dbs.Setup8KTilemapBank
 
     ; Read file.
     LD HL, fileNameBuf
     CALL _SetFileLevelNumber
     CALL _FileOpen
     
-    LD IX, _RAM_SLOT6_STA_HC000
+    LD IX, _RAM_SLOT7_STA_HE000
     LD BC, TI8K_FILE_BYT_D7680
     CALL _FileRead
 

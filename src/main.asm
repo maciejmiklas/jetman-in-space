@@ -85,8 +85,6 @@ mainLoop
     INCLUDE "jw_jet_weapon.asm"
     INCLUDE "ro_rocket.asm"
     INCLUDE "roa_rocket_assembly.asm"
-    INCLUDE "rof_rocket_fly.asm"
-    INCLUDE "ros_rocket_stars.asm"
     INCLUDE "td_times_of_day.asm"
     INCLUDE "jo_jetpack_overheat.asm"
     INCLUDE "li_level_intro.asm"
@@ -166,6 +164,14 @@ mainLoop
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "so_storage.asm"
     ASSERT $$ == dbs.STORAGE_S6_D35
+
+    ; ################ BANK  36 ################
+    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    MMU _RAM_SLOT6, dbs.ROCKET_S6_D36
+    ORG _RAM_SLOT6_STA_HC000
+    INCLUDE "rof_rocket_fly.asm"
+    INCLUDE "ros_rocket_stars.asm"
+    ASSERT $$ == dbs.ROCKET_S6_D36
 
 ;----------------------------------------------------------;
 ;                      sjasmplus                           ;

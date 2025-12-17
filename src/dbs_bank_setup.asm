@@ -39,6 +39,7 @@ AY_FX_S6_D32            = 32                    ; Slot 6, FX sound.
 AY_MCODE_S6_D33         = 33                    ; Slot 6, music code, music binary is in AY_MCODE_S6_D33.
 TILE_ANIMATION_D34      = 34                    ; Slot 6, tile animation.
 STORAGE_S6_D35          = 35                    ; Slot 6, game data storage.
+ROCKET_S6_D36           = 36                    ; Slot 6, rocket.
 
 ; ################ Dynamic Data #################
 PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D87.
@@ -59,13 +60,22 @@ PAL2_BANK_S6_D87        = 87                   ; Slot 6. Layer 2 pallettes.
 
 
 ;----------------------------------------------------------;
+;                    SetupRocketBank                       ;
+;----------------------------------------------------------;
+SetupRocketBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, ROCKET_S6_D36
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                   SetupStorageBank                       ;
 ;----------------------------------------------------------;
 SetupStorageBank
 
     NEXTREG _MMU_REG_SLOT6_H56, STORAGE_S6_D35
 
-    RET                                         ; ## END of the function ## 
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                SetupFollowingEnemyBank                   ;
@@ -137,7 +147,7 @@ Setup16KTilemapBank
 ;----------------------------------------------------------;
 Setup8KTilemapBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, LONG_TI_BANK1_S6_D82
+    NEXTREG _MMU_REG_SLOT7_H57, LONG_TI_BANK2_S7_D84
 
     RET                                         ; ## END of the function ##
 

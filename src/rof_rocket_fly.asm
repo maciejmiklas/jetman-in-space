@@ -6,6 +6,7 @@
 ;                      Flying the Rocket                   ;
 ;----------------------------------------------------------;
     MODULE rof
+    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
 
 /*
 Rocket fly phases:
@@ -53,7 +54,7 @@ PHASE_5                 = %00010000
 
 PHASE_2_3               = %00000110
 
-rocketFlyPhase          DB PHASE_0
+rocketFlyPhase          DB PHASE_0; TODO move to ro to avoid cycle!!
 
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
@@ -62,7 +63,6 @@ RO_FLY_DELAY_DIST_D5    = 5
 EXPLODE_Y_HI_H4         = $08
 EXPLODE_Y_LO_H7E        = $FF
 
-EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
 RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
@@ -78,11 +78,14 @@ soundRepeatDelay        DB FLY_SOUND_REPEAT
 DELAY_TILE              = 5
 decTileDelayCnt         DB DELAY_TILE
 
+rocketExhaustDB                                 ; Sprite IDs for exhaust
+    DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
+RO_EXHAUST_MAX          = 18
+
 ;----------------------------------------------------------;
 ;               ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
 ResetAndDisableFlyRocket
-    CALL dbs.SetupArrays2Bank
 
     XOR A
     LD (rocketExplodeCnt), A
@@ -120,11 +123,11 @@ FlyRocketSound
 .play
     XOR A
     LD (soundRepeatDelay), A
-
+/* TODO
     LD A, af.FX_ROCKET_FLY
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
-
+*/
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -142,7 +145,6 @@ RocketFLyStartPhase1
 ;----------------------------------------------------------;
 FlyRocket
 
-    CALL dbs.SetupArrays2Bank
     LD A, (rocketFlyPhase)
     CP PHASE_4
     JR NZ,.notPhase4
@@ -166,7 +168,7 @@ FlyRocket
 
     ; ##########################################
     ; Set X/Y coordinates for flames coming out of the exhaust.
-    LD A, EXHAUST_SPRID_D83
+    LD A, _EXHAUST_SPRID_D83
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
     ; Sprite X coordinate.
@@ -183,8 +185,6 @@ FlyRocket
 ;                    BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
 BlinkFlyingRocket
-
-    CALL dbs.SetupArrays2Bank
 
     LD A, ro.EL_EXH_D1
     CALL ro.MoveIXtoGivenRocketElement
@@ -207,10 +207,8 @@ BlinkFlyingRocket
 ;                AnimateRocketExplosion                    ;
 ;----------------------------------------------------------;
 AnimateRocketExplosion
+    ret
 
-    CALL dbs.SetupArrays2Bank
-
-    ; ##########################################
     ; Is the exploding sequence over?
     LD A, (rocketExplodeCnt)
     CP RO_EXPLODE_MAX
@@ -288,12 +286,10 @@ AnimateRocketExplosion
 ;----------------------------------------------------------;
 AnimateRocketExhaust
 
-    CALL dbs.SetupArrays2Bank
-
     ; Increment sprite pattern counter.
     LD A, (rocketExhaustCnt)
     INC A
-    CP db2.RO_EXHAUST_MAX
+    CP RO_EXHAUST_MAX
     JP NZ, .afterIncrement
     XOR A                                       ; Reset counter.
 .afterIncrement 
@@ -301,11 +297,11 @@ AnimateRocketExhaust
     LD (rocketExhaustCnt), A                    ; Store current counter (increment or reset).
 
     ; Set the ID of the sprite for the following commands.
-    LD A, EXHAUST_SPRID_D83
+    LD A, _EXHAUST_SPRID_D83
     NEXTREG _SPR_REG_NR_H34, A
 
     ; Load sprite pattern to A.
-    LD HL, db2.rocketExhaustDB
+    LD HL, rocketExhaustDB
     LD A, (rocketExhaustCnt)
     ADD HL, A
     LD A, (HL)
@@ -353,7 +349,6 @@ _ControlFlyingRocket
     CALL ro.UpdateRocketPosition
 
     CALL gc.RocketFLyPhase4
-    CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
 
     RET                                         ; ## END of the function ##
 
@@ -361,9 +356,6 @@ _ControlFlyingRocket
 ;                  _MoveFlyingRocket                       ;
 ;----------------------------------------------------------;
 _MoveFlyingRocket
-
-    ; ##########################################
-    CALL dbs.SetupArrays2Bank
 
     ; Slow down rocket movement speed while taking off.
     ; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
@@ -412,7 +404,6 @@ _MoveFlyingRocket
     JR Z, .afterBoosting
 
     CALL gc.RocketFLyPhase2and3
-    CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
     POP AF
     JR .notFlygin
 .afterBoosting
@@ -421,7 +412,6 @@ _MoveFlyingRocket
     CP PHASE_4
     JR C, .notFlygin
     CALL gc.RocketFLyPhase4
-    CALL dbs.SetupArrays2Bank                    ; gc-call can change bank!
 .notFlygin
 
     ; ##########################################
@@ -433,7 +423,6 @@ _MoveFlyingRocket
     PUSH HL
     CALL _UpdateRocketFlyPhase
     POP HL
-    CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     ; The current position of rocket elements is stored in #ro.rocAssemblyX and #ro.RO.Y 
@@ -477,7 +466,7 @@ _StartRocketExplosion
 
     ; ##########################################
     ; Hide exhaust
-    LD A, EXHAUST_SPRID_D83                     ; Hide sprite on display.
+    LD A, _EXHAUST_SPRID_D83                     ; Hide sprite on display.
     CALL sp.SetIdAndHideSprite
 
     ; ##########################################
@@ -651,7 +640,6 @@ _JoyDown
 
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                      _JoyLeft                            ;
 ;----------------------------------------------------------;
@@ -660,14 +648,14 @@ _JoyLeft
     LD A, (ro.rocX)
     DEC A
     LD (ro.rocX), A
-
+    ret
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A
     CP 0
     JR NZ, .afterDec
 
-    CALL ros.DecTileOffsetX
+   ; CALL ros.DecTileOffsetX
 
     LD A, DELAY_TILE
 .afterDec
@@ -683,14 +671,14 @@ _JoyRight
     LD A, (ro.rocX)
     INC A
     LD (ro.rocX), A
-
+    ret
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A
     CP 0
     JR NZ, .afterDec
 
-    CALL ros.IncTileOffsetX
+    ;CALL ros.IncTileOffsetX
 
     LD A, DELAY_TILE
 .afterDec
