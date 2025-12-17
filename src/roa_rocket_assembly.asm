@@ -6,6 +6,7 @@
 ;                     Building the Rocket                  ;
 ;----------------------------------------------------------;
     MODULE roa
+    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
 
 RO_DROP_NEXT_D10        = 2                    ; Drop next element delay.
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element.
@@ -70,7 +71,6 @@ SetupRocket
 ;                 ResetAndDisableRocket                    ;
 ;----------------------------------------------------------;
 ResetAndDisableRocket
-    CALL dbs.SetupArrays2Bank
 
     XOR A
     LD HL, 0
@@ -106,7 +106,6 @@ ResetAndDisableRocket
 ;                AssemblyRocketForDebug                    ;
 ;----------------------------------------------------------;
 AssemblyRocketForDebug
-    CALL dbs.SetupArrays2Bank
 
     LD A, EL_TANK6_D9
     LD (rocketElementCnt), A
@@ -123,7 +122,6 @@ AssemblyRocketForDebug
 ;                   StartRocketAssembly                    ;
 ;----------------------------------------------------------;
 StartRocketAssembly
-    CALL dbs.SetupArrays2Bank
 
     LD A, ro.ROST_WAIT_DROP
     LD (ro.rocketState), A
@@ -134,7 +132,6 @@ StartRocketAssembly
 ;                 UpdateRocketOnJetmanMove                 ;
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
-    CALL dbs.SetupArrays2Bank
 
     CALL _PickupRocketElement
     CALL _CarryRocketElement
@@ -184,8 +181,6 @@ CheckHitTank
     LD A, (jt.difLevel)
     CP jt.DIF_EASY
     RET Z
-
-    CALL dbs.SetupArrays2Bank
 
     ; Is the thank out there?
     CALL IsFuelDeployed
@@ -241,7 +236,6 @@ CheckHitTank
 ;                   AnimateTankExplode                     ;
 ;----------------------------------------------------------;
 AnimateTankExplode
-    CALL dbs.SetupArrays2Bank
 
     ; Return if tank is not exploding.
     LD A, (ro.rocketState)
@@ -271,7 +265,7 @@ AnimateTankExplode
     ; Move #rocketExplodeTankDB by #explodeTankCnt, so that A points to current explosion frame.
     LD A, (explodeTankCnt)
     LD B, A
-    LD A, (db2.rocketExplodeTankDB)
+    LD A, (rod.rocketExplodeTankDB)
     ADD B
 
     ; Set sprite pattern.
@@ -290,8 +284,6 @@ AnimateTankExplode
 ;----------------------------------------------------------;
 ResetCarryingRocketElement
 
-    CALL dbs.SetupArrays2Bank
-
     ; Return if the state does not match carry.
     LD A, (ro.rocketState)
     CP ro.ROST_CARRY
@@ -305,8 +297,6 @@ ResetCarryingRocketElement
 ;               RocketElementFallsForPickup                ;
 ;----------------------------------------------------------;
 RocketElementFallsForPickup
-
-    CALL dbs.SetupArrays2Bank
 
     ; Return if there is no fall.
     LD A, (ro.rocketState)
@@ -348,8 +338,6 @@ RocketElementFallsForPickup
 ;----------------------------------------------------------;
 BlinkRocketReady
 
-    CALL dbs.SetupArrays2Bank
-
     ; Return if rocket is not ready.
     LD A, (ro.rocketState)
     CP ro.ROST_READY
@@ -377,8 +365,6 @@ BlinkRocketReady
 ;              RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly
-
-    CALL dbs.SetupArrays2Bank
 
     ; Return if there is no assembly
     LD A, (ro.rocketState)
@@ -440,7 +426,6 @@ RocketElementFallsForAssembly
 ;                  DropNextRocketElement                   ;
 ;----------------------------------------------------------;
 DropNextRocketElement
-    CALL dbs.SetupArrays2Bank
     
     ; Check state.
     LD A, (ro.rocketState)
@@ -699,8 +684,6 @@ _ResetRocketElement
 ;                     _BoardRocket                         ;
 ;----------------------------------------------------------;
 _BoardRocket
-
-    CALL dbs.SetupArrays2Bank
 
     ; Return if rocket is not ready for boarding.
     LD A, (ro.rocketState)

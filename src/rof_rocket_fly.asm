@@ -219,8 +219,8 @@ AnimateRocketExplosion
     ; ##########################################
     ; FX
     LD A, af.FX_EXPLODE_ENEMY_2
-    CALL dbs.SetupAyFxsBank
-    CALL af.AfxPlay
+   ; CALL dbs.SetupAyFxsBank
+    ;CALL af.AfxPlay
     
     ; ##########################################
     ; Animation for the top rockets element.
@@ -231,7 +231,7 @@ AnimateRocketExplosion
     ; Move HL to current frame.
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db2.rocketExplodeDB3
+    LD HL, rod.rocketExplodeDB3
     DEC DE                                      ; Counter starts at 1.
     ADD HL, DE
     LD D, (HL)
@@ -246,7 +246,7 @@ AnimateRocketExplosion
     ; Move HL to current frame.
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db2.rocketExplodeDB2
+    LD HL, rod.rocketExplodeDB2
     DEC DE                                      ; Counter starts at 1.
     ADD HL, DE
     LD D, (HL)
@@ -261,7 +261,7 @@ AnimateRocketExplosion
     ; Move HL to current frame.
     LD DE, (rocketExplodeCnt)
     LD D, 0                                     ; Reset D, we have an 8-bit counter here.
-    LD HL, db2.rocketExplodeDB1
+    LD HL, rod.rocketExplodeDB1
     DEC DE                                      ; Counter starts at 1.
     ADD HL, DE
     LD D, (HL)

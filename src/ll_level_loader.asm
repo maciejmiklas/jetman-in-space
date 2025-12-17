@@ -33,9 +33,9 @@ LoadLevel1Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL1
-    LD A, (db2.rocketAssemblyXL1)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL1
+    LD A, (rod.rocketAssemblyXL1)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -116,9 +116,9 @@ LoadLevel2Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL2
-    LD A, (db2.rocketAssemblyXL2)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL2
+    LD A, (rod.rocketAssemblyXL2)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -200,9 +200,9 @@ LoadLevel3Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL3
-    LD A, (db2.rocketAssemblyXL3)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL3
+    LD A, (rod.rocketAssemblyXL3)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -286,9 +286,9 @@ LoadLevel4Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL4
-    LD A, (db2.rocketAssemblyXL4)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL4
+    LD A, (rod.rocketAssemblyXL4)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -365,9 +365,9 @@ LoadLevel5Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL5
-    LD A, (db2.rocketAssemblyXL5)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL5
+    LD A, (rod.rocketAssemblyXL5)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -449,9 +449,9 @@ LoadLevel6Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL6
-    LD A, (db2.rocketAssemblyXL6)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL6
+    LD A, (rod.rocketAssemblyXL6)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -533,9 +533,9 @@ LoadLevel7Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL7
-    LD A, (db2.rocketAssemblyXL7)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL7
+    LD A, (rod.rocketAssemblyXL7)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -612,9 +612,9 @@ LoadLevel8Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL8
-    LD A, (db2.rocketAssemblyXL8)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL8
+    LD A, (rod.rocketAssemblyXL8)
     CALL roa.SetupRocket
     
     ; ##########################################
@@ -696,9 +696,9 @@ LoadLevel9Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL9
-    LD A, (db2.rocketAssemblyXL9)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL9
+    LD A, (rod.rocketAssemblyXL9)
     CALL roa.SetupRocket
 
     ; ##########################################
@@ -774,9 +774,9 @@ LoadLevel10Data
 
     ; ##########################################
     ; Load rocket
-    CALL dbs.SetupArrays2Bank
-    LD HL, db2.rocketElL10
-    LD A, (db2.rocketAssemblyXL10)
+    CALL dbs.SetupRocketBank
+    LD HL, rod.rocketElL10
+    LD A, (rod.rocketAssemblyXL10)
     CALL roa.SetupRocket
 
     ; ##########################################

@@ -241,6 +241,8 @@ LoadNextLevel
     CALL lu.UnlockNextLevel
     CALL LoadCurrentLevel
 
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -353,6 +355,9 @@ DifficultyChange
 ;----------------------------------------------------------;
 ; See #rof.rocketFlyPhase
 RocketFLyStartPhase1
+    ; The dbs.SetupRocketBank is already set
+
+    CALL rof.RocketFLyStartPhase1
 
     LD A, ms.FLY_ROCKET
     CALL ms.SetMainState
@@ -368,8 +373,7 @@ RocketFLyStartPhase1
     CALL enu.DisableFuelThief
     CALL jw.HideShots
 
-    CALL dbs.SetupRocketBank
-    CALL rof.RocketFLyStartPhase1
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -377,6 +381,7 @@ RocketFLyStartPhase1
 ;                   RocketFLyStartPhase2                   ;
 ;----------------------------------------------------------;
 ; See #rof.rocketFlyPhase
+; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase2
 
     CALL ti.SetTilesClipHorizontal
@@ -390,9 +395,11 @@ RocketFLyStartPhase2
 ;                  RocketFLyStartPhase4                    ;
 ;----------------------------------------------------------;
 ; See #rof.rocketFlyPhase
+; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase4
 
     CALL ros.ResetRocketStars
+
     CALL ti.CleanAllTiles
 
     LD DE, (jt.levelNumber)
@@ -404,13 +411,14 @@ RocketFLyStartPhase4
     LD B, db1.STARS_PAL_BYTES
     CALL ti.LoadTilemap9bitPalette
 
-    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   RocketFLyPhase2and3                    ;
 ;----------------------------------------------------------;
+; The dbs.SetupRocketBank is already set
 RocketFLyPhase2and3
 
     CALL ros.ScrollStarsOnFlyRocket
@@ -420,13 +428,14 @@ RocketFLyPhase2and3
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
-    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    RocketFLyPhase4                       ;
 ;----------------------------------------------------------;
+; The dbs.SetupRocketBank is already set
 RocketFLyPhase4
 
     CALL ros.ScrollStarsOnFlyRocket
@@ -434,7 +443,7 @@ RocketFLyPhase4
     CALL st.MoveStarsDown
     CALL st.MoveStarsDown
 
-    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
     
@@ -449,6 +458,8 @@ RocketTankHit
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -460,6 +471,7 @@ RocketElementPickup
 
     ; ##########################################
     ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element.
+    CALL dbs.SetupRocketBank
     CALL roa.IsFuelDeployed
     JR NZ, .notFuelTank
 
@@ -474,6 +486,8 @@ RocketElementPickup
     CALL af.AfxPlay
 .afterFuelFx
 
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
@@ -483,18 +497,22 @@ RocketElementPickupInAir
     
     CALL sc.PickupRocketElementInAir
 
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
 ;                   RocketElementDrop                      ;
 ;----------------------------------------------------------;
 RocketElementDrop
-    
+
     CALL sc.DropRocketElement
 
     LD A, af.FX_ROCKET_EL_DROP
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
@@ -808,13 +826,13 @@ RespawnJet
 
     ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
     CALL bm.CopyImageData
-
     CALL jt.SetJetStateRespawn
-
     CALL jco.MakeJetInvincible
-
     CALL bg.UpdateBackgroundOnJetmanMove
+
+    CALL dbs.SetupRocketBank
     CALL roa.ResetCarryingRocketElement
+
     CALL jw.HideShots
     CALL jo.ResetJetpackOverheating
 
@@ -1035,7 +1053,9 @@ JetLanding
 ; Called on any Jetman movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
 JetMoves
 
+    CALL dbs.SetupRocketBank
     CALL roa.UpdateRocketOnJetmanMove
+
     CALL jl.UpdateLifeFaceOnJetMove
 
     CALL dbs.SetupArrays2Bank
@@ -1076,6 +1096,8 @@ RocketReady
     LD A, af.FX_ROCKET_READY
     CALL dbs.SetupAyFxsBank
     CALL af.AfxPlay
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -1265,7 +1287,10 @@ _HideGame
 
     CALL bm.HideImage
     CALL js.HideJetSprite
+
+    CALL dbs.SetupRocketBank
     CALL roa.ResetAndDisableRocket
+
     CALL st.HideStars
     CALL jw.HideShots
     CALL jt.SetJetStateInactive
@@ -1321,7 +1346,10 @@ _StartLevel
 
     CALL gb.ShowGameBar
     CALL sc.PrintScore
+
+    CALL dbs.SetupRocketBank
     CALL roa.StartRocketAssembly
+
     CALL ti.SetTilesClipFull
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating

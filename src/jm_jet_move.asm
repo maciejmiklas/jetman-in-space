@@ -319,7 +319,10 @@ _SholdProcessJoyOnOverheat
 _JoystickMoves
 
     CALL pl.ResetJoyOffBump
+
+    CALL dbs.SetupRocketBank
     CALL roa.UpdateRocketOnJetmanMove
+    
     CALL pl.JetPlatformHitOnJoyMove
 
     ; ##########################################

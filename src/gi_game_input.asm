@@ -315,6 +315,7 @@ _Key_S
     CALL ki.CanProcessKeyInput
     RET NZ
 
+    CALL dbs.SetupRocketBank
     CALL roa.AssemblyRocketForDebug
 
     RET                                         ; ## END of the function ##
@@ -353,6 +354,8 @@ _Key_Q
     RET NZ
 
     CALL gc.LoadLevel1
+
+    CALL dbs.SetupRocketBank
     CALL roa.AssemblyRocketForDebug
 
     RET                                         ; ## END of the function ##
