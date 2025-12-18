@@ -10,11 +10,13 @@
 GAME_ACTIVE             = 1
 GAME_PAUSE              = 2
 FLY_ROCKET              = 3
-LEVEL_INTRO             = 4
-MENU_MAIN               = 5
-MENU_MANUAL             = 6
-MENU_SCORE              = 7
-MENU_LEVEL              = 8
+
+LEVEL_INTRO             = 10
+MENU_MAIN               = 11
+MENU_MANUAL             = 12
+MENU_SCORE              = 13
+MENU_LEVEL              = 14
+
 GAME_OVER               = 20
 PAUSE                   = 30
 

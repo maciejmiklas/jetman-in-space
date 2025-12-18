@@ -16,7 +16,7 @@ PI_SPR_GRENADE          = 42                ; Collect and expolode.
 PI_FREEZE_ENEMIES       = 43                ; Freeze enemies.
 PI_SPR_GUN              = 44                ; Improve weapon.
 
-pickupsArrayPos          DB 0
+pickupsArrayPos         DB 0
 
 deployed                DB 0                ; Currently deployed sprite reference from spr-file(#PI_SPR_XXX), 0 for none.
 

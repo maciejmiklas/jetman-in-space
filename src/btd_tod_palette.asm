@@ -9,14 +9,14 @@
 
     ; ### TO USE THIS MODULE: CALL dbs.SetupPaletteBank ###
 
-palBytes                DW 0                    ; Size in bytes of background palette, max 512.
 palColors               DB 0                    ; Amount of colors in background palette, max 255-40 for stars.
-palAdr                  DW 0                    ; Address of the original palette data.
 todPalAddr              DW 0                    ; Pointer to current brightness palette.
 
 ; We use 40 colors (41 with margin) for the stars palette, which leaves 512-(41*2) = 430 bytes, or 215 colors for the L2 image.
 PAL_BG_BYTES_D430      = 512-st.ST_PAL_L1_BYTES_D64-st.ST_PAL_L2_BYTES_D16-2
     ASSERT PAL_BG_BYTES_D430 = 430
+
+PAL_ADDR               = bp.DEFAULT_PAL_ADDR
 
 ; Palettes are stored in: $E200,$E400,$E600,$E800,$EA000,... #todPalAddr points to the current palette.
 ; $E000 holds default palette
@@ -77,7 +77,7 @@ LoadCurrentTodPalette
     CALL dbs.SetupPaletteBank
     CALL bp.SetupPaletteLoad
 
-    LD HL, (palAdr)
+    LD HL, PAL_ADDR
     LD A, (palColors)
     LD B, A 
     CALL bp.WritePalette
@@ -129,9 +129,9 @@ _CreateTodPalettes
     CALL ResetPaletteArrd
     
     ; Copy initial palette. HL (source) and BC (amount), DE (destination).
-    LD HL, (palAdr)
+    LD HL, PAL_ADDR
     LD DE, (todPalAddr)
-    LD BC, (palBytes)
+    LD BC, PAL_BG_BYTES_D430
     LDIR
 
     ; ##########################################
@@ -160,7 +160,7 @@ _CreateTodPalettes
 _VariablesSet
 
     ; Set #palColors from #palBytes
-    LD BC, (palBytes)
+    LD BC, PAL_BG_BYTES_D430
     CALL bp.BytesToColors
     LD A, B
     LD (palColors), A
@@ -182,7 +182,7 @@ _NextBrightnessPalette
 
     ; ##########################################
     ; Copy current palette to new address given by #todPalAddr.
-    LD BC, (palBytes)                           ; Number of bytes to be copied by LDIR.
+    LD BC, PAL_BG_BYTES_D430                    ; Number of bytes to be copied by LDIR.
     LDIR                                        ; Copy palette from HL to DE.
 
     RET                                         ; ## END of the function ##
@@ -227,7 +227,7 @@ _LoadTodPalette
     LD A, (palColors)                           ; Number of colors/iterations.
     LD B, A
 
-    LD HL, (palAdr)                             ; Address of the palette.
+    LD HL, PAL_ADDR                             ; Address of the palette.
 .loopCopyColor
     
     ; 1st write

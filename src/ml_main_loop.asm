@@ -81,6 +81,7 @@ _MainLoop000OnPause
 ;                _MainLoop000OnFlayRocket                  ;
 ;----------------------------------------------------------;
 _MainLoop000OnFlayRocket
+    CALL dbs.SetupRocketBank
 
     ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
     ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY.
@@ -108,7 +109,7 @@ _MainLoop000OnActiveGame
     CALL _MainLoop000OnDisabledJoy
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
-    CALL roa.CheckHitTank
+
     CALL jco.JetRip
     CALL jw.MoveShots
     CALL gc.WeaponHitEnemy
@@ -117,6 +118,9 @@ _MainLoop000OnActiveGame
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
     CALL jco.JetInvincible
+
+    CALL dbs.SetupRocketBank
+    CALL roa.CheckHitTank
     CALL roa.RocketElementFallsForPickup
 
     CALL dbs.SetupPatternEnemyBank
@@ -156,10 +160,10 @@ _MainLoop000OnActiveGame
 ;----------------------------------------------------------;
 _MainLoop000OnNotInGame
 
-    ; Return if main menu is inactive.
+    ; Return if menu is not active.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
-    RET Z
+    CP ms.LEVEL_INTRO
+    RET C
 
     ; ##########################################
     CALL ki.KeyboardInput
@@ -309,6 +313,9 @@ _MainLoop005
 ;              _MainLoop005OnRocketExplosion               ;
 ;----------------------------------------------------------;
 _MainLoop005OnRocketExplosion
+
+    CALL dbs.SetupRocketBank
+
     ; Is rocket exploding ?
     LD A, (ro.rocketState)
     CP ro.ROST_EXPLODE
@@ -316,7 +323,7 @@ _MainLoop005OnRocketExplosion
 
     ; ##########################################
     CALL rof.AnimateRocketExplosion
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -330,7 +337,9 @@ _MainLoop005OnActiveGame
     RET NZ
 
     ; ##########################################
+    CALL dbs.SetupRocketBank
     CALL roa.RocketElementFallsForAssembly
+
     CALL jo.UpdateJetpackOverheating
 
     CALL dbs.SetupArrays2Bank
@@ -388,16 +397,20 @@ _MainLoop008OnActiveScoreMenu
 ;               _MainLoop008OnFlayingRocket                ;
 ;----------------------------------------------------------;
 _MainLoop008OnFlayingRocket
+
     ; Return if rocket is not flying.
+    CALL dbs.SetupRocketBank
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
     RET NZ
 
     ; ##########################################
-    CALL rof.AnimateRocketExhaust
-    CALL rof.BlinkFlyingRocket
     CALL st.BlinkStarsL1
     CALL st.BlinkStarsL2
+
+    CALL dbs.SetupRocketBank
+    CALL rof.AnimateRocketExhaust
+    CALL rof.BlinkFlyingRocket
 
     RET                                         ; ## END of the function ##
 
@@ -413,8 +426,11 @@ _MainLoop008OnActiveGame
 
     ; ##########################################
     CALL jw.AnimateShots
+
+    CALL dbs.SetupRocketBank
     CALL roa.BlinkRocketReady
     CALL roa.AnimateTankExplode
+
     CALL st.BlinkStarsL1
     CALL jo.AnimateJetpackOverheat
 
@@ -449,6 +465,7 @@ _MainLoop008OnActiveGameOrFlyingRocket
     JR .execute
 .gameInactive
     ; Game ist inactive, what about rocket?
+    CALL dbs.SetupRocketBank
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
     RET NZ                                          ; Return if rocket is not flying.
@@ -582,7 +599,9 @@ _MainLoop040OnActiveGame
     RET NZ
 
     ; ##########################################
+    CALL dbs.SetupRocketBank
     CALL roa.DropNextRocketElement
+    
     CALL td.NextTimeOfDayTrigger
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
 
@@ -728,8 +747,9 @@ _LastLoop
 ;----------------------------------------------------------;
 _LastLoopOnRocketPhase2_3
 
-    LD A, (rof.rocketFlyPhase)
-    AND rof.PHASE_2_3
+    CALL dbs.SetupRocketBank
+    LD A, (ro.rocketFlyPhase)
+    AND ro.PHASE_2_3
     RET Z
 
     CALL bg.HideBackgroundBars

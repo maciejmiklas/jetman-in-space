@@ -303,7 +303,6 @@ _Key_D
     LD A, (jt.jetState)
     LD A,B
     LD A, (js.sprState)
-    nextreg 2,8
 
     RET                                         ; ## END of the function ##
 
@@ -315,6 +314,7 @@ _Key_S
     CALL ki.CanProcessKeyInput
     RET NZ
 
+    CALL dbs.SetupRocketBank
     CALL roa.AssemblyRocketForDebug
 
     RET                                         ; ## END of the function ##
@@ -352,8 +352,9 @@ _Key_Q
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel1
-    CALL roa.AssemblyRocketForDebug
+    LD A, 1
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -365,7 +366,9 @@ _Key_W
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel2
+    LD A, 2
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -377,7 +380,9 @@ _Key_E
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel3
+    LD A, 3
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -389,7 +394,9 @@ _Key_R
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel4
+    LD A, 4
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -401,7 +408,9 @@ _Key_T
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel5
+    LD A, 5
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -413,7 +422,9 @@ _Key_Y
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel6
+    LD A, 6
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -425,7 +436,9 @@ _Key_U
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel7
+    LD A, 7
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -437,7 +450,9 @@ _Key_I
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel8
+    LD A, 8
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -449,7 +464,9 @@ _Key_O
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL gc.LoadLevel9
+    LD A, 9
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 

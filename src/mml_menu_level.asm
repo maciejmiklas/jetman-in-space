@@ -38,7 +38,7 @@ LoadMenuLevelSelect
     ; ##########################################
     ; Load background palette
     CALL dbs.SetupStorageBank
-    CALL lu.LoadUnlockLevel
+    CALL ll.LoadUnlockLevel
     CALL ut.NumTo99Str                          ; Load A into DE as Text
 
     PUSH DE
@@ -99,7 +99,7 @@ LoadMenuLevelSelect
 _ConfirmSelection
 
     LD A, (currentLevel)
-    LD (lu.currentLevel), A
+    LD (ll.currentLevel), A
     
     CALL gc.LoadMainMenu
 
@@ -154,7 +154,7 @@ _MoveJet
 _NextLevel
 
     ; Increment #currentLevel by 1 up to #unlockedLevel.
-    CALL lu.LoadUnlockLevel
+    CALL ll.LoadUnlockLevel
     LD B, A
     
     LD A, (currentLevel)

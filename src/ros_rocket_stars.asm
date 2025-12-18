@@ -6,18 +6,20 @@
 ;                     Rocket Stars                         ;
 ;----------------------------------------------------------;
     MODULE ros
+    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+
 ; Moves the tilemap with platforms, then animates the stars.
 
 ; Tile stars
-TI_ROWS_D128            = ti.TI_VTILES_D32*4    ; 128 rows (4*32), tile starts takes 4 horizontal screens.
-    ASSERT TI_ROWS_D128 =  128
+TI_ROWS_D96            = ti.TI_VTILES_D32*3    ; 128 rows (40*32), tile starts takes 4 horizontal screens.
+    ASSERT TI_ROWS_D96 =  96
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
 ti.TI_H_BYTES_D80       = 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow                DB ti.TI_VTILES_D32     ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
-sourceTilesRow          DB TI_ROWS_D128         ; Current tiles row in source file (RAM), runs from from TI_ROWS_D128 to 0.
+sourceTilesRow          DB TI_ROWS_D96         ; Current tiles row in source file (RAM), runs from from TI_ROWS_D96 to 0.
 
 tileOffsetY             DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tileOffsetX             DW 0
@@ -43,7 +45,7 @@ ResetRocketStars
     DEC A
     LD (blackTilesRow), A
 
-    LD A, TI_ROWS_D128
+    LD A, TI_ROWS_D96
     LD (sourceTilesRow), A
 
     LD A, _SC_RESY1_D255
@@ -73,8 +75,8 @@ PauseScrollStars
 ScrollStarsOnFlyRocket
 
     ; Start animation when the rocket reaches given phase.
-    LD A, (rof.rocketFlyPhase)
-    CP rof.PHASE_2
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_2
     RET C                                       ; Do not animate when phase < 2
 
     ; ##########################################
@@ -109,8 +111,8 @@ ScrollStarsOnFlyRocket
 
     ; ##########################################
     ; Print black tile line until phase 4 is reached, or all black tiles have been printed.
-    LD A, (rof.rocketFlyPhase)
-    CP rof.PHASE_4
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
     JR NC, .afterClearTileLine                  ; Jump if phase >= 4
 
     ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.
@@ -135,20 +137,6 @@ ScrollStarsOnFlyRocket
     DEC A
     LD (tileOffsetY), A
     NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _UpdateTileXOffset                     ;
-;----------------------------------------------------------;
-_UpdateTileXOffset
-
-    LD HL, (tileOffsetX)
-    LD A, L
-    NEXTREG _DC_REG_TI_X_LSB_H30, A
-
-    LD A, H
-    NEXTREG _DC_REG_TI_X_MSB_H2F, A
 
     RET                                         ; ## END of the function ##
 
@@ -204,6 +192,20 @@ IncTileOffsetX
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                   _UpdateTileXOffset                     ;
+;----------------------------------------------------------;
+_UpdateTileXOffset
+
+    LD HL, (tileOffsetX)
+    LD A, L
+    NEXTREG _DC_REG_TI_X_LSB_H30, A
+
+    LD A, H
+    NEXTREG _DC_REG_TI_X_MSB_H2F, A
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
 ;                 _NextStarsTileRow                        ;
 ;----------------------------------------------------------;
 ; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
@@ -211,7 +213,7 @@ IncTileOffsetX
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
 _NextStarsTileRow
 
-    CALL dbs.Setup16KTilemapBank
+    CALL dbs.Setup8KTilemapBank
 
     ; ##########################################
     ; Decrement counters
@@ -230,7 +232,7 @@ _NextStarsTileRow
     LD D, A
     LD E, ti.TI_H_BYTES_D80
     MUL D, E                                    ; DE contains byte offset to current row.
-    LD HL, _RAM_SLOT6_STA_HC000
+    LD HL, _RAM_SLOT7_STA_HE000
     ADD HL, DE                                  ; Move RAM pointer to current row.
 
     ; Load the memory address of in-game tiles into DE. This row will be replaced with stars.
@@ -255,7 +257,7 @@ _NextStarsTileRow
     JR NZ, .afterResetStarsRow                  ; Jump if #starsLine > 0.
 
     ; Reset stars counter
-    LD A, TI_ROWS_D128
+    LD A, TI_ROWS_D96
     LD (sourceTilesRow), A
 .afterResetStarsRow
 
