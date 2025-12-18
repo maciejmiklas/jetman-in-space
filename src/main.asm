@@ -23,8 +23,6 @@ start
     LD (ll.currentLevel), A
     CALL gc.LoadCurrentLevel
 
-   ;CALL gc.LoadLevel1
-
     ;CALL gc.LoadMainMenu
 
     ; ##########################################
@@ -103,6 +101,7 @@ mainLoop
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
+    INCLUDE "enur_enemy_fuel_thief_roc.asm"
 
     ; Imports below use ORG and dedicated memory bank!
 

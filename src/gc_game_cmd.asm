@@ -23,6 +23,8 @@ FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
 
 tilePaletteStarsAddr    DW 0
 
+FUEL_THIEF_ACTIVE_LEV   = 5
+
 ;----------------------------------------------------------;
 ;                  StartGameWithIntro                      ;
 ;----------------------------------------------------------;
@@ -143,7 +145,10 @@ LoadCurrentLevel
     CALL ll.LoadCurrentLevel
     CALL _StartLevel
 
-    ; TODO
+    LD A, (ll.currentLevel)
+    CP FUEL_THIEF_ACTIVE_LEV
+    RET NC
+
     CALL dbs.SetupPatternEnemyBank
     CALL enu.DisableFuelThief
 

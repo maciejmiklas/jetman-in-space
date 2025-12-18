@@ -12,7 +12,7 @@ RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
 ; Max rocket fly distance, when reached, it will explode.
-EXPLODE_Y_HI_H4         = $01;$08
+EXPLODE_Y_HI_H4         = $08
 EXPLODE_Y_LO_H7E        = $FF
 
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
@@ -594,7 +594,7 @@ _JoyLeft
     LD A, (ro.rocX)
     DEC A
     LD (ro.rocX), A
-    ret
+
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A
@@ -617,7 +617,7 @@ _JoyRight
     LD A, (ro.rocX)
     INC A
     LD (ro.rocX), A
-    ret
+
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A

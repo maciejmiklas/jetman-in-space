@@ -737,23 +737,8 @@ _MainLoop150
 ;----------------------------------------------------------;
 _LastLoop
 
-    CALL _LastLoopOnNotInGame
-    CALL _LastLoopOnRocketPhase2_3
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _LastLoopOnNotInGame                   ;
-;----------------------------------------------------------;
-_LastLoopOnNotInGame
-
-    ; Return if menu is not active.
-    LD A, (ms.mainState)
-    CP ms.LEVEL_INTRO
-    RET C
-
-    ; ##########################################
     CALL ki.KeyboardInputLastLoop
+    CALL _LastLoopOnRocketPhase2_3
 
     RET                                         ; ## END of the function ##
 

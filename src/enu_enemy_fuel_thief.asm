@@ -49,7 +49,7 @@ DisableFuelThief
 EnableFuelThief
 
     CALL _HideFuelThief
-    
+
     LD A, TS_WAITING
     LD (thiefState), A
 
@@ -114,16 +114,14 @@ RespawnFuelThief
 
     ; ##########################################
     ; Does the rocket have enough fuel?
-    CALL dbs.SetupRocketBank
-    LD A, (roa.rocketElementCnt)
+    CALL enur.LoadRocketElementCnt
     CP MIN_FUEL_LEVEL
     RET C                                       ; Return if rocket does not have enough fuel.
 
     ; ##########################################
     ; Respawn thief only if no rocket tank is deployed for pickup. Otherwise, decrementing the element number would make picking up the 
     ; deployed one impossible.
-    CALL dbs.SetupRocketBank
-    LD A, (ro.rocketState)
+    CALL enur.LoadRocketState
     CP ro.ROST_WAIT_DROP
     RET NZ
 
@@ -142,9 +140,7 @@ RespawnFuelThief
     LD (thiefState), A
 
     ; Reset the deployment countdown for the next fuel element because the thief is active.
-    CALL dbs.SetupRocketBank
-    XOR A
-    LD (roa.dropNextDelay), A
+    CALL enur.ResetDropNextDelay
 .afterDeploying
 
     ; ##########################################
@@ -163,17 +159,14 @@ RespawnFuelThief
     LD A, R
     CP DEPLOY_SIDE_RND
     JR C, .deployRight
-    LD (IY+ENP.SETUP),  enp.ENP_S_LEFT_ALONG 
+    LD (IY+ENP.SETUP), enp.ENP_S_LEFT_ALONG 
     JR .afterDeploySide
 .deployRight
-    LD (IY+ENP.SETUP),  enp.ENP_S_RIGHT_ALONG 
+    LD (IY+ENP.SETUP), enp.ENP_S_RIGHT_ALONG 
 .afterDeploySide
 
     ; Reset the deployment countdown for the next fuel element because the thief is active.
-    CALL dbs.SetupRocketBank
-    XOR A
-    LD (roa.dropNextDelay), A
-
+    CALL enur.ResetDropNextDelay
     CALL enp.RespawnPatternEnemy
 
     RET                                         ; ## END of the function ##
@@ -262,8 +255,7 @@ MoveFuelThief
     CP 1
     JR Z, .notAtRocket
 
-    CALL dbs.SetupRocketBank
-    LD A, (roa.rocAssemblyX)
+    CALL enur.LoadRocAssemblyX
 
     SUB C                                       ; Ignore B because X < 255, rocket assembly X is 8bit.
     CP roa.DROP_MARGX_D8
@@ -271,7 +263,7 @@ MoveFuelThief
  
     ; ##########################################
     ; Pickup fuel tank.
-    CALL roa.RemoveRocketElement
+    CALL enur.RemoveRocketElement
     LD A, TS_CARRIES_FUEL
     LD (thiefState), A
 .notAtRocket
