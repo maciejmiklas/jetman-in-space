@@ -14,7 +14,7 @@ TSID                    = _EXHAUST_SPRID_D83
 TSRE                    = 17
 
 ; Level 1
-rocketAssemblyXL1       DB 22*8
+ROCKET_X_L1             = 22*8
 rocketElL1
 ; Rocket element.
     ro.RO {04*8/*DROP_X*/, 14*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -30,7 +30,7 @@ rocketElL1
     ro.RO {09*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
     
 ; Level 2
-rocketAssemblyXL2       DB 24*8
+ROCKET_X_L2             = 24*8
 rocketElL2
 ; Rocket element.
     ro.RO {07*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -46,7 +46,7 @@ rocketElL2
     ro.RO {17*8/*DROP_X*/, 07*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 3
-rocketAssemblyXL3       DB 6*8
+ROCKET_X_L3             = 6*8
 rocketElL3
 ; Rocket element.
     ro.RO {09*8/*DROP_X*/, 05*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -62,7 +62,7 @@ rocketElL3
     ro.RO {01*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 4
-rocketAssemblyXL4       DB 18*8
+ROCKET_X_L4             = 18*8
 rocketElL4
 ; Rocket element.
     ro.RO {06*8/*DROP_X*/, 06*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -78,7 +78,7 @@ rocketElL4
     ro.RO {16*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 5
-rocketAssemblyXL5       DB 18*8
+ROCKET_X_L5             = 18*8
 rocketElL5
 ; Rocket element.
     ro.RO {04*8/*DROP_X*/, 13*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -94,7 +94,7 @@ rocketElL5
     ro.RO {27*8/*DROP_X*/, 23*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 6
-rocketAssemblyXL6       DB 08*8
+ROCKET_X_L6             = 8*8
 rocketElL6
 ; Rocket element.
     ro.RO {17*8/*DROP_X*/, 16*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -110,7 +110,7 @@ rocketElL6
     ro.RO {31*8/*DROP_X*/, 08*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 7
-rocketAssemblyXL7       DB 18*8
+ROCKET_X_L7             = 18*8
 rocketElL7
 ; Rocket element.
     ro.RO {06*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -126,7 +126,7 @@ rocketElL7
     ro.RO {31*8/*DROP_X*/, AGND/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 8
-rocketAssemblyXL8       DB 14*8
+ROCKET_X_L8             =  14*8
 rocketElL8
 ; Rocket element.
     ro.RO {22*8/*DROP_X*/, 21*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -142,7 +142,7 @@ rocketElL8
     ro.RO {27*8/*DROP_X*/, 12*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 9
-rocketAssemblyXL9       DB 17*8
+ROCKET_X_L9             = 17*8
 rocketElL9
 ; Rocket element.
     ro.RO {03*8/*DROP_X*/, 20*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element
@@ -158,7 +158,7 @@ rocketElL9
     ro.RO {30*8/*DROP_X*/, 11*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
 
 ; Level 10
-rocketAssemblyXL10      DB 19*8
+ROCKET_X_L10             = 19*8
 rocketElL10
 ; Rocket element.
     ro.RO {05*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, 234/*ASSEMBLY_Y*/, 80/*SPRITE_ID*/, 60/*SPRITE_REF*/}  ; bottom element

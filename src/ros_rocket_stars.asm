@@ -75,8 +75,8 @@ PauseScrollStars
 ScrollStarsOnFlyRocket
 
     ; Start animation when the rocket reaches given phase.
-    LD A, (rof.rocketFlyPhase)
-    CP rof.PHASE_2
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_2
     RET C                                       ; Do not animate when phase < 2
 
     ; ##########################################
@@ -111,8 +111,8 @@ ScrollStarsOnFlyRocket
 
     ; ##########################################
     ; Print black tile line until phase 4 is reached, or all black tiles have been printed.
-    LD A, (rof.rocketFlyPhase)
-    CP rof.PHASE_4
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
     JR NC, .afterClearTileLine                  ; Jump if phase >= 4
 
     ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.

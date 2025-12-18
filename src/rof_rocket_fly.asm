@@ -8,59 +8,11 @@
     MODULE rof
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
 
-/*
-Rocket fly phases:
-
- PHASE 0: not flying
-
- PHASE 1:
-  - Rocket: takes off, and it moves slowly towards middle of the screen.
-  - Tilemap: is shaking but not moving down.
-  - Background: no change.
-
- PHASE 2:
-  - Rocket: moves at towards the middle of the screen.
-  - Tilemap: does not shake, moves down. The bottom line of the tilemap is being replaced with a transparent line.
-             The clipping window cuts off the bottom of the tilemap.
-  - Background: moves down.
- 
- PHASE 3:
-  - Rocket: has reached middle of the screen and stops moving.
-  - Tilemap: no change from previous phase.
-  - Background: moves down.
- 
- PHASE 4:
-  - Meteor shower starts.
-  - Rocket: player takes over the control.
-  - Tilemap: the whole tilemap has been replaced with transparent lines.  New tilemap with loads and starts rolling.
-  - Background: is gone.
-*/
-PHASE_0                 = %00000000             ; Rocket is not flying.
-PHASE_1                 = %00000001             ; Rocket liftsoff, the world is shaking.
-
-PHASE_2                 = %00000010             ; Rocket moves at towards the middle of the screen.
-PHASE_2_ALTITUDE_HI     = 0                     ; Altitude to trigger phase 2.
-PHASE_2_ALTITUDE_LO     = 30
-
-PHASE_3                 = %00000100             ; Rocket has reached middle of the screen and stops moving.
-PHASE_3_ALTITUDE_HI     = 0                     ; Altitude to trigger phase 3.
-PHASE_3_ALTITUDE_LO     = 100
-
-PHASE_4                 = %00001000             ; Meteor shower starts, player takes control of the rocket.
-PHASE_4_ALTITUDE_HI     = 1                     ; Cannot be too short, or the background image will not entirely hide.
-PHASE_4_ALTITUDE_LO     = 50
-
-PHASE_5                 = %00010000
-
-PHASE_2_3               = %00000110
-
-rocketFlyPhase          DB PHASE_0; TODO move to ro to avoid cycle!!
-
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
 ; Max rocket fly distance, when reached, it will explode.
-EXPLODE_Y_HI_H4         = $08
+EXPLODE_Y_HI_H4         = $01;$08
 EXPLODE_Y_LO_H7E        = $FF
 
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
@@ -91,7 +43,7 @@ ResetAndDisableFlyRocket
     LD (rocketExplodeCnt), A
     LD (rocketDelayDistance), A
     LD (rocketExhaustCnt), A
-    LD (rocketFlyPhase), A
+    LD (ro.rocketFlyPhase), A
 
     LD HL, 0
     LD (rocketDistance), HL
@@ -123,11 +75,9 @@ FlyRocketSound
 .play
     XOR A
     LD (soundRepeatDelay), A
-/* TODO
-    LD A, af.FX_ROCKET_FLY
-    CALL dbs.SetupAyFxsBank
-    CALL af.AfxPlay
-*/
+
+    CALL gc.PlayRocketSound
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -135,8 +85,8 @@ FlyRocketSound
 ;----------------------------------------------------------;
 RocketFLyStartPhase1
 
-    LD A, PHASE_1
-    LD (rocketFlyPhase), A
+    LD A, ro.PHASE_1
+    LD (ro.rocketFlyPhase), A
 
     RET                                         ; ## END of the function ##
 
@@ -145,8 +95,8 @@ RocketFLyStartPhase1
 ;----------------------------------------------------------;
 FlyRocket
 
-    LD A, (rocketFlyPhase)
-    CP PHASE_4
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
     JR NZ,.notPhase4
 
     CALL _ControlFlyingRocket
@@ -160,7 +110,7 @@ FlyRocket
 
      ; ##########################################
      ; Shake tiles
-     CP PHASE_1
+     CP ro.PHASE_1
      JR NZ, .afterPhaseCase
      CALL ti.ShakeTilemap
 
@@ -207,7 +157,6 @@ BlinkFlyingRocket
 ;                AnimateRocketExplosion                    ;
 ;----------------------------------------------------------;
 AnimateRocketExplosion
-    ret
 
     ; Is the exploding sequence over?
     LD A, (rocketExplodeCnt)
@@ -215,12 +164,9 @@ AnimateRocketExplosion
     JR Z, .explodingEnds
 
     ; Nope, keep exploding.
-
     ; ##########################################
     ; FX
-    LD A, af.FX_EXPLODE_ENEMY_2
-   ; CALL dbs.SetupAyFxsBank
-    ;CALL af.AfxPlay
+    CALL gc.RocketExpolodes
     
     ; ##########################################
     ; Animation for the top rockets element.
@@ -398,9 +344,9 @@ _MoveFlyingRocket
 
      ; ##########################################
      ; Execute when in phase 2 or 3
-    LD A, (rocketFlyPhase)
+    LD A, (ro.rocketFlyPhase)
     PUSH AF
-    AND PHASE_2_3
+    AND ro.PHASE_2_3
     JR Z, .afterBoosting
 
     CALL gc.RocketFLyPhase2and3
@@ -409,7 +355,7 @@ _MoveFlyingRocket
 .afterBoosting
     POP AF
 
-    CP PHASE_4
+    CP ro.PHASE_4
     JR C, .notFlygin
     CALL gc.RocketFLyPhase4
 .notFlygin
@@ -432,8 +378,8 @@ _MoveFlyingRocket
 
     ; ##########################################
     ; Did the rocket reach the middle of the screen, and should it stop moving?
-    LD A, (rocketFlyPhase)
-    CP PHASE_3
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_3
     JR C, .keepMoving
 
     ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
@@ -485,47 +431,47 @@ _UpdateRocketFlyPhase
 
     ; Phase 2?
     LD A, H
-    CP PHASE_2_ALTITUDE_HI
+    CP ro.PHASE_2_ALTITUDE_HI
     JR NZ, .not2
 
     LD A, L
-    CP PHASE_2_ALTITUDE_LO
+    CP ro.PHASE_2_ALTITUDE_LO
     JR NZ, .not2
 
     ; Rocket has reached pahse 2.
-    LD A, PHASE_2
-    LD (rocketFlyPhase), A
+    LD A, ro.PHASE_2
+    LD (ro.rocketFlyPhase), A
     CALL gc.RocketFLyStartPhase2
 .not2
 
     ; ##########################################
     ; Phase 3?
     LD A, H
-    CP PHASE_3_ALTITUDE_HI
+    CP ro.PHASE_3_ALTITUDE_HI
     JR NZ, .not3
 
     LD A, L
-    CP PHASE_3_ALTITUDE_LO
+    CP ro.PHASE_3_ALTITUDE_LO
     JR NZ, .not3
 
     ; Rocket has reached pahse 3.
-    LD A, PHASE_3
-    LD (rocketFlyPhase), A
+    LD A, ro.PHASE_3
+    LD (ro.rocketFlyPhase), A
 .not3
 
     ; ##########################################
     ; Phase 4?
     LD A, H
-    CP PHASE_4_ALTITUDE_HI
+    CP ro.PHASE_4_ALTITUDE_HI
     JR NZ, .not4
 
     LD A, L
-    CP PHASE_4_ALTITUDE_LO
+    CP ro.PHASE_4_ALTITUDE_LO
     JR NZ, .not4
 
     ; Rocket has reached pahse 4.
-    LD A, PHASE_4
-    LD (rocketFlyPhase), A
+    LD A, ro.PHASE_4
+    LD (ro.rocketFlyPhase), A
     CALL _RocketFLyStartPhase4
     CALL gc.RocketFLyStartPhase4
 .not4

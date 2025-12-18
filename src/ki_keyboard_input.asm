@@ -71,7 +71,7 @@ ResetKeyboard
 ;                     KeyboardInput                        ;
 ;----------------------------------------------------------;
 KeyboardInput
-    nextreg 2,8
+
     ; Key right pressed ?
     LD A, _KB_6_TO_0_HEF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.

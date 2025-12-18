@@ -33,7 +33,7 @@ StartGameWithIntro
     CALL aml.MusicOff
 
     ; Show intro only for the first level.
-    LD A, (lu.currentLevel)
+    LD A, (ll.currentLevel)
     CP _LEVEL_MIN
     JR Z, .intro
     CALL LoadCurrentLevel
@@ -64,7 +64,7 @@ SetupSystem
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
-    LD B, db1.tilePalette1Length
+    LD B, db1.TILE_PAL_SIZE_L1
     CALL ti.LoadTilemap9bitPalette
 
     ; Load sprites from any level for mein menu.
@@ -92,7 +92,7 @@ LoadMainMenu
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
-    LD B, db1.tilePalette1Length
+    LD B, db1.TILE_PAL_SIZE_L1
     CALL ti.LoadTilemap9bitPalette
 
     RET                                         ; ## END of the function ##
@@ -112,117 +112,6 @@ LoadLevel1Intro
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                       LoadLevel1                         ;
-;----------------------------------------------------------;
-LoadLevel1
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel1Data
-    CALL _StartLevel
-
-    CALL dbs.SetupPatternEnemyBank: CALL enu.DisableFuelThief
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel2                         ;
-;----------------------------------------------------------;
-LoadLevel2
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel2Data
-    CALL _StartLevel
-    
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel3                         ;
-;----------------------------------------------------------;
-LoadLevel3
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel3Data
-    CALL _StartLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel4                         ;
-;----------------------------------------------------------;
-LoadLevel4
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel4Data
-    CALL _StartLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel5                         ;
-;----------------------------------------------------------;
-LoadLevel5
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel5Data
-    CALL _StartLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel6                         ;
-;----------------------------------------------------------;
-LoadLevel6
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel6Data
-    CALL _StartLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel7                         ;
-;----------------------------------------------------------;
-LoadLevel7
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel7Data
-    CALL _StartLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel8                         ;
-;----------------------------------------------------------;
-LoadLevel8
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel8Data
-    CALL _StartLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       LoadLevel9                         ;
-;----------------------------------------------------------;
-LoadLevel9
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel9Data
-    CALL _StartLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      LoadLevel10                         ;
-;----------------------------------------------------------;
-LoadLevel10
-
-    CALL _InitLevelLoad
-    CALL ll.LoadLevel10Data
-    CALL _StartLevel
-    
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;               BackgroundPaletteLoaded                    ;
@@ -238,7 +127,7 @@ BackgroundPaletteLoaded
 ;----------------------------------------------------------;
 LoadNextLevel
 
-    CALL lu.UnlockNextLevel
+    CALL ll.UnlockNextLevel
     CALL LoadCurrentLevel
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
@@ -250,78 +139,13 @@ LoadNextLevel
 ;----------------------------------------------------------;
 LoadCurrentLevel
 
-    ; Load level into A
-    LD A, (lu.currentLevel)
+    CALL _InitLevelLoad
+    CALL ll.LoadCurrentLevel
+    CALL _StartLevel
 
-    ; Load level 1
-    CP 1
-    JR NZ, .afterLevel1
-    CALL LoadLevel1
-    RET
-.afterLevel1
-
-    ; Load level 2
-    CP 2
-    JR NZ, .afterLevel2
-    CALL LoadLevel2
-    RET
-.afterLevel2
-
-    ; Load level 3
-    CP 3
-    JR NZ, .afterLevel3
-    CALL LoadLevel3
-    RET
-.afterLevel3
-
-    ; Load level 4
-    CP 4
-    JR NZ, .afterLevel4
-    CALL LoadLevel4
-    RET
-.afterLevel4
-
-    ; Load level 5
-    CP 5
-    JR NZ, .afterLevel5
-    CALL LoadLevel5
-    RET
-.afterLevel5
-
-    ; Load level 6
-    CP 6
-    JR NZ, .afterLevel6
-    CALL LoadLevel6
-    RET
-.afterLevel6
-
-    ; Load level 7
-    CP 7
-    JR NZ, .afterLevel7
-    CALL LoadLevel7
-    RET
-.afterLevel7
-
-    ; Load level 8
-    CP 8
-    JR NZ, .afterLevel8
-    CALL LoadLevel8
-    RET
-.afterLevel8
-
-    ; Load level 9
-    CP 9
-    JR NZ, .afterLevel9
-    CALL LoadLevel9
-    RET
-.afterLevel9
-
-    ; Load level 10
-    CP 10
-    JR NZ, .afterLevel10
-    CALL LoadLevel10
-    RET
-.afterLevel10
+    ; TODO
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.DisableFuelThief
 
     RET                                         ; ## END of the function ##
 
@@ -346,14 +170,14 @@ FuelThiefHit
 ; Read curent dificluty from #jt.difLevel
 DifficultyChange
 
-    CALL lu.ResetLevelPlaying
+    CALL ll.ResetLevelPlaying
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                  RocketFLyStartPhase1                    ;
 ;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
+; See #ro.rocketFlyPhase
 RocketFLyStartPhase1
     ; The dbs.SetupRocketBank is already set
 
@@ -380,7 +204,7 @@ RocketFLyStartPhase1
 ;----------------------------------------------------------;
 ;                   RocketFLyStartPhase2                   ;
 ;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
+; See #ro.rocketFlyPhase
 ; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase2
 
@@ -394,7 +218,7 @@ RocketFLyStartPhase2
 ;----------------------------------------------------------;
 ;                  RocketFLyStartPhase4                    ;
 ;----------------------------------------------------------;
-; See #rof.rocketFlyPhase
+; See #ro.rocketFlyPhase
 ; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase4
 
@@ -500,6 +324,32 @@ RocketElementPickupInAir
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                    RocketExpolodes                       ;
+;----------------------------------------------------------;
+RocketExpolodes
+
+    LD A, af.FX_EXPLODE_ENEMY_2
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    PlayRocketSound                       ;
+;----------------------------------------------------------;
+PlayRocketSound
+
+    LD A, af.FX_ROCKET_FLY
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   RocketElementDrop                      ;

@@ -323,7 +323,7 @@ _MainLoop005OnRocketExplosion
 
     ; ##########################################
     CALL rof.AnimateRocketExplosion
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -763,8 +763,8 @@ _LastLoopOnNotInGame
 _LastLoopOnRocketPhase2_3
 
     CALL dbs.SetupRocketBank
-    LD A, (rof.rocketFlyPhase)
-    AND rof.PHASE_2_3
+    LD A, (ro.rocketFlyPhase)
+    AND ro.PHASE_2_3
     RET Z
 
     CALL bg.HideBackgroundBars
