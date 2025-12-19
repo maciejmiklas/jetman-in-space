@@ -1,4 +1,4 @@
-<img src="/assets/img/cover.jpg" width="800px"/>
+<img src="/img/cover.jpg" width="800px"/>
 
 > [!TIP]
 > [DOWNLOAD SECTION](https://github.com/maciejmiklas/jetman-in-space/releases)
@@ -6,17 +6,17 @@
 > [!NOTE]
 > Click on the image below to play the video
 
-[![Youtube](/assets/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
+[![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
    
-<img src="/assets/img/scr1.jpg" width="640px"/>
+<img src="/img/scr1.jpg" width="640px"/>
    
-<img src="/assets/img/scr2.jpg" width="640px"/>
+<img src="/img/scr2.jpg" width="640px"/>
    
-<img src="/assets/img/scr3.jpg" width="640px"/>
+<img src="/img/scr3.jpg" width="640px"/>
    
-<img src="/assets/img/scr4.jpg" width="640px"/>
+<img src="/img/scr4.jpg" width="640px"/>
     
-<img src="/assets/img/scr5.jpg" width="640px"/>
+<img src="/img/scr5.jpg" width="640px"/>
    
 
 I want to give a shout-out to the following, without them, I would have been lost in space!
