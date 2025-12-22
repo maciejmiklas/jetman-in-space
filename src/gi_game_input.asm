@@ -511,9 +511,6 @@ _Key_F
 ;----------------------------------------------------------;
 _Key_Break
 
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
     LD A, (gid.breakCnt)
     INC A
     LD (gid.breakCnt), A

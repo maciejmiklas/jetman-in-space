@@ -51,7 +51,7 @@ InitJetSprite
     NEXTREG _SPR_REG_X_H35, 0                   ; Set X position
     NEXTREG _SPR_REG_Y_H36, 0                   ; Set Y position
     NEXTREG _SPR_REG_ATR2_H37, 0
-    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_SHOW
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE
 
     ; Set up the bottom sprite (legs) as a relative sprite. This attribute 4 for the head sprite will set it as an anchor and increase 
     ; the sprite id for the following commands. Head sprite becomes anchor for legs (relative sprite).
@@ -63,7 +63,7 @@ InitJetSprite
     NEXTREG _SPR_REG_Y_H36, 16                   ; Set Y position
 
     NEXTREG _SPR_REG_ATR2_H37, 0
-    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_SHOW_EXT
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE_EXT
 
     ; Relative sprite
     NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_RELATIVE
