@@ -46,7 +46,7 @@ sprState                DB SPR_STATE_SHOW
 ;----------------------------------------------------------;
 InitJetSprite
 
-    ; Setup top sprite (head)
+    ; Setup anchor sprite (head)
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     NEXTREG _SPR_REG_X_H35, 0                   ; Set X position
     NEXTREG _SPR_REG_Y_H36, 0                   ; Set Y position

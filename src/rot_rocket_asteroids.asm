@@ -22,7 +22,7 @@
 
 AS_FRAMES               = 5                     ; Number of frames for asteroid sprite.
 spV                     DB 3                    ; Number of 16x16 elemets building sprite in vertical position.
-spH                     DB 2                    ; Number of 16x16 elemets building sprite in horizontal position
+spH                     DB 3                    ; Number of 16x16 elemets building sprite in horizontal position
 spSize                  DB 9                    ; Nuimber of 16x16 elemets building sprite.
 
 ; Sprite data for each active asteroid.
@@ -41,7 +41,8 @@ asteroids
     ;   SID X   Y   FRAME ACTIVE
     AS {20, 50, 50, 0,    0}
     AS {30, 50, 50, 0,    0}
-ASTEROIDS               = 2
+    AS {40, 50, 50, 0,    0}
+ASTEROIDS               = 3
 
 ANIM_DEPLAY             = 5
 animDelayCnt            DB ANIM_DEPLAY
@@ -53,6 +54,94 @@ SetupAsteroids
 
     LD A, ANIM_DEPLAY
     LD (animDelayCnt), A
+
+    LD IX, asteroids
+    LD A, ASTEROIDS
+    LD B, A
+.asLoop
+    ld a, $aa: nextreg 2,8
+    PUSH BC
+    LD A, (IX + AS.SID)
+
+    ; ##########################################
+    ; Setup unified relative sprires.
+    ; There are 2 loops, H goes from 0 to #spH-1, L from 0 to #spV-1
+
+    XOR A
+    LD L, A
+.vLoop
+
+    XOR A
+    LD H, A
+.hLoop
+
+    ; ##########################################
+    ; Setup unified sprire based on current values from #spV and #spH
+
+    ; Calculate X offset based on #spH (H).
+    LD D, H
+    LD E, _SPR_SIZE_D16
+    MUL D, E
+    LD C, E                                     ; C has X offset for the sprite.
+
+    ; Calculate Y offset based on #spV (L).
+    LD D, L
+    LD E, _SPR_SIZE_D16
+    MUL D, E                                    ; E has Y offset for the sprite.
+    ; X = C, Y = E
+    nextreg 2,8
+
+    ; Anchor sprite is on X=0 and Y=0
+    LD A, H
+    OR L
+    CP 0
+    JR NZ, .notAnchorSprite
+
+    ; ##########################################
+    ; Setup sprites
+    
+    ; Setup anchor sprite
+    NEXTREG _SPR_REG_NR_H34, A                  ; Set the sprite ID
+    NEXTREG _SPR_REG_X_H35, 0                   ; Set X position
+    NEXTREG _SPR_REG_Y_H36, 0                   ; Set Y position
+    NEXTREG _SPR_REG_ATR2_H37, 0
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE
+.notAnchorSprite
+
+    ; Relative sprite
+    NEXTREG _SPR_REG_ATR4_INC_H79, _SPR_ATR4_ANCHOR
+
+    LD A, C
+    NEXTREG _SPR_REG_X_H35, A                   ; Set X position
+
+    LD A, E
+    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
+    
+    NEXTREG _SPR_REG_ATR2_H37, 0
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE_EXT
+
+    NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_RELATIVE
+
+    ; ##########################################
+    ; .hLoop iteration
+    INC H
+    LD A, (spH)
+    CP H
+    JR NZ, .hLoop
+
+    ; .vLoop iteration
+    INC L
+    LD A, (spV)
+    CP L
+    JR NZ, .vLoop
+
+    ; Move IX to next AS record.
+    LD DE, AS
+    ADD IX, DE
+
+    ; Loop
+    POP BC
+    DJNZ .asLoop
 
     RET                                         ; ## END of the function ##
 
@@ -114,8 +203,6 @@ _NextAsteroidFrame
 ; Input:
 ;  - IX: Pointer to AS
 _UpdateAsteroidSprite
-
-    ld a, $aa:nextreg 2,8
 
     LD D, (IX + AS.SID)
 

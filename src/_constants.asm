@@ -433,6 +433,7 @@ _ULA_COL_SIZE           = 768                   ; Size of color RAM: $5AFF - $58
 ; ##############################################
 ; Common return types
 _BANK_BYTES_D8192       = 8*1024
+_SPR_SIZE_D16           = 16
 _GC_FLIP_ON_D1          = 1
 _GC_FLIP_OFF_D0         = 0
 _16BIT_CHARS_D5         = 5
