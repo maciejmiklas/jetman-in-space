@@ -50,7 +50,7 @@ UpdateJetSpritePositionRotation
     ; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
     LD BC, (jpo.jetX)
 
-    ; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion
+    ; Set Jetman's X postion.
     LD A, C
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     NEXTREG _SPR_REG_X_H35, A                   ; Set LSB from BC (X)
@@ -58,7 +58,7 @@ UpdateJetSpritePositionRotation
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands
     NEXTREG _SPR_REG_X_H35, A                   ; Set LSB from BC (X)
 
-    ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position, rotation and mirror
+    ; Set overflow bit from X, rotation and mirror.
     LD A, (gid.jetDirection)
     LD D, A
     XOR A                                       ; Clear A to set only rotation/mirror bits
@@ -304,22 +304,24 @@ ChangeJetSpriteOnFlyUp
 ;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE
 _ShowOrHideJetSprite
     CALL dbs.SetupArrays2Bank
-    
+
     LD HL, (sprDBIdx)                           ; Load current sprite pattern
-    ADD HL, -SDB_FRAME_SIZE                     ; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record
+
+    ; Every update sprite pattern moves db pointer to the next record, but blinking has to show current record.
+    ADD HL, -SDB_FRAME_SIZE
 
     ; Update upper sprite
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     LD A, (HL)
     OR B                                        ; Store pattern number into Sprite Attribute
-    NEXTREG _SPR_REG_ATR3_H38, A    
+    NEXTREG _SPR_REG_ATR3_H38, A
 
     ; Update lower sprite
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands
     INC HL
     LD A, (HL)
     OR B                                        ; Store pattern number into Sprite Attribute
-    NEXTREG _SPR_REG_ATR3_H38, A    
+    NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;

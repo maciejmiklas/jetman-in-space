@@ -474,6 +474,7 @@ _UpdateRocketFlyPhase
     LD (ro.rocketFlyPhase), A
     CALL _RocketFLyStartPhase4
     CALL gc.RocketFLyStartPhase4
+
 .not4
 
     RET                                         ; ## END of the function ##

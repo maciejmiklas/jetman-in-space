@@ -21,8 +21,6 @@ KILL_FEW                = 7
 freezeEnemiesCnt        DW 0
 FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
 
-tilePaletteStarsAddr    DW 0
-
 FUEL_THIEF_ACTIVE_LEV   = 5
 
 ;----------------------------------------------------------;
@@ -74,7 +72,7 @@ SetupSystem
     LD E, "1"
     CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -236,9 +234,13 @@ RocketFLyStartPhase4
 
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
-    LD HL, (tilePaletteStarsAddr)
+    LD HL, (ll.tilePaletteStarsAddr)
     LD B, db1.STARS_PAL_BYTES
     CALL ti.LoadTilemap9bitPalette
+
+    LD DE, (ll.currentLevelStr)
+    CALL fi.LoadSpritesFile
+    CALL sp.LoadSpritesFPGA
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
@@ -268,6 +270,8 @@ RocketFLyPhase2and3
 RocketFLyPhase4
 
     CALL ros.ScrollStarsOnFlyRocket
+    CALL rot.AnimateAsteroids
+
     CALL st.MoveStarsDown
     CALL st.MoveStarsDown
     CALL st.MoveStarsDown
@@ -970,6 +974,7 @@ JetBumpsIntoPlatform
 ;----------------------------------------------------------;
 ;                  MovementInactivity                      ;
 ;----------------------------------------------------------;
+; TODO move to another file
 ; It gets executed as a last procedure after the input has been processed, and there was no movement from joystick.
 MovementInactivity
 

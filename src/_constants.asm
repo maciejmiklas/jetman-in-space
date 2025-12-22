@@ -269,7 +269,7 @@ _SPR_REG_ATR3_H38       = $38
 ; Bits:
 ;  - 7: H (1 = sprite uses 4-bit patterns).
 ;  - 6: N6 (0 = use the first 128 bytes of the pattern else use the last 128 bytes).
-;  - 5: 1 if relative sprites are composite, 0 if relative sprites are unified Scaling
+;  - 5: 1 if relative sprites are composite, 0 if relative sprites are unified scaling.
 ;  - 4-3: X scaling (00 = 1x, 01 = 2x, 10 = 4x, 11 = 8x).
 ;  - 2-1: Y scaling (00 = 1x, 01 = 2x, 10 = 4x, 11 = 8x).
 ;  - 0: MSB of Y coordinate.

@@ -373,6 +373,7 @@ plTileFileName          DB "assets/00/tiles.map",0
 
 ; Sprite file
 sprFileName             DB "assets/00/sprites_0.spr",0
+astFileName             DB "assets/00/asteroi_0.spr",0
 SPR_FILE_NR_POS         = 10
 SPR_FILE_BYT_D8192      = _BANK_BYTES_D8192
 

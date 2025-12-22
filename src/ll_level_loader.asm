@@ -7,8 +7,8 @@
 ;----------------------------------------------------------;
     MODULE ll
 
-currentLevel            DB _LEVEL_MIN           ; 1-10
-
+currentLevel            DB _LEVEL_MIN           ; Int value 1-10.
+currentLevelStr         DW 0                    ; string value  01-10.
 
     STRUCT LL
 LNUM                    DW                      ; Level number as a 2-char string.
@@ -67,6 +67,8 @@ levels
     LL {"09", 0,        db1.starsData1MaxYL9,  db1.starsData2MaxYL9,  db2.PLATFORM_SIZE_L9,  db2.platformsL9,  rod.ROCKET_X_L9,  rod.rocketElL9,  db1.tilePaletteStars9Bin,  ena.SINGLE_ENEMIES_L9,  ens.NEXT_RESP_DEL, ena.singleEnemiesL9,  fed.FENEMY_SIZE_L8, fed.fEnemyL08, ena.ENEMY_FORMATION_SIZE, 0,       ena.enemyFormationL9,  tad.TILEMAP_ANIM_ROWS_L8, tad.tilemapAnimationRowsL8, db1.TILE_PAL_SIZE_L1, db1.tilePalette1Bin, db2.PICKUPS_L6_SIZE, db2.pickupsL6}
     LL {"10", 1,        db1.starsData1MaxYL10, db1.starsData2MaxYL10, db2.PLATFORM_SIZE_L10, db2.platformsL10, rod.ROCKET_X_L10, rod.rocketElL10, db1.tilePaletteStars10Bin, ena.SINGLE_ENEMIES_L10, ens.NEXT_RESP_DEL, ena.singleEnemiesL10, fed.FENEMY_SIZE_L8, fed.fEnemyL08, ena.ENEMY_FORMATION_SIZE, 0,       ena.enemyFormationL10, tad.TILEMAP_ANIM_ROWS_L8, tad.tilemapAnimationRowsL8, db1.TILE_PAL_SIZE_L1, db1.tilePalette1Bin, db2.PICKUPS_L6_SIZE, db2.pickupsL6}
 
+tilePaletteStarsAddr    DW 0
+
 ;----------------------------------------------------------;
 ;                  LoadCurrentLevel                        ;
 ;----------------------------------------------------------;
@@ -97,6 +99,7 @@ LoadCurrentLevel
     ; Load data for level
     PUSH IX
     LD DE, (IX + LL.LNUM)
+    LD (currentLevelStr), DE
     CALL _LoadDataByLevelNumber
     POP IX
 
@@ -192,9 +195,10 @@ LoadCurrentLevel
     ; ##########################################
     ; Rocket stars
     LD DE, (IX + LL.ROC_ST_PAL)
-    LD (gc.tilePaletteStarsAddr), DE
+    LD (tilePaletteStarsAddr), DE
 
     RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;                   LoadUnlockLevel                        ;
 ;----------------------------------------------------------;
@@ -242,6 +246,7 @@ UnlockNextLevel
 
     ; Increment current level, or eventually reset it (10 -> 1).
     LD A, (currentLevel)
+    INC A
     INC A
     LD (currentLevel), A
 

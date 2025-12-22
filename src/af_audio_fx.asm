@@ -427,7 +427,7 @@ _AfxInit
 ;                     Effects file                         ;
 ;----------------------------------------------------------;
 effectsFileAddr
-    INCBIN  "assets/assets/com/effects.afb",0
+    INCBIN  "assets/com/effects.afb",0
 effectsFileSize  = $ - effectsFileAddr
     ASSERT effectsFileSize <= 7 * 1024
 
