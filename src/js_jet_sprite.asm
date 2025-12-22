@@ -40,6 +40,36 @@ SPR_STATE_HIDE          = 0
 SPR_STATE_SHOW          = 1
 sprState                DB SPR_STATE_SHOW
 
+
+;----------------------------------------------------------;
+;                      InitJetSprite                       ;
+;----------------------------------------------------------;
+InitJetSprite
+
+    ; Setup top sprite (head)
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
+    NEXTREG _SPR_REG_X_H35, 0                   ; Set X position
+    NEXTREG _SPR_REG_Y_H36, 0                   ; Set Y position
+    NEXTREG _SPR_REG_ATR2_H37, 0
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_SHOW
+
+    ; Set up the bottom sprite (legs) as a relative sprite. This attribute 4 for the head sprite will set it as an anchor and increase 
+    ; the sprite id for the following commands. Head sprite becomes anchor for legs (relative sprite).
+    NEXTREG _SPR_REG_ATR4_INC_H79, _SPR_ATR4_ANCHOR
+
+    NEXTREG _SPR_REG_X_H35, 0                   ; Set X position
+
+    ; Legs are 16px below head.
+    NEXTREG _SPR_REG_Y_H36, 16                   ; Set Y position
+
+    NEXTREG _SPR_REG_ATR2_H37, 0
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_SHOW_EXT
+
+    ; Relative sprite
+    NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_RELATIVE
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;              UpdateJetSpritePositionRotation             ;
 ;----------------------------------------------------------;
@@ -47,16 +77,18 @@ UpdateJetSpritePositionRotation
 
     CALL dbs.SetupArrays2Bank
 
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
+
     ; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
     LD BC, (jpo.jetX)
 
     ; Set Jetman's X postion.
     LD A, C
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     NEXTREG _SPR_REG_X_H35, A                   ; Set LSB from BC (X)
 
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands
-    NEXTREG _SPR_REG_X_H35, A                   ; Set LSB from BC (X)
+    ; Move Jetman sprite to current Y postion, 8-bit value is simple
+    LD A, (jpo.jetY)
+    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
 
     ; Set overflow bit from X, rotation and mirror.
     LD A, (gid.jetDirection)
@@ -75,21 +107,10 @@ UpdateJetSpritePositionRotation
     AND _OVERFLOW_BIT                           ; Keep only an overflow bit
     OR E                                        ; Apply rotation from A (E now)
 
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     NEXTREG _SPR_REG_ATR2_H37, A
 
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands
-    NEXTREG _SPR_REG_ATR2_H37, A
-
-    ; Move Jetman sprite to current Y postion, 8-bit value is simple
-    LD A, (jpo.jetY)
-
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
-    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
-
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands
-    ADD 16                                      ; Lower part is 16px below upper
-    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
+    ; Anchor with relative sprite (see #InitJetSprite)
+    NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_ANCHOR
 
     RET                                         ; ## END of the function ##
 
@@ -124,7 +145,7 @@ ChangeJetSpritePattern
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
 AnimateJetSprite
-    
+
     CALL dbs.SetupArrays2Bank
 
     ; Delay animation.
@@ -186,28 +207,30 @@ AnimateJetSprite
     ; Now we are at correct DB position containing next sprite pattern and will load it into registry.
     LD HL, (sprDBIdx)
 
-    ; Store in B _SPR_PATTERN_SHOW/_HIDE depending on the #sprState
+    ; Store in B _SPR_ATTR3_SHOW/_HIDE depending on the #sprState
     LD A, (sprState)
     CP SPR_STATE_HIDE
     JR Z, .hide
-    LD B, _SPR_PATTERN_SHOW                     ; Sprite is visible
+    LD B, _SPR_ATTR3_SHOW                     ; Sprite is visible
     JR .afterShow
 .hide
-    LD B, _SPR_PATTERN_HIDE                     ; Sprite is hidden
-.afterShow  
+    LD B, _SPR_ATTR3_HIDE                     ; Sprite is hidden
+.afterShow
 
     ; Update upper sprite
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     LD A, (HL)                                  ; Store pattern number into sprite attribute
     OR B                                        ; Store visibility sprite attribute
-    NEXTREG _SPR_REG_ATR3_H38, A    
+    SET _SPR_ATTR3_EX_BIT_6, A                  ; Set extendet attribue to keep anchor/relative sprite.
+    NEXTREG _SPR_REG_ATR3_H38, A
 
     ; Update lower sprite
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands
     INC HL
     LD A, (HL)                                  ; Store pattern number into sprite attribute
     OR B                                        ; Store visibility sprite attribute
-    NEXTREG _SPR_REG_ATR3_H38, A    
+    SET _SPR_ATTR3_EX_BIT_6, A                  ; Set extendet attribue to keep anchor/relative sprite.
+    NEXTREG _SPR_REG_ATR3_H38, A
 
     ; Update pointer to DB
     INC HL
@@ -242,7 +265,7 @@ ShowJetSprite
     LD A, SPR_STATE_SHOW
     LD (sprState), A
 
-    LD B, _SPR_PATTERN_SHOW
+    LD B, _SPR_ATTR3_SHOW
     CALL _ShowOrHideJetSprite
 
     RET                                         ; ## END of the function ##
@@ -255,7 +278,7 @@ HideJetSprite
     LD A, SPR_STATE_HIDE
     LD (sprState), A
 
-    LD B, _SPR_PATTERN_HIDE
+    LD B, _SPR_ATTR3_HIDE
     CALL _ShowOrHideJetSprite
 
     RET                                         ; ## END of the function ##
@@ -301,8 +324,9 @@ ChangeJetSpriteOnFlyUp
 ;                  _ShowOrHideJetSprite                    ;
 ;----------------------------------------------------------;
 ; Input:
-;  - B: _SPR_PATTERN_SHOW or _SPR_PATTERN_HIDE
+;  - B: _SPR_ATTR3_SHOW or _SPR_ATTR3_HIDE
 _ShowOrHideJetSprite
+
     CALL dbs.SetupArrays2Bank
 
     LD HL, (sprDBIdx)                           ; Load current sprite pattern
@@ -314,6 +338,7 @@ _ShowOrHideJetSprite
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
     LD A, (HL)
     OR B                                        ; Store pattern number into Sprite Attribute
+    SET _SPR_ATTR3_EX_BIT_6, A                  ; Set extendet attribue to keep anchor/relative sprite.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     ; Update lower sprite
@@ -321,6 +346,7 @@ _ShowOrHideJetSprite
     INC HL
     LD A, (HL)
     OR B                                        ; Store pattern number into Sprite Attribute
+    SET _SPR_ATTR3_EX_BIT_6, A                  ; Set extendet attribue to keep anchor/relative sprite.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##

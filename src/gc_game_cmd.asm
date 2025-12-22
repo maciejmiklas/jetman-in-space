@@ -73,13 +73,15 @@ SetupSystem
     CALL fi.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
+    CALL js.InitJetSprite
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
-    
+
     LD A, ms.MENU_MAIN
     CALL ms.SetMainState
 
@@ -676,6 +678,8 @@ EnemyHitsJet
 ;----------------------------------------------------------;
 RespawnJet
 
+    CALL js.InitJetSprite
+    
     ; Set respawn coordinates.
     LD BC, JM_RESPAWN_X_D100
     LD (jpo.jetX), BC

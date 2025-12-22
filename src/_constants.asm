@@ -241,7 +241,7 @@ _MMU_REG_SLOT7_H57      = $57                   ; $E000 = $FFFF
 ;----------------------------------------------------------;
 ;                        Sprites                           ;
 ;----------------------------------------------------------;
-_SPR_REG_NR_H34         = $34                   ; Sprite Number (R/W)
+_SPR_REG_NR_H34         = $34                   ; Sprite Number/ID
 _SPR_REG_X_H35          = $35                   ; Sprite X coordinate
 _SPR_REG_Y_H36          = $36                   ; Sprite Y coordinate
 
@@ -266,6 +266,13 @@ _SPR_REG_ATR2_EMPTY     = %00000000             ; No rotation, no mirror, no ove
 ;  - 5-0: Pattern used by sprite (0-63).
 _SPR_REG_ATR3_H38       = $38
 
+_SPR_ATTR3_SHOW         = %10000000
+_SPR_ATTR3_HIDE         = %00000000
+
+_SPR_ATTR3_SHOW_EXT     = %11000000
+_SPR_ATTR3_HIDE_EXT     = %01000000
+_SPR_ATTR3_EX_BIT_6     = 6
+
 ; Bits:
 ;  - 7: H (1 = sprite uses 4-bit patterns).
 ;  - 6: N6 (0 = use the first 128 bytes of the pattern else use the last 128 bytes).
@@ -274,6 +281,10 @@ _SPR_REG_ATR3_H38       = $38
 ;  - 2-1: Y scaling (00 = 1x, 01 = 2x, 10 = 4x, 11 = 8x).
 ;  - 0: MSB of Y coordinate.
 _SPR_REG_ATR4_H39       = $39
+_SPR_REG_ATR4_INC_H79   = $79                   ; Sprite Attribute 4 with automatic post increment of sprite number.
+
+_SPR_ATR4_ANCHOR        = %00100000             ; Anchor with unified relatives.
+_SPR_ATR4_RELATIVE      = %01000000             ; Relative sprite.
 
 ; Sprite and Layers system.
 ; Bits:
@@ -296,11 +307,6 @@ _SPR_REG_ATR4_H39       = $39
 _SPR_REG_SETUP_H15      = $15
 
 _SPR_PORT_H303B         = $303B
-
-; bit 7 = Visible flag (1 = displayed).
-; bits 5-0 = Pattern used by sprite (0-63).
-_SPR_PATTERN_SHOW       = %10000000
-_SPR_PATTERN_HIDE       = %00000000
 
 ;----------------------------------------------------------;
 ;                        Tiles                             ;

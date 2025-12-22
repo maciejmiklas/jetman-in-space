@@ -95,7 +95,7 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 ;----------------------------------------------------------;
 HideSprite
 
-    LD A, _SPR_PATTERN_HIDE                     ; Hide sprite on display.
+    LD A, _SPR_ATTR3_HIDE                     ; Hide sprite on display.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##
