@@ -424,7 +424,7 @@ LoadSpritesFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadAsteroidsFile
 
-    LD HL, db2.sprFileName
+    LD HL, db2.astFileName
     CALL _LoadSpritesFile
 
     RET                                         ; ## END of the function ##

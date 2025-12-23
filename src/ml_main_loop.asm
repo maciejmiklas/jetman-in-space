@@ -60,7 +60,7 @@ _MainLoop000
     CALL _MainLoop000OnActiveMain
     CALL _MainLoop000OnNotInGame
     CALL _MainLoop000OnActiveLevelIntro
-    CALL _MainLoop000OnFlayRocket
+    CALL _MainLoop000OnFlyRocket
 
     RET                                         ; ## END of the function ##
 
@@ -78,9 +78,9 @@ _MainLoop000OnPause
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop000OnFlayRocket                  ;
+;                _MainLoop000OnFlyRocket                   ;
 ;----------------------------------------------------------;
-_MainLoop000OnFlayRocket
+_MainLoop000OnFlyRocket
     CALL dbs.SetupRocketBank
 
     ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
@@ -92,6 +92,16 @@ _MainLoop000OnFlayRocket
     ; ##########################################
     CALL rof.FlyRocket
     CALL rof.FlyRocketSound
+
+    ; ##########################################
+    ; Phase 4
+    CALL dbs.SetupRocketBank
+
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
+    RET NZ
+
+    CALL rot.MoveAsteroids
 
     RET                                         ; ## END of the function ##
 
@@ -373,9 +383,8 @@ _MainLoop008
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop008OnActiveGame
-    CALL _MainLoop008OnActiveGameOrFlyingRocket
-    CALL _MainLoop008OnFlayingRocket
     CALL _MainLoop008OnActiveScoreMenu
+    CALL _MainLoop008OnFlayingRocket
 
     RET                                         ; ## END of the function ##
 
@@ -411,6 +420,18 @@ _MainLoop008OnFlayingRocket
     CALL dbs.SetupRocketBank
     CALL rof.AnimateRocketExhaust
     CALL rof.BlinkFlyingRocket
+    CALL gc.AnimateEnemies
+
+    ; ##########################################
+    ; Phase 4
+    CALL dbs.SetupRocketBank
+
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
+    RET NZ
+
+    CALL rot.AnimateAsteroids
+    CALL rot.DeolyNextAsteroid
 
     RET                                         ; ## END of the function ##
 
@@ -440,6 +461,8 @@ _MainLoop008OnActiveGame
     CALL dbs.SetupPatternEnemyBank
     CALL enu.AnimateFuelThief
 
+    CALL gc.AnimateEnemies
+
     ; ##########################################
     ; Hard
     LD A, (jt.difLevel)
@@ -450,29 +473,6 @@ _MainLoop008OnActiveGame
     CALL gc.RespawnEnemy
 
 .notHard
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;          _MainLoop008OnActiveGameOrFlyingRocket          ;
-;----------------------------------------------------------;
-_MainLoop008OnActiveGameOrFlyingRocket
-
-    ; Is Game active?
-    LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
-    JR NZ, .gameInactive
-    JR .execute
-.gameInactive
-    ; Game ist inactive, what about rocket?
-    CALL dbs.SetupRocketBank
-    LD A, (ro.rocketState)
-    CP ro.ROST_FLY
-    RET NZ                                          ; Return if rocket is not flying.
-
-.execute
-    ; ##########################################
-    CALL gc.AnimateEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -748,6 +748,7 @@ _LastLoop
 _LastLoopOnRocketPhase2_3
 
     CALL dbs.SetupRocketBank
+
     LD A, (ro.rocketFlyPhase)
     AND ro.PHASE_2_3
     RET Z

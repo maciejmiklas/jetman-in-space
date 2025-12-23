@@ -107,7 +107,7 @@ SetIdAndHideSprite
 ; Input:
 ;  - A: Sprite ID.
 
-    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands
+    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
     CALL HideSprite
 

@@ -233,17 +233,18 @@ RocketFLyStartPhase4
     CALL ti.CleanAllTiles
 
     LD DE, (jt.levelNumber)
+    PUSH DE
     CALL fi.LoadTileStarsSprFile
+    POP DE
+
+    CALL fi.LoadAsteroidsFile
+    CALL sp.LoadSpritesFPGA
 
     ; Load tilemap palette
     CALL dbs.SetupArrays1Bank
     LD HL, (ll.tilePaletteStarsAddr)
     LD B, db1.STARS_PAL_BYTES
     CALL ti.LoadTilemap9bitPalette
-
-    LD DE, (ll.currentLevelStr)
-    CALL fi.LoadSpritesFile
-    CALL sp.LoadSpritesFPGA
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
@@ -273,7 +274,6 @@ RocketFLyPhase2and3
 RocketFLyPhase4
 
     CALL ros.ScrollStarsOnFlyRocket
-    CALL rot.AnimateAsteroids
 
     CALL st.MoveStarsDown
     CALL st.MoveStarsDown
