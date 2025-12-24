@@ -12,7 +12,7 @@ RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
 ; Max rocket fly distance, when reached, it will explode.
-EXPLODE_Y_HI_H4         = $08
+EXPLODE_Y_HI_H4         = $FF
 EXPLODE_Y_LO_H7E        = $FF
 
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
@@ -34,7 +34,7 @@ rocketExhaustDB                                 ; Sprite IDs for exhaust
     DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
 RO_EXHAUST_MAX          = 18
 
-ROC_Y_MIN_D20           = 4. 0
+ROC_Y_MIN_D20           = 40
 ROC_Y_MAX_D220          = 220
 
 ROC_X_MIN_D10           = 15

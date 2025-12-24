@@ -227,7 +227,6 @@ RocketFLyStartPhase2
 ; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase4
 
-    CALL rot.SetupAsteroids
     CALL ros.ResetRocketStars
 
     CALL ti.CleanAllTiles

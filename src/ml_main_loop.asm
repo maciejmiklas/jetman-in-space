@@ -431,7 +431,6 @@ _MainLoop008OnFlayingRocket
     RET NZ
 
     CALL rot.AnimateAsteroids
-    CALL rot.DeolyNextAsteroid
 
     RET                                         ; ## END of the function ##
 
@@ -634,6 +633,7 @@ _MainLoop050
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
     CALL _MainLoop050OnActiveGame
+    CALL _MainLoop050OnFlayingRocket
 
     RET                                         ; ## END of the function ##
 
@@ -649,6 +649,30 @@ _MainLoop050OnActiveGame
 
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.NextFollowingAngle
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;               _MainLoop050OnFlayingRocket                ;
+;----------------------------------------------------------;
+_MainLoop050OnFlayingRocket
+
+    ; Return if rocket is not flying.
+    CALL dbs.SetupRocketBank
+    LD A, (ro.rocketState)
+    CP ro.ROST_FLY
+    RET NZ
+
+    ; ##########################################
+    ; Phase 4
+    CALL dbs.SetupRocketBank
+
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
+    RET NZ
+
+    CALL rot.DeployNextAsteroid
 
     RET                                         ; ## END of the function ##
 
