@@ -34,6 +34,15 @@ rocketExhaustDB                                 ; Sprite IDs for exhaust
     DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
 RO_EXHAUST_MAX          = 18
 
+ROC_Y_MIN_D20           = 4. 0
+ROC_Y_MAX_D220          = 220
+
+ROC_X_MIN_D10           = 15
+
+; $12c = 300
+ROC_Y_MAX_LO_H36        = $2C
+ROC_Y_MAX_HI_H1         = $1
+
 ;----------------------------------------------------------;
 ;               ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
@@ -556,7 +565,7 @@ _ProcessJoystickInput
     CALL NZ, _JoyDown
     POP AF
 
-    ; Joystick up
+    ; Joystick uv                                                         bp
     BIT 3, A                                    ; Bit 3 set -> Up pressed.
     CALL NZ, _JoyUp
 
@@ -568,6 +577,9 @@ _ProcessJoystickInput
 _JoyUp
 
     LD A, (ro.rocY)
+    CP ROC_Y_MIN_D20
+    RET C
+
     DEC A
     LD (ro.rocY), A
 
@@ -579,7 +591,9 @@ _JoyUp
 _JoyDown
 
     LD A, (ro.rocY)
-    INC A
+    CP ROC_Y_MAX_D220
+    RET NC
+
     INC A
     LD (ro.rocY), A
 
@@ -592,9 +606,17 @@ _JoyDown
 ;----------------------------------------------------------;
 _JoyLeft
 
-    LD A, (ro.rocX)
-    DEC A
-    LD (ro.rocX), A
+    LD BC, (ro.rocX)
+    LD A, B
+    CP 0
+    JR NZ, .afterMinX
+    LD A, C
+    CP ROC_X_MIN_D10
+    RET C
+.afterMinX
+
+    DEC BC
+    LD (ro.rocX), BC
 
     ; ##########################################
     LD A, (decTileDelayCnt)
@@ -615,9 +637,17 @@ _JoyLeft
 ;----------------------------------------------------------;
 _JoyRight
 
-    LD A, (ro.rocX)
-    INC A
-    LD (ro.rocX), A
+    LD BC, (ro.rocX)
+    LD A, B
+    CP ROC_Y_MAX_HI_H1
+    JR NZ, .afterMaxX
+    LD A, C
+    CP ROC_Y_MAX_LO_H36
+    RET NC
+.afterMaxX
+
+    INC BC
+    LD (ro.rocX), BC
 
     ; ##########################################
     LD A, (decTileDelayCnt)
