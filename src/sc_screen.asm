@@ -8,6 +8,9 @@
     MODULE sc
 
 SYNC_SL_D192            = 255                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
+TI_CLIP_TOP_D8          = _TI_PIXELS_D8
+TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - _TI_PIXELS_D8
+CLIP_TOP50_D50          = 40
 
 ;----------------------------------------------------------;
 ;                      #SetupScreen                        ;
@@ -17,11 +20,11 @@ SetupScreen
     ; Sprite and Layers system. Bits:
     ;  - 7: 0 - low RES mode off.
     ;  - 6: 1 - sprite on top.
-    ;  - 5: 0 - sprite clipping disabled.
+    ;  - 5: 1 - sprite clipping disabled.
     ;  - 4-2: 110 - S(U+L) ULA and Layer 2 combined (tiles + background).
     ;  - 1: 1 - sprite over border.
     ;  - 0: 1 - sprites visible.
-    NEXTREG _SPR_REG_SETUP_H15, %0'1'0'110'1'1
+    NEXTREG _SPR_REG_SETUP_H15, %0'1'1'110'1'1
 
     NEXTREG _DC_REG_CONTROL1_H69, %1'0'0'00000  ; Enable Layer 2
     
@@ -32,11 +35,77 @@ SetupScreen
     LD  A, _COL_BLACK_D0                        ; Set border color.
     OUT (_BORDER_IO_HFE), A
 
-    ; Clip window for layer 2, required to display full picture at 320x256.
-    NEXTREG _DC_REG_L2_CLIP_H18, 0
-    NEXTREG _DC_REG_L2_CLIP_H18, 159
-    NEXTREG _DC_REG_L2_CLIP_H18, 0
-    NEXTREG _DC_REG_L2_CLIP_H18, 255    
+    CALL ResetClippings
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      SetClipTop50                        ;
+;----------------------------------------------------------;
+; 8px clip from top and 8px clip from the bottom.
+SetClipTop50
+
+    ; Reset clip index.
+    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_VAL
+
+    ; Clip Window layer 2
+    NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_X1_D0
+    NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_X2_D159
+    NEXTREG _DC_REG_L2_CLIP_H18, CLIP_TOP50_D50
+    NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_FULLY2_D255
+
+    ; Clip window sprites.
+    NEXTREG _GL_REG_CLIP_SPR_H19, _CLIP_FULL_X1_D0
+    NEXTREG _GL_REG_CLIP_SPR_H19, _CLIP_FULL_X2_D159
+    NEXTREG _GL_REG_CLIP_SPR_H19, CLIP_TOP50_D50
+    NEXTREG _GL_REG_CLIP_SPR_H19, _CLIP_FULL_FULLY2_D255
+
+    ; Clip window tilemap.
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_X1_D0
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_X2_D159
+    NEXTREG _GL_REG_CLIP_TI_H1, CLIP_TOP50_D50
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_FULLY2_D255
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
+;                  SetClipTilesHorizontal                  ;
+;----------------------------------------------------------;
+; 8px clip from top and 8px clip from the bottom.
+SetClipTilesHorizontal
+
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_X1_D0
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_X2_D159
+    NEXTREG _GL_REG_CLIP_TI_H1, TI_CLIP_TOP_D8
+    NEXTREG _GL_REG_CLIP_TI_H1, TI_CLIP_BOTTOM_D247
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    #ResetClippings                       ;
+;----------------------------------------------------------;
+ResetClippings
+
+    ; Reset clip index.
+    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_VAL
+
+    ; Clip Window layer 2
+    NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_X1_D0
+    NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_X2_D159
+    NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_Y1_D0
+    NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_FULLY2_D255
+
+    ; Clip window sprites.
+    NEXTREG _GL_REG_CLIP_SPR_H19, _CLIP_FULL_X1_D0
+    NEXTREG _GL_REG_CLIP_SPR_H19, _CLIP_FULL_X2_D159
+    NEXTREG _GL_REG_CLIP_SPR_H19, _CLIP_FULL_Y1_D0
+    NEXTREG _GL_REG_CLIP_SPR_H19, _CLIP_FULL_FULLY2_D255
+
+    ; Clip window tilemap.
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_X1_D0
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_X2_D159
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_Y1_D0
+    NEXTREG _GL_REG_CLIP_TI_H1, _CLIP_FULL_FULLY2_D255
 
     RET                                         ; ## END of the function ##
 

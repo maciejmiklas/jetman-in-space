@@ -32,24 +32,60 @@ _GL_REG_VL_H1F          = $1F               ; Active video line (LSB).
 ;     - 11: AY1.
 _GL_REG_SOUND_HFFFD     = $FFFD             ; AY reg
 
+
 ;----------------------------------------------------------;
 ;                 Peripheral Control                       ;
 ;----------------------------------------------------------;
 
 ;(R/W) 0x09 (09) => Peripheral 4 setting:
 ; Bits:
-;  - 7: Mono setting for AY 2 (1 = mono, 0 default).
-;  - 6: Mono setting for AY 1 (1 = mono, 0 default).
-;  - 5: Mono setting for AY 0 (1 = mono, 0 default).
-;  - 4: Sprite id lockstep (1 = Nextreg 0x34 and IO Port 0x303B are in lockstep, 0 default).
-;  - 3: Disables Kempston port ($DF) if set.
-;  - 2: Disables divMMC ports ($E3, $E7, $EB) if set.
+;  - 7: mono setting for AY 2 (1 = mono, 0 default).
+;  - 6: mono setting for AY 1 (1 = mono, 0 default).
+;  - 5: mono setting for AY 0 (1 = mono, 0 default).
+;  - 4: sprite id lockstep (1 = Nextreg 0x34 and IO Port 0x303B are in lockstep, 0 default).
+;  - 3: disables Kempston port ($DF) if set.
+;  - 2: disables divMMC ports ($E3, $E7, $EB) if set.
 ; - bits 1-0 = scanlines (0 after a PoR or Hard-reset).
 ; - 00 = scanlines off.
 ; - 01 = scanlines 75%.
 ; - 10 = scanlines 50%.
 ; - 11 = scanlines 25%.
 _PERIPHERAL_04_H09      = $09
+
+
+;----------------------------------------------------------;
+;                     Clip Window                          ;
+;----------------------------------------------------------;
+; All clippings have the samne settings:
+; Bits 7-0 = coordinates of the clip window
+; 1st write – X1 position
+; 2nd write – X2 position
+; 3rd write – Y1 position
+; 4rd write – Y2 position
+
+_CLIP_FULL_X1_D0           = 0
+_CLIP_FULL_X2_D159         = 159                   ; For 320x256 the the X coords are internally doubled.
+_CLIP_FULL_Y1_D0           = 0
+_CLIP_FULL_FULLY2_D255     = 255
+
+; Clip window layer 2.
+_DC_REG_L2_CLIP_H18     = $18
+
+; Clip window sprites.
+_GL_REG_CLIP_SPR_H19    = $19
+
+; Clip window tilemap.
+_GL_REG_CLIP_TI_H1   = $1B
+
+; Clip window control.
+; bits 7-4 = Reserved, must be 0
+; Bits:
+;  - 3: reset the tilemap clip index
+;  - 2: reset the ULA/LoRes clip index.
+;  - 1: reset the sprite clip index.
+;  - 0: reset the Layer 2 clip index.
+_GL_REG_CLIP_CTR_H1C    = $1C
+_GL_REG_CLIP_VAL        = %0000'1111
 
 ;----------------------------------------------------------;
 ;                   Display Control                        ;
@@ -63,10 +99,6 @@ _DC_REG_L2_OFFSET_X_H16 = $16
 
 ; Layer 2 Offset Y. (0-191) (0 after a reset).
 _DC_REG_L2_OFFSET_Y_H17 = $17
-
-; The coordinate values are 0,255,0,191 after a Reset.
-; For Layer 2 at 320x256 use 0,159,0,255.
-_DC_REG_L2_CLIP_H18     = $18
 
 ; Tilemap Offset X MSB.
 ; Bits:
@@ -312,14 +344,11 @@ _SPR_PORT_H303B         = $303B
 ;                        Tiles                             ;
 ;----------------------------------------------------------;
 
-; Clip Window Tilemap.
-; bits 7-0 = coordinates of the clip window.
-;  1st write = X1 position,
-;  2nd write = X2 position,
-;  3rd write = Y1 position,
-;  4rd write = Y2 position,
-; The values are 0,159,0,255 after a Reset.
-_C_TI_CLIP_WINDOW_H1B   = $1B
+; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
+_TI_PIXELS_D8           = 8                     ; Size of a single tile in pixels.
+_TI_H_D40               = 40
+_TI_V_D32               = 32
+_TI_H_BYTES_D80         = _TI_H_D40 *2 
 
 ; Tilemap Offset X MSB.
 ; bits 7-2 = Reserved, must be 0

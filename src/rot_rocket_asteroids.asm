@@ -31,7 +31,7 @@ SID                     DB                      ; Sprite ID for the first sprite
 X                       DW
 Y                       DB
 PAT                     DB                      ; Current animation pattern, from 0 to AS_PATTERNS-1
-MOVE_DEL                DB                      ; Number of game loops to skip.
+MOVE_SPD                DB                      ; Number of game loops to skip.
 MOVE_PAT                DB                      ; MP1, MP2 or MP3
 ACTIVE                  DB
     ENDS
@@ -40,7 +40,7 @@ ACTIVE                  DB
     STRUCT ASD
 X                       DW
 Y                       DB
-MOVE_DEL                DB                      ; Number of game loops to skip.
+MOVE_SPD                DB                      ; Number of game loops to skip.
 MOVE_PAT                DB                      ; MP1, MP2 or MP3
 ACTIVE                  DB                      ; True if has been alrady deplyed
     ENDS
@@ -53,7 +53,7 @@ MP2                     = 2                     ; Increment Y, increment X
 MP2                     = 2                     ; Increment Y,  decrement X
 
 asteroids                                       ; Rocket has sprite ID 80-89
-;       SID  X  Y  PAT MOVE_DEL MOVE_PAT ACTIVE
+;       SID  X  Y  PAT MOVE_SPD MOVE_PAT ACTIVE
     AS {00,  0, 0, 0,  0,       0,       0}
     AS {10,  0, 0, 0,  0,       0,       0}
     AS {20,  0, 0, 0,  0,       0,       0}
@@ -64,16 +64,17 @@ asteroids                                       ; Rocket has sprite ID 80-89
     AS {70,  0, 0, 0,  0,       0,       0}
 
 asDeployL1
-;        X    Y    MOVE_DEL MOVE_PAT ACTIVE
-    ASD {020, 245, 0,       MP1,     AS_ACTIVE_NO}
-    ASD {070, 245, 0,       MP1,     AS_ACTIVE_NO}
-    ASD {120, 245, 0,       MP1,     AS_ACTIVE_NO}
-    ASD {170, 245, 0,       MP1,     AS_ACTIVE_NO}
-    ASD {220, 245, 0,       MP1,     AS_ACTIVE_NO}
-    ASD {030, 245, 0,       MP1,     AS_ACTIVE_NO}
+;        X    Y    MOVE_SPD MOVE_PAT ACTIVE
+    ASD {100, 100, 0,       MP1,     AS_ACTIVE_NO}
+    ASD {010, 000, 1,       MP1,     AS_ACTIVE_NO}
+    ASD {050, 000, 2,       MP1,     AS_ACTIVE_NO}
+    ASD {090, 000, 3,       MP1,     AS_ACTIVE_NO}
+    ASD {130, 000, 2,       MP1,     AS_ACTIVE_NO}
+    ASD {180, 000, 1,       MP1,     AS_ACTIVE_NO}
+    ASD {220, 000, 2,       MP1,     AS_ACTIVE_NO}
 
 asDeployAddr            DW (asDeployL1)
-asDeploySize            DW 6
+asDeploySize            DW 7
 
 ;----------------------------------------------------------;
 ;                   DeployNextAsteroid                     ;
@@ -116,8 +117,8 @@ DeployNextAsteroid
     LD A, (IY + ASD.Y)
     LD (IX + AS.Y), A
 
-    LD A, (IY + ASD.MOVE_DEL)
-    LD (IX + AS.MOVE_DEL), A
+    LD A, (IY + ASD.MOVE_SPD)
+    LD (IX + AS.MOVE_SPD), A
 
     LD A, (IY + ASD.MOVE_PAT)
     LD (IX + AS.MOVE_PAT), A
@@ -225,12 +226,15 @@ MoveAsteroids
     CP AS_ACTIVE_YES
     JR NZ, .asLoopNext
 
+.afterDelCnt
     ; ##########################################
     LD A, (IX + AS.SID)
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the sprite ID for the following commands.
 
+    ; Increment Y based on definied speed.
     LD A, (IX + AS.Y)
-    INC A
+    LD B, (IX + AS.MOVE_SPD)
+    ADD A, B
     LD (IX + AS.Y), A
     NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
 

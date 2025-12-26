@@ -13,7 +13,7 @@ sourceTilesRow          DB 0                    ; Current tiles row in source fi
 sourceTilesRowMax       DB 0
 
 tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
-tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti.TI_PIXELS_D8-1).
+tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti._TI_PIXELS_D8-1).
 
 animateDelayCnt         DB ANIMATE_DELAY        ; Start scrolling without a delay.
 ANIMATE_DELAY           = 50
@@ -37,7 +37,7 @@ LoadLevelIntro
     PUSH DE
     CALL dbs.SetupArrays2Bank
     LD (db2.introSecondFileSize), HL
-    CALL ti.SetTilesClipHorizontal
+    CALL sc.SetClipTilesHorizontal
 
     ; ##########################################
     ; Load palette
@@ -100,7 +100,7 @@ AnimateLevelIntroTextScroll
     INC A
     LD (tilePixelCnt), A
 
-    CP ti.TI_PIXELS_D8
+    CP ti._TI_PIXELS_D8
     JR NZ, .afterNextTile
     
     ; Reset the counter and fetch the next tile row.
@@ -168,27 +168,27 @@ _NextTilesRow
     ; ##########################################
     ; Prepare tile copy fom temp RAM to screen RAM.
 
-    ; Load the memory address of the tiles row to be copied into HL. HL = RS_ADDR_HC000 + sourceTilesRow * ti.TI_H_BYTES_D80.
+    ; Load the memory address of the tiles row to be copied into HL. HL = RS_ADDR_HC000 + sourceTilesRow * _TI_H_BYTES_D80.
     LD A, (sourceTilesRow)
     LD D, A
-    LD E, ti.TI_H_BYTES_D80
+    LD E, _TI_H_BYTES_D80
     MUL D, E                                    ; DE contains byte offset to current row.
     LD HL, _RAM_SLOT6_STA_HC000
     ADD HL, DE                                  ; Move RAM pointer to current row.
 
     ; Load the bottom line of tilemap screen memory into DE. This row will be replaced with new lite line.
-    ; DE = ti.TI_MAP_RAM_H5B00 + screenTilesRow * ti.TI_H_BYTES_D80.
+    ; DE = ti.TI_MAP_RAM_H5B00 + screenTilesRow * _TI_H_BYTES_D80.
     LD A, (screenTilesRow)
 
     LD D, A
-    LD E, ti.TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains #screenTilesRow * ti.TI_H_BYTES_D80.
+    LD E, _TI_H_BYTES_D80
+    MUL D, E                                    ; DE contains #screenTilesRow * _TI_H_BYTES_D80.
     PUSH HL                                     ; Keep HL because it already contains proper source tiles address.
     LD HL, ti.TI_MAP_RAM_H5B00                   ; Now HL contains memory offset to tiles.
     ADD HL, DE
     LD DE, HL
     POP HL
-    LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
+    LD BC, _TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
     LDIR
 
     ; ##########################################

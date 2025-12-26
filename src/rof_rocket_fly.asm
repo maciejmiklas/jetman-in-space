@@ -34,7 +34,7 @@ rocketExhaustDB                                 ; Sprite IDs for exhaust
     DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
 RO_EXHAUST_MAX          = 18
 
-ROC_Y_MIN_D20           = 40
+ROC_Y_MIN_D70           = 70
 ROC_Y_MAX_D220          = 220
 
 ROC_X_MIN_D10           = 15
@@ -565,7 +565,7 @@ _ProcessJoystickInput
     CALL NZ, _JoyDown
     POP AF
 
-    ; Joystick uv                                                         bp
+    ; Joystick up
     BIT 3, A                                    ; Bit 3 set -> Up pressed.
     CALL NZ, _JoyUp
 
@@ -577,9 +577,10 @@ _ProcessJoystickInput
 _JoyUp
 
     LD A, (ro.rocY)
-    CP ROC_Y_MIN_D20
+    CP ROC_Y_MIN_D70
     RET C
 
+    DEC A
     DEC A
     LD (ro.rocY), A
 
@@ -594,6 +595,7 @@ _JoyDown
     CP ROC_Y_MAX_D220
     RET NC
 
+    INC A
     INC A
     LD (ro.rocY), A
 
@@ -615,6 +617,7 @@ _JoyLeft
     RET C
 .afterMinX
 
+    DEC BC
     DEC BC
     LD (ro.rocX), BC
 
@@ -646,6 +649,7 @@ _JoyRight
     RET NC
 .afterMaxX
 
+    INC BC
     INC BC
     LD (ro.rocX), BC
 

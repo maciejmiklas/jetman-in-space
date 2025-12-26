@@ -87,7 +87,6 @@ LoadMainMenu
 
     CALL _HideGame
     CALL sc.ResetScore
-    CALL ti.SetTilesClipFull
     CALL mma.LoadMainMenu
     CALL jl.ResetLives
 
@@ -96,6 +95,8 @@ LoadMainMenu
     LD HL, db1.tilePalette1Bin
     LD B, db1.TILE_PAL_SIZE_L1
     CALL ti.LoadTilemap9bitPalette
+
+    CALL sc.ResetClippings
 
     RET                                         ; ## END of the function ##
 
@@ -213,7 +214,7 @@ RocketFLyStartPhase1
 ; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase2
 
-    CALL ti.SetTilesClipHorizontal
+    CALL sc.SetClipTilesHorizontal
     CALL ti.ClearBottomTileLine
 
     CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
@@ -244,6 +245,8 @@ RocketFLyStartPhase4
     LD HL, (ll.tilePaletteStarsAddr)
     LD B, db1.STARS_PAL_BYTES
     CALL ti.LoadTilemap9bitPalette
+
+    CALL sc.SetClipTop50
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
@@ -1175,6 +1178,8 @@ _HideGame
     CALL dbs.SetupRocketBank
     CALL rof.ResetAndDisableFlyRocket
 
+    CALL sc.ResetClippings
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -1214,7 +1219,6 @@ _StartLevel
     CALL dbs.SetupRocketBank
     CALL roa.StartRocketAssembly
 
-    CALL ti.SetTilesClipFull
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
     CALL jl.SetupLives
