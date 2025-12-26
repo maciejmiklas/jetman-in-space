@@ -49,7 +49,6 @@ AS_ACTIVE_YES           = 1
 AS_ACTIVE_NO            = 0
 
 MP1                     = 1                     ; Increment Y
-MP2                     = 2                     ; Increment Y, increment X
 MP2                     = 2                     ; Increment Y,  decrement X
 
 asteroids                                       ; Rocket has sprite ID 80-89
@@ -65,13 +64,13 @@ asteroids                                       ; Rocket has sprite ID 80-89
 
 asDeployL1
 ;        X    Y    MOVE_SPD MOVE_PAT ACTIVE
-    ASD {100, 100, 0,       MP1,     AS_ACTIVE_NO}
+    ASD {300, 050, 1,       MP2,     AS_ACTIVE_NO}
     ASD {010, 000, 1,       MP1,     AS_ACTIVE_NO}
     ASD {050, 000, 2,       MP1,     AS_ACTIVE_NO}
-    ASD {090, 000, 3,       MP1,     AS_ACTIVE_NO}
+    ASD {300, 100, 3,       MP2,     AS_ACTIVE_NO}
     ASD {130, 000, 2,       MP1,     AS_ACTIVE_NO}
     ASD {180, 000, 1,       MP1,     AS_ACTIVE_NO}
-    ASD {220, 000, 2,       MP1,     AS_ACTIVE_NO}
+    ASD {300, 200, 2,       MP2,     AS_ACTIVE_NO}
 
 asDeployAddr            DW (asDeployL1)
 asDeploySize            DW 7
@@ -231,7 +230,24 @@ MoveAsteroids
     LD A, (IX + AS.SID)
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the sprite ID for the following commands.
 
-    ; Increment Y based on definied speed.
+    ; DEC X based on the defined speed and only if it's enabled.
+    LD A, (IX + AS.MOVE_PAT)
+    CP MP2
+    JR NZ, .afterX
+
+    LD BC, (IX + AS.X)
+    DEC BC
+    LD (IX + AS.X), BC
+    LD A, C
+    NEXTREG _SPR_REG_X_H35, A
+
+    ; Set overflow bit from X position.
+    LD A, B                                     ; Load MSB from X into A.
+    AND _OVERFLOW_BIT                           ; Keep only an overflow bit.
+    NEXTREG _SPR_REG_ATR2_H37, A
+.afterX
+
+    ; Increment Y based on the defined speed.
     LD A, (IX + AS.Y)
     LD B, (IX + AS.MOVE_SPD)
     ADD A, B
