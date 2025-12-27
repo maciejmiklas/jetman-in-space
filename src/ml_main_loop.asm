@@ -22,7 +22,7 @@ MainLoop
     CALL _MainLoop040
     CALL _MainLoop050
     CALL _MainLoop075
-    CALL _MainLoop150
+    CALL _MainLoop250
     CALL _LastLoop
 
     RET                                         ; ## END of the function ##
@@ -733,28 +733,43 @@ _MainLoop075OnActiveGameOver
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop150                       ;
+;                       _MainLoop250                       ;
 ;----------------------------------------------------------;
-; Tick rate: 3s
-_MainLoop150
+; Tick rate: 5s
+_MainLoop250
 
     ; Increment the counter.
-    LD A, (mld.counter150)
+    LD A, (mld.counter250)
     INC A
-    LD (mld.counter150), A
-    CP mld.COUNTER150_MAX
+    LD (mld.counter250), A
+    CP mld.COUNTER250_MAX
     RET NZ
 
     ; ##########################################
     ; Reset the counter.
     XOR A                                       ; Set A to 0
-    LD (mld.counter150), A
+    LD (mld.counter250), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
+    CALL _MainLoop250OnRocketPhase4
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;             _MainLoop250OnRocketPhase4                   ;
+;----------------------------------------------------------;
+_MainLoop250OnRocketPhase4
+
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
+    RET NZ
+
+    ; ##########################################
+    CALL dbs.SetupRocketBank
+    CALL rot.ChangeAsteroidSpeed
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                         _LastLoop                        ;

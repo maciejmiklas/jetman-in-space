@@ -8,15 +8,17 @@
     MODULE rot
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
 
-; Each asteroid sprite is a matrix built of single 16x16 sprites. For example, 3x2 (#spH=3, #spV=2). It has AS_PATTERNS animation frames.
-; Sprites are stored in 16K sprite files (asteroi_0.spr/asteroi_1.spr). Sprites are stored horizontally, one after another. 
-; For example for the 3x2 we have following IDs:
+; Asteroid sprite takes almost a complete 16K sprite file (asteroi_0.spr/asteroi_1.spr). Each asteroid sprite is a matrix of single 16x16
+; sprites (a composite sprite with an anchor).
+; For example, for a 3x2 asteroid (#spH=3, #spV=2), a single animation frame (pattern) occupies 6 slots (3*2=6) in the sprite file. 
+; Each asteroid has 5 animation patterns. For an asteroid of size 3x2 requires 30 (3*2*5) slots in the sprite file. 
+; Patterns are stored horizontally, one after another. For example, for the 3x2, we have the following IDs:
 ;
-; - animation frame 1:
+; - animation pattern 1:
 ;  0 1 2
 ;  3 4 5
 ;
-; - animation frame 2:
+; - animation pattern 2:
 ;  6 7  8
 ;  9 10 11
 
@@ -62,18 +64,95 @@ asteroids                                       ; Rocket has sprite ID 80-89
     AS {60,  0, 0, 0,  0,       0,       0}
     AS {70,  0, 0, 0,  0,       0,       0}
 
-asDeployL1
+asDeploy1
 ;        X    Y    MOVE_SPD MOVE_PAT ACTIVE
-    ASD {300, 050, 1,       MP2,     AS_ACTIVE_NO}
-    ASD {010, 000, 1,       MP1,     AS_ACTIVE_NO}
-    ASD {050, 000, 2,       MP1,     AS_ACTIVE_NO}
-    ASD {300, 100, 3,       MP2,     AS_ACTIVE_NO}
-    ASD {130, 000, 2,       MP1,     AS_ACTIVE_NO}
-    ASD {180, 000, 1,       MP1,     AS_ACTIVE_NO}
-    ASD {300, 200, 2,       MP2,     AS_ACTIVE_NO}
+    ASD {300, 020, 1,       MP2,     AS_ACTIVE_NO} ; 0
+    ASD {010, 000, 1,       MP1,     AS_ACTIVE_NO} ; 1
+    ASD {050, 000, 1,       MP1,     AS_ACTIVE_NO} ; 2
+    ASD {300, 060, 1,       MP2,     AS_ACTIVE_NO} ; 3
+    ASD {150, 000, 1,       MP1,     AS_ACTIVE_NO} ; 4
+    ASD {200, 000, 1,       MP1,     AS_ACTIVE_NO} ; 5
+    ASD {300, 150, 1,       MP2,     AS_ACTIVE_NO} ; 6
 
-asDeployAddr            DW (asDeployL1)
-asDeploySize            DW 7
+asDeployAddr            DW (asDeploy1)
+AS_DEPLOY_SIZE          = 7
+
+; This list is used to adjust asteroid's speeds over time. It contains pairs, let's call the elements in each pair A and B. For example: 
+; "A,B, A,B, ... A,B". A loop runs every few seconds, each iteration takes the next AB pair from this list and adds it to the ASD list. 
+; A gives an index in the ASD list (starts from 0), and B is the applied value. B will be added or subtracted from ASD.MOVE_SPD. 
+; In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
+randMov                 DB 0,1,  0,1|$80, 3,1,  3,1|$80,  5,1,  5,1|$80,  2,1,  2,1|$80,  6,1,  6,1|$80, 5,1,  5,1|$80,  0,1
+                        DB 2,1,  4,1,  6,1,  6,1|$80,  0,1,  1,1,  4,1,  6,1,  5,1,  2,1|$80,  3,1,  5,1|$80,  2,1,  5,1,  6,1|$80
+                        DB 3,1|$80,  4,1|$80
+
+randMovAddr             DW randMov
+randMovPos              DB 0
+RAND_MOVE_SIZE_D30      = 30                    ; 30 elements, 60 bytes.
+RAND_MOVE_EL_D2         = 2
+RAND_SIGN_BIT_D7        = 7
+
+;----------------------------------------------------------;
+;                     SetupAsteroids                       ;
+;----------------------------------------------------------;
+; Input:
+; - IX
+SetupAsteroids
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  ChangeAsteroidSpeed                     ;
+;----------------------------------------------------------;
+ChangeAsteroidSpeed
+
+    ; HL will point to #randMov based on #randMovPos
+    LD A, (randMovPos)
+    LD D, A
+    LD E, RAND_MOVE_EL_D2
+    MUL D, E
+    LD HL, (randMovAddr)
+    ADD HL, DE
+
+    ; Load current #randMov into BC.
+    LD B, (HL)
+    INC HL
+    LD C, (HL)
+  
+    ; IX will point to ASD given by offset from B.
+    LD HL, asteroids
+    LD D, B
+    LD E, AS
+    MUL D, E
+    ADD HL, DE
+    LD IX, HL
+
+    ;  Add or subtract from AS.MOVE_SPD the value in C.
+    LD A, (IX + AS.MOVE_SPD)
+
+    BIT RAND_SIGN_BIT_D7, C
+    JR NZ, .sub
+    ADD C
+    JR .afterMath
+.sub
+    RES RAND_SIGN_BIT_D7, C
+    SUB C
+    JP P, .afterMath                            ; Jump if A-C >= 0
+    XOR A                                       ; Sub was negative, reset A to 1.
+.afterMath
+
+    LD (IX + AS.MOVE_SPD), A
+
+    ; ##########################################
+    ; Move the index to the next record, or reset it to the first one.
+    LD A, (randMovPos)
+    INC A
+    CP RAND_MOVE_SIZE_D30
+    JR NZ, .afterPosReset
+    XOR A
+.afterPosReset
+    LD (randMovPos), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   DeployNextAsteroid                     ;
@@ -85,8 +164,7 @@ DeployNextAsteroid
 
     ; ##########################################
     ; We are looking for inactive asteroid to deploy.
-    LD A, (asDeploySize)
-    LD B, A
+    LD B, AS_DEPLOY_SIZE
 .asLoop
     LD A, (IY + ASD.ACTIVE)
 
@@ -212,9 +290,7 @@ DeployNextAsteroid
 MoveAsteroids
 
     LD IX, asteroids
-
-    LD A, (asDeploySize)
-    LD B, A
+    LD B, AS_DEPLOY_SIZE
 
 .asLoop
     PUSH BC
@@ -275,8 +351,7 @@ AnimateAsteroids
 
     LD IX, asteroids
 
-    LD A, (asDeploySize)
-    LD B, A
+    LD B, AS_DEPLOY_SIZE
 
 .asLoop
     PUSH BC
