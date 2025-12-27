@@ -64,28 +64,14 @@ asteroids                                       ; Rocket has sprite ID 80-89
     AS {60,  0, 0, 0,  0,       0,       0}
     AS {70,  0, 0, 0,  0,       0,       0}
 
-asDeploy1
-;        X    Y    MOVE_SPD MOVE_PAT ACTIVE
-    ASD {300, 020, 1,       MP2,     AS_ACTIVE_NO} ; 0
-    ASD {010, 000, 1,       MP1,     AS_ACTIVE_NO} ; 1
-    ASD {050, 000, 1,       MP1,     AS_ACTIVE_NO} ; 2
-    ASD {300, 060, 1,       MP2,     AS_ACTIVE_NO} ; 3
-    ASD {150, 000, 1,       MP1,     AS_ACTIVE_NO} ; 4
-    ASD {200, 000, 1,       MP1,     AS_ACTIVE_NO} ; 5
-    ASD {300, 150, 1,       MP2,     AS_ACTIVE_NO} ; 6
-
-asDeployAddr            DW (asDeploy1)
+asDeployAddr            DW 0                    ; Pointer to #ASD array, must contain 7 elements.
 AS_DEPLOY_SIZE          = 7
 
 ; This list is used to adjust asteroid's speeds over time. It contains pairs, let's call the elements in each pair A and B. For example: 
 ; "A,B, A,B, ... A,B". A loop runs every few seconds, each iteration takes the next AB pair from this list and adds it to the ASD list. 
 ; A gives an index in the ASD list (starts from 0), and B is the applied value. B will be added or subtracted from ASD.MOVE_SPD. 
 ; In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
-randMov                 DB 0,1,  0,1|$80, 3,1,  3,1|$80,  5,1,  5,1|$80,  2,1,  2,1|$80,  6,1,  6,1|$80, 5,1,  5,1|$80,  0,1
-                        DB 2,1,  4,1,  6,1,  6,1|$80,  0,1,  1,1,  4,1,  6,1,  5,1,  2,1|$80,  3,1,  5,1|$80,  2,1,  5,1,  6,1|$80
-                        DB 3,1|$80,  4,1|$80
-
-randMovAddr             DW randMov
+randMovAddr             DW 0
 randMovPos              DB 0
 RAND_MOVE_SIZE_D30      = 30                    ; 30 elements, 60 bytes.
 RAND_MOVE_EL_D2         = 2
@@ -94,9 +80,17 @@ RAND_SIGN_BIT_D7        = 7
 ;----------------------------------------------------------;
 ;                     SetupAsteroids                       ;
 ;----------------------------------------------------------;
+; Remember to set #spH and #spV
 ; Input:
-; - IX
+; - DE: pointer to #asDeploy
+; - HL: pointer to #randMov
 SetupAsteroids
+
+    LD (asDeployAddr), DE
+    LD (randMovAddr), HL
+
+    XOR A
+    LD (randMovPos), A
 
     RET                                         ; ## END of the function ##
 
@@ -306,6 +300,15 @@ MoveAsteroids
     LD A, (IX + AS.SID)
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the sprite ID for the following commands.
 
+    ; Increment Y based on the defined speed.
+    LD A, (IX + AS.MOVE_SPD)
+    CP 0
+    JR Z, .asLoopNext
+    LD B, (IX + AS.Y)
+    ADD A, B
+    LD (IX + AS.Y), A
+    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
+
     ; DEC X based on the defined speed and only if it's enabled.
     LD A, (IX + AS.MOVE_PAT)
     CP MP2
@@ -322,13 +325,6 @@ MoveAsteroids
     AND _OVERFLOW_BIT                           ; Keep only an overflow bit.
     NEXTREG _SPR_REG_ATR2_H37, A
 .afterX
-
-    ; Increment Y based on the defined speed.
-    LD A, (IX + AS.Y)
-    LD B, (IX + AS.MOVE_SPD)
-    ADD A, B
-    LD (IX + AS.Y), A
-    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
 
     NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_ANCHOR
 

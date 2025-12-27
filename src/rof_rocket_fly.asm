@@ -35,11 +35,11 @@ rocketExhaustDB                                 ; Sprite IDs for exhaust
 RO_EXHAUST_MAX          = 18
 
 ROC_Y_MIN_D70           = 70
-ROC_Y_MAX_D220          = 220
+ROC_Y_MAX_D220          = 240
 
 ROC_X_MIN_D10           = 15
 
-; $12c = 300
+; $12C = 300
 ROC_Y_MAX_LO_H36        = $2C
 ROC_Y_MAX_HI_H1         = $1
 
