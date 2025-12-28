@@ -259,9 +259,7 @@ RocketFLyStartPhase4
 RocketFLyPhase2and3
 
     CALL ros.ScrollStarsOnFlyRocket
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
+    CALL st.MoveFastStarsDown
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
@@ -276,11 +274,7 @@ RocketFLyPhase2and3
 RocketFLyPhase4
 
     CALL ros.ScrollStarsOnFlyRocket
-
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-    CALL st.MoveStarsDown
-
+    CALL st.MoveFastStarsDown
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##

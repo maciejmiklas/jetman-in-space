@@ -74,6 +74,12 @@ PauseScrollStars
 ;----------------------------------------------------------;
 ScrollStarsOnFlyRocket
 
+    ; Move every second game loop
+    LD A, (mld.counter000FliFLop)
+    CP _GC_FLIP_ON_D1
+    RET NZ
+
+    ; ##########################################
     ; Start animation when the rocket reaches given phase.
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_2
@@ -170,7 +176,6 @@ IncTileOffsetX
 
     LD BC, (tileOffsetX)
     INC BC
-
     ; If X >= 319 then set it to 0. X is 9-bit value.
     ; 319 = 256 + 63 = %0000'0001 + %0011'1111 -> MSB: 1, LSB: 63.
     LD A, B                                     ; Load MSB from X into A.
