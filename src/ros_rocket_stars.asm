@@ -74,12 +74,6 @@ PauseScrollStars
 ;----------------------------------------------------------;
 ScrollStarsOnFlyRocket
 
-    ; Move every second game loop
-    LD A, (mld.counter000FliFLop)
-    CP _GC_FLIP_ON_D1
-    RET NZ
-
-    ; ##########################################
     ; Start animation when the rocket reaches given phase.
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_2

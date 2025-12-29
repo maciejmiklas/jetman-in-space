@@ -8,9 +8,8 @@
     MODULE rot
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
 
-; Asteroid sprite takes almost a complete 16K sprite file (asteroi_0.spr/asteroi_1.spr). Each asteroid sprite is a matrix of single 16x16
-; sprites (a composite sprite with an anchor).
-; For example, for a 3x2 asteroid (#spH=3, #spV=2), a single animation frame (pattern) occupies 6 slots (3*2=6) in the sprite file. 
+; Asteroid sprite takes almost a complete 16K sprite file (asteroi_0.spr/asteroi_1.spr). Each asteroid sprite is a matrix of 3x3 sprites 
+; (a composite sprite with an anchor). A single animation frame (pattern) occupies 6 slots (3*2=6) in the sprite file. 
 ; Each asteroid has 5 animation patterns. For an asteroid of size 3x2 requires 30 (3*2*5) slots in the sprite file. 
 ; Patterns are stored horizontally, one after another. For example, for the 3x2, we have the following IDs:
 ;
@@ -23,8 +22,7 @@
 ;  9 10 11
 
 AS_PATTERNS             = 5                     ; Number of frames for asteroid sprite.
-spV                     DB 3                    ; Number of 16x16 elemets building sprite in vertical position.
-spH                     DB 3                    ; Number of 16x16 elemets building sprite in horizontal position
+AS_SIZE                 = 3                     ; Number of 16x16 elemets building sprite in vertical/horizontal position (3x3).
 spSize                  DB 9                    ; Nuimber of 16x16 elemets building sprite.
 
 ; Sprite data for each active asteroid.
@@ -266,13 +264,13 @@ DeployNextAsteroid
     ; .hLoop iteration
 .hLoopEnd
     INC H
-    LD A, (spH)
+    LD A, AS_SIZE
     CP H
     JR NZ, .hLoop
 
     ; .vLoop iteration
     INC L
-    LD A, (spV)
+    LD A, AS_SIZE
     CP L
     JR NZ, .vLoop
 

@@ -182,17 +182,16 @@ MoveFastStarsDown
     LD A, ST_MOVE_DOWN
     LD (starsState), A
 
-    CALL _SetupLayer1
-    CALL _MoveAndRenderStars
-
     CALL _SetupLayer2
     CALL _MoveAndRenderStars
 
-    ; Speed up every second game loop
     LD A, (mld.counter000FliFLop)
     CP _GC_FLIP_ON_D1
     RET NZ
 
+    CALL _MoveAndRenderStars
+
+    CALL _SetupLayer1
     CALL _MoveAndRenderStars
 
     RET                                         ; ## END of the function ##
