@@ -30,8 +30,14 @@ soundRepeatDelay        DB FLY_SOUND_REPEAT
 DELAY_TILE              = 5
 decTileDelayCnt         DB DELAY_TILE
 
-rocketExhaustDB                                 ; Sprite IDs for exhaust
+roctExhaustMax                                 ; Sprite IDs for exhaust at max speed.
     DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
+
+roctExhaustPoint        DW roctExhaustMax
+
+roctExhaustSlow                                ; Sprite IDs for exhaust at slow speed.
+    DB 58,59,63,  58,63,59,  63,58,59,  58,59,63,  58,59,63,  59,58,63
+
 RO_EXHAUST_MAX          = 18
 
 ROC_Y_MIN_D70           = 70
@@ -256,7 +262,7 @@ AnimateRocketExhaust
     NEXTREG _SPR_REG_NR_H34, A
 
     ; Load sprite pattern to A.
-    LD HL, rocketExhaustDB
+    LD HL, (roctExhaustPoint)
     LD A, (rocketExhaustCnt)
     ADD HL, A
     LD A, (HL)
@@ -515,6 +521,9 @@ _RocketFLyStartPhase4
 ;----------------------------------------------------------;
 _ProcessJoystickInput
 
+    LD HL, roctExhaustMax
+    LD (roctExhaustPoint), HL
+
     ; Key Left
     LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1).
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
@@ -600,6 +609,9 @@ _JoyDown
     LD (ro.rocY), A
 
     CALL ros.PauseScrollStars
+
+    LD HL, roctExhaustSlow
+    LD (roctExhaustPoint), HL
 
     RET                                         ; ## END of the function ##
 
