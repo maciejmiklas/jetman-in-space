@@ -90,6 +90,26 @@ SetupAsteroids
     XOR A
     LD (randMovPos), A
 
+    ; ##########################################
+    ; Reset asteroid data.
+    LD IX, asteroids
+    LD IY, DE
+    LD B, AS_DEPLOY_SIZE
+.asLoop
+
+    LD (IX + AS.ACTIVE), AS_ACTIVE_NO
+    LD (IY + ASD.ACTIVE), AS_ACTIVE_NO
+    
+    ; ##########################################
+    ; Loop logic.
+    LD DE, ASD
+    ADD IY, DE
+
+    LD DE, AS
+    ADD IX, DE
+
+    DJNZ .asLoop
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -344,7 +364,6 @@ MoveAsteroids
 AnimateAsteroids
 
     LD IX, asteroids
-
     LD B, AS_DEPLOY_SIZE
 
 .asLoop

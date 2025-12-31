@@ -21,9 +21,9 @@ start
 
     LD A, 1
     LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
+   ; CALL gc.LoadCurrentLevel
 
-    ;CALL gc.LoadMainMenu
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
@@ -77,8 +77,9 @@ mainLoop
     INCLUDE "btd_tod_palette.asm"
     INCLUDE "gb_game_bar.asm"
     INCLUDE "sc_screen.asm"
-    INCLUDE "sr_simple_sprite.asm"
     INCLUDE "sp_sprite.asm"
+    INCLUDE "sr_simple_sprite.asm"
+
     INCLUDE "jt_jet_state.asm"
     INCLUDE "jpo_jet_position.asm"
     INCLUDE "jco_jet_collision.asm"

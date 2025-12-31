@@ -156,7 +156,9 @@ ShakeTilemap
 ResetTilemapOffset
 
     XOR A
+
     NEXTREG _DC_REG_TI_X_LSB_H30, A
+    NEXTREG _DC_REG_TI_X_MSB_H2F, A
     NEXTREG _DC_REG_TI_Y_H31, A
 
     RET                                         ; ## END of the function ##

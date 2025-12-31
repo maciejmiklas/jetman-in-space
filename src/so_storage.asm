@@ -9,7 +9,7 @@
     module so
    ; TO USE THIS MODULE: CALL dbs.SetupStorageBank
 
-unlockedLevel           DB 07,10,06             ; Levels: easy, normal, hard. Values: 1-10
+unlockedLevel           DB 01,10,01             ; There are three difficulty levels, unlocked independently.
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
 highScore                                       ; This score does not show on screen, it's only there for the sorting ;)

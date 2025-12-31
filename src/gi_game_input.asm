@@ -143,14 +143,8 @@ GameOptionsInput
     ; Key ENTER
     LD A, _KB_H_TO_ENT_HBF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     BIT 0, A                                    ; Bit 0 reset -> ENTER pressed.
     CALL Z, _JoyFireA
-
-    ; Key L
-    BIT 1, A                                    ; Q
-    CALL Z, _Key_L
-    POP AF
 
     ; ##########################################
     ; Row T...Q
@@ -471,20 +465,6 @@ _Key_O
     RET NZ
 
     LD A, 9
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_L                            ;
-;----------------------------------------------------------;
-_Key_L
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 10
     LD (ll.currentLevel), A
     CALL gc.LoadCurrentLevel
 

@@ -127,12 +127,12 @@ LoadCurrentLevel
 
     ; ##########################################
     ; Asteroids
+    PUSH IX
     LD DE, (IX + LL.AD_DEP_DATA)
     LD HL, (IX + LL.AS_MOV_DATA)
-
     CALL rot.SetupAsteroids
-
-
+    POP IX
+    
     ; ##########################################
     ; Load single enemies
     PUSH IX
@@ -260,7 +260,6 @@ UnlockNextLevel
 
     ; Increment current level, or eventually reset it (10 -> 1).
     LD A, (currentLevel)
-    INC A
     INC A
     LD (currentLevel), A
 

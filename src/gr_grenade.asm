@@ -40,8 +40,8 @@ UseGrenade
 
     CALL gc.KillFewEnemies
 
-    LD A, af.FX_GRENADE_EXPLODE
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_GRENADE_EXPLODE
     CALL af.AfxPlay
 
     CALL _UpdateGamebar

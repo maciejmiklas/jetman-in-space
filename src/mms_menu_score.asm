@@ -273,8 +273,8 @@ _JoyFire
     CALL _SetScoreToReadOnly
 
     ; FX
-    LD A, af.MENU_ENTER
     CALL dbs.SetupAyFxsBank
+    LD A, af.MENU_ENTER
     CALL af.AfxPlay
 
     ; ##########################################
@@ -310,8 +310,8 @@ _JoyDown
     CALL _StoreCurrentChar
 
     ; FX
-    LD A, af.FX_FIRE2
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_FIRE2
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -341,8 +341,8 @@ _JoyUp
     CALL _StoreCurrentChar
 
     ; FX
-    LD A, af.FX_FIRE1
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_FIRE1
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -365,8 +365,8 @@ _JoyLeft
     LD (tileChar), A
 
     ; FX
-    LD A, af.FX_MENU_MOVE
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_MENU_MOVE
     CALL af.AfxPlay
 
     CALL _UpdateCursor
@@ -391,8 +391,8 @@ _JoyRight
     LD (tileChar), A
 
     ; FX
-    LD A, af.FX_MENU_MOVE
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_MENU_MOVE
     CALL af.AfxPlay
 
     CALL _UpdateCursor

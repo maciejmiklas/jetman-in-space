@@ -141,8 +141,8 @@ JetpackOverheatFx
     CP jt.JT_STATE_INACTIVE
     RET NZ
 
-    LD A, af.FX_JET_OVERHEAT
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_JET_OVERHEAT
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -207,8 +207,8 @@ _JetpackTempUp
     CALL jt.SetJetState
     LD (jt.jetState), A
 
-    LD A, af.FX_JET_OVERHEAT
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_JET_OVERHEAT
     CALL af.AfxPlay
 
 .afterTempCheck

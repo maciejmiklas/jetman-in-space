@@ -12,17 +12,17 @@
 ;----------------------------------------------------------;
 MainLoop
 
-    CALL _MainLoop000
-    CALL _MainLoop002
-    CALL _MainLoop005
+    CALL _Loop000
+    CALL _Loop002
+    CALL _Loop005
 
-    CALL _MainLoop008
-    CALL _MainLoop010
-    CALL _MainLoop025
-    CALL _MainLoop040
-    CALL _MainLoop050
-    CALL _MainLoop075
-    CALL _MainLoop250
+    CALL _Loop008
+    CALL _Loop010
+    CALL _Loop025
+    CALL _Loop040
+    CALL _Loop050
+    CALL _Loop075
+    CALL _Loop250
     CALL _LastLoop
 
     RET                                         ; ## END of the function ##
@@ -34,9 +34,9 @@ MainLoop
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                      _MainLoop000                        ;
+;                         _Loop000                         ;
 ;----------------------------------------------------------;
-_MainLoop000
+_Loop000
 
     ; 1 -> 0 and 0 -> 1
     LD A, (mld.counter000FliFLop)
@@ -55,19 +55,35 @@ _MainLoop000
     CALL dbs.SetupMusicBank
     CALL am.MusicLoop
 
-    CALL _MainLoop000OnPause
-    CALL _MainLoop000OnActiveGame
-    CALL _MainLoop000OnActiveMain
-    CALL _MainLoop000OnNotInGame
-    CALL _MainLoop000OnActiveLevelIntro
-    CALL _MainLoop000OnFlyRocket
+    CALL _Loop000OnRocketPhase2_3
+    CALL _Loop000OnPause
+    CALL _Loop000OnActiveGame
+    CALL _Loop000OnActiveMain
+    CALL _Loop000OnNotInGame
+    CALL _Loop000OnActiveLevelIntro
+    CALL _Loop000OnFlyRocket
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   _MainLoop000OnPause                    ;
+;               _Loop000OnRocketPhase2_3                   ;
 ;----------------------------------------------------------;
-_MainLoop000OnPause
+_Loop000OnRocketPhase2_3
+
+    CALL dbs.SetupRocketBank
+
+    LD A, (ro.rocketFlyPhase)
+    AND ro.PHASE_2_3
+    RET Z
+
+    CALL bg.HideBackgroundBars
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     _Loop000OnPause                      ;
+;----------------------------------------------------------;
+_Loop000OnPause
 
     LD A, (ms.mainState)
     CP ms.PAUSE
@@ -78,9 +94,9 @@ _MainLoop000OnPause
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop000OnFlyRocket                   ;
+;                  _Loop000OnFlyRocket                     ;
 ;----------------------------------------------------------;
-_MainLoop000OnFlyRocket
+_Loop000OnFlyRocket
     CALL dbs.SetupRocketBank
 
     ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
@@ -106,9 +122,9 @@ _MainLoop000OnFlyRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop000OnActiveGame                  ;
+;                  _Loop000OnActiveGame                    ;
 ;----------------------------------------------------------;
-_MainLoop000OnActiveGame
+_Loop000OnActiveGame
 
     ; Return if game is inactive
     LD A, (ms.mainState)
@@ -116,7 +132,7 @@ _MainLoop000OnActiveGame
     RET NZ
 
     ; ##########################################
-    CALL _MainLoop000OnDisabledJoy
+    CALL _Loop000OnDisabledJoy
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
 
@@ -166,9 +182,9 @@ _MainLoop000OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop000OnNotInGame                  ;
+;                   _Loop000OnNotInGame                    ;
 ;----------------------------------------------------------;
-_MainLoop000OnNotInGame
+_Loop000OnNotInGame
 
     ; Return if menu is not active.
     LD A, (ms.mainState)
@@ -181,9 +197,9 @@ _MainLoop000OnNotInGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop000OnActiveMain                 ;
+;                   _Loop000OnActiveMain                   ;
 ;----------------------------------------------------------;
-_MainLoop000OnActiveMain
+_Loop000OnActiveMain
 
     ; Execute if main menu or level select menu is inactive.
     LD A, (ms.mainState)
@@ -204,9 +220,9 @@ _MainLoop000OnActiveMain
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              _MainLoop000OnActiveLevelIntro              ;
+;                _Loop000OnActiveLevelIntro                ;
 ;----------------------------------------------------------;
-_MainLoop000OnActiveLevelIntro
+_Loop000OnActiveLevelIntro
 
     ; Return if intro is inactive.
     LD A, (ms.mainState)
@@ -219,9 +235,9 @@ _MainLoop000OnActiveLevelIntro
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop000OnDisabledJoy                 ;
+;                  _Loop000OnDisabledJoy                   ;
 ;----------------------------------------------------------;
-_MainLoop000OnDisabledJoy
+_Loop000OnDisabledJoy
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -241,10 +257,10 @@ _MainLoop000OnDisabledJoy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        _MainLoop002                      ;
+;                          _Loop002                        ;
 ;----------------------------------------------------------;
 ; Tick rate: 1/25s
-_MainLoop002
+_Loop002
 
     ; Increment the counter.
     LD A, (mld.counter002)
@@ -265,14 +281,14 @@ _MainLoop002
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop002OnActiveGame
+    CALL _Loop002OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop002OnActiveGame                  ;
+;                  _Loop002OnActiveGame                    ;
 ;----------------------------------------------------------;
-_MainLoop002OnActiveGame
+_Loop002OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -290,10 +306,10 @@ _MainLoop002OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      _MainLoop004                        ;
+;                        _Loop004                          ;
 ;----------------------------------------------------------;
 ; Tick rate: 1/10s
-_MainLoop005
+_Loop005
 
     ; Increment the counter.
     LD A, (mld.counter005)
@@ -314,15 +330,15 @@ _MainLoop005
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop005OnRocketExplosion
-    CALL _MainLoop005OnActiveGame
+    CALL _Loop005OnRocketExplosion
+    CALL _Loop005OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              _MainLoop005OnRocketExplosion               ;
+;                _Loop005OnRocketExplosion                 ;
 ;----------------------------------------------------------;
-_MainLoop005OnRocketExplosion
+_Loop005OnRocketExplosion
 
     CALL dbs.SetupRocketBank
 
@@ -337,9 +353,9 @@ _MainLoop005OnRocketExplosion
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop005OnActiveGame                 ;
+;                   _Loop005OnActiveGame                   ;
 ;----------------------------------------------------------;
-_MainLoop005OnActiveGame
+_Loop005OnActiveGame
 
     ; Return if game is not active.
     LD A, (ms.mainState)
@@ -358,10 +374,10 @@ _MainLoop005OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      _MainLoop008                        ;
+;                        _Loop008                          ;
 ;----------------------------------------------------------;
 ; Tick rate: ±1/6s
-_MainLoop008
+_Loop008
 
     ; Increment the counter.
     LD A, (mld.counter008)
@@ -382,16 +398,16 @@ _MainLoop008
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop008OnActiveGame
-    CALL _MainLoop008OnActiveScoreMenu
-    CALL _MainLoop008OnFlayingRocket
+    CALL _Loop008OnActiveGame
+    CALL _Loop008OnActiveScoreMenu
+    CALL _Loop008OnFlayingRocket
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             _MainLoop008OnActiveScoreMenu                ;
+;               _Loop008OnActiveScoreMenu                  ;
 ;----------------------------------------------------------;
-_MainLoop008OnActiveScoreMenu
+_Loop008OnActiveScoreMenu
 
     LD A, (ms.mainState)
     CP ms.MENU_SCORE
@@ -403,9 +419,9 @@ _MainLoop008OnActiveScoreMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               _MainLoop008OnFlayingRocket                ;
+;                 _Loop008OnFlayingRocket                  ;
 ;----------------------------------------------------------;
-_MainLoop008OnFlayingRocket
+_Loop008OnFlayingRocket
 
     ; Return if rocket is not flying.
     CALL dbs.SetupRocketBank
@@ -435,9 +451,9 @@ _MainLoop008OnFlayingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop008OnActiveGame                 ;
+;                   _Loop008OnActiveGame                   ;
 ;----------------------------------------------------------;
-_MainLoop008OnActiveGame
+_Loop008OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -476,10 +492,10 @@ _MainLoop008OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      _MainLoop010                        ;
+;                        _Loop010                          ;
 ;----------------------------------------------------------;
 ; Tick rate: 1/5s
-_MainLoop010
+_Loop010
 
     ; Increment the counter
     LD A, (mld.counter010)
@@ -500,14 +516,14 @@ _MainLoop010
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop010OnActiveGame
+    CALL _Loop010OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop010OnActiveGame                 ;
+;                   _Loop010OnActiveGame                   ;
 ;----------------------------------------------------------;
-_MainLoop010OnActiveGame
+_Loop010OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -524,10 +540,10 @@ _MainLoop010OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop025                       ;
+;                         _Loop025                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 0.5s
-_MainLoop025
+_Loop025
 
     ; Increment the counter.
     LD A, (mld.counter025)
@@ -543,14 +559,14 @@ _MainLoop025
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop025nFlyingRocket
+    CALL _Loop025nFlyingRocket
     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop020nFlyingRocket                 ;
+;                  _Loop020nFlyingRocket                   ;
 ;----------------------------------------------------------;
-_MainLoop025nFlyingRocket
+_Loop025nFlyingRocket
 
     ; Return if rocket is not flying.
     LD A, (ms.mainState)
@@ -564,10 +580,10 @@ _MainLoop025nFlyingRocket
 
 
 ;----------------------------------------------------------;
-;                       _MainLoop040                       ;
+;                         _Loop040                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 4/5s
-_MainLoop040
+_Loop040
 
     ; Increment the counter.
     LD A, (mld.counter040)
@@ -583,14 +599,14 @@ _MainLoop040
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop040OnActiveGame
+    CALL _Loop040OnActiveGame
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 _MainLoop040OnActiveGame                 ;
+;                   _Loop040OnActiveGame                   ;
 ;----------------------------------------------------------;
-_MainLoop040OnActiveGame
+_Loop040OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -613,10 +629,10 @@ _MainLoop040OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop050                       ;
+;                         _Loop050                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 1s
-_MainLoop050
+_Loop050
 
     ; Increment the counter.
     LD A, (mld.counter050)
@@ -632,15 +648,15 @@ _MainLoop050
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop050OnActiveGame
-    CALL _MainLoop050OnFlayingRocket
+    CALL _Loop050OnActiveGame
+    CALL _Loop050OnFlayingRocket
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop050OnActiveGame                  ;
+;                  _Loop050OnActiveGame                    ;
 ;----------------------------------------------------------;
-_MainLoop050OnActiveGame
+_Loop050OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -654,9 +670,9 @@ _MainLoop050OnActiveGame
 
 
 ;----------------------------------------------------------;
-;               _MainLoop050OnFlayingRocket                ;
+;                 _Loop050OnFlayingRocket                  ;
 ;----------------------------------------------------------;
-_MainLoop050OnFlayingRocket
+_Loop050OnFlayingRocket
 
     ; Return if rocket is not flying.
     CALL dbs.SetupRocketBank
@@ -677,10 +693,10 @@ _MainLoop050OnFlayingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop075                       ;
+;                         _Loop075                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 1,5s
-_MainLoop075
+_Loop075
 
     ; Increment the counter.
     LD A, (mld.counter075)
@@ -696,15 +712,15 @@ _MainLoop075
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop075OnActiveGame
-    CALL _MainLoop075OnActiveGameOver
+    CALL _Loop075OnActiveGame
+    CALL _Loop075OnActiveGameOver
     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _MainLoop075OnActiveGame                  ;
+;                  _Loop075OnActiveGame                    ;
 ;----------------------------------------------------------;
-_MainLoop075OnActiveGame
+_Loop075OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -718,9 +734,9 @@ _MainLoop075OnActiveGame
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;            _MainLoop075OnActiveGameOver                  ;
+;              _Loop075OnActiveGameOver                    ;
 ;----------------------------------------------------------;
-_MainLoop075OnActiveGameOver
+_Loop075OnActiveGameOver
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
@@ -733,10 +749,10 @@ _MainLoop075OnActiveGameOver
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _MainLoop250                       ;
+;                         _Loop250                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 5s
-_MainLoop250
+_Loop250
 
     ; Increment the counter.
     LD A, (mld.counter250)
@@ -752,14 +768,14 @@ _MainLoop250
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _MainLoop250OnRocketPhase4
+    CALL _Loop250OnRocketPhase4
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;             _MainLoop250OnRocketPhase4                   ;
+;               _Loop250OnRocketPhase4                     ;
 ;----------------------------------------------------------;
-_MainLoop250OnRocketPhase4
+_Loop250OnRocketPhase4
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4

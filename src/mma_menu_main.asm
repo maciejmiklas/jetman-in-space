@@ -39,6 +39,7 @@ MENU_EL_MAX             = MENU_EL_DIFFICULTY
 LoadMainMenu
 
     CALL js.HideJetSprite
+    CALL js.InitJetSprite
 
     ; ##########################################
     ; Update menu state
@@ -290,8 +291,8 @@ _UpdateSelection
     LD A, js.SDB_T_KO
     CALL js.ChangeJetSpritePattern
 
-    LD A, af.FX_MENU_MOVE
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_MENU_MOVE
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -455,8 +456,8 @@ _JoyFire
 
     ; ##########################################
     ; Wrong key hit, play sound
-    LD A, af.FX_JET_KILL
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_JET_KILL
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##

@@ -12,11 +12,11 @@ RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
 ; Max rocket fly distance, when reached, it will explode.
-EXPLODE_Y_HI_H4         = $FF
+EXPLODE_Y_HI_H4         = $01
 EXPLODE_Y_LO_H7E        = $FF
 
-rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
-RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
+rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_SIZE (both inclusive).
+RO_EXPLODE_SIZE         = 28                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
 rocketExhaustCnt        DB 0                    ; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
 rocketDistance          DW 0                    ; Increments with every rocket move when the rocket is flying towards the next planet.
@@ -175,7 +175,7 @@ AnimateRocketExplosion
 
     ; Is the exploding sequence over?
     LD A, (rocketExplodeCnt)
-    CP RO_EXPLODE_MAX
+    CP RO_EXPLODE_SIZE
     JR Z, .explodingEnds
 
     ; Nope, keep exploding.

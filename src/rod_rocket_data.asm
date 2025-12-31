@@ -174,9 +174,9 @@ rocketElL10
     ro.RO {27*8/*DROP_X*/, 27*8/*DROP_LAND_Y*/, TASM/*ASSEMBLY_Y*/, TSID/*SPRITE_ID*/, TSRE/*SPRITE_REF*/}
     
 ; Three explode DBs for three rocket elements.
-rocketExplodeDB1        DB 60,60,60,60, 60,60,60,60, 30,31,32,31, 30,32,31,31, 30,31,32,33  ; bottom element
-rocketExplodeDB2        DB 56,56,56,56, 30,31,32,31, 30,31,32,31, 32,30,32,31, 30,31,32,33  ; middle element
-rocketExplodeDB3        DB 30,31,32,31, 30,31,32,31, 30,31,32,31, 30,32,31,30, 30,31,32,33  ; top of the rocket
+rocketExplodeDB1        DB 60,60,60,60, 60,60,60,60, 48,50,49,50, 48,49,50,50, 48,50,49,51, 51,51,51,51, 51,51,51,51 ; bottom element
+rocketExplodeDB2        DB 56,56,56,56, 48,50,49,50, 48,50,49,50, 49,48,49,50, 48,51,51,51, 51,51,51,51, 51,51,51,51 ; middle element
+rocketExplodeDB3        DB 48,50,49,50, 48,50,49,50, 48,50,49,50, 51,51,51,51, 51,51,51,51, 51,51,51,51, 51,51,51,51 ; top of the rocket
 
 rocketExplodeTankDB     DB 30, 31, 32, 33       ; Sprite IDs for explosion
 
