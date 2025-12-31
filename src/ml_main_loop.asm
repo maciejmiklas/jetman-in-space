@@ -330,27 +330,10 @@ _Loop005
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop005OnRocketExplosion
     CALL _Loop005OnActiveGame
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                _Loop005OnRocketExplosion                 ;
-;----------------------------------------------------------;
-_Loop005OnRocketExplosion
-
-    CALL dbs.SetupRocketBank
-
-    ; Is rocket exploding ?
-    LD A, (ro.rocketState)
-    CP ro.ROST_EXPLODE
-    RET NZ
-
-    ; ##########################################
-    CALL rof.AnimateRocketExplosion
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   _Loop005OnActiveGame                   ;
@@ -401,6 +384,29 @@ _Loop008
     CALL _Loop008OnActiveGame
     CALL _Loop008OnActiveScoreMenu
     CALL _Loop008OnFlayingRocket
+    CALL _Loop008OnRocketExplosion
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                _Loop008OnRocketExplosion                 ;
+;----------------------------------------------------------;
+_Loop008OnRocketExplosion
+
+    CALL dbs.SetupRocketBank
+
+    ; Is rocket exploding ?
+    LD A, (ro.rocketState)
+    CP ro.ROST_EXPLODE
+    RET NZ
+
+    ; ##########################################
+    CALL st.BlinkStarsL1
+    CALL st.BlinkStarsL2
+
+    CALL dbs.SetupRocketBank
+    CALL rot.AnimateAsteroids
+    CALL rof.AnimateRocketExplosion
 
     RET                                         ; ## END of the function ##
 
