@@ -48,82 +48,106 @@ scoreLine               DB $FF                  ; Score line where user enters t
 menuScoreCursor
     SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
+
 ;----------------------------------------------------------;
-;                      EnterNewScore                       ;
 ;----------------------------------------------------------;
-EnterNewScore
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
-    ; Music off
-    CALL dbs.SetupMusicBank
-    CALL aml.MusicOff
+;----------------------------------------------------------;
+;                    _StoreNewScore                        ;
+;----------------------------------------------------------;
+; Store the last user's high score into #db2.highScore, position is given by #scoreLine.
+    MACRO _StoreNewScore
 
-    XOR A                                       ; Enable user name input
-    LD (nameChPos), A
-
-    CALL _SetupMenuScore
-    CALL _CalculateScoreLine
-    CALL _StoreNewScore
-
+    ; Set IX to #db2.highScore that will be updated.
+    CALL dbs.SetupStorageBank
     LD A, (scoreLine)
+
+    ; Does the user qualify for the scoreboard?
+    CP LINES_D10
+    JR C, .prepareEdit
+    
+    CALL _SetScoreToReadOnly
+    JR .end
+.prepareEdit
+
+    CALL _LineToIX
+
+    ; ##########################################
+    ; Copy score from game to the line.
+    LD HL, (sc.scoreHi)
+    LD (IX), HL
+
+    INC IX
+    INC IX
+
+    LD HL, (sc.scoreLo)
+    LD (IX), HL
+
+    ; ##########################################
+    ; Clear users name.
+    LD B, SCORE_TX_BYTES_D13 +2                ; +2 for size of #sc.scoreLo
+    LD A, ti.TX_IDX_EMPTY
+.nameLoop
+    LD (IX), A
+    INC IX
+    DJNZ .nameLoop
+
+    ; ##########################################
+    ; Show cursor
+    CALL _UpdateCursor
+
+    XOR A
+    LD IX, menuScoreCursor
+
+    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
+    CALL sr.SetStateVisible
+    CALL sr.ShowSprite
+
+    ; ##########################################
+    ; Show enter tile on the end the of score line.
+    CALL _SetDeToEnterTiRam
+
+    ; Load tile and palette into tile ram.
+    LD A, ti.TX_PALETTE_D0
+    LD (DE), A
+    INC DE
+    
+    LD A, ti.TI_ENTER
+    LD (DE), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                     _PrintWholeScore                     ;
+;----------------------------------------------------------;
+; Prints structure from #db2.highScore
+    MACRO _PrintWholeScore
+
+    CALL dbs.SetupStorageBank
+
+    LD B, LINES_D10
+.placesLoop
+    PUSH BC
+
+    LD A, B
     CALL _PrintScoreLine
 
-    ; ##########################################
-    ; Music on
-    CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_HIGH_SCORE
-    CALL aml.LoadSong
-    
-    RET                                         ; ## END of the function ##
+    POP BC
+    DJNZ .placesLoop
 
-;----------------------------------------------------------;
-;                      LoadMenuScore                       ;
-;----------------------------------------------------------;
-LoadMenuScore
-
-    ; Music off
-    CALL dbs.SetupMusicBank
-    CALL aml.MusicOff
-
-    ; Read only mode.
-    LD A, NAME_CH_POS_OFF
-    LD (nameChPos), A
-
-    CALL _SetupMenuScore
-
-    ; ##########################################
-    ; Music on
-    CALL dbs.SetupMusicBank
-    CALL aml.MusicOn
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       AnimateCursor                      ;
-;----------------------------------------------------------;
-AnimateCursor
-
-    LD A, (nameChPos)
-    CP NAME_CH_POS_OFF
-    RET Z
-
-    LD IX, menuScoreCursor
-    CALL sr.SetSpriteId
-    CALL sr.UpdateSpritePattern
-
-    RET                                         ; ## END of the function ##
-    
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _CalculateScoreLine                     ;
 ;----------------------------------------------------------;
 ; Return:
 ;  A: contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
-_CalculateScoreLine
+    MACRO _CalculateScoreLine
 
     CALL dbs.SetupStorageBank
 
@@ -186,7 +210,84 @@ _CalculateScoreLine
     INC A
     LD (scoreLine), A
 
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      EnterNewScore                       ;
+;----------------------------------------------------------;
+EnterNewScore
+
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
+    XOR A                                       ; Enable user name input
+    LD (nameChPos), A
+
+    CALL _SetupMenuScore
+    _CalculateScoreLine
+    _StoreNewScore
+
+    LD A, (scoreLine)
+    CALL _PrintScoreLine
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_HIGH_SCORE
+    CALL aml.LoadSong
+    
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      LoadMenuScore                       ;
+;----------------------------------------------------------;
+LoadMenuScore
+
+    ; Music off
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOff
+
+    ; Read only mode.
+    LD A, NAME_CH_POS_OFF
+    LD (nameChPos), A
+
+    CALL _SetupMenuScore
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       AnimateCursor                      ;
+;----------------------------------------------------------;
+AnimateCursor
+
+    LD A, (nameChPos)
+    CP NAME_CH_POS_OFF
+    RET Z
+
+    LD IX, menuScoreCursor
+    CALL sr.SetSpriteId
+    CALL sr.UpdateSpritePattern
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                     _SetupMenuScore                      ;
@@ -244,7 +345,7 @@ _SetupMenuScore
     CALL bm.CopyImageData
 
     ; ###########################################
-    CALL _PrintWholeScore
+    _PrintWholeScore
     
     RET                                         ; ## END of the function ##
 
@@ -482,26 +583,6 @@ _UpdateCursor
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     _PrintWholeScore                     ;
-;----------------------------------------------------------;
-; Prints structure from #db2.highScore
-_PrintWholeScore
-
-    CALL dbs.SetupStorageBank
-
-    LD B, LINES_D10
-.placesLoop
-    PUSH BC
-
-    LD A, B
-    CALL _PrintScoreLine
-
-    POP BC
-    DJNZ .placesLoop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                    _PrintScoreLine                       ;
 ;----------------------------------------------------------;
 ; Input:
@@ -583,71 +664,6 @@ _LineToIX
     MUL D, E
     ADD DE, HL
     ADD IX, DE
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _StoreNewScore                        ;
-;----------------------------------------------------------;
-; Store the last user's high score into #db2.highScore, position is given by #scoreLine.
-_StoreNewScore
-
-    ; Set IX to #db2.highScore that will be updated.
-    CALL dbs.SetupStorageBank
-    LD A, (scoreLine)
-
-    ; Does the user qualify for the scoreboard?
-    CP LINES_D10
-    JR C, .prepareEdit
-    
-    CALL _SetScoreToReadOnly
-    RET
-.prepareEdit
-
-    CALL _LineToIX
-
-    ; ##########################################
-    ; Copy score from game to the line.
-    LD HL, (sc.scoreHi)
-    LD (IX), HL
-
-    INC IX
-    INC IX
-
-    LD HL, (sc.scoreLo)
-    LD (IX), HL
-
-    ; ##########################################
-    ; Clear users name.
-    LD B, SCORE_TX_BYTES_D13 +2                ; +2 for size of #sc.scoreLo
-    LD A, ti.TX_IDX_EMPTY
-.nameLoop
-    LD (IX), A
-    INC IX
-    DJNZ .nameLoop
-
-    ; ##########################################
-    ; Show cursor
-    CALL _UpdateCursor
-
-    XOR A
-    LD IX, menuScoreCursor
-
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
-    CALL sr.SetStateVisible
-    CALL sr.ShowSprite
-
-    ; ##########################################
-    ; Show enter tile on the end the of score line.
-    CALL _SetDeToEnterTiRam
-
-    ; Load tile and palette into tile ram.
-    LD A, ti.TX_PALETTE_D0
-    LD (DE), A
-    INC DE
-    
-    LD A, ti.TI_ENTER
-    LD (DE), A
 
     RET                                         ; ## END of the function ##
 

@@ -763,7 +763,7 @@ _LoadCurrentMoveStep
 ;  - IY: pointer to #ENP for current sprite
 ; Modifies: A, IY, BC, HL
 _RestartMovePattern
-    
+
     LD BC, (IX + SPR.EXT_DATA_POINTER)       ; Load #ENP for this sprite to IY
     LD IY, BC
     LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; HL points to start of the #movePattern, that is the amount of elements in this pattern

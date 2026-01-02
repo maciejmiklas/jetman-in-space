@@ -34,166 +34,18 @@ PAUSE_SCROLL_STARTS     = 2
 pauseScrollStars        DB 0
 slowDownScrollY         DB 0
 
-;----------------------------------------------------------;
-;                    ResetRocketStars                      ;
-;----------------------------------------------------------;
-ResetRocketStars
-
-    LD A, ti.TI_VTILES_D32
-    LD (tilesRow), A
-
-    DEC A
-    LD (blackTilesRow), A
-
-    LD A, TI_ROWS_D96
-    LD (sourceTilesRow), A
-
-    LD A, _SC_RESY1_D255
-    LD (tileOffsetY), A
-
-    XOR A
-    LD (tilePixelCnt), A
-
-    LD HL, 0
-    LD (tileOffsetX), HL
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    PauseScrollStars                      ;
-;----------------------------------------------------------;
-PauseScrollStars
-
-    LD A, PAUSE_SCROLL_STARTS
-    LD (pauseScrollStars), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 ScrollStarsOnFlyRocket                   ;
-;----------------------------------------------------------;
-ScrollStarsOnFlyRocket
-
-    ; Start animation when the rocket reaches given phase.
-    LD A, (ro.rocketFlyPhase)
-    CP ro.PHASE_2
-    RET C                                       ; Do not animate when phase < 2
-
-    ; ##########################################
-    CALL _UpdateTileXOffset
-
-    ; ##########################################
-    ; Pause ?
-    LD A, (pauseScrollStars)
-    CP 0
-    JR Z, .afterPause
-    DEC A
-    LD (pauseScrollStars), A
-
-    ; Pase scrolling, acctually slow it down.
-    LD A, (mld.counter000FliFLop)
-    CP _GC_FLIP_ON_D1
-    RET NZ
-
-.afterPause
-    ; ##########################################
-    ; Increment the tile counter to determine whether we should load the next tile row.
-    LD A, (tilePixelCnt)
-    INC A
-    LD (tilePixelCnt), A
-
-    CP ti._TI_PIXELS_D8
-    JR NZ, .afterNextTile
-    
-    ; Reset the counter and fetch the next tile row.
-    XOR A
-    LD (tilePixelCnt), A
-
-    ; ##########################################
-    ; Print black tile line until phase 4 is reached, or all black tiles have been printed.
-    LD A, (ro.rocketFlyPhase)
-    CP ro.PHASE_4
-    JR NC, .afterClearTileLine                  ; Jump if phase >= 4
-
-    ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.
-    LD A, (blackTilesRow)
-    CP 0
-    RET Z
-
-    DEC A
-    LD (blackTilesRow), A
-
-    CALL ti.ClearTileLine
-    JR .afterNextTile
-.afterClearTileLine
-
-    CALL _NextStarsTileRow
-.afterNextTile
-
-    ; ##########################################
-    ; Move tiles by 1 pixel.
-
-    LD A, (tileOffsetY)
-    DEC A
-    LD (tileOffsetY), A
-    NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      DecTileOffsetX                      ;
-;----------------------------------------------------------;
-DecTileOffsetX
-
-    LD BC, (tileOffsetX)
-
-    ; If X == 0 then set it to 319. X == 0 when B and C are 0
-    LD A, B
-    CP 0
-    JR NZ, .afterResetX
-    LD A, C
-    CP 0
-    JR NZ, .afterResetX
-    LD BC, _TI_OFFSET_X_MAX
-    JR .afterDec
-.afterResetX
-    DEC BC
-.afterDec
-    LD (tileOffsetX), BC
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      IncTileOffsetX                      ;
-;----------------------------------------------------------;
-IncTileOffsetX
-
-    LD BC, (tileOffsetX)
-    INC BC
-    ; If X >= 319 then set it to 0. X is 9-bit value.
-    ; 319 = 256 + 63 = %0000'0001 + %0011'1111 -> MSB: 1, LSB: 63.
-    LD A, B                                     ; Load MSB from X into A.
-    CP 1                                        ; 9-th bit set means X > 256.
-    JR NZ, .lessThanMaxX
-    LD A, C                                     ; Load MSB from X into A.
-    CP 63                                       ; MSB > 63
-    JR C, .lessThanMaxX
-    LD BC, 0                                    ; 319 -> set to 0.
-.lessThanMaxX
-    LD (tileOffsetX), BC                        ; Update new X position.
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
+;                        MACROS                            ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
 
 ;----------------------------------------------------------;
 ;                   _UpdateTileXOffset                     ;
 ;----------------------------------------------------------;
-_UpdateTileXOffset
+    MACRO _UpdateTileXOffset
 
     LD HL, (tileOffsetX)
     LD A, L
@@ -202,15 +54,16 @@ _UpdateTileXOffset
     LD A, H
     NEXTREG _DC_REG_TI_X_MSB_H2F, A
 
-    RET                                         ; ## END of the function ##
-    
+.end
+    ENDM                                        ; ## END of the macro ##
+
 ;----------------------------------------------------------;
 ;                 _NextStarsTileRow                        ;
 ;----------------------------------------------------------;
 ; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
 ; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
-_NextStarsTileRow
+    MACRO _NextStarsTileRow
 
     CALL dbs.Setup8KTilemapBank
 
@@ -270,6 +123,163 @@ _NextStarsTileRow
     LD A, ti.TI_VTILES_D32
     LD (tilesRow), A
 .afterResetTilesRow
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                    ResetRocketStars                      ;
+;----------------------------------------------------------;
+ResetRocketStars
+
+    LD A, ti.TI_VTILES_D32
+    LD (tilesRow), A
+
+    DEC A
+    LD (blackTilesRow), A
+
+    LD A, TI_ROWS_D96
+    LD (sourceTilesRow), A
+
+    LD A, _SC_RESY1_D255
+    LD (tileOffsetY), A
+
+    XOR A
+    LD (tilePixelCnt), A
+
+    LD HL, 0
+    LD (tileOffsetX), HL
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    PauseScrollStars                      ;
+;----------------------------------------------------------;
+PauseScrollStars
+
+    LD A, PAUSE_SCROLL_STARTS
+    LD (pauseScrollStars), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 ScrollStarsOnFlyRocket                   ;
+;----------------------------------------------------------;
+ScrollStarsOnFlyRocket
+
+    ; Start animation when the rocket reaches given phase.
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_2
+    RET C                                       ; Do not animate when phase < 2
+
+    ; ##########################################
+    _UpdateTileXOffset
+
+    ; ##########################################
+    ; Pause ?
+    LD A, (pauseScrollStars)
+    CP 0
+    JR Z, .afterPause
+    DEC A
+    LD (pauseScrollStars), A
+
+    ; Pase scrolling, acctually slow it down.
+    LD A, (mld.counter000FliFLop)
+    CP _GC_FLIP_ON_D1
+    RET NZ
+
+.afterPause
+    ; ##########################################
+    ; Increment the tile counter to determine whether we should load the next tile row.
+    LD A, (tilePixelCnt)
+    INC A
+    LD (tilePixelCnt), A
+
+    CP ti._TI_PIXELS_D8
+    JR NZ, .afterNextTile
+    
+    ; Reset the counter and fetch the next tile row.
+    XOR A
+    LD (tilePixelCnt), A
+
+    ; ##########################################
+    ; Print black tile line until phase 4 is reached, or all black tiles have been printed.
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
+    JR NC, .afterClearTileLine                  ; Jump if phase >= 4
+
+    ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.
+    LD A, (blackTilesRow)
+    CP 0
+    RET Z
+
+    DEC A
+    LD (blackTilesRow), A
+
+    CALL ti.ClearTileLine
+    JR .afterNextTile
+.afterClearTileLine
+
+    _NextStarsTileRow
+.afterNextTile
+
+    ; ##########################################
+    ; Move tiles by 1 pixel.
+
+    LD A, (tileOffsetY)
+    DEC A
+    LD (tileOffsetY), A
+    NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset.
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      DecTileOffsetX                      ;
+;----------------------------------------------------------;
+DecTileOffsetX
+
+    LD BC, (tileOffsetX)
+
+    ; If X == 0 then set it to 319. X == 0 when B and C are 0
+    LD A, B
+    CP 0
+    JR NZ, .afterResetX
+    LD A, C
+    CP 0
+    JR NZ, .afterResetX
+    LD BC, _TI_OFFSET_X_MAX
+    JR .afterDec
+.afterResetX
+    DEC BC
+.afterDec
+    LD (tileOffsetX), BC
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      IncTileOffsetX                      ;
+;----------------------------------------------------------;
+IncTileOffsetX
+
+    LD BC, (tileOffsetX)
+    INC BC
+    ; If X >= 319 then set it to 0. X is 9-bit value.
+    ; 319 = 256 + 63 = %0000'0001 + %0011'1111 -> MSB: 1, LSB: 63.
+    LD A, B                                     ; Load MSB from X into A.
+    CP 1                                        ; 9-th bit set means X > 256.
+    JR NZ, .lessThanMaxX
+    LD A, C                                     ; Load MSB from X into A.
+    CP 63                                       ; MSB > 63
+    JR C, .lessThanMaxX
+    LD BC, 0                                    ; 319 -> set to 0.
+.lessThanMaxX
+    LD (tileOffsetX), BC                        ; Update new X position.
 
     RET                                         ; ## END of the function ##
 

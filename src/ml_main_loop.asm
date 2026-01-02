@@ -140,7 +140,7 @@
     ; Return if game is inactive
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    JR NZ, .end
+    JP NZ, .end
 
     ; ##########################################
     _Loop000OnDisabledJoy
@@ -149,9 +149,9 @@
 
     CALL jco.JetRip
     CALL jw.MoveShots
-    CALL gc.WeaponHitEnemy
+    WeaponHitEnemy
     CALL jw.FireDelayCounter
-    CALL gc.JetmanEnemiesCollision
+    JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
     CALL jco.JetInvincible
@@ -741,7 +741,7 @@
 
     ; ##########################################
     CALL jo.JetpackOverheatFx
-    CALL gc.PlayFuelThiefFx
+    PlayFuelThiefFx
 
 .end
     ENDM                                        ; ## END of the macro ##

@@ -33,6 +33,73 @@ FIRE_FX_ON              = 1
 FIRE_FX_OFF             = 0
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     _FireDelayDown                       ;
+;----------------------------------------------------------;
+    MACRO _FireDelayDown
+
+    LD A, (fireDelay)
+    CP JM_FIRE_DELAY_MIN
+    JR Z, .end
+
+    DEC A
+    LD (fireDelay), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                        _WeaponFx                         ;
+;----------------------------------------------------------;
+    MACRO _WeaponFx
+
+    ; Do to play FX it it's off.
+    LD A, (fireFxOn)
+    CP FIRE_FX_ON
+    JR NZ, .end
+
+    ; Play FX every few game loops.
+    LD A, (fireFxDelayCnt)
+    CP 0
+    JR NZ, .decFireFxCnt
+
+    ; The delay counter is done, reset it, and play FX.
+    LD A, (fireFxDelay)
+    LD (fireFxDelayCnt), A
+
+    ; Start playing different FX when the weapon fires at max speed.
+    CP FIRE_FX_DELAY_SOUND2
+    JR NC, .newSound
+    LD A, af.FX_FIRE1
+    JR .afterNewSound
+.newSound
+    LD A, af.FX_FIRE2
+.afterNewSound
+
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    JR .afterFireFx
+.decFireFxCnt
+    DEC A
+    LD (fireFxDelayCnt), A
+.afterFireFx
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                       FlipFireFx                         ;
 ;----------------------------------------------------------;
 FlipFireFx
@@ -85,7 +152,7 @@ FireSpeedUp
     LD A, JM_FIRE_SPEED_UP
     LD B, A
 .loop
-    CALL _FireDelayDown
+    _FireDelayDown
     DJNZ .loop
 
     XOR A
@@ -452,69 +519,10 @@ FirePress
     CALL sr.ShowSprite
 
     ; Call callback
-    CALL _WeaponFx
+    _WeaponFx
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-
-;----------------------------------------------------------;
-;                        _WeaponFx                         ;
-;----------------------------------------------------------;
-_WeaponFx
-
-    ; Do to play FX it it's off.
-    LD A, (fireFxOn)
-    CP FIRE_FX_ON
-    RET NZ
-
-    ; Play FX every few game loops.
-    LD A, (fireFxDelayCnt)
-    CP 0
-    JR NZ, .decFireFxCnt
-
-    ; The delay counter is done, reset it, and play FX.
-    LD A, (fireFxDelay)
-    LD (fireFxDelayCnt), A
-
-    ; Start playing different FX when the weapon fires at max speed.
-    CP FIRE_FX_DELAY_SOUND2
-    JR NC, .newSound
-    LD A, af.FX_FIRE1
-    JR .afterNewSound
-.newSound
-    LD A, af.FX_FIRE2
-.afterNewSound
-
-    CALL dbs.SetupAyFxsBank
-    CALL af.AfxPlay
-
-    JR .afterFireFx
-.decFireFxCnt
-    DEC A
-    LD (fireFxDelayCnt), A
-.afterFireFx
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _FireDelayDown                       ;
-;----------------------------------------------------------;
-_FireDelayDown
-
-    LD A, (fireDelay)
-    CP JM_FIRE_DELAY_MIN
-    RET Z
-
-    DEC A
-    LD (fireDelay), A
-
-    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

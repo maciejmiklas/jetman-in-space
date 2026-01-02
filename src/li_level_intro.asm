@@ -19,6 +19,41 @@ animateDelayCnt         DB ANIMATE_DELAY        ; Start scrolling without a dela
 ANIMATE_DELAY           = 50
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+
+;----------------------------------------------------------;
+;                   _ResetLevelIntro                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A:  Number of horizontal lines in source tilemap (40xA)
+    MACRO _ResetLevelIntro
+
+    LD (sourceTilesRowMax), A
+
+    LD A, ti.TI_VTILES_D32-1
+    LD (screenTilesRow), A
+
+    XOR A
+    LD (tileOffset), A
+    LD (sourceTilesRow), A
+    LD (tilePixelCnt), A
+
+    LD A, ANIMATE_DELAY
+    LD (animateDelayCnt), A
+    
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
 ;----------------------------------------------------------;
 ; Input:
@@ -27,7 +62,7 @@ ANIMATE_DELAY           = 50
 ;  - HL: size of second tiles file (first one has 8KiB).
 LoadLevelIntro
 
-    CALL _ResetLevelIntro
+    _ResetLevelIntro
 
     ; Update state
     LD A, ms.LEVEL_INTRO
@@ -132,28 +167,6 @@ _KeyExitIntro
 
     CALL gc.LoadCurrentLevel
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _ResetLevelIntro                       ;
-;----------------------------------------------------------;
-; Input:
-;  - A:  Number of horizontal lines in source tilemap (40xA)
-_ResetLevelIntro
-
-    LD (sourceTilesRowMax), A
-
-    LD A, ti.TI_VTILES_D32-1
-    LD (screenTilesRow), A
-
-    XOR A
-    LD (tileOffset), A
-    LD (sourceTilesRow), A
-    LD (tilePixelCnt), A
-
-    LD A, ANIMATE_DELAY
-    LD (animateDelayCnt), A
-    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

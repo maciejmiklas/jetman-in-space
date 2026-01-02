@@ -47,6 +47,194 @@ EL_EXH_Y_POS_D234      = 234                     ; Assembly height of the rocket
 
 rocAssemblyX           DB 0
 
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                 _JetmanDropsRocketElement                ;
+;----------------------------------------------------------;
+    MACRO _JetmanDropsRocketElement
+
+    ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
+    LD BC, (jpo.jetX)
+    LD A, (rocAssemblyX)
+    SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit.
+    CP DROP_MARGX_D8
+    JR NC, .end
+
+    ; ##########################################
+    ; To drop rocket element Jetman's height has to be within bounds: #dropMinY < #jpo.jetY < #RO_DROP_Y_MAX_D180.
+    LD A, (dropMinY)
+    LD B, A
+    LD A, (jpo.jetY)
+    CP RO_DROP_Y_MAX_D180
+    JR NC, .end
+
+    CP B
+    JR C, .end
+
+    ; ##########################################
+    ; Jetman drops rocket element.
+    LD A, ro.ROST_FALL_ASSEMBLY
+    LD (ro.rocketState), A
+
+    ; ##########################################
+    ; Store the height of the drop so that the element can keep falling from this location into the assembly place.
+    CALL _SetIXtoCurrentRocketElement           ; Set IX to current #rocket postion.
+    LD A, (jpo.jetY)
+    LD (ro.rocY), A
+
+    ; ##########################################
+    CALL gc.RocketElementDrop
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _MoveWithJetman                       ;
+;----------------------------------------------------------;
+; Move the element to the current Jetman's position.
+    MACRO _MoveWithJetman
+
+    ; Set the ID of the sprite for the following commands.
+    LD A, (IX + ro.RO.SPRITE_ID)
+    NEXTREG _SPR_REG_NR_H34, A
+
+    ; ##########################################
+    ; Set sprite X coordinate.
+    LD BC, (jpo.jetX)
+    LD A, C     
+    NEXTREG _SPR_REG_X_H35, A                   ; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion.
+    
+    ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
+    LD A, B                                     ; Load MSB from X into A.
+    NEXTREG _SPR_REG_ATR2_H37, A
+
+    ; ##########################################
+    ; Set Y coordinate
+    LD A, (jpo.jetY)
+    ADD CARRY_ADJUSTY_D10
+    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position.
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                     _BoardRocket                         ;
+;----------------------------------------------------------;
+    MACRO _BoardRocket
+
+    ; Return if rocket is not ready for boarding.
+    LD A, (ro.rocketState)
+    CP ro.ROST_READY
+    JR NZ, .end
+
+    ; ##########################################
+    ; Jetman collision with first (lowest) rocket element triggers liftoff.
+    LD BC, (rocAssemblyX)                       ; X of the element.
+    LD B, 0
+    LD D, EL_EXH_Y_POS_D234                     ; Y of the element.
+    CALL jco.JetmanElementCollision
+    JR NZ, .end
+
+    ; ##########################################
+    ; Jetman boards the rocket!
+    LD A, ro.ROST_FLY
+    LD (ro.rocketState), A
+
+    ; Update the rocket's coordinates to start flying from the proper location.
+    LD HL, 0
+    LD A, (rocAssemblyX)
+    LD L, A
+    LD (ro.rocX), HL
+    LD A, EL_EXH_Y_POS_D234
+    LD (ro.rocY), A
+
+    ; ##########################################
+    ; Lift off!
+    CALL gc.RocketFLyStartPhase1
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _CarryRocketElement                    ;
+;----------------------------------------------------------;
+    MACRO _CarryRocketElement
+
+    ; Return if the state does not match.
+    LD A, (ro.rocketState)
+    CP ro.ROST_CARRY
+    JR NZ, .end
+
+    CALL _SetIXtoCurrentRocketElement
+    _MoveWithJetman
+    _JetmanDropsRocketElement
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                  _PickupRocketElement                    ;
+;----------------------------------------------------------;
+    MACRO _PickupRocketElement
+
+    ; Return if there is no element/tank to pick up. Status must be #ro.ROST_WAIT_PICKUP or #ro.ROST_FALL_PICKUP.
+    LD A, (ro.rocketState)
+    CP ro.ROST_WAIT_PICKUP
+    JR Z, .afterStatusCheck
+
+    CP ro.ROST_FALL_PICKUP
+    JR NZ, .end
+
+.afterStatusCheck
+
+    ; ##########################################
+    ;  Exit if RiP.
+    LD A, (jt.jetState)
+    CP jt.JETST_RIP
+    JR Z, .end
+
+    ; ##########################################
+    ; Set IX to current #rocket postion.
+    CALL _SetIXtoCurrentRocketElement
+
+    ; ##########################################
+    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
+    LD BC, (IX + ro.RO.DROP_X)                     ; X of the element.
+    LD B, 0
+    LD DE, (ro.rocY)                               ; Y of the element.
+    LD D, E
+    CALL jco.JetmanElementCollision
+    JR NZ, .end
+
+     ; ##########################################
+    ; Call game command with pickup info.
+    LD A, (ro.rocketState)
+    CP ro.ROST_FALL_PICKUP
+    JR NZ, .pickupOnGround
+    CALL gc.RocketElementPickupInAir
+.pickupOnGround
+    CALL gc.RocketElementPickup
+
+    ; ##########################################
+    ; Jetman picks up element/tank. Update state to reflect it and return.
+    LD A, ro.ROST_CARRY
+    LD (ro.rocketState), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
 ;----------------------------------------------------------;
 ;                        SetupRocket                       ;
 ;----------------------------------------------------------;
@@ -133,9 +321,9 @@ StartRocketAssembly
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
 
-    CALL _PickupRocketElement
-    CALL _CarryRocketElement
-    CALL _BoardRocket
+    _PickupRocketElement
+    _CarryRocketElement
+    _BoardRocket
 
     RET                                         ; ## END of the function ##
 
@@ -531,139 +719,6 @@ _SetIXtoCurrentRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  _PickupRocketElement                    ;
-;----------------------------------------------------------;
-_PickupRocketElement
-
-    ; Return if there is no element/tank to pick up. Status must be #ro.ROST_WAIT_PICKUP or #ro.ROST_FALL_PICKUP.
-    LD A, (ro.rocketState)
-    CP ro.ROST_WAIT_PICKUP
-    JR Z, .afterStatusCheck
-
-    CP ro.ROST_FALL_PICKUP
-    RET NZ
-    
-.afterStatusCheck
-
-    ; ##########################################
-    ;  Exit if RiP.
-    LD A, (jt.jetState)
-    CP jt.JETST_RIP
-    RET Z
-
-    ; ##########################################
-    ; Set IX to current #rocket postion.
-    CALL _SetIXtoCurrentRocketElement
-
-    ; ##########################################
-    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
-    LD BC, (IX + ro.RO.DROP_X)                     ; X of the element.
-    LD B, 0
-    LD DE, (ro.rocY)                               ; Y of the element.
-    LD D, E
-    CALL jco.JetmanElementCollision
-    RET NZ
-
-     ; ##########################################
-    ; Call game command with pickup info.
-    LD A, (ro.rocketState)
-    CP ro.ROST_FALL_PICKUP
-    JR NZ, .pickupOnGround
-    CALL gc.RocketElementPickupInAir
-.pickupOnGround
-    CALL gc.RocketElementPickup
-
-    ; ##########################################
-    ; Jetman picks up element/tank. Update state to reflect it and return.
-    LD A, ro.ROST_CARRY
-    LD (ro.rocketState), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _MoveWithJetman                       ;
-;----------------------------------------------------------;
-; Move the element to the current Jetman's position.
-_MoveWithJetman
-
-    ; Set the ID of the sprite for the following commands.
-    LD A, (IX + ro.RO.SPRITE_ID)
-    NEXTREG _SPR_REG_NR_H34, A
-
-    ; ##########################################
-    ; Set sprite X coordinate.
-    LD BC, (jpo.jetX)
-    LD A, C     
-    NEXTREG _SPR_REG_X_H35, A                   ; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion.
-    
-    ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
-    LD A, B                                     ; Load MSB from X into A.
-    NEXTREG _SPR_REG_ATR2_H37, A
-
-    ; ##########################################
-    ; Set Y coordinate
-    LD A, (jpo.jetY)
-    ADD CARRY_ADJUSTY_D10
-    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _JetmanDropsRocketElement                ;
-;----------------------------------------------------------;
-_JetmanDropsRocketElement
-
-    ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
-    LD BC, (jpo.jetX)
-    LD A, (rocAssemblyX)
-    SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit.
-    CP DROP_MARGX_D8
-    RET NC
-
-    ; ##########################################
-    ; To drop rocket element Jetman's height has to be within bounds: #dropMinY < #jpo.jetY < #RO_DROP_Y_MAX_D180.
-    LD A, (dropMinY)
-    LD B, A
-    LD A, (jpo.jetY)
-    CP RO_DROP_Y_MAX_D180
-    RET NC
-
-    CP B
-    RET C
-
-    ; ##########################################
-    ; Jetman drops rocket element.
-    LD A, ro.ROST_FALL_ASSEMBLY
-    LD (ro.rocketState), A
-
-    ; ##########################################
-    ; Store the height of the drop so that the element can keep falling from this location into the assembly place.
-    CALL _SetIXtoCurrentRocketElement           ; Set IX to current #rocket postion.
-    LD A, (jpo.jetY)
-    LD (ro.rocY), A
-
-    ; ##########################################
-    CALL gc.RocketElementDrop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _CarryRocketElement                    ;
-;----------------------------------------------------------;
-_CarryRocketElement
-
-    ; Return if the state does not match.
-    LD A, (ro.rocketState)
-    CP ro.ROST_CARRY
-    RET NZ
-
-    CALL _SetIXtoCurrentRocketElement
-    CALL _MoveWithJetman
-    CALL _JetmanDropsRocketElement
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 _ResetRocketElement                      ;
 ;----------------------------------------------------------;
 _ResetRocketElement
@@ -677,43 +732,6 @@ _ResetRocketElement
 
     ; Reset the state and decrement element counter -> we will drop this element again.
     CALL RemoveRocketElement
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _BoardRocket                         ;
-;----------------------------------------------------------;
-_BoardRocket
-
-    ; Return if rocket is not ready for boarding.
-    LD A, (ro.rocketState)
-    CP ro.ROST_READY
-    RET NZ
-
-    ; ##########################################
-    ; Jetman collision with first (lowest) rocket element triggers liftoff.
-    LD BC, (rocAssemblyX)                       ; X of the element.
-    LD B, 0
-    LD D, EL_EXH_Y_POS_D234                     ; Y of the element.
-    CALL jco.JetmanElementCollision
-    RET NZ
-
-    ; ##########################################
-    ; Jetman boards the rocket!
-    LD A, ro.ROST_FLY
-    LD (ro.rocketState), A
-
-    ; Update the rocket's coordinates to start flying from the proper location.
-    LD HL, 0
-    LD A, (rocAssemblyX)
-    LD L, A
-    LD (ro.rocX), HL
-    LD A, EL_EXH_Y_POS_D234
-    LD (ro.rocY), A
-
-    ; ##########################################
-    ; Lift off!
-    CALL gc.RocketFLyStartPhase1
 
     RET                                         ; ## END of the function ##
 

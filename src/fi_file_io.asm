@@ -194,44 +194,6 @@ LoadLevelSelectImageFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _SetupMenuScoreFileName                   ;
-;----------------------------------------------------------;
-; Input:
-;  - DE: difficulty number as ASCII, for example for level 4: D="0", E="2".
-;  - HL: pointer to file name.
-_SetupMenuScoreFileName
-
-    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
-    LD IX, HL
-    ADD HL, db2.MS_BG_LEVEL_POS
-    LD (HL), D
-    INC HL
-    LD (HL), E
-    POP HL
-    CALL _CopyFileName
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;               _SetupLevelIntroFileName                   ;
-;----------------------------------------------------------;
-; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
-;  - HL: pointer to file name.
-_SetupLevelIntroFileName
-
-    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
-    LD IX, HL
-    ADD HL, db2.LS_BG_LEVEL_POS
-    LD (HL), D
-    INC HL
-    LD (HL), E
-    POP HL
-    CALL _CopyFileName
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;               LoadLevelIntroImageFile                    ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
@@ -579,6 +541,44 @@ LoadMenuHardImageFile
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+;----------------------------------------------------------;
+;                _SetupMenuScoreFileName                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: difficulty number as ASCII, for example for level 4: D="0", E="2".
+;  - HL: pointer to file name.
+_SetupMenuScoreFileName
+
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
+    LD IX, HL
+    ADD HL, db2.MS_BG_LEVEL_POS
+    LD (HL), D
+    INC HL
+    LD (HL), E
+    POP HL
+    CALL _CopyFileName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               _SetupLevelIntroFileName                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+;  - HL: pointer to file name.
+_SetupLevelIntroFileName
+
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
+    LD IX, HL
+    ADD HL, db2.LS_BG_LEVEL_POS
+    LD (HL), D
+    INC HL
+    LD (HL), E
+    POP HL
+    CALL _CopyFileName
+
+    RET                                         ; ## END of the function ##
+    
 ;----------------------------------------------------------;
 ;                      _CopyFileName                       ;
 ;----------------------------------------------------------;

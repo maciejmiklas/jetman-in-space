@@ -24,6 +24,102 @@ FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
 FUEL_THIEF_ACTIVE_LEV   = 5
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     _HideEnemies                         ;
+;----------------------------------------------------------;
+    MACRO _HideEnemies
+
+    ; Hide single enemies.
+    CALL dbs.SetupPatternEnemyBank
+
+    LD A, ena.ENEMY_SINGLE_SIZE
+    LD IX, ena.singleEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+    ; ##########################################
+    ; Hide formation enemies.
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+    ; ##########################################
+    ; Hide following enemies.
+    CALL dbs.SetupFollowingEnemyBank
+    
+    LD A, fe.FOLLOWING_FENEMY_SIZE
+    LD IX, fe.fEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                      _StartLevel                         ;
+;----------------------------------------------------------;
+    MACRO _StartLevel
+
+    LD A, ms.GAME_ACTIVE
+    CALL ms.SetMainState
+
+    CALL gb.ShowGameBar
+    CALL sc.PrintScore
+
+    CALL dbs.SetupRocketBank
+    CALL roa.StartRocketAssembly
+
+    CALL ti.ResetTilemapOffset
+    CALL jo.ResetJetpackOverheating
+    CALL jl.SetupLives
+
+    LD A, ms.GAME_ACTIVE
+    CALL ms.SetMainState
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.NextGameSong
+
+    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
+    CALL RespawnJet
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _InitLevelLoad                        ;
+;----------------------------------------------------------;
+    MACRO _InitLevelLoad
+
+    CALL _HideGame
+    CALL gi.ResetKeysState
+    CALL td.ResetTimeOfDay
+
+    CALL dbs.SetupRocketBank
+    CALL ros.ResetRocketStars
+
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.EnableFuelThief
+
+    CALL dbs.SetupTileAnimationBank
+    CALL ta.DisableTileAnimation
+
+    XOR A
+    LD (freezeEnemiesCnt), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                  StartGameWithIntro                      ;
 ;----------------------------------------------------------;
 StartGameWithIntro
@@ -140,9 +236,9 @@ LoadNextLevel
 ;----------------------------------------------------------;
 LoadCurrentLevel
 
-    CALL _InitLevelLoad
+    _InitLevelLoad
     CALL ll.LoadCurrentLevel
-    CALL _StartLevel
+    _StartLevel
 
     LD A, (ll.currentLevel)
     CP FUEL_THIEF_ACTIVE_LEV
@@ -421,7 +517,7 @@ PlatformWeaponHit
 ;----------------------------------------------------------;
 ;                   PlayFuelThiefFx                        ;
 ;----------------------------------------------------------;
-PlayFuelThiefFx
+    MACRO PlayFuelThiefFx
 
     CALL dbs.SetupPatternEnemyBank
     LD A, (enu.thiefState)
@@ -429,7 +525,7 @@ PlayFuelThiefFx
     CP enu.TS_DEPLOYING
     JR Z, .play
     CP enu.TS_RUNS_EMPTY
-    RET NZ
+    JR NZ, .end
 .play
 
     ; Play FX
@@ -437,12 +533,13 @@ PlayFuelThiefFx
     LD A, af.FX_THIEF
     CALL af.AfxPlay
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                     WeaponHitEnemy                       ;
 ;----------------------------------------------------------;
-WeaponHitEnemy
+    MACRO WeaponHitEnemy
 
     CALL dbs.SetupArrays2Bank
 
@@ -465,7 +562,8 @@ WeaponHitEnemy
     LD A, (fe.fEnemySize)
     CALL jw.CheckHitEnemies
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                   RocketHitsAsteroid                     ;
@@ -533,7 +631,7 @@ KillOneEnemy
 ;----------------------------------------------------------;
 ;                JetmanEnemiesCollision                    ;
 ;----------------------------------------------------------;
-JetmanEnemiesCollision
+    MACRO JetmanEnemiesCollision
 
     CALL dbs.SetupArrays2Bank
 
@@ -556,7 +654,8 @@ JetmanEnemiesCollision
     LD IX, fe.fEnemySprites
     CALL jco.EnemiesCollision
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                     KillFewEnemies                       ;
@@ -1170,7 +1269,7 @@ _HideGame
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
     CALL ki.ResetKeyboard
-    CALL _HideEnemies
+    _HideEnemies
 
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
@@ -1185,87 +1284,6 @@ _HideGame
     CALL rof.ResetAndDisableFlyRocket
 
     CALL sc.ResetClippings
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _InitLevelLoad                        ;
-;----------------------------------------------------------;
-_InitLevelLoad
-
-    CALL _HideGame
-    CALL gi.ResetKeysState
-    CALL td.ResetTimeOfDay
-
-    CALL dbs.SetupRocketBank
-    CALL ros.ResetRocketStars
-
-    CALL dbs.SetupPatternEnemyBank
-    CALL enu.EnableFuelThief
-
-    CALL dbs.SetupTileAnimationBank
-    CALL ta.DisableTileAnimation
-
-    XOR A
-    LD (freezeEnemiesCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      _StartLevel                         ;
-;----------------------------------------------------------;
-_StartLevel
-
-    LD A, ms.GAME_ACTIVE
-    CALL ms.SetMainState
-
-    CALL gb.ShowGameBar
-    CALL sc.PrintScore
-
-    CALL dbs.SetupRocketBank
-    CALL roa.StartRocketAssembly
-
-    CALL ti.ResetTilemapOffset
-    CALL jo.ResetJetpackOverheating
-    CALL jl.SetupLives
-
-    LD A, ms.GAME_ACTIVE
-    CALL ms.SetMainState
-
-    ; Music on
-    CALL dbs.SetupMusicBank
-    CALL aml.NextGameSong
-
-    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
-    CALL RespawnJet
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _HideEnemies                         ;
-;----------------------------------------------------------;
-_HideEnemies
-
-    ; Hide single enemies.
-    CALL dbs.SetupPatternEnemyBank
-
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD IX, ena.singleEnemySprites
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide formation enemies.
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide following enemies.
-    CALL dbs.SetupFollowingEnemyBank
-    
-    LD A, fe.FOLLOWING_FENEMY_SIZE
-    LD IX, fe.fEnemySprites
-    CALL sr.HideAllSimpleSprites
 
     RET                                         ; ## END of the function ##
 

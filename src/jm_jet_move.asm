@@ -13,6 +13,66 @@
 jetInactivityCnt        DB 0
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     _JoyCntEnabled                       ;
+;----------------------------------------------------------;
+; Disable joystick and, therefore, control over the Jetman.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+    MACRO _JoyCntEnabled
+
+    LD A, (gid.joyOffCnt)
+    CP 0
+    JR Z, .joyEnabled                           ; Jump if joystick is enabled -> #joyOffCnt > 0.
+
+    ; ##########################################
+    ; Joystick is disabled
+    DEC A                                       ; Decrement disabled counter.
+    LD (gid.joyOffCnt), A
+
+    ; Joystick will enable on the next loop?
+    CP 0
+    JR NZ, .afterEnableCheck
+
+    ; Yes, this was the last blocking loop.
+    CALL gc.JoyWillEnable
+.afterEnableCheck   
+
+    ; ##########################################
+    ; Allow input processing if Jetman is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when
+    ; hitting the platform from below and pressing up + left (or right). 
+    ; We can have the following situation: Jetman is below the platform and is not bumping off anymore because it's close long enough.
+    ; The player still keeps pressing up and simultaneously, let's say, left. We want to allow movement to the left, but not up.
+    ; Because #joyOffCnt > 0, the function #_MainLoop000OnDisabledJoy will be executed. It will move Jetman one pixel down, which is good
+    ; because pressing up has moved him one pixel up. To allow movement left, we ignore #joyOffBump because it is so small that we know
+    ; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
+
+    LD A, (pl.joyOffBump)
+    CP pl.PL_BUMP_JOY_DEC_D1+1
+    JR C, .joyEnabled
+
+    OR 1                                        ; Return NO (Z set).
+    JR .end                                     ; Do not process input, as the joystick is disabled.
+
+.joyEnabled                                     ; Process input.
+    XOR A                                       ; Return YES (Z is reset).
+
+.end
+    ENDM                                        ; ## END of the macro #
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                      #JoyMoveUp                          ;
 ;----------------------------------------------------------;
 JoyMoveUp
@@ -231,53 +291,6 @@ JoystickMoveProcessed
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     _JoyCntEnabled                       ;
-;----------------------------------------------------------;
-; Disable joystick and, therefore, control over the Jetman.
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-_JoyCntEnabled
-
-    LD A, (gid.joyOffCnt)
-    CP 0
-    JR Z, .joyEnabled                           ; Jump if joystick is enabled -> #joyOffCnt > 0.
-
-    ; ##########################################
-    ; Joystick is disabled
-    DEC A                                       ; Decrement disabled counter.
-    LD (gid.joyOffCnt), A
-
-    ; Joystick will enable on the next loop?
-    CP 0
-    JR NZ, .afterEnableCheck
-
-    ; Yes, this was the last blocking loop.
-    CALL gc.JoyWillEnable
-.afterEnableCheck   
-
-    ; ##########################################
-    ; Allow input processing if Jetman is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when
-    ; hitting the platform from below and pressing up + left (or right). 
-    ; We can have the following situation: Jetman is below the platform and is not bumping off anymore because it's close long enough.
-    ; The player still keeps pressing up and simultaneously, let's say, left. We want to allow movement to the left, but not up.
-    ; Because #joyOffCnt > 0, the function #_MainLoop000OnDisabledJoy will be executed. It will move Jetman one pixel down, which is good
-    ; because pressing up has moved him one pixel up. To allow movement left, we ignore #joyOffBump because it is so small that we know
-    ; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
-
-    LD A, (pl.joyOffBump)
-    CP pl.PL_BUMP_JOY_DEC_D1+1
-    JR C, .joyEnabled
-
-    OR 1                                        ; Return NO (Z set).
-    RET                                         ; Do not process input, as the joystick is disabled.
-
-.joyEnabled                                     ; Process input.
-    XOR A                                       ; Return YES (Z is reset).
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;               _SholdProcessJoyOnOverheat                 ;
 ;----------------------------------------------------------;
 ; Slow down joystick input and, therefore, the speed of Jetman's movement when jetpack has overheated.
@@ -379,7 +392,7 @@ _StandToWalk
 ;  - NO:  Z is set (JP NZ).
 _CanJetMove
 
-    CALL _JoyCntEnabled
+    _JoyCntEnabled
     RET NZ
 
     ; ##########################################

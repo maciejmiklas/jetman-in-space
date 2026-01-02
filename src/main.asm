@@ -13,9 +13,12 @@ STACK_SIZE              = 50
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     DEFINE PERFORMANCE 1                        ; Enable to store end scan line to #endLine
     IFDEF PERFORMANCE
-UPDATE_PERF             = 10
-endLine DB 0
-endLineCnt DB UPDATE_PERF
+UPDATE_REFRESH          = 10
+UPDATE_REFRESH_MAX      = 18
+endLine                 DB 0
+endLineMax              DB 0
+endLineCnt              DB UPDATE_REFRESH
+endLineMaxCnt           DB UPDATE_REFRESH_MAX
     ENDIF
 
 start
@@ -38,6 +41,53 @@ start
     CALL dbs.SetupMusicBank
     LD A, aml.MUSIC_MAIN_MENU
     CALL aml.LoadSong
+    JR mainLoop
+
+;----------------------------------------------------------;
+;                 _ReadPerformance                         ;
+;----------------------------------------------------------;
+    MACRO _ReadPerformance
+
+    IFDEF PERFORMANCE
+
+    ; Update #endLine every few loops
+    LD A, (endLineCnt)
+    DEC A
+    LD (endLineCnt), A
+    JR NZ, .endPer                              ; Jump if A != 0
+    LD A, UPDATE_REFRESH
+    LD (endLineCnt), A
+
+    ; Reset #endLineMax to 0 every few loops
+    LD A, (endLineMaxCnt)
+    DEC A
+    LD (endLineMaxCnt), A
+    JR NZ, .afterMaxReset                       ; Jump if A != 0
+    LD A, UPDATE_REFRESH_MAX
+    LD (endLineMaxCnt), A
+    XOR A
+    LD (endLineMax), A
+.afterMaxReset
+
+    ; Read end line.
+    LD  A, $1F
+    LD  BC, $243B
+    OUT (C),A
+    INC B
+    IN A,(C)
+    LD (endLine), A
+
+    LD B, A
+    LD A, (endLineMax)
+    LD C, A
+    LD A, B
+    CP C
+    JR C, .endPer
+    LD (endLineMax), A
+.endPer
+    ENDIF
+
+    ENDM
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;
@@ -45,33 +95,12 @@ start
 mainLoop
 
     CALL sc.WaitForTopScanline
-
     CALL ml.MainLoop
 
-    IFDEF PERFORMANCE
-    LD A, (endLineCnt)
-    DEC A
-    LD (endLineCnt), A
-    CP 0
-    JR NZ, .endPer
-    LD A, UPDATE_PERF
-    LD (endLineCnt), A
-
-    LD  A, $1F
-    LD  BC, $243B
-    OUT (C),A
-    INC B
-    IN A,(C)
-    LD (endLine), A
-.endPer
-    ENDIF
+    _ReadPerformance
 
     CALL sc.WaitForBottomScanline
-
     JR mainLoop
-
-    MACRO ReadPerformance
-    ENDM
 
 ;----------------------------------------------------------;
 ;                       Includes                           ;
@@ -84,10 +113,7 @@ mainLoop
     INCLUDE "ti_tiles.asm"
     INCLUDE "ut_util.asm"
     INCLUDE "mld_main_loop_data.asm"
-    INCLUDE "ml_main_loop.asm"
-
     INCLUDE "gc_game_cmd.asm"
-
     INCLUDE "er_error.asm"
     INCLUDE "fi_file_io.asm"
     INCLUDE "dbs_bank_setup.asm"
@@ -100,7 +126,6 @@ mainLoop
     INCLUDE "sc_screen.asm"
     INCLUDE "sp_sprite.asm"
     INCLUDE "sr_simple_sprite.asm"
-
     INCLUDE "jt_jet_state.asm"
     INCLUDE "jpo_jet_position.asm"
     INCLUDE "jco_jet_collision.asm"
@@ -124,7 +149,8 @@ mainLoop
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
     INCLUDE "enur_enemy_fuel_thief_roc.asm"
-
+    INCLUDE "ml_main_loop.asm"
+    
     ; Imports below use ORG and dedicated memory bank!
 
     ; ################ BANK 28 ################

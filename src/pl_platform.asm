@@ -52,6 +52,242 @@ platformWalkNumber      DB PLATFORM_WALK_INACTIVE
 joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                _CheckPlatformHitRight                    ;
+;----------------------------------------------------------;
+; Check the collision with the left side of the platform.
+; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #HIT_MARGIN_D5].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM
+;  - IY: pointer to #PLA
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: BC, DE
+    MACRO _CheckPlatformHitRight
+
+    ; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X]
+    LD DE, (IY + PLA.X_RIGHT)
+    LD BC, (IX + PLAM.X_RIGHT)
+    ADD DE, BC                                  ; DE contains [#PLA.X_RIGHT + #PLAM.X_RIGHT].
+
+    ; Load (HL) into HL (sprite X), as preparation for SBC.
+    PUSH HL
+    LD BC, (HL)
+    LD HL, BC                                   ; HL contains sprite X.
+
+    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
+    POP HL
+    JP M, .keepChecking
+
+    ; HL(sprite X) - DE > 0 -> No collision.
+    OR 1                                        ; Return NO (Z set).`
+    JR .end
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite X] > [#PLA.X_RIGHT  + PLAM.X_RIGHT- #HIT_MARGIN_D5].
+    PUSH HL
+
+    LD BC, (HL)                                 ; BC contains sprite X.
+
+    LD HL, (IY + PLA.X_RIGHT)
+    LD DE, HIT_MARGIN_D5
+    SBC HL, DE
+    LD DE, (IX + PLAM.X_RIGHT)
+    ADD HL, DE                                  ; HL contains [#PLA.X_RIGHT  + PLAM.X_RIGHT- #PLAM.X_RIGHT].
+
+    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
+    POP HL
+    JP M, .hit
+
+    OR 1                                        ; Return NO (Z set).
+    JR .end
+.hit
+    XOR A                                       ; Return YES (Z is reset).
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _CheckPlatformHitLeft                    ;
+;----------------------------------------------------------;
+; Check the collision with the left side of the platform.
+; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM
+;  - IY: pointer to #PLA
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: BC, DE
+    MACRO _CheckPlatformHitLeft
+
+    ; Check if [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X]
+    LD DE, (IY + PLA.X_LEFT)
+    LD BC, HIT_MARGIN_D5
+    ADD DE, BC
+
+    LD BC, (IX + PLAM.X_LEFT)
+
+    SUB DE, BC                                  ; DE contains: #PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5.
+
+    ; Load (HL) into HL (sprite X), as preparation for SBC.
+    PUSH HL
+    LD BC, (HL)
+    LD HL, BC                                   ; HL contains sprite X.
+
+    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
+    POP HL
+    JP M, .keepChecking
+
+    ; HL(sprite X) - DE > 0 -> No collision.
+    OR 1                                        ; Return NO (Z set).
+    JR .end
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT]
+    PUSH HL
+
+    LD BC, (HL)                                 ; BC contains sprite X.
+
+    LD HL, (IY + PLA.X_LEFT)
+    LD DE, (IX + PLAM.X_LEFT)
+    SBC HL, DE                                  ; HL contains [#PLA.X_LEFT - #PLAM.X_LEFT].
+    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
+
+    POP HL
+    JP M, .hit
+
+    OR 1                                        ; Return NO (Z set).
+    JR .end
+.hit
+    XOR A                                       ; Return YES (Z is reset).
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                _CheckPlatformHitBottom                   ;
+;----------------------------------------------------------;
+; Check the collision with the bottom side of the platform.
+; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM.
+;  - IY: pointer to #PLA.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: C
+    MACRO _CheckPlatformHitBottom
+    
+    ; Check [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y]
+    LD A, (IY + PLA.Y_BOTTOM)
+    ADD (IX + PLAM.Y_BOTTOM)
+    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM].
+
+    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+
+    CP C
+    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
+
+    ;  A (sprite Y) > C -> no collision.
+    OR 1                                        ; Return NO (Z set).
+    JR .end
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
+
+    LD A, (IY + PLA.Y_BOTTOM)
+    ADD (IX + PLAM.Y_BOTTOM)
+    SUB HIT_MARGIN_D5
+    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
+
+    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+
+    CP C
+    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
+
+    OR 1                                        ; Return NO (Z set).
+    JR .end
+.hit
+    XOR A                                       ; Return YES (Z is reset).
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _CheckPlatformHitTop                     ;
+;----------------------------------------------------------;
+; Check the collision with the top side of the platform.
+; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM
+;  - IY: pointer to #PLA
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: C
+    MACRO _CheckPlatformHitTop
+
+    ; ##########################################
+    ; Check [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y].
+    LD A, (IY + PLA.Y_TOP)
+    LD C, HIT_MARGIN_D5
+    ADD C
+    SUB (IX + PLAM.Y_TOP)
+    LD C, A                                     ; C holds [#PLA.Y_TOP + #HIT_MARGIN_D5].
+
+    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+
+    CP C
+    JR Z, .keepChecking                         ; Jump if A (sprite Y) == C.
+    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
+
+    ;  A (sprite Y) > C -> no collision.
+    OR 1                                        ; Return NO (Z set).
+    JR .end
+
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
+
+    LD A, (IY + PLA.Y_TOP)
+    SUB (IX + PLAM.Y_TOP)
+    LD C, A                                     ; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
+
+    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+
+    CP C
+    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
+    
+    OR 1                                        ; Return NO (Z set).
+    JR .end
+.hit
+    XOR A                                       ; Return YES (Z is reset).
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                     SetupPlatforms                       ;
 ;----------------------------------------------------------;
 ; Input:
@@ -407,7 +643,7 @@ JetLanding
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 PlatformBounceOff                   ;
+;                   PlatformBounceOff                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
@@ -447,7 +683,7 @@ PlatformDirectionHit
     ; Check the collision from the left side of the platform.
 
     PUSH BC
-    CALL _CheckPlatformHitLeft
+    _CheckPlatformHitLeft
     POP BC
 
     JR NZ, .afterHitLeft
@@ -464,7 +700,7 @@ PlatformDirectionHit
     ; Check the collision from the right side of the platform.
 
     PUSH BC
-    CALL _CheckPlatformHitRight
+    _CheckPlatformHitRight
     POP BC
 
     JR NZ, .afterHitRight
@@ -480,7 +716,7 @@ PlatformDirectionHit
     ; ##########################################
     ; Check the collision from the top side of the platform.
 
-    CALL _CheckPlatformHitTop
+    _CheckPlatformHitTop
     JR NZ, .afterHitTop
 
     ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
@@ -497,7 +733,7 @@ PlatformDirectionHit
     ; ##########################################
     ; Check the collision from the bottom side of the platform.
 
-    CALL _CheckPlatformHitBottom
+    _CheckPlatformHitBottom
     JR NZ, .afterHitBottom
 
     ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
@@ -515,7 +751,9 @@ PlatformDirectionHit
     ; Loop over platforms.
     LD DE, PLA
     ADD IY, DE
-    DJNZ .loopOverPlatforms                         ; decrement B until all platforms have been evaluated.
+
+    DEC B
+    JP NZ, .loopOverPlatforms                         ; decrement B until all platforms have been evaluated.
 
     ; We've iterated over all platforms, and there was no hit.
     LD A, PL_HIT_NO
@@ -748,226 +986,6 @@ _LoadSpriteYtoA
     LD DE, HL
     ADD DE, Y_SPR_RAMOFFSET
     LD A, (DE)                                  ; A holds current sprite Y position.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _CheckPlatformHitTop                     ;
-;----------------------------------------------------------;
-; Check the collision with the top side of the platform.
-; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: C
-_CheckPlatformHitTop
-
-    ; ##########################################
-    ; Check [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y].
-    LD A, (IY + PLA.Y_TOP)
-    LD C, HIT_MARGIN_D5
-    ADD C
-    SUB (IX + PLAM.Y_TOP)
-    LD C, A                                     ; C holds [#PLA.Y_TOP + #HIT_MARGIN_D5].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR Z, .keepChecking                         ; Jump if A (sprite Y) == C.
-    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
-
-    ;  A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).
-    RET
-
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
-
-    LD A, (IY + PLA.Y_TOP)
-    SUB (IX + PLAM.Y_TOP)
-    LD C, A                                     ; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
-    
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                _CheckPlatformHitBottom                   ;
-;----------------------------------------------------------;
-; Check the collision with the bottom side of the platform.
-; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM.
-;  - IY: pointer to #PLA.
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: C
-_CheckPlatformHitBottom
-    
-    ; Check [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y]
-    LD A, (IY + PLA.Y_BOTTOM)
-    ADD (IX + PLAM.Y_BOTTOM)
-    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
-
-    ;  A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).
-    RET
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
-
-    LD A, (IY + PLA.Y_BOTTOM)
-    ADD (IX + PLAM.Y_BOTTOM)
-    SUB HIT_MARGIN_D5
-    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
-
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _CheckPlatformHitLeft                    ;
-;----------------------------------------------------------;
-; Check the collision with the left side of the platform.
-; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: BC, DE
-_CheckPlatformHitLeft
-
-    ; Check if [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X]
-    LD DE, (IY + PLA.X_LEFT)
-    LD BC, HIT_MARGIN_D5
-    ADD DE, BC
-
-    LD BC, (IX + PLAM.X_LEFT)
-
-    SUB DE, BC                                  ; DE contains: #PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5.
-
-    ; Load (HL) into HL (sprite X), as preparation for SBC.
-    PUSH HL
-    LD BC, (HL)
-    LD HL, BC                                   ; HL contains sprite X.
-
-    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
-    POP HL
-    JP M, .keepChecking
-
-    ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).
-    RET
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT]
-    PUSH HL
-
-    LD BC, (HL)                                 ; BC contains sprite X.
-
-    LD HL, (IY + PLA.X_LEFT)
-    LD DE, (IX + PLAM.X_LEFT)
-    SBC HL, DE                                  ; HL contains [#PLA.X_LEFT - #PLAM.X_LEFT].
-    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
-
-    POP HL
-    JP M, .hit
-
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                _CheckPlatformHitRight                    ;
-;----------------------------------------------------------;
-; Check the collision with the left side of the platform.
-; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #HIT_MARGIN_D5].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: BC, DE
-_CheckPlatformHitRight
-
-    ; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X]
-    LD DE, (IY + PLA.X_RIGHT)
-    LD BC, (IX + PLAM.X_RIGHT)
-    ADD DE, BC                                  ; DE contains [#PLA.X_RIGHT + #PLAM.X_RIGHT].
-
-    ; Load (HL) into HL (sprite X), as preparation for SBC.
-    PUSH HL
-    LD BC, (HL)
-    LD HL, BC                                   ; HL contains sprite X.
-
-    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
-    POP HL
-    JP M, .keepChecking
-
-    ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).`
-    RET
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite X] > [#PLA.X_RIGHT  + PLAM.X_RIGHT- #HIT_MARGIN_D5].
-    PUSH HL
-
-    LD BC, (HL)                                 ; BC contains sprite X.
-
-    LD HL, (IY + PLA.X_RIGHT)
-    LD DE, HIT_MARGIN_D5
-    SBC HL, DE
-    LD DE, (IX + PLAM.X_RIGHT)
-    ADD HL, DE                                  ; HL contains [#PLA.X_RIGHT  + PLAM.X_RIGHT- #PLAM.X_RIGHT].
-
-    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
-    POP HL
-    JP M, .hit
-
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
 
     RET                                         ; ## END of the function ##
 

@@ -41,6 +41,147 @@ BAR_ICON_RAM_START     = BAR_RAM_START - 2
 BAR_ICON_PAL           = $00
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                    _ShowHeatBarIcon                      ;
+;----------------------------------------------------------;
+    MACRO _ShowHeatBarIcon
+
+    LD HL, BAR_ICON_RAM_START
+
+    LD (HL), BAR_ICON                           ; Set tile id.
+    INC HL
+    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _JetpackTempDown                      ;
+;----------------------------------------------------------;
+    MACRO _JetpackTempDown
+
+    ; Exit if jetpack is cold
+    LD A, (jetTempLevel)
+    CP TEMP_MIN
+    JR Z, .end
+
+    ; ##########################################
+    ; Increase the cool down counter, and check whether it's necessary to decrease the heat level of the jetpack.
+    LD A, (jetCoolCnt)
+    INC A
+    LD (jetCoolCnt),A
+
+    CP JM_COOL_CNT
+    JR NZ, .end                                 ; The counter did not reach the required value to decrease jeptack temp.
+
+    ; Cool down counter has reached max value, reset it.
+    XOR A
+    LD (jetCoolCnt), A
+
+    ; ##########################################
+    ; Decrease jetpack temp
+    LD A, (jetTempLevel)
+    DEC A
+    LD (jetTempLevel),A
+
+    CP TEMP_NORM
+    JR NZ, .afterNormTempCheck
+
+    ; #########################################
+    ; Is Jetpack going to temp normal from overheated?
+    LD A, (jt.jetState)
+    CP jt.JETST_OVERHEAT
+    JR NZ, .afterNormTempCheck
+
+    ; Jetpack is coll again
+    LD A, jt.JETST_NORMAL
+    LD (jt.jetState), A
+
+    CALL gc.JetpackTempNormal
+.afterNormTempCheck
+
+    CALL _UpdateUiHeatBar
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                     _JetpackTempUp                       ;
+;----------------------------------------------------------;
+    MACRO _JetpackTempUp
+
+    ; Check if Jetpack has overheated already.
+    LD A, (jetTempLevel)
+    CP TEMP_MAX
+    JR Z, .end
+
+    ; ##########################################
+    ; Increase the heat counter, and check whether it's necessary to increase the heat level of the jetpack.
+    LD A, (jetHeatCnt)
+    INC A
+    LD (jetHeatCnt),A
+
+    ; Temperature increase speed slows down hen #jetTempLevel is over TEMP_RED.
+    ; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with JM_HEAT_CNT.
+    ; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with JM_HEAT_RED_CNT.
+    LD A, (jetTempLevel)
+    CP TEMP_RED
+    JR NC, .increaseSlow
+
+    ; Fast heat increase.
+    LD A, (jetHeatCnt)
+    CP JM_HEAT_CNT
+    JR NZ, .end                                 ; The counter did not reach the required value to increase jeptack's temp.
+    JR .afterIncrease
+
+.increaseSlow
+    ; Slow down hating.
+    LD A, (jetHeatCnt)
+    CP JM_HEAT_RED_CNT
+    JR NZ, .end                                 ; The counter did not reach the required value to increase jeptack's temp.
+.afterIncrease
+
+    ; Heat up counter has reached max value, reset it.
+    XOR A
+    LD (jetHeatCnt),A
+
+    ; ##########################################
+    ; Increase jetpack temp.
+    LD A, (jetTempLevel)
+    INC A
+    LD (jetTempLevel),A
+
+    CP TEMP_MAX
+    JR NZ, .afterTempCheck
+
+    ; Jetpack has overhated.
+    LD A, jt.JETST_OVERHEAT
+    CALL jt.SetJetState
+    LD (jt.jetState), A
+
+    CALL dbs.SetupAyFxsBank
+    LD A, af.FX_JET_OVERHEAT
+    CALL af.AfxPlay
+
+.afterTempCheck
+
+    CALL _UpdateUiHeatBar
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                  AnimateJetpackOverheat                  ;
 ;----------------------------------------------------------;
 ; Replace last two tiles in heat bar for blinking effect: _BAR_RED_A1_SPR,_BAR_RED_A2_SPR -> _BAR_RED_B1_SPR,_BAR_RED_B2_SPR
@@ -95,7 +236,7 @@ ResetJetpackOverheating
     LD (jetCoolCnt), A
     LD (jetTempLevel), A
     CALL _UpdateUiHeatBar
-    CALL _ShowHeatBarIcon
+    _ShowHeatBarIcon
 
     CALL jt.ResetOverheat
 
@@ -112,7 +253,7 @@ UpdateJetpackOverheating
     JR Z, .afterFlaying
     
     ; Jetman is flying
-    CALL _JetpackTempUp
+    _JetpackTempUp
     RET
 .afterFlaying
 
@@ -123,7 +264,7 @@ UpdateJetpackOverheating
     RET Z
     
     ; Jetman is walking.
-    CALL _JetpackTempDown
+    _JetpackTempDown
 
     RET                                         ; ## END of the function ##
 
@@ -152,132 +293,6 @@ JetpackOverheatFx
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                     _JetpackTempUp                       ;
-;----------------------------------------------------------;
-_JetpackTempUp
-
-    ; Check if Jetpack has overheated already.
-    LD A, (jetTempLevel)
-    CP TEMP_MAX
-    RET Z
-
-    ; ##########################################
-    ; Increase the heat counter, and check whether it's necessary to increase the heat level of the jetpack.
-    LD A, (jetHeatCnt)
-    INC A
-    LD (jetHeatCnt),A
-
-    ; Temperature increase speed slows down hen #jetTempLevel is over TEMP_RED.
-    ; if #jetTempLevel < TEMP_RED then compare #jetHeatCnt with JM_HEAT_CNT.
-    ; if #jetTempLevel >= TEMP_RED then compare #jetHeatCnt with JM_HEAT_RED_CNT.
-    LD A, (jetTempLevel)
-    CP TEMP_RED
-    JR NC, .increaseSlow
-
-    ; Fast heat increase.
-    LD A, (jetHeatCnt)
-    CP JM_HEAT_CNT
-    RET NZ                                      ; The counter did not reach the required value to increase jeptack's temp.
-    JR .afterIncrease
-
-.increaseSlow
-    ; Slow down hating.
-    LD A, (jetHeatCnt)
-    CP JM_HEAT_RED_CNT
-    RET NZ                                      ; The counter did not reach the required value to increase jeptack's temp.
-.afterIncrease
-
-    ; Heat up counter has reached max value, reset it.
-    XOR A
-    LD (jetHeatCnt),A
-
-    ; ##########################################
-    ; Increase jetpack temp.
-    LD A, (jetTempLevel)
-    INC A
-    LD (jetTempLevel),A
-
-    CP TEMP_MAX
-    JR NZ, .afterTempCheck
-
-    ; Jetpack has overhated.
-    LD A, jt.JETST_OVERHEAT
-    CALL jt.SetJetState
-    LD (jt.jetState), A
-
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_JET_OVERHEAT
-    CALL af.AfxPlay
-
-.afterTempCheck
-
-    CALL _UpdateUiHeatBar
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _JetpackTempDown                      ;
-;----------------------------------------------------------;
-_JetpackTempDown
-
-    ; Exit if jetpack is cold
-    LD A, (jetTempLevel)
-    CP TEMP_MIN
-    RET Z
-
-    ; ##########################################
-    ; Increase the cool down counter, and check whether it's necessary to decrease the heat level of the jetpack.
-    LD A, (jetCoolCnt)
-    INC A
-    LD (jetCoolCnt),A
-
-    CP JM_COOL_CNT
-    RET NZ                                      ; The counter did not reach the required value to decrease jeptack temp.
-
-    ; Cool down counter has reached max value, reset it.
-    XOR A
-    LD (jetCoolCnt), A
-
-    ; ##########################################
-    ; Decrease jetpack temp
-    LD A, (jetTempLevel)
-    DEC A
-    LD (jetTempLevel),A
-
-    CP TEMP_NORM
-    JR NZ, .afterNormTempCheck
-
-    ; #########################################
-    ; Is Jetpack going to temp normal from overheated?
-    LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT
-    JR NZ, .afterNormTempCheck
-
-    ; Jetpack is coll again
-    LD A, jt.JETST_NORMAL
-    LD (jt.jetState), A
-
-    CALL gc.JetpackTempNormal
-.afterNormTempCheck
-
-    CALL _UpdateUiHeatBar
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _ShowHeatBarIcon                      ;
-;----------------------------------------------------------;
-_ShowHeatBarIcon
-
-    LD HL, BAR_ICON_RAM_START
-
-    LD (HL), BAR_ICON                           ; Set tile id.
-    INC HL
-    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    _UpdateUiHeatBar                      ;

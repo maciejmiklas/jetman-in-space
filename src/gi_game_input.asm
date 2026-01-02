@@ -687,7 +687,7 @@ _JoyFireRelease
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     _JoyGrenade                          ;
+;                    _ThrowGranade                         ;
 ;----------------------------------------------------------;
 _ThrowGranade
 

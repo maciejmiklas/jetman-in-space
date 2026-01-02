@@ -58,6 +58,13 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
 
+    ; ##########################################
+    LD BC, 46
+    LD H, 0
+    LD A, (endLineMax)
+    LD L, A
+    CALL ut.PrintNumber
+
 /*
     ; ##########################################
     LD BC, 40

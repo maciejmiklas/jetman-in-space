@@ -40,6 +40,144 @@ PICK_MARGY_D16          = 16
 JM_INV_D400             = 400                   ; Number of loops to keep Jetman invincible.
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      _RipMove                            ;
+;----------------------------------------------------------;
+; Jetman moves in zig-zac towards the upper side of the screen
+    MACRO _RipMove
+
+    ; Move left or right.
+    LD A, (ripMoveState)
+    CP RIP_MOVE_LEFT
+    JR Z, .moveLeft
+
+    ; Move right.
+    LD B, JM_RIP_MOVE_L_D3
+    CALL jpo.DecJetXbyB
+    JR .afterMove
+
+.moveLeft
+    ; Move left.
+    LD B, JM_RIP_MOVE_R_D3
+    CALL jpo.IncJetXbyB
+.afterMove
+
+    LD B, JM_RIP_MOVE_Y_D4                      ; Going up
+    CALL jpo.DecJetYbyB
+
+    ; Decrement move counter.
+    LD A, (ripMoveCnt)
+    DEC A
+    LD (ripMoveCnt), A
+    CP 0
+
+    JR NZ, .end                                 ; Counter is still > 0 - keep going
+
+    ; Counter has reached 0 - change direction.
+    LD A, (ripMoveState)
+    XOR 1
+    LD (ripMoveState), A
+
+    ; Increment zig-zag distance (gets bigger with every direction change).
+    LD A, (ripMoveMul)
+    ADD RIP_MOVE_MUL_INC
+    LD (ripMoveMul), A
+
+    ; Counter (how far we go left/right in zig-zag) increments with every turn, and ripMoveMul holds the increasing value.
+    LD (ripMoveCnt), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                     _ResetRipMove                        ;
+;----------------------------------------------------------;
+    MACRO _ResetRipMove
+
+    LD A, RIP_MOVE_MUL_INC
+    LD (ripMoveMul), A
+    LD (ripMoveCnt), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _EnemyCollision                       ;
+;----------------------------------------------------------;
+; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
+; Input:
+;  - IX: pointer to concrete single enemy, single #SPR.
+    MACRO _EnemyCollision
+
+    ; Exit if enemy is not alive.
+    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
+    JR Z, .end
+
+    ; Exit if enemy is not visible.
+    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    JR Z, .end
+
+    ; ################################
+    ; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman.
+
+    ; It's flying, now check the collision.
+    LD E, 0
+    LD D, MARG_VERT_KICK_D25
+    CALL _CheckCollision
+    JR NZ, .noKicking
+    
+    ; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already.
+    LD A, (jt.jetAir)
+    CP jt.AIR_ENEMY_KICK
+    JR Z, .end                                  ; Animation plays already.
+
+    ; Play animation and set state
+    LD A, jt.AIR_ENEMY_KICK
+    CALL jt.SetJetStateAir
+
+    LD A, js.SDB_T_KF
+    CALL js.ChangeJetSpritePattern              ; Play the animation and keep checking for RiP collision.
+
+.noKicking
+
+    ; ################################
+    ; Check if we should reset kicking state.
+    LD A, (jt.jetAir)
+    CP jt.AIR_ENEMY_KICK
+    JR NZ, .afterKickReset
+
+    ; Reset kick state.
+    LD A, jt.AIR_FLY
+    CALL jt.SetJetStateAir
+
+    JR NZ, .afterKickReset
+.afterKickReset
+
+    ; ################################
+    ; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die.
+    LD D, MARG_VERT_UP_D18
+    LD E, MARG_VERT_LOW_D15
+    CALL _CheckCollision
+    JR NZ, .end
+
+    ; We have collision!
+    CALL gc.EnemyHitsJet
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                   JetmanElementCollision                 ;
 ;----------------------------------------------------------;
 ; Checks whether Jetman overlaps with given element.
@@ -108,7 +246,7 @@ EnemiesCollision
     LD B, A
 .loop
     PUSH BC                                     ; Preserve B for loop counter.
-    CALL _EnemyCollision
+    _EnemyCollision
 .continue
     ; Move HL to the beginning of the next #shotsX.
     LD DE, SPR
@@ -127,7 +265,7 @@ JetRip
     CP jt.JETST_RIP
     RET NZ                                      ; Exit if not RiP.
 
-    CALL _RipMove
+    _RipMove
 
     ; Did Jetman reach the top of the screen (the RIP sequence is over)?
     LD A, (jpo.jetY)
@@ -135,7 +273,7 @@ JetRip
     RET NC                                      ; Nope, still going up (#jetY >= 4).
 
     ; Sequence is over, respawn new live.
-    CALL _ResetRipMove
+    _ResetRipMove
     CALL gc.RespawnJet 
 
     RET                                         ; ## END of the function ##
@@ -210,130 +348,6 @@ JetInvincible
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                    _EnemyCollision                       ;
-;----------------------------------------------------------;
-; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
-; Input:
-;  - IX: pointer to concrete single enemy, single #SPR.
-_EnemyCollision
-
-    ; Exit if enemy is not alive.
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
-    RET Z
-
-    ; Exit if enemy is not visible.
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
-    RET Z
-
-    ; ################################
-    ; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman.
-
-    ; It's flying, now check the collision.
-    LD E, 0
-    LD D, MARG_VERT_KICK_D25
-    CALL _CheckCollision
-    JR NZ, .noKicking
-    
-    ; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already.
-    LD A, (jt.jetAir)
-    CP jt.AIR_ENEMY_KICK
-    RET Z                                       ; Animation plays already.
-    
-    ; Play animation and set state
-    LD A, jt.AIR_ENEMY_KICK
-    CALL jt.SetJetStateAir
-
-    LD A, js.SDB_T_KF
-    CALL js.ChangeJetSpritePattern              ; Play the animation and keep checking for RiP collision.
-
-.noKicking
-
-    ; ################################
-    ; Check if we should reset kicking state.
-    LD A, (jt.jetAir)
-    CP jt.AIR_ENEMY_KICK
-    JR NZ, .afterKickReset
-
-    ; Reset kick state.
-    LD A, jt.AIR_FLY
-    CALL jt.SetJetStateAir
-
-    JR NZ, .afterKickReset
-.afterKickReset
-
-    ; ################################
-    ; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die.
-    LD D, MARG_VERT_UP_D18
-    LD E, MARG_VERT_LOW_D15
-    CALL _CheckCollision
-    RET NZ
-
-    ; We have collision!
-    CALL gc.EnemyHitsJet
-
-    RET                                         ; ## END of the function ##
-
-
-;----------------------------------------------------------;
-;                     _ResetRipMove                        ;
-;----------------------------------------------------------;
-_ResetRipMove
-
-    LD A, RIP_MOVE_MUL_INC
-    LD (ripMoveMul), A
-    LD (ripMoveCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      _RipMove                            ;
-;----------------------------------------------------------;
-; Jetman moves in zig-zac towards the upper side of the screen
-_RipMove
-
-    ; Move left or right.
-    LD A, (ripMoveState)
-    CP RIP_MOVE_LEFT
-    JR Z, .moveLeft
-
-    ; Move right.
-    LD B, JM_RIP_MOVE_L_D3
-    CALL jpo.DecJetXbyB
-    JR .afterMove
-
-.moveLeft
-    ; Move left.
-    LD B, JM_RIP_MOVE_R_D3
-    CALL jpo.IncJetXbyB
-.afterMove
-
-    LD B, JM_RIP_MOVE_Y_D4                      ; Going up
-    CALL jpo.DecJetYbyB
-
-    ; Decrement move counter.
-    LD A, (ripMoveCnt)
-    DEC A
-    LD (ripMoveCnt), A
-    CP 0
-
-    RET NZ                                      ; Counter is still > 0 - keep going
-
-    ; Counter has reached 0 - change direction.
-    LD A, (ripMoveState)
-    XOR 1
-    LD (ripMoveState), A
-
-    ; Increment zig-zag distance (gets bigger with every direction change).
-    LD A, (ripMoveMul)
-    ADD RIP_MOVE_MUL_INC
-    LD (ripMoveMul), A
-
-    ; Counter (how far we go left/right in zig-zag) increments with every turn, and ripMoveMul holds the increasing value.
-    LD (ripMoveCnt), A
-    
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    #_CheckCollision                      ;
