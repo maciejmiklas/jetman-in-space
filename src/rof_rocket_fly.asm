@@ -147,6 +147,27 @@ FlyRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  StartRocketExplosion                    ;
+;----------------------------------------------------------;
+; Start explosion sequence. The rocket explodes when the state is flying and counter above zero.
+StartRocketExplosion
+
+    LD A, 1
+    LD (rocketExplodeCnt), A
+
+    ; ##########################################
+    ; Hide exhaust
+    LD A, _EXHAUST_SPRID_D83                     ; Hide sprite on display.
+    CALL sp.SetIdAndHideSprite
+
+    ; ##########################################
+    ; Update state
+    LD A, ro.ROST_EXPLODE
+    LD (ro.rocketState), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                    BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
 BlinkFlyingRocket
@@ -302,7 +323,7 @@ _ControlFlyingRocket
     CP EXPLODE_Y_LO_H7E
     JR C, .notAtExpolodeDistance
 
-    CALL _StartRocketExplosion
+    CALL StartRocketExplosion
     RET
 .notAtExpolodeDistance
 
@@ -413,27 +434,6 @@ _MoveFlyingRocket
     LD (ro.rocY), A
 
     CALL ro.UpdateRocketPosition
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                _StartRocketExplosion                     ;
-;----------------------------------------------------------;
-; Start explosion sequence. The rocket explodes when the state is flying and counter above zero.
-_StartRocketExplosion
-
-    LD A, 1
-    LD (rocketExplodeCnt), A
-
-    ; ##########################################
-    ; Hide exhaust
-    LD A, _EXHAUST_SPRID_D83                     ; Hide sprite on display.
-    CALL sp.SetIdAndHideSprite
-
-    ; ##########################################
-    ; Update state
-    LD A, ro.ROST_EXPLODE
-    LD (ro.rocketState), A
 
     RET                                         ; ## END of the function ##
 

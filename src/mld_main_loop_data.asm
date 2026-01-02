@@ -34,11 +34,11 @@ counter040          DB 0
 COUNTER050_MAX      = 50                        ; Tick rate: 1s
 counter050          DB 0
 
-COUNTER075_MAX      = 80                        ; Tick rate: 1.5s
+COUNTER075_MAX      = 75                        ; Tick rate: 1.5s
 counter075          DB 0
 
-COUNTER250_MAX      = 250                       ; Tick rate: 5s
-counter250          DB 0
+counter150_MAX      = 150                       ; Tick rate: 3s
+counter150          DB 0
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

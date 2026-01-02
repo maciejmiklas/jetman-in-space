@@ -142,7 +142,7 @@ CheckRocketCollision
     LD A, L
     LD B, COL_MARGIN_X_D20
     CP B
-    JR C, .collisionFound 
+    JR C, .collisionFound
 
 .asLoopNext
     ; ##########################################
@@ -156,9 +156,7 @@ CheckRocketCollision
 
 .collisionFound
 
-    PUSH BC,IX
-    CALL gc.SSS
-    POP IX,BC
+    CALL gc.RocketHitsAsteroid
 
     RET                                         ; ## END of the function ##
 
@@ -216,7 +214,7 @@ ChangeAsteroidSpeed
     LD B, (HL)
     INC HL
     LD C, (HL)
-  
+
     ; IX will point to ASD given by offset from B.
     LD HL, asteroids
     LD D, B

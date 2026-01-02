@@ -22,7 +22,7 @@ MainLoop
     CALL _Loop040
     CALL _Loop050
     CALL _Loop075
-    CALL _Loop250
+    CALL _Loop150
     CALL _LastLoop
 
     RET                                         ; ## END of the function ##
@@ -755,33 +755,33 @@ _Loop075OnActiveGameOver
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         _Loop250                         ;
+;                         _Loop150                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 5s
-_Loop250
+_Loop150
 
     ; Increment the counter.
-    LD A, (mld.counter250)
+    LD A, (mld.counter150)
     INC A
-    LD (mld.counter250), A
-    CP mld.COUNTER250_MAX
+    LD (mld.counter150), A
+    CP mld.counter150_MAX
     RET NZ
 
     ; ##########################################
     ; Reset the counter.
     XOR A                                       ; Set A to 0
-    LD (mld.counter250), A
+    LD (mld.counter150), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop250OnRocketPhase4
+    CALL _Loop150OnRocketPhase4
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               _Loop250OnRocketPhase4                     ;
+;               _Loop150OnRocketPhase4                     ;
 ;----------------------------------------------------------;
-_Loop250OnRocketPhase4
+_Loop150OnRocketPhase4
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
@@ -790,6 +790,9 @@ _Loop250OnRocketPhase4
     ; ##########################################
     CALL dbs.SetupRocketBank
     CALL rot.ChangeAsteroidSpeed
+
+    ; When flying a rocket and avoiding asteroids, the score increases with asteroid speed change.
+    CALL sc.HitEnemy2
 
     RET                                         ; ## END of the function ##
 

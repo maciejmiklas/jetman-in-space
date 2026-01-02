@@ -21,9 +21,9 @@ start
 
     LD A, 1
     LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
+    ;CALL gc.LoadCurrentLevel
 
-   ; CALL gc.LoadMainMenu
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
@@ -178,7 +178,7 @@ mainLoop
     INCLUDE "rof_rocket_fly.asm"
     INCLUDE "ros_rocket_stars.asm"
     INCLUDE "rot_rocket_asteroids.asm"
-    INCLUDE "rot_rocket_asteroids_data.asm"
+    INCLUDE "rotd_rocket_asteroids_data.asm"
 
     ASSERT $$ == dbs.ROCKET_S6_D36
 

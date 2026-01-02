@@ -279,21 +279,6 @@ RocketFLyPhase4
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
-    
-
-;----------------------------------------------------------;
-;                     SSS                        ;
-;----------------------------------------------------------;
-SSS
-
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_EXPLODE_TANK
-    CALL af.AfxPlay
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
-
-    RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                     RocketTankHit                        ;
@@ -479,6 +464,15 @@ WeaponHitEnemy
     LD IX, fe.fEnemySprites
     LD A, (fe.fEnemySize)
     CALL jw.CheckHitEnemies
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   RocketHitsAsteroid                     ;
+;----------------------------------------------------------;
+RocketHitsAsteroid
+
+    CALL rof.StartRocketExplosion
 
     RET                                         ; ## END of the function ##
 
