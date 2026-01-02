@@ -66,22 +66,109 @@ asDeployAddr            DW 0                    ; Pointer to #ASD array, must co
 AS_DEPLOY_SIZE          = 7
 
 ; This list is used to adjust asteroid's speeds over time. It contains pairs, let's call the elements in each pair A and B. For example: 
-; "A,B, A,B, ... A,B". A loop runs every few seconds, each iteration takes the next AB pair from this list and adds it to the ASD list. 
-; A gives an index in the ASD list (starts from 0), and B is the applied value. B will be added or subtracted from ASD.MOVE_SPD. 
-; In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
+; "A,B, A,B, ... A,B". A loop runs every few seconds, each iteration takes the next AB pair from this list and applies it to the element 
+; from ASD list. A gives an index in the ASD list (starts from 0), and B is the applied value. B will be added or subtracted 
+; from ASD.MOVE_SPD. In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
 randMovAddr             DW 0
 randMovPos              DB 0
 RAND_MOVE_SIZE_D30      = 30                    ; 30 elements, 60 bytes.
 RAND_MOVE_EL_D2         = 2
 RAND_SIGN_BIT_D7        = 7
 
+COL_MARGIN_Y_D30        = 30
+COL_ADD_Y_N25           = -25
+COL_MARGIN_X_D20        = 20
+COL_ADD_X_N17           = -17
+
+;----------------------------------------------------------;
+;                CheckRocketCollision                      ;
+;----------------------------------------------------------;
+CheckRocketCollision
+
+    LD IX, asteroids
+    LD B, AS_DEPLOY_SIZE
+
+.asLoop
+
+    ; ##########################################
+    ; Check Y collision.
+    LD A, (ro.rocY)                             ; Y of the rocket.
+    ADD COL_ADD_Y_N25
+    LD C, (IX + AS.Y)                           ; Y of the asteroid.
+
+    ; Is rocket above or below the asteroid?
+    LD E, COL_MARGIN_Y_D30
+    CP C
+    JR C, .above                                ; Jump if roc-y < asteroid-y
+
+    ; Rocket is below the asteroid.
+    SUB C
+    CP E
+    JR C, .collisionOnY                            ; Jump if A - C < E (the distance between the rocket and the asteroid is smaller than the margin)
+    JR .asLoopNext
+
+    ; Rocket is above the asteroid.
+.above
+
+    ; Swap A and C to avoid negative value
+    LD D, A
+    LD A, C
+    LD C, D
+    SUB C
+    
+    CP E
+    JR C, .collisionOnY
+    JR .asLoopNext
+
+.collisionOnY
+    ; ##########################################
+    ; We have collision on Y, not check X.
+
+    LD DE, (ro.rocX)                             ; X of the rocket.
+    ADD DE, COL_ADD_X_N17
+    LD HL, (IX + AS.X)                           ; X of the asteroid.
+
+    ; Check whether the rocket is horizontal with the asteroid.
+    SBC HL, DE
+    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
+    LD A, H
+    CP 0
+    JR Z, .keepCheckingX
+
+    ; HL > 256  -> no collision.
+    JR .asLoopNext
+
+.keepCheckingX
+    LD A, L
+    LD B, COL_MARGIN_X_D20
+    CP B
+    JR C, .collisionFound 
+
+.asLoopNext
+    ; ##########################################
+    ; Asteroid loop logic.
+
+    ; Move IX to next AS record.
+    LD DE, AS
+    ADD IX, DE
+    DJNZ .asLoop
+    RET
+
+.collisionFound
+
+    PUSH BC,IX
+    CALL gc.SSS
+    POP IX,BC
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                     SetupAsteroids                       ;
 ;----------------------------------------------------------;
 ; Remember to set #spH and #spV
 ; Input:
-; - DE: pointer to #asDeploy
-; - HL: pointer to #randMov
+; - DE: pointer to be sotred in #asDeployAddr
+; - HL: pointer to be sotred in #randMovAddr
 SetupAsteroids
 
     LD (asDeployAddr), DE
@@ -256,7 +343,7 @@ DeployNextAsteroid
     LD A, (IX + AS.SID)
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the sprite ID
 
-    LD A, (IX + AS.X);TODO
+    LD A, (IX + AS.X)
     NEXTREG _SPR_REG_X_H35, A                   ; Set X position
 
     LD A, (IX + AS.Y)

@@ -12,7 +12,7 @@ RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
 ; Max rocket fly distance, when reached, it will explode.
-EXPLODE_Y_HI_H4         = $01
+EXPLODE_Y_HI_H4         = $F0
 EXPLODE_Y_LO_H7E        = $FF
 
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_SIZE (both inclusive).

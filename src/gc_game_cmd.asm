@@ -272,11 +272,29 @@ RocketFLyPhase2and3
 RocketFLyPhase4
 
     CALL ros.ScrollStarsOnFlyRocket
+    CALL rot.CheckRocketCollision
+
     CALL st.MoveFastStarsDown
+
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
     
+
+;----------------------------------------------------------;
+;                     SSS                        ;
+;----------------------------------------------------------;
+SSS
+
+    CALL dbs.SetupAyFxsBank
+    LD A, af.FX_EXPLODE_TANK
+    CALL af.AfxPlay
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
+    RET                                         ; ## END of the function ##
+
+
 ;----------------------------------------------------------;
 ;                     RocketTankHit                        ;
 ;----------------------------------------------------------;
