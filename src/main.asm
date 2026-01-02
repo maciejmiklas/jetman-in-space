@@ -10,6 +10,14 @@ STACK_SIZE              = 50
     DEVICE ZXSPECTRUMNEXT                       ; Allow the Next paging and instructions.
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
+; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
+    DEFINE PERFORMANCE 1                        ; Enable to store end scan line to #endLine
+    IFDEF PERFORMANCE
+UPDATE_PERF             = 10
+endLine DB 0
+endLineCnt DB UPDATE_PERF
+    ENDIF
+
 start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
@@ -36,21 +44,34 @@ start
 ;----------------------------------------------------------;
 mainLoop
 
-    IFDEF PERFORMANCE_BORDER
-        LD  A, _COL_GREEN_D4
-        OUT (_BORDER_IO_HFE), A
-    ENDIF
-
-    CALL sc.WaitForScanline
-
-    IFDEF PERFORMANCE_BORDER
-        LD  A, _COL_RED_D2
-        OUT (_BORDER_IO_HFE), A
-    ENDIF   
+    CALL sc.WaitForTopScanline
 
     CALL ml.MainLoop
 
+    IFDEF PERFORMANCE
+    LD A, (endLineCnt)
+    DEC A
+    LD (endLineCnt), A
+    CP 0
+    JR NZ, .endPer
+    LD A, UPDATE_PERF
+    LD (endLineCnt), A
+
+    LD  A, $1F
+    LD  BC, $243B
+    OUT (C),A
+    INC B
+    IN A,(C)
+    LD (endLine), A
+.endPer
+    ENDIF
+
+    CALL sc.WaitForBottomScanline
+
     JR mainLoop
+
+    MACRO ReadPerformance
+    ENDM
 
 ;----------------------------------------------------------;
 ;                       Includes                           ;

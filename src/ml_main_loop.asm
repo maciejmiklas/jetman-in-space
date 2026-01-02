@@ -7,36 +7,17 @@
 ;----------------------------------------------------------;
     MODULE ml 
 
-;----------------------------------------------------------;
-;                      #MainLoop                           ;
-;----------------------------------------------------------;
-MainLoop
-
-    CALL _Loop000
-    CALL _Loop002
-    CALL _Loop005
-
-    CALL _Loop008
-    CALL _Loop010
-    CALL _Loop025
-    CALL _Loop040
-    CALL _Loop050
-    CALL _Loop075
-    CALL _Loop150
-    CALL _LastLoop
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
+;                        MACROS                            ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                         _Loop000                         ;
 ;----------------------------------------------------------;
-_Loop000
+    MACRO _Loop000
 
     ; 1 -> 0 and 0 -> 1
     LD A, (mld.counter000FliFLop)
@@ -55,55 +36,28 @@ _Loop000
     CALL dbs.SetupMusicBank
     CALL am.MusicLoop
 
-    CALL _Loop000OnRocketPhase2_3
-    CALL _Loop000OnPause
-    CALL _Loop000OnActiveGame
-    CALL _Loop000OnActiveMain
-    CALL _Loop000OnNotInGame
-    CALL _Loop000OnActiveLevelIntro
-    CALL _Loop000OnFlyRocket
+    _Loop000OnRocketPhase2_3
+    _Loop000OnPause
+    _Loop000OnActiveGame
+    _Loop000OnActiveMain
+    _Loop000OnNotInGame
+    _Loop000OnActiveLevelIntro
+    _Loop000OnFlyRocket
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;               _Loop000OnRocketPhase2_3                   ;
-;----------------------------------------------------------;
-_Loop000OnRocketPhase2_3
-
-    CALL dbs.SetupRocketBank
-
-    LD A, (ro.rocketFlyPhase)
-    AND ro.PHASE_2_3
-    RET Z
-
-    CALL bg.HideBackgroundBars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _Loop000OnPause                      ;
-;----------------------------------------------------------;
-_Loop000OnPause
-
-    LD A, (ms.mainState)
-    CP ms.PAUSE
-    RET NZ
-
-    CALL gi.GameOptionsInput
-
-    RET                                         ; ## END of the function ##
+    ENDM                                         ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _Loop000OnFlyRocket                     ;
 ;----------------------------------------------------------;
-_Loop000OnFlyRocket
+    MACRO _Loop000OnFlyRocket
+
     CALL dbs.SetupRocketBank
 
     ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
     ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY.
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL rof.FlyRocket
@@ -115,24 +69,81 @@ _Loop000OnFlyRocket
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
-    RET NZ
+    JR NZ, .end
 
     CALL rot.MoveAsteroids
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                _Loop000OnActiveLevelIntro                ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnActiveLevelIntro
+
+    ; Return if intro is inactive.
+    LD A, (ms.mainState)
+    CP ms.LEVEL_INTRO
+    JR NZ, .end
+
+    ; ##########################################
+    CALL li.AnimateLevelIntroTextScroll
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _Loop000OnNotInGame                    ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnNotInGame
+
+    ; Return if menu is not active.
+    LD A, (ms.mainState)
+    CP ms.LEVEL_INTRO
+    JR C, .end
+
+    ; ##########################################
+    CALL ki.KeyboardInput
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _Loop000OnActiveMain                   ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnActiveMain
+
+    ; Execute if main menu or level select menu is inactive.
+    LD A, (ms.mainState)
+    
+    CP ms.MENU_MAIN
+    JR Z, .execute
+
+    CP ms.MENU_LEVEL
+    JR Z, .execute
+
+    JR .end
+
+.execute
+    ; ##########################################
+    CALL js.UpdateJetSpritePositionRotation
+    CALL js.AnimateJetSprite
+
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _Loop000OnActiveGame                    ;
 ;----------------------------------------------------------;
-_Loop000OnActiveGame
+    MACRO _Loop000OnActiveGame
 
     ; Return if game is inactive
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
-    CALL _Loop000OnDisabledJoy
+    _Loop000OnDisabledJoy
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
 
@@ -179,95 +190,74 @@ _Loop000OnActiveGame
     CALL gi.JetMovementInput
 .notHard
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _Loop000OnNotInGame                    ;
-;----------------------------------------------------------;
-_Loop000OnNotInGame
-
-    ; Return if menu is not active.
-    LD A, (ms.mainState)
-    CP ms.LEVEL_INTRO
-    RET C
-
-    ; ##########################################
-    CALL ki.KeyboardInput
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _Loop000OnActiveMain                   ;
-;----------------------------------------------------------;
-_Loop000OnActiveMain
-
-    ; Execute if main menu or level select menu is inactive.
-    LD A, (ms.mainState)
-    
-    CP ms.MENU_MAIN
-    JR Z, .execute
-
-    CP ms.MENU_LEVEL
-    JR Z, .execute
-
-    RET
-
-.execute
-    ; ##########################################
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.AnimateJetSprite
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                _Loop000OnActiveLevelIntro                ;
-;----------------------------------------------------------;
-_Loop000OnActiveLevelIntro
-
-    ; Return if intro is inactive.
-    LD A, (ms.mainState)
-    CP ms.LEVEL_INTRO
-    RET NZ
-
-    ; ##########################################
-    CALL li.AnimateLevelIntroTextScroll
-
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _Loop000OnDisabledJoy                   ;
 ;----------------------------------------------------------;
-_Loop000OnDisabledJoy
+    MACRO _Loop000OnDisabledJoy
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; Return if the joystick is about to enable.
     LD A, (gid.joyOffCnt)
     CP pl.PL_BUMP_JOY_DEC_D1+1
-    RET C                                       ; Return on the last off loop - this one is used to reset status and not to animate
+    JR C, .end                                  ; Return on the last off loop - this one is used to reset status and not to animate
 
     ; ##########################################
     CALL pl.MoveJetOnPlatformSideHit
     CALL pl.MoveJetOnFallingFromPlatform
     CALL pl.MoveJetOnHitPlatformBelow
-    
-    RET                                         ; ## END of the function ##
+
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                          _Loop002                        ;
+;                     _Loop000OnPause                      ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnPause
+
+    LD A, (ms.mainState)
+    CP ms.PAUSE
+    JR NZ, .end
+
+    CALL gi.GameOptionsInput
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;               _Loop000OnRocketPhase2_3                   ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnRocketPhase2_3
+
+    CALL dbs.SetupRocketBank
+
+    LD A, (ro.rocketFlyPhase)
+    AND ro.PHASE_2_3
+    JR Z, .end
+
+    CALL bg.HideBackgroundBars
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                      _Loop002                            ;
 ;----------------------------------------------------------;
 ; Tick rate: 1/25s
-_Loop002
+    MACRO _Loop002
 
     ; Increment the counter.
     LD A, (mld.counter002)
     INC A
     LD (mld.counter002), A
     CP mld.COUNTER002_MAX
-    RET NZ
+    JR NZ, .end
 
     ; Reset the counter.
     XOR A                                       ; Set A to 0
@@ -281,19 +271,20 @@ _Loop002
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop002OnActiveGame
+    _Loop002OnActiveGame
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _Loop002OnActiveGame                    ;
 ;----------------------------------------------------------;
-_Loop002OnActiveGame
+    MACRO _Loop002OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     LD A, (jt.difLevel)
@@ -303,21 +294,22 @@ _Loop002OnActiveGame
     CALL gc.MoveEnemies
 .notEasy
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                        _Loop004                          ;
+;                        _Loop005                          ;
 ;----------------------------------------------------------;
 ; Tick rate: 1/10s
-_Loop005
+    MACRO _Loop005
 
     ; Increment the counter.
     LD A, (mld.counter005)
     INC A
     LD (mld.counter005), A
     CP mld.COUNTER005_MAX
-    RET NZ
-    
+    JR NZ, .end
+
     ; Reset the counter.
     XOR A                                       ; Set A to 0
     LD (mld.counter005), A
@@ -330,20 +322,20 @@ _Loop005
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop005OnActiveGame
+    _Loop005OnActiveGame
 
-    RET                                         ; ## END of the function ##
-
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                   _Loop005OnActiveGame                   ;
 ;----------------------------------------------------------;
-_Loop005OnActiveGame
+    MACRO _Loop005OnActiveGame
 
     ; Return if game is not active.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL dbs.SetupRocketBank
@@ -354,20 +346,21 @@ _Loop005OnActiveGame
     CALL dbs.SetupArrays2Bank
     CALL pi.AnimateFallingPickup
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                        _Loop008                          ;
 ;----------------------------------------------------------;
 ; Tick rate: ±1/6s
-_Loop008
+    MACRO _Loop008
 
     ; Increment the counter.
     LD A, (mld.counter008)
     INC A
     LD (mld.counter008), A
     CP mld.COUNTER008_MAX
-    RET NZ
+    JP NZ, .end
 
     ; Reset the counter.
     XOR A                                       ; Set A to 0
@@ -381,24 +374,25 @@ _Loop008
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop008OnActiveGame
-    CALL _Loop008OnActiveScoreMenu
-    CALL _Loop008OnFlayingRocket
-    CALL _Loop008OnRocketExplosion
+    _Loop008OnActiveGame
+    _Loop008OnActiveScoreMenu
+    _Loop008OnFlayingRocket
+    _Loop008OnRocketExplosion
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                _Loop008OnRocketExplosion                 ;
 ;----------------------------------------------------------;
-_Loop008OnRocketExplosion
+    MACRO _Loop008OnRocketExplosion
 
     CALL dbs.SetupRocketBank
 
     ; Is rocket exploding ?
     LD A, (ro.rocketState)
     CP ro.ROST_EXPLODE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL st.BlinkStarsL1
@@ -408,32 +402,34 @@ _Loop008OnRocketExplosion
     CALL rot.AnimateAsteroids
     CALL rof.AnimateRocketExplosion
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;               _Loop008OnActiveScoreMenu                  ;
 ;----------------------------------------------------------;
-_Loop008OnActiveScoreMenu
+    MACRO _Loop008OnActiveScoreMenu
 
     LD A, (ms.mainState)
     CP ms.MENU_SCORE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL mms.AnimateCursor
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                 _Loop008OnFlayingRocket                  ;
 ;----------------------------------------------------------;
-_Loop008OnFlayingRocket
+    MACRO _Loop008OnFlayingRocket
 
     ; Return if rocket is not flying.
     CALL dbs.SetupRocketBank
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL st.BlinkStarsL1
@@ -450,21 +446,22 @@ _Loop008OnFlayingRocket
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
-    RET NZ
+    JR NZ, .end
 
     CALL rot.AnimateAsteroids
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                   _Loop008OnActiveGame                   ;
 ;----------------------------------------------------------;
-_Loop008OnActiveGame
+    MACRO _Loop008OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL jw.AnimateShots
@@ -495,20 +492,21 @@ _Loop008OnActiveGame
 
 .notHard
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                        _Loop010                          ;
 ;----------------------------------------------------------;
 ; Tick rate: 1/5s
-_Loop010
+    MACRO _Loop010
 
     ; Increment the counter
     LD A, (mld.counter010)
     INC A
     LD (mld.counter010), A
     CP mld.COUNTER010_MAX
-    RET NZ
+    JR NZ, .end
 
     ; Reset the counter
     XOR A                                       ; Set A to 0
@@ -522,19 +520,20 @@ _Loop010
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop010OnActiveGame
+    _Loop010OnActiveGame
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                   _Loop010OnActiveGame                   ;
 ;----------------------------------------------------------;
-_Loop010OnActiveGame
+    MACRO _Loop010OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
@@ -543,20 +542,21 @@ _Loop010OnActiveGame
     CALL gc.RespawnEnemy
     CALL st.BlinkStarsL2
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                         _Loop025                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 0.5s
-_Loop025
+    MACRO _Loop025
 
     ; Increment the counter.
     LD A, (mld.counter025)
     INC A
     LD (mld.counter025), A
     CP mld.COUNTER025_MAX
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
@@ -565,38 +565,39 @@ _Loop025
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop025nFlyingRocket
-    
-    RET                                         ; ## END of the function ##
+    _Loop025nFlyingRocket
+
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _Loop020nFlyingRocket                   ;
 ;----------------------------------------------------------;
-_Loop025nFlyingRocket
+    MACRO _Loop025nFlyingRocket
 
     ; Return if rocket is not flying.
     LD A, (ms.mainState)
     CP ms.FLY_ROCKET
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL gc.KillOneEnemy
 
-    RET                                         ; ## END of the function ##
-
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                         _Loop040                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 4/5s
-_Loop040
+    MACRO _Loop040
 
     ; Increment the counter.
     LD A, (mld.counter040)
     INC A
     LD (mld.counter040), A
     CP mld.COUNTER040_MAX
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
@@ -605,19 +606,20 @@ _Loop040
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop040OnActiveGame
+    _Loop040OnActiveGame
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                   _Loop040OnActiveGame                   ;
 ;----------------------------------------------------------;
-_Loop040OnActiveGame
+    MACRO _Loop040OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL dbs.SetupRocketBank
@@ -632,20 +634,21 @@ _Loop040OnActiveGame
     CALL dbs.SetupPatternEnemyBank
     CALL enu.RespawnFuelThief
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                         _Loop050                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 1s
-_Loop050
+    MACRO _Loop050
 
     ; Increment the counter.
     LD A, (mld.counter050)
     INC A
     LD (mld.counter050), A
     CP mld.COUNTER050_MAX
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
@@ -654,37 +657,38 @@ _Loop050
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop050OnActiveGame
-    CALL _Loop050OnFlayingRocket
+    _Loop050OnActiveGame
+    _Loop050OnFlayingRocket
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _Loop050OnActiveGame                    ;
 ;----------------------------------------------------------;
-_Loop050OnActiveGame
+    MACRO _Loop050OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.NextFollowingAngle
 
-    RET                                         ; ## END of the function ##
-
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                 _Loop050OnFlayingRocket                  ;
 ;----------------------------------------------------------;
-_Loop050OnFlayingRocket
+    MACRO _Loop050OnFlayingRocket
 
     ; Return if rocket is not flying.
     CALL dbs.SetupRocketBank
     LD A, (ro.rocketState)
     CP ro.ROST_FLY
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     ; Phase 4
@@ -692,24 +696,25 @@ _Loop050OnFlayingRocket
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
-    RET NZ
+    JR NZ, .end
 
     CALL rot.DeployNextAsteroid
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                         _Loop075                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 1,5s
-_Loop075
+    MACRO _Loop075
 
     ; Increment the counter.
     LD A, (mld.counter075)
     INC A
     LD (mld.counter075), A
     CP mld.COUNTER075_MAX
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
@@ -718,54 +723,57 @@ _Loop075
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop075OnActiveGame
-    CALL _Loop075OnActiveGameOver
-    
-    RET                                         ; ## END of the function ##
+    _Loop075OnActiveGame
+    _Loop075OnActiveGameOver
+
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _Loop075OnActiveGame                    ;
 ;----------------------------------------------------------;
-_Loop075OnActiveGame
+    MACRO _Loop075OnActiveGame
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_ACTIVE
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL jo.JetpackOverheatFx
     CALL gc.PlayFuelThiefFx
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;              _Loop075OnActiveGameOver                    ;
 ;----------------------------------------------------------;
-_Loop075OnActiveGameOver
+    MACRO _Loop075OnActiveGameOver
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
     CP ms.GAME_OVER
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL go.GameOverLoop
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                         _Loop150                         ;
 ;----------------------------------------------------------;
 ; Tick rate: 5s
-_Loop150
+    MACRO _Loop150
 
     ; Increment the counter.
     LD A, (mld.counter150)
     INC A
     LD (mld.counter150), A
     CP mld.counter150_MAX
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
@@ -774,18 +782,19 @@ _Loop150
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
-    CALL _Loop150OnRocketPhase4
+    _Loop150OnRocketPhase4
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;               _Loop150OnRocketPhase4                     ;
 ;----------------------------------------------------------;
-_Loop150OnRocketPhase4
+    MACRO _Loop150OnRocketPhase4
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
-    RET NZ
+    JR NZ, .end
 
     ; ##########################################
     CALL dbs.SetupRocketBank
@@ -794,32 +803,67 @@ _Loop150OnRocketPhase4
     ; When flying a rocket and avoiding asteroids, the score increases with asteroid speed change.
     CALL sc.HitEnemy2
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                         _LastLoop                        ;
 ;----------------------------------------------------------;
-_LastLoop
+    MACRO _LastLoop
 
     CALL ki.KeyboardInputLastLoop
-    CALL _LastLoopOnRocketPhase2_3
+    _LastLoopOnRocketPhase2_3
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;              _LastLoopOnRocketPhase2_3                   ;
 ;----------------------------------------------------------;
-_LastLoopOnRocketPhase2_3
+    MACRO _LastLoopOnRocketPhase2_3
 
     CALL dbs.SetupRocketBank
 
     LD A, (ro.rocketFlyPhase)
     AND ro.PHASE_2_3
-    RET Z
+    JR Z, .end
 
     CALL bg.HideBackgroundBars
 
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      #MainLoop                           ;
+;----------------------------------------------------------;
+MainLoop
+
+    _Loop000
+    _Loop002
+    _Loop005
+    _Loop008
+    _Loop010
+    _Loop025
+    _Loop040
+    _Loop050
+    _Loop075
+    _Loop150
+    _LastLoop
+
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
