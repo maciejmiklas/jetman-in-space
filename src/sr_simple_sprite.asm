@@ -306,10 +306,10 @@ HideSimpleSprite
     RES SPRITE_ST_VISIBLE_BIT, A
     LD (IX + SPR.STATE), A
 
-    CALL sp.HideSprite
+    HideSprite
 
     RET                                         ; ## END of the function ##
-    
+
 ;----------------------------------------------------------;
 ;                        ShowSprite                        ;
 ;----------------------------------------------------------;
@@ -378,7 +378,7 @@ UpdateSpritePattern
     ; Set sprite pattern
     LD HL, (IX + SPR.SDB_POINTER)               ; HL points to a memory location holding a pointer to the current DB position with the next sprite pattern.
     LD A, (HL)                                  ; A holds the next sprite pattern.
-    OR _SPR_PATTERN_SHOW                        ; Store pattern number into Sprite Attribute.
+    OR _SPR_ATTR3_SHOW                        ; Store pattern number into Sprite Attribute.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##

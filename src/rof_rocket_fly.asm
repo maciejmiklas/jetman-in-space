@@ -12,11 +12,11 @@ RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
 ; Max rocket fly distance, when reached, it will explode.
-EXPLODE_Y_HI_H4         = $08
+EXPLODE_Y_HI_H4         = $F0
 EXPLODE_Y_LO_H7E        = $FF
 
-rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_MAX (both inclusive).
-RO_EXPLODE_MAX          = 20                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
+rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_SIZE (both inclusive).
+RO_EXPLODE_SIZE         = 28                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
 rocketExhaustCnt        DB 0                    ; Counts from 0 (inclusive) to #RO_EXHAUST_MAX (exclusive).
 rocketDistance          DW 0                    ; Increments with every rocket move when the rocket is flying towards the next planet.
@@ -30,9 +30,24 @@ soundRepeatDelay        DB FLY_SOUND_REPEAT
 DELAY_TILE              = 5
 decTileDelayCnt         DB DELAY_TILE
 
-rocketExhaustDB                                 ; Sprite IDs for exhaust
+roctExhaustMax                                 ; Sprite IDs for exhaust at max speed.
     DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
+
+roctExhaustPoint        DW roctExhaustMax
+
+roctExhaustSlow                                ; Sprite IDs for exhaust at slow speed.
+    DB 58,59,63,  58,63,59,  63,58,59,  58,59,63,  58,59,63,  59,58,63
+
 RO_EXHAUST_MAX          = 18
+
+ROC_Y_MIN_D70           = 70
+ROC_Y_MAX_D220          = 240
+
+ROC_X_MIN_D10           = 15
+
+; $12C = 300
+ROC_Y_MAX_LO_H36        = $2C
+ROC_Y_MAX_HI_H1         = $1
 
 ;----------------------------------------------------------;
 ;               ResetAndDisableFlyRocket                   ;
@@ -132,6 +147,27 @@ FlyRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  StartRocketExplosion                    ;
+;----------------------------------------------------------;
+; Start explosion sequence. The rocket explodes when the state is flying and counter above zero.
+StartRocketExplosion
+
+    LD A, 1
+    LD (rocketExplodeCnt), A
+
+    ; ##########################################
+    ; Hide exhaust
+    LD A, _EXHAUST_SPRID_D83                     ; Hide sprite on display.
+    CALL sp.SetIdAndHideSprite
+
+    ; ##########################################
+    ; Update state
+    LD A, ro.ROST_EXPLODE
+    LD (ro.rocketState), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                    BlinkFlyingRocket                     ;
 ;----------------------------------------------------------;
 BlinkFlyingRocket
@@ -160,7 +196,7 @@ AnimateRocketExplosion
 
     ; Is the exploding sequence over?
     LD A, (rocketExplodeCnt)
-    CP RO_EXPLODE_MAX
+    CP RO_EXPLODE_SIZE
     JR Z, .explodingEnds
 
     ; Nope, keep exploding.
@@ -247,13 +283,13 @@ AnimateRocketExhaust
     NEXTREG _SPR_REG_NR_H34, A
 
     ; Load sprite pattern to A.
-    LD HL, rocketExhaustDB
+    LD HL, (roctExhaustPoint)
     LD A, (rocketExhaustCnt)
     ADD HL, A
     LD A, (HL)
 
     ; Set sprite pattern.
-    OR _SPR_PATTERN_SHOW                        ; Set show bit.
+    OR _SPR_ATTR3_SHOW                        ; Set show bit.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##
@@ -287,7 +323,7 @@ _ControlFlyingRocket
     CP EXPLODE_Y_LO_H7E
     JR C, .notAtExpolodeDistance
 
-    CALL _StartRocketExplosion
+    CALL StartRocketExplosion
     RET
 .notAtExpolodeDistance
 
@@ -402,27 +438,6 @@ _MoveFlyingRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _StartRocketExplosion                     ;
-;----------------------------------------------------------;
-; Start explosion sequence. The rocket explodes when the state is flying and counter above zero.
-_StartRocketExplosion
-
-    LD A, 1
-    LD (rocketExplodeCnt), A
-
-    ; ##########################################
-    ; Hide exhaust
-    LD A, _EXHAUST_SPRID_D83                     ; Hide sprite on display.
-    CALL sp.SetIdAndHideSprite
-
-    ; ##########################################
-    ; Update state
-    LD A, ro.ROST_EXPLODE
-    LD (ro.rocketState), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                  _UpdateRocketFlyPhase                   ;
 ;----------------------------------------------------------;
 ; Input:
@@ -474,6 +489,7 @@ _UpdateRocketFlyPhase
     LD (ro.rocketFlyPhase), A
     CALL _RocketFLyStartPhase4
     CALL gc.RocketFLyStartPhase4
+
 .not4
 
     RET                                         ; ## END of the function ##
@@ -504,6 +520,9 @@ _RocketFLyStartPhase4
 ;                 _ProcessJoystickInput                    ;
 ;----------------------------------------------------------;
 _ProcessJoystickInput
+
+    LD HL, roctExhaustMax
+    LD (roctExhaustPoint), HL
 
     ; Key Left
     LD A, _KB_5_TO_1_HF7                        ; $FD -> A (5...1).
@@ -567,6 +586,10 @@ _ProcessJoystickInput
 _JoyUp
 
     LD A, (ro.rocY)
+    CP ROC_Y_MIN_D70
+    RET C
+
+    DEC A
     DEC A
     LD (ro.rocY), A
 
@@ -578,11 +601,17 @@ _JoyUp
 _JoyDown
 
     LD A, (ro.rocY)
+    CP ROC_Y_MAX_D220
+    RET NC
+
     INC A
     INC A
     LD (ro.rocY), A
 
     CALL ros.PauseScrollStars
+
+    LD HL, roctExhaustSlow
+    LD (roctExhaustPoint), HL
 
     RET                                         ; ## END of the function ##
 
@@ -591,9 +620,18 @@ _JoyDown
 ;----------------------------------------------------------;
 _JoyLeft
 
-    LD A, (ro.rocX)
-    DEC A
-    LD (ro.rocX), A
+    LD BC, (ro.rocX)
+    LD A, B
+    CP 0
+    JR NZ, .afterMinX
+    LD A, C
+    CP ROC_X_MIN_D10
+    RET C
+.afterMinX
+
+    DEC BC
+    DEC BC
+    LD (ro.rocX), BC
 
     ; ##########################################
     LD A, (decTileDelayCnt)
@@ -614,9 +652,18 @@ _JoyLeft
 ;----------------------------------------------------------;
 _JoyRight
 
-    LD A, (ro.rocX)
-    INC A
-    LD (ro.rocX), A
+    LD BC, (ro.rocX)
+    LD A, B
+    CP ROC_Y_MAX_HI_H1
+    JR NZ, .afterMaxX
+    LD A, C
+    CP ROC_Y_MAX_LO_H36
+    RET NC
+.afterMaxX
+
+    INC BC
+    INC BC
+    LD (ro.rocX), BC
 
     ; ##########################################
     LD A, (decTileDelayCnt)

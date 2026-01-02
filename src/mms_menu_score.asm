@@ -14,12 +14,12 @@ ASCII_A                 = 64                    ; 64 is space, it's not proper A
 ASCII_Z                 = 90
 
 MARGIN_TOP_LI_D2        = 2                     ; Top margin has 3 lines.
-MARGIN_TOP_TI_D80       = MARGIN_TOP_LI_D2*ti.TI_H_D40
+MARGIN_TOP_TI_D80       = MARGIN_TOP_LI_D2*_TI_H_D40
 
 SPACE_LINES_LI_D2       = 2                     ; Space between score lines is 2 lines.
-SPACE_LINES_TI_D80      = SPACE_LINES_LI_D2*ti.TI_H_D40 ; Number of tiles taken by the space between score lines.
+SPACE_LINES_TI_D80      = SPACE_LINES_LI_D2*_TI_H_D40 ; Number of tiles taken by the space between score lines.
 SCORE_H_LI_D3           = 3                     ; Number of lines taken by the single score.
-SCORE_H_TI_D120         = SCORE_H_LI_D3*ti.TI_H_D40; Number of tiles taken by the single score.
+SCORE_H_TI_D120         = SCORE_H_LI_D3*_TI_H_D40; Number of tiles taken by the single score.
 CURSOR_SPR_ADJ          = -4
 
 NAME_TI_SPACE_D3        = 3                     ; Before the name there are 3 spaces.
@@ -273,8 +273,8 @@ _JoyFire
     CALL _SetScoreToReadOnly
 
     ; FX
-    LD A, af.MENU_ENTER
     CALL dbs.SetupAyFxsBank
+    LD A, af.MENU_ENTER
     CALL af.AfxPlay
 
     ; ##########################################
@@ -310,8 +310,8 @@ _JoyDown
     CALL _StoreCurrentChar
 
     ; FX
-    LD A, af.FX_FIRE2
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_FIRE2
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -341,8 +341,8 @@ _JoyUp
     CALL _StoreCurrentChar
 
     ; FX
-    LD A, af.FX_FIRE1
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_FIRE1
     CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
@@ -365,8 +365,8 @@ _JoyLeft
     LD (tileChar), A
 
     ; FX
-    LD A, af.FX_MENU_MOVE
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_MENU_MOVE
     CALL af.AfxPlay
 
     CALL _UpdateCursor
@@ -391,8 +391,8 @@ _JoyRight
     LD (tileChar), A
 
     ; FX
-    LD A, af.FX_MENU_MOVE
     CALL dbs.SetupAyFxsBank
+    LD A, af.FX_MENU_MOVE
     CALL af.AfxPlay
 
     CALL _UpdateCursor
@@ -443,7 +443,7 @@ _UpdateCursor
     ADD DE, LINE_INDICATION_TI_D10
     ADD DE, SCORE_TI_D10
     ADD DE, NAME_TI_SPACE_D3
-    LD D, ti.TI_PIXELS_D8
+    LD D, ti._TI_PIXELS_D8
     MUL D, E
     ADD DE, CURSOR_SPR_ADJ
 
@@ -467,7 +467,7 @@ _UpdateCursor
     ADD DE, MARGIN_TOP_LI_D2                    ; Add top margin.
 
     ; E contains the number of lines from the top to the current score, D is 0.
-    LD D, ti.TI_PIXELS_D8
+    LD D, ti._TI_PIXELS_D8
     MUL D, E                                    ; E contains number of pixels from the top, D is 0.
 
     ; ##########################################

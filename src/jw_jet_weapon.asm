@@ -162,7 +162,7 @@ HideShots
 .shotsLoop
 
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
-    CALL sp.HideSprite
+    HideSprite
     CALL sr.ResetSprite
 
     ; ##########################################

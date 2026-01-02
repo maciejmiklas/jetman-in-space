@@ -225,7 +225,7 @@ _EnemyCollision
 
     ; Exit if enemy is not visible.
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
-    RET Z   
+    RET Z
 
     ; ################################
     ; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman.
@@ -261,7 +261,7 @@ _EnemyCollision
     CALL jt.SetJetStateAir
 
     JR NZ, .afterKickReset
-.afterKickReset 
+.afterKickReset
 
     ; ################################
     ; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die.
@@ -357,20 +357,20 @@ _CheckCollision
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
     LD A, H
     CP 0
-    JR Z, .keepCheckingHorizontal               ; HL > 256 -> no collision.
+    JR Z, .keepCheckingX                        ; HL > 256 -> no collision.
 
     OR 1                                        ; Return NO (Z set).
     RET
-.keepCheckingHorizontal 
+.keepCheckingX
     LD A, L
     LD B, MARG_HOR_D12
     CP B
-    JR C, .checkVertical                        ; Jump if there is horizontal collision, check vertical.
+    JR C, .checkX                               ; Jump if there is horizontal collision, check vertical.
 
     ; L >= D (Horizontal thickness of the enemy) -> no collision.
     OR 1                                        ; Return NO (Z set).
     RET
-.checkVertical
+.checkX
 
     ; We are here because Jetman's horizontal position matches that of the enemy, now check vertical.
     LD B, (IX + SPR.Y)                          ; Y of the enemy.
@@ -383,13 +383,14 @@ _CheckCollision
     ; Jetman is below enemy
     SUB B
     CP E
-    JR C, .collision                            ; Jump if A - B < D
+    JR C, .collision                            ; Jump if A - B < E
     JR .noCollision
 
 .jetmanAboveEnemy
     ; Jetman is above enemy
 
-    ; Swap A and B (compared to above) to avoid negative value
+    ; TODO do not load X/Y again, reuse already loaded values!
+    ; Swap A and B to avoid negative value.
     LD A, (jpo.jetY)
     LD B, A                                     ; B: Y of the Jetman
     LD A, (IX + SPR.Y)                          ; A: Y of the enemy

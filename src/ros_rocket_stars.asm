@@ -15,7 +15,7 @@ TI_ROWS_D96            = ti.TI_VTILES_D32*3    ; 128 rows (40*32), tile starts t
     ASSERT TI_ROWS_D96 =  96
 
 ; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
-ti.TI_H_BYTES_D80       = 320/8 * 2
+_TI_H_BYTES_D80       = 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow                DB ti.TI_VTILES_D32     ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
@@ -23,7 +23,7 @@ sourceTilesRow          DB TI_ROWS_D96         ; Current tiles row in source fil
 
 tileOffsetY             DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tileOffsetX             DW 0
-tilePixelCnt            DB ti.TI_PIXELS_D8      ; Runs from 0 to 7 (ti.TI_PIXELS_D8-1).
+tilePixelCnt            DB ti._TI_PIXELS_D8      ; Runs from 0 to 7 (ti._TI_PIXELS_D8-1).
 
 ; There are 32 tile lines. We insert the black tile line starting from 32 to 1. However, the first black line is inserted when the rocket 
 ; takes off, so this counter runs not from 32 but from 31.
@@ -102,7 +102,7 @@ ScrollStarsOnFlyRocket
     INC A
     LD (tilePixelCnt), A
 
-    CP ti.TI_PIXELS_D8
+    CP ti._TI_PIXELS_D8
     JR NZ, .afterNextTile
     
     ; Reset the counter and fetch the next tile row.
@@ -170,7 +170,6 @@ IncTileOffsetX
 
     LD BC, (tileOffsetX)
     INC BC
-
     ; If X >= 319 then set it to 0. X is 9-bit value.
     ; 319 = 256 + 63 = %0000'0001 + %0011'1111 -> MSB: 1, LSB: 63.
     LD A, B                                     ; Load MSB from X into A.
@@ -228,26 +227,26 @@ _NextStarsTileRow
     ; ##########################################
     ; Prepare tile copy fom temp RAM to screen RAM
 
-    ; Load the memory address of the starts row to be copied into HL. HL = TI_RAM_ADDR + sourceTilesRow * ti.TI_H_BYTES_D80.
+    ; Load the memory address of the starts row to be copied into HL. HL = TI_RAM_ADDR + sourceTilesRow * _TI_H_BYTES_D80.
     LD D, A
-    LD E, ti.TI_H_BYTES_D80
+    LD E, _TI_H_BYTES_D80
     MUL D, E                                    ; DE contains byte offset to current row.
     LD HL, _RAM_SLOT7_STA_HE000
     ADD HL, DE                                  ; Move RAM pointer to current row.
 
     ; Load the memory address of in-game tiles into DE. This row will be replaced with stars.
-    ; DE = ti.TI_MAP_RAM_H5B00 + tilesRow * ti.TI_H_BYTES_D80.
+    ; DE = ti.TI_MAP_RAM_H5B00 + tilesRow * _TI_H_BYTES_D80.
     LD A, (tilesRow)
     LD D, A
-    LD E, ti.TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains #tilesRow * ti.TI_H_BYTES_D80.
+    LD E, _TI_H_BYTES_D80
+    MUL D, E                                    ; DE contains #tilesRow * _TI_H_BYTES_D80.
     PUSH HL
     LD HL, ti.TI_MAP_RAM_H5B00                  ; HL contains memory offset to tiles.
     ADD HL, DE
     LD DE, HL
     POP HL
 
-    LD BC, ti.TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
+    LD BC, _TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
     LDIR 
 
     ; ##########################################

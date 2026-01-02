@@ -406,15 +406,42 @@ LoadTilePlatformsSprFile
 ;----------------------------------------------------------;
 ;                    LoadSpritesFile                       ;
 ;----------------------------------------------------------;
+; Loads sprites_0.spr/sprites_1.spr 
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadSpritesFile
+
+    LD HL, db2.sprFileName
+    CALL _LoadSpritesFile
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  LoadAsteroidsFile                       ;
+;----------------------------------------------------------;
+; Loadsasteroi_0.spr/asteroi_1.spr
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+LoadAsteroidsFile
+
+    LD HL, db2.astFileName
+    CALL _LoadSpritesFile
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    _LoadSpritesFile                      ;
+;----------------------------------------------------------;
+; Loads sprites_0.spr/sprites_1.spr and asteroi_0.spr/asteroi_1.spr
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+;  - HL: ponter to file name
+_LoadSpritesFile
 
     CALL dbs.SetupArrays2Bank
 
     ; Load first file
     PUSH DE
-    LD HL, db2.sprFileName
     CALL _CopyFileName
 
     CALL dbs.SetupSpritesBank
@@ -428,7 +455,7 @@ LoadSpritesFile
     LD BC, db2.SPR_FILE_BYT_D8192
     CALL _FileRead
     POP DE
-    
+
     ; ##########################################
     ; Load second file
 
@@ -442,6 +469,7 @@ LoadSpritesFile
     CALL _FileRead
 
     RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;              LoadRocketStarsTilemapFile                  ;

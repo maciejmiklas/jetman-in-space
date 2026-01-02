@@ -7,12 +7,6 @@
 ;----------------------------------------------------------;
     MODULE ti
 
-; 320/8*2 = 80 bytes pro row -> single tile has 8x8 pixels. 320/8 = 40 tiles pro line, each tile takes 2 bytes.
-TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
-TI_H_D40                = 40
-TI_V_D32                = 32
-TI_H_BYTES_D80          = TI_H_D40 *2 
-
 ; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
 TI_MAP_RAM_H5B00        = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap.
@@ -22,7 +16,7 @@ TI_MAP_RAM_H5B00        = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap.
 TI_MAP_BANK_OFFSET      = (TI_MAP_RAM_H5B00 - _RAM_SLOT2_STA_H4000) >> 8
     ASSERT TI_MAP_BANK_OFFSET =  $1B
 
-TI_MAP_TILES            = TI_H_D40*TI_V_D32
+TI_MAP_TILES            = _TI_H_D40*_TI_V_D32
 TI_MAP_BYTES_D2560      = TI_MAP_TILES*2        ; 2560 bytes. 320x256 = 40x32 tiles (each 8x8 pixels), each tile takes 2 bytes.
 
 ; Each tile sprite has 8x8 pixels = 64 and 32 bytes due to a 4-bit color. Sprites are combined into a 4x4 structure,
@@ -30,14 +24,6 @@ TI_MAP_BYTES_D2560      = TI_MAP_TILES*2        ; 2560 bytes. 320x256 = 40x32 ti
 ; The editor stores 4 sprites (4x4) in a single row. 53/4 = 13 rows. The editor can contain at most 4x13 large sprites.
 ;   6910                 =           $7FFF      -    $5B00     -     2560
 TI_DEF_MAX_D6910         = _RAM_SLOT3_END_H7FFF - TI_MAP_RAM_H5B00 - TI_MAP_BYTES_D2560
-
-TI_CLIP_X1_D0           = 0
-TI_CLIP_X2_D159         = 159
-TI_CLIP_Y1_D0           = 0
-TI_CLIP_FULLY2_D255     = _SC_RESY1_D255
-
-TI_CLIP_TOP_D8          = TI_PIXELS_D8
-TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - TI_PIXELS_D8
 
 TX_ASCII_OFFSET_D34     = 34                    ; Tiles containing characters beginning with '!' - this is 33 in the ASCII table.
 TX_PALETTE_D0           = 0                     ; Palette byte for tile characters.
@@ -50,7 +36,7 @@ TX_IDX_ARROWS           = TX_ASCII_OFFSET_D34 + 190
 TX_IDX_ENTER            = TX_ASCII_OFFSET_D34 + TI_ENTER
 TX_IDX_MINUS            = TX_ASCII_OFFSET_D34 + 11
 
-TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
+_TI_PIXELS_D8            = 8                     ; Size of a single tile in pixels.
 TI_VTILES_D32           = 256/8                 ; 256/8 = 32 rows (256 - vertical screen size).
     ASSERT TI_VTILES_D32 =  32
 
@@ -86,14 +72,9 @@ SetupTiles
     NEXTREG _TI_MAP_CONTROL_H6B, %10000001      ; 40x32, 8-pixel tiles = 320x256.
     NEXTREG _TI_ATTRIBUTE_H6C, %00000000        ; Palette offset, visuals.
 
-    ; Setup clip window to hide bottom tile row
-    CALL SetTilesClipFull
-
     ; Tell hardware where to find tiles. Bits 5-0 = MSB of address of the tilemap in Bank 5.
     NEXTREG _TI_MAP_ADR_H6E, TI_MAP_BANK_OFFSET ; MSB of tilemap in bank 5.
     NEXTREG _TI_DEF_ADR_H6F, TI_DEF_BANK_OFFSET ; MSB of tilemap definitions (sprites).
-
-    CALL SetTilesClipOff
 
     ; Black for tilemap transparency.
     NEXTREG _DC_REG_TI_TRANSP_H4C, _COL_BLACK_D0
@@ -175,7 +156,9 @@ ShakeTilemap
 ResetTilemapOffset
 
     XOR A
+
     NEXTREG _DC_REG_TI_X_LSB_H30, A
+    NEXTREG _DC_REG_TI_X_MSB_H2F, A
     NEXTREG _DC_REG_TI_Y_H31, A
 
     RET                                         ; ## END of the function ##
@@ -233,7 +216,7 @@ ClearTileLine
 
     ; DE will contain the tile memory offset to the tile line given by A.
     LD E, A
-    LD D, TI_H_BYTES_D80
+    LD D, _TI_H_BYTES_D80
     MUL D, E
 
     LD HL, TI_MAP_RAM_H5B00                     ; HL points to screen memory containing tilemap.
@@ -241,7 +224,7 @@ ClearTileLine
     ADD HL, DE                                  ; Move HL to tile line given by A.
 
     LD A, TI_EMPTY_D198
-    LD B, TI_H_D40
+    LD B, _TI_H_D40
 
 .loopV
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile.
@@ -263,12 +246,12 @@ CleanAllTiles
 
     ; ##########################################
     LD A, TI_EMPTY_D198
-    LD B, TI_H_D40
+    LD B, _TI_H_D40
 
     ; Number of loops: 40*32
 .loopH
     PUSH BC
-    LD B, TI_V_D32
+    LD B, _TI_V_D32
 
 .loopV
     LD (HL), TX_PALETTE_D0                      ; Set palette for tile.
@@ -302,43 +285,6 @@ CleanTiles
     INC HL  
 
     DJNZ .loop                                  ; Loop until B == 0.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     SetTilesClipOff                      ;
-;----------------------------------------------------------;
-SetTilesClipOff
-
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, 0
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    SetTilesClipFull                      ;
-;----------------------------------------------------------;
-SetTilesClipFull
-
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X1_D0
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X2_D159
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_Y1_D0
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_FULLY2_D255
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  SetTilesClipHorizontal                  ;
-;----------------------------------------------------------;
-; 8px clip from top and 8px clip from the bottom.
-SetTilesClipHorizontal
-
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X1_D0
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_X2_D159
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_TOP_D8
-    NEXTREG _C_TI_CLIP_WINDOW_H1B, TI_CLIP_BOTTOM_D247
 
     RET                                         ; ## END of the function ##
 

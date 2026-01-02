@@ -37,10 +37,10 @@ ST_MOVE_DOWN            = 4
 
 starsState              DB ST_SHOW
 
-ST_L1_MOVE_DEL_D10      = 8                     ; Stars move delay for layer 1.
+ST_L1_MOVE_DEL_D8       = 8                     ; Stars move delay for layer 1.
 ST_L2_MOVE_DEL_D2       = 2                     ; Stars move delay for layer 2.
 
-starsMoveL1Delay        DB ST_L1_MOVE_DEL_D10   ; Delay counter for stars on layer 1 (there are 2 layers of stars).
+starsMoveL1Delay        DB ST_L1_MOVE_DEL_D8    ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 starsMoveL2Delay        DB ST_L2_MOVE_DEL_D2    ; Delay counter for stars on layer 2.
 
 randColor               DB 0                    ; Rand value from the previous call.
@@ -135,10 +135,10 @@ ShowStars
 
     ; Render
     CALL _SetupLayer1
-    CALL _RenderStars
+    CALL _MoveAndRenderStars
 
     CALL _SetupLayer2
-    CALL _RenderStars
+    CALL _MoveAndRenderStars
 
     RET                                         ; ## END of the function ##
 
@@ -170,6 +170,29 @@ MoveStarsUp
     ;###########################################
     CALL _MoveStarsL1Up
     CALL _MoveStarsL2Up
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  MoveFastStarsDown                       ;
+;----------------------------------------------------------;
+MoveFastStarsDown
+
+    ; Update state
+    LD A, ST_MOVE_DOWN
+    LD (starsState), A
+
+    CALL _SetupLayer2
+    CALL _MoveAndRenderStars
+
+    LD A, (mld.counter000FliFLop)
+    CP _GC_FLIP_ON_D1
+    RET NZ
+
+    CALL _MoveAndRenderStars
+
+    CALL _SetupLayer1
+    CALL _MoveAndRenderStars
 
     RET                                         ; ## END of the function ##
 
@@ -243,14 +266,13 @@ _MoveStarsL1Down
     RET NZ                                      ; Do not move yet, wait for 0.
     
     ; Reset delay
-    LD A, ST_L1_MOVE_DEL_D10
+    LD A, ST_L1_MOVE_DEL_D8
     LD (starsMoveL1Delay), A
-
 
     ;###########################################
     ; Render
     CALL _SetupLayer1
-    CALL _RenderStars
+    CALL _MoveAndRenderStars
 
     RET                                         ; ## END of the function ##
 
@@ -273,7 +295,7 @@ _MoveStarsL2Down
     ;###########################################
     ; Render
     CALL _SetupLayer2
-    CALL _RenderStars
+    CALL _MoveAndRenderStars
 
     RET                                         ; ## END of the function ##
 
@@ -290,13 +312,13 @@ _MoveStarsL1Up
     RET NZ                                      ; Do not move yet, wait for 0.
     
     ; Reset delay
-    LD A, ST_L1_MOVE_DEL_D10
+    LD A, ST_L1_MOVE_DEL_D8
     LD (starsMoveL1Delay), A
 
     ;###########################################
     ; Render
     CALL _SetupLayer1
-    CALL _RenderStars
+    CALL _MoveAndRenderStars
 
     RET                                         ; ## END of the function ##
 
@@ -319,7 +341,7 @@ _MoveStarsL2Up
     ;###########################################
     ; Render
     CALL _SetupLayer2
-    CALL _RenderStars
+    CALL _MoveAndRenderStars
 
     RET                                         ; ## END of the function ##
 
@@ -445,9 +467,9 @@ _NextStarsColor
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    _RenderStars                          ;
+;                  _MoveAndRenderStars                     ;
 ;----------------------------------------------------------;
-_RenderStars
+_MoveAndRenderStars
 
     CALL dbs.SetupArrays1Bank
     LD A, (starsDataSize)

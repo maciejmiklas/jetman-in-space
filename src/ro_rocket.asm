@@ -160,7 +160,7 @@ UpdateRocketSpritePattern
     ; ##########################################
     ; Set sprite pattern
     LD A, D
-    OR _SPR_PATTERN_SHOW                        ; Set show bit.
+    OR _SPR_ATTR3_SHOW                        ; Set show bit.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     RET                                         ; ## END of the function ##

@@ -24,6 +24,27 @@ SP_ADDR_HC000           = _RAM_SLOT6_STA_HC000 ; RAM start address for sprites.
 ; Following Enemy:      98-108
 
 ;----------------------------------------------------------;
+;                    ResetAllSprites                       ;
+;----------------------------------------------------------;
+ResetAllSprites
+
+    LD B, 128
+.asLoop
+
+    LD A, B
+    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
+
+    NEXTREG _SPR_REG_X_H35, 0
+    NEXTREG _SPR_REG_Y_H36, 0
+    NEXTREG _SPR_REG_ATR2_H37, 0
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE_EXT
+    NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_ANCHOR
+
+    DJNZ .asLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      LoadSpritesFPGA                     ;
 ;----------------------------------------------------------;
 ; Loads sprites from a file into hardware using DMA.
@@ -93,12 +114,11 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 ;----------------------------------------------------------;
 ;                      HideSprite                          ;
 ;----------------------------------------------------------;
-HideSprite
+    MACRO HideSprite
 
-    LD A, _SPR_PATTERN_HIDE                     ; Hide sprite on display.
-    NEXTREG _SPR_REG_ATR3_H38, A
+    NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  SetIdAndHideSprite                      ;
@@ -107,9 +127,9 @@ SetIdAndHideSprite
 ; Input:
 ;  - A: Sprite ID.
 
-    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands
+    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
-    CALL HideSprite
+    HideSprite
 
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;

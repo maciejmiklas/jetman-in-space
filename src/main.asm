@@ -21,9 +21,9 @@ start
 
     LD A, 1
     LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
+    ;CALL gc.LoadCurrentLevel
 
-    ;CALL gc.LoadMainMenu
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
@@ -77,8 +77,9 @@ mainLoop
     INCLUDE "btd_tod_palette.asm"
     INCLUDE "gb_game_bar.asm"
     INCLUDE "sc_screen.asm"
-    INCLUDE "sr_simple_sprite.asm"
     INCLUDE "sp_sprite.asm"
+    INCLUDE "sr_simple_sprite.asm"
+
     INCLUDE "jt_jet_state.asm"
     INCLUDE "jpo_jet_position.asm"
     INCLUDE "jco_jet_collision.asm"
@@ -176,6 +177,9 @@ mainLoop
     INCLUDE "rod_rocket_data.asm"
     INCLUDE "rof_rocket_fly.asm"
     INCLUDE "ros_rocket_stars.asm"
+    INCLUDE "rot_rocket_asteroids.asm"
+    INCLUDE "rotd_rocket_asteroids_data.asm"
+
     ASSERT $$ == dbs.ROCKET_S6_D36
 
 ;----------------------------------------------------------;
