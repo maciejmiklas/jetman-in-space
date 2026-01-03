@@ -41,7 +41,7 @@ jetInactivityCnt        DB 0
     JR NZ, .afterEnableCheck
 
     ; Yes, this was the last blocking loop.
-    CALL gc.JoyWillEnable
+    gc.JoyWillEnable
 .afterEnableCheck   
 
     ; ##########################################
@@ -110,7 +110,7 @@ JoyMoveUp
 .afterDec
 
     ; ##########################################
-    CALL gc.JetPlatformTakesOff                 ; Transition from walking to flaying.
+    gc.JetPlatformTakesOff                      ; Transition from walking to flaying.
 
     RET                                         ; ## END of the function ##
 
@@ -280,7 +280,7 @@ JoystickMoveProcessed
 
 .inactive
 
-    CALL gc.MovementInactivity
+    gc.MovementInactivity
 
     RET                                         ; ## END of the function ##
 

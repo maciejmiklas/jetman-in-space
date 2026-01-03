@@ -166,7 +166,7 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     JR NZ, .end
 
     ; We have collision!
-    CALL gc.EnemyHitsJet
+    gc.EnemyHitsJet
 
 .end
     ENDM                                        ; ## END of the macro ##

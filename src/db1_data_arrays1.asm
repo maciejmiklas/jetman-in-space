@@ -118,7 +118,7 @@ tilePalette1Bin                              ; 9-bit
 	DB $D5, $01, $E0, $00, $D9, $01, $FD, $01, $26, $01, $2A, $01, $DA, $01, $E3, $01
 
 TILE_PAL_SIZE_L1        = $ - tilePalette1Bin
-    ASSERT TILE_PAL_SIZE_L1 <= 256
+    ASSERT TILE_PAL_SIZE_L1 < 256
 
 ; ##############################################
 ; Level: 5-6
@@ -156,7 +156,7 @@ tilePalette2Bin                              ; 9-bit
     DB $C1, $01, $E0, $00, $58, $00, $F8, $00, $26, $01, $2A, $01, $1C, $00, $E3, $01
 
 TILE_PAL_SIZE_L2        = $ - tilePalette2Bin
-    ASSERT TILE_PAL_SIZE_L2 <= 256
+    ASSERT TILE_PAL_SIZE_L2 < 256
 
 ; ##############################################
 ; Level: 8
@@ -204,10 +204,10 @@ tilePalette3Bin                                  ; RGB332, 8 bit
 	DB $E3, $01, $DD, $01, $DD, $00, $D9, $01, $D1, $01, $D8, $00, $C9, $01, $C5, $01
 	DB $D5, $01, $E0, $00, $D9, $01, $FD, $01, $26, $01, $2A, $01, $DA, $01, $E3, $01
 	DB $E3, $01, $60, $00, $A4, $00, $96, $01, $97, $00, $03, $00, $88, $01, $B8, $00
-	DB $F9, $00, $FC, $00, $00, $00, $78, $00, $9C, $00, $2A, $00, $4E, $00, $E0, $00
+	DB $F9, $00, $FC, $00, $00, $00, $78, $00, $9C, $00, $2A, $00, $4E, $00
 
 TILE_PAL_SIZE_L3        = $ - tilePalette3Bin
-    ASSERT TILE_PAL_SIZE_L3 <= 256
+    ASSERT TILE_PAL_SIZE_L3 < 256
 
 ;----------------------------------------------------------;
 ;                     Stars Position                       ;

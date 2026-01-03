@@ -102,19 +102,27 @@ mainLoop
     CALL sc.WaitForBottomScanline
     JR mainLoop
 
+    MACRO deb
+    NEXTREG 2,8
+    ENDM
+
+    MACRO deba val
+    LD A, val
+    NEXTREG 2,8
+    ENDM
 ;----------------------------------------------------------;
 ;                       Includes                           ;
 ;----------------------------------------------------------;
     INCLUDE "_constants.asm"
 
     INCLUDE "gid_game_input_data.asm"
-    INCLUDE "gi_game_input.asm"
     INCLUDE "tx_text.asm"
     INCLUDE "ti_tiles.asm"
     INCLUDE "ut_util.asm"
     INCLUDE "mld_main_loop_data.asm"
     INCLUDE "jt_jet_state.asm"
     INCLUDE "gc_game_cmd.asm"
+    INCLUDE "gi_game_input.asm"
     INCLUDE "er_error.asm"
     INCLUDE "fi_file_io.asm"
     INCLUDE "dbs_bank_setup.asm"
