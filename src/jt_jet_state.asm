@@ -44,21 +44,21 @@ difLevel                DB DIF_NORMAL
 levelNumber             DW "00"                 ; ASCII level number from 01 to 10
 
 ;----------------------------------------------------------;
-;               UpdateStateOnJoyWillEnable                 ;
+;              jt.UpdateStateOnJoyWillEnable               ;
 ;----------------------------------------------------------;
-UpdateStateOnJoyWillEnable
+    MACRO jt.UpdateStateOnJoyWillEnable
 
     ; Reset #jetAir
-    LD A, (jetAir)
-    CP JT_STATE_INACTIVE
+    LD A, (jt.jetAir)
+    CP jt.JT_STATE_INACTIVE
     JR Z, .afterResetAir                        ; Do not need to reset if #jetAir is inactive.
 
     ; Reset!
-    LD A, AIR_FLY
-    LD (jetAir), A
+    LD A, jt.AIR_FLY
+    LD (jt.jetAir), A
 .afterResetAir
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                      SetJetStateAir                      ;
@@ -87,34 +87,34 @@ SetJetStateGnd
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     SetJetStateRip                       ;
+;                   jt.SetJetStateRip                      ;
 ;----------------------------------------------------------;
-SetJetStateRip
+    MACRO jt.SetJetStateRip
 
     XOR A
-    LD (jetAir), A
-    LD (jetGnd), A
+    LD (jt.jetAir), A
+    LD (jt.jetGnd), A
 
-    LD A, JETST_RIP
-    LD (jetState), A
+    LD A, jt.JETST_RIP
+    LD (jt.jetState), A
 
-    RET                                         ; ## END of the function ##
-    
+    ENDM                                        ; ## END of the macro ##
+
 ;----------------------------------------------------------;
-;                   SetJetStateRespawn                     ;
+;                 jt.SetJetStateRespawn                    ;
 ;----------------------------------------------------------;
-SetJetStateRespawn
+    MACRO jt.SetJetStateRespawn
 
-    LD A, GND_STAND
-    LD (jetGnd), A
+    LD A, jt.GND_STAND
+    LD (jt.jetGnd), A
 
     XOR A
-    LD (jetAir), A
+    LD (jt.jetAir), A
     
-    LD A, JETST_NORMAL
-    LD (jetState), A
-    
-    RET                                         ; ## END of the function ##
+    LD A, jt.JETST_NORMAL
+    LD (jt.jetState), A
+
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                   SetJetStateInactive                    ;
@@ -129,29 +129,31 @@ SetJetStateInactive
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       ResetOverheat                      ;
+;                     jt.ResetOverheat                     ;
 ;----------------------------------------------------------;
-ResetOverheat
+    MACRO jt.ResetOverheat
 
     ; Reset overheat only if it's active.
-    LD A, (jetState)
-    CP JETST_OVERHEAT
-    RET NZ
+    LD A, (jt.jetState)
+    CP jt.JETST_OVERHEAT
+    JR NZ, .end
 
-    LD A, JETST_NORMAL
-    LD (jetState), A
-    
-    RET                                         ; ## END of the function ##
+    LD A, jt.JETST_NORMAL
+    LD (jt.jetState), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                       SetJetState                        ;
+;                     jt.SetJetState                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:                                         ; Air State: #JETST_XXX
-SetJetState
-    LD (jetState), A
-    
-    RET                                         ; ## END of the function ##
+    MACRO jt.SetJetState
+
+    LD (jt.jetState), A
+
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -515,9 +515,9 @@ PlatformWeaponHit
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                   PlayFuelThiefFx                        ;
+;                 gc.PlayFuelThiefFx                       ;
 ;----------------------------------------------------------;
-    MACRO PlayFuelThiefFx
+    MACRO gc.PlayFuelThiefFx
 
     CALL dbs.SetupPatternEnemyBank
     LD A, (enu.thiefState)
@@ -537,9 +537,9 @@ PlatformWeaponHit
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                     WeaponHitEnemy                       ;
+;                   gc.WeaponHitEnemy                     ;
 ;----------------------------------------------------------;
-    MACRO WeaponHitEnemy
+    MACRO gc.WeaponHitEnemy
 
     CALL dbs.SetupArrays2Bank
 
@@ -629,9 +629,9 @@ KillOneEnemy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                JetmanEnemiesCollision                    ;
+;              gc.JetmanEnemiesCollision                  ;
 ;----------------------------------------------------------;
-    MACRO JetmanEnemiesCollision
+    MACRO gc.JetmanEnemiesCollision
 
     CALL dbs.SetupArrays2Bank
 
@@ -763,7 +763,7 @@ EnemyHitsJet
 
     ; ##########################################
     ; This is the first enemy hit.
-    CALL jt.SetJetStateRip
+    jt.SetJetStateRip
     CALL jw.ResetWeapon
     
     ; Change animation.
@@ -796,7 +796,7 @@ RespawnJet
 
     ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
     CALL bm.CopyImageData
-    CALL jt.SetJetStateRespawn
+    jt.SetJetStateRespawn
     CALL jco.MakeJetInvincible
     CALL bg.UpdateBackgroundOnJetmanMove
 
@@ -1170,7 +1170,7 @@ MovementInactivity
 ;----------------------------------------------------------;
 JoyWillEnable
 
-    CALL jt.UpdateStateOnJoyWillEnable
+    jt.UpdateStateOnJoyWillEnable
 
     RET                                         ; ## END of the function ##
 

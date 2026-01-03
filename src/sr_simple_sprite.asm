@@ -306,7 +306,7 @@ HideSimpleSprite
     RES SPRITE_ST_VISIBLE_BIT, A
     LD (IX + SPR.STATE), A
 
-    HideSprite
+    sp.HideSprite
 
     RET                                         ; ## END of the function ##
 

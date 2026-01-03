@@ -54,7 +54,7 @@ FIRE_FX_OFF             = 0
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                        _WeaponFx                         ;
+;                      _WeaponFx                           ;
 ;----------------------------------------------------------;
     MACRO _WeaponFx
 
@@ -229,7 +229,7 @@ HideShots
 .shotsLoop
 
     CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
-    HideSprite
+    sp.HideSprite
     CALL sr.ResetSprite
 
     ; ##########################################
