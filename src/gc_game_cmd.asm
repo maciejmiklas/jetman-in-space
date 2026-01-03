@@ -366,7 +366,7 @@ RocketFLyPhase2and3
 
     CALL ros.ScrollStarsOnFlyRocket
     CALL st.MoveFastStarsDown
-    CALL bg.UpdateBackgroundOnRocketMove
+    bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
