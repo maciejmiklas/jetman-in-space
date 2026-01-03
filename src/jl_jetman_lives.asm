@@ -48,7 +48,7 @@ LifeDown
 
     CP 0
     JR NZ, .keepPlaying
-    CALL gc.GameOver
+    gc.GameOver
     RET
 .keepPlaying
 
