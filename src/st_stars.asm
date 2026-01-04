@@ -39,7 +39,7 @@ ST_MOVE_DOWN            = 4
 starsState              DB ST_SHOW
 
 ST_L1_MOVE_DEL_D8       = 8                     ; Stars move delay for layer 1.
-ST_L2_MOVE_DEL_D2       = 2                     ; Stars move delay for layer 2.
+ST_L2_MOVE_DEL_D2       = 3                     ; Stars move delay for layer 2.
 
 starsMoveL1Delay        DB ST_L1_MOVE_DEL_D8    ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 starsMoveL2Delay        DB ST_L2_MOVE_DEL_D2    ; Delay counter for stars on layer 2.
@@ -338,6 +338,20 @@ starsPalL2Addr         DW 0
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
+;                   _PrepRenderStars                       ;
+;----------------------------------------------------------;
+    MACRO _PrepRenderStars
+
+    ; Move stars only if enabled.
+    LD A, (starsState)
+    CP ST_C_HIDDEN
+    RET C
+
+    CALL dbs.SetupArrays1Bank
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PUBLIC FUNCTIONS                       ;
 ;----------------------------------------------------------;
@@ -406,13 +420,6 @@ ShowStars
     LD A, ST_SHOW
     LD (starsState), A
 
-    ; Render
-    CALL _SetupLayer1
-    CALL _MoveAndRenderStars
-
-    CALL _SetupLayer2
-    CALL _MoveAndRenderStars
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -429,11 +436,13 @@ HideStars
 ;                       MoveStarsUp                        ;
 ;----------------------------------------------------------;
 MoveStarsUp
-    ret
+
     ; Move stars only if enabled.
     LD A, (starsState)
     CP ST_C_HIDDEN
     RET C
+
+    CALL dbs.SetupArrays1Bank
 
     ;###########################################
     ; Update state
@@ -447,13 +456,29 @@ MoveStarsUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                      MoveStarsDown                       ;
+;----------------------------------------------------------;
+MoveStarsDown
+
+    _PrepRenderStars
+
+    ;###########################################
+    ; Update state
+    LD A, ST_MOVE_DOWN
+    LD (starsState), A
+
+    ;###########################################
+    _MoveStarsL1Down
+    _MoveStarsL2Down
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  MoveFastStarsDown                       ;
 ;----------------------------------------------------------;
 MoveFastStarsDown
 
-    ; Update state
-    LD A, ST_MOVE_DOWN
-    LD (starsState), A
+    _PrepRenderStars
 
     CALL _SetupLayer2
     CALL _MoveAndRenderStars
@@ -470,55 +495,38 @@ MoveFastStarsDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      MoveStarsDown                       ;
+;                      BlinkStars                          ;
 ;----------------------------------------------------------;
-MoveStarsDown
-    ret
-    ; Move stars only if enabled.
-    LD A, (starsState)
-    CP ST_C_HIDDEN
-    RET C
+BlinkStars
 
-    ;###########################################
-    ; Update state
-    LD A, ST_MOVE_DOWN
+    _PrepRenderStars
+
+    LD A, (starsState)
+    CP ST_SHOW
+
+    ; We would like to execute _MoveAndRenderStars only if there is no movement up/down. If previous state is ST_SHOW, it means that there
+    ; is no movement. Otherwise state should be ST_MOVE_UP/ST_MOVE_DOWN (is cannot be ST_HIDDEN, see _PrepRenderStars).
+    PUSH AF
+
+    JR Z, .afterStateUpdate
+    LD A, ST_SHOW
     LD (starsState), A
+.afterStateUpdate
 
-    ;###########################################
-    _MoveStarsL1Down
-    _MoveStarsL2Down
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       BlinkStarsL1                       ;
-;----------------------------------------------------------;
-BlinkStarsL1
-
-    ; Execute stars only if enabled.
-    LD A, (starsState)
-    CP ST_C_HIDDEN
-    RET C
-
+    ; Blink L1
     CALL _SetupLayer1
     CALL _NextStarsColor
-    CALL ShowStars
 
-    RET                                         ; ## END of the function ##
+    POP AF
+    PUSH AF
+    CALL Z, _MoveAndRenderStars                 ; Call only when #starsState == ST_SHOW
 
-;----------------------------------------------------------;
-;                       BlinkStarsL2                       ;
-;----------------------------------------------------------;
-BlinkStarsL2
-    ret
-    ; Execute stars only if enabled.
-    LD A, (starsState)
-    CP ST_C_HIDDEN
-    RET C
-
+    ; Blink L2
     CALL _SetupLayer2
     CALL _NextStarsColor
-    CALL ShowStars
+
+    POP AF
+    CALL Z, _MoveAndRenderStars                 ; Call only when #starsState == ST_SHOW
 
     RET                                         ; ## END of the function ##
 
@@ -586,15 +594,10 @@ _SetupLayer2
 
     RET                                         ; ## END of the function ##
 
-tmp db 0
 ;----------------------------------------------------------;
 ;                     _NextStarsColor                      ;
 ;----------------------------------------------------------;
 _NextStarsColor
-
-    deba $F0
-
-    CALL dbs.SetupArrays1Bank
 
     LD HL, (starsSCAddr)
     LD A, (starsSCSize)
@@ -616,9 +619,6 @@ _NextStarsColor
 .starsLoop
     INC HL                                      ; Move HL after star position to color info.
 
-    ld a, (tmp)
-    inc a
-    ld (tmp), a
     ; ##########################################
     ; Do not change the color always, randomize it.
     LD A, (randColor)
@@ -651,8 +651,6 @@ _NextStarsColor
     POP BC
     DJNZ .scLoop
 
-    ld a, (tmp)
-    deb
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -660,7 +658,6 @@ _NextStarsColor
 ;----------------------------------------------------------;
 _MoveAndRenderStars
 
-    CALL dbs.SetupArrays1Bank
     LD A, (starsSCSize)
     LD B, A
     LD HL, (starsSCAddr)
@@ -729,7 +726,7 @@ _CanShowStar
 
 .notAllowed2
     LD A, CANSS_NO
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

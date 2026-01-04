@@ -395,8 +395,7 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL st.BlinkStarsL1
-    CALL st.BlinkStarsL2
+    CALL st.BlinkStars
 
     CALL dbs.SetupRocketBank
     CALL rot.AnimateAsteroids
@@ -432,8 +431,7 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL st.BlinkStarsL1
-    CALL st.BlinkStarsL2
+    CALL st.BlinkStars
 
     CALL dbs.SetupRocketBank
     CALL rof.AnimateRocketExhaust
@@ -470,7 +468,6 @@
     CALL roa.BlinkRocketReady
     CALL roa.AnimateTankExplode
 
-    CALL st.BlinkStarsL1
     CALL jo.AnimateJetpackOverheat
 
     CALL dbs.SetupTileAnimationBank
@@ -538,9 +535,8 @@
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
     CALL enf.RespawnFormation
-
     CALL gc.RespawnEnemy
-    CALL st.BlinkStarsL2
+    CALL st.BlinkStars
 
 .end
     ENDM                                        ; ## END of the macro ##

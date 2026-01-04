@@ -67,12 +67,11 @@ PrintDebug
 
 /*
     ; ##########################################
-    LD BC, 40
+    LD BC, 60
     LD H, 0
-    LD A, (jpo.jetY)
+    LD A, (st.tmp)
     LD L, A
     CALL ut.PrintNumber
-
 */
     RET                                         ; ## END of the function ##
 
