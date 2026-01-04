@@ -39,29 +39,28 @@ UpdateBackgroundOnJetmanMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;           bg.UpdateBackgroundOnRocketMove                ;
+;             UpdateBackgroundOnRocketMove                 ;
 ;----------------------------------------------------------;
-    MACRO bg.UpdateBackgroundOnRocketMove
+UpdateBackgroundOnRocketMove
 
-    LD A, (bg.bgOffset)
+    LD A, (bgOffset)
     CP _SC_RESY1_D255                           ; Keep increasing until we reach 255, the whole image is hidden afterward.
-    JR Z, .end
+    RET Z
 
     INC A
-    LD (bg.bgOffset), A
+    LD (bgOffset), A
 
-    CALL bg._MoveBackground
-
-.end
-    ENDM                                        ; ## END of the macro ##
+    CALL _MoveBackground
+    
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                bg.HideBackgroundBars                     ;
+;                  HideBackgroundBars                      ;
 ;----------------------------------------------------------;
 ; Hide the bottom/top stripe of 8 pixels.
-    MACRO bg.HideBackgroundBars
+HideBackgroundBars
 
-    CALL bg._GetGroundImageLine
+    CALL _GetGroundImageLine
     LD C, A
     LD B, 8
 
@@ -73,7 +72,7 @@ UpdateBackgroundOnJetmanMove
     POP BC
     DJNZ .loop
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;              HideBackgroundBehindHorizon                 ;

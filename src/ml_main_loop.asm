@@ -36,6 +36,7 @@
     CALL dbs.SetupMusicBank
     CALL am.MusicLoop
 
+    _Loop000OnRocketPhase2_3
     _Loop000OnPause
     _Loop000OnActiveGame
     _Loop000OnActiveMain
@@ -225,6 +226,22 @@
     JR NZ, .end
 
     CALL gi.GameOptionsInput
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;               _Loop000OnRocketPhase2_3                   ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnRocketPhase2_3
+
+    CALL dbs.SetupRocketBank
+
+    LD A, (ro.rocketFlyPhase)
+    AND ro.PHASE_2_3
+    JR Z, .end
+
+    CALL bg.HideBackgroundBars
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -811,7 +828,7 @@
     AND ro.PHASE_2_3
     JR Z, .end
 
-    bg.HideBackgroundBars
+    CALL bg.HideBackgroundBars
 
 .end
     ENDM                                        ; ## END of the macro ##
