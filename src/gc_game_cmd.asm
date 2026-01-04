@@ -1235,16 +1235,15 @@ JetMoves
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                    gc.GameOver                           ;
+;                      GameOver                            ;
 ;----------------------------------------------------------;
-    MACRO gc.GameOver
-
-    CALL gc._HideGame
+GameOver
+    CALL _HideGame
 
     CALL go.ShowGameOver
     CALL jl.ResetLives
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
