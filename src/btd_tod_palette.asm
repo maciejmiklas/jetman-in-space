@@ -46,7 +46,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
     ; ##########################################
     ; Decrement the brightness of the current color.
     LD DE, (HL)                                 ; DE contains color that will be changed.
-    bp.BrightnessDown
+    CALL bp.BrightnessDown
     LD (HL), DE                                 ; Update temp color.
     INC HL
     INC HL
@@ -127,7 +127,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
 
     ; Set #palColors from #palBytes
     LD BC, PAL_BG_BYTES_D430
-    bp.BytesToColors
+    CALL bp.BytesToColors
     LD A, B
     LD (palColors), A
 
@@ -158,7 +158,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
     LD A, (HL)
     LD D, A
     INC HL
-    bp.WriteColor
+    CALL bp.WriteColor
 
     DJNZ .loopCopyColor
 

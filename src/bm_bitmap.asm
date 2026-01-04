@@ -171,12 +171,12 @@ HideImageLine
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  bm.ReplaceImageLine                     ;
+;                    ReplaceImageLine                      ;
 ;----------------------------------------------------------;
 ; Replaces the line of the displayed layer 2 image with the corresponding line of the given image.
 ; Input:
 ;  - E: line number
-    MACRO bm.ReplaceImageLine
+ReplaceImageLine
 
     LD B, 0
 .bankLoop                                       ; Loop from 0 to dbs.BM_BANKS_D10 - 1
@@ -225,8 +225,7 @@ HideImageLine
     CP dbs.BM_BANKS_D10
     JR NZ, .bankLoop
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

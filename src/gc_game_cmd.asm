@@ -1068,7 +1068,7 @@ JetMoves
 ;----------------------------------------------------------;
     MACRO gc.JetMovesDown
 
-    bg.ShowBackgroundAboveHorizon
+    CALL bg.ShowBackgroundAboveHorizon
     CALL bg.UpdateBackgroundOnJetmanMove
     CALL st.MoveStarsUp
 

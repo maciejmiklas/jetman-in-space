@@ -93,24 +93,23 @@ HideBackgroundBehindHorizon
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              bg.ShowBackgroundAboveHorizon               ;
+;              ShowBackgroundAboveHorizon                  ;
 ;----------------------------------------------------------;
 ; Copy lower background image line from original picture.
-    MACRO bg.ShowBackgroundAboveHorizon
+ShowBackgroundAboveHorizon
 
-    CALL bg._GetGroundImageLine
+    CALL _GetGroundImageLine
 
     ; Do not remove the line if the Jetman is on the ground (offset is 255).
-    CP bg.GBL_RET_A_GND
-    JR Z, .end
+    CP GBL_RET_A_GND
+    RET Z
 
     INC A                                       ; Move image one pixel down (TODO why is that necessary?).
     LD E, A                                     ; E contains bottom line.
 
-    bm.ReplaceImageLine
+    CALL bm.ReplaceImageLine
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
