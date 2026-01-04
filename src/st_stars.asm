@@ -193,7 +193,6 @@ starsPalL2Addr         DW 0
     ; B contains a star position before it was moved - that's the one that should be hidden.
     
     CALL _CanShowStar
-    CP CANSS_YES
     JR NZ, .afterPaintStar                      ; Skip this star if it cannot be hidden.
 
     ; Hide star
@@ -210,8 +209,6 @@ starsPalL2Addr         DW 0
 
     LD B, (HL)                                  ; A contains the position of the already moved star.
     CALL _CanShowStar
-    
-    CP CANSS_YES
     JR NZ, .afterPaintStar                      ; Skip this star if it cannot be painted.
 
     ; Paint star on new postion
@@ -693,10 +690,8 @@ _MoveAndRenderStars
 ;  - B:  Star y-postion to be checked.
 ;  - IY: Points to the current max y postion for the star.
 ; Return:
-;  - A with value CANSS_XXX
-; Modifies: A,C
-CANSS_YES           = 1
-CANSS_NO            = 0
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
 
 _CanShowStar
 
@@ -707,7 +702,7 @@ _CanShowStar
     JR C, .notAllowed                           ; Jump if the max position (A) is below the current (B).
 
 .allowed
-    LD A, CANSS_YES
+    XOR A                                       ; Return YES (Z is reset).
     RET
 
 .notAllowed
@@ -721,11 +716,11 @@ _CanShowStar
 
     CP B
     JR NC, .notAllowed2                         ; Jump if the max position (A) is below the current (B).
-    LD A, CANSS_YES
+    XOR A                                       ; Return YES (Z is reset).
     RET
 
 .notAllowed2
-    LD A, CANSS_NO
+    OR 1                                        ; Return NO (Z set).
 
     RET                                         ; ## END of the function ##
 
