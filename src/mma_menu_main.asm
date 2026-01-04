@@ -410,7 +410,7 @@ _JoyFire
     ; Start game
     CP MENU_EL_START
     JR NZ, .notStartGame
-    gc.StartGameWithIntro
+    CALL gc.StartGameWithIntro
     RET
 .notStartGame
 
@@ -504,7 +504,7 @@ _DifficultyDown
 ;                   _SetupDifficulty                       ;
 ;----------------------------------------------------------;
 _SetupDifficulty
-    gc.DifficultyChange
+    CALL gc.DifficultyChange
 
     LD A, js.SDB_T_KO
     CALL js.ChangeJetSpritePattern

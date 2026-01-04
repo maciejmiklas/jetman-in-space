@@ -30,21 +30,6 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    _LoadLevel1Intro                      ;
-;----------------------------------------------------------;
-    MACRO _LoadLevel1Intro
-
-    CALL gc._HideGame
-
-    LD D, "0"
-    LD E, "1"
-    LD HL, 4048                                 ; Size of intro_1.map.
-    LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
-    CALL li.LoadLevelIntro
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
 ;                     _HideEnemies                         ;
 ;----------------------------------------------------------;
     MACRO _HideEnemies
@@ -135,9 +120,9 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                gc.StartGameWithIntro                     ;
+;                  StartGameWithIntro                      ;
 ;----------------------------------------------------------;
-    MACRO gc.StartGameWithIntro
+StartGameWithIntro
 
     ; Music off
     CALL dbs.SetupMusicBank
@@ -147,20 +132,20 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     LD A, (ll.currentLevel)
     CP _LEVEL_MIN
     JR Z, .intro
-    CALL gc.LoadCurrentLevel
-    JR .end
+    CALL LoadCurrentLevel
+    RET
 
 .intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
-    _LoadLevel1Intro
+    CALL LoadLevel1Intro
 
     ; Music on
     CALL dbs.SetupMusicBank
     LD A, aml.MUSIC_INTRO
     CALL aml.LoadSong
-.end
-    ENDM                                        ; ## END of the macro ##
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       SetupSystem                        ;
@@ -208,6 +193,22 @@ LoadMainMenu
     CALL sc.ResetClippings
 
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     LoadLevel1Intro                      ;
+;----------------------------------------------------------;
+LoadLevel1Intro
+
+    CALL _HideGame
+
+    LD D, "0"
+    LD E, "1"
+    LD HL, 4048                                 ; Size of intro_1.map.
+    LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
+    CALL li.LoadLevelIntro
+
+    RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
 ;               BackgroundPaletteLoaded                    ;
@@ -264,25 +265,12 @@ FuelThiefHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  gc.DifficultyChange                     ;
+;                    DifficultyChange                      ;
 ;----------------------------------------------------------;
 ; Read curent dificluty from #jt.difLevel
-    MACRO gc.DifficultyChange
+DifficultyChange
 
     CALL ll.ResetLevelPlaying
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                       RocketReady                        ;
-;----------------------------------------------------------;
-RocketReady
-
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_ROCKET_READY
-    CALL af.AfxPlay
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -485,14 +473,14 @@ RocketElementDrop
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                   gc.JetPlatformTakesOff                 ;
+;                     JetPlatformTakesOff                  ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPlatformTakesOff
+JetPlatformTakesOff
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform.
-    JR Z, .end
+    RET Z
 
     ; Jetman is taking off.
     LD A, jt.AIR_FLY
@@ -513,19 +501,18 @@ RocketElementDrop
     LD A, af.FX_JET_TAKE_OFF
     CALL af.AfxPlay
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 gc.PlatformWeaponHit                     ;
+;                   PlatformWeaponHit                      ;
 ;----------------------------------------------------------;
-    MACRO gc.PlatformWeaponHit
+PlatformWeaponHit
 
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_FIRE_PLATFORM_HIT
     CALL af.AfxPlay
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
 ;                 gc.PlayFuelThiefFx                       ;
@@ -550,7 +537,7 @@ RocketElementDrop
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                    gc.WeaponHitEnemy                     ;
+;                   gc.WeaponHitEnemy                     ;
 ;----------------------------------------------------------;
     MACRO gc.WeaponHitEnemy
 
@@ -642,7 +629,7 @@ KillOneEnemy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               gc.JetmanEnemiesCollision                  ;
+;              gc.JetmanEnemiesCollision                  ;
 ;----------------------------------------------------------;
     MACRO gc.JetmanEnemiesCollision
 
@@ -687,13 +674,12 @@ KillFewEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    gc.EnemyHit                           ;
+;                      EnemyHit                            ;
 ;----------------------------------------------------------;
 ; Input
 ;    A:  Sprite ID of the enemy.
 ;  - IX: Pointer to enemy's #SPR.
-    MACRO gc.EnemyHit
-
+EnemyHit
     CALL dbs.SetupArrays2Bank
 
     CALL sr.SpriteHit
@@ -714,7 +700,7 @@ KillFewEnemies
 
     CALL sc.HitEnemy1
 
-    JR .end
+    RET
 .afterHitEnemy1
 
      ; ##########################################
@@ -729,7 +715,7 @@ KillFewEnemies
     CALL af.AfxPlay
 
     CALL sc.HitEnemy2
-    JR .end
+    RET
 
 .afterHitEnemy2
 
@@ -740,7 +726,7 @@ KillFewEnemies
     JR Z, .hit3
 
     CP sr.SDB_ENEMY1A 
-    JR NZ, .end
+    RET NZ
 
 .hit3
     ; Yes, enemy 3 hot git.
@@ -750,15 +736,14 @@ KillFewEnemies
 
     CALL sc.HitEnemy3
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   gc.EnemyHitsJet                        ;
+;                       EnemyHitsJet                       ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:    Pointer enemy's #SPR
-    MACRO gc.EnemyHitsJet
+EnemyHitsJet
 
     CALL dbs.SetupArrays2Bank
     
@@ -767,14 +752,14 @@ KillFewEnemies
 
     ; ##########################################
     ; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy.
-    LD A, (jt.jetState)
+    LD A, (jt.jetState)                         
     CP jt.JETST_RIP
-    JR Z, .end                                  ; Exit if RIP.
+    RET Z                                       ; Exit if RIP.
 
     ; ##########################################
     ; Is Jetman invincible? If so, just kill the enemy.
     CP jt.JETST_INV
-    JR Z, .end                                  ; Exit if invincible.
+    RET Z                                       ; Exit if invincible.
 
     ; ##########################################
     ; This is the first enemy hit.
@@ -793,8 +778,7 @@ KillFewEnemies
     ; Remove one life.
     CALL jl.LifeDown
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       RespawnJet                         ;
@@ -834,40 +818,40 @@ RespawnJet
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                   gc.JetpackOverheat                     ;
+;                    JetpackOverheat                       ;
 ;----------------------------------------------------------;
-    MACRO gc.JetpackOverheat
+JetpackOverheat
 
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_JET_OVERHEAT
     CALL af.AfxPlay
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 gc.JetpackTempNormal                     ;
+;                   JetpackTempNormal                      ;
 ;----------------------------------------------------------;
-    MACRO gc.JetpackTempNormal
+JetpackTempNormal
 
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_JET_NORMAL
     CALL af.AfxPlay
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    gc.JetPicksInAir                      ;
+;                      JetPicksInAir                       ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPicksInAir
+JetPicksInAir
 
     CALL sc.PickupInAir
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     gc.JetPicksGun                       ;
+;                       JetPicksGun                        ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPicksGun
+JetPicksGun
 
     CALL sc.PickupRegular
     CALL jw.FireSpeedUp
@@ -876,12 +860,12 @@ RespawnJet
     LD A, af.FX_PICKUP_GUN
     CALL af.AfxPlay
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    gc.JetPicksLife                       ;
+;                      JetPicksLife                        ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPicksLife
+JetPicksLife
 
     CALL sc.PickupRegular
 
@@ -891,22 +875,22 @@ RespawnJet
 
     CALL jl.LifeUp
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   gc.JetPicksGrenade                     ;
+;                     JetPicksGrenade                      ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPicksGrenade
+JetPicksGrenade
 
     CALL sc.PickupRegular
     CALL gr.GrenadePickup
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  gc.JetPicksStrawberry                   ;
+;                   JetPicksStrawberry                     ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPicksStrawberry
+JetPicksStrawberry
 
     CALL sc.PickupRegular
 
@@ -916,12 +900,12 @@ RespawnJet
 
     CALL jco.MakeJetInvincible
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  gc.JetPicksDiamond                      ;
+;                    JetPicksDiamond                       ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPicksDiamond
+JetPicksDiamond
 
     CALL sc.PickupDiamond
 
@@ -929,12 +913,12 @@ RespawnJet
     LD A, af.FX_PICKUP_DIAMOND
     CALL af.AfxPlay
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       JetPicksJar                        ;
 ;----------------------------------------------------------;
-    MACRO gc.JetPicksJar
+JetPicksJar
 
     CALL sc.PickupRegular
     CALL jo.ResetJetpackOverheating
@@ -943,21 +927,21 @@ RespawnJet
     LD A, af.FX_PICKUP_JAR
     CALL af.AfxPlay
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 gc.FreezeEnemies                         ;
+;                   FreezeEnemies                          ;
 ;----------------------------------------------------------;
-    MACRO gc.FreezeEnemies
+FreezeEnemies
 
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_FREEZE_ENEMIES
     CALL af.AfxPlay
 
-    LD DE, gc.FREEZE_ENEMIES_CNT
-    LD (gc.freezeEnemiesCnt), DE
+    LD DE, FREEZE_ENEMIES_CNT
+    LD (freezeEnemiesCnt), DE
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                     RespawnEnemy                         ;
@@ -1050,9 +1034,9 @@ JetMoves
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      gc.JetMovesUp                       ;
+;                        JetMovesUp                        ;
 ;----------------------------------------------------------;
-    MACRO gc.JetMovesUp
+JetMovesUp
 
     ; The #UpdateBackgroundOnJetmanMove calculates #bgOffset, which is used to hide the background line behind the horizon.
     ; To avoid glitches, like not hidden lines, we always have to first hide the line and then calculate the #bgOffset. This will introduce 
@@ -1061,36 +1045,49 @@ JetMoves
     CALL bg.UpdateBackgroundOnJetmanMove
     CALL st.MoveStarsDown
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    gc.JetMovesDown                       ;
+;                      JetMovesDown                        ;
 ;----------------------------------------------------------;
-    MACRO gc.JetMovesDown
+JetMovesDown
 
     CALL bg.ShowBackgroundAboveHorizon
     CALL bg.UpdateBackgroundOnJetmanMove
     CALL st.MoveStarsUp
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 gc.JetBumpsIntoPlatform                  ;
+;                       RocketReady                        ;
 ;----------------------------------------------------------;
-    MACRO gc.JetBumpsIntoPlatform
+RocketReady
+
+    CALL dbs.SetupAyFxsBank
+    LD A, af.FX_ROCKET_READY
+    CALL af.AfxPlay
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   JetBumpsIntoPlatform                   ;
+;----------------------------------------------------------;
+JetBumpsIntoPlatform
 
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_BUMP_PLATFORM
     CALL af.AfxPlay
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                gc.MovementInactivity                     ;
+;                  MovementInactivity                      ;
 ;----------------------------------------------------------;
 ; TODO move to another file
 ; It gets executed as a last procedure after the input has been processed, and there was no movement from joystick.
-    MACRO gc.MovementInactivity
+MovementInactivity
 
     ; Increment inactivity counter.
     LD A, (jm.jetInactivityCnt)
@@ -1109,7 +1106,7 @@ JetMoves
 
     ; Jetman is in the air, not hovering, but is he not moving long enough?
     LD A, (jm.jetInactivityCnt)
-    CP gc.HOVER_START_D250
+    CP HOVER_START_D250
     JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering.
 
     ; Jetman starts to hover!
@@ -1118,46 +1115,46 @@ JetMoves
 
     LD A, js.SDB_HOVER
     CALL js.ChangeJetSpritePattern
-    JR .end                                     ; Already hovering, do not check standing.
+    RET                     ; Already hovering, do not check standing.
 .afterHoover
 
     ; ##########################################
     ; Jetman is not hovering, but should he stand?
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE                     ; Is Jetman on the ground already?
-    JR Z, .end                                  ; Jump if not on the ground.
+    RET Z                                       ; Jump if not on the ground.
 
     LD A, (jt.jetGnd)
     CP jt.GND_STAND                             ; Jetman is on the ground, but is he standing already?
-    JR Z, .end                                  ; Jump if already standing.
+    RET Z                                       ; Jump if already standing.
 
     ; ##########################################
     ; Jetman is on the ground and does not move, but is he not moving long enough?
     LD A, (jm.jetInactivityCnt)
-    CP gc.STAND_START_D30
+    CP STAND_START_D30
     JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing.
-
+    
     ; Transition from walking to standing.
     LD A, jt.GND_STAND
     CALL jt.SetJetStateGnd
 
     LD A, js.SDB_STAND                          ; Change animation.
     CALL js.ChangeJetSpritePattern
-    JR .end
+    RET
 .afterStand
 
     ; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
     ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
     LD A, (jt.jetGnd)
     CP jt.GND_WALK
-    JR NZ, .end                                  ; Jump if not walking.
-
+    RET NZ                                      ; Jump if not walking.
+    
     CP jt.GND_JSTAND
-    JR Z, .end                                   ; Jump already j-standing (just standing - for a short time).
+    RET Z                                       ; Jump already j-standing (just standing - for a short time).
 
     LD A, (jm.jetInactivityCnt)
-    CP gc.JSTAND_START_D15
-    JR NC, .end                                  ; Jump if Jetman stands for too short to trigger j-standing.
+    CP JSTAND_START_D15
+    RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing.
 
     ; Stop walking immediately and stand still.
     LD A, jt.GND_JSTAND
@@ -1166,31 +1163,31 @@ JetMoves
     LD A, js.SDB_JSTAND                         ; Change animation.
     CALL js.ChangeJetSpritePattern
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    gc.JoyWillEnable                      ;
+;                      JoyWillEnable                       ;
 ;----------------------------------------------------------;
-    MACRO gc.JoyWillEnable
+JoyWillEnable
 
     jt.UpdateStateOnJoyWillEnable
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
+
 
 ;----------------------------------------------------------;
-;                 gc.ExitGameToMainMenu                    ;
+;                   ExitGameToMainMenu                     ;
 ;----------------------------------------------------------;
-    MACRO gc.ExitGameToMainMenu
+ExitGameToMainMenu
 
-    CALL gc.LoadMainMenu
-
-    ENDM                                        ; ## END of the macro ##
+    CALL LoadMainMenu
+    
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       gc.NightEnds                       ;
+;                         NightEnds                        ;
 ;----------------------------------------------------------;
-    MACRO gc.NightEnds
+NightEnds
 
     ; #NextTodPalette moves the palette address to the next chunk after loading colors into the hardware. Now, we are after the last 
     ; transition step from day to night (night to day will start), and the palette address points to the memory containing the next step, 
@@ -1198,41 +1195,40 @@ JetMoves
     ; palette containing colors for the darkest night.
     CALL btd.PrevTodPaletteAddr
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   gc.NextDayToNight                      ;
+;                     NextDayToNight                       ;
 ;----------------------------------------------------------;
 ; The function will be called when a night shifts to a day.
 ; Call sequence:
 ; A) NextDayToNight -> NextDayToNight -> .... -> NextDayToNight -> GOTO B).
 ; B) NextNightToDay -> NextNightToDay -> .... -> NextNightToDay -> ChangeToFullDay -> GOTO A).
-    MACRO gc.NextDayToNight
+NextDayToNight
 
     CALL btd.NextTodPalette
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 gc.NextNightToDay                        ;
+;                   NextNightToDay                         ;
 ;----------------------------------------------------------;
 ; The function will be called when a day shifts to a night.
-    MACRO gc.NextNightToDay
+NextNightToDay
 
     CALL btd.PrevTodPalette
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  gc.ChangeToFullDay                      ;
+;                    ChangeToFullDay                       ;
 ;----------------------------------------------------------;
 ; Called when the lighting condition has changed to a full day.
-    MACRO gc.ChangeToFullDay
-
+ChangeToFullDay
     CALL btd.ResetPaletteArrd
     CALL btd.LoadCurrentTodPalette
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      GameOver                            ;

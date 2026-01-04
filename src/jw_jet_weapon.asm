@@ -201,7 +201,7 @@ CheckHitEnemies
     JR NZ, .continue                            ; Jump if there is no hit.
 
     ; We have hit!
-    gc.EnemyHit
+    CALL gc.EnemyHit
 
 .continue
     ; Move HL to the beginning of the next enemy.
@@ -365,7 +365,7 @@ MoveShots
     JR Z, .afterPlatformHit
     PUSH IX
     CALL sr.SpriteHit
-    gc.PlatformWeaponHit
+    CALL gc.PlatformWeaponHit
     POP IX
 .afterPlatformHit
 

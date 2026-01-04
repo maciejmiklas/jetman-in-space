@@ -102,7 +102,7 @@ BAR_ICON_PAL           = $00
     LD A, jt.JETST_NORMAL
     LD (jt.jetState), A
 
-    gc.JetpackTempNormal
+    CALL gc.JetpackTempNormal
 .afterNormTempCheck
 
     CALL _UpdateUiHeatBar
@@ -164,7 +164,9 @@ BAR_ICON_PAL           = $00
     jt.SetJetState
     LD (jt.jetState), A
 
-    gc.JetpackOverheat
+    CALL dbs.SetupAyFxsBank
+    LD A, af.FX_JET_OVERHEAT
+    CALL af.AfxPlay
 
 .afterTempCheck
 
@@ -280,7 +282,9 @@ JetpackOverheatFx
     CP jt.JT_STATE_INACTIVE
     RET NZ
 
-    gc.JetpackOverheat
+    CALL dbs.SetupAyFxsBank
+    LD A, af.FX_JET_OVERHEAT
+    CALL af.AfxPlay
 
     RET                                         ; ## END of the function ##
 

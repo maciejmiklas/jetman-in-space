@@ -1153,7 +1153,7 @@ _JetHitsPlatform
     LD (joyOffBump), A
 
     ; ##########################################
-    gc.JetBumpsIntoPlatform
+    CALL gc.JetBumpsIntoPlatform
 
     RET                                         ; ## END of the function ##
 

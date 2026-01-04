@@ -8,28 +8,6 @@
     MODULE gi
 
 ;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                     PRIVATE MACROS                       ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                     _LoadGivenLevel                      ;
-;----------------------------------------------------------;
-    MACRO _LoadGivenLevel level
-
-    LD A, level
-    CALL gc.LoadCurrentLevel
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PUBLIC FUNCTIONS                       ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
 ;                     ResetKeysState                       ;
 ;----------------------------------------------------------;
 ResetKeysState
@@ -374,7 +352,9 @@ _Key_Q
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 1
+    LD A, 1
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -386,7 +366,9 @@ _Key_W
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 2
+    LD A, 2
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -398,7 +380,9 @@ _Key_E
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 3
+    LD A, 3
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -410,7 +394,9 @@ _Key_R
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 4
+    LD A, 4
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -422,7 +408,9 @@ _Key_T
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 5
+    LD A, 5
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -434,7 +422,9 @@ _Key_Y
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 6
+    LD A, 6
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -446,7 +436,9 @@ _Key_U
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 7
+    LD A, 7
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -458,7 +450,9 @@ _Key_I
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 8
+    LD A, 8
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -470,7 +464,9 @@ _Key_O
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _LoadGivenLevel 9
+    LD A, 9
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
@@ -523,7 +519,7 @@ _Key_Break
     RET NZ
 
     ; The break has been pressed long enough to exit the game.
-    gc.ExitGameToMainMenu
+    CALL gc.ExitGameToMainMenu
 
     RET                                         ; ## END of the function ##
 

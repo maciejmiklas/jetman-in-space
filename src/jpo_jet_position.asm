@@ -100,7 +100,7 @@ IncJetY
     LD (jetY), A
 
     CALL gc.JetMoves
-    gc.JetMovesDown
+    CALL gc.JetMovesDown
 
     RET                                         ; ## END of the function ##
 
@@ -114,7 +114,7 @@ DecJetY
     LD (jetY), A
 
     CALL gc.JetMoves
-    gc.JetMovesUp
+    CALL gc.JetMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

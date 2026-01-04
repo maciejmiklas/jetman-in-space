@@ -49,7 +49,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     LD A, 1                                 ; Switching should be short.
     LD (stepDuration), A
 
-    gc.NightEnds
+    CALL gc.NightEnds
     JR .end
 
 .nextStep
@@ -60,7 +60,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     LD A, TOD_STEP_DURATION
     LD (stepDuration), A
 
-    gc.NextDayToNight
+    CALL gc.NextDayToNight
 
     ; Decrement step
     LD A, (step)
@@ -108,7 +108,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     LD A, TOD_DAY_DURATION
     LD (stepDuration), A
 
-    gc.ChangeToFullDay
+    CALL gc.ChangeToFullDay
 
     JR .end
 
@@ -120,7 +120,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     LD A, TOD_STEP_DURATION
     LD (stepDuration), A
 
-    gc.NextNightToDay
+    CALL gc.NextNightToDay
 
     ; Decrement step
     LD A, (step)

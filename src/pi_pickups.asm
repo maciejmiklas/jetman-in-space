@@ -98,9 +98,7 @@ UpdatePickupsOnJetmanMove
     ; Pickup in the air?
     LD A, (deployedY)
     CP _GSC_Y_MAX2_D238
-    JR Z, .notInAir
-    gc.JetPicksInAir
-.notInAir
+    CALL NZ, gc.JetPicksInAir
 
     ; ##########################################
     ; Callbacks
@@ -109,49 +107,49 @@ UpdatePickupsOnJetmanMove
     ; Diamond
     CP PI_SPR_DIAMOND
     JR NZ, .afterDiamond
-    gc.JetPicksDiamond
+    CALL gc.JetPicksDiamond
     JR .nextPickup
 .afterDiamond
 
     ; Jar
     CP PI_SPR_JAR
     JR NZ, .afterJar
-    gc.JetPicksJar
+    CALL gc.JetPicksJar
     JR .nextPickup
 .afterJar
 
     ; Strawberry
     CP PI_SPR_STRAWBERRY
     JR NZ, .afterStrawberry
-    gc.JetPicksStrawberry
+    CALL gc.JetPicksStrawberry
     JR .nextPickup
 .afterStrawberry
 
     ; Grenade
     CP PI_SPR_GRENADE
     JR NZ, .afterGrenade
-    gc.JetPicksGrenade
+    CALL gc.JetPicksGrenade
     JR .nextPickup
 .afterGrenade
 
     ; Life
     CP PI_SPR_LIFE
     JR NZ, .afterLife
-    gc.JetPicksLife
+    CALL gc.JetPicksLife
     JR .nextPickup
 .afterLife
 
     ; Gun
     CP PI_SPR_GUN
     JR NZ, .afterGun
-    gc.JetPicksGun
+    CALL gc.JetPicksGun
     JR .nextPickup
 .afterGun
 
     ; Freeze enemies
     CP PI_FREEZE_ENEMIES
     JR NZ, .afterFreeze
-    gc.FreezeEnemies
+    CALL gc.FreezeEnemies
     JR .nextPickup
 .afterFreeze
 
