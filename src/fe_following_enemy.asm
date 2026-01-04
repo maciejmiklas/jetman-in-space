@@ -237,7 +237,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
 
 .afterLR
     LD (IX + SPR.X), BC
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
+    sr.SetSpriteId
     CALL sr.ShowSprite
 
     XOR A                                       ; Return YES (Z is reset).
@@ -349,7 +349,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     CALL sr.MoveY                               ; A contains #MOVE_Y_IN_DOWN/UP
 .afterMoveY
 
-    CALL sr.SetSpriteId
+    sr.SetSpriteId
     CALL sr.UpdateSpritePosition
 
 .end
@@ -755,7 +755,7 @@ _ResetSprites
 .spriteLoop
 
     LD A, (IX + SPR.ID)
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     CALL sr.ResetSprite
 

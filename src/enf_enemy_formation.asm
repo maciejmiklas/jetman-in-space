@@ -131,7 +131,7 @@ RespawnFormation
     LD (respawnDelayCnt), A
     RET
 .startRespawn                                   ; #RESPAWN_DELAY == #respawnDelayCnt -> deployment is active.
-    
+
     ; ##########################################
     ; Formation deployment in progress.....
 

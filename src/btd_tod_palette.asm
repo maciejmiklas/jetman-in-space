@@ -158,7 +158,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
     LD A, (HL)
     LD D, A
     INC HL
-    CALL bp.WriteColor
+    bp.WriteColor
 
     DJNZ .loopCopyColor
 

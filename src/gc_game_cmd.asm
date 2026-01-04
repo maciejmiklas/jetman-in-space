@@ -95,7 +95,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     MACRO _InitLevelLoad
 
     CALL _HideGame
-    CALL gi.ResetKeysState
+    CALL gid.ResetKeysState
     CALL td.ResetTimeOfDay
 
     CALL dbs.SetupRocketBank

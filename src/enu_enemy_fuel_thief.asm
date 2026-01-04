@@ -85,7 +85,7 @@ ThiefWeaponHit
     CALL sr.SpriteHit
 
     LD A, FUEL_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     ; Restart deploy countdown.
     XOR A
@@ -334,7 +334,7 @@ _HideFuelThief
 
     ; Hide tank
     LD A, FUEL_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     ; Restart deploy countdown
     XOR A

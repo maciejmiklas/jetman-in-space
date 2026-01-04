@@ -63,7 +63,7 @@ ResetPickups
     LD (pickupsSize), A
 
     LD A, PICKUP_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -310,7 +310,7 @@ _PrepareNextPixkup
 
     ; Hide pickup
     LD A, PICKUP_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;

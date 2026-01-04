@@ -82,6 +82,20 @@ srSpriteDB
             DB 48, 49, 50, 48, 49, 50
 
 ;----------------------------------------------------------;
+;                    sr.SetSpriteId                        ;
+;----------------------------------------------------------;
+; Set the ID of the sprite for the following commands.
+; Input:
+;  - IX: pointer to #SPR.
+; Modifies: A
+    MACRO sr.SetSpriteId
+
+    LD A, (IX + SPR.ID)
+    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                 #CheckAnySpriteVisible                   ;
 ;----------------------------------------------------------;
 ; Input:
@@ -173,7 +187,7 @@ KillOneSprite
 ;  - IX: pointer to #SPR.
 SpriteHit
 
-    CALL SetSpriteId
+    sr.SetSpriteId
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection.
 
     LD A, SDB_EXPLODE
@@ -201,7 +215,7 @@ AnimateSprites
     JR Z, .continue                             ; Jump if visibility is not set -> hidden, can be reused.
 
     ; Sprite is visible.
-    CALL SetSpriteId                            ; Set the ID of the sprite for the following commands.
+    sr.SetSpriteId
     CALL UpdateSpritePattern
 
     ; Move #SPR.SDB_POINTER to the next sprite pattern.
@@ -215,19 +229,6 @@ AnimateSprites
     ADD IX, DE
     POP BC
     DJNZ .loop                                  ; Jump if B > 0
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      SetSpriteId                         ;
-;----------------------------------------------------------;
-; Input:
-;  - IX: pointer to #SPR.
-; Modifies: A
-SetSpriteId
-
-    LD A, (IX + SPR.ID)
-    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
     RET                                         ; ## END of the function ##
 
@@ -299,14 +300,14 @@ HideAllSimpleSprites
 ;  - IX: pointer to #SPR.
 HideSimpleSprite
 
-    CALL SetSpriteId
+    sr.SetSpriteId
 
     LD A, (IX + SPR.STATE)
     RES SPRITE_ST_ACTIVE, A
     RES SPRITE_ST_VISIBLE_BIT, A
     LD (IX + SPR.STATE), A
 
-    HideSprite
+    sp.HideSprite
 
     RET                                         ; ## END of the function ##
 

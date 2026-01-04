@@ -73,6 +73,65 @@ levels
 
 tilePaletteStarsAddr    DW 0
 
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                     PRIVATE MACROS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                _LoadDataByLevelNumber                    ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+    MACRO _LoadDataByLevelNumber
+
+    LD (jt.levelNumber), DE
+
+    PUSH DE
+    CALL fi.LoadBgImageFile
+    POP DE
+
+    ; ##########################################
+    ; Load platform tile map. DE is set to level number
+    PUSH DE
+    CALL fi.LoadPlatformsTilemapFile
+    POP DE
+
+    ; ##########################################
+    ; Load stars tile map. DE is set to level number
+    PUSH DE
+    CALL fi.LoadRocketStarsTilemapFile
+    POP DE
+
+    ; ##########################################
+    ; Copy tile definitions (sprite file) to expected memory
+    PUSH DE
+    CALL fi.LoadTilePlatformsSprFile
+    POP DE
+
+    ; ##########################################
+    ; Load sprites. DE is set to level number
+    PUSH DE
+    CALL fi.LoadSpritesFile
+    CALL sp.LoadSpritesFPGA
+    POP DE
+
+    ; ##########################################
+    ; Load palettes
+    CALL fi.LoadBgPaletteFile
+    CALL btd.CreateTodPalettes
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
 ;----------------------------------------------------------;
 ;                  LoadCurrentLevel                        ;
 ;----------------------------------------------------------;
@@ -104,7 +163,7 @@ LoadCurrentLevel
     PUSH IX
     LD DE, (IX + LL.LNUM)
     LD (currentLevelStr), DE
-    CALL _LoadDataByLevelNumber
+    _LoadDataByLevelNumber
     POP IX
 
     ; ##########################################
@@ -293,56 +352,6 @@ UnlockNextLevel
 .resetCurrentLevel
     LD A, _LEVEL_MIN
     LD (currentLevel), A
-
-    RET                                         ; ## END of the function ##
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                _LoadDataByLevelNumber                    ;
-;----------------------------------------------------------;
-; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-_LoadDataByLevelNumber
-
-    LD (jt.levelNumber), DE
-
-    PUSH DE
-    CALL fi.LoadBgImageFile
-    POP DE
-
-    ; ##########################################
-    ; Load platform tile map. DE is set to level number
-    PUSH DE
-    CALL fi.LoadPlatformsTilemapFile
-    POP DE
-
-    ; ##########################################
-    ; Load stars tile map. DE is set to level number
-    PUSH DE
-    CALL fi.LoadRocketStarsTilemapFile
-    POP DE
-
-    ; ##########################################
-    ; Copy tile definitions (sprite file) to expected memory
-    PUSH DE
-    CALL fi.LoadTilePlatformsSprFile
-    POP DE
-
-    ; ##########################################
-    ; Load sprites. DE is set to level number
-    PUSH DE
-    CALL fi.LoadSpritesFile
-    CALL sp.LoadSpritesFPGA
-    POP DE
-
-    ; ##########################################
-    ; Load palettes
-    CALL fi.LoadBgPaletteFile
-    CALL btd.CreateTodPalettes
 
     RET                                         ; ## END of the function ##
 

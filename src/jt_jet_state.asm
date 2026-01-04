@@ -149,8 +149,9 @@ ResetOverheat
 ; Input:
 ;  - A:                                         ; Air State: #JETST_XXX
 SetJetState
+
     LD (jetState), A
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

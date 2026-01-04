@@ -230,13 +230,26 @@ rocAssemblyX           DB 0
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
+;                   _ShowAssemblyBarIcon                   ;
+;----------------------------------------------------------;
+    MACRO _ShowAssemblyBarIcon
+
+    LD HL, BAR_ICON_RAM_START
+
+    LD (HL), BAR_ICON                           ; Set tile id.
+    INC HL
+    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PUBLIC FUNCTIONS                       ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                        SetupRocket                       ;
+;                     SetupRocket                          ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: X coordinate for rocket assembly.
@@ -279,7 +292,7 @@ ResetAndDisableRocket
 
     XOR A
     LD A, (IX + ro.RO.SPRITE_ID)
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     ; ##########################################
     ; Next rocket element
@@ -606,7 +619,7 @@ RocketElementFallsForAssembly
 
     ; We are dropping fuel already, hide the fuel sprite as it has reached the rocket.
     LD A, (IX + ro.RO.SPRITE_ID)
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -728,7 +741,7 @@ _ResetRocketElement
 
     ; Hide rocket element sprite.
     LD A, (IX + ro.RO.SPRITE_ID)
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     ; Reset the state and decrement element counter -> we will drop this element again.
     CALL RemoveRocketElement
@@ -754,7 +767,7 @@ _UpdateFuelProgressBar
     ; ##########################################
     ; Show icon on first load only.
     JR NZ, .afterIcon
-    CALL _ShowHeatBarIcon
+    _ShowAssemblyBarIcon
 .afterIcon
 
     ; ##########################################
@@ -787,19 +800,6 @@ _UpdateFuelProgressBar
     JR NZ, .tilesLoop
 
     RET                                         ; ## END of the function #
-
-;----------------------------------------------------------;
-;                    _ShowHeatBarIcon                      ;
-;----------------------------------------------------------;
-_ShowHeatBarIcon
-
-    LD HL, BAR_ICON_RAM_START
-
-    LD (HL), BAR_ICON                           ; Set tile id.
-    INC HL
-    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

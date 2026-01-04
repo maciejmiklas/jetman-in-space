@@ -102,7 +102,7 @@ menuScoreCursor
     XOR A
     LD IX, menuScoreCursor
 
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands
+    sr.SetSpriteId
     CALL sr.SetStateVisible
     CALL sr.ShowSprite
 
@@ -278,7 +278,7 @@ AnimateCursor
     RET Z
 
     LD IX, menuScoreCursor
-    CALL sr.SetSpriteId
+    sr.SetSpriteId
     CALL sr.UpdateSpritePattern
 
     RET                                         ; ## END of the function ##

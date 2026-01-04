@@ -228,8 +228,8 @@ HideShots
     LD B, db2.SHOTS_SIZE 
 .shotsLoop
 
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
-    HideSprite
+    sr.SetSpriteId
+    sp.HideSprite
     CALL sr.ResetSprite
 
     ; ##########################################
@@ -336,7 +336,7 @@ MoveShots
     JR Z, .continue
 
     ; Shot is visible, move it and update postion.
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
+    sr.SetSpriteId
     
     LD D, sr.MVX_IN_D_6PX_HIDE
 
@@ -515,7 +515,7 @@ FirePress
     LD (IX + SPR.Y), A
 
     ; Setup laser beam pattern, IX already points to the right memory address.
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
+    sr.SetSpriteId
     CALL sr.ShowSprite
 
     ; Call callback

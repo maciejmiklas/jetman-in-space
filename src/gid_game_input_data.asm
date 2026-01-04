@@ -53,6 +53,23 @@ breakCnt                DB 0
 BREAK_CNT               = 50
 
 ;----------------------------------------------------------;
+;                     ResetKeysState                       ;
+;----------------------------------------------------------;
+ResetKeysState
+
+    XOR A
+    LD (joyOffCnt), A
+    LD (jetDirection), A
+    LD (joyDirection), A
+    LD (joyPrevDirection), A
+    LD (joyOverheatDelayCnt), A
+    LD (gameInputState), A
+    LD (gameInputPrevState), A
+    LD (breakCnt), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
     ENDMODULE

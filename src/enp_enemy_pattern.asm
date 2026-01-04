@@ -353,7 +353,7 @@ RespawnPatternEnemy
 
 .afterLR
     LD (IX + SPR.X), BC
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
+    sr.SetSpriteId
     CALL sr.ShowSprite
 
     XOR A                                       ; Return YES (Z is reset).
@@ -473,7 +473,7 @@ _MoveEnemyX
 _MoveEnemy
 
     ; Set sprite ID in hardware
-    CALL sr.SetSpriteId
+    sr.SetSpriteId
 
     ; Load #ENP for this sprite to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)

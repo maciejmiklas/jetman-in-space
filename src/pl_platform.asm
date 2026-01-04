@@ -58,6 +58,23 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                    _LoadSpriteYtoA                       ;
+;----------------------------------------------------------;
+; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+; Return:
+;  - A:  sprite's Y coordinate.
+; Modifies: DE
+    MACRO _LoadSpriteYtoA
+
+    LD DE, HL
+    ADD DE, Y_SPR_RAMOFFSET
+    LD A, (DE)                                  ; A holds current sprite Y position.
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                _CheckPlatformHitRight                    ;
 ;----------------------------------------------------------;
 ; Check the collision with the left side of the platform.
@@ -195,7 +212,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     ADD (IX + PLAM.Y_BOTTOM)
     LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
@@ -213,7 +230,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     SUB HIT_MARGIN_D5
     LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
@@ -249,7 +266,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     SUB (IX + PLAM.Y_TOP)
     LD C, A                                     ; C holds [#PLA.Y_TOP + #HIT_MARGIN_D5].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR Z, .keepChecking                         ; Jump if A (sprite Y) == C.
@@ -268,7 +285,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     SUB (IX + PLAM.Y_TOP)
     LD C, A                                     ; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
@@ -973,23 +990,6 @@ _PlatformHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    _LoadSpriteYtoA                       ;
-;----------------------------------------------------------;
-; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-; Return:
-;  - A:  sprite's Y coordinate.
-; Modifies: DE
-_LoadSpriteYtoA
-
-    LD DE, HL
-    ADD DE, Y_SPR_RAMOFFSET
-    LD A, (DE)                                  ; A holds current sprite Y position.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;              _CheckPlatformHitHorizontal                 ;
 ;----------------------------------------------------------;
 ; Jetman is within the platform's horizontal bounds when:
@@ -1063,7 +1063,7 @@ _CheckPlatformHitVertical
     ADD (IX + PLAM.Y_BOTTOM)
     LD C, A                                     ; C holds [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
@@ -1081,7 +1081,7 @@ _CheckPlatformHitVertical
     SUB (IX + PLAM.Y_TOP)
     LD C, A                                     ; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.

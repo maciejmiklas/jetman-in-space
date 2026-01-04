@@ -8,23 +8,6 @@
     MODULE gi
 
 ;----------------------------------------------------------;
-;                     ResetKeysState                       ;
-;----------------------------------------------------------;
-ResetKeysState
-
-    XOR A
-    LD (gid.joyOffCnt), A
-    LD (gid.jetDirection), A
-    LD (gid.joyDirection), A
-    LD (gid.joyPrevDirection), A
-    LD (gid.joyOverheatDelayCnt), A
-    LD (gid.gameInputState), A
-    LD (gid.gameInputPrevState), A
-    LD (gid.breakCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from function keys (throw granade, music off)
