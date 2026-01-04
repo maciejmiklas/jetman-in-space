@@ -366,7 +366,7 @@ StartRocketExplosion
     ; ##########################################
     ; Hide exhaust
     LD A, _EXHAUST_SPRID_D83                     ; Hide sprite on display.
-    sp.SetIdAndHideSprite
+    CALL sp.SetIdAndHideSprite
 
     ; ##########################################
     ; Update state

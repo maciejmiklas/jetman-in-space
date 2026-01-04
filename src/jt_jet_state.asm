@@ -44,21 +44,21 @@ difLevel                DB DIF_NORMAL
 levelNumber             DW "00"                 ; ASCII level number from 01 to 10
 
 ;----------------------------------------------------------;
-;              jt.UpdateStateOnJoyWillEnable               ;
+;               UpdateStateOnJoyWillEnable                 ;
 ;----------------------------------------------------------;
-    MACRO jt.UpdateStateOnJoyWillEnable
+UpdateStateOnJoyWillEnable
 
     ; Reset #jetAir
-    LD A, (jt.jetAir)
-    CP jt.JT_STATE_INACTIVE
+    LD A, (jetAir)
+    CP JT_STATE_INACTIVE
     JR Z, .afterResetAir                        ; Do not need to reset if #jetAir is inactive.
 
     ; Reset!
-    LD A, jt.AIR_FLY
-    LD (jt.jetAir), A
+    LD A, AIR_FLY
+    LD (jetAir), A
 .afterResetAir
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      SetJetStateAir                      ;
@@ -87,34 +87,34 @@ SetJetStateGnd
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   jt.SetJetStateRip                      ;
+;                     SetJetStateRip                       ;
 ;----------------------------------------------------------;
-    MACRO jt.SetJetStateRip
+SetJetStateRip
 
     XOR A
-    LD (jt.jetAir), A
-    LD (jt.jetGnd), A
+    LD (jetAir), A
+    LD (jetGnd), A
 
-    LD A, jt.JETST_RIP
-    LD (jt.jetState), A
+    LD A, JETST_RIP
+    LD (jetState), A
 
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                 jt.SetJetStateRespawn                    ;
-;----------------------------------------------------------;
-    MACRO jt.SetJetStateRespawn
-
-    LD A, jt.GND_STAND
-    LD (jt.jetGnd), A
-
-    XOR A
-    LD (jt.jetAir), A
+    RET                                         ; ## END of the function ##
     
-    LD A, jt.JETST_NORMAL
-    LD (jt.jetState), A
+;----------------------------------------------------------;
+;                   SetJetStateRespawn                     ;
+;----------------------------------------------------------;
+SetJetStateRespawn
 
-    ENDM                                        ; ## END of the macro ##
+    LD A, GND_STAND
+    LD (jetGnd), A
+
+    XOR A
+    LD (jetAir), A
+    
+    LD A, JETST_NORMAL
+    LD (jetState), A
+    
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   SetJetStateInactive                    ;
@@ -129,31 +129,29 @@ SetJetStateInactive
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     jt.ResetOverheat                     ;
+;                       ResetOverheat                      ;
 ;----------------------------------------------------------;
-    MACRO jt.ResetOverheat
+ResetOverheat
 
     ; Reset overheat only if it's active.
-    LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT
-    JR NZ, .end
+    LD A, (jetState)
+    CP JETST_OVERHEAT
+    RET NZ
 
-    LD A, jt.JETST_NORMAL
-    LD (jt.jetState), A
-
-.end
-    ENDM                                        ; ## END of the macro ##
+    LD A, JETST_NORMAL
+    LD (jetState), A
+    
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     jt.SetJetState                       ;
+;                       SetJetState                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:                                         ; Air State: #JETST_XXX
-    MACRO jt.SetJetState
-
-    LD (jt.jetState), A
-
-    ENDM                                        ; ## END of the macro ##
+SetJetState
+    LD (jetState), A
+    
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

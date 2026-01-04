@@ -161,7 +161,7 @@ BAR_ICON_PAL           = $00
 
     ; Jetpack has overhated.
     LD A, jt.JETST_OVERHEAT
-    jt.SetJetState
+    CALL jt.SetJetState
     LD (jt.jetState), A
 
     CALL dbs.SetupAyFxsBank
@@ -238,7 +238,7 @@ ResetJetpackOverheating
     CALL _UpdateUiHeatBar
     _ShowHeatBarIcon
 
-    jt.ResetOverheat
+    CALL jt.ResetOverheat
 
     RET                                         ; ## END of the function ##
 

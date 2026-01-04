@@ -289,7 +289,7 @@ MakeJetInvincible
     
     ; Update state
     LD A, jt.JETST_INV
-    jt.SetJetState
+    CALL jt.SetJetState
 
     RET                                         ; ## END of the function ##
 
@@ -337,7 +337,7 @@ JetInvincible
     ; ##########################################
     ; It is the last iteration, remove invincibility.
     LD A, jt.JETST_NORMAL
-    jt.SetJetState
+    CALL jt.SetJetState
 
     CALL js.ShowJetSprite
 

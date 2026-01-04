@@ -112,26 +112,26 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    sp.HideSprite                         ;
+;                      HideSprite                          ;
 ;----------------------------------------------------------;
-    MACRO sp.HideSprite
+    MACRO HideSprite
 
     NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE
 
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                sp.SetIdAndHideSprite                     ;
+;                  SetIdAndHideSprite                      ;
 ;----------------------------------------------------------;
-    MACRO sp.SetIdAndHideSprite
+SetIdAndHideSprite
 ; Input:
 ;  - A: Sprite ID.
 
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
-    sp.HideSprite
+    HideSprite
 
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

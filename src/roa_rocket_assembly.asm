@@ -279,7 +279,7 @@ ResetAndDisableRocket
 
     XOR A
     LD A, (IX + ro.RO.SPRITE_ID)
-    sp.SetIdAndHideSprite
+    CALL sp.SetIdAndHideSprite
 
     ; ##########################################
     ; Next rocket element
@@ -606,7 +606,7 @@ RocketElementFallsForAssembly
 
     ; We are dropping fuel already, hide the fuel sprite as it has reached the rocket.
     LD A, (IX + ro.RO.SPRITE_ID)
-    sp.SetIdAndHideSprite
+    CALL sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -728,7 +728,7 @@ _ResetRocketElement
 
     ; Hide rocket element sprite.
     LD A, (IX + ro.RO.SPRITE_ID)
-    sp.SetIdAndHideSprite
+    CALL sp.SetIdAndHideSprite
 
     ; Reset the state and decrement element counter -> we will drop this element again.
     CALL RemoveRocketElement

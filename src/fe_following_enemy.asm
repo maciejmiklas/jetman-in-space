@@ -755,7 +755,7 @@ _ResetSprites
 .spriteLoop
 
     LD A, (IX + SPR.ID)
-    sp.SetIdAndHideSprite
+    CALL sp.SetIdAndHideSprite
 
     CALL sr.ResetSprite
 
