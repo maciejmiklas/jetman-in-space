@@ -149,7 +149,7 @@
 
     CALL jco.JetRip
     CALL jw.MoveShots
-    WeaponHitEnemy
+    CALL gc.WeaponHitEnemy
     CALL jw.FireDelayCounter
     JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
@@ -741,7 +741,7 @@
 
     ; ##########################################
     CALL jo.JetpackOverheatFx
-    PlayFuelThiefFx
+    CALL gc.PlayFuelThiefFx
 
 .end
     ENDM                                        ; ## END of the macro ##

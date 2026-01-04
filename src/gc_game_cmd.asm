@@ -517,7 +517,7 @@ PlatformWeaponHit
 ;----------------------------------------------------------;
 ;                   PlayFuelThiefFx                        ;
 ;----------------------------------------------------------;
-    MACRO PlayFuelThiefFx
+PlayFuelThiefFx
 
     CALL dbs.SetupPatternEnemyBank
     LD A, (enu.thiefState)
@@ -525,7 +525,7 @@ PlatformWeaponHit
     CP enu.TS_DEPLOYING
     JR Z, .play
     CP enu.TS_RUNS_EMPTY
-    JR NZ, .end
+    RET NZ
 .play
 
     ; Play FX
@@ -533,13 +533,12 @@ PlatformWeaponHit
     LD A, af.FX_THIEF
     CALL af.AfxPlay
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                     WeaponHitEnemy                       ;
 ;----------------------------------------------------------;
-    MACRO WeaponHitEnemy
+WeaponHitEnemy
 
     CALL dbs.SetupArrays2Bank
 
@@ -562,8 +561,7 @@ PlatformWeaponHit
     LD A, (fe.fEnemySize)
     CALL jw.CheckHitEnemies
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                   RocketHitsAsteroid                     ;
