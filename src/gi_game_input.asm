@@ -30,7 +30,24 @@
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    JetMovementInput                      ; TODO called 2x
+;                     ResetKeysState                       ;
+;----------------------------------------------------------;
+ResetKeysState
+
+    XOR A
+    LD (gid.joyOffCnt), A
+    LD (gid.jetDirection), A
+    LD (gid.joyDirection), A
+    LD (gid.joyPrevDirection), A
+    LD (gid.joyOverheatDelayCnt), A
+    LD (gid.gameInputState), A
+    LD (gid.gameInputPrevState), A
+    LD (gid.breakCnt), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from function keys (throw granade, music off)
 ; Function keys are always processed at the same speed.
@@ -118,7 +135,7 @@ JetMovementInput
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   GameOptionsInput                       ; TODO called 2x
+;                   GameOptionsInput                       ;
 ;----------------------------------------------------------;
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement.
 ; Keys are always processed at the same speed. Also, only one option key is being processed during a single loop.
@@ -678,7 +695,7 @@ _JoyFireRelease
 ;----------------------------------------------------------;
 _ThrowGranade
 
-    gr.UseGrenade
+    CALL gr.UseGrenade
 
     RET                                         ; ## END of the function ##
 

@@ -110,7 +110,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     MACRO _InitLevelLoad
 
     CALL _HideGame
-    gid.ResetKeysState
+    CALL gi.ResetKeysState
     CALL td.ResetTimeOfDay
 
     CALL dbs.SetupRocketBank
@@ -588,7 +588,7 @@ RocketHitsAsteroid
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     AnimateEnemies                       ; TODO called 2x
+;                     AnimateEnemies                       ;
 ;----------------------------------------------------------;
 AnimateEnemies
 
@@ -615,7 +615,7 @@ AnimateEnemies
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      KillOneEnemy                        ; TODO called 2x
+;                      KillOneEnemy                        ;
 ;----------------------------------------------------------;
 KillOneEnemy
 
@@ -791,7 +791,7 @@ KillFewEnemies
     CALL af.AfxPlay
 
     ; Remove one life.
-    jl.LifeDown
+    CALL jl.LifeDown
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -889,7 +889,7 @@ RespawnJet
     LD A, af.FX_PICKUP_LIVE
     CALL af.AfxPlay
 
-    jl.LifeUp
+    CALL jl.LifeUp
 
     ENDM                                        ; ## END of the macro ##
 
@@ -899,7 +899,7 @@ RespawnJet
     MACRO gc.JetPicksGrenade
 
     CALL sc.PickupRegular
-    gr.GrenadePickup
+    CALL gr.GrenadePickup
 
     ENDM                                        ; ## END of the macro ##
 
@@ -960,7 +960,7 @@ RespawnJet
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                     RespawnEnemy                         ; TODO called 2x
+;                     RespawnEnemy                         ;
 ;----------------------------------------------------------;
 RespawnEnemy
 
@@ -985,7 +985,7 @@ RespawnEnemy
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      MoveEnemies                         ; TODO called 2x
+;                      MoveEnemies                         ;
 ;----------------------------------------------------------;
 MoveEnemies
 

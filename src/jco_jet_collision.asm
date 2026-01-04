@@ -52,44 +52,44 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     MACRO _RipMove
 
     ; Move left or right.
-    LD A, (jco.ripMoveState)
-    CP jco.RIP_MOVE_LEFT
+    LD A, (ripMoveState)
+    CP RIP_MOVE_LEFT
     JR Z, .moveLeft
 
     ; Move right.
-    LD B, jco.JM_RIP_MOVE_L_D3
+    LD B, JM_RIP_MOVE_L_D3
     CALL jpo.DecJetXbyB
     JR .afterMove
 
 .moveLeft
     ; Move left.
-    LD B, jco.JM_RIP_MOVE_R_D3
+    LD B, JM_RIP_MOVE_R_D3
     CALL jpo.IncJetXbyB
 .afterMove
 
-    LD B, jco.JM_RIP_MOVE_Y_D4                      ; Going up
+    LD B, JM_RIP_MOVE_Y_D4                      ; Going up
     CALL jpo.DecJetYbyB
 
     ; Decrement move counter.
-    LD A, (jco.ripMoveCnt)
+    LD A, (ripMoveCnt)
     DEC A
-    LD (jco.ripMoveCnt), A
+    LD (ripMoveCnt), A
     CP 0
 
     JR NZ, .end                                 ; Counter is still > 0 - keep going
 
     ; Counter has reached 0 - change direction.
-    LD A, (jco.ripMoveState)
+    LD A, (ripMoveState)
     XOR 1
-    LD (jco.ripMoveState), A
+    LD (ripMoveState), A
 
     ; Increment zig-zag distance (gets bigger with every direction change).
-    LD A, (jco.ripMoveMul)
-    ADD jco.RIP_MOVE_MUL_INC
-    LD (jco.ripMoveMul), A
+    LD A, (ripMoveMul)
+    ADD RIP_MOVE_MUL_INC
+    LD (ripMoveMul), A
 
     ; Counter (how far we go left/right in zig-zag) increments with every turn, and ripMoveMul holds the increasing value.
-    LD (jco.ripMoveCnt), A
+    LD (ripMoveCnt), A
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -99,9 +99,9 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
 ;----------------------------------------------------------;
     MACRO _ResetRipMove
 
-    LD A, jco.RIP_MOVE_MUL_INC
-    LD (jco.ripMoveMul), A
-    LD (jco.ripMoveCnt), A
+    LD A, RIP_MOVE_MUL_INC
+    LD (ripMoveMul), A
+    LD (ripMoveCnt), A
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -130,7 +130,7 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     LD D, MARG_VERT_KICK_D25
     CALL _CheckCollision
     JR NZ, .noKicking
-
+    
     ; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already.
     LD A, (jt.jetAir)
     CP jt.AIR_ENEMY_KICK
@@ -242,7 +242,7 @@ EnemiesCollision
 
     CP 0
     RET Z
-
+    
     LD B, A
 .loop
     PUSH BC                                     ; Preserve B for loop counter.
@@ -252,34 +252,31 @@ EnemiesCollision
     LD DE, SPR
     ADD IX, DE
     POP BC
-
-    DEC B
-    JP NZ, .loop                                ; Jump if B > 0.
+    DJNZ .loop                                  ; Jump if B > 0.
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       jco.JetRip                         ;
+;                         JetRip                           ;
 ;----------------------------------------------------------;
-    MACRO jco.JetRip
+JetRip
 
     LD A, (jt.jetState)
     CP jt.JETST_RIP
-    JR NZ, .end                                  ; Exit if not RiP.
+    RET NZ                                      ; Exit if not RiP.
 
     _RipMove
 
     ; Did Jetman reach the top of the screen (the RIP sequence is over)?
     LD A, (jpo.jetY)
     CP 4                                        ; Going up is incremented by 2.
-    JR NC, .end                                 ; Nope, still going up (#jetY >= 4).
+    RET NC                                      ; Nope, still going up (#jetY >= 4).
 
     ; Sequence is over, respawn new live.
     _ResetRipMove
-    CALL gc.RespawnJet
+    CALL gc.RespawnJet 
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                    MakeJetInvincible                     ;
@@ -297,19 +294,19 @@ MakeJetInvincible
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  jco.JetInvincible                       ;
+;                    JetInvincible                         ;
 ;----------------------------------------------------------;
-    MACRO jco.JetInvincible
+JetInvincible
 
     LD A, (jt.jetState)
     CP jt.JETST_INV
-    JR NZ, .end
+    RET NZ
 
     ; ##########################################
     ; Decrement counter
-    LD HL, (jco.invincibleCnt)
+    LD HL, (invincibleCnt)
     DEC HL
-    LD (jco.invincibleCnt), HL                      ; Decrement counter and store it.
+    LD (invincibleCnt), HL                      ; Decrement counter and store it.
 
     ; End invincibility if count is 0.
     CALL ut.HlEqual0
@@ -323,7 +320,7 @@ MakeJetInvincible
     JR NZ, .blinkFast                           ; #invincibleCnt > 255 (H != 0) -> blink fast.
 
     LD A, L
-    CP jco.JM_INV_BLINK_D100
+    CP JM_INV_BLINK_D100
     JR NC, .blinkFast                           ; #invincibleCnt > #JM_INV_BLINK_D100 -> blink fast.
 
     ;  #invincibleCnt < #JM_INV_BLINK_D100 -> blink slow (invincibility is almost over).
@@ -334,7 +331,7 @@ MakeJetInvincible
 .afterBlinkSet
 
     CALL js.BlinkJetSprite
-    JR .end
+    RET
 
 .endInvincibility
     ; ##########################################
@@ -344,8 +341,7 @@ MakeJetInvincible
 
     CALL js.ShowJetSprite
 
-.end
-    ENDM                                        ; ## END of the macro ##
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
