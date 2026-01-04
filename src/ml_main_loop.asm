@@ -146,14 +146,14 @@
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
 
-    CALL jco.JetRip
+    jco.JetRip
     CALL jw.MoveShots
     gc.WeaponHitEnemy
     CALL jw.FireDelayCounter
     gc.JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
-    CALL jco.JetInvincible
+    jco.JetInvincible
 
     CALL dbs.SetupRocketBank
     CALL roa.CheckHitTank
@@ -740,7 +740,7 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL go.GameOverLoop
+    go.GameOverLoop
 
 .end
     ENDM                                        ; ## END of the macro ##

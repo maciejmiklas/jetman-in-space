@@ -53,6 +53,29 @@ breakCnt                DB 0
 BREAK_CNT               = 50
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  gid.ResetKeysState                      ;
+;----------------------------------------------------------;
+    MACRO gid.ResetKeysState
+
+    XOR A
+    LD (gid.joyOffCnt), A
+    LD (gid.jetDirection), A
+    LD (gid.joyDirection), A
+    LD (gid.joyPrevDirection), A
+    LD (gid.joyOverheatDelayCnt), A
+    LD (gid.gameInputState), A
+    LD (gid.gameInputPrevState), A
+    LD (gid.breakCnt), A
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
     ENDMODULE

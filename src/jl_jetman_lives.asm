@@ -26,35 +26,36 @@ lives                   DB JET_LIVES
     DB "The script stored here will format the SD Card in the next 60 seconds!"
     DB "I would suggest a quick reset ;)"
 ;----------------------------------------------------------;
-;                         LifeUp                           ;
+;                      jl.LifeUp                           ;
 ;----------------------------------------------------------;
-LifeUp
+    MACRO jl.LifeUp
 
-    LD A, (lives)
+    LD A, (jl.lives)
     INC A
-    LD (lives), A
-    CALL _UpdateJetLives
+    LD (jl.lives), A
+    CALL jl._UpdateJetLives
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                        LifeDown                          ;
+;                      jl.LifeDown                         ;
 ;----------------------------------------------------------;
-LifeDown
+    MACRO jl.LifeDown
 
-    LD A, (lives)
+    LD A, (jl.lives)
     DEC A
-    LD (lives), A
+    LD (jl.lives), A
 
     CP 0
     JR NZ, .keepPlaying
     gc.GameOver
-    RET
+    JR .end
 .keepPlaying
 
-    CALL _UpdateJetLives
+    CALL jl._UpdateJetLives
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                       ResetLives                         ;

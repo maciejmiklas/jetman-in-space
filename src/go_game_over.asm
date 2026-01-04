@@ -11,18 +11,20 @@ GAME_OVER_CNT           = 2
 fireCnt                 DB 0
 
 ;----------------------------------------------------------;
-;                       GameOverLoop                       ;
+;                    go.GameOverLoop                       ;
 ;----------------------------------------------------------;
-GameOverLoop
+    MACRO go.GameOverLoop
 
-    LD A, (fireCnt)
-    CP GAME_OVER_CNT
-    RET Z
+    LD A, (go.fireCnt)
+    CP go.GAME_OVER_CNT
+    JR Z, .end
 
     INC A
-    LD (fireCnt), A
+    LD (go.fireCnt), A
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
+
 ;----------------------------------------------------------;
 ;                       ShowGameOver                       ;
 ;----------------------------------------------------------;

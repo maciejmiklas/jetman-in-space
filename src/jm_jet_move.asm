@@ -42,7 +42,7 @@ jetInactivityCnt        DB 0
 
     ; Yes, this was the last blocking loop.
     gc.JoyWillEnable
-.afterEnableCheck   
+.afterEnableCheck
 
     ; ##########################################
     ; Allow input processing if Jetman is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when

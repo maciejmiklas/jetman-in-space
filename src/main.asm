@@ -122,7 +122,11 @@ mainLoop
     INCLUDE "mld_main_loop_data.asm"
     INCLUDE "jt_jet_state.asm"
     INCLUDE "bg_background.asm"
+    INCLUDE "gr_grenade.asm"
+    INCLUDE "jl_jetman_lives.asm"
+
     INCLUDE "gc_game_cmd.asm"
+
     INCLUDE "gi_game_input.asm"
     INCLUDE "er_error.asm"
     INCLUDE "fi_file_io.asm"
@@ -153,10 +157,9 @@ mainLoop
     INCLUDE "mms_menu_score.asm"
     INCLUDE "sc_score.asm"
     INCLUDE "pi_pickups.asm"
-    INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
-    INCLUDE "gr_grenade.asm"
     INCLUDE "enur_enemy_fuel_thief_roc.asm"
+
     INCLUDE "ml_main_loop.asm"
     
     ; Imports below use ORG and dedicated memory bank!

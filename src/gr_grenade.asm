@@ -14,29 +14,29 @@ GRENADE_ICON_TI_POS     = 19
 GRENADE_COUNT_TI_POS    = 20
 
 ;----------------------------------------------------------;
-;                     GrenadePickup                        ;
+;                   gr.GrenadePickup                       ;
 ;----------------------------------------------------------;
-GrenadePickup
+    MACRO gr.GrenadePickup
 
-    LD A, (grenadeCount)
+    LD A, (gr.grenadeCount)
     INC A
-    LD (grenadeCount), A
+    LD (gr.grenadeCount), A
 
-    CALL _UpdateGamebar
+    CALL gr._UpdateGamebar
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                       UseGrenade                         ;
+;                     gr.UseGrenade                        ;
 ;----------------------------------------------------------;
-UseGrenade
+    MACRO gr.UseGrenade
 
-    LD A, (grenadeCount)
+    LD A, (gr.grenadeCount)
     CP 0
-    RET Z
+    JR Z, .end
 
     DEC A
-    LD (grenadeCount), A
+    LD (gr.grenadeCount), A
 
     CALL gc.KillFewEnemies
 
@@ -44,9 +44,10 @@ UseGrenade
     LD A, af.FX_GRENADE_EXPLODE
     CALL af.AfxPlay
 
-    CALL _UpdateGamebar
+    CALL gr._UpdateGamebar
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
