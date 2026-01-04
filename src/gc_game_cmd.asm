@@ -793,9 +793,9 @@ RespawnJet
     LD (jpo.jetY), A
 
     ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
-    CALL bm.CopyImageData
     CALL jt.SetJetStateRespawn
     CALL jco.MakeJetInvincible
+    CALL bm.CopyImageData
     CALL bg.UpdateBackgroundOnJetmanMove
 
     CALL dbs.SetupRocketBank

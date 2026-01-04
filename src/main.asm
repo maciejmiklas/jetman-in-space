@@ -32,9 +32,9 @@ start
 
     LD A, 1
     LD (ll.currentLevel), A
-    ;CALL gc.LoadCurrentLevel
+    CALL gc.LoadCurrentLevel
 
-    CALL gc.LoadMainMenu
+    ;CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
@@ -57,7 +57,7 @@ start
 ;----------------------------------------------------------;
     MACRO deba val
 
-    LD A, VAL
+    LD A, val
     NEXTREG 2,8
 
     ENDM                                        ; ## END of the macro ##

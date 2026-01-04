@@ -5,6 +5,7 @@
 ;----------------------------------------------------------;
 ;          Stars for Layer 2 bitmap at 320x256             ;
 ;----------------------------------------------------------;
+; Stars data is sored in db1, CALL ut.SetupDataArraysBank
     module st
 
 ; The starfield is grouped into columns (#SC). When Jetman moves, the whole starfield and, respectively, all columns move in the
@@ -46,17 +47,19 @@ starsMoveL2Delay        DB ST_L2_MOVE_DEL_D2    ; Delay counter for stars on lay
 randColor               DB 0                    ; Rand value from the previous call.
 
 ; Currently rendered palette
-starsPalPoint           DW 0
+starsPalAddr            DW 0
 starsPalSize            DB 0
 starsPalOffset          DB 0
 
 ; Currently rendered stars
-starsDataSize           DB 0
-starsDataPoint          DW 0                    ; Before using: CALL ut.SetupDataArraysBank
-starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDataArraysBank
+starsSCSize             DB 0                    ; Number of SC elements (star columns).
+starsSCAddr             DW 0
 
-starsData1MaxY          DW 0
-starsData2MaxY          DW 0
+; An array containing the maximum Y value to render the star column to avoid printing over the background image. 
+; The size of this array is equal to the #starsSCSize
+starsMaxY               DW 0
+starsMaxYL1Addr         DW 0                    ; Address for layer 1.
+starsMaxYL2Addr         DW 0                    ; Address for layer 2.
 
 paletteNumber           DB 0                    ; Palette number, values from 0-3
 PALETTE_CNT             = 4
@@ -67,8 +70,8 @@ ST_PAL_L2_SIZE_D8       = 8                     ; Number of colors for stars on 
 ST_PAL_L1_BYTES_D64     = ST_PAL_L1_SIZE_D32*2
 ST_PAL_L2_BYTES_D16     = ST_PAL_L2_SIZE_D8*2
 
-starsPalL1Point         DW 0
-starsPalL2Point         DW 0
+starsPalL1Addr         DW 0
+starsPalL2Addr         DW 0
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -89,7 +92,7 @@ starsPalL2Point         DW 0
     LD DE, HL                                   ; DE points to the star position in the column.
     INC DE                                      ; DE points to the color info.
 
-    ; DE points to the color offset from #starsPalPoint. Now, we have to move it to the offset in the layer two palette.
+    ; DE points to the color offset from #starsPalAddr. Now, we have to move it to the offset in the layer two palette.
     ; #btd.palColors points right after the colors registered for the image.
     LD A, (DE)
     LD B, A
@@ -350,8 +353,8 @@ starsPalL2Point         DW 0
 SetupStars
 
     LD (paletteNumber), A
-    LD (starsData1MaxY), DE
-    LD (starsData2MaxY), HL
+    LD (starsMaxYL1Addr), DE
+    LD (starsMaxYL2Addr), HL
     
     RET                                         ; ## END of the function ##
 
@@ -374,7 +377,7 @@ LoadStarsPalette
     MUL D, E                                    ; DE contains palette offset.
     LD HL, db1.starsPalL1
     ADD HL, DE                                  ; HL points to data with palette colors.
-    LD (starsPalL1Point), HL
+    LD (starsPalL1Addr), HL
     LD A, ST_PAL_L1_SIZE_D32
     LD B, A
     CALL bp.WritePalette
@@ -388,7 +391,7 @@ LoadStarsPalette
     LD HL, db1.starsPalL2
     ADD HL, DE                                  ; HL points to data with palette colors.
     
-    LD (starsPalL2Point), HL
+    LD (starsPalL2Addr), HL
     LD A, ST_PAL_L2_SIZE_D8
     LD B, A
     CALL bp.WritePalette
@@ -426,7 +429,7 @@ HideStars
 ;                       MoveStarsUp                        ;
 ;----------------------------------------------------------;
 MoveStarsUp
-
+    ret
     ; Move stars only if enabled.
     LD A, (starsState)
     CP ST_C_HIDDEN
@@ -470,7 +473,7 @@ MoveFastStarsDown
 ;                      MoveStarsDown                       ;
 ;----------------------------------------------------------;
 MoveStarsDown
-
+    ret
     ; Move stars only if enabled.
     LD A, (starsState)
     CP ST_C_HIDDEN
@@ -499,6 +502,7 @@ BlinkStarsL1
 
     CALL _SetupLayer1
     CALL _NextStarsColor
+    CALL ShowStars
 
     RET                                         ; ## END of the function ##
 
@@ -506,7 +510,7 @@ BlinkStarsL1
 ;                       BlinkStarsL2                       ;
 ;----------------------------------------------------------;
 BlinkStarsL2
-
+    ret
     ; Execute stars only if enabled.
     LD A, (starsState)
     CP ST_C_HIDDEN
@@ -514,6 +518,7 @@ BlinkStarsL2
 
     CALL _SetupLayer2
     CALL _NextStarsColor
+    CALL ShowStars
 
     RET                                         ; ## END of the function ##
 
@@ -529,8 +534,8 @@ BlinkStarsL2
 _SetupLayer1
 
     ; Palette
-    LD DE, (starsPalL1Point)
-    LD (starsPalPoint), DE
+    LD DE, (starsPalL1Addr)
+    LD (starsPalAddr), DE
 
     LD A, ST_PAL_L1_SIZE_D32
     LD (starsPalSize), A
@@ -542,13 +547,13 @@ _SetupLayer1
     ; ##########################################
     ; Data
     LD DE, db1.starsData1
-    LD (starsDataPoint), DE
+    LD (starsSCAddr), DE
 
     LD A, ST_L1_SIZE_D27
-    LD (starsDataSize), A
+    LD (starsSCSize), A
 
-    LD DE, (starsData1MaxY)
-    LD (starsDataMaxYPoint), DE
+    LD DE, (starsMaxYL1Addr)
+    LD (starsMaxY), DE
 
     RET                                         ; ## END of the function ##
 
@@ -558,8 +563,8 @@ _SetupLayer1
 _SetupLayer2
 
     ; Palette
-    LD DE, (starsPalL2Point)
-    LD (starsPalPoint), DE
+    LD DE, (starsPalL2Addr)
+    LD (starsPalAddr), DE
     
     LD A, ST_PAL_L2_SIZE_D8
     LD (starsPalSize), A
@@ -571,28 +576,32 @@ _SetupLayer2
     ; ##########################################
     ; Data
     LD DE, db1.starsData2
-    LD (starsDataPoint), DE
+    LD (starsSCAddr), DE
 
     LD A, ST_L2_SIZE_D16
-    LD (starsDataSize), A
+    LD (starsSCSize), A
 
-    LD DE, (starsData2MaxY)
-    LD (starsDataMaxYPoint), DE
+    LD DE, (starsMaxYL2Addr)
+    LD (starsMaxY), DE
 
     RET                                         ; ## END of the function ##
 
+tmp db 0
 ;----------------------------------------------------------;
 ;                     _NextStarsColor                      ;
 ;----------------------------------------------------------;
 _NextStarsColor
 
+    deba $F0
+
     CALL dbs.SetupArrays1Bank
-    LD HL, (starsDataPoint)
-    LD A, (starsDataSize)
+
+    LD HL, (starsSCAddr)
+    LD A, (starsSCSize)
     LD B, A
 
-    ; Loop over stars data.
-.columnsLoop
+    ; Loop over stars data (SC elements).
+.scLoop
     PUSH BC
     LD IX, HL
 
@@ -607,9 +616,11 @@ _NextStarsColor
 .starsLoop
     INC HL                                      ; Move HL after star position to color info.
 
+    ld a, (tmp)
+    inc a
+    ld (tmp), a
     ; ##########################################
     ; Do not change the color always, randomize it.
-
     LD A, (randColor)
     LD C, A
     LD A, R                                     ; Load the random number into A register.
@@ -635,13 +646,13 @@ _NextStarsColor
     DJNZ .starsLoop
 
 .nextColumn
-    
+
     ; Move HL to the next stars column.
     POP BC
-    DJNZ .columnsLoop
+    DJNZ .scLoop
 
-    CALL ShowStars
-
+    ld a, (tmp)
+    deb
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -650,12 +661,12 @@ _NextStarsColor
 _MoveAndRenderStars
 
     CALL dbs.SetupArrays1Bank
-    LD A, (starsDataSize)
+    LD A, (starsSCSize)
     LD B, A
-    LD HL, (starsDataPoint)
+    LD HL, (starsSCAddr)
 
     ; Loop over all stars.
-    LD IY, (starsDataMaxYPoint)
+    LD IY, (starsMaxY)
 .columnsLoop
 
     LD IX, HL
