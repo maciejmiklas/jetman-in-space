@@ -105,8 +105,6 @@ ShowBackgroundAboveHorizon
     RET Z
 
     INC A                                       ; Move image one pixel down (TODO why is that necessary?).
-    LD E, A                                     ; E contains bottom line.
-
     CALL bm.ReplaceImageLine
 
     RET                                         ; ## END of the function ##

@@ -177,8 +177,11 @@ HideImageLine
 ;----------------------------------------------------------;
 ; Replaces the line of the displayed layer 2 image with the corresponding line of the given image.
 ; Input:
-;  - E: line number
+;  - A: line number
 ReplaceImageLine
+
+    LD E, A
+    LD D, 0                                     ; We will use DE for the 16-bit ADD, D must be 0
 
     LD B, 0
 .bankLoop                                       ; Loop from 0 to dbs.BM_BANKS_D10 - 1
@@ -218,12 +221,11 @@ ReplaceImageLine
 
     DJNZ .linesLoop
     POP BC
-    
+
     ; ##########################################
     ; Loop from 0 to dbs.BM_BANKS_D10 - 1
+    INC B
     LD A, B
-    INC A
-    LD B, A
     CP dbs.BM_BANKS_D10
     JR NZ, .bankLoop
 
