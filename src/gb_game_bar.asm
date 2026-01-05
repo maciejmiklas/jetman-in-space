@@ -69,6 +69,13 @@ PrintDebug
     ; ##########################################
     LD BC, 60
     LD H, 0
+    LD A, (tmpm)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 66
+    LD H, 0
     LD A, (st.tmp)
     LD L, A
     CALL ut.PrintNumber

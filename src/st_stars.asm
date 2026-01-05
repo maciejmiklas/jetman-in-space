@@ -80,6 +80,47 @@ starsPalL2Addr         DW 0
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                     _CanShowStar                         ;
+;----------------------------------------------------------;
+; Input 
+;  - B:  Star y-postion to be checked.
+;  - IY: Points to the current max y postion for the star.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+    MACRO _CanShowStar
+
+    LD A, (IY)                                  ; Load into A max star y-postion
+
+    ; A holds max star y-position and B current
+    CP B
+    JR C, .maxBelowCurrent                      ; Jump if the max position (A) is below the current (B).
+
+.allowed
+    XOR A                                       ; Return YES (Z is reset).
+    JR .end
+
+.maxBelowCurrent
+
+    ; Stars could be behind the building, in which case it should be hidden, but it's also possible that the star is
+    ; below the building (basement?) in the picture that rolls over to the top of the screen. In this case, the star should be visible.
+    LD A, (bg.bgOffset)                         ; The background image moves down, releasing more room for stars.
+    LD C, A
+    LD A, _SC_RESY1_D255
+    SUB C
+
+    CP B
+    JR NC, .notAllowed2                         ; Jump if the max position (A) is below the current (B).
+    XOR A                                       ; Return YES (Z is reset).
+    JR .end
+
+.notAllowed2
+    OR 1                                        ; Return NO (Z set).
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                      _GetStarColor                       ;
 ;----------------------------------------------------------;
 ; Input:
@@ -192,7 +233,7 @@ starsPalL2Addr         DW 0
     ; Hide star only if it's not being placed on the original image.
     ; B contains a star position before it was moved - that's the one that should be hidden.
     
-    CALL _CanShowStar
+    _CanShowStar
     JR NZ, .afterPaintStar                      ; Skip this star if it cannot be hidden.
 
     ; Hide star
@@ -208,7 +249,7 @@ starsPalL2Addr         DW 0
     ; Print the moved (or not moved if #starsState == ST_SHOW) star if it's not behind something on the image.
 
     LD B, (HL)                                  ; A contains the position of the already moved star.
-    CALL _CanShowStar
+    _CanShowStar
     JR NZ, .afterPaintStar                      ; Skip this star if it cannot be painted.
 
     ; Paint star on new postion
@@ -591,11 +632,12 @@ _SetupLayer2
 
     RET                                         ; ## END of the function ##
 
+
 ;----------------------------------------------------------;
 ;                     _NextStarsColor                      ;
 ;----------------------------------------------------------;
 _NextStarsColor
-
+ 
     LD HL, (starsSCAddr)
     LD A, (starsSCSize)
     LD B, A
@@ -680,47 +722,6 @@ _MoveAndRenderStars
 
     DEC B
     JP NZ, .columnsLoop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _CanShowStar                         ;
-;----------------------------------------------------------;
-; Input 
-;  - B:  Star y-postion to be checked.
-;  - IY: Points to the current max y postion for the star.
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-
-_CanShowStar
-
-    LD A, (IY)                                  ; Load into A max star y-postion
-
-    ; A holds max star y-position and B current
-    CP B
-    JR C, .notAllowed                           ; Jump if the max position (A) is below the current (B).
-
-.allowed
-    XOR A                                       ; Return YES (Z is reset).
-    RET
-
-.notAllowed
-
-    ; Stars could be behind the building, in which case it should be hidden, but it's also possible that the star is
-    ; below the building (basement?) in the picture that rolls over to the top of the screen. In this case, the star should be visible.
-    LD A, (bg.bgOffset)                         ; The background image moves down, releasing more room for stars.
-    LD C, A
-    LD A, _SC_RESY1_D255
-    SUB C
-
-    CP B
-    JR NC, .notAllowed2                         ; Jump if the max position (A) is below the current (B).
-    XOR A                                       ; Return YES (Z is reset).
-    RET
-
-.notAllowed2
-    OR 1                                        ; Return NO (Z set).
 
     RET                                         ; ## END of the function ##
 

@@ -114,6 +114,7 @@ start
 mainLoop
 
     CALL sc.WaitForTopScanline
+
     CALL ml.MainLoop
 
     _ReadPerformance
