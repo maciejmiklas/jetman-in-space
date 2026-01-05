@@ -5,9 +5,10 @@
 ;----------------------------------------------------------;
 ;              Bitmap on Layer 2 at 320x256                ;
 ;----------------------------------------------------------;
-; The image on Layer Two has a resolution of 320x256 and occupies 81920 bytes (80KiB) in 10 banks.
-; The pixel orientation is from top to bottom, left to right. 
-; Each bank has 8KiB = 8192 bytes and can hold 32 horizontal lines. 10 banks hold 320 lines.
+; The image on Layer 2 has a resolution of 320x256 and occupies 81920 bytes (80 KiB) across 10 banks.
+; The pixel orientation is top-to-bottom, left-to-right (the image is rotated 90 degrees). In a single 8 KiB bank, each column is 256 
+; bytes tall. There are 32 such columns per bank (8192 / 256 = 32). 10 banks × 32 columns = 320 columns total.
+; Each bank is 256 pixels tall and has 32 columns. 10 banks give us: 256x320, because the image is rotated by 90 degrees. 
 
     MODULE bm
 
@@ -139,33 +140,34 @@ HideImage
 ;  - A: line number.
 HideImageLine
     LD E, A
+    LD D, 0                                     ; We will use DE for the 16-bit ADD, D must be 0.
     LD B, dbs.BM_BANKS_D10
+
 .bankLoop                                       ; Loop from 10 (dbs.BM_BANKS_D10) to 0
 
     ; We will iterate over 10 banks ascending from dbs.BMB_ST_BANK_S7_D18 to dbs.BMB_END_BANK_S7_D27.
     ; However, the loop starts at 10 (inclusive) and goes to 0 (exclusive).
-    LD A, dbs.BMB_END_BANK_S7_D27 + 1               ; 27 + 1 - 10 = 18 -> dbs.BMB_END_BANK_S7_D27 + 1 - dbs.BM_BANKS_D10 = dbs.BMB_ST_BANK_S7_D18.
+    LD A, dbs.BMB_END_BANK_S7_D27 + 1           ; 27 + 1 - 10 = 18 -> dbs.BMB_END_BANK_S7_D27 + 1 - dbs.BM_BANKS_D10 = dbs.BMB_ST_BANK_S7_D18.
     SUB B
     NEXTREG _MMU_REG_SLOT7_H57, A               ; Use slot 7 to modify displayed image.
 
     ; Each bank contains columns, each having 256 bytes/pixels. To draw the horizontal line at pixel 12 (y position from the top of the 
     ; picture), we have to start at byte 12, then 12+256, 12+(256*2), 12+(256*3), and so on.
     LD HL, _RAM_SLOT7_STA_HE000
-    LD D, 0                                     ; E contains the line number, reset only D to use DE for 16-bit math.
     ADD HL, DE                                  ; HL points at line that will be replaced.
 
     ; ##########################################
     ; Iterate over each picture line in the current bank. Each bank has 8*1024/256=32 lines.
-    PUSH BC
 
-    LD B, _BANK_BYTES_D8192/_BM_YRES_D256       ; 8*1024/256=32
+    LD C, _BANK_BYTES_D8192/_BM_YRES_D256       ; 8*1024/256=32
 .linesLoop
     LD (HL), _COL_BLACK_D0
-    ADD HL, _BM_YRES_D256                       ; Move HL to the next pixel to the right by adding 256 pixels.
+    INC H                                       ; Move HL to the next pixel to the right by adding 256 pixels.
 
-    DJNZ .linesLoop
-    POP BC
-    
+    ; Lines loop
+    DEC C
+    JR NZ, .linesLoop
+
     DJNZ .bankLoop
 
     RET                                         ; ## END of the function ##
@@ -180,7 +182,7 @@ ReplaceImageLine
 
     LD B, 0
 .bankLoop                                       ; Loop from 0 to dbs.BM_BANKS_D10 - 1
-    
+
     ; ##########################################
     ; Setup banks. The source image will be stored in bank 6, destination image in bank 7. We will copy line from 6 to 7.
 

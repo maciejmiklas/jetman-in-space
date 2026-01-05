@@ -21,7 +21,7 @@ GBL_RET_A_GND           = _BM_YRES_D256-1
 ; When Jetman moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset.
 ; It starts with 8 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
 UpdateBackgroundOnJetmanMove
-    ret
+
     ; Divide the Jetman's position by GB_MOVE_SLOW_D2 to slow down the movement of the background.
     LD A, (jpo.jetY)
     LD C, A
@@ -80,7 +80,7 @@ HideBackgroundBars
 ;----------------------------------------------------------;
 ; Hide picture line going behind the horizon
 HideBackgroundBehindHorizon
-    ret
+
     CALL _GetGroundImageLine
 
     ; Do not remove the line if the Jetman is on the ground (offset is 255).
@@ -97,7 +97,7 @@ HideBackgroundBehindHorizon
 ;----------------------------------------------------------;
 ; Copy lower background image line from original picture.
 ShowBackgroundAboveHorizon
-    ret
+
     CALL _GetGroundImageLine
 
     ; Do not remove the line if the Jetman is on the ground (offset is 255).
