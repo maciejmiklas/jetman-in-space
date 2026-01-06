@@ -107,9 +107,9 @@ MOVE_PAT_STEP_OFFSET_D1 = 1                     ; Data for move pattern starts a
 MOVE_PAT_REPEAT_MASK    = %0000'1111 
 MOVE_PAT_DELAY_MASK     = %1111'0000 
 
-MOVE_SPEED_3X           = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
-MOVE_SPEED_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
-DEC_MOVE_SPEED          = %0001'0000 
+MOVE_DELAY_3X           = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
+MOVE_DELAY_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
+DEC_MOVE_DELAY          = %0001'0000 
 
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
@@ -140,14 +140,14 @@ BOUNCE_H_MARG_D3        = 3
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                      _LoadMoveSpeed                      ;
+;                      _LoadMoveDelay                      ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IY: pointer to #ENP holding data for single sprite.
 ; Return:
 ;  - A: value of move delay counter for this pattern (bits 8-5).
 ; Modifies: A, HL
-    MACRO _LoadMoveSpeed
+    MACRO _LoadMoveDelay
 
     _LoadCurrentMoveStep
     INC HL
@@ -272,7 +272,7 @@ MovePatternEnemies
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .continue                            ; Skip enemy if the delay counter > 0.
 
-    _LoadMoveSpeed
+    _LoadMoveDelay
     LD (IY + ENP.MOVE_DELAY_CNT), A             ; Reset counter, A has the max value of delay counter.
 
 .afterMoveDelay
@@ -286,8 +286,8 @@ MovePatternEnemies
     ; TODO calling _MoveEnemy multiple times
 
     ; Tripple movement speed if move delay is 0.
-    _LoadMoveSpeed
-    CP MOVE_SPEED_3X
+    _LoadMoveDelay
+    CP MOVE_DELAY_3X
     JR NZ, .after3x
     PUSH IY
     CALL _MoveEnemy
@@ -297,7 +297,7 @@ MovePatternEnemies
 .after3x
 
     ; Double movement speed if move delay is 1.
-    CP MOVE_SPEED_2X
+    CP MOVE_DELAY_2X
     JR NZ, .continue
     CALL _MoveEnemy
 
@@ -377,7 +377,7 @@ RespawnPatternEnemy
     ; Reset reverse
     RES ENP_S_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
 
-    _LoadMoveSpeed
+    _LoadMoveDelay
     CALL _SetDelayCnt
     CALL _RestartMovePattern
 
@@ -732,7 +732,7 @@ _MoveEnemy
     LD BC, HL                                   ; BC points to current position in #movePatternXX.
     INC BC                                      ; Move BC to the counter for current pattern.
     INC BC                                      ; Move BC to the next pattern.
-
+    
     LD A, (BC)                                  ; X, Y counters will be set to max value as we count down towards 0.
     LD (IY + ENP.MOVE_PAT_STEP), A  
 
@@ -815,10 +815,10 @@ _SetDelayCnt
     ; pixels per frame, so there is no delay at all. Delay 2 should move by 1 pixel, and first delay 3 should skip one pixel.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .storeA
-    SUB DEC_MOVE_SPEED                          ; First decrement, try again to decrement if still above 0.
+    SUB DEC_MOVE_DELAY                          ; First decrement, try again to decrement if still above 0.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .storeA
-    SUB DEC_MOVE_SPEED
+    SUB DEC_MOVE_DELAY
 .storeA
     LD (IY + ENP.MOVE_DELAY_CNT), A
     
