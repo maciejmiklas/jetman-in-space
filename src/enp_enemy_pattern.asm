@@ -282,7 +282,7 @@ MovePatternEnemies
     PUSH IY
     CALL _MoveEnemy
     POP IY
-
+/*
     ; Tripple movement speed if move delay is 0.
     _LoadMoveDelay
     CP MOVE_DELAY_3X
@@ -298,8 +298,8 @@ MovePatternEnemies
     CP MOVE_DELAY_2X
     JR NZ, .continue
     CALL _MoveEnemy
-
-.continue   
+*/
+.continue
     ; ##########################################
     ; Move IX to the beginning of the next #SPR.
     LD DE, SPR
@@ -705,7 +705,7 @@ _MoveEnemy
     DEC A
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .nextMovePattern                      ; Jump if repetition counter for single step has reached 0
-    
+
     ; Decrement repetition counter for move step and return
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A         ; Store decremented counter
     
@@ -761,7 +761,7 @@ _MoveEnemy
     CALL pl.PlatformSpriteHit
     RET NZ                                      ; Return if there is no collision
     CALL sr.SpriteHit                           ; Explode!
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

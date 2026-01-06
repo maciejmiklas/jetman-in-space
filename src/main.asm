@@ -151,6 +151,7 @@ mainLoop
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
     INCLUDE "enur_enemy_fuel_thief_roc.asm"
+    INCLUDE "enc_enemy_cmd.asm"
     INCLUDE "ml_main_loop.asm"
     
     ; Imports below use ORG and dedicated memory bank!

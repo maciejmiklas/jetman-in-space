@@ -149,7 +149,7 @@ UpdatePickupsOnJetmanMove
     ; Freeze enemies
     CP PI_FREEZE_ENEMIES
     JR NZ, .afterFreeze
-    CALL gc.FreezeEnemies
+    CALL enc.FreezeEnemies
     JR .nextPickup
 .afterFreeze
 

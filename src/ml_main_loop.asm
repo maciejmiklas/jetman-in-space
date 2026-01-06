@@ -149,7 +149,7 @@
 
     CALL jco.JetRip
     CALL jw.MoveShots
-    CALL gc.WeaponHitEnemy
+    CALL enc.CheckEnemyWeaponHit
     CALL jw.FireDelayCounter
     JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
@@ -173,7 +173,7 @@
     CP jt.DIF_EASY_D1
     JR Z, .onEasy
 
-    CALL gc.MoveEnemies
+    CALL enc.MoveEnemies
 .onEasy
 
     ; ##########################################
@@ -291,7 +291,7 @@
     CP jt.DIF_EASY_D1
     JR NZ, .notEasy
 
-    CALL gc.MoveEnemies
+    CALL enc.MoveEnemies
 .notEasy
 
 .end
@@ -436,7 +436,7 @@
     CALL dbs.SetupRocketBank
     CALL rof.AnimateRocketExhaust
     CALL rof.BlinkFlyingRocket
-    CALL gc.AnimateEnemies
+    CALL enc.AnimateEnemies
 
     ; ##########################################
     ; Phase 4
@@ -476,7 +476,7 @@
     CALL dbs.SetupPatternEnemyBank
     CALL enu.AnimateFuelThief
 
-    CALL gc.AnimateEnemies
+    CALL enc.AnimateEnemies
 
     ; ##########################################
     ; Hard
@@ -484,8 +484,8 @@
     CP jt.DIF_HARD_D3
     JR NZ, .notHard
 
-    CALL gc.MoveEnemies
-    CALL gc.RespawnEnemy
+    CALL enc.MoveEnemies
+    CALL enc.RespawnEnemy
 
 .notHard
 
@@ -535,7 +535,7 @@
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
     CALL enf.RespawnFormation
-    CALL gc.RespawnEnemy
+    CALL enc.RespawnEnemy
     CALL st.BlinkStars
 
 .end
@@ -577,7 +577,7 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL gc.KillOneEnemy
+    CALL enc.KillOneEnemy
 
 .end
     ENDM                                        ; ## END of the macro ##

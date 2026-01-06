@@ -262,12 +262,12 @@ PLATFORM_SIZE_L5        = 4
 
 ; Level 6
 platformsL6
-    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 03*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 11*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
     pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 
-    pl.PLA {16*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
-    pl.PLA {27*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 09*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+    pl.PLA {17*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 09*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
     pl.PLA {24*8/*X_LEFT*/, 28*8/*X_RIGHT*/, 24*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
 
     pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}

@@ -16,11 +16,6 @@ JSTAND_START_D15        = 15
 JM_RESPAWN_X_D100       = 100
 JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
-KILL_FEW                = 7
-
-freezeEnemiesCnt        DW 0
-FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
-
 FUEL_THIEF_ACTIVE_LEV   = 5
 
 ;----------------------------------------------------------;
@@ -28,35 +23,6 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;                        MACROS                            ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                     _HideEnemies                         ;
-;----------------------------------------------------------;
-    MACRO _HideEnemies
-
-    ; Hide single enemies.
-    CALL dbs.SetupPatternEnemyBank
-
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD IX, ena.singleEnemySprites
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide formation enemies.
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide following enemies.
-    CALL dbs.SetupFollowingEnemyBank
-    
-    LD A, fe.FOLLOWING_FENEMY_SIZE
-    LD IX, fe.fEnemySprites
-    CALL sr.HideAllSimpleSprites
-
-.end
-    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                      _StartLevel                         ;
@@ -107,8 +73,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL dbs.SetupTileAnimationBank
     CALL ta.DisableTileAnimation
 
-    XOR A
-    LD (freezeEnemiesCnt), A
+    CALL enc.InitEnemies
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -536,93 +501,11 @@ PlayFuelThiefFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     WeaponHitEnemy                       ;
-;----------------------------------------------------------;
-WeaponHitEnemy
-
-    CALL dbs.SetupArrays2Bank
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-
-    LD A, (ens.singleEnemySize)
-    LD IX, ena.singleEnemySprites
-    CALL jw.CheckHitEnemies
-
-    ; ##########################################
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL jw.CheckHitEnemies
-
-    ; ##########################################
-    CALL dbs.SetupFollowingEnemyBank
-
-    LD IX, fe.fEnemySprites
-    LD A, (fe.fEnemySize)
-    CALL jw.CheckHitEnemies
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                   RocketHitsAsteroid                     ;
 ;----------------------------------------------------------;
 RocketHitsAsteroid
 
     CALL rof.StartRocketExplosion
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     AnimateEnemies                       ;
-;----------------------------------------------------------;
-AnimateEnemies
-
-    ; Animate single enemy
-    CALL dbs.SetupPatternEnemyBank
-
-    LD A, (ens.singleEnemySize)
-    LD IX, ena.singleEnemySprites
-    CALL sr.AnimateSprites
-
-    ; ##########################################
-    ; Animate formation enemy
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL sr.AnimateSprites
-
-    ; ##########################################
-    CALL dbs.SetupFollowingEnemyBank
-
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
-    CALL sr.AnimateSprites
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      KillOneEnemy                        ;
-;----------------------------------------------------------;
-KillOneEnemy
-
-    ; Kill single enemy
-    CALL dbs.SetupPatternEnemyBank
-    LD A, (ens.singleEnemySize)
-    LD IX, ena.singleEnemySprites
-    CALL sr.KillOneSprite
-
-    ; ##########################################
-    ; Kill formation enemy
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL sr.KillOneSprite
-
-    ; ##########################################
-    ; Kill following enemy
-    CALL dbs.SetupFollowingEnemyBank
-
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
-    CALL sr.KillOneSprite
 
     RET                                         ; ## END of the function ##
 
@@ -654,22 +537,6 @@ KillOneEnemy
 
 .end
     ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                     KillFewEnemies                       ;
-;----------------------------------------------------------;
-KillFewEnemies
-
-    LD B, KILL_FEW
-.killLoop
-    PUSH BC
-
-    CALL KillOneEnemy
-
-    POP BC
-    DJNZ .killLoop
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      EnemyHit                            ;
@@ -924,83 +791,6 @@ JetPicksJar
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_PICKUP_JAR
     CALL af.AfxPlay
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   FreezeEnemies                          ;
-;----------------------------------------------------------;
-FreezeEnemies
-
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_FREEZE_ENEMIES
-    CALL af.AfxPlay
-
-    LD DE, FREEZE_ENEMIES_CNT
-    LD (freezeEnemiesCnt), DE
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     RespawnEnemy                         ;
-;----------------------------------------------------------;
-RespawnEnemy
-
-    ; Enemies frozen and cannot move/respawn?
-    LD DE, (freezeEnemiesCnt)
-
-    LD A, D
-    OR A                                        ; Same as CP 0, but faster.
-    RET NZ
-
-    LD A, E
-    OR A                                        ; Same as CP 0, but faster.
-    RET NZ
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.RespawnNextSingleEnemy
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.RespawnFollowingEnemy
-    
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      MoveEnemies                         ;
-;----------------------------------------------------------;
-MoveEnemies
-
-    ; Pattern enemies are immune to freeze
-    CALL dbs.SetupPatternEnemyBank
-    CALL enf.MoveFormationEnemies
-
-    ; Enemies frozen and cannot move?
-    LD DE, (freezeEnemiesCnt)
-    
-    ; DE == 0 ?
-    LD A, D
-    OR A                                        ; Same as CP 0, but faster.
-    JR NZ, .decFreezeCnt
-
-    ; D == 0, now check E
-    LD A, E
-    OR A                                        ; Same as CP 0, but faster.
-    JR Z, .afterFreeze
-
-.decFreezeCnt
-    DEC DE
-    LD (freezeEnemiesCnt), DE
-    RET
-.afterFreeze
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
 
     RET                                         ; ## END of the function ##
 
@@ -1267,7 +1057,7 @@ _HideGame
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
     CALL ki.ResetKeyboard
-    _HideEnemies
+    CALL enc.HideEnemies
 
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups

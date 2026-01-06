@@ -79,13 +79,11 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
 
     CALL dbs.SetupArrays2Bank
 .loopOverPlatforms
-
+    PUSH BC
     ; ##########################################
     ; Check the collision from the left side of the platform.
 
-    PUSH BC
     _CheckPlatformHitLeft
-    POP BC
 
     JR NZ, .afterHitLeft
 
@@ -94,16 +92,13 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JR NZ, .afterHitLeft
 
     LD A, PL_DHIT_LEFT_D1
-    JP .end
+    JP .endLoopOverPlatforms
 .afterHitLeft
 
     ; ##########################################
     ; Check the collision from the right side of the platform.
 
-    PUSH BC
     _CheckPlatformHitRight
-    POP BC
-
     JR NZ, .afterHitRight
 
     ; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
@@ -111,7 +106,7 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JR NZ, .afterHitRight
 
     LD A, PL_DHIT_RIGHT_D2
-    JP .end
+    JP .endLoopOverPlatforms
 .afterHitRight
 
     ; ##########################################
@@ -121,14 +116,12 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JR NZ, .afterHitTop
 
     ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
-    PUSH BC
     CALL _CheckPlatformHitHorizontal
-    POP BC
 
     JR NZ, .afterHitTop
 
     LD A, PL_DHIT_TOP_D3
-    JR .end
+    JR .endLoopOverPlatforms
 .afterHitTop
 
     ; ##########################################
@@ -138,26 +131,30 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JR NZ, .afterHitBottom
 
     ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
-    PUSH BC
     CALL _CheckPlatformHitHorizontal
-    POP BC
 
     JR NZ, .afterHitBottom
 
     LD A, PL_DHIT_BOTTOM_D4
-    JR .end
+    JR .endLoopOverPlatforms
 .afterHitBottom
 
     ; ##########################################
     ; Loop over platforms.
+    
     LD DE, PLA
     ADD IY, DE
 
+    POP BC
     DEC B
     JP NZ, .loopOverPlatforms                         ; decrement B until all platforms have been evaluated.
 
     ; We've iterated over all platforms, and there was no hit.
     LD A, PL_DHIT_NO_D0
+    JR .end
+
+.endLoopOverPlatforms
+    POP BC
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -228,9 +225,9 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
     POP HL
     JP M, .hit
-
     _NO
     JR .end
+
 .hit
     _YES
 
