@@ -94,7 +94,7 @@ UpdateJetSpritePositionRotation
     LD A, (gid.jetDirection)
     LD D, A
     XOR A                                       ; Clear A to set only rotation/mirror bits
-    BIT gid.MOVE_LEFT_BIT, D                    ; Moving left bit set?
+    BIT gid.MOVE_LEFT_BIT_D0, D                    ; Moving left bit set?
     JR Z, .rotateRight
     SET _SPR_REG_ATR2_MIRX_BIT, A               ; Rotate sprite left
     JR .afterRotate 
@@ -290,7 +290,7 @@ ChangeJetSpriteOnFlyDown
 
     ; Change animation only if Jetman is flying
     LD A, (jt.jetAir)
-    CP jt.AIR_FLY_D10
+    OR A                                        ; Same as: CP jt.AIR_FLY_D10
     RET NZ
 
     ; Switch to flaying down animation

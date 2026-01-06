@@ -50,7 +50,7 @@ UpdateStateOnJoyWillEnable
 
     ; Reset #jetAir
     LD A, (jetAir)
-    CP JT_STATE_INACTIVE_D0
+    OR A                                        ; Same as: CP JT_STATE_INACTIVE_D0
     JR Z, .afterResetAir                        ; Do not need to reset if #jetAir is inactive.
 
     ; Reset!

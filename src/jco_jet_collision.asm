@@ -13,8 +13,8 @@ MARG_VERT_UP_D18        = 18
 MARG_VERT_LOW_D15       = 15
 MARG_VERT_KICK_D25      = 25
 
-RIP_MOVE_LEFT           = 0
-RIP_MOVE_RIGHT          = 1
+RIP_MOVE_LEFT_D0        = 0
+RIP_MOVE_RIGHT_D1       = 1
 ripMoveState            DB 0                    ; 1 - move right, 0 - move left
 
 ; Amount of steps to move in a direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
@@ -53,7 +53,7 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
 
     ; Move left or right.
     LD A, (ripMoveState)
-    CP RIP_MOVE_LEFT
+    OR A                                        ; Same as: CP RIP_MOVE_LEFT_D0
     JR Z, .moveLeft
 
     ; Move right.

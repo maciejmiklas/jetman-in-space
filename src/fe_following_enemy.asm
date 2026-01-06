@@ -56,34 +56,34 @@ fEnemySize              BYTE 1
 FOLLOWING_FENEMY_SIZE   = 10
 
 fEnemy01
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy02
-    FE {STATE_DEPLOY_LEFT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_LEFT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy03
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy04
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy05
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy06
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy07
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy08
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy09
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 fEnemy10
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY_D22*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
+    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 ; Each line contains a single set of 4 "angles", which will be applied to the enemy when it changes direction. Each angle lasts for
 ; 0.5 seconds (_MainLoop025OnActiveGame -> NextFollowingAngle), and afterwards, the next one is taken until we reach the last one.
@@ -180,7 +180,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     ; There are two respawn delay timers. The first is global (#respawnDelayCnt) and ensures that multiple enemies do not respawn at the 
     ; same time. The second timer can be configured for a single enemy, which further delays its comeback.
-    LD A, (IY + FE.RESPAWN_DELAY_D22)
+    LD A, (IY + FE.RESPAWN_DELAY)
 
     ; Enemy disabled?
     CP enp.RESPAWN_OFF_D255
@@ -543,8 +543,8 @@ SetupFollowingEnemies
     LD A, (IX + FES.RESPAWN_Y)
     LD (IY + FES.RESPAWN_Y), A
 
-    LD A, (IX + FES.RESPAWN_DELAY_D22)
-    LD (IY + FES.RESPAWN_DELAY_D22), A
+    LD A, (IX + FES.RESPAWN_DELAY)
+    LD (IY + FES.RESPAWN_DELAY), A
 
     LD A, (IX + FES.MOVE_DELAY)
     LD (IY + FES.MOVE_DELAY), A

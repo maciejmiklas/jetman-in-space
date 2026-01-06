@@ -47,7 +47,7 @@ SDB_BOUNCE_TOPA         = 211                   ; Play bounce animation by top/b
 SDB_HIDE                = 255                   ; Hides Sprite.
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX).
 
-SDB_SEARCH_LIMIT        = 200
+SDB_SEARCH_LIMIT_D200   = 200
 
 ;----------------------------------------------------------;
 ;                  Sprite Animations                       ;
@@ -440,7 +440,7 @@ MoveX
 
     ; H is 0, check whether L has reached left side of the screen.
     LD A, L
-    CP _GSC_X_MIN_D0
+    OR A                                        ; Same as: CP _GSC_X_MIN_D0
     JR NZ, .continueLeftLoop                    ; Jump if A !=0
 
     ; HL == #_GSC_X_MIN_D0+1
@@ -574,7 +574,7 @@ LoadSpritePattern
 
     ; Find DB record.
     LD HL, srSpriteDB                           ; HL points to the beginning of the DB.
-    LD BC, SDB_SEARCH_LIMIT                     ; Limit CPIR search.
+    LD BC, SDB_SEARCH_LIMIT_D200                     ; Limit CPIR search.
     CPIR                                        ; CPIR will keep increasing HL until it finds a record ID from A.
 
     ; ##########################################

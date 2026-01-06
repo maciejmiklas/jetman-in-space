@@ -320,7 +320,7 @@ _SetupMenuScore
 .noJoystick
 
     ; ###########################################
-    LD A, ms.MENU_SCORE
+    LD A, ms.MS_MENU_SCORE_D13
     CALL ms.SetMainState
 
     CALL js.HideJetSprite

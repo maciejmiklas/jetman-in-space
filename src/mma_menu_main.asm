@@ -43,7 +43,7 @@ LoadMainMenu
 
     ; ##########################################
     ; Update menu state
-    LD A, ms.MENU_MAIN
+    LD A, ms.MS_MENU_MAIN_D11
     CALL ms.SetMainState
 
     ; ##########################################
@@ -95,7 +95,7 @@ LoadMainMenu
 
     ; Jetman is facing left
     XOR A
-    SET gid.MOVE_LEFT_BIT, A
+    SET gid.MOVE_LEFT_BIT_D0, A
     LD (gid.jetDirection), A
 
     LD A, js.SDB_HOVER

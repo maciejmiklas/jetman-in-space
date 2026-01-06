@@ -471,7 +471,7 @@ JetPlatformHitOnJoyMove
     
     ; Is Jetman moving down?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_DOWN_BIT, A
+    BIT gid.MOVE_DOWN_BIT_D3, A
     JR Z, .afterLanding                         ; Jump if move down bit is not set.
     
     ; Update #platformWalkNumber = #platformSize - B.
@@ -491,7 +491,7 @@ JetPlatformHitOnJoyMove
     
     ; Is Jetman moving right (Jetman have to move right to hit the left side of the platform)?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_RIGHT_BIT, A
+    BIT gid.MOVE_RIGHT_BIT_D1, A
     JR Z, .afterHitLeft                         ; Jump if right down bit is not set.
     
     ; Jetman hits the platform.
@@ -523,7 +523,7 @@ JetPlatformHitOnJoyMove
     
     ; Is Jetman moving left (Jetman have to move left to hit the right side of the platform)?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_LEFT_BIT, A
+    BIT gid.MOVE_LEFT_BIT_D0, A
     JR Z, .afterHitRight                        ; Jump if left down bit is not set.
     
     ; Jetman hits the platform from the right side and bumps off to the right.
@@ -555,7 +555,7 @@ JetPlatformHitOnJoyMove
 
     ; Is Jetman moving up?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_UP_BIT, A
+    BIT gid.MOVE_UP_BIT_D2, A
     JR Z, .afterHitBottom                       ; Jump if left down bit is not set.
     
     ; Jetman hits the platform from the bottom.
@@ -715,14 +715,14 @@ MoveJetOnHitPlatformBelow
     LD A, (gid.joyDirection)
 
     ; Joystick points right, move left.
-    BIT gid.MOVE_RIGHT_BIT, A
+    BIT gid.MOVE_RIGHT_BIT_D1, A
     JR Z, .afterRight
     CALL jpo.IncJetX
     JR .afterLeft
 .afterRight
 
     ; Joystick points left, move right.
-    BIT gid.MOVE_LEFT_BIT, A
+    BIT gid.MOVE_LEFT_BIT_D0, A
     JR Z, .afterLeft
     CALL jpo.DecJetX
 .afterLeft  

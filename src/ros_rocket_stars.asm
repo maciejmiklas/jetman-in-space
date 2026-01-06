@@ -104,7 +104,7 @@ slowDownScrollY         DB 0
     ; ##########################################
     ; Reset stars counter ?
     LD A, (sourceTilesRow)
-    CP A, 0
+    OR A
     JR NZ, .afterResetStarsRow                  ; Jump if #starsLine > 0.
 
     ; Reset stars counter
@@ -115,7 +115,7 @@ slowDownScrollY         DB 0
     ; ##########################################
     ; Reset tiles counter?
     LD A, (tilesRow)
-    CP A, 0
+    OR A
     JR NZ, .afterResetTilesRow                  ; Jump if #tilesRow > 0.
 
     ; Reset tiles counter

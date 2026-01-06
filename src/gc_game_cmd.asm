@@ -63,7 +63,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
     MACRO _StartLevel
 
-    LD A, ms.GAME_ACTIVE
+    LD A, ms.MS_GAME_ACTIVE_D1
     CALL ms.SetMainState
 
     CALL gb.ShowGameBar
@@ -76,7 +76,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL jo.ResetJetpackOverheating
     CALL jl.SetupLives
 
-    LD A, ms.GAME_ACTIVE
+    LD A, ms.MS_GAME_ACTIVE_D1
     CALL ms.SetMainState
 
     ; Music on
@@ -130,7 +130,7 @@ StartGameWithIntro
 
     ; Show intro only for the first level.
     LD A, (ll.currentLevel)
-    CP _LEVEL_MIN
+    CP _LEVEL_MIN_D1
     JR Z, .intro
     CALL LoadCurrentLevel
     RET
@@ -176,7 +176,7 @@ SetupSystem
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    LD A, ms.MENU_MAIN
+    LD A, ms.MS_MENU_MAIN_D11
     CALL ms.SetMainState
 
     CALL _HideGame
@@ -283,7 +283,7 @@ RocketFLyStartPhase1
 
     CALL rof.RocketFLyStartPhase1
 
-    LD A, ms.FLY_ROCKET
+    LD A, ms.MS_FLY_ROCKET_D3
     CALL ms.SetMainState
 
     CALL sc.BoardRocket
@@ -479,7 +479,7 @@ JetPlatformTakesOff
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE_D0                     ; Check if Jetman is on the ground/platform.
+    OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0. Check if Jetman is on the ground/platform.
     RET Z
 
     ; Jetman is taking off.

@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE ll
 
-currentLevel            DB _LEVEL_MIN           ; Int value 1-10.
+currentLevel            DB _LEVEL_MIN_D1           ; Int value 1-10.
 currentLevelStr         DW 0                    ; string value  01-10.
 
     STRUCT LL
@@ -296,7 +296,7 @@ LoadUnlockLevel
 ;----------------------------------------------------------;
 ResetLevelPlaying
 
-    LD A, _LEVEL_MIN
+    LD A, _LEVEL_MIN_D1
     LD (currentLevel), A
 
     RET                                         ; ## END of the function ##
@@ -323,7 +323,7 @@ UnlockNextLevel
     LD (currentLevel), A
 
     ; Player has finished the last level, restart at  1, but do not store the unlock level.
-    CP _LEVEL_MAX + 1
+    CP _LEVEL_MAX_D10 + 1
     JR Z, .resetCurrentLevel
 
     ; ##########################################
@@ -350,7 +350,7 @@ UnlockNextLevel
     RET
 
 .resetCurrentLevel
-    LD A, _LEVEL_MIN
+    LD A, _LEVEL_MIN_D1
     LD (currentLevel), A
 
     RET                                         ; ## END of the function ##

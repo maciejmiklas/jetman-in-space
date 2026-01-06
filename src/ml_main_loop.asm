@@ -53,10 +53,10 @@
 
     CALL dbs.SetupRocketBank
 
-    ; Return if rocket is not flying. #ms.mainState has also similar state: #FLY_ROCKET, but its not the same!
-    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE and not #ro.ROST_FLY.
+    ; Return if rocket is not flying. #ms.mainState has also similar state: #MS_FLY_ROCKET_D3, but its not the same!
+    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE_D102 and not #ro.ROST_FLY_D101.
     LD A, (ro.rocketState)
-    CP ro.ROST_FLY
+    CP ro.ROST_FLY_D101
     JR NZ, .end
 
     ; ##########################################
@@ -83,7 +83,7 @@
 
     ; Return if intro is inactive.
     LD A, (ms.mainState)
-    CP ms.LEVEL_INTRO
+    CP ms.MS_LEVEL_INTRO_D10
     JR NZ, .end
 
     ; ##########################################
@@ -99,7 +99,7 @@
 
     ; Return if menu is not active.
     LD A, (ms.mainState)
-    CP ms.LEVEL_INTRO
+    CP ms.MS_LEVEL_INTRO_D10
     JR C, .end
 
     ; ##########################################
@@ -116,10 +116,10 @@
     ; Execute if main menu or level select menu is inactive.
     LD A, (ms.mainState)
     
-    CP ms.MENU_MAIN
+    CP ms.MS_MENU_MAIN_D11
     JR Z, .execute
 
-    CP ms.MENU_LEVEL
+    CP ms.MS_MENU_LEVEL_D14
     JR Z, .execute
 
     JR .end
@@ -139,7 +139,7 @@
 
     ; Return if game is inactive
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JP NZ, .end
 
     ; ##########################################
@@ -200,7 +200,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     ; Return if the joystick is about to enable.
@@ -222,7 +222,7 @@
     MACRO _Loop000OnPause
 
     LD A, (ms.mainState)
-    CP ms.PAUSE
+    CP ms.MS_PAUSE_D30
     JR NZ, .end
 
     CALL gi.GameOptionsInput
@@ -283,7 +283,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     ; ##########################################
@@ -334,7 +334,7 @@
 
     ; Return if game is not active.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     ; ##########################################
@@ -391,7 +391,7 @@
 
     ; Is rocket exploding ?
     LD A, (ro.rocketState)
-    CP ro.ROST_EXPLODE
+    CP ro.ROST_EXPLODE_D102
     JR NZ, .end
 
     ; ##########################################
@@ -410,7 +410,7 @@
     MACRO _Loop008OnActiveScoreMenu
 
     LD A, (ms.mainState)
-    CP ms.MENU_SCORE
+    CP ms.MS_MENU_SCORE_D13
     JR NZ, .end
 
     ; ##########################################
@@ -427,7 +427,7 @@
     ; Return if rocket is not flying.
     CALL dbs.SetupRocketBank
     LD A, (ro.rocketState)
-    CP ro.ROST_FLY
+    CP ro.ROST_FLY_D101
     JR NZ, .end
 
     ; ##########################################
@@ -458,7 +458,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     ; ##########################################
@@ -529,7 +529,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     ; ##########################################
@@ -573,7 +573,7 @@
 
     ; Return if rocket is not flying.
     LD A, (ms.mainState)
-    CP ms.FLY_ROCKET
+    CP ms.MS_FLY_ROCKET_D3
     JR NZ, .end
 
     ; ##########################################
@@ -614,7 +614,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     ; ##########################################
@@ -666,7 +666,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     CALL dbs.SetupFollowingEnemyBank
@@ -683,7 +683,7 @@
     ; Return if rocket is not flying.
     CALL dbs.SetupRocketBank
     LD A, (ro.rocketState)
-    CP ro.ROST_FLY
+    CP ro.ROST_FLY_D101
     JR NZ, .end
 
     ; ##########################################
@@ -732,7 +732,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_ACTIVE
+    CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
 
     ; ##########################################
@@ -749,7 +749,7 @@
 
     ; Return if game is inactive.
     LD A, (ms.mainState)
-    CP ms.GAME_OVER
+    CP ms.MS_GAME_OVER_D20
     JR NZ, .end
 
     ; ##########################################

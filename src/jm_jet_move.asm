@@ -89,8 +89,8 @@ JoyMoveUp
 
     ; We have direction change!
     LD A, (gid.jetDirection)                    ; Update #jetState by resetting down and setting up.
-    RES gid.MOVE_DOWN_BIT, A
-    SET gid.MOVE_UP_BIT, A
+    RES gid.MOVE_DOWN_BIT_D3, A
+    SET gid.MOVE_UP_BIT_D2, A
     LD (gid.jetDirection), A
 .afterDirectionChange
 
@@ -131,8 +131,8 @@ JoyMoveRight
 
     ; We have direction change!
     LD A, (gid.jetDirection)                    ; Reset left and set right.
-    RES gid.MOVE_LEFT_BIT, A
-    SET gid.MOVE_RIGHT_BIT, A
+    RES gid.MOVE_LEFT_BIT_D0, A
+    SET gid.MOVE_RIGHT_BIT_D1, A
     LD (gid.jetDirection), A
 .afterDirectionChange
 
@@ -168,8 +168,8 @@ JoyMoveLeft
 
     ; We have direction change! 
     LD A, (gid.jetDirection)                    ; Reset right and set left.
-    RES gid.MOVE_RIGHT_BIT, A
-    SET gid.MOVE_LEFT_BIT, A
+    RES gid.MOVE_RIGHT_BIT_D1, A
+    SET gid.MOVE_LEFT_BIT_D0, A
     LD (gid.jetDirection), A
 .afterDirectionChange
 
@@ -199,7 +199,7 @@ JoyMoveDown
     ; ##########################################
     ; Cannot move down when walking
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE_D0
+    OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0
     RET NZ
 
     ; ##########################################
@@ -211,8 +211,8 @@ JoyMoveDown
 
     ; We have direction change!
     LD A, (gid.jetDirection)                    ; Update #jetState by resetting Up/Hover and setting down.
-    RES gid.MOVE_UP_BIT, A
-    SET gid.MOVE_DOWN_BIT, A    
+    RES gid.MOVE_UP_BIT_D2, A
+    SET gid.MOVE_DOWN_BIT_D3, A    
     LD (gid.jetDirection), A
     
     CALL js.ChangeJetSpriteOnFlyDown
@@ -275,7 +275,7 @@ JoystickMoveProcessed
     ; ##########################################
     ; Is there a movement?
     LD A, (gid.joyDirection)
-    CP gid.MOVE_INACTIVE
+    OR A                                        ; Same as: CP gid.MOVE_INACTIVE_D0
     RET NZ                                      ; Jump if there is a movement.
 
 .inactive
@@ -367,7 +367,7 @@ _JoystickMoves
 _StandToWalk
 
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE_D0
+    OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0
     RET Z                                       ; Exit if Jetman is not on the ground.
 
     ; Jetman is on the ground, is he already walking?
@@ -398,7 +398,7 @@ _CanJetMove
     ; ##########################################
     ; Joystick disabled if Jetman is inactive.
     LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE_D0
+    OR A                                    ; Sama as: CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .jetActive
 
     ; Do not process input.

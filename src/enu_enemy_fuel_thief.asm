@@ -121,7 +121,7 @@ RespawnFuelThief
     ; Respawn thief only if no rocket tank is deployed for pickup. Otherwise, decrementing the element number would make picking up the 
     ; deployed one impossible.
     CALL enur.LoadRocketState
-    CP ro.ROST_WAIT_DROP
+    CP ro.ROST_WAIT_DROP_D1
     RET NZ
 
     ; ##########################################
@@ -315,7 +315,7 @@ _SetupFuelThief
     CALL enp.ResetPatternEnemies
 
     XOR A
-    LD (IY + ENP.RESPAWN_DELAY_D22), A
+    LD (IY + ENP.RESPAWN_DELAY), A
     LD (thiefRespawnDelayCnt), A
     
     RET                                         ; ## END of the function ##

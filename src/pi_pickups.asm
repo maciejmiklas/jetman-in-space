@@ -278,7 +278,7 @@ PickupDropCounter
     JR NZ, .afterGunCheck
 
     LD A, (jw.fireDelay)
-    CP jw.JM_FIRE_DELAY_MIN
+    CP jw.JM_FIRE_DELAY_MIN_D3
     JR Z, .deployNext
 .afterGunCheck
 

@@ -370,7 +370,7 @@ StartRocketExplosion
 
     ; ##########################################
     ; Update state
-    LD A, ro.ROST_EXPLODE
+    LD A, ro.ROST_EXPLODE_D102
     LD (ro.rocketState), A
 
     RET                                         ; ## END of the function ##

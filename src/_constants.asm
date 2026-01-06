@@ -496,21 +496,20 @@ _GSC_JET_GND_D217       = _GSC_Y_MAX_D232 - _GND_THICK_D8 +1
 
 ; ##############################################
 ; Game bar
-_BAR_TILES              = 6
-_BAR_FULL_SPR           = 176
-_BAR_EMPTY_SPR          = 182
+_BAR_TILES_D6           = 6
+_BAR_FULL_SPR_D176      = 176
+_BAR_EMPTY_SPR_D182     = 182
 
-_BAR_RED_A1_SPR         = 180
-_BAR_RED_A2_SPR         = 181
+_BAR_RED_A1_SPR_D180    = 180
+_BAR_RED_A2_SPR_D181    = 181
 
-_BAR_RED_B1_SPR         = 188
-_BAR_RED_B2_SPR         = 189
-
+_BAR_RED_B1_SPR_D188    = 188
+_BAR_RED_B2_SPR_D189     = 189
 
 ; ##############################################
 ; Game Levels
-_LEVEL_MIN              = 1
-_LEVEL_MAX              = 10
+_LEVEL_MIN_D1           = 1
+_LEVEL_MAX_D10          = 10
 
 ;----------------------------------------------------------;
 ;       Single Enemy and Formation (Pattern Enemy)         ;
@@ -526,7 +525,7 @@ _LEVEL_MAX              = 10
 ;  - 7: #ENP_S_BIT_REVERSE_Y_D7
 SETUP                   DB
 MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
-RESPAWN_DELAY_D22           DB                      ; Number of game loops delaying respawn.
+RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter.
 RESPAWN_Y               DB                      ; Respawn Y position.
 MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX).
@@ -538,7 +537,7 @@ MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of sing
 ; Setup values loaded for each level for #SPR
     STRUCT ENPS
 RESPAWN_Y               DB                      ; Value for: ENP.RESPAWN_Y
-RESPAWN_DELAY_D22           DB                      ; Value for: ENP.RESPAWN_DELAY_D22
+RESPAWN_DELAY           DB                      ; Value for: ENP.RESPAWN_DELAY
 MOVE_PAT_POINTER        DW                      ; Value for: ENP.MOVE_PAT_POINTER
 SDB_INIT                DB                      ; Value for: SPR.SDB_INIT
 SETUP                   DB                      ; Value for: ENP.SETUP
@@ -573,12 +572,12 @@ EXT_DATA_POINTER        DW                      ; Pointer to additional data str
     STRUCT FE
 STATE                   DB                      ; See: #fe.STATE_XXX.
 RESPAWN_Y               DB                      ; Respawn Y position.
-RESPAWN_DELAY_D22           DB                      ; Number of game loops delaying respawn.
+RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
 MOVE_DELAY              DB
 
 ; Values changed during runtime
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0.
-RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY_D22.
+RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY.
 FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops.
 SKIP_XY_CNT             DB                      ; Holds skip counters for x/y, same bits as on #FE.STATE (1-2 for x and 5-6 for y).
 ANGLES_IDX              DB                      ; Current offset to #angles, set after direction change.
@@ -589,7 +588,7 @@ ANGLES_IDX_END          DB                      ; End offset to #angles, inclusi
     STRUCT FES
 STATE                   DB                      ; Value for FE.STATE
 RESPAWN_Y               DB                      ; Value for FE.RESPAWN_Y
-RESPAWN_DELAY_D22           DB                      ; Value for FE.RESPAWN_DELAY_D22
+RESPAWN_DELAY           DB                      ; Value for FE.RESPAWN_DELAY
 MOVE_DELAY              DB                      ; Value for FE.MOVE_DELAY
     ENDS
 
@@ -617,8 +616,7 @@ X_OFFSET                DB                      ; X offset (column) from the beg
 SIZE                    DB                      ; Amount of stars.
     ENDS
 
-
 ;----------------------------------------------------------;
 ;                          Rocket                          ;
 ;----------------------------------------------------------;
-_EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
+_EXHAUST_SPRID_D83      = 83                    ; Sprite ID for exhaust.

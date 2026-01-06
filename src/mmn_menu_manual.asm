@@ -95,7 +95,7 @@ _PreLoadMenu
     CALL dbs.SetupMusicBank
     CALL aml.MusicOff
 
-    LD A, ms.MENU_MANUAL
+    LD A, ms.MS_MENU_MANUAL_D12
     CALL ms.SetMainState
 
     CALL js.HideJetSprite

@@ -7,11 +7,11 @@
 ;----------------------------------------------------------;
     MODULE gb 
 
-GB_VISIBLE              = 1
-GB_HIDDEN               = 0
+GB_VISIBLE_D1           = 1
+GB_HIDDEN_D0            = 0
 GB_TILES_D13            = 320 / 8 * 3
 
-gamebarState            DB GB_VISIBLE
+gamebarState            DB GB_VISIBLE_D1
 
 ;----------------------------------------------------------;
 ;                     HideGameBar                          ;
@@ -19,7 +19,7 @@ gamebarState            DB GB_VISIBLE
 HideGameBar
 
     ; Update state
-    LD A, GB_HIDDEN
+    LD A, GB_HIDDEN_D0
     LD (gamebarState), A
 
     ; ##########################################
@@ -36,7 +36,7 @@ HideGameBar
 ShowGameBar
 
     ; Update state
-    LD A, GB_VISIBLE
+    LD A, GB_VISIBLE_D1
     LD (gamebarState),A
 
     RET                                         ; ## END of the function ##
@@ -48,8 +48,8 @@ PrintDebug
 
     ; Return if gamebar is hidden
     LD A, (gamebarState)
-    CP GB_VISIBLE
-    RET NZ
+    OR A
+    RET Z
 
     ; ##########################################
     LD BC, 40

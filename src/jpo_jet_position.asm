@@ -62,10 +62,10 @@ DecJetX
 
     ; If X == 0 (_GSC_X_MIN_D0) then set it to 315. X == 0 when B and C are 0
     LD A, B
-    CP _GSC_X_MIN_D0                            ; If B > 0 then X is also > 0.
+    OR A                                        ; If B > 0 then X is also > 0.
     JR NZ, .afterResetX
     LD A, C
-    CP _GSC_X_MIN_D0                            ; If C > 0 then X is also > 0.
+    OR A                                        ; If C > 0 then X is also > 0.
     JR NZ, .afterResetX
     LD BC, _GSC_X_MAX_D315                      ; X == 0 (both A and B are 0) -> set X to 315.
 .afterResetX

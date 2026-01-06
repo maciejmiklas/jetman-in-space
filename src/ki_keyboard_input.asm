@@ -8,10 +8,10 @@
     MODULE ki
 
 userInputDelayCnt       DB 0
-USER_INPUT_DELAY        = 15
+USER_INPUT_DELAY_D15    = 15
 
 userInputInactiveCnt    DB 0
-USER_INPUT_RESET        = 5
+USER_INPUT_RESET_D5     = 5
 
 callbackRight           DW _DummyFunction
 callbackLeft            DW _DummyFunction
@@ -24,16 +24,16 @@ callbackFire            DW _DummyFunction
 ;----------------------------------------------------------;
 KeyboardInputLastLoop
 
-    ; Reset #userInputDelayCnt when timer #userInputInactiveCnt has reached #USER_INPUT_RESET. By doing it, the next button press will
+    ; Reset #userInputDelayCnt when timer #userInputInactiveCnt has reached #USER_INPUT_RESET_D5. By doing it, the next button press will
     ; execute immediately.
 
-    ; Do not reset #userInputDelayCnt if already at #USER_INPUT_DELAY.
+    ; Do not reset #userInputDelayCnt if already at #USER_INPUT_DELAY_D15.
     LD A, (userInputDelayCnt)
-    CP USER_INPUT_DELAY
+    CP USER_INPUT_DELAY_D15
     RET Z
 
     LD A, (userInputInactiveCnt)
-    CP USER_INPUT_RESET
+    CP USER_INPUT_RESET_D5
     JR Z, .reset
     INC A
     LD (userInputInactiveCnt),A
@@ -42,7 +42,7 @@ KeyboardInputLastLoop
     XOR A
     LD (userInputInactiveCnt), A
 
-    LD A, USER_INPUT_DELAY
+    LD A, USER_INPUT_DELAY_D15
     LD (userInputDelayCnt), A
 
     RET                                         ; ## END of the function ##
@@ -218,7 +218,7 @@ CanProcessKeyInput
 
     ; Delay user input processing
     LD A, (userInputDelayCnt)
-    CP USER_INPUT_DELAY
+    CP USER_INPUT_DELAY_D15
     JR Z, .processInput
     INC A
     LD (userInputDelayCnt), A

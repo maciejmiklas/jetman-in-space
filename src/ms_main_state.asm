@@ -7,21 +7,21 @@
 ;----------------------------------------------------------;
     MODULE ms
 
-GAME_ACTIVE             = 1
-GAME_PAUSE              = 2
-FLY_ROCKET              = 3
+MS_GAME_ACTIVE_D1       = 1
+MS_GAME_PAUSE_D2        = 2
+MS_FLY_ROCKET_D3        = 3
 
-LEVEL_INTRO             = 10
-MENU_MAIN               = 11
-MENU_MANUAL             = 12
-MENU_SCORE              = 13
-MENU_LEVEL              = 14
+MS_LEVEL_INTRO_D10      = 10
+MS_MENU_MAIN_D11        = 11
+MS_MENU_MANUAL_D12      = 12
+MS_MENU_SCORE_D13       = 13
+MS_MENU_LEVEL_D14       = 14
 
-GAME_OVER               = 20
-PAUSE                   = 30
+MS_GAME_OVER_D20        = 20
+MS_PAUSE_D30            = 30
 
-mainState              DB MENU_MAIN
-mainStateBackup        DB MENU_MAIN
+mainState              DB MS_MENU_MAIN_D11
+mainStateBackup        DB MS_MENU_MAIN_D11
 
 ;----------------------------------------------------------;
 ;                     SetMainState                         ;

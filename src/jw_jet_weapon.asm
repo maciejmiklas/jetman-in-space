@@ -15,22 +15,22 @@ FIRE_THICKNESS_D10      = 10
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter .
 ; reaches #JM_FIRE_DELAY
-JM_FIRE_DELAY_MAX       = 15
-JM_FIRE_DELAY_MIN       = 3
-JM_FIRE_SPEED_UP        = 4
+JM_FIRE_DELAY_MAX_D15   = 15
+JM_FIRE_DELAY_MIN_D3    = 3
+JM_FIRE_SPEED_UP_D4     = 4
 fireDelayCnt            DB 0
-fireDelay               DB JM_FIRE_DELAY_MAX
+fireDelay               DB JM_FIRE_DELAY_MAX_D15
 
 STATE_SHOT_DIR_BIT      = 5                     ; Bit for #SPR.STATE, 1 - shot moves right, 0 - shot moves left.
 
 fireFxDelayCnt          DB 0
-fireFxDelay             DB FIRE_FX_DELAY_INIT
-FIRE_FX_DELAY_INIT      = 2
-FIRE_FX_DELAY_SOUND2    = 5                     ; When delay reaches this value play #af.FX_FIRE2.
+fireFxDelay             DB FIRE_FX_DELAY_INIT_D2
+FIRE_FX_DELAY_INIT_D2   = 2
+FIRE_FX_DELAY_SND2_D5   = 5                     ; When delay reaches this value play #af.FX_FIRE2.
 
 fireFxOn                DB 1
-FIRE_FX_ON              = 1
-FIRE_FX_OFF             = 0
+FIRE_FX_ON_D1            = 1
+FIRE_FX_OFF_D0           = 0
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -44,7 +44,7 @@ FIRE_FX_OFF             = 0
     MACRO _FireDelayDown
 
     LD A, (fireDelay)
-    CP JM_FIRE_DELAY_MIN
+    CP JM_FIRE_DELAY_MIN_D3
     JR Z, .end
 
     DEC A
@@ -60,8 +60,8 @@ FIRE_FX_OFF             = 0
 
     ; Do to play FX it it's off.
     LD A, (fireFxOn)
-    CP FIRE_FX_ON
-    JR NZ, .end
+    OR A                                        ; Same as: CP FIRE_FX_OFF_D0
+    JR Z, .end
 
     ; Play FX every few game loops.
     LD A, (fireFxDelayCnt)
@@ -73,7 +73,7 @@ FIRE_FX_OFF             = 0
     LD (fireFxDelayCnt), A
 
     ; Start playing different FX when the weapon fires at max speed.
-    CP FIRE_FX_DELAY_SOUND2
+    CP FIRE_FX_DELAY_SND2_D5
     JR NC, .newSound
     LD A, af.FX_FIRE1
     JR .afterNewSound
@@ -119,10 +119,10 @@ ResetWeapon
     LD (fireFxDelayCnt), A
     LD (fireDelayCnt), A
 
-    LD A, JM_FIRE_DELAY_MAX
+    LD A, JM_FIRE_DELAY_MAX_D15
     LD (fireDelay), A
 
-    LD A, FIRE_FX_DELAY_INIT
+    LD A, FIRE_FX_DELAY_INIT_D2
     LD (fireFxDelay), A
 
     LD A, (jt.difLevel)
@@ -146,10 +146,10 @@ FireSpeedUp
 
     ; Do not speed up the fire (by decreasing the delay) if it's already at max firing speed.
     LD A, (fireDelay)
-    CP JM_FIRE_DELAY_MIN
+    CP JM_FIRE_DELAY_MIN_D3
     RET Z
 
-    LD A, JM_FIRE_SPEED_UP
+    LD A, JM_FIRE_SPEED_UP_D4
     LD B, A
 .loop
     _FireDelayDown
@@ -467,7 +467,7 @@ FirePress
 
     ; Is Jetman moving left or right?
     LD A, (gid.jetDirection)
-    BIT gid.MOVE_LEFT_BIT, A
+    BIT gid.MOVE_LEFT_BIT_D0, A
     JR NZ, .movingLeft                          ; Jump if Jetman is moving left.
 
     XOR A                                       ; A will hold SPR.STATE.
