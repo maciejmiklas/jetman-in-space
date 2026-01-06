@@ -197,7 +197,6 @@ CheckHitEnemies
     PUSH IX
     CALL ShotsCollision
     POP IX
-    CP SHOT_HIT
     JR NZ, .continue                            ; Jump if there is no hit.
 
     ; We have hit!
@@ -248,10 +247,8 @@ HideShots
 ; - DE: X of the sprite.
 ; - C:  Y of the sprite.
 ; Return:
-; - A:   values:
-; Modifies: All
-SHOT_HIT                    = 1
-SHOT_MISS                   = 0
+;  - YES (hit): Z is reset (JP Z).
+;  - NO (miss):  Z is set (JP NZ).
 ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots
@@ -301,7 +298,7 @@ ShotsCollision
     ; We have hit! Hide shot and return.
     CALL sr.HideSimpleSprite
 
-    LD A, SHOT_HIT
+    _YES
     POP DE, BC
     RET
 
@@ -314,7 +311,7 @@ ShotsCollision
     DJNZ .shotsLoop                             ; Jump if B > 0 (loop starts with B = #SPR)
 
     ; There was no hit.
-    LD A, SHOT_MISS
+    _NO
 
     RET                                         ; ## END of the function ##
 

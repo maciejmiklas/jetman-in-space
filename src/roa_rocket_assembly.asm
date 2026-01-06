@@ -417,7 +417,6 @@ CheckHitTank
     LD A, (ro.rocY)
     LD C, A
     CALL jw.ShotsCollision
-    CP jw.SHOT_HIT
     RET NZ
 
     ; ##########################################

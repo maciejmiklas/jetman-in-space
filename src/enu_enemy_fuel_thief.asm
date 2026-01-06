@@ -75,7 +75,6 @@ ThiefWeaponHit
     PUSH IX
     CALL jw.ShotsCollision
     POP IX
-    CP jw.SHOT_HIT
     RET NZ
 
     ; Weapon hit confirmed!
