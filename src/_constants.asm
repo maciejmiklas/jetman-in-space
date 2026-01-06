@@ -489,6 +489,7 @@ _GSC_Y_MAX2_D238        = _GSC_Y_MAX_D232 + 4
 
 _BM_XRES_D320           = 320
 _BM_YRES_D256           = 256
+_BM_YRES_D255           = 255
 
 _GND_THICK_D8           = 8                     ; The thickness of the ground (tilemap).
 _GSC_JET_GND_D217       = _GSC_Y_MAX_D232 - _GND_THICK_D8 +1
@@ -518,18 +519,18 @@ _LEVEL_MAX              = 10
 ; Extends #SPR by additional params.
     STRUCT ENP
 ; Setup bits:
-;  - 0: #ENP_S_BIT_ALONG
-;  - 1: #ENP_S_BIT_DEPLOY
-;  - 2: #ENP_S_BIT_BOUNCE
-;  - 3: #ENP_S_BIT_BOUNCE_ANIM
-;  - 7: #ENP_S_BIT_REVERSE_Y
+;  - 0: #ENP_S_BIT_ALONG_D0
+;  - 1: #ENP_S_BIT_DEPLOY_D1
+;  - 2: #ENP_S_BIT_BOUNCE_D2
+;  - 3: #ENP_S_BIT_BOUNCE_AN_D3
+;  - 7: #ENP_S_BIT_REVERSE_Y_D7
 SETUP                   DB
 MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter.
 RESPAWN_Y               DB                      ; Respawn Y position.
 MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX).
-MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX.
+MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET_D1 to #movePatternXX.
 MOVE_PAT_STEP           DB                      ; Counters X,Y from current move pattern.
 MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of single move pattern st Counts towards 0.
     ENDS

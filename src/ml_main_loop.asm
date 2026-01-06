@@ -170,7 +170,7 @@
     ; ##########################################
     ; Move enemies for normal or hard.
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     JR Z, .onEasy
 
     CALL gc.MoveEnemies
@@ -179,7 +179,7 @@
     ; ##########################################
     ; Faster movement speed for Jetman on hard.
     LD A, (jt.difLevel)
-    CP jt.DIF_HARD
+    CP jt.DIF_HARD_D3
     JR NZ, .notHard
 
     ; Do not speed up animations, like falling from the platform.
@@ -288,7 +288,7 @@
 
     ; ##########################################
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     JR NZ, .notEasy
 
     CALL gc.MoveEnemies
@@ -481,7 +481,7 @@
     ; ##########################################
     ; Hard
     LD A, (jt.difLevel)
-    CP jt.DIF_HARD
+    CP jt.DIF_HARD_D3
     JR NZ, .notHard
 
     CALL gc.MoveEnemies

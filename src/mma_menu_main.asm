@@ -67,13 +67,13 @@ LoadMainMenu
 
     ; ##########################################
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     CALL Z, _LoadMenuEasy
 
-    CP jt.DIF_NORMAL
+    CP jt.DIF_NORMAL_D2
     CALL Z, _LoadMenuNormal
 
-    CP jt.DIF_HARD
+    CP jt.DIF_HARD_D3
     CALL Z, _LoadMenuHard
 
     ; ##########################################
@@ -150,7 +150,7 @@ _LoadMenuEasy
     CALL bm.CopyImageData
 
     ; ##########################################
-    LD A, jt.DIF_EASY
+    LD A, jt.DIF_EASY_D1
     LD (jt.difLevel), A
 
     ; ##########################################
@@ -194,7 +194,7 @@ _LoadMenuNormal
     CALL bm.CopyImageData
 
     ; ##########################################
-    LD A, jt.DIF_NORMAL
+    LD A, jt.DIF_NORMAL_D2
     LD (jt.difLevel), A
 
     ; ##########################################
@@ -233,7 +233,7 @@ _LoadMenuHard
     CALL bm.CopyImageData
 
     ; ##########################################
-    LD A, jt.DIF_HARD
+    LD A, jt.DIF_HARD_D3
     LD (jt.difLevel), A
 
     ; ##########################################
@@ -468,14 +468,14 @@ _JoyFire
 _DifficultyUp
 
     LD A, (jt.difLevel)
-    CP jt.DIF_HARD
+    CP jt.DIF_HARD_D3
     JR Z, .overflow
     INC A
     LD (jt.difLevel), A
     CALL _SetupDifficulty
     RET
 .overflow
-    LD A, jt.DIF_EASY
+    LD A, jt.DIF_EASY_D1
     LD (jt.difLevel), A
     CALL _SetupDifficulty
 
@@ -487,14 +487,14 @@ _DifficultyUp
 _DifficultyDown
 
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     JR Z, .overflow
     DEC A
     LD (jt.difLevel), A
     CALL _SetupDifficulty
     RET
 .overflow
-    LD A, jt.DIF_HARD
+    LD A, jt.DIF_HARD_D3
     LD (jt.difLevel), A
     CALL _SetupDifficulty
 
@@ -510,21 +510,21 @@ _SetupDifficulty
     CALL js.ChangeJetSpritePattern
 
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     JR NZ, .notEasy
     CALL _LoadMenuEasy
     RET
 .notEasy
 
     LD A, (jt.difLevel)
-    CP jt.DIF_NORMAL
+    CP jt.DIF_NORMAL_D2
     JR NZ, .notNormal
     CALL _LoadMenuNormal
     RET
 .notNormal
 
     LD A, (jt.difLevel)
-    CP jt.DIF_HARD
+    CP jt.DIF_HARD_D3
     JR NZ, .notHard
     CALL _LoadMenuHard
     RET

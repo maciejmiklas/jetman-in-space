@@ -126,15 +126,15 @@ ResetWeapon
     LD (fireFxDelay), A
 
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     CALL Z, FireSpeedUp
     
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     CALL Z, FireSpeedUp
 
     LD A, (jt.difLevel)
-    CP jt.DIF_HARD
+    CP jt.DIF_HARD_D3
     CALL Z, FireSpeedUp
 
     RET                                         ; ## END of the function ##
@@ -361,8 +361,7 @@ MoveShots
 
     ; Check the collision with the platform.
     CALL pl.CheckPlatformWeaponHit
-    CP A, pl.PL_HIT_NO
-    JR Z, .afterPlatformHit
+    JR NZ, .afterPlatformHit
     PUSH IX
     CALL sr.SpriteHit
     CALL gc.PlatformWeaponHit

@@ -27,11 +27,11 @@
 ; a platform, fly along it, or bounce from it.
 
 ; Values for #ENP.SETUP
-ENP_S_BIT_ALONG         = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform.
-ENP_S_BIT_DEPLOY        = 1                     ; 1 - deploy enemy on the left, 0 - on the right.
-ENP_S_BIT_BOUNCE        = 2                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG is ignored, 0 - disabled.
-ENP_S_BIT_BOUNCE_ANIM   = 3                     ; 1 - enable extra bouncing animation (sprites 34,35,36).
-ENP_S_BIT_REVERSE_Y     = 7                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY, set during runtime when enemy hits platform from L/R.
+ENP_S_BIT_ALONG_D0      = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform.
+ENP_S_BIT_DEPLOY_D1     = 1                     ; 1 - deploy enemy on the left, 0 - on the right.
+ENP_S_BIT_BOUNCE_D2     = 2                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG_D0 is ignored, 0 - disabled.
+ENP_S_BIT_BOUNCE_AN_D3  = 3                     ; 1 - enable extra bouncing animation (sprites 34,35,36).
+ENP_S_BIT_REVERSE_Y_D7  = 7                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY_D1, set during runtime when enemy hits platform from L/R.
 
 ENP_S_LEFT_ALONG        = %0000'0'0'1'1 
 ENP_S_RIGHT_ALONG       = %0000'0'0'0'1 
@@ -49,7 +49,7 @@ ENP_S_REVERSE_Y         = %1'0000000
 
 MOVE_DELAY_CNT_INC      = %0001'0000 
 
-RESPAWN_OFF             = 255
+RESPAWN_OFF_D255        = 255
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
 ; Each pattern step takes 2 bytes so that the size will be 24 for movement consisting of 12 patterns.
@@ -67,9 +67,9 @@ RESPAWN_OFF             = 255
 ;
 ; Bits of the single step:
 ; 0-2:  Number of pixels to move along X axis
-; 3:    #MOVE_PAT_X_TOD_DIR_BIT
+; 3:    #MOVE_PAT_X_TOD_DIR_B_D3
 ; 4-6:  Number of pixels to move on Y axis
-; 7:    #MOVE_PAT_Y_TOD_DIR_BIT
+; 7:    #MOVE_PAT_Y_TOD_DIR_B_D7
 ; 
 ; Example: for a move pattern: "%0'011'1'101, 10" the sprite will move 5 pixels on the X axis, 3 pixel on the Y axis,
 ; and it will be repeated 10 times. In total sprite will travel: 5*10 pixels on X and 3*10 pixels on Y. 
@@ -87,7 +87,7 @@ MOVE_PAT_X_ADD          = %0'000'0'001
 
 ; Determines whether X should be incremented (1 - move right) or decremented (0 - move left) in each iteration. It's under the assumption,
 ; that deployment takes place on the left side of the screen. Values will be automatically inverted if it's on the right side of the screen.
-MOVE_PAT_X_TOD_DIR_BIT  = 3
+MOVE_PAT_X_TOD_DIR_B_D3 = 3
 MOVE_PAT_X_TOD_DIR_MASK = %0'000'1'000 
 
 MOVE_PAT_Y_MASK         = %0'111'0'000 
@@ -96,14 +96,14 @@ MOVE_PAT_Y_ADD          = %0'001'0'000
 MOVE_PAT_Y_TOD_DIR_MASK = %1'000'0'000 
 
 ; Determines whether Y should be decremented (0 - move up) or incremented (1 - move down) in each iteration.
-MOVE_PAT_Y_TOD_DIR_BIT  = 7
+MOVE_PAT_Y_TOD_DIR_B_D7 = 7
 
 MOVE_PAT_XY_MASK        = %0'111'0'111 
 MOVE_PAT_XY_MASK_RES    = %1'000'1'000 
 
-MOVE_STEP_SIZE          = 2                     ; Each move step in the pattern takes two bytes: pattern and delay/number of repeats.
-MOVE_STEP_CNT_OFF       = 1
-MOVE_PAT_STEP_OFFSET    = 1                     ; Data for move pattern starts at byte 1, byte 0 provides size.
+MOVE_STEP_SIZE_D2       = 2                     ; Each move step in the pattern takes two bytes: pattern and delay/number of repeats.
+MOVE_STEP_CNT_OFF_D1    = 1
+MOVE_PAT_STEP_OFFSET_D1 = 1                     ; Data for move pattern starts at byte 1, byte 0 provides size.
 MOVE_PAT_REPEAT_MASK    = %0000'1111 
 MOVE_PAT_DELAY_MASK     = %1111'0000 
 
@@ -197,10 +197,10 @@ ResetEnp
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
     LD (IY + ENP.RESPAWN_DELAY_CNT), A
 
-    LD A, RESPAWN_OFF
+    LD A, RESPAWN_OFF_D255
     LD (IY + ENP.RESPAWN_DELAY), A
 
-    LD A, MOVE_PAT_STEP_OFFSET
+    LD A, MOVE_PAT_STEP_OFFSET_D1
     LD (IY + ENP.MOVE_PAT_POS), A
 
     RET                                         ; ## END of the function ##
@@ -223,7 +223,7 @@ ResetPatternEnemies
 
     CALL ResetEnp
 
-    LD A, MOVE_PAT_STEP_OFFSET
+    LD A, MOVE_PAT_STEP_OFFSET_D1
     LD (IY + ENP.MOVE_PAT_POS), A
 
     ; ##########################################
@@ -342,7 +342,7 @@ RespawnPatternEnemy
     LD A, (IY + ENP.RESPAWN_DELAY)
 
     ; Enemy disabled?
-    CP RESPAWN_OFF
+    CP RESPAWN_OFF_D255
     JR NZ, .respawnOn
 
     OR 1                                        ; Return NO (Z set).
@@ -373,7 +373,7 @@ RespawnPatternEnemy
     LD (IY + ENP.RESPAWN_DELAY_CNT), 0
 
     ; Reset reverse
-    RES ENP_S_BIT_REVERSE_Y, (IY + ENP.SETUP)
+    RES ENP_S_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
 
     _LoadMoveDelay
     CALL _SetDelayCnt
@@ -384,7 +384,7 @@ RespawnPatternEnemy
     LD (IX + SPR.Y), A
 
     ; Set X to left or right side of the screen.
-    BIT ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR NZ, .deployLeft                          ; Jump if bit is 0 -> deploy left.
 
     ; Deploy right
@@ -433,7 +433,7 @@ _FlipReverseY
 ;  - A: hit side sr.SDB_BOUNCE_SIDE or sr.SDB_BOUNCE_TOP
 _PlayBounceAnimation
 
-    BIT ENP_S_BIT_BOUNCE_ANIM, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_BOUNCE_AN_D3, (IY + ENP.SETUP)
     RET Z
 
     PUSH BC, HL
@@ -454,18 +454,18 @@ _PlayBounceAnimation
 _MoveEnemyX
 
     LD D, MOVEX_SETUP                           ; D contains configuration for MoveX.
-    BIT ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR NZ, .deployedLeft                        ; Jump if bit is 0 -> deploy left.
 
 .deployRight
-    ; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_BIT.
-    BIT MOVE_PAT_X_TOD_DIR_BIT, (HL)
+    ; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_B_D3.
+    BIT MOVE_PAT_X_TOD_DIR_B_D3, (HL)
     JR NZ, .moveLeft                            ; Jump if bit is set to 1 (right), invert right -> left.
     JR .moveRight                               ; Bit is 0 -> move left.
 
 .deployedLeft
-    ; Enemy was deployed on the left, do not invert #MOVE_PAT_X_TOD_DIR_BIT.
-    BIT MOVE_PAT_X_TOD_DIR_BIT, (HL)
+    ; Enemy was deployed on the left, do not invert #MOVE_PAT_X_TOD_DIR_B_D3.
+    BIT MOVE_PAT_X_TOD_DIR_B_D3, (HL)
     JR NZ, .moveRight                           ; Jump if bit is set to 1 (right).
     JR .moveLeft                                ; Bit is 0 -> move left.
 
@@ -528,7 +528,7 @@ _MoveEnemy
 
     ; ##########################################
     ; Should enemy bounce of the platform?
-    BIT ENP_S_BIT_BOUNCE, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_BOUNCE_D2, (IY + ENP.SETUP)
     JR Z, .afterBounceSetup                        ; Jump if bounce is not set
 
     ; Check the collision with the platform
@@ -539,19 +539,19 @@ _MoveEnemy
     CALL pl.PlatformBounceOff
     POP HL, IY, IX
 
-    CP pl.PL_DHIT_NO
+    OR A                                            ; Same as CP pl.PL_DHIT_NO_D0
     JR Z, .afterBounceSetup
 
-    CP pl.PL_DHIT_LEFT
+    CP pl.PL_DHIT_LEFT_D1
     JR Z, .bounceL
 
-    CP pl.PL_DHIT_RIGHT
+    CP pl.PL_DHIT_RIGHT_D2
     JR Z, .bounceR
 
-    CP pl.PL_DHIT_TOP
+    CP pl.PL_DHIT_TOP_D3
     JR Z, .bounceHorizontal
 
-    CP pl.PL_DHIT_BOTTOM
+    CP pl.PL_DHIT_BOTTOM_D4
     JR Z, .bounceHorizontal
 
 .bounceHorizontal
@@ -561,7 +561,7 @@ _MoveEnemy
     JR .afterBounceSetup
 .bounceL
     ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction
-    RES ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    RES ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
 
     LD A, sr.SDB_BOUNCE_SIDE
@@ -570,7 +570,7 @@ _MoveEnemy
     JR .afterBounceSetup
 .bounceR
     ; Enemy bounces from the platform's right side
-    SET ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    SET ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
 
     LD A, sr.SDB_BOUNCE_SIDE
@@ -580,7 +580,7 @@ _MoveEnemy
 
     ; ##########################################
     ; Should the enemy move along the platform to avoid collision?
-    BIT ENP_S_BIT_ALONG, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_ALONG_D0, (IY + ENP.SETUP)
     JR Z, .afterMoveAlong                       ; Jump if move along is not set
 
     ; Check the collision with the platform
@@ -588,8 +588,7 @@ _MoveEnemy
     CALL pl.PlatformSpriteClose
     POP HL, IY, IX
 
-    CP A, pl.PL_HIT_NO
-    JR Z, .afterMoveAlong                       ; Jump if there is no collision
+    JR NZ, .afterMoveAlong                      ; Jump if there is no collision
 
     ; Avoid collision with the platform by moving along it
     CALL _MoveEnemyX
@@ -628,14 +627,14 @@ _MoveEnemy
     LD A, (HL)                                  ; A contains current pattern
 
     ; Reverse movement direction?
-    BIT ENP_S_BIT_REVERSE_Y, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
     JR Z, .doNotReverseY
 
     ; Yes, reverse bit is set, up -> down, down -> up
     XOR MOVE_PAT_Y_TOD_DIR_MASK
 .doNotReverseY
 
-    BIT MOVE_PAT_Y_TOD_DIR_BIT, A
+    BIT MOVE_PAT_Y_TOD_DIR_B_D7, A
     JR Z, .moveUp                               ; Jump if sprite should move up
 
     ; ##########################################
@@ -647,15 +646,15 @@ _MoveEnemy
     JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3)
     ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down
     CALL _FlipReverseY
-    LD A, sr.MOVE_Y_IN_UP
+    LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
     JR .afterChangeY
 
 .afterBounceMoveDown
     ; Bouncing not necessary, finally move down
-    LD A, sr.MOVE_Y_IN_DOWN
+    LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
-    CP sr.MOVE_RET_HIDDEN
+    OR A                                        ; Same as: CP sr.MOVE_RET_HIDDEN_D0
     JR NZ, .afterChangeY                        ; Jump is sprite is not hidden
 
     RET                                         ; Stop moving this sprite, it's hidden
@@ -663,7 +662,7 @@ _MoveEnemy
 .moveUp
     ; ##########################################
     ; Move on pixel up, but first, check whether the enemy bounces off the top of the screen
-    BIT ENP_S_BIT_BOUNCE, (IY + ENP.SETUP)
+    BIT ENP_S_BIT_BOUNCE_D2, (IY + ENP.SETUP)
     JR Z, .afterBounceMoveUp                    ; Jump if bounce is not set
 
     ; Bounce is set, has sprite reached top of the screen?
@@ -673,15 +672,15 @@ _MoveEnemy
 
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up
     CALL _FlipReverseY
-    LD A, sr.MOVE_Y_IN_DOWN
+    LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
     JR .afterChangeY
 .afterBounceMoveUp
 
     ; Bouncing not necessary, finally move up
-    LD A, sr.MOVE_Y_IN_UP
+    LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
-    CP sr.MOVE_RET_HIDDEN
+    OR A                                        ; Same as: CP sr.MOVE_RET_HIDDEN_D0
     JR NZ,.afterChangeY                         ; Jump is sprite is not hidden
     RET                                         ; Stop moving this sprite, it's hidden
 
@@ -717,7 +716,7 @@ _MoveEnemy
     ; Setup next move pattern
     LD A, (IY + ENP.MOVE_PAT_POS)               ; A contains the current position in the move pattern
 
-    ADD MOVE_STEP_SIZE                          ; Increment the position to the next pattern and store it
+    ADD MOVE_STEP_SIZE_D2                          ; Increment the position to the next pattern and store it
     LD (IY + ENP.MOVE_PAT_POS), A
 
     ; Check if we should restart the move pattern, as it might have reached the last element.
@@ -760,8 +759,7 @@ _MoveEnemy
 .checkPlatformHit
 
     CALL pl.PlatformSpriteHit
-    CP A, pl.PL_HIT_NO
-    RET Z                                       ; Return if there is no collision
+    RET NZ                                      ; Return if there is no collision
     CALL sr.SpriteHit                           ; Explode!
     
     RET                                         ; ## END of the function ##
@@ -786,7 +784,7 @@ _RestartMovePattern
     LD (IY + ENP.MOVE_PAT_STEP), A  
 
     ; Set position at the first pattern, this is one byte after the start of #movePatternXX
-    LD A, MOVE_PAT_STEP_OFFSET
+    LD A, MOVE_PAT_STEP_OFFSET_D1
     LD (IY + ENP.MOVE_PAT_POS), A
 
     ; Set pattern counters to the first pattern

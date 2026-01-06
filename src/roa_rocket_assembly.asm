@@ -196,7 +196,7 @@ rocAssemblyX           DB 0
     ; ##########################################
     ;  Exit if RiP.
     LD A, (jt.jetState)
-    CP jt.JETST_RIP
+    CP jt.JETST_RIP_D103
     JR Z, .end
 
     ; ##########################################
@@ -260,7 +260,7 @@ SetupRocket
     LD (ro.rocketElPtr), HL
 
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     RET NZ
 
     LD A, RO_DROP_Y_MIN_EASY_D30
@@ -380,7 +380,7 @@ CheckHitTank
 
     ; Not tank hit on easy
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     RET Z
 
     ; Is the thank out there?

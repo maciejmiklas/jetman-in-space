@@ -73,7 +73,7 @@ ResetPickups
 UpdatePickupsOnJetmanMove
 
     LD A, (jt.jetState)
-    CP jt.JETST_RIP
+    CP jt.JETST_RIP_D103
     RET Z
 
     ; ##########################################

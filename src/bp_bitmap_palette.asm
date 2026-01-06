@@ -146,7 +146,7 @@ BrightnessDown
     LD A, E
     AND PAL2_RRR_MASK                       ; Reset all bits but red.
 
-    CP PAL2_MIN                             ; Do not decrement if red is already at 0
+    OR A                                    ; Do not decrement if red is already at 0
     JR Z, .afterDecrementRed
 
     ; Red is above 0, decrement it.
@@ -168,7 +168,7 @@ BrightnessDown
     LD A, E
     AND PAL2_GGG_MASK                       ; Reset all bits but green.
 
-    CP PAL2_MIN                             ; Do not decrement if green is already at 0.
+    OR A                                    ; Do not decrement if green is already at 0.
     JR Z, .afterDecrementGreen
 
     ; Green is above 0, decrement it.
@@ -194,9 +194,9 @@ BrightnessDown
     RLA                                         ; Rotate left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF.
 
     ; Ensure that BBB is > 0 before decreasing it.
-    CP PAL2_MIN
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterDecrementBlue
-    
+
     ; A contains BBB as 00000'BBB, decrement it and update DE.
     DEC A                                       ; Decrement BBB
 

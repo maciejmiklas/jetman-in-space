@@ -11,9 +11,9 @@
 
 ; Jetpack temperature and the temp bar in UI increase in two steps. First, when Jetman is flying, the #jetHeatCnt will increase.
 ; When it reaches JM_HEAT_CNT, the jetpack temperature will increase (#jetTempLevel) until it reaches MAX_TEMP. Then, it will update Jetman
-; state to #JETST_OVERHEAT and slow flying down. 
+; state to #JETST_OVERHEAT_D104 and slow flying down. 
 ; When Jetman lands, the #jetCoolCnt decreases. When it reaches JM_COOL_CNT, the jetpack temperature decreases,
-; until it reaches #TEMP_NORM. At this point, the Jetman state changes to #JETST_NORMAL, and Jetman can fly at a full speed.
+; until it reaches #TEMP_NORM. At this point, the Jetman state changes to #JETST_NORMAL_D101, and Jetman can fly at a full speed.
 
 ; Jetpack heats up/cools down during the flight
 jetHeatCnt              DB 0                    ; Runs from 0 to JM_HEAT_CNT
@@ -95,11 +95,11 @@ BAR_ICON_PAL           = $00
     ; #########################################
     ; Is Jetpack going to temp normal from overheated?
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT
+    CP jt.JETST_OVERHEAT_D104
     JR NZ, .afterNormTempCheck
 
     ; Jetpack is coll again
-    LD A, jt.JETST_NORMAL
+    LD A, jt.JETST_NORMAL_D101
     LD (jt.jetState), A
 
     CALL gc.JetpackTempNormal
@@ -160,7 +160,7 @@ BAR_ICON_PAL           = $00
     JR NZ, .afterTempCheck
 
     ; Jetpack has overhated.
-    LD A, jt.JETST_OVERHEAT
+    LD A, jt.JETST_OVERHEAT_D104
     CALL jt.SetJetState
     LD (jt.jetState), A
 
@@ -189,7 +189,7 @@ AnimateJetpackOverheat
 
     ; Animate only when overheated, and Jetman slows down.
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT
+    CP jt.JETST_OVERHEAT_D104
     RET NZ
 
     ; Move HL so that it points to first read tile.
@@ -198,7 +198,7 @@ AnimateJetpackOverheat
 
     ; Do not animate when on the ground.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .normal
 
     ; Change between two colors based on the flip-flop counter.
@@ -249,7 +249,7 @@ UpdateJetpackOverheating
 
     ; Increase the overheating timer if Jetman is flying.
     LD A, (jt.jetAir)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     JR Z, .afterFlaying
     
     ; Jetman is flying
@@ -260,7 +260,7 @@ UpdateJetpackOverheating
     ; ##########################################
     ; Increase the cool down timer if Jetman is walking.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     RET Z
     
     ; Jetman is walking.
@@ -274,12 +274,12 @@ UpdateJetpackOverheating
 JetpackOverheatFx
 
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT
+    CP jt.JETST_OVERHEAT_D104
     RET NZ
 
     ; Do not beep when walking.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     RET NZ
 
     CALL dbs.SetupAyFxsBank

@@ -241,7 +241,7 @@ EnterNewScore
     ; ##########################################
     ; Music on
     CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_HIGH_SCORE
+    LD A, aml.MUSIC_HIGH_SCORE_D82
     CALL aml.LoadSong
     
     RET                                         ; ## END of the function ##
@@ -381,7 +381,7 @@ _JoyFire
     ; ##########################################
     ; Music for main menu
     CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_MAIN_MENU
+    LD A, aml.MUSIC_MAIN_MENU_D81
     CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##

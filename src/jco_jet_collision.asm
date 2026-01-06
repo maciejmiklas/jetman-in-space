@@ -132,11 +132,11 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     
     ; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already.
     LD A, (jt.jetAir)
-    CP jt.AIR_ENEMY_KICK
+    CP jt.AIR_ENEMY_KICK_D17
     JR Z, .end                                  ; Animation plays already.
 
     ; Play animation and set state
-    LD A, jt.AIR_ENEMY_KICK
+    LD A, jt.AIR_ENEMY_KICK_D17
     CALL jt.SetJetStateAir
 
     LD A, js.SDB_T_KF
@@ -147,11 +147,11 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     ; ################################
     ; Check if we should reset kicking state.
     LD A, (jt.jetAir)
-    CP jt.AIR_ENEMY_KICK
+    CP jt.AIR_ENEMY_KICK_D17
     JR NZ, .afterKickReset
 
     ; Reset kick state.
-    LD A, jt.AIR_FLY
+    LD A, jt.AIR_FLY_D10
     CALL jt.SetJetStateAir
 
     JR NZ, .afterKickReset
@@ -261,7 +261,7 @@ EnemiesCollision
 JetRip
 
     LD A, (jt.jetState)
-    CP jt.JETST_RIP
+    CP jt.JETST_RIP_D103
     RET NZ                                      ; Exit if not RiP.
 
     _RipMove
@@ -287,7 +287,7 @@ MakeJetInvincible
     LD (invincibleCnt), BC
     
     ; Update state
-    LD A, jt.JETST_INV
+    LD A, jt.JETST_INV_D102
     CALL jt.SetJetState
 
     RET                                         ; ## END of the function ##
@@ -298,7 +298,7 @@ MakeJetInvincible
 JetInvincible
 
     LD A, (jt.jetState)
-    CP jt.JETST_INV
+    CP jt.JETST_INV_D102
     RET NZ
 
     ; ##########################################
@@ -335,7 +335,7 @@ JetInvincible
 .endInvincibility
     ; ##########################################
     ; It is the last iteration, remove invincibility.
-    LD A, jt.JETST_NORMAL
+    LD A, jt.JETST_NORMAL_D101
     CALL jt.SetJetState
 
     CALL js.ShowJetSprite

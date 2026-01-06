@@ -44,7 +44,7 @@ Y_BOTTOM                DB                    ; Y end of the platform.
 platformsPtr            DW 0                  ; Pointer value to platforms.
 platformsSize           DB 0
 
-; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK.
+; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK_D51.
 PLATFORM_WALK_INACTIVE  = $FF                   ; Not on any platform.
 
 platformWalkNumber      DB PLATFORM_WALK_INACTIVE
@@ -332,7 +332,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Collision only possible when flying.
     LD A, (jt.jetAir)
-    CP jt.AIR_FLY
+    CP jt.AIR_FLY_D10
     RET NZ
 
     ; ##########################################
@@ -347,9 +347,9 @@ JetPlatformHitOnJoyMove
     LD B, A
 
     LD IX, db2.jetHitMargin
-    CALL PlatformDirectionHit
+    CALL _PlatformDirectionHit
 
-    CP PL_DHIT_NO
+    CP PL_DHIT_NO_D0
     RET Z
     LD D, A                                     ; Keep return flag D
 
@@ -361,7 +361,7 @@ JetPlatformHitOnJoyMove
 
     ; Did Jetman hit top of the platform?
     LD A, D
-    CP PL_DHIT_TOP
+    CP PL_DHIT_TOP_D3
     JR NZ, .afterLanding
     
     ; Is Jetman moving down?
@@ -381,7 +381,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Does Jetman hit the platform from the left side?
     LD A, D
-    CP PL_DHIT_LEFT
+    CP PL_DHIT_LEFT_D1
     JR NZ, .afterHitLeft
     
     ; Is Jetman moving right (Jetman have to move right to hit the left side of the platform)?
@@ -390,7 +390,7 @@ JetPlatformHitOnJoyMove
     JR Z, .afterHitLeft                         ; Jump if right down bit is not set.
     
     ; Jetman hits the platform.
-    LD A, jt.AIR_BUMP_LEFT
+    LD A, jt.AIR_BUMP_LEFT_D15
     CALL jt.SetJetStateAir
 
     CALL _JetHitsPlatform
@@ -413,7 +413,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Does Jetman hit the platform from the right side?
     LD A, D
-    CP PL_DHIT_RIGHT
+    CP PL_DHIT_RIGHT_D2
     JR NZ, .afterHitRight
     
     ; Is Jetman moving left (Jetman have to move left to hit the right side of the platform)?
@@ -422,7 +422,7 @@ JetPlatformHitOnJoyMove
     JR Z, .afterHitRight                        ; Jump if left down bit is not set.
     
     ; Jetman hits the platform from the right side and bumps off to the right.
-    LD A, jt.AIR_BUMP_RIGHT
+    LD A, jt.AIR_BUMP_RIGHT_D14
     CALL jt.SetJetStateAir
 
     CALL _JetHitsPlatform
@@ -445,7 +445,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Does Jetman hit the platform from the bottom?
     LD A, D
-    CP PL_DHIT_BOTTOM
+    CP PL_DHIT_BOTTOM_D4
     JR NZ, .afterHitBottom
 
     ; Is Jetman moving up?
@@ -454,7 +454,7 @@ JetPlatformHitOnJoyMove
     JR Z, .afterHitBottom                       ; Jump if left down bit is not set.
     
     ; Jetman hits the platform from the bottom.
-    LD A, jt.AIR_BUMP_BOTTOM
+    LD A, jt.AIR_BUMP_BOTTOM_D16
     CALL jt.SetJetStateAir
 
     CALL _JetHitsPlatform
@@ -493,7 +493,7 @@ ResetJoyOffBump
 
     ; Does Jetman walk on the platform?
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .reset                               ; Reset immediately if walking.
     
     ; Call _PlatformHit to check whether Jetman is close to the platform. now, we will load the params for this method.
@@ -506,8 +506,7 @@ ResetJoyOffBump
 
     LD IX, db2.jetAwayMargin
     CALL _PlatformHit
-    CP PL_HIT_YES                         ; Jetman is close to platform - do not reset the bump.
-    RET Z   
+    RET Z                                        ; Jetman is close to platform - do not reset the bump.
 
 .reset
     ; Jetman far from the platform - reset.
@@ -523,7 +522,8 @@ ResetJoyOffBump
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
 ; Return:
-;  - A:  #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteHit
 
     LD IY, db2.spriteHitMargin
@@ -536,7 +536,8 @@ PlatformSpriteHit
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
 ; Return:
-;  - A:  #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteClose
 
     LD IY, db2.closeMargin
@@ -549,7 +550,8 @@ PlatformSpriteClose
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
 ; Return:
-;  - A:  #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 CheckPlatformWeaponHit
 
     LD IY, db2.shotHitMargin
@@ -562,7 +564,7 @@ MoveJetOnFallingFromPlatform
 
     ; Is Jetman falling from the platform on the right side?
     LD A, (jt.jetAir)
-    CP jt.AIR_FALL_RIGHT
+    CP jt.AIR_FALL_RIGHT_D12
     JR NZ, .afterFallingRight
 
     ; Yes, Jetman is falling from the platform.
@@ -577,7 +579,7 @@ MoveJetOnFallingFromPlatform
 
     ; Is Jetman falling from the platform on the left side?
     LD A, (jt.jetAir)
-    CP jt.AIR_FALL_LEFT
+    CP jt.AIR_FALL_LEFT_D13
     RET NZ
 
     ; Yes, Jetman is falling from the platform.
@@ -596,7 +598,7 @@ MoveJetOnHitPlatformBelow
 
     ; Jetman hits the platform from the bottom?
     LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_BOTTOM
+    CP jt.AIR_BUMP_BOTTOM_D16
     RET NZ
 
     ; Yes, Jetman hits the platform.
@@ -629,11 +631,11 @@ JetLanding
 
     ; Ignore landing if Jetman is already on the ground.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     RET NZ
 
     ; Update state as we are walking.
-    LD A, jt.GND_WALK
+    LD A, jt.GND_WALK_D51
     CALL jt.SetJetStateGnd
     
     ; Jetman is landing, trigger transition: flying -> standing/walking.
@@ -648,7 +650,7 @@ JetLanding
     JR .afterStand                              ; The animation is already loaded, do not overwrite it with standing.
 .afterMoveLR
 
-    LD A, jt.GND_STAND
+    LD A, jt.GND_STAND_D53
     CALL jt.SetJetStateGnd                      ; Update state as we are standing.
 
     LD A, js.SDB_T_FS                           ; Play transition from landing -> standing.
@@ -674,7 +676,7 @@ PlatformBounceOff
     LD IX, db2.bounceMargin
 
 ;----------------------------------------------------------;
-;                 PlatformDirectionHit                     ;
+;                 _PlatformDirectionHit                     ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms, also provides platform number and side.
 ; Input:
@@ -685,13 +687,13 @@ PlatformBounceOff
 ; Return:
 ;  - A:  #PL_DHIT_RET_XXX
 ;  - B:  platform counter set to the current platform. The counter starts with the number (inclusive) of platforms and counts toward 1 (inclusive).
-PL_DHIT_NO              = 0                     ; No collision.
-PL_DHIT_LEFT            = 1                     ; Sprite hits the platform from the left.
-PL_DHIT_RIGHT           = 2                     ; Sprite hits the platform from the right.
-PL_DHIT_TOP             = 3                     ; Sprite hits the platform from above.
-PL_DHIT_BOTTOM          = 4                     ; Sprite hits the platform from below.
+PL_DHIT_NO_D0           = 0                     ; No collision.
+PL_DHIT_LEFT_D1         = 1                     ; Sprite hits the platform from the left.
+PL_DHIT_RIGHT_D2        = 2                     ; Sprite hits the platform from the right.
+PL_DHIT_TOP_D3          = 3                     ; Sprite hits the platform from above.
+PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from below.
 
-PlatformDirectionHit
+_PlatformDirectionHit
 
     CALL dbs.SetupArrays2Bank
 .loopOverPlatforms
@@ -709,7 +711,7 @@ PlatformDirectionHit
     CALL _CheckPlatformHitVertical
     JR NZ, .afterHitLeft
 
-    LD A, PL_DHIT_LEFT
+    LD A, PL_DHIT_LEFT_D1
     RET
 .afterHitLeft
 
@@ -726,7 +728,7 @@ PlatformDirectionHit
     CALL _CheckPlatformHitVertical
     JR NZ, .afterHitRight
 
-    LD A, PL_DHIT_RIGHT
+    LD A, PL_DHIT_RIGHT_D2
     RET
 .afterHitRight
 
@@ -743,7 +745,7 @@ PlatformDirectionHit
 
     JR NZ, .afterHitTop
 
-    LD A, PL_DHIT_TOP
+    LD A, PL_DHIT_TOP_D3
     RET
 .afterHitTop
 
@@ -760,7 +762,7 @@ PlatformDirectionHit
 
     JR NZ, .afterHitBottom
 
-    LD A, PL_DHIT_BOTTOM
+    LD A, PL_DHIT_BOTTOM_D4
     RET
 .afterHitBottom
 
@@ -773,8 +775,8 @@ PlatformDirectionHit
     JP NZ, .loopOverPlatforms                         ; decrement B until all platforms have been evaluated.
 
     ; We've iterated over all platforms, and there was no hit.
-    LD A, PL_HIT_NO
-    
+    LD A, PL_DHIT_NO_D0
+
     RET                                         ; ## END of the function ##
 
 
@@ -785,7 +787,7 @@ MoveJetOnPlatformSideHit
 
     ; Is Jetman bumping into the platform from the right?
     LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_RIGHT
+    CP jt.AIR_BUMP_RIGHT_D14
     JR NZ, .afterBumpingRight
 
     ; Yes
@@ -795,11 +797,11 @@ MoveJetOnPlatformSideHit
 
     ; Is Jetman bumping into the platform from the left?
     LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_LEFT
+    CP jt.AIR_BUMP_LEFT_D15
     RET NZ
 
     ; Yes
-    CALL jpo.DecJetX    
+    CALL jpo.DecJetX
 
     RET                                         ; ## END of the function ##
 
@@ -850,11 +852,11 @@ JetFallingFromPlatform
 
 ; Jetman is falling from the platform, left or right.
 .fallingLeft
-    LD A, jt.AIR_FALL_LEFT
+    LD A, jt.AIR_FALL_LEFT_D13
     JR .afterFallingRight
 
 .fallingRight
-    LD A, jt.AIR_FALL_RIGHT
+    LD A, jt.AIR_FALL_RIGHT_D12
 
 .afterFallingRight
     
@@ -887,19 +889,18 @@ JetFallingFromPlatform
 ;                     _PlatformHit                         ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms. It does not provide direction, just an indication that 
-; there was a hit. To get directions use #PlatformDirectionHit.
+; there was a hit. To get directions use #_PlatformDirectionHit.
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IY: pointer to #PLA list.
 ;  - B:  number of elements in #PLA list.
 ;  - IX: pointer to #PLAM.
 ; Return:
-;  - A:  PL_HIT_RET_XXX
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 ;  - B:  the current value of the platform counter. It counts from the maximum amount of platforms to zero.
 ;  - IY: set to current platform.
-PL_HIT_NO               = 0                     ; No collision.
-PL_HIT_YES              = 1                     ; Sprite hits the platform.
-
+;
 ; Modifies:  A, BC, DE, IY
 ; Unchanged: HL, IX
 _PlatformHit
@@ -977,7 +978,7 @@ _PlatformHit
 
     ; ##########################################
     ; Sprite hits the platform!
-    LD A, PL_HIT_YES
+    XOR A                                       ; Return YES (Z is reset).
     RET
 
 .continueLoopOverPlatforms
@@ -985,8 +986,8 @@ _PlatformHit
     ADD IY, DE
     DJNZ .loopOverPlatforms                     ; decrement B until all platforms have been evaluated.
 
-    LD A, PL_HIT_NO
-    
+    OR 1                                        ; Return NO (Z set).
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -1101,7 +1102,8 @@ _CheckPlatformHitVertical
 ;  - IX: pointer to #SPR, single sprite to check collision for.
 ;  - IY: pointer to #PLAM
 ; Return:
-;  - A:     #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 _PlatformSpriteHit
     CALL dbs.SetupArrays2Bank
     
@@ -1109,7 +1111,7 @@ _PlatformSpriteHit
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .alive                               ; Jump if sprite is alive.
 
-    LD A, PL_HIT_NO
+    OR 1                                        ; Return NO (Z set).
     RET
 .alive
 

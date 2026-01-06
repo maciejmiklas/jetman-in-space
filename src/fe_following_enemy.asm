@@ -30,7 +30,7 @@ STATE_SKIP_RESET_MASK   = %1'00'11'00'1
 SKIP_XY_DEC_X           = %0'00'00'01'0
 SKIP_XY_DEC_Y           = %0'01'00'00'0
 
-STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP/#sr.MOVE_Y_IN_DOWN, 1-move up, 0-move down.
+STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP_D1/#sr.MOVE_Y_IN_DOWN_D0, 1-move up, 0-move down.
 STATE_DIR_Y_MASK        = %000'0'1'000          ; Reset all but #STATE_DIR_Y_BIT 
 
 STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right).
@@ -183,7 +183,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     LD A, (IY + FE.RESPAWN_DELAY)
 
     ; Enemy disabled?
-    CP enp.RESPAWN_OFF
+    CP enp.RESPAWN_OFF_D255
     JR NZ, .respawnOn
 
     OR 1                                        ; Return NO (Z set).
@@ -337,16 +337,16 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     JR NZ, .moveUp                              ; Jump if bit #STATE_DIR_Y_BIT == 1
 
     ; Move down
-    LD A, sr.MOVE_Y_IN_DOWN
+    LD A, sr.MOVE_Y_IN_DOWN_D0
     JR .afterMoveYDir
 
     ; Move up
 .moveUp
-    LD A, sr.MOVE_Y_IN_UP
+    LD A, sr.MOVE_Y_IN_UP_D1
 
 .afterMoveYDir
     ; ##########################################
-    CALL sr.MoveY                               ; A contains #MOVE_Y_IN_DOWN/UP
+    CALL sr.MoveY                               ; A contains #MOVE_Y_IN_DOWN_D0/UP
 .afterMoveY
 
     sr.SetSpriteId
@@ -371,19 +371,19 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     CALL pl.PlatformBounceOff
     POP HL, IY, IX
 
-    CP pl.PL_DHIT_NO
+    OR A                                        ; Same as CP pl.PL_DHIT_NO_D0, but faster
     JR Z, .end
 
-    CP pl.PL_DHIT_LEFT
+    CP pl.PL_DHIT_LEFT_D1
     JR Z, .hitLeft
 
-    CP pl.PL_DHIT_RIGHT
+    CP pl.PL_DHIT_RIGHT_D2
     JR Z, .hitRight
 
-    CP pl.PL_DHIT_TOP
+    CP pl.PL_DHIT_TOP_D3
     JR Z, .hitTop
 
-    CP pl.PL_DHIT_BOTTOM
+    CP pl.PL_DHIT_BOTTOM_D4
     JR Z, .hitBottom
 
 .hitLeft

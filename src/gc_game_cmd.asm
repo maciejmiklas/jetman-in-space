@@ -142,7 +142,7 @@ StartGameWithIntro
 
     ; Music on
     CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_INTRO
+    LD A, aml.MUSIC_INTRO_D82
     CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
@@ -479,11 +479,11 @@ JetPlatformTakesOff
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform.
+    CP jt.JT_STATE_INACTIVE_D0                     ; Check if Jetman is on the ground/platform.
     RET Z
 
     ; Jetman is taking off.
-    LD A, jt.AIR_FLY
+    LD A, jt.AIR_FLY_D10
     CALL jt.SetJetStateAir
 
     ; Play takeoff animation.
@@ -751,12 +751,12 @@ EnemyHitsJet
     ; ##########################################
     ; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy.
     LD A, (jt.jetState)                         
-    CP jt.JETST_RIP
+    CP jt.JETST_RIP_D103
     RET Z                                       ; Exit if RIP.
 
     ; ##########################################
     ; Is Jetman invincible? If so, just kill the enemy.
-    CP jt.JETST_INV
+    CP jt.JETST_INV_D102
     RET Z                                       ; Exit if invincible.
 
     ; ##########################################
@@ -1095,11 +1095,11 @@ MovementInactivity
     ; ##########################################
     ; Should Jetman hover?
     LD A, (jt.jetAir)
-    CP jt.JT_STATE_INACTIVE                     ; Is Jetman in the air?
+    OR A                                        ; Is Jetman in the air (same as CP jt.JT_STATE_INACTIVE_D0 but faster) ?
     JR Z, .afterHoover                          ; Jump if not flaying.
 
     LD A, (jt.jetAir)
-    CP jt.AIR_HOOVER                            ; Jetman is in the air, but is he hovering already?
+    CP jt.AIR_HOOVER_D11                            ; Jetman is in the air, but is he hovering already?
     JR Z, .afterHoover                          ; Jump if already hovering.
 
     ; Jetman is in the air, not hovering, but is he not moving long enough?
@@ -1108,7 +1108,7 @@ MovementInactivity
     JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering.
 
     ; Jetman starts to hover!
-    LD A, jt.AIR_HOOVER
+    LD A, jt.AIR_HOOVER_D11
     CALL jt.SetJetStateAir
 
     LD A, js.SDB_HOVER
@@ -1119,11 +1119,11 @@ MovementInactivity
     ; ##########################################
     ; Jetman is not hovering, but should he stand?
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE                     ; Is Jetman on the ground already?
+    CP jt.JT_STATE_INACTIVE_D0                     ; Is Jetman on the ground already?
     RET Z                                       ; Jump if not on the ground.
 
     LD A, (jt.jetGnd)
-    CP jt.GND_STAND                             ; Jetman is on the ground, but is he standing already?
+    CP jt.GND_STAND_D53                             ; Jetman is on the ground, but is he standing already?
     RET Z                                       ; Jump if already standing.
 
     ; ##########################################
@@ -1133,7 +1133,7 @@ MovementInactivity
     JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing.
     
     ; Transition from walking to standing.
-    LD A, jt.GND_STAND
+    LD A, jt.GND_STAND_D53
     CALL jt.SetJetStateGnd
 
     LD A, js.SDB_STAND                          ; Change animation.
@@ -1144,10 +1144,10 @@ MovementInactivity
     ; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
     ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
     LD A, (jt.jetGnd)
-    CP jt.GND_WALK
+    CP jt.GND_WALK_D51
     RET NZ                                      ; Jump if not walking.
     
-    CP jt.GND_JSTAND
+    CP jt.GND_JSTAND_D52
     RET Z                                       ; Jump already j-standing (just standing - for a short time).
 
     LD A, (jm.jetInactivityCnt)
@@ -1155,7 +1155,7 @@ MovementInactivity
     RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing.
 
     ; Stop walking immediately and stand still.
-    LD A, jt.GND_JSTAND
+    LD A, jt.GND_JSTAND_D52
     CALL jt.SetJetStateGnd
 
     LD A, js.SDB_JSTAND                         ; Change animation.

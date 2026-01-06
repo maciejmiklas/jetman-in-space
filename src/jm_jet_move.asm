@@ -199,7 +199,7 @@ JoyMoveDown
     ; ##########################################
     ; Cannot move down when walking
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     RET NZ
 
     ; ##########################################
@@ -262,7 +262,7 @@ JoystickMoveProcessed
     ; ##########################################
     ; Ignore the situation when Jetman stands on the ground and only down is present. This does not count as movement.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     JR Z, .afterDownOnGround
 
     ; Jetman is on the ground, but is only down key pressed (without left/right)?
@@ -299,11 +299,11 @@ JoystickMoveProcessed
 ;  - NO:  Disable joystick input processing for this loop, Z is set (JP NZ).
 _SholdProcessJoyOnOverheat
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT
+    CP jt.JETST_OVERHEAT_D104
     JR NZ, .yes
 
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .yes
 
     LD A, (mld.counter000FliFLop)
@@ -346,11 +346,11 @@ _JoystickMoves
     ; ##########################################
     ; Transition from hovering to flying?
     LD A, (jt.jetAir)
-    CP jt.AIR_HOOVER                            ; Is Jetman hovering?
+    CP jt.AIR_HOOVER_D11                            ; Is Jetman hovering?
     JR NZ, .afterHovering                       ; Jump if not hovering.
 
     ; Jetman is hovering, but we have movement, so switch state to fly.
-    LD A, jt.AIR_FLY
+    LD A, jt.AIR_FLY_D10
     CALL jt.SetJetStateAir
     
     ; Switch to flaying animation
@@ -367,16 +367,16 @@ _JoystickMoves
 _StandToWalk
 
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     RET Z                                       ; Exit if Jetman is not on the ground.
 
     ; Jetman is on the ground, is he already walking?
     LD A, (jt.jetGnd)   
-    CP jt.GND_WALK
+    CP jt.GND_WALK_D51
     RET Z                                       ; Exit if Jetman is already walking.
 
     ; Jetman is standing and starts walking now.
-    LD A, jt.GND_WALK
+    LD A, jt.GND_WALK_D51
     CALL jt.SetJetStateGnd
     
     LD A, js.SDB_WALK_ST
@@ -398,7 +398,7 @@ _CanJetMove
     ; ##########################################
     ; Joystick disabled if Jetman is inactive.
     LD A, (jt.jetState)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .jetActive
 
     ; Do not process input.
@@ -408,7 +408,7 @@ _CanJetMove
 
     ; ##########################################
     LD A, (jt.jetState)
-    CP jt.JETST_RIP
+    CP jt.JETST_RIP_D103
     JR NZ, .afterRip                            ; Do not process input if Jetman is dying.
 
     ; Do not process input, Jet is dying.

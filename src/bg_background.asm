@@ -11,7 +11,6 @@ bgOffset                DB 0                    ; Offset of the background image
 GB_OFFSET_D6            = _GND_THICK_D8-2
 
 GB_MOVE_SLOW_D2         = 2                     ; Slows down background movement (when Jetman moves).
-GBL_RET_A_GND           = _BM_YRES_D256-1
 
 ;----------------------------------------------------------;
 ;             UpdateBackgroundOnJetmanMove                 ;
@@ -84,7 +83,7 @@ HideBackgroundBehindHorizon
     CALL _GetGroundImageLine
 
     ; Do not remove the line if the Jetman is on the ground (offset is 255).
-    CP GBL_RET_A_GND
+    CP _BM_YRES_D255
     RET Z
 
     INC A                                       ; Move image one pixel down (TODO why is that necessary?).
@@ -101,7 +100,7 @@ ShowBackgroundAboveHorizon
     CALL _GetGroundImageLine
 
     ; Do not remove the line if the Jetman is on the ground (offset is 255).
-    CP GBL_RET_A_GND
+    CP _BM_YRES_D255
     RET Z
 
     INC A                                       ; Move image one pixel down (TODO why is that necessary?).
@@ -138,7 +137,7 @@ _GetGroundImageLine
     ; Calculate the line number that needs to be replaced. It's the line going behind the horizon. It's always the bottom line of the image.
     LD A, (bgOffset)
     LD B, A
-    LD A, _BM_YRES_D256-1
+    LD A, _BM_YRES_D255
     SUB B                                       ; Move A by B (background offset).
 
     RET                                         ; ## END of the function ##

@@ -517,15 +517,15 @@ MoveX
 ; Input
 ;  - IX: pointer to #SPR
 ;  - A:  MOVE_Y_IN_XXX
-MOVE_Y_IN_UP                = 1                 ; Move up
-MOVE_Y_IN_DOWN              = 0                 ; Move down
+MOVE_Y_IN_UP_D1             = 1                 ; Move up
+MOVE_Y_IN_DOWN_D0           = 0                 ; Move down
 ; Return:
 ;  - A:     MOVE_RET_XXX
-MOVE_RET_VISIBLE            = 1                 ; Sprite is still visible.
-MOVE_RET_HIDDEN             = 0                 ; Sprite outside screen, or hits ground.
+MOVE_RET_VISIBLE_D1         = 1                 ; Sprite is still visible.
+MOVE_RET_HIDDEN_D0          = 0                 ; Sprite outside screen, or hits ground.
 ; Modifies: A
 MoveY
-    CP MOVE_Y_IN_UP
+    CP MOVE_Y_IN_UP_D1
     JR Z, .afterMovingUp                        ; Jump if moving up.
 
     ; Moving down - increment Y coordinate
@@ -537,7 +537,7 @@ MoveY
     JR C, .afterMoving                          ; Jump if the sprite is above ground (A < _GSC_Y_MAX2_D238).
 
     ; Sprite hits the ground
-    LD A, MOVE_RET_HIDDEN
+    LD A, MOVE_RET_HIDDEN_D0
     CALL SpriteHit
     RET
 .afterMovingUp
@@ -552,13 +552,13 @@ MoveY
 
     ; Sprite is above screen -> hide it.
     CALL HideSimpleSprite
-    LD A, MOVE_RET_HIDDEN
+    LD A, MOVE_RET_HIDDEN_D0
 
     RET
 .afterMoving
 
     LD (IX + SPR.Y), A                          ; Update new X position.
-    LD A, MOVE_RET_VISIBLE
+    LD A, MOVE_RET_VISIBLE_D1
 
     RET                                         ; ## END of the function ##
 
