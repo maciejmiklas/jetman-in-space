@@ -222,7 +222,7 @@ LoadCurrentLevel
     CALL dbs.SetupFollowingEnemyBank
 
     LD A, (IX + LL.FE_SIZE)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .followingDisabled
 
     LD DE, (IX + LL.FE_DATA)

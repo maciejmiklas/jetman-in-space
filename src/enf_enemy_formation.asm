@@ -26,7 +26,7 @@ MoveFormationEnemies
 
     ; Check whether formation is disabled.
     LD A, (formationSize)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -45,7 +45,7 @@ MoveFormationEnemies
 SetupEnemyFormation
 
     LD (formationSize), A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD A, B
@@ -100,13 +100,13 @@ RespawnFormation
 
     ; Check whether formation is disabled
     LD A, (formationSize)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     ; ##########################################
     ; Check whether the respawn delay timer is 0, indicating that deployment is over.
     LD A, (respawnDelayCnt)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterStillAliveCheck
 
     ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous.

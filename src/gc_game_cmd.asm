@@ -950,11 +950,11 @@ RespawnEnemy
     LD DE, (freezeEnemiesCnt)
 
     LD A, D
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET NZ
 
     LD A, E
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET NZ
 
     ; ##########################################
@@ -980,12 +980,12 @@ MoveEnemies
     
     ; DE == 0 ?
     LD A, D
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .decFreezeCnt
 
     ; D == 0, now check E
     LD A, E
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterFreeze
 
 .decFreezeCnt

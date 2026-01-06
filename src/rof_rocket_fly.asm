@@ -125,7 +125,7 @@ ROC_Y_MAX_HI_H1         = $1
 
     ; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.
     LD A, (rocketFlyDelayCnt)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterDelay
 
     ; Decrement delay counter.
@@ -133,7 +133,7 @@ ROC_Y_MAX_HI_H1         = $1
     DEC A
     LD (rocketFlyDelay), A
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JP NZ, .end                                 ; Return if delay counter has not been reached.
 
     ; The counter reached 0, reset it and increment the distance counter.
@@ -636,7 +636,7 @@ _JoyLeft
 
     LD BC, (ro.rocX)
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterMinX
     LD A, C
     CP ROC_X_MIN_D10
@@ -650,7 +650,7 @@ _JoyLeft
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterDec
 
     CALL ros.DecTileOffsetX
@@ -682,7 +682,7 @@ _JoyRight
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterDec
 
     CALL ros.IncTileOffsetX

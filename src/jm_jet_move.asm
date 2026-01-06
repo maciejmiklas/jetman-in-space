@@ -28,7 +28,7 @@ jetInactivityCnt        DB 0
     MACRO _JoyCntEnabled
 
     LD A, (gid.joyOffCnt)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .joyEnabled                           ; Jump if joystick is enabled -> #joyOffCnt > 0.
 
     ; ##########################################
@@ -37,12 +37,12 @@ jetInactivityCnt        DB 0
     LD (gid.joyOffCnt), A
 
     ; Joystick will enable on the next loop?
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterEnableCheck
 
     ; Yes, this was the last blocking loop.
     CALL gc.JoyWillEnable
-.afterEnableCheck   
+.afterEnableCheck
 
     ; ##########################################
     ; Allow input processing if Jetman is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when

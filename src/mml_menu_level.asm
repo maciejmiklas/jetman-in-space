@@ -178,7 +178,7 @@ _PreviousLevel
     ; Decrement #currentLevel by 1, min value is 1.
     LD A, (currentLevel)
     DEC A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD (currentLevel), A

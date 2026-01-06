@@ -65,7 +65,7 @@ FIRE_FX_OFF             = 0
 
     ; Play FX every few game loops.
     LD A, (fireFxDelayCnt)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .decFireFxCnt
 
     ; The delay counter is done, reset it, and play FX.
@@ -176,7 +176,7 @@ FireSpeedUp
 ; Modifies: ALL
 CheckHitEnemies
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A

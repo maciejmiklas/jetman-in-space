@@ -190,7 +190,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     JR .end
 .respawnOn
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterEnemyRespawnDelay               ; Jump if there is no extra delay for this enemy
 
     LD B, A
@@ -261,13 +261,13 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     ; Should we skip movement on x-axis (to change the angle)?
     LD A, (IY + FE.STATE)
     AND STATE_SKIP_X_MASK
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterSkipX
 
     ; Check counter
     LD A, (IY + FE.SKIP_XY_CNT)                 ; Has counter reached 0?
     AND STATE_SKIP_X_MASK
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .resetSkipX
 
     ; Decrement the counter and skip movement in this direction
@@ -306,13 +306,13 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     ; Should we skip movement on y-axis (to change the angle)?
     LD A, (IY + FE.STATE)
     AND STATE_SKIP_Y_MASK
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterSkipY
 
     ; Check counter
     LD A, (IY + FE.SKIP_XY_CNT)                 ; Has counter reached 0?
     AND STATE_SKIP_Y_MASK
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .resetSkipY
 
     ; Decrement the counter and skip movement in this direction
@@ -430,7 +430,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES
     ; ##########################################
     ; Is following disabled?
     LD A, (IY + FE.FOLLOW_OFF_CNT)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterFollowOff
     DEC A
     LD (IY + FE.FOLLOW_OFF_CNT), A
@@ -576,7 +576,7 @@ NextFollowingAngle
     LD A, (fEnemySize)
  
     ; Do not execute if there are no active enemies (disabled).
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -609,7 +609,7 @@ UpdateFollowingJetman
     LD A, (fEnemySize)
 
     ; Do not execute if there are no active enemies (disabled)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -643,7 +643,7 @@ RespawnFollowingEnemy
     LD A, (fEnemySize)
 
     ; Do not execute if there are no active enemies (disabled)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -672,7 +672,7 @@ MoveFollowingEnemies
     LD A, (fEnemySize)
 
     ; Do not execute if there are no active enemies (disabled)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -690,7 +690,7 @@ MoveFollowingEnemies
     ; Ignore this sprite if it's hidden
     LD A, (IX + SPR.STATE)
     AND sr.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JP Z, .continue                             ; Jump if visibility is not set (sprite is hidden)
 
     ; Load extra data for this sprite to IY
@@ -702,11 +702,11 @@ MoveFollowingEnemies
 
     ; Delay disabled?
     LD A, (IY + FE.MOVE_DELAY)
-    CP 0                                        ; No delay? -> move at full speed
+    OR A                                        ; No delay? -> move at full speed
     JR Z, .afterMoveDelay
 
     LD A, (IY + FE.MOVE_DELAY_CNT)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .resetDelay
 
     ; Decrement the counter and skip the movement

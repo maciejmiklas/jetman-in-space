@@ -184,7 +184,7 @@
 
     ; Do not speed up animations, like falling from the platform.
     LD A, (gid.joyOffCnt)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notHard
 
     CALL gi.JetMovementInput

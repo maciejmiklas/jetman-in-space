@@ -150,12 +150,12 @@ AnimateJetSprite
 
     ; Delay animation.
     LD A, (sprDBDelay)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterAnimationDelay                  ; Jump if delay is off
     
     ; Animation delay is on. Check if counter has reached 0 and needs to be reset.
     LD A, (sprDBDelayCnt)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .decResetDelay
     
     ; Delay counter is 0, reset it
@@ -171,7 +171,7 @@ AnimateJetSprite
     ; ##########################################
     ; Switch to the next DB record if all bytes from the current one have been used.
     LD A, (sprDBRemain)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterRecordChange                   ; Jump if there are still bytes to be processed
     
     ; Load new record.

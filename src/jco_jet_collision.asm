@@ -74,8 +74,7 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     LD A, (ripMoveCnt)
     DEC A
     LD (ripMoveCnt), A
-    CP 0
-
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Counter is still > 0 - keep going
 
     ; Counter has reached 0 - change direction.
@@ -197,7 +196,7 @@ JetmanElementCollision
     SBC HL, BC  
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
     LD A, H
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .keepCheckingHorizontal               ; HL > 256 -> no collision.
     OR 1                                        ; Return NO (Z set).
     RET
@@ -240,9 +239,9 @@ JetmanElementCollision
 ; Modifies: ALL
 EnemiesCollision
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
-    
+
     LD B, A
 .loop
     PUSH BC                                     ; Preserve B for loop counter.
@@ -316,7 +315,7 @@ JetInvincible
     ; Still invincible - blink Jetman sprite (at first blink fast, last few seconds blink slow).
     ; Should blink slow or fast?
     LD A, H                                     ; H should be 0 because the last blink phase (slow blink) is 8 bits.
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .blinkFast                           ; #invincibleCnt > 255 (H != 0) -> blink fast.
 
     LD A, L
@@ -370,7 +369,7 @@ _CheckCollision
     SBC HL, BC
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
     LD A, H
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .keepCheckingX                        ; HL > 256 -> no collision.
 
     OR 1                                        ; Return NO (Z set).

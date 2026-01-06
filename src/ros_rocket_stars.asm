@@ -183,7 +183,7 @@ ScrollStarsOnFlyRocket
     ; ##########################################
     ; Pause ?
     LD A, (pauseScrollStars)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterPause
     DEC A
     LD (pauseScrollStars), A
@@ -215,7 +215,7 @@ ScrollStarsOnFlyRocket
 
     ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.
     LD A, (blackTilesRow)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     DEC A
@@ -247,10 +247,10 @@ DecTileOffsetX
 
     ; If X == 0 then set it to 319. X == 0 when B and C are 0
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterResetX
     LD A, C
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterResetX
     LD BC, _TI_OFFSET_X_MAX
     JR .afterDec

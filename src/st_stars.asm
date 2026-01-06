@@ -288,7 +288,7 @@ starsPalL2Addr         DW 0
     LD A, (starsMoveL1Delay)
     DEC A
     LD (starsMoveL1Delay), A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Do not move yet, wait for 0.
 
     ; Reset delay
@@ -312,7 +312,7 @@ starsPalL2Addr         DW 0
     LD A, (starsMoveL2Delay)
     DEC A
     LD (starsMoveL2Delay), A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Do not move yet, wait for 0.
 
     ; Reset delay
@@ -336,7 +336,7 @@ starsPalL2Addr         DW 0
     LD A, (starsMoveL1Delay)
     DEC A
     LD (starsMoveL1Delay), A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Do not move yet, wait for 0.
 
     ; Reset delay
@@ -360,7 +360,7 @@ starsPalL2Addr         DW 0
     LD A, (starsMoveL2Delay)
     DEC A
     LD (starsMoveL2Delay), A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                      ; Do not move yet, wait for 0.
 
     ; Reset delay

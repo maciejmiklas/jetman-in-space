@@ -79,7 +79,7 @@ UpdatePickupsOnJetmanMove
     ; ##########################################
     ; Exit if there is no active pickup.
     LD A, (deployed)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     ; ##########################################
@@ -165,7 +165,7 @@ AnimateFallingPickup
 
     ; Exit if there is no active pickup.
     LD A, (deployed)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     ; ##########################################
@@ -219,7 +219,7 @@ PickupDropCounter
 
     ; Do not deploy next pickup if there is one out there.
     LD A, (deployed)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET NZ
 
     ; ##########################################

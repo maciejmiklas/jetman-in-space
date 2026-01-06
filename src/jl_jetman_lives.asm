@@ -46,7 +46,7 @@ LifeDown
     DEC A
     LD (lives), A
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .keepPlaying
     CALL gc.GameOver
     RET

@@ -151,7 +151,7 @@ ResetSprite
 ;  - A:  sprites size
 KillOneSprite
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -204,7 +204,7 @@ SpriteHit
 ; Modifies: A, BC, HL
 AnimateSprites
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -275,7 +275,7 @@ UpdateSpritePosition
 ;  - A:  sprites size.
 HideAllSimpleSprites
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -352,7 +352,7 @@ UpdateSpritePattern
 
     ; Switch to the next DB record if all bytes from the current one have been used.
     LD A, (IX + SPR.REMAINING)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterRecordChange                   ; Jump if there are still bytes to be processed.
 
     ; ##########################################
@@ -421,10 +421,10 @@ MoveX
     ; ##########################################
     ; Is HL == 0 ? -> in this case do not decrement it ;)
     LD A, H
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .hlNot0
     LD A, L
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .hlNot0
   
     ; HL == 0
@@ -435,7 +435,7 @@ MoveX
 
     ; Check whether a sprite is outside the screen.
     LD A, H
-    CP 0                                        ; H holds MSB from X, if H > 0 than X > 256.
+    OR A                                        ; H holds MSB from X, if H > 0 than X > 256.
     JR NZ, .continueLeftLoop
 
     ; H is 0, check whether L has reached left side of the screen.
@@ -456,7 +456,7 @@ MoveX
     ; Otherwise, this loop continues moving the spire until it reaches the left edge of the screen and disappears without eventually
     ; triggering collision detection.
     LD A, H
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterLeftSideCheck
     LD A, L
     CP 2
@@ -597,7 +597,7 @@ LoadSpritePattern
 
     ; ##########################################
     ; Ensure that #REMAINING is not 0, because it's counting down.
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .remainingNot0
     LD (IX + SPR.REMAINING), 1                  ; Set it to something > 0
     LD A, er.ERR_001

@@ -33,7 +33,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
 
     ; Decrement counter and execute next step if not 0, otherwise, change direction from day->night to night->day.
     LD A, (step)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .nextStep
 
     ; ##########################################
@@ -96,7 +96,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
 
     ; Decrement counter and execute next step if not 0, otherwise, change direction from night->day to day->night.
     LD A, (step)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .nextStep
 
     ; ##########################################
@@ -162,7 +162,7 @@ NextTimeOfDayTrigger
     DEC A
     LD (stepDuration), A
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET NZ                                      ; Keep counting down.
 
     ; ##########################################

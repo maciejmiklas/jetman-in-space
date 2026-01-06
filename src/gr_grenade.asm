@@ -32,7 +32,7 @@ GrenadePickup
 UseGrenade
 
     LD A, (grenadeCount)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     DEC A

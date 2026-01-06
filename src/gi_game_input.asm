@@ -247,7 +247,7 @@ GameOptionsInput
 
     ; Do not detect a break when Jetman is moving.
     LD A, (gid.joyDirection)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notBreak
 
     ; SHIFT pressed?

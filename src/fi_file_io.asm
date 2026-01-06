@@ -721,13 +721,13 @@ _Load16KTilemap
 
     ; Should we load second file?
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .loadSecond
 
     LD A, C
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .loadSecond
-    
+
     POP BC
     RET                                         ; B and C are 0, do not load second file.
 

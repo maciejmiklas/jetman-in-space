@@ -28,7 +28,7 @@ MoveSingleEnemies
 
     ; Single enemies disabled?
     LD A, (singleEnemySize)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -48,7 +48,7 @@ MoveSingleEnemies
 SetupSingleEnemies
 
     LD (singleEnemySize), A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD A, B
@@ -118,21 +118,22 @@ RespawnNextSingleEnemy
 
     ; Single enemies disabled?
     LD A, (singleEnemySize)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster
     RET Z
 
     ; Increment respawn timer and exit function if it's not time to respawn a new enemy.
     LD A, (nextRespDel)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster
     JR Z, .startRespawn
+
     LD D, A
     LD A, (singleRespDelayCnt)
     INC A
     CP D
     JR Z, .startRespawn                         ; Jump if the timer reaches respawn delay.
     LD (singleRespDelayCnt), A
-
     RET
+
 .startRespawn
     XOR A                                       ; Set A to 0.
     LD (singleRespDelayCnt), A                  ; Reset delay timer.

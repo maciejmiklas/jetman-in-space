@@ -132,7 +132,7 @@ CheckRocketCollision
     SBC HL, DE
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
     LD A, H
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .keepCheckingX
 
     ; HL > 256  -> no collision.
@@ -331,7 +331,7 @@ DeployNextAsteroid
     ; Anchor sprite is on X=0 and Y=0
     LD A, H
     OR L
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notAnchor
 
     ; ##########################################
@@ -405,7 +405,7 @@ MoveAsteroids
 
     ; Increment Y based on the defined speed.
     LD A, (IX + AS.MOVE_SPD)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .asLoopNext
     LD B, (IX + AS.Y)
     ADD A, B

@@ -79,7 +79,7 @@ BytesToColors
 
     ; In case of 512 colors there is an overflow, and B is 0.
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster
     RET NZ
     LD B, $FF
 

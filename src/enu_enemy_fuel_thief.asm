@@ -217,7 +217,7 @@ MoveFuelThief
 
     LD BC, (IX + SPR.X)
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notHideLeft
     LD A, C
     CP 5
