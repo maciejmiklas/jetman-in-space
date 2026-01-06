@@ -107,14 +107,15 @@ MOVE_PAT_STEP_OFFSET_D1 = 1                     ; Data for move pattern starts a
 MOVE_PAT_REPEAT_MASK    = %0000'1111 
 MOVE_PAT_DELAY_MASK     = %1111'0000 
 
-MOVE_DELAY_3X           = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
-MOVE_DELAY_2X           = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
+; The delay 0 and delay 1 move by 3 or 2 pixels per frame, so there is no delay at all. Delay 2 should move by 1 pixel, and first delay 
+; 3 should skip one pixel.
+MOVE_DELAY_3PX          = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
+MOVE_DELAY_2PX          = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
 DEC_MOVE_DELAY          = %0001'0000 
 
 MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
 BOUNCE_H_MARG_D3        = 3
-
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -287,7 +288,7 @@ MovePatternEnemies
 
     ; Tripple movement speed if move delay is 0.
     _LoadMoveDelay
-    CP MOVE_DELAY_3X
+    CP MOVE_DELAY_3PX
     JR NZ, .after3x
     PUSH IY
     CALL _MoveEnemy
@@ -297,7 +298,7 @@ MovePatternEnemies
 .after3x
 
     ; Double movement speed if move delay is 1.
-    CP MOVE_DELAY_2X
+    CP MOVE_DELAY_2PX
     JR NZ, .continue
     CALL _MoveEnemy
 
