@@ -282,7 +282,9 @@ MovePatternEnemies
     PUSH IY
     CALL _MoveEnemy
     POP IY
-/*
+
+    ; TODO calling _MoveEnemy multiple times
+
     ; Tripple movement speed if move delay is 0.
     _LoadMoveDelay
     CP MOVE_DELAY_3X
@@ -298,7 +300,7 @@ MovePatternEnemies
     CP MOVE_DELAY_2X
     JR NZ, .continue
     CALL _MoveEnemy
-*/
+
 .continue
     ; ##########################################
     ; Move IX to the beginning of the next #SPR.
