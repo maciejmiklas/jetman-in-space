@@ -135,7 +135,7 @@ BOUNCE_H_MARG_D3        = 3
 
     LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; HL points to start of the #movePattern
     LD A, (IY + ENP.MOVE_PAT_POS)
-    ADD HL, A                                   ; Move HL from the beginning of the move pattern to current element
+    ADD HL, A                                   ; Move HL from the beginning of the move pattern to current element.
 
     ENDM                                        ; ## END of the macro ##
 
@@ -519,19 +519,19 @@ _MoveEnemy
     ; ##########################################
     ; Is enemy alive?
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
-    JR NZ, .afterAliveCheck                     ; Jump if sprite is alive
+    JR NZ, .afterAliveCheck                     ; Jump if sprite is alive.
 
-    ; Sprite is not alive -> move it horizontally while it's exploding
+    ; Sprite is not alive -> move it horizontally while it's exploding.
     CALL _MoveEnemyX
-    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
+    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
 
-    RET                                         ; Return - enemy is exploding
+    RET                                         ; Return - enemy is exploding.
 .afterAliveCheck
 
     ; ##########################################
     ; Should enemy bounce of the platform?
     BIT ENP_S_BIT_BOUNCE_D2, (IY + ENP.SETUP)
-    JR Z, .afterBounceSetup                        ; Jump if bounce is not set
+    JR Z, .afterBounceSetup                        ; Jump if bounce is not set.
 
     ; Check the collision with the platform
     PUSH IX, IY, HL
@@ -562,18 +562,18 @@ _MoveEnemy
 
     JR .afterBounceSetup
 .bounceL
-    ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction
+    ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction.
     RES ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
-    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
+    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
 
     LD A, sr.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
 
     JR .afterBounceSetup
 .bounceR
-    ; Enemy bounces from the platform's right side
+    ; Enemy bounces from the platform's right side.
     SET ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
-    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite
+    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
 
     LD A, sr.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
@@ -583,50 +583,50 @@ _MoveEnemy
     ; ##########################################
     ; Should the enemy move along the platform to avoid collision?
     BIT ENP_S_BIT_ALONG_D0, (IY + ENP.SETUP)
-    JR Z, .afterMoveAlong                       ; Jump if move along is not set
+    JR Z, .afterMoveAlong                       ; Jump if move along is not set.
 
     ; Check the collision with the platform
     PUSH IX, IY, HL
     CALL pl.PlatformSpriteClose
     POP HL, IY, IX
 
-    JR NZ, .afterMoveAlong                      ; Jump if there is no collision
+    JR NZ, .afterMoveAlong                      ; Jump if there is no collision.
 
     ; Avoid collision with the platform by moving along it
     CALL _MoveEnemyX
-    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
-    RET                                         ; Return, sprite moves along platform
+    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
+    RET                                         ; Return, sprite moves along platform.
 .afterMoveAlong
 
     ; ##########################################
-    ; Check if counter for X has already reached 0, or is set to 0
-    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters
-    AND MOVE_PAT_X_MASK                         ; Reset all but X
+    ; Check if counter for X has already reached 0, or is set to 0.
+    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
+    AND MOVE_PAT_X_MASK                         ; Reset all but X.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterMoveLR                          ; Jump if the counter for X has reached 0
 
     ; Decrement X counter
-    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters
-    SUB MOVE_PAT_X_ADD                          ; Decrement X counter by 1
+    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
+    SUB MOVE_PAT_X_ADD                          ; Decrement X counter by 1.
     LD (IY + ENP.MOVE_PAT_STEP), A
 
     CALL _MoveEnemyX
 .afterMoveLR
 
     ; ##########################################
-    ; Check if counter for Y has already reached 0, or is set to 0
-    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters
-    AND MOVE_PAT_Y_MASK                         ; Reset all but Y
+    ; Check if counter for Y has already reached 0, or is set to 0.
+    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
+    AND MOVE_PAT_Y_MASK                         ; Reset all but Y.
     OR A                                        ; Same as CP 0, but faster.
-    JR Z, .afterChangeY                         ; Jump if the counter for Y has reached 0
+    JR Z, .afterChangeY                         ; Jump if the counter for Y has reached 0.
 
     ; Enemy should move on Y
-    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters
-    SUB MOVE_PAT_Y_ADD                          ; Decrement Y counter by 1
+    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
+    SUB MOVE_PAT_Y_ADD                          ; Decrement Y counter by 1.
     LD (IY + ENP.MOVE_PAT_STEP), A  
 
     ; Move on Y-axis one pixel up or down?
-    LD A, (HL)                                  ; A contains current pattern
+    LD A, (HL)                                  ; A contains current pattern.
 
     ; Reverse movement direction?
     BIT ENP_S_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
@@ -637,16 +637,16 @@ _MoveEnemy
 .doNotReverseY
 
     BIT MOVE_PAT_Y_TOD_DIR_B_D7, A
-    JR Z, .moveUp                               ; Jump if sprite should move up
+    JR Z, .moveUp                               ; Jump if sprite should move up.
 
     ; ##########################################
-    ; Move on pixel down, but first, check whether the enemy bounces off the ground
+    ; Move on pixel down, but first, check whether the enemy bounces off the ground.
 
     ; Bounce is set, has sprite reached the bottom of the screen?
     LD A, (IX + SPR.Y)
     CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D3
-    JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3)
-    ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down
+    JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3).
+    ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down.
     CALL _FlipReverseY
     LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
@@ -656,23 +656,22 @@ _MoveEnemy
     ; Bouncing not necessary, finally move down
     LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
-    OR A                                        ; Same as: CP sr.MOVE_RET_HIDDEN_D0
-    JR NZ, .afterChangeY                        ; Jump is sprite is not hidden
+    JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
 
-    RET                                         ; Stop moving this sprite, it's hidden
+    RET                                         ; Stop moving this sprite, it's hidden.
 
 .moveUp
     ; ##########################################
-    ; Move on pixel up, but first, check whether the enemy bounces off the top of the screen
+    ; Move on pixel up, but first, check whether the enemy bounces off the top of the screen.
     BIT ENP_S_BIT_BOUNCE_D2, (IY + ENP.SETUP)
-    JR Z, .afterBounceMoveUp                    ; Jump if bounce is not set
+    JR Z, .afterBounceMoveUp                    ; Jump if bounce is not set.
 
     ; Bounce is set, has sprite reached top of the screen?
     LD A, (IX + SPR.Y)
     CP _GSC_Y_MIN_D15 + BOUNCE_H_MARG_D3
     JR NC, .afterBounceMoveUp                   ; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15+_GSC_Y_MIN_D15)
 
-    ; Yes - we are at the top of the screen, set reverse-y and move down instead of up
+    ; Yes - we are at the top of the screen, set reverse-y and move down instead of up.
     CALL _FlipReverseY
     LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
@@ -682,16 +681,15 @@ _MoveEnemy
     ; Bouncing not necessary, finally move up
     LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
-    OR A                                        ; Same as: CP sr.MOVE_RET_HIDDEN_D0
-    JR NZ,.afterChangeY                         ; Jump is sprite is not hidden
-    RET                                         ; Stop moving this sprite, it's hidden
+    JR Z,.afterChangeY                          ; Jump is sprite is not hidden.
+    RET                                         ; Stop moving this sprite, it's hidden.
 
 .afterChangeY
-    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates
+    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
 
     ; Check if X and Y have reached 0
-    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains pattern counter
-    AND MOVE_PAT_XY_MASK                        ; Reset all but max X,Y values
+    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains pattern counter.
+    AND MOVE_PAT_XY_MASK                        ; Reset all but max X,Y values.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .resetXYCounters                      ; Jump if X and Y counters has reached 0
 
@@ -700,53 +698,53 @@ _MoveEnemy
 .resetXYCounters
     ; ##########################################
     ; X and Y have reached the max value. First, reset the X and Y counters, and afterward, decrement the repetition counter.
-    LD A, (HL)                                  ; X, Y counters will be set to max value as we count down towards 0
+    LD A, (HL)                                  ; X, Y counters will be set to max value as we count down towards 0.
     LD (IY + ENP.MOVE_PAT_STEP), A  
 
-    LD A, (IY + ENP.MOVE_PAT_STEP_RCNT)         ; decrement the repetition counter
+    LD A, (IY + ENP.MOVE_PAT_STEP_RCNT)         ; decrement the repetition counter.
     DEC A
     OR A                                        ; Same as CP 0, but faster.
-    JR Z, .nextMovePattern                      ; Jump if repetition counter for single step has reached 0
+    JR Z, .nextMovePattern                      ; Jump if repetition counter for single step has reached 0.
 
-    ; Decrement repetition counter for move step and return
-    LD (IY + ENP.MOVE_PAT_STEP_RCNT), A         ; Store decremented counter
+    ; Decrement repetition counter for move step and return.
+    LD (IY + ENP.MOVE_PAT_STEP_RCNT), A         ; Store decremented counter.
     
     JR .checkPlatformHit
 
 .nextMovePattern
     ; ##########################################
     ; Setup next move pattern
-    LD A, (IY + ENP.MOVE_PAT_POS)               ; A contains the current position in the move pattern
+    LD A, (IY + ENP.MOVE_PAT_POS)               ; A contains the current position in the move pattern.
 
-    ADD MOVE_STEP_SIZE_D2                          ; Increment the position to the next pattern and store it
+    ADD MOVE_STEP_SIZE_D2                          ; Increment the position to the next pattern and store it.
     LD (IY + ENP.MOVE_PAT_POS), A
 
     ; Check if we should restart the move pattern, as it might have reached the last element.
-    DEC A                                       ; Pattern starts after offset
+    DEC A                                       ; Pattern starts after offset.
     PUSH HL
-    LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; DE points to start of the #movePattern
-    LD B, (HL)                                  ; B contains the amount of bytes in the move pattern array
+    LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; DE points to start of the #movePattern.
+    LD B, (HL)                                  ; B contains the amount of bytes in the move pattern array.
     POP HL
     CP B
-    JR NC, .restartMovePattern                  ; Jump A >= B -> (current postion >= size)
+    JR NC, .restartMovePattern                  ; Jump A >= B -> (current postion >= size).
 
     ; There is no need to restart the move pattern, load the next one.
-    LD BC, HL                                   ; BC points to current position in #movePatternXX
-    INC BC                                      ; Move BC to the counter for current pattern
-    INC BC                                      ; Move BC to the next pattern
+    LD BC, HL                                   ; BC points to current position in #movePatternXX.
+    INC BC                                      ; Move BC to the counter for current pattern.
+    INC BC                                      ; Move BC to the next pattern.
     
-    LD A, (BC)                                  ; X, Y counters will be set to max value as we count down towards 0
+    LD A, (BC)                                  ; X, Y counters will be set to max value as we count down towards 0.
     LD (IY + ENP.MOVE_PAT_STEP), A  
 
-    INC BC                                      ; Move BC to the counter for the next pattern
+    INC BC                                      ; Move BC to the counter for the next pattern.
     LD A, (BC)                                  ; Load delay/repeat counter into A
     LD D, A
 
-    ; Set pattern counter for next pattern
-    AND MOVE_PAT_REPEAT_MASK                    ; Leave only repeat counter bits
+    ; Set pattern counter for next pattern.
+    AND MOVE_PAT_REPEAT_MASK                    ; Leave only repeat counter bits.
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
 
-    ; Set delay counter for next pattern
+    ; Set delay counter for next pattern.
     LD A, D
     CALL _SetDelayCnt
     JR .checkPlatformHit
@@ -771,31 +769,31 @@ _MoveEnemy
 ;----------------------------------------------------------;
 ; This method resets the move pattern (#ENP) so animation can start from the first move pattern. It does not modify #SPR.
 ; Input
-;  - IX: pointer to #SPR holding data for single sprite that will be moved
-;  - IY: pointer to #ENP for current sprite
+;  - IX: pointer to #SPR holding data for single sprite that will be moved.
+;  - IY: pointer to #ENP for current sprite.
 ; Modifies: A, IY, BC, HL
 _RestartMovePattern
 
-    LD BC, (IX + SPR.EXT_DATA_POINTER)       ; Load #ENP for this sprite to IY
+    LD BC, (IX + SPR.EXT_DATA_POINTER)          ; Load #ENP for this sprite to IY.
     LD IY, BC
-    LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; HL points to start of the #movePattern, that is the amount of elements in this pattern
-    INC HL                                      ; HL points to the first move pattern element
+    LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; HL points to start of the #movePattern, that is the amount of elements in this pattern.
+    INC HL                                      ; HL points to the first move pattern element.
     
-    ; X, Y counters will be set to max value as we count down towards 0
+    ; X, Y counters will be set to max value as we count down towards 0.
     LD A, (HL)
     LD (IY + ENP.MOVE_PAT_STEP), A  
 
-    ; Set position at the first pattern, this is one byte after the start of #movePatternXX
+    ; Set position at the first pattern, this is one byte after the start of #movePatternXX.
     LD A, MOVE_PAT_STEP_OFFSET_D1
     LD (IY + ENP.MOVE_PAT_POS), A
 
-    ; Set pattern counters to the first pattern
-    INC HL                                      ; HL points to delay/repeat counter byte
+    ; Set pattern counters to the first pattern.
+    INC HL                                      ; HL points to delay/repeat counter byte.
     LD A, (HL)
     LD B, A
 
     ; Set repeat counter
-    AND MOVE_PAT_REPEAT_MASK                    ; Leave only repeat counter bits
+    AND MOVE_PAT_REPEAT_MASK                    ; Leave only repeat counter bits.
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
 
     ; Set delay counter 
@@ -811,13 +809,13 @@ _RestartMovePattern
 ;  - A: delay counter from configuration.
 _SetDelayCnt
 
-    AND MOVE_PAT_DELAY_MASK                     ; Leave only delay counter bits
+    AND MOVE_PAT_DELAY_MASK                     ; Leave only delay counter bits.
 
     ; If the delay counter is above 0, decrement it by 2 if possible. The reason for this is that delay 0 and delay 1 move by 3 or 2 
     ; pixels per frame, so there is no delay at all. Delay 2 should move by 1 pixel, and first delay 3 should skip one pixel.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .storeA
-    SUB DEC_MOVE_DELAY                          ; First decrement, try again to decrement if still above 0
+    SUB DEC_MOVE_DELAY                          ; First decrement, try again to decrement if still above 0.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .storeA
     SUB DEC_MOVE_DELAY
