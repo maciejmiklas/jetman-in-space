@@ -22,7 +22,7 @@
 ; there is another structure, #ENPS - this structure has elements with the same name as #ENP (but not all, only those that we can configure). 
 ; Before the level starts, values from ENPS are directly copied to ENP, and enemies for this level are configured and ready to go.
 ; Enemies can move according to the different movement patterns given by #ENP.MOVE_PAT_POINTER. After they are destroyed, the next 
-; deployment is delayed by #ENP.RESPAWN_DELAY. #ENP.SDB_INIT gives Sprite animation. #ENP.RESPAWN_Y determines the horizontal respawn position.
+; deployment is delayed by #ENP.RESPAWN_DELAY_D22. #ENP.SDB_INIT gives Sprite animation. #ENP.RESPAWN_Y determines the horizontal respawn position.
 ; #ENP.SETUP (see #ENP_S_BIT_XXX) decides whether the enemy is deployed on the right or left side of the screen and whether it should hit 
 ; a platform, fly along it, or bounce from it.
 
@@ -176,8 +176,8 @@ CopyEnpsToEnp
     LD A, (IX + ENPS.SETUP)
     LD (IY + ENP.SETUP), A
 
-    LD A, (IX + ENPS.RESPAWN_DELAY)
-    LD (IY + ENP.RESPAWN_DELAY), A
+    LD A, (IX + ENPS.RESPAWN_DELAY_D22)
+    LD (IY + ENP.RESPAWN_DELAY_D22), A
 
     LD DE, (IX + ENPS.MOVE_PAT_POINTER)
     LD (IY + ENP.MOVE_PAT_POINTER), DE
@@ -198,7 +198,7 @@ ResetEnp
     LD (IY + ENP.RESPAWN_DELAY_CNT), A
 
     LD A, RESPAWN_OFF_D255
-    LD (IY + ENP.RESPAWN_DELAY), A
+    LD (IY + ENP.RESPAWN_DELAY_D22), A
 
     LD A, MOVE_PAT_STEP_OFFSET_D1
     LD (IY + ENP.MOVE_PAT_POS), A
@@ -339,7 +339,7 @@ RespawnPatternEnemy
     ; There are two respawn delay timers. The first is global (#respawnDelayCnt) and ensures that multiple enemies do not respawn at the 
     ; same time. The second timer can be configured for a single enemy, which further delays its comeback. Keep in mind, that
     ; #respawnDelayCnt applies only to single enemies and not to formation.
-    LD A, (IY + ENP.RESPAWN_DELAY)
+    LD A, (IY + ENP.RESPAWN_DELAY_D22)
 
     ; Enemy disabled?
     CP RESPAWN_OFF_D255

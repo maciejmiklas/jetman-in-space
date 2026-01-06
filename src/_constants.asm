@@ -526,7 +526,7 @@ _LEVEL_MAX              = 10
 ;  - 7: #ENP_S_BIT_REVERSE_Y_D7
 SETUP                   DB
 MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
-RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
+RESPAWN_DELAY_D22           DB                      ; Number of game loops delaying respawn.
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter.
 RESPAWN_Y               DB                      ; Respawn Y position.
 MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX).
@@ -538,7 +538,7 @@ MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of sing
 ; Setup values loaded for each level for #SPR
     STRUCT ENPS
 RESPAWN_Y               DB                      ; Value for: ENP.RESPAWN_Y
-RESPAWN_DELAY           DB                      ; Value for: ENP.RESPAWN_DELAY
+RESPAWN_DELAY_D22           DB                      ; Value for: ENP.RESPAWN_DELAY_D22
 MOVE_PAT_POINTER        DW                      ; Value for: ENP.MOVE_PAT_POINTER
 SDB_INIT                DB                      ; Value for: SPR.SDB_INIT
 SETUP                   DB                      ; Value for: ENP.SETUP
@@ -573,12 +573,12 @@ EXT_DATA_POINTER        DW                      ; Pointer to additional data str
     STRUCT FE
 STATE                   DB                      ; See: #fe.STATE_XXX.
 RESPAWN_Y               DB                      ; Respawn Y position.
-RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
+RESPAWN_DELAY_D22           DB                      ; Number of game loops delaying respawn.
 MOVE_DELAY              DB
 
 ; Values changed during runtime
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0.
-RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY.
+RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY_D22.
 FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops.
 SKIP_XY_CNT             DB                      ; Holds skip counters for x/y, same bits as on #FE.STATE (1-2 for x and 5-6 for y).
 ANGLES_IDX              DB                      ; Current offset to #angles, set after direction change.
@@ -589,7 +589,7 @@ ANGLES_IDX_END          DB                      ; End offset to #angles, inclusi
     STRUCT FES
 STATE                   DB                      ; Value for FE.STATE
 RESPAWN_Y               DB                      ; Value for FE.RESPAWN_Y
-RESPAWN_DELAY           DB                      ; Value for FE.RESPAWN_DELAY
+RESPAWN_DELAY_D22           DB                      ; Value for FE.RESPAWN_DELAY_D22
 MOVE_DELAY              DB                      ; Value for FE.MOVE_DELAY
     ENDS
 

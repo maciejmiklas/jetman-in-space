@@ -522,9 +522,9 @@ PlayFuelThiefFx
     CALL dbs.SetupPatternEnemyBank
     LD A, (enu.thiefState)
 
-    CP enu.TS_DEPLOYING
+    CP enu.TS_DEPLOYING_D2
     JR Z, .play
-    CP enu.TS_RUNS_EMPTY
+    CP enu.TS_RUNS_EMPTY_D30
     RET NZ
 .play
 
