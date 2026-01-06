@@ -107,8 +107,13 @@ MOVE_PAT_STEP_OFFSET_D1 = 1                     ; Data for move pattern starts a
 MOVE_PAT_REPEAT_MASK    = %0000'1111 
 MOVE_PAT_DELAY_MASK     = %1111'0000 
 
-; The delay 0 and delay 1 move by 3 or 2 pixels per frame, so there is no delay at all. Delay 2 should move by 1 pixel, and first delay 
-; 3 should skip one pixel.
+; Move delay is not directly a delay, but also not a speed. Here is a mapping from delay to speed in pixels:
+;  - delay 0 moves by 3 pixels
+;  - delay 1 moves by 2 pixels
+;  - delay 2 moves by 1 pixel (normal speed)
+;  - delay 3 skips 1 pixel
+; We could say that delay 0 and 1 speed up, 2 does nothing, and first delay 3 slows down.
+
 MOVE_DELAY_3PX          = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
 MOVE_DELAY_2PX          = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
 DEC_MOVE_DELAY          = %0001'0000 
