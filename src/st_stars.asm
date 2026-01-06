@@ -97,7 +97,7 @@ starsPalL2Addr         DW 0
     JR C, .maxBelowCurrent                      ; Jump if the max position (A) is below the current (B).
 
 .allowed
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
     JR .end
 
 .maxBelowCurrent
@@ -111,11 +111,11 @@ starsPalL2Addr         DW 0
 
     CP B
     JR NC, .notAllowed2                         ; Jump if the max position (A) is below the current (B).
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
     JR .end
 
 .notAllowed2
-    OR 1                                        ; Return NO (Z set).
+    _NO
 
 .end
     ENDM                                        ; ## END of the macro ##

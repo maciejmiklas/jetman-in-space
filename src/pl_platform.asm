@@ -209,7 +209,7 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JP M, .keepChecking
 
     ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).`
+    _NO
     JR .end
 .keepChecking
 
@@ -229,10 +229,10 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     POP HL
     JP M, .hit
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -271,7 +271,7 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JP M, .keepChecking
 
     ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .keepChecking
 
@@ -289,10 +289,10 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     POP HL
     JP M, .hit
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -323,7 +323,7 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
 
     ;  A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .keepChecking
 
@@ -340,10 +340,10 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -378,7 +378,7 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
 
     ;  A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 
 .keepChecking
@@ -395,10 +395,10 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
     
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -979,7 +979,7 @@ _PlatformHit
 
     ; ##########################################
     ; Sprite hits the platform!
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
     RET
 
 .continueLoopOverPlatforms
@@ -987,7 +987,7 @@ _PlatformHit
     ADD IY, DE
     DJNZ .loopOverPlatforms                     ; decrement B until all platforms have been evaluated.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
 
     RET                                         ; ## END of the function ##
 
@@ -1021,7 +1021,7 @@ _CheckPlatformHitHorizontal
     JP M, .keepChecking
 
     ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .keepChecking
 
@@ -1039,10 +1039,10 @@ _CheckPlatformHitHorizontal
     POP HL
     JP M, .hit
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -1071,9 +1071,9 @@ _CheckPlatformHitVertical
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
 
     ; A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).`
+    _NO
     RET
-    
+
 .keepChecking
 
     ; ##########################################
@@ -1088,10 +1088,10 @@ _CheckPlatformHitVertical
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -1112,7 +1112,7 @@ _PlatformSpriteHit
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .alive                               ; Jump if sprite is alive.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .alive
 

@@ -230,11 +230,11 @@ HlEqual0
     JR NZ, .notEqual                            ; Jump if L == B
 
     ; H == 0 and L == 0
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
     RET
 
 .notEqual
-    OR 1                                        ; Return NO (Z set).
+    _NO
 
     RET                                         ; ## END of the function ##
 

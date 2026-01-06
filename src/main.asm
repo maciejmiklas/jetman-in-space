@@ -44,25 +44,6 @@ start
     JR mainLoop
 
 ;----------------------------------------------------------;
-;                         deb                              ;
-;----------------------------------------------------------;
-    MACRO deb
-
-    NEXTREG 2,8
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                         deba                             ;
-;----------------------------------------------------------;
-    MACRO deba val
-
-    LD A, val
-    NEXTREG 2,8
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
 ;                 _ReadPerformance                         ;
 ;----------------------------------------------------------;
     MACRO _ReadPerformance
@@ -126,6 +107,7 @@ mainLoop
 ;                       Includes                           ;
 ;----------------------------------------------------------;
     INCLUDE "_constants.asm"
+    INCLUDE "_macros.asm"
 
     INCLUDE "gid_game_input_data.asm"
     INCLUDE "gi_game_input.asm"

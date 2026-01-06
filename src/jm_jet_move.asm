@@ -57,11 +57,11 @@ jetInactivityCnt        DB 0
     CP pl.PL_BUMP_JOY_DEC_D1+1
     JR C, .joyEnabled
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end                                     ; Do not process input, as the joystick is disabled.
 
 .joyEnabled                                     ; Process input.
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
 .end
     ENDM                                        ; ## END of the macro #
@@ -311,7 +311,7 @@ _SholdProcessJoyOnOverheat
     JR Z, .delayReached
 
     ; Return because #joyDelayCnt !=  #pl.PL_JOY_DELAY
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .delayReached                                   ; Delay counter has been reached.
 
@@ -321,7 +321,7 @@ _SholdProcessJoyOnOverheat
     ; Process input, because counter has been reached.
 
 .yes
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -402,7 +402,7 @@ _CanJetMove
     JR NZ, .jetActive
 
     ; Do not process input.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .jetActive
 
@@ -412,13 +412,13 @@ _CanJetMove
     JR NZ, .afterRip                            ; Do not process input if Jetman is dying.
 
     ; Do not process input, Jet is dying.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .afterRip
 
     ; ##########################################
     ; Process input
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 

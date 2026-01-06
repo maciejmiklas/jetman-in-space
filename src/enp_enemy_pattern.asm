@@ -327,7 +327,7 @@ RespawnPatternEnemy
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterVisibilityCheck                 ; Skip this sprite if it's already visible.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .afterVisibilityCheck
     ; Sprite is hidden, check the dedicated delay before respawning.
@@ -345,7 +345,7 @@ RespawnPatternEnemy
     CP RESPAWN_OFF_D255
     JR NZ, .respawnOn
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .respawnOn
 
@@ -360,7 +360,7 @@ RespawnPatternEnemy
 
     LD (IY + ENP.RESPAWN_DELAY_CNT), A          ; The delay timer for the enemy is still ticking.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .afterEnemyRespawnDelay
 
@@ -402,7 +402,7 @@ RespawnPatternEnemy
     sr.SetSpriteId
     CALL sr.ShowSprite
 
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 

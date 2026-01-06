@@ -198,7 +198,7 @@ JetmanElementCollision
     LD A, H
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .keepCheckingHorizontal               ; HL > 256 -> no collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .keepCheckingHorizontal
     LD A, L
@@ -206,7 +206,7 @@ JetmanElementCollision
     CP B
     JR C, .checkVertical                        ; Jump if there is horizontal collision, check vertical.
     ; L >= D (Horizontal thickness of the enemy) -> no collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .checkVertical
     
@@ -222,10 +222,10 @@ JetmanElementCollision
     JR NC, .collision                           ; Jump if A(#PICK_MARGY_D16) >= B.
 
 .noCollision
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .collision
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
     
@@ -372,7 +372,7 @@ _CheckCollision
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .keepCheckingX                        ; HL > 256 -> no collision.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .keepCheckingX
     LD A, L
@@ -381,7 +381,7 @@ _CheckCollision
     JR C, .checkX                               ; Jump if there is horizontal collision, check vertical.
 
     ; L >= D (Horizontal thickness of the enemy) -> no collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .checkX
 
@@ -413,10 +413,10 @@ _CheckCollision
     JR .noCollision
 
 .noCollision
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .collision
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 

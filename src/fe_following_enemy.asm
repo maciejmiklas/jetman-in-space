@@ -168,7 +168,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .afterAliveCheck                      ; Jump if not active
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .afterAliveCheck
 
@@ -186,7 +186,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     CP enp.RESPAWN_OFF_D255
     JR NZ, .respawnOn
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .respawnOn
 
@@ -201,7 +201,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     LD (IY + FE.RESPAWN_DELAY_CNT), A           ; The delay timer for the enemy is still ticking
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     JR .end
 .afterEnemyRespawnDelay
 
@@ -240,7 +240,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     sr.SetSpriteId
     CALL sr.ShowSprite
 
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
 .end
     ENDM                                        ; ## END of the macro ##

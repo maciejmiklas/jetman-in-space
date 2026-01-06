@@ -112,7 +112,7 @@ CheckAnySpriteVisible
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden).
 
     ; Sprite is visible!
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
     RET
 
 .continue
@@ -122,7 +122,7 @@ CheckAnySpriteVisible
     DJNZ .sprLoop
 
     ; All sprites are hidden, otherwise, we would have found one in the loop.
-    OR 1                                        ; Return NO (Z set).
+    _NO
 
     RET                                         ; ## END of the function ##
 

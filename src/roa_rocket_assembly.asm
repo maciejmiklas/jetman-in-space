@@ -364,11 +364,11 @@ IsFuelDeployed
     JR Z, .isFuel
 
 .notFuel
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 
 .isFuel
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 
