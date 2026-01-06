@@ -453,8 +453,8 @@ JetPlatformHitOnJoyMove
 
     LD IX, db2.jetHitMargin
     _PlatformDirectionHit
-
-    CP PL_DHIT_NO_D0
+    
+    OR A                                        ; Same as: CP PL_DHIT_NO_D0
     RET Z
     LD D, A                                     ; Keep return flag D
 
