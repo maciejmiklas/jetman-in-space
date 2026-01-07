@@ -294,7 +294,6 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     LD A, sr.MVX_IN_D_1PX_ROL
     OR B
-    LD D, A
     CALL sr.MoveX
 
 .afterMoveX

@@ -113,12 +113,11 @@ MOVE_PAT_DELAY_MASK     = %1111'0000
 ;  - delay 2 moves by 1 pixel (normal speed)
 ;  - delay 3 skips 1 pixel
 ; We could say that delay 0 and 1 speed up, 2 does nothing, and first delay 3 slows down.
-
 MOVE_DELAY_3PX          = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
 MOVE_DELAY_2PX          = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
+MOVE_DELAY_1PX          = %0010'0000            ; Delay 2 moves the enemy by 1 pixel during a single frame
+MOVE_DELAY_SK1          = %0011'0000            ; Delay 3 moves the enemy by 0.5 pixel during a single frame
 DEC_MOVE_DELAY          = %0001'0000 
-
-MOVEX_SETUP             = %000'0'0000           ; Input mask for MoveX. Move the sprite by one pixel and roll over on the screen end.
 
 BOUNCE_H_MARG_D3        = 3
 
@@ -288,7 +287,7 @@ MovePatternEnemies
     PUSH IY
     CALL _MoveEnemy
     POP IY
-
+/*
     ; Tripple movement speed if move delay is 0.
     _LoadMoveDelay
     CP MOVE_DELAY_3PX
@@ -304,7 +303,7 @@ MovePatternEnemies
     CP MOVE_DELAY_2PX
     JR NZ, .continue
     CALL _MoveEnemy
-
+*/
 .continue
     ; ##########################################
     ; Move IX to the beginning of the next #SPR.
@@ -457,9 +456,32 @@ _PlayBounceAnimation
 ;  - IY: pointer to #ENP.
 ;  - HL: points to the current move pattern.
 ; Modifies: A, BC
-_MoveEnemyX
+_MoveEnemyX_
 
-    LD D, MOVEX_SETUP                           ; D contains configuration for MoveX.
+    ; Load movement speed into D
+    _LoadMoveDelay                              ; A will contain configured move delay.
+    LD A, MOVE_DELAY_3PX
+
+    ; Double movement speed if move delay is 1.
+    CP MOVE_DELAY_2PX
+    JR NZ, .not2px
+    LD A, sr.MVX_IN_D_2PX_ROL
+    JR .afterSetMoveSpeed
+.not2px
+
+    ; Tripple movement speed if move delay is 0.
+    CP MOVE_DELAY_3PX
+    JR NZ, .defaultSpeed
+    LD A, sr.MVX_IN_D_3PX_ROL
+    JR .afterSetMoveSpeed
+
+.defaultSpeed
+    LD A, sr.MVX_IN_D_1PX_ROL
+
+.afterSetMoveSpeed
+
+    ; ##########################################
+    ; Move right or left?
     BIT ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR NZ, .deployedLeft                        ; Jump if bit is 0 -> deploy left.
 
@@ -480,8 +502,71 @@ _MoveEnemyX
 .moveRight
 
     ; Reverse bit not set, now really move right.
-    LD D, sr.MVX_IN_D_1PX_ROL
-    SET sr.MVX_IN_D_TOD_DIR_BIT, D
+    SET sr.MVX_IN_D_TOD_DIR_BIT, A
+    JR .execMove
+
+    ; ##########################################
+    ; Move left
+.moveLeft
+
+    ; Reverse bit not set, now really move left.
+    RES sr.MVX_IN_D_TOD_DIR_BIT, A
+
+.execMove
+
+    PUSH HL
+    LD A, sr.MVX_IN_D_1PX_ROL
+    CALL sr.MoveX
+    POP HL
+
+    RET                                         ; ## END of the function ##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;----------------------------------------------------------;
+;                     _MoveEnemyX                          ;
+;----------------------------------------------------------;
+; Move enemy one step left or right.
+; Input
+;  - IX: pointer to #SPR.
+;  - IY: pointer to #ENP.
+;  - HL: points to the current move pattern.
+; Modifies: A, BC
+_MoveEnemyX
+
+    BIT ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
+    JR NZ, .deployedLeft                        ; Jump if bit is 0 -> deploy left.
+
+.deployRight
+    ; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_B_D3.
+    BIT MOVE_PAT_X_TOD_DIR_B_D3, (HL)
+    JR NZ, .moveLeft                            ; Jump if bit is set to 1 (right), invert right -> left.
+    JR .moveRight                               ; Bit is 0 -> move left.
+
+.deployedLeft
+    ; Enemy was deployed on the left, do not invert #MOVE_PAT_X_TOD_DIR_B_D3.
+    BIT MOVE_PAT_X_TOD_DIR_B_D3, (HL)
+    JR NZ, .moveRight                           ; Jump if bit is set to 1 (right).
+    JR .moveLeft                                ; Bit is 0 -> move left.
+
+    ; ##########################################
+    ; Move right
+.moveRight
+
+    ; Reverse bit not set, now really move right.
+    LD A, sr.MVX_IN_D_1PX_ROL
+    SET sr.MVX_IN_D_TOD_DIR_BIT, A
     PUSH HL
     CALL sr.MoveX
     POP HL
@@ -492,13 +577,34 @@ _MoveEnemyX
 .moveLeft
 
     ; Reverse bit not set, now really move left.
-    LD D, sr.MVX_IN_D_1PX_ROL
-    RES sr.MVX_IN_D_TOD_DIR_BIT, D
+    LD A, sr.MVX_IN_D_1PX_ROL
+    RES sr.MVX_IN_D_TOD_DIR_BIT, A
     PUSH HL
     CALL sr.MoveX
     POP HL
 
     RET                                         ; ## END of the function ##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;

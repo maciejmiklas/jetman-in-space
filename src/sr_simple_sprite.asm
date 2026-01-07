@@ -390,7 +390,7 @@ UpdateSpritePattern
 ; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on D.
 ; Input
 ;  - IX: pointer to #SPR
-;  - D:  do not confuse this parameter with #SPR.STATE, they are different parameters.
+;  - A:  do not confuse this parameter with #SPR.STATE, they are different parameters.
 ;        Configuration, bits:
 ;         - 0-2: Number of pixels to move sprite
 ;         - 3:   #MVX_IN_D_HIDE_BIT
@@ -401,11 +401,15 @@ MVX_IN_D_1PX_HIDE           = %0000'1001        ; Move the sprite by 1 pixel and
 MVX_IN_D_6PX_HIDE           = %0000'1110        ; Move the sprite by 6 pixels and hide on the screen end
 MVX_IN_D_1PX_ROL            = %0000'0001        ; Move the sprite by 1 pixel and roll over sprite when off-screen
 MVX_IN_D_2PX_ROL            = %0000'0010        ; Move the sprite by 2 pixels and roll over sprite when off-screen
+MVX_IN_D_3PX_ROL            = %0000'0011        ; Move the sprite by 3 pixels and roll over sprite when off-screen
 MVX_IN_D_MASK_CNT           = %0000'0111 
 ; Modifies; A, B, HL
+
 MoveX
+
+    LD D, A
+
     ; Load counter for .moveLeftLoop/.moveRightLoop into B.
-    LD A, D
     AND MVX_IN_D_MASK_CNT
     LD B, A
 

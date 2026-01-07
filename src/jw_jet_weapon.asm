@@ -335,18 +335,18 @@ MoveShots
     ; Shot is visible, move it and update postion.
     sr.SetSpriteId
     
-    LD D, sr.MVX_IN_D_6PX_HIDE
+    LD A, sr.MVX_IN_D_6PX_HIDE
 
     ; Setup move direction for shot.
     BIT STATE_SHOT_DIR_BIT, (IX + SPR.STATE)
     JR Z, .shotDirLeft
 
     ; Shot moves right.
-    SET sr.MVX_IN_D_TOD_DIR_BIT, D
+    SET sr.MVX_IN_D_TOD_DIR_BIT, A
     JR .afterShotDir
 .shotDirLeft
     ; Shot moves left.
-    RES sr.MVX_IN_D_TOD_DIR_BIT, D
+    RES sr.MVX_IN_D_TOD_DIR_BIT, A
 .afterShotDir
 
     CALL sr.MoveX

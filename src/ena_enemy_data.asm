@@ -12,11 +12,18 @@
 ;                   Movement patterns                      ;
 ;----------------------------------------------------------;
 
+; Move delay is not directly a delay, but also not a speed. Here is a mapping from delay to speed in pixels:
+;  - delay 0 moves by 3 pixels
+;  - delay 1 moves by 2 pixels
+;  - delay 2 moves by 1 pixel (normal speed)
+;  - delay 3 skips 1 pixel
+; We could say that delay 0 and 1 speed up, 2 does nothing, and first delay 3 slows down.
+
 ; Horizontal, max speed
 movePattern01D0
     DB 2, %0'000'1'111,$00
 
-; Horizontal, delay 2
+; Horizontal, delay 1
 movePattern01D1
     DB 2, %0'000'1'111,$10
 
@@ -267,7 +274,7 @@ singleEnemiesL1
     ENPS {220/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT  /*SETUP*/}
 SINGLE_ENEMIES_L1       = 10
 
-singleEnemiesL2
+singleEnemiesL2__
     ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT   /*SETUP*/}
     ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT  /*SETUP*/}
     ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_HIT  /*SETUP*/}
@@ -279,8 +286,25 @@ singleEnemiesL2
     ENPS {200/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern16  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
     ENPS {220/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
     ENPS {220/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_RIGHT_ALONG/*SETUP*/}
-SINGLE_ENEMIES_L2       = 11
+SINGLE_ENEMIES_L2__       = 11
+enemyFormationL2__ ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
+
+singleEnemiesL2
+    ENPS {020/*RESPAWN_Y*/, 001/*RESPAWN_DELAY*/, movePattern13D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG   /*SETUP*/}
+    ENPS {080/*RESPAWN_Y*/, 001/*RESPAWN_DELAY*/, movePattern13D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG  /*SETUP*/}
+    ENPS {120/*RESPAWN_Y*/, 001/*RESPAWN_DELAY*/, movePattern13D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG  /*SETUP*/}
+    ENPS {200/*RESPAWN_Y*/, 001/*RESPAWN_DELAY*/, movePattern13D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG   /*SETUP*/}
+    
+    ENPS {100/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern13D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
+    ENPS {120/*RESPAWN_Y*/, 005/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
+    ENPS {140/*RESPAWN_Y*/, 024/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG   /*SETUP*/}
+    ENPS {180/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
+    ENPS {200/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern16  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
+    ENPS {220/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG /*SETUP*/}
+    ENPS {220/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
+SINGLE_ENEMIES_L2       = 1
 enemyFormationL2 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_HIT/*SETUP*/}
+
 
 singleEnemiesL3
     ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_S_LEFT_ALONG/*SETUP*/}
