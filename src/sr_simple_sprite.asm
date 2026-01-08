@@ -515,12 +515,13 @@ MoveX
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                           MoveY                          ;
+;                        MoveY                             ;
 ;----------------------------------------------------------;
 ; Move the sprite one pixel up or down, depending on the A.
 ; Input
 ;  - IX: pointer to #SPR
 ;  - A:  MOVE_Y_IN_XXX
+;  - B:  number of pixels to move.
 MOVE_Y_IN_UP_D1             = 1                 ; Move up
 MOVE_Y_IN_DOWN_D0           = 0                 ; Move down
 ;  - YES (visible): Z is reset (JP Z).
@@ -531,8 +532,8 @@ MoveY
     JR Z, .afterMovingUp                        ; Jump if moving up.
 
     ; Moving down - increment Y coordinate
-    LD A, (IX + SPR.Y)  
-    INC A
+    LD A, (IX + SPR.Y)
+    ADD A, B
 
     ; Check whether a sprite hits ground
     CP _GSC_Y_MAX2_D238
@@ -547,7 +548,7 @@ MoveY
 
     ; Moving up - decrement X coordinate.
     LD A, (IX + SPR.Y)
-    DEC A
+    SUB A, B
 
     ; Check if sprite is above screen.
     CP _GSC_Y_MIN_D15

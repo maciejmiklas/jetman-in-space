@@ -345,6 +345,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
 .afterMoveYDir
     ; ##########################################
+    LD B, 1
     CALL sr.MoveY                               ; A contains #MOVE_Y_IN_DOWN_D0/UP
 .afterMoveY
 

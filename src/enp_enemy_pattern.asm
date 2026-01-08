@@ -159,6 +159,61 @@ BOUNCE_H_MARG_D3        = 3
     LD A, (HL)                                  ; Load the delay/repetition counter into A, reset all bits but delay.
     AND MOVE_PAT_DELAY_MASK
 
+    _LoadMovePixels
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                     _LoadMovePixels                      ;
+;----------------------------------------------------------;
+; The function returns the number of pixels the enemy should move, calculated based on the configured delay:
+;  - delay 0 (%0000'0000) = 3px
+;  - delay 1 (%0001'0000) = 2px
+;  - delay 2 (%0010'0000) = 1px
+;  - delay 3 (%0011'0000) = 1px (logic elsewhere will skip every second frame to get 0.5px)
+;
+; Input
+;  - IY: pointer to #ENP holding data for single sprite.
+; Return:
+;  - A: the number of pixels that the enemy should move.
+;
+; Modifies: A, B, HL
+    MACRO _LoadMovePixels
+
+    _LoadCurrentMoveStep
+    INC HL
+    LD A, (HL)                                  ; Load the delay/repetition counter into A, reset all bits but delay.
+    AND MOVE_PAT_DELAY_MASK                     ; A now contains delay, from 0 (%0000'0000) to 3 (%0011'0000).
+
+    LD A, MOVE_DELAY_1PX
+
+    ; In case of delay 3 change it to delay 2 -> both move by 1px
+    CP MOVE_DELAY_SK1
+    JR NZ, .notSK1
+    SUB DEC_MOVE_DELAY
+.notSK1
+
+    ; Now A contains delay in bits 7-5, for example for delay 3: %0010'0000, we move those bits to the right to have value 0-3
+    SRL A
+    SRL A
+    SRL A
+    SRL A
+
+    ; Now %0010'0000 was changed to %0000'0010, A has following values:
+    ;  - delay 0 = 0
+    ;  - delay 1 = 1
+    ;  - delay 2 = 2
+    ;  - delay 3 = 2
+    ; but we need:
+    ;  - delay 0 = 3
+    ;  - delay 1 = 2
+    ;  - delay 2 = 1
+    ;  - delay 3 = 1
+    LD B, A
+    LD A, 3
+    SUB B
+
+    _DEB
+
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -456,11 +511,12 @@ _PlayBounceAnimation
 ;  - IY: pointer to #ENP.
 ;  - HL: points to the current move pattern.
 ; Modifies: A, BC
-_MoveEnemyX_
+_MoveEnemyX
 
     ; Load movement speed into D
+    PUSH HL
     _LoadMoveDelay                              ; A will contain configured move delay.
-    LD A, MOVE_DELAY_3PX
+    POP HL
 
     ; Double movement speed if move delay is 1.
     CP MOVE_DELAY_2PX
@@ -515,96 +571,10 @@ _MoveEnemyX_
 .execMove
 
     PUSH HL
-    LD A, sr.MVX_IN_D_1PX_ROL
     CALL sr.MoveX
     POP HL
 
     RET                                         ; ## END of the function ##
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;----------------------------------------------------------;
-;                     _MoveEnemyX                          ;
-;----------------------------------------------------------;
-; Move enemy one step left or right.
-; Input
-;  - IX: pointer to #SPR.
-;  - IY: pointer to #ENP.
-;  - HL: points to the current move pattern.
-; Modifies: A, BC
-_MoveEnemyX
-
-    BIT ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
-    JR NZ, .deployedLeft                        ; Jump if bit is 0 -> deploy left.
-
-.deployRight
-    ; Enemy was deployed on the right, invert #MOVE_PAT_X_TOD_DIR_B_D3.
-    BIT MOVE_PAT_X_TOD_DIR_B_D3, (HL)
-    JR NZ, .moveLeft                            ; Jump if bit is set to 1 (right), invert right -> left.
-    JR .moveRight                               ; Bit is 0 -> move left.
-
-.deployedLeft
-    ; Enemy was deployed on the left, do not invert #MOVE_PAT_X_TOD_DIR_B_D3.
-    BIT MOVE_PAT_X_TOD_DIR_B_D3, (HL)
-    JR NZ, .moveRight                           ; Jump if bit is set to 1 (right).
-    JR .moveLeft                                ; Bit is 0 -> move left.
-
-    ; ##########################################
-    ; Move right
-.moveRight
-
-    ; Reverse bit not set, now really move right.
-    LD A, sr.MVX_IN_D_1PX_ROL
-    SET sr.MVX_IN_D_TOD_DIR_BIT, A
-    PUSH HL
-    CALL sr.MoveX
-    POP HL
-    RET
-
-    ; ##########################################
-    ; Move left
-.moveLeft
-
-    ; Reverse bit not set, now really move left.
-    LD A, sr.MVX_IN_D_1PX_ROL
-    RES sr.MVX_IN_D_TOD_DIR_BIT, A
-    PUSH HL
-    CALL sr.MoveX
-    POP HL
-
-    RET                                         ; ## END of the function ##
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ;----------------------------------------------------------;
 ;                       _MoveEnemy                         ;
@@ -759,12 +729,14 @@ _MoveEnemy
     ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down.
     CALL _FlipReverseY
     LD A, sr.MOVE_Y_IN_UP_D1
+    LD B, 1
     CALL sr.MoveY
     JR .afterChangeY
 
 .afterBounceMoveDown
     ; Bouncing not necessary, finally move down
     LD A, sr.MOVE_Y_IN_DOWN_D0
+    LD B, 1
     CALL sr.MoveY
     JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
 
@@ -784,12 +756,14 @@ _MoveEnemy
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up.
     CALL _FlipReverseY
     LD A, sr.MOVE_Y_IN_DOWN_D0
+    LD B, 1
     CALL sr.MoveY
     JR .afterChangeY
 .afterBounceMoveUp
 
     ; Bouncing not necessary, finally move up
     LD A, sr.MOVE_Y_IN_UP_D1
+    LD B, 1
     CALL sr.MoveY
     JR Z,.afterChangeY                          ; Jump is sprite is not hidden.
     RET                                         ; Stop moving this sprite, it's hidden.
