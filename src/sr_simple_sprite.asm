@@ -528,6 +528,7 @@ MOVE_Y_IN_DOWN_D0           = 0                 ; Move down
 ;  - NO (hidden):  Z is set (JP NZ).
 
 MoveY
+
     CP MOVE_Y_IN_UP_D1
     JR Z, .afterMovingUp                        ; Jump if moving up.
 

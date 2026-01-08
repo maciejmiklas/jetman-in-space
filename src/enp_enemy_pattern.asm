@@ -112,7 +112,7 @@ MOVE_PAT_DELAY_MASK     = %1111'0000
 ;  - delay 1 moves by 2 pixels
 ;  - delay 2 moves by 1 pixel (normal speed)
 ;  - delay 3 skips 1 pixel
-; We could say that delay 0 and 1 speed up, 2 does nothing, and first delay 3 slows down.
+; When the delay is 0, the enemy moves at the maximum speed of 3px/frame. Delay 1 slows down to 2px, 2 to 1px, and 3 to 0.5px.
 MOVE_DELAY_3PX          = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
 MOVE_DELAY_2PX          = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
 MOVE_DELAY_1PX          = %0010'0000            ; Delay 2 moves the enemy by 1 pixel during a single frame
@@ -159,7 +159,6 @@ BOUNCE_H_MARG_D3        = 3
     LD A, (HL)                                  ; Load the delay/repetition counter into A, reset all bits but delay.
     AND MOVE_PAT_DELAY_MASK
 
-    _LoadMovePixels
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -183,8 +182,6 @@ BOUNCE_H_MARG_D3        = 3
     INC HL
     LD A, (HL)                                  ; Load the delay/repetition counter into A, reset all bits but delay.
     AND MOVE_PAT_DELAY_MASK                     ; A now contains delay, from 0 (%0000'0000) to 3 (%0011'0000).
-
-    LD A, MOVE_DELAY_1PX
 
     ; In case of delay 3 change it to delay 2 -> both move by 1px
     CP MOVE_DELAY_SK1
@@ -211,8 +208,6 @@ BOUNCE_H_MARG_D3        = 3
     LD B, A
     LD A, 3
     SUB B
-
-    _DEB
 
     ENDM                                        ; ## END of the macro ##
 
@@ -698,7 +693,7 @@ _MoveEnemy
     LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
     AND MOVE_PAT_Y_MASK                         ; Reset all but Y.
     OR A                                        ; Same as CP 0, but faster.
-    JR Z, .afterChangeY                         ; Jump if the counter for Y has reached 0.
+    JP Z, .afterChangeY                         ; Jump if the counter for Y has reached 0.
 
     ; Enemy should move on Y
     LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
@@ -728,15 +723,25 @@ _MoveEnemy
     JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3).
     ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down.
     CALL _FlipReverseY
+
+    PUSH HL
+    _LoadMovePixels
+    LD B, A
+    POP HL
+
     LD A, sr.MOVE_Y_IN_UP_D1
-    LD B, 1
     CALL sr.MoveY
-    JR .afterChangeY
+    JP .afterChangeY
 
 .afterBounceMoveDown
     ; Bouncing not necessary, finally move down
+
+    PUSH HL
+    _LoadMovePixels
+    LD B, A
+    POP HL
+
     LD A, sr.MOVE_Y_IN_DOWN_D0
-    LD B, 1
     CALL sr.MoveY
     JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
 
@@ -755,15 +760,25 @@ _MoveEnemy
 
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up.
     CALL _FlipReverseY
+
+    PUSH HL
+    _LoadMovePixels
+    LD B, A
+    POP HL
+
     LD A, sr.MOVE_Y_IN_DOWN_D0
-    LD B, 1
     CALL sr.MoveY
     JR .afterChangeY
 .afterBounceMoveUp
 
     ; Bouncing not necessary, finally move up
+
+    PUSH HL
+    _LoadMovePixels
+    LD B, A
+    POP HL
+
     LD A, sr.MOVE_Y_IN_UP_D1
-    LD B, 1
     CALL sr.MoveY
     JR Z,.afterChangeY                          ; Jump is sprite is not hidden.
     RET                                         ; Stop moving this sprite, it's hidden.
