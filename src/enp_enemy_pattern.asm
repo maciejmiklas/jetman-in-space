@@ -337,23 +337,7 @@ MovePatternEnemies
     PUSH IY
     CALL _MoveEnemy
     POP IY
-/*
-    ; Tripple movement speed if move delay is 0.
-    _LoadMoveDelay
-    CP MOVE_DELAY_3PX
-    JR NZ, .after3x
-    PUSH IY
-    CALL _MoveEnemy
-    POP IY
-    CALL _MoveEnemy
-    JR .continue
-.after3x
 
-    ; Double movement speed if move delay is 1.
-    CP MOVE_DELAY_2PX
-    JR NZ, .continue
-    CALL _MoveEnemy
-*/
 .continue
     ; ##########################################
     ; Move IX to the beginning of the next #SPR.
@@ -510,26 +494,8 @@ _MoveEnemyX
 
     ; Load movement speed into D
     PUSH HL
-    _LoadMoveDelay                              ; A will contain configured move delay.
+    _LoadMovePixels                             ; A will contain configured move piexls.
     POP HL
-
-    ; Double movement speed if move delay is 1.
-    CP MOVE_DELAY_2PX
-    JR NZ, .not2px
-    LD A, sr.MVX_IN_D_2PX_ROL
-    JR .afterSetMoveSpeed
-.not2px
-
-    ; Tripple movement speed if move delay is 0.
-    CP MOVE_DELAY_3PX
-    JR NZ, .defaultSpeed
-    LD A, sr.MVX_IN_D_3PX_ROL
-    JR .afterSetMoveSpeed
-
-.defaultSpeed
-    LD A, sr.MVX_IN_D_1PX_ROL
-
-.afterSetMoveSpeed
 
     ; ##########################################
     ; Move right or left?
