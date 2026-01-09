@@ -260,6 +260,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     ; Should we skip movement on x-axis (to change the angle)?
     LD A, (IY + FE.STATE)
+    LD D, A
     AND STATE_SKIP_X_MASK
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterSkipX
@@ -278,7 +279,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
 .resetSkipX
     ; Counter reached 0, reset it by copying value max value from state
-    LD A, (IY + FE.STATE)
+    LD A, D                                     ; D contains (IY + FE.STATE)
     AND STATE_SKIP_X_MASK
     LD B, A
     LD A, (IY + FE.SKIP_XY_CNT)
@@ -288,7 +289,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     ; ##########################################
     ; Move on X left or right. The direction is being copied from FE.STATE to D as a parameter for #sr.MoveX
-    LD A, (IY + FE.STATE)
+    LD A, D                                     ; D contains (IY + FE.STATE)
     AND STATE_DIR_X_MASK
     LD B, A
 
@@ -304,6 +305,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     ; Should we skip movement on y-axis (to change the angle)?
     LD A, (IY + FE.STATE)
+    LD D, A
     AND STATE_SKIP_Y_MASK
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterSkipY
@@ -322,7 +324,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
 .resetSkipY
     ; Counter reached 0, reset it by copying value max value from state
-    LD A, (IY + FE.STATE)
+    LD A, D                                     ; D contains (IY + FE.STATE)
     AND STATE_SKIP_Y_MASK
     LD B, A
     LD A, (IY + FE.SKIP_XY_CNT)
@@ -332,7 +334,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     ; ##########################################
     ; Move up/down based on state
-    BIT STATE_DIR_Y_BIT, (IY + FE.STATE)
+    BIT STATE_DIR_Y_BIT, D
     JR NZ, .moveUp                              ; Jump if bit #STATE_DIR_Y_BIT == 1
 
     ; Move down
@@ -686,12 +688,6 @@ MoveFollowingEnemies
     ; Ignore if enemy is not visible
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JP Z, .continue
-
-    ; Ignore this sprite if it's hidden
-    LD A, (IX + SPR.STATE)
-    AND sr.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility
-    OR A                                        ; Same as CP 0, but faster.
-    JP Z, .continue                             ; Jump if visibility is not set (sprite is hidden)
 
     ; Load extra data for this sprite to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
