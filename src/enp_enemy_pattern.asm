@@ -23,29 +23,29 @@
 ; Before the level starts, values from ENPS are directly copied to ENP, and enemies for this level are configured and ready to go.
 ; Enemies can move according to the different movement patterns given by #ENP.MOVE_PAT_POINTER. After they are destroyed, the next 
 ; deployment is delayed by #ENP.RESPAWN_DELAY. #ENP.SDB_INIT gives Sprite animation. #ENP.RESPAWN_Y determines the horizontal respawn position.
-; #ENP.SETUP (see #ENP_S_BIT_XXX) decides whether the enemy is deployed on the right or left side of the screen and whether it should hit 
+; #ENP.SETUP (see #ENP_BIT_XXX) decides whether the enemy is deployed on the right or left side of the screen and whether it should hit 
 ; a platform, fly along it, or bounce from it.
 
 ; Values for #ENP.SETUP
-ENP_S_BIT_ALONG_D0      = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform.
-ENP_S_BIT_DEPLOY_D1     = 1                     ; 1 - deploy enemy on the left, 0 - on the right.
-ENP_S_BIT_BOUNCE_D2     = 2                     ; 1 - bounce from platforms, if set #ENP_S_BIT_ALONG_D0 is ignored, 0 - disabled.
-ENP_S_BIT_BOUNCE_AN_D3  = 3                     ; 1 - enable extra bouncing animation (sprites 34,35,36).
-ENP_S_BIT_REVERSE_Y_D7  = 7                     ; 1 - reverses bit #ENP_S_BIT_DEPLOY_D1, set during runtime when enemy hits platform from L/R.
+ENP_BIT_ALONG_D0      = 0                       ; 1 - avoid platforms by flying along them, 0 - hit platform.
+ENP_BIT_DEPLOY_D1     = 1                       ; 1 - deploy enemy on the left, 0 - on the right.
+ENP_BIT_BOUNCE_D2     = 2                       ; 1 - bounce from platforms, if set #ENP_BIT_ALONG_D0 is ignored, 0 - disabled.
+ENP_BIT_BOUNCE_AN_D3  = 3                       ; 1 - enable extra bouncing animation (sprites 34,35,36).
+ENP_BIT_REVERSE_Y_D7  = 7                       ; 1 - reverses bit #ENP_BIT_DEPLOY_D1, set during runtime when enemy hits platform from L/R.
 
-ENP_S_LEFT_ALONG        = %0000'0'0'1'1 
-ENP_S_RIGHT_ALONG       = %0000'0'0'0'1 
+ENP_LEFT_ALONG        = %0000'0'0'1'1 
+ENP_RIGHT_ALONG       = %0000'0'0'0'1 
 
-ENP_S_LEFT_HIT          = %0000'0'0'1'0 
-ENP_S_RIGHT_HIT         = %0000'0'0'0'0 
+ENP_LEFT_HIT          = %0000'0'0'1'0 
+ENP_RIGHT_HIT         = %0000'0'0'0'0 
 
-ENP_S_LEFT_BOUNCE       = %0000'0'1'1'0 
-ENP_S_RIGHT_BOUNCE      = %0000'0'1'0'0 
+ENP_LEFT_BOUNCE       = %0000'0'1'1'0 
+ENP_RIGHT_BOUNCE      = %0000'0'1'0'0 
 
-ENP_S_LEFT_BOUNCE_AN    = %0000'1'1'1'0         ; Deploy left, bounce, animate bounce effect.
-ENP_S_RIGHT_BOUNCE_AN   = %0000'1'1'0'0 
+ENP_LEFT_BOUNCE_AN    = %0000'1'1'1'0         ; Deploy left, bounce, animate bounce effect.
+ENP_RIGHT_BOUNCE_AN   = %0000'1'1'0'0 
 
-ENP_S_REVERSE_Y         = %1'0000000 
+ENP_REVERSE_Y         = %1'0000000 
 
 MOVE_DELAY_CNT_INC      = %0001'0000 
 
@@ -120,8 +120,7 @@ MOVE_DELAY_SK1          = %0011'0000            ; Delay 3 moves the enemy by 0.5
 DEC_MOVE_DELAY          = %0001'0000 
 
 BOUNCE_H_MARG_D3        = 3
-tmp1 dw 0
-tmp2 db 0
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                     PRIVATE MACROS                       ;
@@ -414,7 +413,7 @@ RespawnPatternEnemy
     LD (IY + ENP.RESPAWN_DELAY_CNT), 0
 
     ; Reset reverse
-    RES ENP_S_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
+    RES ENP_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
 
     _LoadMoveDelay
     CALL _SetDelayCnt
@@ -425,7 +424,7 @@ RespawnPatternEnemy
     LD (IX + SPR.Y), A
 
     ; Set X to left or right side of the screen.
-    BIT ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
+    BIT ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR NZ, .deployLeft                          ; Jump if bit is 0 -> deploy left.
 
     ; Deploy right
@@ -459,7 +458,7 @@ RespawnPatternEnemy
 _FlipReverseY
 
     LD A, (IY + ENP.SETUP)
-    XOR ENP_S_REVERSE_Y
+    XOR ENP_REVERSE_Y
     LD (IY + ENP.SETUP), A
 
     LD A, sr.SDB_BOUNCE_TOP
@@ -474,7 +473,7 @@ _FlipReverseY
 ;  - A: hit side sr.SDB_BOUNCE_SIDE or sr.SDB_BOUNCE_TOP
 _PlayBounceAnimation
 
-    BIT ENP_S_BIT_BOUNCE_AN_D3, (IY + ENP.SETUP)
+    BIT ENP_BIT_BOUNCE_AN_D3, (IY + ENP.SETUP)
     RET Z
 
     PUSH BC, HL
@@ -499,7 +498,7 @@ _MoveEnemyX
 
     ; ##########################################
     ; Move right or left?
-    BIT ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
+    BIT ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR NZ, .deployedLeft                        ; Jump if bit is 0 -> deploy left.
 
 .deployRight
@@ -557,13 +556,6 @@ _MoveEnemy
     ;  - IY: pointer to #ENP for current sprite
     ;  - HL: pointer to current position in #movePattern
 
-    LD DE, (IX + SPR.X)
-    ld (tmp1), DE
-
-    LD A, (IX + SPR.Y)
-    ld (tmp2), A
-    CALL ut.PauseShort
-
     ; ##########################################
     ; Is enemy alive?
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
@@ -578,7 +570,7 @@ _MoveEnemy
 
     ; ##########################################
     ; Should enemy bounce of the platform?
-    BIT ENP_S_BIT_BOUNCE_D2, (IY + ENP.SETUP)
+    BIT ENP_BIT_BOUNCE_D2, (IY + ENP.SETUP)
     JR Z, .afterBounceSetup                        ; Jump if bounce is not set.
 
     ; Check the collision with the platform
@@ -611,7 +603,7 @@ _MoveEnemy
     JR .afterBounceSetup
 .bounceL
     ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction.
-    RES ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
+    RES ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
 
     LD A, sr.SDB_BOUNCE_SIDE
@@ -620,7 +612,7 @@ _MoveEnemy
     JR .afterBounceSetup
 .bounceR
     ; Enemy bounces from the platform's right side.
-    SET ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
+    SET ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
 
     LD A, sr.SDB_BOUNCE_SIDE
@@ -630,7 +622,7 @@ _MoveEnemy
 
     ; ##########################################
     ; Should the enemy move along the platform to avoid collision?
-    BIT ENP_S_BIT_ALONG_D0, (IY + ENP.SETUP)
+    BIT ENP_BIT_ALONG_D0, (IY + ENP.SETUP)
     JR Z, .afterMoveAlong                       ; Jump if move along is not set.
 
     ; Check the collision with the platform
@@ -677,7 +669,7 @@ _MoveEnemy
     LD A, (HL)                                  ; A contains current pattern.
 
     ; Reverse movement direction?
-    BIT ENP_S_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
+    BIT ENP_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
     JR Z, .doNotReverseY
 
     ; Yes, reverse bit is set, up -> down, down -> up
@@ -722,7 +714,7 @@ _MoveEnemy
 
     ; ##########################################
     ; Move  up, but first, check whether the enemy bounces off the top of the screen.
-    BIT ENP_S_BIT_BOUNCE_D2, (IY + ENP.SETUP)
+    BIT ENP_BIT_BOUNCE_D2, (IY + ENP.SETUP)
     JR Z, .afterBounceMoveUp                    ; Jump if bounce is not set.
 
     ; Bounce is set, has sprite reached top of the screen?

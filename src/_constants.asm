@@ -518,11 +518,11 @@ _LEVEL_MAX_D10          = 10
 ; Extends #SPR by additional params.
     STRUCT ENP
 ; Setup bits:
-;  - 0: #ENP_S_BIT_ALONG_D0
-;  - 1: #ENP_S_BIT_DEPLOY_D1
-;  - 2: #ENP_S_BIT_BOUNCE_D2
-;  - 3: #ENP_S_BIT_BOUNCE_AN_D3
-;  - 7: #ENP_S_BIT_REVERSE_Y_D7
+;  - 0: #ENP_BIT_ALONG_D0
+;  - 1: #ENP_BIT_DEPLOY_D1
+;  - 2: #ENP_BIT_BOUNCE_D2
+;  - 3: #ENP_BIT_BOUNCE_AN_D3
+;  - 7: #ENP_BIT_REVERSE_Y_D7
 SETUP                   DB
 MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.

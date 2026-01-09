@@ -158,10 +158,10 @@ RespawnFuelThief
     LD A, R
     CP DEPLOY_SIDE_RND_H30
     JR C, .deployRight
-    LD (IY+ENP.SETUP), enp.ENP_S_LEFT_ALONG 
+    LD (IY+ENP.SETUP), enp.ENP_LEFT_ALONG 
     JR .afterDeploySide
 .deployRight
-    LD (IY+ENP.SETUP), enp.ENP_S_RIGHT_ALONG 
+    LD (IY+ENP.SETUP), enp.ENP_RIGHT_ALONG 
 .afterDeploySide
 
     ; Reset the deployment countdown for the next fuel element because the thief is active.
@@ -211,7 +211,7 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the left side of the screen, if he deployed right.
-    BIT enp.ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
+    BIT enp.ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR NZ, .notHideLeft                        ; Jump if bit is 0 -> deploy left.
 
     LD BC, (IX + SPR.X)
@@ -228,7 +228,7 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the right side of the screen (315 =  $13B), if he deployed left.
-    BIT enp.ENP_S_BIT_DEPLOY_D1, (IY + ENP.SETUP)
+    BIT enp.ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR Z, .notHideRight                        ; Jump if bit is 1 -> deploy right.
 
     LD BC, (IX + SPR.X)
