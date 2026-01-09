@@ -530,11 +530,11 @@ MOVE_Y_IN_DOWN_D0           = 0                 ; Move down
 MoveY
 
     CP MOVE_Y_IN_UP_D1
-    JR Z, .afterMovingUp                        ; Jump if moving up.
+    JR Z, .movingUp                             ; Jump if moving up.
 
     ; Moving down - increment Y coordinate
     LD A, (IX + SPR.Y)
-    ADD A, B
+    ADD B
 
     ; Check whether a sprite hits ground
     CP _GSC_Y_MAX2_D238
@@ -545,11 +545,11 @@ MoveY
 
     _NO
     RET
-.afterMovingUp
+.movingUp
 
     ; Moving up - decrement X coordinate.
     LD A, (IX + SPR.Y)
-    SUB A, B
+    SUB B
 
     ; Check if sprite is above screen.
     CP _GSC_Y_MIN_D15
@@ -557,6 +557,7 @@ MoveY
 
     ; Sprite is above screen -> hide it.
     CALL HideSimpleSprite
+
     _NO
     RET
 .afterMoving

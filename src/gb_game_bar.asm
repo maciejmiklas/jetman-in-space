@@ -65,21 +65,20 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
 
-/*
+
     ; ##########################################
+    CALL dbs.SetupPatternEnemyBank
     LD BC, 60
-    LD H, 0
-    LD A, (tmpm)
-    LD L, A
+    LD HL, (enp.tmp1)
     CALL ut.PrintNumber
 
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (st.tmp)
+    LD A, (enp.tmp2)
     LD L, A
     CALL ut.PrintNumber
-*/
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

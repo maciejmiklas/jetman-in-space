@@ -57,10 +57,10 @@ NumTo99Str
     LD D, B                                     ; D = tens digit (BCD)
     LD E, A                                     ; E = units digit (BCD)
     LD A, D
-    ADD A,'0'                                   ; Convert tens to ASCII
+    ADD A, '0'                                  ; Convert tens to ASCII
     LD D, A
     LD A, E
-    ADD A,'0'                                   ; Convert units to ASCII
+    ADD A, '0'                                  ; Convert units to ASCII
     LD E, A
     ; D and E now contain the ASCII digits
 
@@ -92,7 +92,7 @@ Add8To32
     ; Add 8-bit value to the second DW, LO byte.
     LD B, A                                     ; Copy the 8-bit value into B (used for carry handling).
     LD A, (HL)                                  ; Load the least significant byte (LSB) of the second DW (LO).
-    ADD A, B                                    ; Add the 8-bit value to the LSB.
+    ADD B                                       ; Add the 8-bit value to the LSB.
     LD (HL), A                                  ; Store the result back to memory.
     INC HL                                      ; Move to the next byte.
 

@@ -160,7 +160,7 @@ starsPalL2Addr         DW 0
     LD A, (IX + SC.BANK)
     LD B, A
     LD A, dbs.BMB_ST_BANK_S7_D18                ; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9".
-    ADD A, B
+    ADD B
     NEXTREG _MMU_REG_SLOT6_H56, A               ; Assign image bank to slot 6.
 
     ; ##########################################

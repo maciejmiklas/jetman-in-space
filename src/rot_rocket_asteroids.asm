@@ -408,7 +408,7 @@ MoveAsteroids
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .asLoopNext
     LD B, (IX + AS.Y)
-    ADD A, B
+    ADD B
     LD (IX + AS.Y), A
     NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
 

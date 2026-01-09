@@ -9,10 +9,10 @@
 
     ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
 
-; Enemies fly by a given hardcoded pattern. This file contains generic logic for such enemies 
+; Enemies moves by a given hardcoded pattern. This file contains generic logic for such enemies 
 ; In general, there are two kinds of enemies: 
-; - single enemies that fly independently from each other (es_enemy_single.asm), and 
-; - pattern enemies that fly together (ep_enemy_pattern.asm)
+; - single enemies that move independently from each other (es_enemy_single.asm), and 
+; - pattern enemies that move together (ep_enemy_pattern.asm)
 
 ; SEE ALSO _constants.asm -> #ENP and #ENPS
 
@@ -120,7 +120,8 @@ MOVE_DELAY_SK1          = %0011'0000            ; Delay 3 moves the enemy by 0.5
 DEC_MOVE_DELAY          = %0001'0000 
 
 BOUNCE_H_MARG_D3        = 3
-
+tmp1 dw 0
+tmp2 db 0
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                     PRIVATE MACROS                       ;
@@ -162,7 +163,7 @@ BOUNCE_H_MARG_D3        = 3
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                     _LoadMovePixels                      ;
+;                   _LoadMovePixels                        ;
 ;----------------------------------------------------------;
 ; The function returns the number of pixels the enemy should move, calculated based on the configured delay:
 ;  - delay 0 (%0000'0000) = 3px
@@ -172,15 +173,16 @@ BOUNCE_H_MARG_D3        = 3
 ;
 ; Input
 ;  - IY: pointer to #ENP holding data for single sprite.
+;  - HL: current move pattern.
 ; Return:
 ;  - A: the number of pixels that the enemy should move.
 ;
-; Modifies: A, B, HL
+; Modifies: A, B
     MACRO _LoadMovePixels
 
-    _LoadCurrentMoveStep
     INC HL
     LD A, (HL)                                  ; Load the delay/repetition counter into A, reset all bits but delay.
+    DEC HL
     AND MOVE_PAT_DELAY_MASK                     ; A now contains delay, from 0 (%0000'0000) to 3 (%0011'0000).
 
     ; In case of delay 3 change it to delay 2 -> both move by 1px
@@ -493,9 +495,7 @@ _PlayBounceAnimation
 _MoveEnemyX
 
     ; Load movement speed into D
-    PUSH HL
-    _LoadMovePixels                             ; A will contain configured move piexls.
-    POP HL
+    _LoadMovePixels                           ; A will contain configured move piexls.
 
     ; ##########################################
     ; Move right or left?
@@ -556,6 +556,13 @@ _MoveEnemy
     ;  - IX: pointer to #SPR for current sprite
     ;  - IY: pointer to #ENP for current sprite
     ;  - HL: pointer to current position in #movePattern
+
+    LD DE, (IX + SPR.X)
+    ld (tmp1), DE
+
+    LD A, (IX + SPR.Y)
+    ld (tmp2), A
+    CALL ut.PauseShort
 
     ; ##########################################
     ; Is enemy alive?
@@ -681,31 +688,29 @@ _MoveEnemy
     JR Z, .moveUp                               ; Jump if sprite should move up.
 
     ; ##########################################
-    ; Move on pixel down, but first, check whether the enemy bounces off the ground.
+    ; Move down, but first, check whether the enemy bounces off the ground.
 
     ; Bounce is set, has sprite reached the bottom of the screen?
     LD A, (IX + SPR.Y)
     CP _GSC_Y_MAX2_D238-BOUNCE_H_MARG_D3
     JR C, .afterBounceMoveDown                  ; Jump if the enemy is above the ground (A < _GSC_Y_MAX_D232-BOUNCE_H_MARG_D3).
+
     ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down.
     CALL _FlipReverseY
 
-    PUSH HL
     _LoadMovePixels
     LD B, A
-    POP HL
 
     LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
+
     JP .afterChangeY
 
 .afterBounceMoveDown
     ; Bouncing not necessary, finally move down
 
-    PUSH HL
     _LoadMovePixels
     LD B, A
-    POP HL
 
     LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
@@ -714,8 +719,9 @@ _MoveEnemy
     RET                                         ; Stop moving this sprite, it's hidden.
 
 .moveUp
+
     ; ##########################################
-    ; Move on pixel up, but first, check whether the enemy bounces off the top of the screen.
+    ; Move  up, but first, check whether the enemy bounces off the top of the screen.
     BIT ENP_S_BIT_BOUNCE_D2, (IY + ENP.SETUP)
     JR Z, .afterBounceMoveUp                    ; Jump if bounce is not set.
 
@@ -727,10 +733,8 @@ _MoveEnemy
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up.
     CALL _FlipReverseY
 
-    PUSH HL
     _LoadMovePixels
     LD B, A
-    POP HL
 
     LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
@@ -738,21 +742,18 @@ _MoveEnemy
 .afterBounceMoveUp
 
     ; Bouncing not necessary, finally move up
-
-    PUSH HL
     _LoadMovePixels
     LD B, A
-    POP HL
 
     LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
-    JR Z,.afterChangeY                          ; Jump is sprite is not hidden.
+    JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
     RET                                         ; Stop moving this sprite, it's hidden.
 
 .afterChangeY
     CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
 
-    ; Check if X and Y have reached 0
+    ; Check if X and Y have reached 0 in move pattern.
     LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains pattern counter.
     AND MOVE_PAT_XY_MASK                        ; Reset all but max X,Y values.
     OR A                                        ; Same as CP 0, but faster.
