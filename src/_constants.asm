@@ -528,8 +528,8 @@ MOVE_DELAY_CNT          DB                      ; Move delay counter, counting d
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter.
 RESPAWN_Y               DB                      ; Respawn Y position.
-MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX).
-MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET_D1 to #movePatternXX.
+MOVE_PAT_ADDR        DW                      ; Pointer to the movement pattern (#movePatternXX).
+MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_ADDR. Counts from #MOVE_PAT_STEP_OFFSET_D1 to #movePatternXX.
 MOVE_PAT_STEP           DB                      ; Counters X,Y from current move pattern.
 MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of single move pattern st Counts towards 0.
     ENDS
@@ -538,7 +538,7 @@ MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of sing
     STRUCT ENPS
 RESPAWN_Y               DB                      ; Value for: ENP.RESPAWN_Y
 RESPAWN_DELAY           DB                      ; Value for: ENP.RESPAWN_DELAY
-MOVE_PAT_POINTER        DW                      ; Value for: ENP.MOVE_PAT_POINTER
+MOVE_PAT_ADDR        DW                      ; Value for: ENP.MOVE_PAT_ADDR
 SDB_INIT                DB                      ; Value for: SPR.SDB_INIT
 SETUP                   DB                      ; Value for: ENP.SETUP
     ENDS

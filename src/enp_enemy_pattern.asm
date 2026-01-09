@@ -21,7 +21,7 @@
 ; enemies and has to be configured for each level so that we have different enemies. To have this ability to configure it per level, 
 ; there is another structure, #ENPS - this structure has elements with the same name as #ENP (but not all, only those that we can configure). 
 ; Before the level starts, values from ENPS are directly copied to ENP, and enemies for this level are configured and ready to go.
-; Enemies can move according to the different movement patterns given by #ENP.MOVE_PAT_POINTER. After they are destroyed, the next 
+; Enemies can move according to the different movement patterns given by #ENP.MOVE_PAT_ADDR. After they are destroyed, the next 
 ; deployment is delayed by #ENP.RESPAWN_DELAY. #ENP.SDB_INIT gives Sprite animation. #ENP.RESPAWN_Y determines the horizontal respawn position.
 ; #ENP.SETUP (see #ENP_BIT_XXX) decides whether the enemy is deployed on the right or left side of the screen and whether it should hit 
 ; a platform, fly along it, or bounce from it.
@@ -138,7 +138,7 @@ BOUNCE_H_MARG_D3        = 3
 ; Modifies: A
     MACRO _LoadCurrentMoveStep
 
-    LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; HL points to start of the #movePattern
+    LD HL, (IY + ENP.MOVE_PAT_ADDR)          ; HL points to start of the #movePattern
     LD A, (IY + ENP.MOVE_PAT_POS)
     ADD HL, A                                   ; Move HL from the beginning of the move pattern to current element.
 
@@ -235,8 +235,8 @@ CopyEnpsToEnp
     LD A, (IX + ENPS.RESPAWN_DELAY)
     LD (IY + ENP.RESPAWN_DELAY), A
 
-    LD DE, (IX + ENPS.MOVE_PAT_POINTER)
-    LD (IY + ENP.MOVE_PAT_POINTER), DE
+    LD DE, (IX + ENPS.MOVE_PAT_ADDR)
+    LD (IY + ENP.MOVE_PAT_ADDR), DE
 
     RET                                         ; ## END of the function ##
 
@@ -780,7 +780,7 @@ _MoveEnemy
     ; Check if we should restart the move pattern, as it might have reached the last element.
     DEC A                                       ; Pattern starts after offset.
     PUSH HL
-    LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; DE points to start of the #movePattern.
+    LD HL, (IY + ENP.MOVE_PAT_ADDR)          ; DE points to start of the #movePattern.
     LD B, (HL)                                  ; B contains the amount of bytes in the move pattern array.
     POP HL
     CP B
@@ -834,7 +834,7 @@ _RestartMovePattern
 
     LD BC, (IX + SPR.EXT_DATA_POINTER)          ; Load #ENP for this sprite to IY.
     LD IY, BC
-    LD HL, (IY + ENP.MOVE_PAT_POINTER)          ; HL points to start of the #movePattern, that is the amount of elements in this pattern.
+    LD HL, (IY + ENP.MOVE_PAT_ADDR)          ; HL points to start of the #movePattern, that is the amount of elements in this pattern.
     INC HL                                      ; HL points to the first move pattern element.
     
     ; X, Y counters will be set to max value as we count down towards 0.

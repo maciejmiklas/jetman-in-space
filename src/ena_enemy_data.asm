@@ -164,248 +164,261 @@ movePattern21
 ;----------------------------------------------------------;
 ;                     Single enemies                       ;
 ;----------------------------------------------------------;
-
 spriteEx01
-    ;    SETUP
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ;    SETUP MOVE_DELAY_CNT RESPAWN_DELAY         RESPAWN_DELAY_CNT RESPAWN_Y MOVE_PAT_ADDR      MOVE_PAT_POS                 MOVE_PAT_STEP MOVE_PAT_STEP_RCNT
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1/, 0,           0}
 spriteEx02
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx03
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx04
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx05
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx06
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx07
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx08
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx09
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/} 
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0} 
 spriteEx10
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx11
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx12
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx13
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx14
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx15
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx16
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx17
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx18
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx19
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx20
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern01D0/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 
 ; Enemies reserved for enemyFormation.
+   ;    SETUP MOVE_DELAY_CNT RESPAWN_DELAY         RESPAWN_DELAY_CNT RESPAWN_Y MOVE_PAT_ADDR     MOVE_PAT_POS                 MOVE_PAT_STEP MOVE_PAT_STEP_RCNT
 spriteExEf01
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf02
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf03
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf04
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf05
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf06
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf07
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY_CNT*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 0/*RESPAWN_Y*/, movePattern07/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0,    0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+
+/*SDB_POINTER*/
 
 ; Single sprites, used by single enemies (#spriteExXX).
 singleEnemySprites
-    SPR {20/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx01/*EXT_DATA_POINTER*/}
-    SPR {21/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx02/*EXT_DATA_POINTER*/}
-    SPR {22/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx03/*EXT_DATA_POINTER*/}
-    SPR {23/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx04/*EXT_DATA_POINTER*/}
-    SPR {24/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx05/*EXT_DATA_POINTER*/}
-    SPR {25/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx06/*EXT_DATA_POINTER*/}
-    SPR {26/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx07/*EXT_DATA_POINTER*/}
-    SPR {27/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx08/*EXT_DATA_POINTER*/}
-    SPR {28/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx09/*EXT_DATA_POINTER*/}
-    SPR {29/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx10/*EXT_DATA_POINTER*/}
-    SPR {30/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx11/*EXT_DATA_POINTER*/}
-    SPR {31/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx12/*EXT_DATA_POINTER*/}
-    SPR {32/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx13/*EXT_DATA_POINTER*/}
-    SPR {33/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx14/*EXT_DATA_POINTER*/}
-    SPR {34/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx15/*EXT_DATA_POINTER*/}
-    SPR {35/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx16/*EXT_DATA_POINTER*/}
-    SPR {36/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx17/*EXT_DATA_POINTER*/}
-    SPR {37/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx18/*EXT_DATA_POINTER*/}
-    SPR {38/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx19/*EXT_DATA_POINTER*/}
-    SPR {39/*ID*/, sr.SDB_ENEMY1/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteEx20/*EXT_DATA_POINTER*/}
+    ;    ID  SDB_POINTER.  SDB_POINTER X  Y  STATE NEXT REMAINING  EXT_DATA_POINTER
+    SPR {20, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx01}
+    SPR {21, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx02}
+    SPR {22, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx03}
+    SPR {23, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx04}
+    SPR {24, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx05}
+    SPR {25, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx06}
+    SPR {26, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx07}
+    SPR {27, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx08}
+    SPR {28, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx09}
+    SPR {29, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx10}
+    SPR {30, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx11}
+    SPR {31, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx12}
+    SPR {32, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx13}
+    SPR {33, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx14}
+    SPR {34, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx15}
+    SPR {35, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx16}
+    SPR {36, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx17}
+    SPR {37, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx18}
+    SPR {38, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx19}
+    SPR {39, sr.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx20}
 ENEMY_SINGLE_SIZE       = 20
 
 ; Formation sprites used by enemyFormation enemies (#spriteExEfXX).
 formationEnemySprites
-    SPR {61/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf01/*EXT_DATA_POINTER*/}
-    SPR {62/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf02/*EXT_DATA_POINTER*/}
-    SPR {63/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf03/*EXT_DATA_POINTER*/}
-    SPR {64/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf04/*EXT_DATA_POINTER*/}
-    SPR {65/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf05/*EXT_DATA_POINTER*/}
-    SPR {66/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf06/*EXT_DATA_POINTER*/}
-    SPR {67/*ID*/, sr.SDB_ENEMY3/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, spriteExEf07/*EXT_DATA_POINTER*/}
+    ;    ID  SDB_INIT       SDB_POINTER X  Y  STATE NEXT REMAINING  EXT_DATA_POINTER
+    SPR {61, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf01}
+    SPR {62, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf02}
+    SPR {63, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf03}
+    SPR {64, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf04}
+    SPR {65, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf05}
+    SPR {66, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf06}
+    SPR {67, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf07}
 ENEMY_FORMATION_SIZE    = 7
 
 ;----------------------------------------------------------;
 ;                         Enemies                          ;
 ;----------------------------------------------------------;
-
+; ENPS {040/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_ADDR*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
 singleEnemiesL1
-    ENPS {020/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {040/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {050/*RESPAWN_Y*/, 050/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {085/*RESPAWN_Y*/, 045/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {090/*RESPAWN_Y*/, 080/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {105/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {125/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {150/*RESPAWN_Y*/, 074/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {175/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {220/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {020,        025,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {040,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {050,        050,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {085,        045,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {090,        080,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {105,        020,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {125,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {150,        074,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {175,        010,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {220,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
 SINGLE_ENEMIES_L1       = 10
 
 singleEnemiesL2
-    ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE   /*SETUP*/}
-    ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT     /*SETUP*/}
-    ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE  /*SETUP*/}
-    ENPS {080/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT      /*SETUP*/}
-    ENPS {100/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG /*SETUP*/}
-    ENPS {120/*RESPAWN_Y*/, 005/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_ALONG/*SETUP*/}
-    ENPS {140/*RESPAWN_Y*/, 024/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT   /*SETUP*/}
-    ENPS {180/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_ALONG/*SETUP*/}
-    ENPS {200/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern16  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_RIGHT_ALONG/*SETUP*/}
-    ENPS {220/*RESPAWN_Y*/, 022/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_ALONG /*SETUP*/}
-    ENPS {220/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_ALONG/*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {020,        010,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_ALONG    }
+    ENPS {020,        010,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT     }
+    ENPS {040,        015,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_ALONG   }
+    ENPS {080,        015,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT      }
+    ENPS {100,        010,          movePattern02D1,   sr.SDB_ENEMY3 enp.ENP_LEFT_BOUNCE   }
+    ENPS {120,        005,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_ALONG   }
+    ENPS {140,        024,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT      }
+    ENPS {180,        022,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_ALONG   }
+    ENPS {200,        025,          movePattern16,     sr.SDB_ENEMY2 enp.ENP_RIGHT_ALONG   }
+    ENPS {220,        022,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_ALONG    }
+    ENPS {220,        020,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_ALONG   }
 SINGLE_ENEMIES_L2       = 11
 enemyFormationL2 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
 
 singleEnemiesL3
-    ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
-    ENPS {020/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {050/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {040/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {060/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {060/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {080/*RESPAWN_Y*/, 021/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {080/*RESPAWN_Y*/, 021/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {100/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {100/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {120/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {120/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {140/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {140/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {160/*RESPAWN_Y*/, 038/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {160/*RESPAWN_Y*/, 037/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {180/*RESPAWN_Y*/, 035/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {180/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
-    ENPS {200/*RESPAWN_Y*/, 028/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT  /*SETUP*/}
-    ENPS {200/*RESPAWN_Y*/, 044/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {010,        025,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_ALONG}
+    ENPS {020,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {050,        015,          movePattern02D1,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {040,        015,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {060,        025,          movePattern02D1,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {060,        025,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {080,        021,          movePattern02D3,   sr.SDB_ENEMY2 enp.ENP_LEFT_HIT  }
+    ENPS {080,        021,          movePattern02D2,   sr.SDB_ENEMY2 enp.ENP_RIGHT_HIT }
+    ENPS {100,        028,          movePattern02D3,   sr.SDB_ENEMY2 enp.ENP_LEFT_HIT  }
+    ENPS {100,        028,          movePattern02D2,   sr.SDB_ENEMY2 enp.ENP_RIGHT_HIT }
+    ENPS {120,        027,          movePattern02D1,   sr.SDB_ENEMY2 enp.ENP_LEFT_HIT  }
+    ENPS {120,        028,          movePattern02D3,   sr.SDB_ENEMY2 enp.ENP_RIGHT_HIT }
+    ENPS {140,        023,          movePattern02D2,   sr.SDB_ENEMY2 enp.ENP_LEFT_HIT  }
+    ENPS {140,        023,          movePattern02D1,   sr.SDB_ENEMY2 enp.ENP_RIGHT_HIT }
+    ENPS {160,        038,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {160,        037,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {180,        035,          movePattern02D1,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {180,        025,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {200,        028,          movePattern02D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {200,        044,          movePattern02D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
 SINGLE_ENEMIES_L3       = 20
 enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
 
 singleEnemiesL4
-    ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern02D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_ALONG  /*SETUP*/}
-    ENPS {010/*RESPAWN_Y*/, 030/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_ALONG /*SETUP*/}
-    ENPS {020/*RESPAWN_Y*/, 029/*RESPAWN_DELAY*/, movePattern13D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG  /*SETUP*/}
-    ENPS {010/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern13D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_RIGHT_ALONG /*SETUP*/}
-    ENPS {010/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern18  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_ALONG  /*SETUP*/}
-    ENPS {010/*RESPAWN_Y*/, 032/*RESPAWN_DELAY*/, movePattern18  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_ALONG /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {010,        025,          movePattern02D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_ALONG  }
+    ENPS {010,        030,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_ALONG }
+    ENPS {020,        029,          movePattern13D1,   sr.SDB_ENEMY3 enp.ENP_LEFT_ALONG  }
+    ENPS {010,        025,          movePattern13D3,   sr.SDB_ENEMY2 enp.ENP_RIGHT_ALONG }
+    ENPS {010,        027,          movePattern18,     sr.SDB_ENEMY1 enp.ENP_LEFT_ALONG  }
+    ENPS {010,        032,          movePattern18,     sr.SDB_ENEMY1 enp.ENP_RIGHT_ALONG }
 
-    ENPS {127/*RESPAWN_Y*/, 018/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {127/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_RIGHT_HIT   /*SETUP*/}
-    ENPS {165/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {165/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern01D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_RIGHT_HIT   /*SETUP*/}
+    ENPS {127,        018,          movePattern01D2,   sr.SDB_ENEMY3 enp.ENP_LEFT_HIT    }
+    ENPS {127,        015,          movePattern01D3,   sr.SDB_ENEMY3 enp.ENP_RIGHT_HIT   }
+    ENPS {165,        025,          movePattern01D1,   sr.SDB_ENEMY2 enp.ENP_LEFT_HIT    }
+    ENPS {165,        020,          movePattern01D1,   sr.SDB_ENEMY2 enp.ENP_RIGHT_HIT   }
 
-    ENPS {103/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {144/*RESPAWN_Y*/, 012/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT   /*SETUP*/}
-    ENPS {144/*RESPAWN_Y*/, 018/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {185/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT   /*SETUP*/}  
-    ENPS {185/*RESPAWN_Y*/, 009/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
+    ENPS {103,        010,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {144,        012,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT   }
+    ENPS {144,        018,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {185,        015,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT   }
+    ENPS {185,        009,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
     
-    ENPS {227/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern09  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_RIGHT_ALONG /*SETUP*/}
-    ENPS {227/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern09  /*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
+    ENPS {227,        020,          movePattern09  ,   sr.SDB_ENEMY3 enp.ENP_RIGHT_ALONG }
+    ENPS {227,        040,          movePattern09  ,   sr.SDB_ENEMY3 enp.ENP_LEFT_HIT    }
 
 SINGLE_ENEMIES_L4       = 17
 enemyFormationL4 ENPS {085/*RESPAWN_Y*/, 8/*RESPAWN_DELAY*/, movePattern17/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
 
 singleEnemiesL5
-    ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {030/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {060/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {070/*RESPAWN_Y*/, 023/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {080/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {100/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {120/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {130/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {150/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {140/*RESPAWN_Y*/, 013/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {180/*RESPAWN_Y*/, 027/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {190/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {200/*RESPAWN_Y*/, 030/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {220/*RESPAWN_Y*/, 012/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {120/*RESPAWN_Y*/, 020/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {220/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern20/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {020,        010,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {030,        040,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {060,        020,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {070,        023,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {080,        020,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {100,        015,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {120,        020,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {130,        040,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {150,        027,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {140,        013,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {180,        027,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {190,        020,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {200,        030,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {220,        012,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {120,        020,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {220,        010,          movePattern20,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
 SINGLE_ENEMIES_L5       = 15
 
 singleEnemiesL6
-    ENPS {020/*RESPAWN_Y*/, 040/*RESPAWN_DELAY*/, movePattern02D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN /*SETUP*/}
-    ENPS {070/*RESPAWN_Y*/, 014/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN /*SETUP*/}
-    ENPS {150/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern02D1/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN /*SETUP*/}
-    ENPS {224/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern15D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {020,        040,          movePattern02D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
+    ENPS {070,        014,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
+    ENPS {150,        010,          movePattern02D1,   sr.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
+    ENPS {224,        010,          movePattern15D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
 
-    ENPS {020/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {120/*RESPAWN_Y*/, 002/*RESPAWN_DELAY*/, movePattern01D3/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {224/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern15D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
+    ENPS {020,        010,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {120,        002,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {224,        010,          movePattern15D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
 SINGLE_ENEMIES_L6       = 6
 
 singleEnemiesL7
-    ENPS {100/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {100/*RESPAWN_Y*/, 015/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {150/*RESPAWN_Y*/, 013/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {150/*RESPAWN_Y*/, 013/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
-    ENPS {220/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN  /*SETUP*/}
-    ENPS {220/*RESPAWN_Y*/, 010/*RESPAWN_DELAY*/, movePattern08/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_BOUNCE_AN /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {100,        015,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {100,        015,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {150,        013,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {150,        013,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {220,        010,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {220,        010,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
 
 SINGLE_ENEMIES_L7       = 6 
 enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN/*SETUP*/}
 
 singleEnemiesL9
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
 SINGLE_ENEMIES_L9       = 1 
 enemyFormationL9 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
 singleEnemiesL10
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
-    ENPS {009/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT    /*SETUP*/}
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ENPS {009,        255,          movePattern01D0,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
 SINGLE_ENEMIES_L10      = 1 
 enemyFormationL10 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
