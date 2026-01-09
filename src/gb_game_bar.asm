@@ -44,6 +44,7 @@ ShowGameBar
 ;----------------------------------------------------------;
 ;                      PrintDebug                          ;
 ;----------------------------------------------------------;
+    IFDEF DEBUG_BAR
 PrintDebug
 
     ; Return if gamebar is hidden
@@ -51,6 +52,7 @@ PrintDebug
     OR A
     RET Z
 
+    IFDEF PERFORMANCE
     ; ##########################################
     LD BC, 40
     LD H, 0
@@ -64,6 +66,7 @@ PrintDebug
     LD A, (endLineMax)
     LD L, A
     CALL ut.PrintNumber
+    ENDIF
 
 /*
     ; ##########################################
@@ -80,7 +83,7 @@ PrintDebug
     CALL ut.PrintNumber
 */
     RET                                         ; ## END of the function ##
-
+    ENDIF
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

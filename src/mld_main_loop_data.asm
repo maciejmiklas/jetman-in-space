@@ -23,7 +23,6 @@ counter008FliFLop   DB 0                        ; Changes with every counter run
 
 COUNTER010_MAX      = 10                        ; Tick rate: 1/5s
 counter010          DB 0
-counter010FliFLop   DB 0                        ; Changes with every counter run from _GC_FLIP_ON_D1 to _GC_FLIP_OFF_D0 and so on.
 
 COUNTER025_MAX      = 25                        ; Tick rate: 0.5s
 counter025          DB 0

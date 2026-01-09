@@ -10,8 +10,10 @@ STACK_SIZE              = 50
     DEVICE ZXSPECTRUMNEXT                       ; Allow the Next paging and instructions.
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
+    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
+    DEFINE DEBUG_BAR    1                        ; Enable debug bar
+
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
-    DEFINE PERFORMANCE 1                        ; Enable to store end scan line to #endLine
     IFDEF PERFORMANCE
 UPDATE_REFRESH          = 10
 UPDATE_REFRESH_MAX      = 18

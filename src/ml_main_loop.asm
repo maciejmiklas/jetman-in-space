@@ -28,8 +28,10 @@
     ; CALL functions that need to be updated every loop.
     ; First update graphics, logic follows afterwards!
 
+        IFDEF DEBUG_BAR
     CALL gb.PrintDebug
-
+        ENDIF
+    
     CALL dbs.SetupAyFxsBank
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing.
     
@@ -509,11 +511,6 @@
     XOR A                                       ; Set A to 0
     LD (mld.counter010), A
 
-    ; ##########################################
-    ; 1 -> 0 and 0 -> 1
-    LD A, (mld.counter010FliFLop)
-    XOR 1
-    LD (mld.counter010FliFLop), A
 
     ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
