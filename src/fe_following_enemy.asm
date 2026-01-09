@@ -448,13 +448,15 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     ; (Jetman X) - (Enemy X) < 0 -> move enemy right
     LD BC, (IX + SPR.X)                         ; X of the enemy
     LD HL, (jpo.jetX)                           ; X of the Jetman
-    OR A: SBC HL, BC
+    OR A
+    SBC HL, BC
     JP M, .moveEnemyLeft                        ; #jetY -#SPR.X < 0 -> move enemy left
  
     ; Increment enemy X (move right)
     SET STATE_DIR_X_BIT, (IY + FE.STATE)
 
-    LD A, D: CP (IY + FE.STATE)
+    LD A, D
+    CP (IY + FE.STATE)
     CALL NZ, _EnemyDirectionChanged             ; Call only if state has changed
     JR .afterMoveX
 
