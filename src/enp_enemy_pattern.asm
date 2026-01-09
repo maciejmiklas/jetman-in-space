@@ -138,7 +138,7 @@ BOUNCE_H_MARG_D3        = 3
 ; Modifies: A
     MACRO _LoadCurrentMoveStep
 
-    LD HL, (IY + ENP.MOVE_PAT_ADDR)          ; HL points to start of the #movePattern
+    LD HL, (IY + ENP.MOVE_PAT_ADDR)             ; HL points to start of the #movePattern
     LD A, (IY + ENP.MOVE_PAT_POS)
     ADD HL, A                                   ; Move HL from the beginning of the move pattern to current element.
 
@@ -834,7 +834,7 @@ _RestartMovePattern
 
     LD BC, (IX + SPR.EXT_DATA_POINTER)          ; Load #ENP for this sprite to IY.
     LD IY, BC
-    LD HL, (IY + ENP.MOVE_PAT_ADDR)          ; HL points to start of the #movePattern, that is the amount of elements in this pattern.
+    LD HL, (IY + ENP.MOVE_PAT_ADDR)             ; HL points to start of the #movePattern, that is the amount of elements in this pattern.
     INC HL                                      ; HL points to the first move pattern element.
     
     ; X, Y counters will be set to max value as we count down towards 0.
