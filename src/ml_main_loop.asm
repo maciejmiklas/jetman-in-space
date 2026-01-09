@@ -38,114 +38,22 @@
     CALL dbs.SetupMusicBank
     CALL am.MusicLoop
 
-    _Loop000OnRocketPhase2_3
-    _Loop000OnPause
-    _Loop000OnActiveGame
-    _Loop000OnActiveMain
-    _Loop000OnNotInGame
-    _Loop000OnActiveLevelIntro
+    _Loop000OnMainState
     _Loop000OnFlyRocket
 
     ENDM                                         ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                  _Loop000OnFlyRocket                     ;
+;                _Loop000OnMainState                       ;
 ;----------------------------------------------------------;
-    MACRO _Loop000OnFlyRocket
+    MACRO _Loop000OnMainState
 
-    CALL dbs.SetupRocketBank
-
-    ; Return if rocket is not flying. #ms.mainState has also similar state: #MS_FLY_ROCKET_D3, but its not the same!
-    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE_D102 and not #ro.ROST_FLY_D101.
-    LD A, (ro.rocketState)
-    CP ro.ROST_FLY_D101
-    JR NZ, .end
-
-    ; ##########################################
-    CALL rof.FlyRocket
-    CALL rof.FlyRocketSound
-
-    ; ##########################################
-    ; Phase 4
-    CALL dbs.SetupRocketBank
-
-    LD A, (ro.rocketFlyPhase)
-    CP ro.PHASE_4
-    JR NZ, .end
-
-    CALL rot.MoveAsteroids
-
-.end
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                _Loop000OnActiveLevelIntro                ;
-;----------------------------------------------------------;
-    MACRO _Loop000OnActiveLevelIntro
-
-    ; Return if intro is inactive.
     LD A, (ms.mainState)
-    CP ms.MS_LEVEL_INTRO_D10
-    JR NZ, .end
 
-    ; ##########################################
-    CALL li.AnimateLevelIntroTextScroll
-
-.end
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                   _Loop000OnNotInGame                    ;
-;----------------------------------------------------------;
-    MACRO _Loop000OnNotInGame
-
-    ; Return if menu is not active.
-    LD A, (ms.mainState)
-    CP ms.MS_LEVEL_INTRO_D10
-    JR C, .end
-
-    ; ##########################################
-    CALL ki.KeyboardInput
-
-.end
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                   _Loop000OnActiveMain                   ;
-;----------------------------------------------------------;
-    MACRO _Loop000OnActiveMain
-
-    ; Execute if main menu or level select menu is inactive.
-    LD A, (ms.mainState)
-    
-    CP ms.MS_MENU_MAIN_D11
-    JR Z, .execute
-
-    CP ms.MS_MENU_LEVEL_D14
-    JR Z, .execute
-
-    JR .end
-
-.execute
-    ; ##########################################
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.AnimateJetSprite
-
-.end
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                  _Loop000OnActiveGame                    ;
-;----------------------------------------------------------;
-    MACRO _Loop000OnActiveGame
-
-    ; Return if game is inactive
-    LD A, (ms.mainState)
+    ; Game is inactive
     CP ms.MS_GAME_ACTIVE_D1
-    JP NZ, .end
+    JP NZ, .afterGameActive
 
-    ; ##########################################
-    _Loop000OnDisabledJoy
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
 
@@ -192,61 +100,165 @@
     CALL gi.JetMovementInput
 .notHard
 
-.end
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                  _Loop000OnDisabledJoy                   ;
-;----------------------------------------------------------;
-    MACRO _Loop000OnDisabledJoy
-
-    ; Return if game is inactive.
-    LD A, (ms.mainState)
-    CP ms.MS_GAME_ACTIVE_D1
-    JR NZ, .end
-
+    ; ##########################################
     ; Return if the joystick is about to enable.
     LD A, (gid.joyOffCnt)
     CP pl.PL_BUMP_JOY_DEC_D1+1
-    JR C, .end                                  ; Return on the last off loop - this one is used to reset status and not to animate
+    JR C, .endJoyOn                             ; Return on the last off loop - this one is used to reset status and not to animate
 
-    ; ##########################################
     CALL pl.MoveJetOnPlatformSideHit
     CALL pl.MoveJetOnFallingFromPlatform
     CALL pl.MoveJetOnHitPlatformBelow
+.endJoyOn
 
-.end
-    ENDM                                        ; ## END of the macro ##
+.afterGameActive
 
-;----------------------------------------------------------;
-;                     _Loop000OnPause                      ;
-;----------------------------------------------------------;
-    MACRO _Loop000OnPause
+     ; ##########################################
+    ; Execute if main menu or level select menu is inactive.
+    CP ms.MS_MENU_MAIN_D11
+    JR Z, .executeMainMenu
 
-    LD A, (ms.mainState)
+    CP ms.MS_MENU_LEVEL_D14
+    JR Z, .executeMainMenu
+
+    JR .afterMainMenu
+
+.executeMainMenu
+
+    CALL js.UpdateJetSpritePositionRotation
+    CALL js.AnimateJetSprite
+.afterMainMenu
+
+    ; ##########################################
+    ; Not in game
+    CP ms.MS_LEVEL_INTRO_D10
+    JR C, .afterNotInGame
+
+    CALL ki.KeyboardInput
+.afterNotInGame
+
+    ; ##########################################
+    ; Intro is inactive.
+    CP ms.MS_LEVEL_INTRO_D10
+    JR NZ, .aftertActiveLevelIntro
+
+    CALL li.AnimateLevelIntroTextScroll
+
+.aftertActiveLevelIntro
+
+    ; ##########################################
+    ; Puase
     CP ms.MS_PAUSE_D30
-    JR NZ, .end
+    JR NZ, .afterPuase
 
     CALL gi.GameOptionsInput
 
-.end
+.afterPuase
+
     ENDM                                        ; ## END of the macro ##
 
+
 ;----------------------------------------------------------;
-;               _Loop000OnRocketPhase2_3                   ;
+;                  _Loop000OnFlyRocket                     ;
 ;----------------------------------------------------------;
-    MACRO _Loop000OnRocketPhase2_3
+    MACRO _Loop000OnFlyRocket
 
     CALL dbs.SetupRocketBank
 
+    ; Return if rocket is not flying. #ms.mainState has also similar state: #MS_FLY_ROCKET_D3, but its not the same!
+    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE_D102 and not #ro.ROST_FLY_D101.
+    LD A, (ro.rocketState)
+    CP ro.ROST_FLY_D101
+    JR NZ, .end
+
+    ; ##########################################
+    CALL rof.FlyRocket
+    CALL rof.FlyRocketSound
+
+    ; ##########################################
+    ; Phase 4
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
+    JR NZ, .notPhase4
+
+    CALL rot.MoveAsteroids
+.notPhase4
+
+    ; ##########################################
     LD A, (ro.rocketFlyPhase)
     AND ro.PHASE_2_3
-    JR Z, .end
+    JR Z, .notPhase2_3
 
     CALL bg.HideBackgroundBars
+.notPhase2_3
 
 .end
     ENDM                                        ; ## END of the macro ##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;----------------------------------------------------------;
 ;                      _Loop002                            ;
