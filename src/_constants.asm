@@ -525,7 +525,8 @@ _LEVEL_MAX_D10          = 10
 ;  - 7: #ENP_BIT_REVERSE_Y_D7
 SETUP                   DB
 MOVE_DELAY              DB                      ; Number of frames to skipp.
-MOVE_DELAY_CNT          DB
+MOVE_DELAY_CNT          DB                      ; Counts from MOVE_DELAY to 0.
+MOVE_PX                 DB                      ; Number of pixels to move.
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter.
 RESPAWN_Y               DB                      ; Respawn Y position.

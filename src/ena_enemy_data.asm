@@ -33,7 +33,7 @@ movePattern01D2
 
 ; Horizontal, delay 3
 movePattern01D3
-    DB 2, %0'000'1'111,$30
+    DB 2, %0'000'1'111,$3A
 
 ; 18deg down, delay 0
 movePattern02D0
@@ -165,63 +165,63 @@ movePattern21
 ;                     Single enemies                       ;
 ;----------------------------------------------------------;
 spriteEx01
-    ;    SETUP MOVE_DELAY MOVE_DELAY_CNT RESPAWN_DELAY         RESPAWN_DELAY_CNT RESPAWN_Y MOVE_PAT_ADDR      MOVE_PAT_POS                 MOVE_PAT_STEP MOVE_PAT_STEP_RCNT
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1/, 0,           0}
+    ;    SETUP MOVE_DELAY MOVE_DELAY_CNT MOVE_PX RESPAWN_DELAY         RESPAWN_DELAY_CNT RESPAWN_Y MOVE_PAT_ADDR      MOVE_PAT_POS                 MOVE_PAT_STEP MOVE_PAT_STEP_RCNT
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1/, 0,           0}
 spriteEx02
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx03
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx04
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx05
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx06
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx07
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx08
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx09
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0} 
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0} 
 spriteEx10
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx11
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx12
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx13
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx14
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx15
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx16
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx17
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx18
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx19
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteEx20
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern01D0,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 
 ; Enemies reserved for enemyFormation.
-   ;    SETUP  MOVE_DELAY MOVE_DELAY_CNT RESPAWN_DELAY         RESPAWN_DELAY_CNT RESPAWN_Y MOVE_PAT_ADDR     MOVE_PAT_POS                 MOVE_PAT_STEP MOVE_PAT_STEP_RCNT
+   ;    SETUP  MOVE_DELAY MOVE_DELAY_CNT MOVE_PX RESPAWN_DELAY         RESPAWN_DELAY_CNT RESPAWN_Y MOVE_PAT_ADDR     MOVE_PAT_POS                 MOVE_PAT_STEP MOVE_PAT_STEP_RCNT
 spriteExEf01
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf02
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf03
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf04
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf05
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf06
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 spriteExEf07
-    ENP {0,    0,         0,             enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
+    ENP {0,    0,         0,             0,      enp.RESPAWN_OFF_D255, 0,                0,        movePattern07,   enp.MOVE_PAT_STEP_OFFSET_D1,  0,           0}
 
 /*SDB_POINTER*/
 
@@ -265,7 +265,7 @@ ENEMY_FORMATION_SIZE    = 7
 ;----------------------------------------------------------;
 ;                         Enemies                          ;
 ;----------------------------------------------------------;
-; ENPS {040/*RESPAWN_Y*/, 025/*RESPAWN_DELAY*/, movePattern01D2/*MOVE_PAT_ADDR*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_RIGHT_HIT /*SETUP*/}
+
 singleEnemiesL1
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
     ENPS {020,        025,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
@@ -279,6 +279,7 @@ singleEnemiesL1
     ENPS {175,        010,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {220,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
 SINGLE_ENEMIES_L1       = 10
+
 
 singleEnemiesL2
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
@@ -297,7 +298,22 @@ SINGLE_ENEMIES_L2       = 11
 enemyFormationL2 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
 
+
 singleEnemiesL3
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {150,        1,            movePattern07,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {040,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {050,        050,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {085,        045,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {090,        080,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {105,        020,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {125,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {150,        074,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {175,        010,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {220,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+SINGLE_ENEMIES_L3       = 1
+
+singleEnemiesL3_
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
     ENPS {010,        025,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_ALONG}
     ENPS {020,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
@@ -319,8 +335,9 @@ singleEnemiesL3
     ENPS {180,        025,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
     ENPS {200,        028,          movePattern02D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {200,        044,          movePattern02D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-SINGLE_ENEMIES_L3       = 20
-enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
+SINGLE_ENEMIES_L3_       = 20
+enemyFormationL3_ ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
+enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
 
 singleEnemiesL4
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
@@ -426,7 +443,7 @@ enemyFormationL10 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, m
 ;                      Fuel Thief                          ;
 ;----------------------------------------------------------;
 fuelThiefEnp
-    ENP {0/*SETUP*/, 0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 233/*RESPAWN_Y*/, movePattern19/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
+    ENP {0/*SETUP*/, 0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*MOVE_PX*/, 0/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 233/*RESPAWN_Y*/, movePattern19/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 
 fuelThiefSpr
     SPR {96/*ID*/, sr.SDB_FUEL_THIEF/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fuelThiefEnp/*EXT_DATA_POINTER*/}

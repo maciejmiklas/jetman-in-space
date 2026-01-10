@@ -68,21 +68,22 @@ PrintDebug
     CALL ut.PrintNumber
     ENDIF
 
-/*
+    CALL dbs.SetupPatternEnemyBank
+
     ; ##########################################
     LD BC, 60
     LD H, 0
-    LD A, (ki.userInputDelayCnt)
+    LD A, (enp.moveDel)
     LD L, A
     CALL ut.PrintNumber
 
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (ki.userInputInactiveCnt)
+    LD A, (enp.movePx)
     LD L, A
     CALL ut.PrintNumber
-*/
+
     RET                                         ; ## END of the function ##
     ENDIF
 ;----------------------------------------------------------;

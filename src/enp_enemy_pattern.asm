@@ -119,8 +119,11 @@ MOVE_DELAY_1PX          = %0010'0000            ; Delay 2 moves the enemy by 1 p
 MOVE_DELAY_SK1          = %0011'0000            ; Delay 3 moves the enemy by 0.5 pixel during a single frame
 DEC_MOVE_DELAY          = %0001'0000 
 
-SPEED_PX_MIN            = 1
-SPEED_PX_MAX            = 3
+DELAY_SK1_D2            = 2
+
+SPEED_PX_MIN_D1         = 1
+SPEED_PX_MAX_D3         = 3
+
 BOUNCE_H_MARG_D3        = 3
 
 ;----------------------------------------------------------;
@@ -130,7 +133,99 @@ BOUNCE_H_MARG_D3        = 3
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                  _LoadCurrentMoveStep                    ;
+;                       _LoadMovePx                        ;
+;----------------------------------------------------------;
+; The function returns  the number of pixels the enemy should move, calculated based on the configured delay:
+;  - delay 0 (%0000'0000) = 3px
+;  - delay 1 (%0001'0000) = 2px
+;  - delay 2 (%0010'0000) = 1px
+;  - delay 3 (%0011'0000) = 1px (logic elsewhere will skip every second frame to get 0.5px)
+;
+; Input
+;  - A: delay counter from configuration (bits 8-5 with mask MOVE_PAT_DELAY_MASK).
+; Return:
+;  - A: the number of pixels that the enemy should move.
+;
+    MACRO _LoadMovePx
+
+    ; In case of delay 3 change it to delay 2 -> both move by 1px
+    CP MOVE_DELAY_SK1
+    JR NZ, .notSK1
+    SUB DEC_MOVE_DELAY
+.notSK1
+
+    ; Now A contains delay in bits 7-5, for example for delay 3: %0010'0000, we move those bits to the right to have value 0-3
+    SRL A
+    SRL A
+    SRL A
+    SRL A
+
+    ; Now %0010'0000 was changed to %0000'0010, A has following values:
+    ;  - delay 0 = 0
+    ;  - delay 1 = 1
+    ;  - delay 2 = 2
+    ;  - delay 3 = 2
+    ; but we need:
+    ;  - delay 0 = 3
+    ;  - delay 1 = 2
+    ;  - delay 2 = 1
+    ;  - delay 3 = 1
+    LD B, A
+    LD A, SPEED_PX_MAX_D3
+    SUB B
+
+     ; Change speed based on difficulty.
+    LD B, A
+
+    LD A, (jt.difLevel)
+
+    CP jt.DIF_NORMAL_D2
+    JR Z, .onNormal
+
+    CP jt.DIF_EASY_D1
+    JR Z, .onEasy
+
+    CP jt.DIF_HARD_D3
+    JR Z, .onhard
+
+    ; Speed up movement on hard.
+.onhard
+    LD A, B
+
+    INC A
+    JR .end
+
+    ; Slow dowm movement on easy.
+.onEasy
+    LD A, B
+
+    CP SPEED_PX_MIN_D1
+    JR Z, .end
+
+    DEC A
+    JR .end
+
+    ; No spped change on normal.
+.onNormal
+    LD A, B
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+moveDel DB 0
+;----------------------------------------------------------;
+;                   _SetEnpDelayCnt                        ;
+;----------------------------------------------------------;
+    MACRO _ResetEnpDelayCnt
+
+    LD A, (IY + ENP.MOVE_DELAY)
+    LD (IY + ENP.MOVE_DELAY_CNT), A
+
+    LD (moveDel), A
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _LoadCurrentMovePattern                  ;
 ;----------------------------------------------------------;
 ; Load HL that points to the current move pattern
 ; Input
@@ -138,7 +233,7 @@ BOUNCE_H_MARG_D3        = 3
 ; Return:
 ;  - HL: points to the current move pattern
 ; Modifies: A
-    MACRO _LoadCurrentMoveStep
+    MACRO _LoadCurrentMovePattern
 
     LD HL, (IY + ENP.MOVE_PAT_ADDR)             ; HL points to start of the #movePattern
     LD A, (IY + ENP.MOVE_PAT_POS)
@@ -256,14 +351,13 @@ MovePatternEnemies
     JR Z, .afterMoveDelay
 
     ; Delaying movement, decrement delay counter.
-    SUB MOVE_DELAY_CNT_INC
+    DEC A
     LD (IY + ENP.MOVE_DELAY_CNT), A
 
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .continue                            ; Skip enemy if the delay counter > 0.
 
-    CALL _LoadMoveDelay
-    LD (IY + ENP.MOVE_DELAY_CNT), A             ; Reset counter, A has the max value of delay counter.
+    _ResetEnpDelayCnt                           ; Reset counter, A has the max value of delay counter.
 
 .afterMoveDelay
 
@@ -349,8 +443,6 @@ RespawnPatternEnemy
     ; Reset reverse
     RES ENP_BIT_REVERSE_Y_D7, (IY + ENP.SETUP)
 
-    CALL _LoadMoveDelay
-    CALL _SetDelayCnt
     CALL _RestartMovePattern
 
     ; Set Y (horizontal respawn)
@@ -427,8 +519,8 @@ _PlayBounceAnimation
 ; Modifies: A, BC
 _MoveEnemyX
 
-    ; Load movement speed into D
-    CALL _LoadMovePixels                        ; A will contain configured move piexls.
+    ; Load movement speed into A
+    LD A, (IY + ENP.MOVE_PX)
 
     ; ##########################################
     ; Move right or left?
@@ -483,7 +575,7 @@ _MoveEnemy
     ; Load #ENP for this sprite to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
-    _LoadCurrentMoveStep
+    _LoadCurrentMovePattern
 
     ; Current register values:
     ;  - IX: pointer to #SPR for current sprite
@@ -624,9 +716,7 @@ _MoveEnemy
     ; Yes - we are at the bottom of the screen, set reverse-y and move up instead of down.
     CALL _FlipReverseY
 
-    CALL _LoadMovePixels
-    LD B, A
-
+    LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
 
@@ -635,9 +725,7 @@ _MoveEnemy
 .afterBounceMoveDown
     ; Bouncing not necessary, finally move down
 
-    CALL _LoadMovePixels
-    LD B, A
-
+    LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
     JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
@@ -659,7 +747,7 @@ _MoveEnemy
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up.
     CALL _FlipReverseY
 
-    CALL _LoadMovePixels
+    ;CALL _LoadMovePixels
     LD B, A
 
     LD A, sr.MOVE_Y_IN_DOWN_D0
@@ -668,9 +756,7 @@ _MoveEnemy
 .afterBounceMoveUp
 
     ; Bouncing not necessary, finally move up
-    CALL _LoadMovePixels
-    LD B, A
-
+    LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sr.MOVE_Y_IN_UP_D1
     CALL sr.MoveY
     JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
@@ -714,7 +800,7 @@ _MoveEnemy
     ; Check if we should restart the move pattern, as it might have reached the last element.
     DEC A                                       ; Pattern starts after offset.
     PUSH HL
-    LD HL, (IY + ENP.MOVE_PAT_ADDR)          ; DE points to start of the #movePattern.
+    LD HL, (IY + ENP.MOVE_PAT_ADDR)             ; DE points to start of the #movePattern.
     LD B, (HL)                                  ; B contains the amount of bytes in the move pattern array.
     POP HL
     CP B
@@ -726,7 +812,7 @@ _MoveEnemy
     INC BC                                      ; Move BC to the next pattern.
     
     LD A, (BC)                                  ; X, Y counters will be set to max value as we count down towards 0.
-    LD (IY + ENP.MOVE_PAT_STEP), A  
+    LD (IY + ENP.MOVE_PAT_STEP), A
 
     INC BC                                      ; Move BC to the counter for the next pattern.
     LD A, (BC)                                  ; Load delay/repeat counter into A
@@ -736,9 +822,9 @@ _MoveEnemy
     AND MOVE_PAT_REPEAT_MASK                    ; Leave only repeat counter bits.
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
 
-    ; Set delay counter for next pattern.
+    ; Set delay counter and move speed for next pattern.
     LD A, D
-    CALL _SetDelayCnt
+    CALL _SetupDelayAndMoveSpeed
     JR .checkPlatformHit
 
 .restartMovePattern
@@ -773,7 +859,7 @@ _RestartMovePattern
 
     ; X, Y counters will be set to max value as we count down towards 0.
     LD A, (HL)
-    LD (IY + ENP.MOVE_PAT_STEP), A  
+    LD (IY + ENP.MOVE_PAT_STEP), A
 
     ; Set position at the first pattern, this is one byte after the start of #movePatternXX.
     LD A, MOVE_PAT_STEP_OFFSET_D1
@@ -788,172 +874,52 @@ _RestartMovePattern
     AND MOVE_PAT_REPEAT_MASK                    ; Leave only repeat counter bits.
     LD (IY + ENP.MOVE_PAT_STEP_RCNT), A
 
-    ; Set delay counter 
+    ; Set delay counter
     LD A, B
-    CALL _SetDelayCnt
+    CALL _SetupDelayAndMoveSpeed
 
     RET                                         ; ## END of the function ##
 
+movePx db 0
 ;----------------------------------------------------------;
-;                      _SetDelayCnt                        ;
+;                _SetupDelayAndMoveSpeed                   ;
 ;----------------------------------------------------------;
+; Mapping from delay (MOVE_PAT_DELAY_MASK) to ENP:
+;  - delay 0 moves by 3 pixels: ENP.MOVE_DELAY = 0,  ENP.MOVE_PX =3
+;  - delay 1 moves by 2 pixels: ENP.MOVE_DELAY = 0,  ENP.MOVE_PX =2
+;  - delay 2 moves by 1 pixel:  ENP.MOVE_DELAY = 0,  ENP.MOVE_PX =1
+;  - delay 3 skips 1 pixel:     ENP.MOVE_DELAY = 1,  ENP.MOVE_PX =1
+;
 ; Input:
-;  - A: delay counter from configuration.
-_SetDelayCnt
+;  - A: delay counter from configuration (bits 8-5 with mask MOVE_PAT_DELAY_MASK).
+_SetupDelayAndMoveSpeed
 
     AND MOVE_PAT_DELAY_MASK                     ; Leave only delay counter bits.
+    PUSH AF
 
-    ; If the delay counter is above 0, decrement it by 2 if possible. The reason for this is that delay 0 and delay 1 move by 3 or 2 
-    ; pixels per frame, so there is no delay at all. Delay 2 should move by 1 pixel, and first delay 3 should skip one pixel.
-    OR A                                        ; Same as CP 0, but faster.
-    JR Z, .storeA
-    SUB DEC_MOVE_DELAY                          ; First decrement, try again to decrement if still above 0.
-    OR A                                        ; Same as CP 0, but faster.
-    JR Z, .storeA
-    SUB DEC_MOVE_DELAY
-.storeA
+    ; Setup delay.
+    ; On hard there is no delay
+    LD B, A
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR Z, .noDelay
+
+    LD A, B
+    CP MOVE_DELAY_SK1
+    JR NZ, .noDelay
+    LD A, DELAY_SK1_D2
+    JR .store
+.noDelay
+    XOR A
+.store
     LD (IY + ENP.MOVE_DELAY_CNT), A
-    
-    RET                                         ; ## END of the function ##
+    LD (IY + ENP.MOVE_DELAY), A
 
-;----------------------------------------------------------;
-;                   _LoadMovePixels                        ;
-;----------------------------------------------------------;
-; The function returns the number of pixels the enemy should move, calculated based on the configured delay:
-;  - delay 0 (%0000'0000) = 3px
-;  - delay 1 (%0001'0000) = 2px
-;  - delay 2 (%0010'0000) = 1px
-;  - delay 3 (%0011'0000) = 1px (logic elsewhere will skip every second frame to get 0.5px)
-;
-; Input
-;  - IY: pointer to #ENP holding data for single sprite.
-;  - HL: current move pattern.
-; Return:
-;  - A: the number of pixels that the enemy should move.
-;
-; Modifies: A, B
-_LoadMovePixels
-
-    INC HL
-    LD A, (HL)                                  ; Load the delay/repetition counter into A, reset all bits but delay.
-    DEC HL
-    AND MOVE_PAT_DELAY_MASK                     ; A now contains delay, from 0 (%0000'0000) to 3 (%0011'0000).
-
-    ; In case of delay 3 change it to delay 2 -> both move by 1px
-    CP MOVE_DELAY_SK1
-    JR NZ, .notSK1
-    SUB DEC_MOVE_DELAY
-.notSK1
-
-    ; Now A contains delay in bits 7-5, for example for delay 3: %0010'0000, we move those bits to the right to have value 0-3
-    SRL A
-    SRL A
-    SRL A
-    SRL A
-
-    ; Now %0010'0000 was changed to %0000'0010, A has following values:
-    ;  - delay 0 = 0
-    ;  - delay 1 = 1
-    ;  - delay 2 = 2
-    ;  - delay 3 = 2
-    ; but we need:
-    ;  - delay 0 = 3
-    ;  - delay 1 = 2
-    ;  - delay 2 = 1
-    ;  - delay 3 = 1
-    LD B, A
-    LD A, 3
-    SUB B
-
-     ; Change speed based on difficulty.
-    LD B, A
-
-    LD A, (jt.difLevel)
-
-    CP jt.DIF_NORMAL_D2
-    JR Z, .onNormal
-
-    CP jt.DIF_EASY_D1
-    JR Z, .onEasy
-
-    CP jt.DIF_HARD_D3
-    JR Z, .onhard
-
-    ; Speed up movement on hard.
-.onhard
-    LD A, B
-
-    CP SPEED_PX_MAX
-    RET Z
-
-    INC A
-    RET
-
-    ; Slow dowm movement on easy.
-.onEasy
-    LD A, B
-
-    CP SPEED_PX_MIN
-    RET Z
-
-    DEC A
-    RET
-
-    ; No spped change on normal.
-.onNormal
-    LD A, B
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      _LoadMoveDelay                      ;
-;----------------------------------------------------------;
-; Input
-;  - IY: pointer to #ENP holding data for single sprite.
-; Return:
-;  - A: value of move delay counter for this pattern (bits 8-5).
-; Modifies: A, HL
-_LoadMoveDelay
-    ld a, MOVE_DELAY_3PX
-    ret
-
-    LD B, 0
-    LD A, (jt.difLevel)
-
-    _LoadCurrentMoveStep
-    INC HL
-    LD A, (HL)                                  ; Load the delay/repetition counter into A, reset all bits but delay.
-    AND MOVE_PAT_DELAY_MASK
-
-    ; Change delay based on difficulty.
-    LD B, A                                     ; Keep the counter.
-
-    LD A, (jt.difLevel)
-
-    CP jt.DIF_NORMAL_D2
-    JR Z, .onNormal
-
-    CP jt.DIF_EASY_D1
-    JR Z, .onEasy
-
-    CP jt.DIF_HARD_D3
-    JR Z, .onhard
-
-    ; Slow dowm movement on easy.
-.onEasy
-    LD A, B
-
-    CP MOVE_DELAY_SK1
-    RET Z
-
-    ADD DEC_MOVE_DELAY
-
-    RET
-
-    ; No spped change on hard/normal.
-.onhard
-.onNormal
-    LD A, B
+    POP AF
+    ;  Set up move speed based on delay and also difficulty level.
+    _LoadMovePx
+    LD (IY + ENP.MOVE_PX), A
+    ld (movePx), a
 
     RET                                         ; ## END of the function ##
 
