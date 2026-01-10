@@ -70,15 +70,16 @@ PrintDebug
 
 /*
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
     LD BC, 60
-    LD HL, (enp.tmp1)
+    LD H, 0
+    LD A, (ki.userInputDelayCnt)
+    LD L, A
     CALL ut.PrintNumber
 
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (enp.tmp2)
+    LD A, (ki.userInputInactiveCnt)
     LD L, A
     CALL ut.PrintNumber
 */

@@ -38,28 +38,29 @@
     CALL dbs.SetupMusicBank
     CALL am.MusicLoop
 
-    _Loop000OnMainState
+    _Loop000OnActiveGame
+    _Loop000OnMainMenu
+    _Loop000OnNotInGame
+    _Loop000OnGameIntro
+    _Loop000GameInPause
     _Loop000OnFlyRocket
 
     ENDM                                         ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                _Loop000OnMainState                       ;
+;                 _Loop000OnActiveGame                     ;
 ;----------------------------------------------------------;
-    MACRO _Loop000OnMainState
+    MACRO _Loop000OnActiveGame
 
     LD A, (ms.mainState)
-
-    ; Game is inactive
     CP ms.MS_GAME_ACTIVE_D1
-    JP NZ, .afterGameActive
+    JR NZ, .end
 
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
 
     CALL jco.JetRip
     CALL jw.MoveShots
-    CALL enc.CheckEnemyWeaponHit
     CALL jw.FireDelayCounter
     JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
@@ -77,14 +78,8 @@
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.UpdateFollowingJetman
 
-    ; ##########################################
-    ; Move enemies for normal or hard.
-    LD A, (jt.difLevel)
-    CP jt.DIF_EASY_D1
-    JR Z, .onEasy
-
+    CALL enc.CheckEnemyWeaponHit
     CALL enc.MoveEnemies
-.onEasy
 
     ; ##########################################
     ; Faster movement speed for Jetman on hard.
@@ -101,7 +96,7 @@
 .notHard
 
     ; ##########################################
-    ; Return if the joystick is about to enable.
+    ; Bumping from platforms.
     LD A, (gid.joyOffCnt)
     CP pl.PL_BUMP_JOY_DEC_D1+1
     JR C, .endJoyOn                             ; Return on the last off loop - this one is used to reset status and not to animate
@@ -111,9 +106,14 @@
     CALL pl.MoveJetOnHitPlatformBelow
 .endJoyOn
 
-.afterGameActive
+.end
+    ENDM                                        ; ## END of the macro ##
 
-     ; ##########################################
+;----------------------------------------------------------;
+;                  _Loop000OnMainMenu                      ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnMainMenu
+
     ; Execute if main menu or level select menu is inactive.
     CP ms.MS_MENU_MAIN_D11
     JR Z, .executeMainMenu
@@ -121,42 +121,57 @@
     CP ms.MS_MENU_LEVEL_D14
     JR Z, .executeMainMenu
 
-    JR .afterMainMenu
+    JR .end
 
 .executeMainMenu
-
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
-.afterMainMenu
 
-    ; ##########################################
-    ; Not in game
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                  _Loop000OnNotInGame                     ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnNotInGame
+
+    LD A, (ms.mainState)
     CP ms.MS_LEVEL_INTRO_D10
-    JR C, .afterNotInGame
+    JR C, .end
 
     CALL ki.KeyboardInput
-.afterNotInGame
 
-    ; ##########################################
-    ; Intro is inactive.
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                  _Loop000OnGameIntro                     ;
+;----------------------------------------------------------;
+    MACRO _Loop000OnGameIntro
+
+    LD A, (ms.mainState)
     CP ms.MS_LEVEL_INTRO_D10
-    JR NZ, .aftertActiveLevelIntro
+    JR NZ, .end
 
     CALL li.AnimateLevelIntroTextScroll
 
-.aftertActiveLevelIntro
+.end
+    ENDM                                        ; ## END of the macro ##
 
-    ; ##########################################
-    ; Puase
+;----------------------------------------------------------;
+;                  _Loop000GameInPause                     ;
+;----------------------------------------------------------;
+    MACRO _Loop000GameInPause
+
+    LD A, (ms.mainState)
     CP ms.MS_PAUSE_D30
-    JR NZ, .afterPuase
+    JR NZ, .end
 
     CALL gi.GameOptionsInput
 
-.afterPuase
+.end
 
     ENDM                                        ; ## END of the macro ##
-
 
 ;----------------------------------------------------------;
 ;                  _Loop000OnFlyRocket                     ;
@@ -213,103 +228,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;----------------------------------------------------------;
-;                      _Loop002                            ;
-;----------------------------------------------------------;
-; Tick rate: 1/25s
-    MACRO _Loop002
-
-    ; Increment the counter.
-    LD A, (mld.counter002)
-    INC A
-    LD (mld.counter002), A
-    CP mld.COUNTER002_MAX
-    JR NZ, .end
-
-    ; Reset the counter.
-    XOR A                                       ; Set A to 0
-    LD (mld.counter002), A
-
-    ; ##########################################
-    ; 1 -> 0 and 0 -> 1
-    LD A, (mld.counter002FliFLop)
-    XOR 1
-    LD (mld.counter002FliFLop), A
-
-    ; ##########################################
-    ; CALL functions that need to be updated every xx-th loop.
-    _Loop002OnActiveGame
-
-.end
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                  _Loop002OnActiveGame                    ;
-;----------------------------------------------------------;
-    MACRO _Loop002OnActiveGame
-
-    ; Return if game is inactive.
-    LD A, (ms.mainState)
-    CP ms.MS_GAME_ACTIVE_D1
-    JR NZ, .end
-
-    ; ##########################################
-    LD A, (jt.difLevel)
-    CP jt.DIF_EASY_D1
-    JR NZ, .notEasy
-
-    CALL enc.MoveEnemies
-.notEasy
-
-.end
-    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                        _Loop005                          ;
@@ -498,7 +416,6 @@
     CP jt.DIF_HARD_D3
     JR NZ, .notHard
 
-    CALL enc.MoveEnemies
     CALL enc.RespawnEnemy
 
 .notHard
@@ -850,7 +767,6 @@
 MainLoop
 
     _Loop000
-    _Loop002
     _Loop005
     _Loop008
     _Loop010

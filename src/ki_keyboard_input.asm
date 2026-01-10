@@ -39,6 +39,7 @@ KeyboardInputLastLoop
     LD (userInputInactiveCnt),A
     RET
 .reset
+
     XOR A
     LD (userInputInactiveCnt), A
 
@@ -56,7 +57,9 @@ ResetKeyboard
 
     XOR A
     LD (userInputInactiveCnt), A
-    LD (userInputDelayCnt),A
+
+    LD A, USER_INPUT_DELAY_D15
+    LD (userInputDelayCnt), A
     
     LD DE, _DummyFunction
     LD (callbackRight), DE
@@ -222,7 +225,6 @@ CanProcessKeyInput
     JR Z, .processInput
     INC A
     LD (userInputDelayCnt), A
-
 
     ; Return NO, A!=0, Z is reset
     RET

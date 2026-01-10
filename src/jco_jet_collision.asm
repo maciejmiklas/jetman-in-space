@@ -326,7 +326,7 @@ JetInvincible
     LD A, (mld.counter005FliFLop)
     JR .afterBlinkSet
 .blinkFast  
-    LD A, (mld.counter002FliFLop)
+    LD A, (mld.counter000FliFLop)
 .afterBlinkSet
 
     CALL js.BlinkJetSprite

@@ -32,11 +32,11 @@ start
 
     CALL gc.SetupSystem
 
-    LD A, 2
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
+  ;  LD A, 2
+  ;  LD (ll.currentLevel), A
+    ;CALL gc.LoadCurrentLevel
 
-    ;CALL gc.LoadMainMenu
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music

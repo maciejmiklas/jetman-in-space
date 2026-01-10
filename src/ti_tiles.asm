@@ -140,7 +140,7 @@ LoadTilemap8bitPalette
 ;----------------------------------------------------------;
 ShakeTilemap
 
-    LD A, (mld.counter002FliFLop)               ; Oscillates between 1 and 0
+    LD A, (mld.counter000FliFLop)               ; Oscillates between 1 and 0
     LD D, A
     LD E, _SC_SHAKE_BY_D2
     MUL D, E
