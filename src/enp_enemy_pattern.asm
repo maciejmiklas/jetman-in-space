@@ -747,9 +747,7 @@ _MoveEnemy
     ; Yes - we are at the top of the screen, set reverse-y and move down instead of up.
     CALL _FlipReverseY
 
-    ;CALL _LoadMovePixels
-    LD B, A
-
+    LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sr.MOVE_Y_IN_DOWN_D0
     CALL sr.MoveY
     JR .afterChangeY

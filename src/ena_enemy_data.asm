@@ -298,7 +298,6 @@ SINGLE_ENEMIES_L2       = 11
 enemyFormationL2 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
 
-
 singleEnemiesL3
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
     ENPS {150,        1,            movePattern07,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
