@@ -148,6 +148,7 @@ BOUNCE_H_MARG_D3        = 3
 ;
     MACRO _LoadMovePx
 
+    LD C, A
     ; In case of delay 3 change it to delay 2 -> both move by 1px
     CP MOVE_DELAY_SK1
     JR NZ, .notSK1
@@ -190,6 +191,13 @@ BOUNCE_H_MARG_D3        = 3
 
     ; Speed up movement on hard.
 .onhard
+
+    LD A, C
+    CP MOVE_DELAY_SK1
+    JR NZ, .notSk1Hard
+    LD A, SPEED_PX_MIN_D1
+    JR .end
+.notSk1Hard
     LD A, B
 
     INC A
@@ -212,7 +220,6 @@ BOUNCE_H_MARG_D3        = 3
 .end
     ENDM                                        ; ## END of the macro ##
 
-moveDel DB 0
 ;----------------------------------------------------------;
 ;                   _SetEnpDelayCnt                        ;
 ;----------------------------------------------------------;
@@ -221,7 +228,6 @@ moveDel DB 0
     LD A, (IY + ENP.MOVE_DELAY)
     LD (IY + ENP.MOVE_DELAY_CNT), A
 
-    LD (moveDel), A
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -341,7 +347,7 @@ MovePatternEnemies
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden).
 
-    ; Load extra data for this sprite to IY.
+    ; Load ENP for this sprite to IY.
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
 
@@ -876,9 +882,9 @@ _RestartMovePattern
     LD A, B
     CALL _SetupDelayAndMoveSpeed
 
+
     RET                                         ; ## END of the function ##
 
-movePx db 0
 ;----------------------------------------------------------;
 ;                _SetupDelayAndMoveSpeed                   ;
 ;----------------------------------------------------------;
@@ -917,7 +923,6 @@ _SetupDelayAndMoveSpeed
     ;  Set up move speed based on delay and also difficulty level.
     _LoadMovePx
     LD (IY + ENP.MOVE_PX), A
-    ld (movePx), a
 
     RET                                         ; ## END of the function ##
 
