@@ -5,7 +5,6 @@
 ;----------------------------------------------------------;
 ;          Stars for Layer 2 bitmap at 320x256             ;
 ;----------------------------------------------------------;
-; Stars data is sored in db1, CALL ut.SetupDataArraysBank
     module st
 
 ; The starfield is grouped into columns (#SC). When Jetman moves, the whole starfield and, respectively, all columns move in the

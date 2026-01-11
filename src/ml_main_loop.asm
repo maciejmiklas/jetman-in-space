@@ -200,15 +200,6 @@
     CALL rof.FlyRocketSound
 
     ; ##########################################
-    ; Phase 4
-    LD A, (ro.rocketFlyPhase)
-    CP ro.PHASE_4
-    JR NZ, .notPhase4
-
-    CALL rot.MoveMeteors
-.notPhase4
-
-    ; ##########################################
     LD A, (ro.rocketFlyPhase)
     AND ro.PHASE_2_3
     JR Z, .notPhase2_3
@@ -216,9 +207,18 @@
     CALL bg.HideBackgroundBars
 .notPhase2_3
 
+    ; ##########################################
+    ; Phase 4
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_4
+    JR NZ, .notPhase4
+
+    CALL rot.MoveMeteors
+    CALL st.MoveStarsDown
+.notPhase4
+
 .end
     ENDM                                        ; ## END of the macro ##
-
 
 ;----------------------------------------------------------;
 ;                      _Loop002                            ;

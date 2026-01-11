@@ -251,7 +251,7 @@ UpdateJetpackOverheating
     LD A, (jt.jetAir)
     OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0
     JR Z, .afterFlaying
-    
+
     ; Jetman is flying
     _JetpackTempUp
     RET

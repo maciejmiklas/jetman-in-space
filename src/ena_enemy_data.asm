@@ -297,22 +297,7 @@ singleEnemiesL2
 SINGLE_ENEMIES_L2       = 11
 enemyFormationL2 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
-
 singleEnemiesL3
-    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
-    ENPS {150,        1,            movePattern07,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-    ENPS {040,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-    ENPS {050,        050,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-    ENPS {085,        045,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-    ENPS {090,        080,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-    ENPS {105,        020,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-    ENPS {125,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-    ENPS {150,        074,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-    ENPS {175,        010,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-    ENPS {220,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-SINGLE_ENEMIES_L3       = 1
-
-singleEnemiesL3_
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
     ENPS {010,        025,          movePattern01D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_ALONG}
     ENPS {020,        025,          movePattern01D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
@@ -334,9 +319,8 @@ singleEnemiesL3_
     ENPS {180,        025,          movePattern02D2,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
     ENPS {200,        028,          movePattern02D3,   sr.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {200,        044,          movePattern02D3,   sr.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-SINGLE_ENEMIES_L3_       = 20
-enemyFormationL3_ ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
-enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 255/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
+SINGLE_ENEMIES_L3       = 20
+enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
 
 singleEnemiesL4
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP

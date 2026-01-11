@@ -166,9 +166,9 @@ BrightnessDown
     ; Decrement green color (xxx'GGG'xxx).
 
     LD A, E
-    AND PAL2_GGG_MASK                       ; Reset all bits but green.
+    AND PAL2_GGG_MASK                           ; Reset all bits but green.
 
-    OR A                                    ; Do not decrement if green is already at 0.
+    OR A                                        ; Do not decrement if green is already at 0.
     JR Z, .afterDecrementGreen
 
     ; Green is above 0, decrement it.

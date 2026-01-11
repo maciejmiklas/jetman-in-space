@@ -571,7 +571,7 @@ _MoveEnemy
     CALL pl.PlatformBounceOff
     POP HL, IY, IX
 
-    OR A                                            ; Same as CP pl.PL_DHIT_NO_D0
+    OR A                                        ; Same as CP pl.PL_DHIT_NO_D0
     JR Z, .afterBounceSetup
 
     CP pl.PL_DHIT_LEFT_D1
@@ -743,7 +743,6 @@ _MoveEnemy
 
     LD A, (IY + ENP.MOVE_PAT_STEP_RCNT)         ; decrement the repetition counter.
     DEC A
-    OR A                                        ; Same as CP 0, but faster.
     JR Z, .nextMovePattern                      ; Jump if repetition counter for single step has reached 0.
 
     ; Decrement repetition counter for move step and return.

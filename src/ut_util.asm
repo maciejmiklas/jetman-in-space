@@ -280,7 +280,6 @@ Pause
     CALL CountdownBC
 
     DEC A
-    OR A                                        ; Same as CP 0, but faster.
     JP NZ, .loop
 
     POP IY, IX, HL, DE, BC, AF
