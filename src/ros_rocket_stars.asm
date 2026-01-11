@@ -34,6 +34,104 @@ PAUSE_SCROLL_STARTS     = 2
 pauseScrollStars        DB 0
 slowDownScrollY         DB 0
 
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                   _UpdateTileXOffset                     ;
+;----------------------------------------------------------;
+    MACRO _UpdateTileXOffset
+
+    LD HL, (tileOffsetX)
+    LD A, L
+    NEXTREG _DC_REG_TI_X_LSB_H30, A
+
+    LD A, H
+    NEXTREG _DC_REG_TI_X_MSB_H2F, A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _NextStarsTileRow                        ;
+;----------------------------------------------------------;
+; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
+; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
+; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
+    MACRO _NextStarsTileRow
+
+    CALL dbs.Setup8KTilemapBank
+
+    ; ##########################################
+    ; Decrement counters
+    LD A, (tilesRow)
+    DEC A
+    LD (tilesRow), A
+
+    LD A, (sourceTilesRow)
+    DEC A
+    LD (sourceTilesRow), A                          ; A is used below.
+
+    ; ##########################################
+    ; Prepare tile copy fom temp RAM to screen RAM
+
+    ; Load the memory address of the starts row to be copied into HL. HL = TI_RAM_ADDR + sourceTilesRow * _TI_H_BYTES_D80.
+    LD D, A
+    LD E, _TI_H_BYTES_D80
+    MUL D, E                                    ; DE contains byte offset to current row.
+    LD HL, _RAM_SLOT7_STA_HE000
+    ADD HL, DE                                  ; Move RAM pointer to current row.
+
+    ; Load the memory address of in-game tiles into DE. This row will be replaced with stars.
+    ; DE = ti.TI_MAP_RAM_H5B00 + tilesRow * _TI_H_BYTES_D80.
+    LD A, (tilesRow)
+    LD D, A
+    LD E, _TI_H_BYTES_D80
+    MUL D, E                                    ; DE contains #tilesRow * _TI_H_BYTES_D80.
+    PUSH HL
+    LD HL, ti.TI_MAP_RAM_H5B00                  ; HL contains memory offset to tiles.
+    ADD HL, DE
+    LD DE, HL
+    POP HL
+
+    LD BC, _TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
+    LDIR 
+
+    ; ##########################################
+    ; Reset stars counter ?
+    LD A, (sourceTilesRow)
+    OR A
+    JR NZ, .afterResetStarsRow                  ; Jump if #starsLine > 0.
+
+    ; Reset stars counter
+    LD A, TI_ROWS_D96
+    LD (sourceTilesRow), A
+.afterResetStarsRow
+
+    ; ##########################################
+    ; Reset tiles counter?
+    LD A, (tilesRow)
+    OR A
+    JR NZ, .afterResetTilesRow                  ; Jump if #tilesRow > 0.
+
+    ; Reset tiles counter
+    LD A, ti.TI_VTILES_D32
+    LD (tilesRow), A
+.afterResetTilesRow
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
 ;----------------------------------------------------------;
 ;                    ResetRocketStars                      ;
 ;----------------------------------------------------------;
@@ -80,12 +178,12 @@ ScrollStarsOnFlyRocket
     RET C                                       ; Do not animate when phase < 2
 
     ; ##########################################
-    CALL _UpdateTileXOffset
+    _UpdateTileXOffset
 
     ; ##########################################
     ; Pause ?
     LD A, (pauseScrollStars)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterPause
     DEC A
     LD (pauseScrollStars), A
@@ -117,7 +215,7 @@ ScrollStarsOnFlyRocket
 
     ; We are not yet in phase 4, but all tiles are already transparent. There is nothing to do, wait for phase 4.
     LD A, (blackTilesRow)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     DEC A
@@ -127,7 +225,7 @@ ScrollStarsOnFlyRocket
     JR .afterNextTile
 .afterClearTileLine
 
-    CALL _NextStarsTileRow
+    _NextStarsTileRow
 .afterNextTile
 
     ; ##########################################
@@ -149,10 +247,10 @@ DecTileOffsetX
 
     ; If X == 0 then set it to 319. X == 0 when B and C are 0
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterResetX
     LD A, C
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterResetX
     LD BC, _TI_OFFSET_X_MAX
     JR .afterDec
@@ -181,95 +279,6 @@ IncTileOffsetX
     LD BC, 0                                    ; 319 -> set to 0.
 .lessThanMaxX
     LD (tileOffsetX), BC                        ; Update new X position.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                   _UpdateTileXOffset                     ;
-;----------------------------------------------------------;
-_UpdateTileXOffset
-
-    LD HL, (tileOffsetX)
-    LD A, L
-    NEXTREG _DC_REG_TI_X_LSB_H30, A
-
-    LD A, H
-    NEXTREG _DC_REG_TI_X_MSB_H2F, A
-
-    RET                                         ; ## END of the function ##
-    
-;----------------------------------------------------------;
-;                 _NextStarsTileRow                        ;
-;----------------------------------------------------------;
-; This method is called when the in-game tilemap has moved by 8 pixels. It reads the next row from the tilemap and places it on the bottom row 
-; on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to calculate the new 
-; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
-_NextStarsTileRow
-
-    CALL dbs.Setup8KTilemapBank
-
-    ; ##########################################
-    ; Decrement counters
-    LD A, (tilesRow)
-    DEC A
-    LD (tilesRow), A
-
-    LD A, (sourceTilesRow)
-    DEC A
-    LD (sourceTilesRow), A                          ; A is used below.
-
-    ; ##########################################
-    ; Prepare tile copy fom temp RAM to screen RAM
-
-    ; Load the memory address of the starts row to be copied into HL. HL = TI_RAM_ADDR + sourceTilesRow * _TI_H_BYTES_D80.
-    LD D, A
-    LD E, _TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains byte offset to current row.
-    LD HL, _RAM_SLOT7_STA_HE000
-    ADD HL, DE                                  ; Move RAM pointer to current row.
-
-    ; Load the memory address of in-game tiles into DE. This row will be replaced with stars.
-    ; DE = ti.TI_MAP_RAM_H5B00 + tilesRow * _TI_H_BYTES_D80.
-    LD A, (tilesRow)
-    LD D, A
-    LD E, _TI_H_BYTES_D80
-    MUL D, E                                    ; DE contains #tilesRow * _TI_H_BYTES_D80.
-    PUSH HL
-    LD HL, ti.TI_MAP_RAM_H5B00                  ; HL contains memory offset to tiles.
-    ADD HL, DE
-    LD DE, HL
-    POP HL
-
-    LD BC, _TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
-    LDIR 
-
-    ; ##########################################
-    ; Reset stars counter ?
-    LD A, (sourceTilesRow)
-    CP A, 0
-    JR NZ, .afterResetStarsRow                  ; Jump if #starsLine > 0.
-
-    ; Reset stars counter
-    LD A, TI_ROWS_D96
-    LD (sourceTilesRow), A
-.afterResetStarsRow
-
-    ; ##########################################
-    ; Reset tiles counter?
-    LD A, (tilesRow)
-    CP A, 0
-    JR NZ, .afterResetTilesRow                  ; Jump if #tilesRow > 0.
-
-    ; Reset tiles counter
-    LD A, ti.TI_VTILES_D32
-    LD (tilesRow), A
-.afterResetTilesRow
 
     RET                                         ; ## END of the function ##
 

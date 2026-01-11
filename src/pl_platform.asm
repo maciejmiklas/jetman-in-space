@@ -44,12 +44,266 @@ Y_BOTTOM                DB                    ; Y end of the platform.
 platformsPtr            DW 0                  ; Pointer value to platforms.
 platformsSize           DB 0
 
-; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK.
+; A number of the platform that Jetman walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK_D51.
 PLATFORM_WALK_INACTIVE  = $FF                   ; Not on any platform.
 
 platformWalkNumber      DB PLATFORM_WALK_INACTIVE
 
 joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the platform decrements with each hit.
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+
+;----------------------------------------------------------;
+;                    _LoadSpriteYtoA                       ;
+;----------------------------------------------------------;
+; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+; Return:
+;  - A:  sprite's Y coordinate.
+; Modifies: DE
+    MACRO _LoadSpriteYtoA
+
+    LD DE, HL
+    ADD DE, Y_SPR_RAMOFFSET
+    LD A, (DE)                                  ; A holds current sprite Y position.
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                _CheckPlatformHitRight                    ;
+;----------------------------------------------------------;
+; Check the collision with the left side of the platform.
+; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #HIT_MARGIN_D5].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM
+;  - IY: pointer to #PLA
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: BC, DE
+    MACRO _CheckPlatformHitRight
+
+    ; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X]
+    LD DE, (IY + PLA.X_RIGHT)
+    LD BC, (IX + PLAM.X_RIGHT)
+    ADD DE, BC                                  ; DE contains [#PLA.X_RIGHT + #PLAM.X_RIGHT].
+
+    ; Load (HL) into HL (sprite X), as preparation for SBC.
+    PUSH HL
+    LD BC, (HL)
+    LD HL, BC                                   ; HL contains sprite X.
+
+    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
+    POP HL
+    JP M, .keepChecking
+
+    ; HL(sprite X) - DE > 0 -> No collision.
+    _NO
+    JR .end
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite X] > [#PLA.X_RIGHT  + PLAM.X_RIGHT- #HIT_MARGIN_D5].
+    PUSH HL
+
+    LD BC, (HL)                                 ; BC contains sprite X.
+
+    LD HL, (IY + PLA.X_RIGHT)
+    LD DE, HIT_MARGIN_D5
+    SBC HL, DE
+    LD DE, (IX + PLAM.X_RIGHT)
+    ADD HL, DE                                  ; HL contains [#PLA.X_RIGHT  + PLAM.X_RIGHT- #PLAM.X_RIGHT].
+
+    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
+    POP HL
+    JP M, .hit
+    _NO
+    JR .end
+
+.hit
+    _YES
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _CheckPlatformHitLeft                    ;
+;----------------------------------------------------------;
+; Check the collision with the left side of the platform.
+; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM
+;  - IY: pointer to #PLA
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: BC, DE
+    MACRO _CheckPlatformHitLeft
+
+    ; Check if [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X]
+    LD DE, (IY + PLA.X_LEFT)
+    LD BC, HIT_MARGIN_D5
+    ADD DE, BC
+
+    LD BC, (IX + PLAM.X_LEFT)
+
+    SUB DE, BC                                  ; DE contains: #PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5.
+
+    ; Load (HL) into HL (sprite X), as preparation for SBC.
+    PUSH HL
+    LD BC, (HL)
+    LD HL, BC                                   ; HL contains sprite X.
+
+    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
+    POP HL
+    JP M, .keepChecking
+
+    ; HL(sprite X) - DE > 0 -> No collision.
+    _NO
+    JR .end
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT]
+    PUSH HL
+
+    LD BC, (HL)                                 ; BC contains sprite X.
+
+    LD HL, (IY + PLA.X_LEFT)
+    LD DE, (IX + PLAM.X_LEFT)
+    SBC HL, DE                                  ; HL contains [#PLA.X_LEFT - #PLAM.X_LEFT].
+    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
+
+    POP HL
+    JP M, .hit
+
+    _NO
+    JR .end
+.hit
+    _YES
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                _CheckPlatformHitBottom                   ;
+;----------------------------------------------------------;
+; Check the collision with the bottom side of the platform.
+; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM.
+;  - IY: pointer to #PLA.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: C
+    MACRO _CheckPlatformHitBottom
+    
+    ; Check [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y]
+    LD A, (IY + PLA.Y_BOTTOM)
+    ADD (IX + PLAM.Y_BOTTOM)
+    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM].
+
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
+
+    CP C
+    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
+
+    ;  A (sprite Y) > C -> no collision.
+    _NO
+    JR .end
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
+
+    LD A, (IY + PLA.Y_BOTTOM)
+    ADD (IX + PLAM.Y_BOTTOM)
+    SUB HIT_MARGIN_D5
+    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
+
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
+
+    CP C
+    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
+
+    _NO
+    JR .end
+.hit
+    _YES
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _CheckPlatformHitTop                     ;
+;----------------------------------------------------------;
+; Check the collision with the top side of the platform.
+; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM
+;  - IY: pointer to #PLA
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+; Modifies: C
+    MACRO _CheckPlatformHitTop
+
+    ; ##########################################
+    ; Check [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y].
+    LD A, (IY + PLA.Y_TOP)
+    LD C, HIT_MARGIN_D5
+    ADD C
+    SUB (IX + PLAM.Y_TOP)
+    LD C, A                                     ; C holds [#PLA.Y_TOP + #HIT_MARGIN_D5].
+
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
+
+    CP C
+    JR Z, .keepChecking                         ; Jump if A (sprite Y) == C.
+    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
+
+    ;  A (sprite Y) > C -> no collision.
+    _NO
+    JR .end
+
+.keepChecking
+
+    ; ##########################################
+    ; Check [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
+
+    LD A, (IY + PLA.Y_TOP)
+    SUB (IX + PLAM.Y_TOP)
+    LD C, A                                     ; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
+
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
+
+    CP C
+    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
+    
+    _NO
+    JR .end
+.hit
+    _YES
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                     SetupPlatforms                       ;
@@ -79,7 +333,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Collision only possible when flying.
     LD A, (jt.jetAir)
-    CP jt.AIR_FLY
+    CP jt.AIR_FLY_D10
     RET NZ
 
     ; ##########################################
@@ -94,9 +348,9 @@ JetPlatformHitOnJoyMove
     LD B, A
 
     LD IX, db2.jetHitMargin
-    CALL PlatformDirectionHit
+    CALL _PlatformDirectionHit
 
-    CP PL_DHIT_NO
+    OR A                                        ; Same as: CP PL_DHIT_NO_D0
     RET Z
     LD D, A                                     ; Keep return flag D
 
@@ -108,12 +362,12 @@ JetPlatformHitOnJoyMove
 
     ; Did Jetman hit top of the platform?
     LD A, D
-    CP PL_DHIT_TOP
+    CP PL_DHIT_TOP_D3
     JR NZ, .afterLanding
     
     ; Is Jetman moving down?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_DOWN_BIT, A
+    BIT gid.MOVE_DOWN_BIT_D3, A
     JR Z, .afterLanding                         ; Jump if move down bit is not set.
     
     ; Update #platformWalkNumber = #platformSize - B.
@@ -128,16 +382,16 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Does Jetman hit the platform from the left side?
     LD A, D
-    CP PL_DHIT_LEFT
+    CP PL_DHIT_LEFT_D1
     JR NZ, .afterHitLeft
     
     ; Is Jetman moving right (Jetman have to move right to hit the left side of the platform)?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_RIGHT_BIT, A
+    BIT gid.MOVE_RIGHT_BIT_D1, A
     JR Z, .afterHitLeft                         ; Jump if right down bit is not set.
     
     ; Jetman hits the platform.
-    LD A, jt.AIR_BUMP_LEFT
+    LD A, jt.AIR_BUMP_LEFT_D15
     CALL jt.SetJetStateAir
 
     CALL _JetHitsPlatform
@@ -160,16 +414,16 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Does Jetman hit the platform from the right side?
     LD A, D
-    CP PL_DHIT_RIGHT
+    CP PL_DHIT_RIGHT_D2
     JR NZ, .afterHitRight
     
     ; Is Jetman moving left (Jetman have to move left to hit the right side of the platform)?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_LEFT_BIT, A
+    BIT gid.MOVE_LEFT_BIT_D0, A
     JR Z, .afterHitRight                        ; Jump if left down bit is not set.
     
     ; Jetman hits the platform from the right side and bumps off to the right.
-    LD A, jt.AIR_BUMP_RIGHT
+    LD A, jt.AIR_BUMP_RIGHT_D14
     CALL jt.SetJetStateAir
 
     CALL _JetHitsPlatform
@@ -192,16 +446,16 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Does Jetman hit the platform from the bottom?
     LD A, D
-    CP PL_DHIT_BOTTOM
+    CP PL_DHIT_BOTTOM_D4
     JR NZ, .afterHitBottom
 
     ; Is Jetman moving up?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_UP_BIT, A
+    BIT gid.MOVE_UP_BIT_D2, A
     JR Z, .afterHitBottom                       ; Jump if left down bit is not set.
     
     ; Jetman hits the platform from the bottom.
-    LD A, jt.AIR_BUMP_BOTTOM
+    LD A, jt.AIR_BUMP_BOTTOM_D16
     CALL jt.SetJetStateAir
 
     CALL _JetHitsPlatform
@@ -240,7 +494,7 @@ ResetJoyOffBump
 
     ; Does Jetman walk on the platform?
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .reset                               ; Reset immediately if walking.
     
     ; Call _PlatformHit to check whether Jetman is close to the platform. now, we will load the params for this method.
@@ -253,8 +507,7 @@ ResetJoyOffBump
 
     LD IX, db2.jetAwayMargin
     CALL _PlatformHit
-    CP PL_HIT_YES                         ; Jetman is close to platform - do not reset the bump.
-    RET Z   
+    RET Z                                        ; Jetman is close to platform - do not reset the bump.
 
 .reset
     ; Jetman far from the platform - reset.
@@ -270,7 +523,8 @@ ResetJoyOffBump
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
 ; Return:
-;  - A:  #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteHit
 
     LD IY, db2.spriteHitMargin
@@ -283,7 +537,8 @@ PlatformSpriteHit
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
 ; Return:
-;  - A:  #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteClose
 
     LD IY, db2.closeMargin
@@ -296,7 +551,8 @@ PlatformSpriteClose
 ; Input:
 ;  - IX: pointer to SPR, single sprite to check cloison for.
 ; Return:
-;  - A:  #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 CheckPlatformWeaponHit
 
     LD IY, db2.shotHitMargin
@@ -309,7 +565,7 @@ MoveJetOnFallingFromPlatform
 
     ; Is Jetman falling from the platform on the right side?
     LD A, (jt.jetAir)
-    CP jt.AIR_FALL_RIGHT
+    CP jt.AIR_FALL_RIGHT_D12
     JR NZ, .afterFallingRight
 
     ; Yes, Jetman is falling from the platform.
@@ -324,7 +580,7 @@ MoveJetOnFallingFromPlatform
 
     ; Is Jetman falling from the platform on the left side?
     LD A, (jt.jetAir)
-    CP jt.AIR_FALL_LEFT
+    CP jt.AIR_FALL_LEFT_D13
     RET NZ
 
     ; Yes, Jetman is falling from the platform.
@@ -343,7 +599,7 @@ MoveJetOnHitPlatformBelow
 
     ; Jetman hits the platform from the bottom?
     LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_BOTTOM
+    CP jt.AIR_BUMP_BOTTOM_D16
     RET NZ
 
     ; Yes, Jetman hits the platform.
@@ -355,14 +611,14 @@ MoveJetOnHitPlatformBelow
     LD A, (gid.joyDirection)
 
     ; Joystick points right, move left.
-    BIT gid.MOVE_RIGHT_BIT, A
+    BIT gid.MOVE_RIGHT_BIT_D1, A
     JR Z, .afterRight
     CALL jpo.IncJetX
     JR .afterLeft
 .afterRight
 
     ; Joystick points left, move right.
-    BIT gid.MOVE_LEFT_BIT, A
+    BIT gid.MOVE_LEFT_BIT_D0, A
     JR Z, .afterLeft
     CALL jpo.DecJetX
 .afterLeft  
@@ -376,11 +632,11 @@ JetLanding
 
     ; Ignore landing if Jetman is already on the ground.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE
+    CP jt.JT_STATE_INACTIVE_D0
     RET NZ
 
     ; Update state as we are walking.
-    LD A, jt.GND_WALK
+    LD A, jt.GND_WALK_D51
     CALL jt.SetJetStateGnd
     
     ; Jetman is landing, trigger transition: flying -> standing/walking.
@@ -395,7 +651,7 @@ JetLanding
     JR .afterStand                              ; The animation is already loaded, do not overwrite it with standing.
 .afterMoveLR
 
-    LD A, jt.GND_STAND
+    LD A, jt.GND_STAND_D53
     CALL jt.SetJetStateGnd                      ; Update state as we are standing.
 
     LD A, js.SDB_T_FS                           ; Play transition from landing -> standing.
@@ -407,7 +663,7 @@ JetLanding
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 PlatformBounceOff                   ;
+;                   PlatformBounceOff                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
@@ -420,108 +676,9 @@ PlatformBounceOff
 
     LD IX, db2.bounceMargin
 
-;----------------------------------------------------------;
-;                 PlatformDirectionHit                     ;
-;----------------------------------------------------------;
-; Check whether the sprite given by coordinates hits one of the platforms, also provides platform number and side.
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA list
-;  - B:  number of elements in #PLA list
-; Return:
-;  - A:  #PL_DHIT_RET_XXX
-;  - B:  platform counter set to the current platform. The counter starts with the number (inclusive) of platforms and counts toward 1 (inclusive).
-PL_DHIT_NO              = 0                     ; No collision.
-PL_DHIT_LEFT            = 1                     ; Sprite hits the platform from the left.
-PL_DHIT_RIGHT           = 2                     ; Sprite hits the platform from the right.
-PL_DHIT_TOP             = 3                     ; Sprite hits the platform from above.
-PL_DHIT_BOTTOM          = 4                     ; Sprite hits the platform from below.
+    CALL _PlatformDirectionHit
 
-PlatformDirectionHit
-
-    CALL dbs.SetupArrays2Bank
-.loopOverPlatforms
-
-    ; ##########################################
-    ; Check the collision from the left side of the platform.
-
-    PUSH BC
-    CALL _CheckPlatformHitLeft
-    POP BC
-
-    JR NZ, .afterHitLeft
-
-    ; We have a hit from the left side, now check whether Jetman is within the vertical bounds of the platform.
-    CALL _CheckPlatformHitVertical
-    JR NZ, .afterHitLeft
-
-    LD A, PL_DHIT_LEFT
-    RET
-.afterHitLeft
-
-    ; ##########################################
-    ; Check the collision from the right side of the platform.
-
-    PUSH BC
-    CALL _CheckPlatformHitRight
-    POP BC
-
-    JR NZ, .afterHitRight
-
-    ; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
-    CALL _CheckPlatformHitVertical
-    JR NZ, .afterHitRight
-
-    LD A, PL_DHIT_RIGHT
-    RET
-.afterHitRight
-
-    ; ##########################################
-    ; Check the collision from the top side of the platform.
-
-    CALL _CheckPlatformHitTop
-    JR NZ, .afterHitTop
-
-    ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
-    PUSH BC
-    CALL _CheckPlatformHitHorizontal
-    POP BC
-
-    JR NZ, .afterHitTop
-
-    LD A, PL_DHIT_TOP
-    RET
-.afterHitTop
-
-    ; ##########################################
-    ; Check the collision from the bottom side of the platform.
-
-    CALL _CheckPlatformHitBottom
-    JR NZ, .afterHitBottom
-
-    ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
-    PUSH BC
-    CALL _CheckPlatformHitHorizontal
-    POP BC
-
-    JR NZ, .afterHitBottom
-
-    LD A, PL_DHIT_BOTTOM
-    RET
-.afterHitBottom
-
-    ; ##########################################
-    ; Loop over platforms.
-    LD DE, PLA
-    ADD IY, DE
-    DJNZ .loopOverPlatforms                         ; decrement B until all platforms have been evaluated.
-
-    ; We've iterated over all platforms, and there was no hit.
-    LD A, PL_HIT_NO
-    
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                 MoveJetOnPlatformSideHit                 ;
@@ -530,7 +687,7 @@ MoveJetOnPlatformSideHit
 
     ; Is Jetman bumping into the platform from the right?
     LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_RIGHT
+    CP jt.AIR_BUMP_RIGHT_D14
     JR NZ, .afterBumpingRight
 
     ; Yes
@@ -540,11 +697,11 @@ MoveJetOnPlatformSideHit
 
     ; Is Jetman bumping into the platform from the left?
     LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_LEFT
+    CP jt.AIR_BUMP_LEFT_D15
     RET NZ
 
     ; Yes
-    CALL jpo.DecJetX    
+    CALL jpo.DecJetX
 
     RET                                         ; ## END of the function ##
 
@@ -595,11 +752,11 @@ JetFallingFromPlatform
 
 ; Jetman is falling from the platform, left or right.
 .fallingLeft
-    LD A, jt.AIR_FALL_LEFT
+    LD A, jt.AIR_FALL_LEFT_D13
     JR .afterFallingRight
 
 .fallingRight
-    LD A, jt.AIR_FALL_RIGHT
+    LD A, jt.AIR_FALL_RIGHT_D12
 
 .afterFallingRight
     
@@ -629,22 +786,123 @@ JetFallingFromPlatform
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                _PlatformDirectionHit                     ;
+;----------------------------------------------------------;
+; Check whether the sprite given by coordinates hits one of the platforms, also provides platform number and side.
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IX: pointer to #PLAM
+;  - IY: pointer to #PLA list
+;  - B:  number of elements in #PLA list
+; Return:
+;  - A:  #PL_DHIT_RET_XXX
+;  - B:  platform counter set to the current platform. The counter starts with the number (inclusive) of platforms and counts toward 1 (inclusive).
+PL_DHIT_NO_D0           = 0                     ; No collision.
+PL_DHIT_LEFT_D1         = 1                     ; Sprite hits the platform from the left.
+PL_DHIT_RIGHT_D2        = 2                     ; Sprite hits the platform from the right.
+PL_DHIT_TOP_D3          = 3                     ; Sprite hits the platform from above.
+PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from below.
+
+_PlatformDirectionHit
+
+    CALL dbs.SetupArrays2Bank
+.loopOverPlatforms
+    PUSH BC
+    ; ##########################################
+    ; Check the collision from the left side of the platform.
+
+    _CheckPlatformHitLeft
+
+    JR NZ, .afterHitLeft
+
+    ; We have a hit from the left side, now check whether Jetman is within the vertical bounds of the platform.
+    CALL _CheckPlatformHitVertical
+    JR NZ, .afterHitLeft
+
+    LD A, PL_DHIT_LEFT_D1
+    JP .endLoopOverPlatforms
+.afterHitLeft
+
+    ; ##########################################
+    ; Check the collision from the right side of the platform.
+
+    _CheckPlatformHitRight
+    JR NZ, .afterHitRight
+
+    ; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
+    CALL _CheckPlatformHitVertical
+    JR NZ, .afterHitRight
+
+    LD A, PL_DHIT_RIGHT_D2
+    JP .endLoopOverPlatforms
+.afterHitRight
+
+    ; ##########################################
+    ; Check the collision from the top side of the platform.
+
+    _CheckPlatformHitTop
+    JR NZ, .afterHitTop
+
+    ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
+    CALL _CheckPlatformHitHorizontal
+
+    JR NZ, .afterHitTop
+
+    LD A, PL_DHIT_TOP_D3
+    JR .endLoopOverPlatforms
+.afterHitTop
+
+    ; ##########################################
+    ; Check the collision from the bottom side of the platform.
+
+    _CheckPlatformHitBottom
+    JR NZ, .afterHitBottom
+
+    ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
+    CALL _CheckPlatformHitHorizontal
+
+    JR NZ, .afterHitBottom
+
+    LD A, PL_DHIT_BOTTOM_D4
+    JR .endLoopOverPlatforms
+.afterHitBottom
+
+    ; ##########################################
+    ; Loop over platforms.
+    
+    LD DE, PLA
+    ADD IY, DE
+
+    POP BC
+    DEC B
+    JP NZ, .loopOverPlatforms                         ; decrement B until all platforms have been evaluated.
+
+    ; We've iterated over all platforms, and there was no hit.
+    LD A, PL_DHIT_NO_D0
+    JR .end
+
+.endLoopOverPlatforms
+    POP BC
+
+.end
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     _PlatformHit                         ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms. It does not provide direction, just an indication that 
-; there was a hit. To get directions use #PlatformDirectionHit.
+; there was a hit. To get directions use #_PlatformDirectionHit.
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 ;  - IY: pointer to #PLA list.
 ;  - B:  number of elements in #PLA list.
 ;  - IX: pointer to #PLAM.
 ; Return:
-;  - A:  PL_HIT_RET_XXX
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 ;  - B:  the current value of the platform counter. It counts from the maximum amount of platforms to zero.
 ;  - IY: set to current platform.
-PL_HIT_NO               = 0                     ; No collision.
-PL_HIT_YES              = 1                     ; Sprite hits the platform.
-
+;
 ; Modifies:  A, BC, DE, IY
 ; Unchanged: HL, IX
 _PlatformHit
@@ -722,7 +980,7 @@ _PlatformHit
 
     ; ##########################################
     ; Sprite hits the platform!
-    LD A, PL_HIT_YES
+    _YES
     RET
 
 .continueLoopOverPlatforms
@@ -730,244 +988,7 @@ _PlatformHit
     ADD IY, DE
     DJNZ .loopOverPlatforms                     ; decrement B until all platforms have been evaluated.
 
-    LD A, PL_HIT_NO
-    
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _LoadSpriteYtoA                       ;
-;----------------------------------------------------------;
-; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-; Return:
-;  - A:  sprite's Y coordinate.
-; Modifies: DE
-_LoadSpriteYtoA
-
-    LD DE, HL
-    ADD DE, Y_SPR_RAMOFFSET
-    LD A, (DE)                                  ; A holds current sprite Y position.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _CheckPlatformHitTop                     ;
-;----------------------------------------------------------;
-; Check the collision with the top side of the platform.
-; Collision when: [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: C
-_CheckPlatformHitTop
-
-    ; ##########################################
-    ; Check [#PLA.Y_TOP - #PLAM.Y_TOP + #HIT_MARGIN_D5] > [sprite Y].
-    LD A, (IY + PLA.Y_TOP)
-    LD C, HIT_MARGIN_D5
-    ADD C
-    SUB (IX + PLAM.Y_TOP)
-    LD C, A                                     ; C holds [#PLA.Y_TOP + #HIT_MARGIN_D5].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR Z, .keepChecking                         ; Jump if A (sprite Y) == C.
-    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
-
-    ;  A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).
-    RET
-
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite Y] > [#PLA.Y_TOP - #PLAM.Y_TOP].
-
-    LD A, (IY + PLA.Y_TOP)
-    SUB (IX + PLAM.Y_TOP)
-    LD C, A                                     ; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
-    
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                _CheckPlatformHitBottom                   ;
-;----------------------------------------------------------;
-; Check the collision with the bottom side of the platform.
-; Collision when: [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM.
-;  - IY: pointer to #PLA.
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: C
-_CheckPlatformHitBottom
-    
-    ; Check [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM] > [sprite Y]
-    LD A, (IY + PLA.Y_BOTTOM)
-    ADD (IX + PLAM.Y_BOTTOM)
-    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
-
-    ;  A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).
-    RET
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite Y] > [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
-
-    LD A, (IY + PLA.Y_BOTTOM)
-    ADD (IX + PLAM.Y_BOTTOM)
-    SUB HIT_MARGIN_D5
-    LD C, A                                     ; C holds [#PLA.Y_BOTTOM + #PLAM.Y_BOTTOM - #HIT_MARGIN_D5].
-
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
-
-    CP C
-    JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
-
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _CheckPlatformHitLeft                    ;
-;----------------------------------------------------------;
-; Check the collision with the left side of the platform.
-; Collision when: [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: BC, DE
-_CheckPlatformHitLeft
-
-    ; Check if [#PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5] > [sprite X]
-    LD DE, (IY + PLA.X_LEFT)
-    LD BC, HIT_MARGIN_D5
-    ADD DE, BC
-
-    LD BC, (IX + PLAM.X_LEFT)
-
-    SUB DE, BC                                  ; DE contains: #PLA.X_LEFT - #PLAM.X_LEFT + #HIT_MARGIN_D5.
-
-    ; Load (HL) into HL (sprite X), as preparation for SBC.
-    PUSH HL
-    LD BC, (HL)
-    LD HL, BC                                   ; HL contains sprite X.
-
-    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
-    POP HL
-    JP M, .keepChecking
-
-    ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).
-    RET
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite X] > [#PLA.X_LEFT - #PLAM.X_LEFT]
-    PUSH HL
-
-    LD BC, (HL)                                 ; BC contains sprite X.
-
-    LD HL, (IY + PLA.X_LEFT)
-    LD DE, (IX + PLAM.X_LEFT)
-    SBC HL, DE                                  ; HL contains [#PLA.X_LEFT - #PLAM.X_LEFT].
-    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
-
-    POP HL
-    JP M, .hit
-
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                _CheckPlatformHitRight                    ;
-;----------------------------------------------------------;
-; Check the collision with the left side of the platform.
-; Collision when: [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X] > [#PLA.X_RIGHT + PLAM.X_RIGHT - #HIT_MARGIN_D5].
-; Input:
-;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA
-; Return:
-;  - YES: Z is reset (JP Z).
-;  - NO:  Z is set (JP NZ).
-; Modifies: BC, DE
-_CheckPlatformHitRight
-
-    ; Check [#PLA.X_RIGHT + PLAM.X_RIGHT] > [sprite X]
-    LD DE, (IY + PLA.X_RIGHT)
-    LD BC, (IX + PLAM.X_RIGHT)
-    ADD DE, BC                                  ; DE contains [#PLA.X_RIGHT + #PLAM.X_RIGHT].
-
-    ; Load (HL) into HL (sprite X), as preparation for SBC.
-    PUSH HL
-    LD BC, (HL)
-    LD HL, BC                                   ; HL contains sprite X.
-
-    SBC HL, DE                                  ; if HL(sprite X) - DE < 0 then we have collision.
-    POP HL
-    JP M, .keepChecking
-
-    ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).`
-    RET
-.keepChecking
-
-    ; ##########################################
-    ; Check [sprite X] > [#PLA.X_RIGHT  + PLAM.X_RIGHT- #HIT_MARGIN_D5].
-    PUSH HL
-
-    LD BC, (HL)                                 ; BC contains sprite X.
-
-    LD HL, (IY + PLA.X_RIGHT)
-    LD DE, HIT_MARGIN_D5
-    SBC HL, DE
-    LD DE, (IX + PLAM.X_RIGHT)
-    ADD HL, DE                                  ; HL contains [#PLA.X_RIGHT  + PLAM.X_RIGHT- #PLAM.X_RIGHT].
-
-    SBC HL, BC                                  ; Jump if HL - DE (sprite X) < 0.
-    POP HL
-    JP M, .hit
-
-    OR 1                                        ; Return NO (Z set).
-    RET
-.hit
-    XOR A                                       ; Return YES (Z is reset).
+    _NO
 
     RET                                         ; ## END of the function ##
 
@@ -1001,7 +1022,7 @@ _CheckPlatformHitHorizontal
     JP M, .keepChecking
 
     ; HL(sprite X) - DE > 0 -> No collision.
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .keepChecking
 
@@ -1019,10 +1040,10 @@ _CheckPlatformHitHorizontal
     POP HL
     JP M, .hit
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -1045,15 +1066,15 @@ _CheckPlatformHitVertical
     ADD (IX + PLAM.Y_BOTTOM)
     LD C, A                                     ; C holds [#PLA.Y_BOTTOM + PLAM.Y_BOTTOM].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR C, .keepChecking                         ; Jump if A (sprite Y) < C.
 
     ; A (sprite Y) > C -> no collision.
-    OR 1                                        ; Return NO (Z set).`
+    _NO
     RET
-    
+
 .keepChecking
 
     ; ##########################################
@@ -1063,15 +1084,15 @@ _CheckPlatformHitVertical
     SUB (IX + PLAM.Y_TOP)
     LD C, A                                     ; C holds [#PLA.Y_TOP - #PLAM.Y_TOP].
 
-    CALL _LoadSpriteYtoA                        ; A holds current sprite Y position.
+    _LoadSpriteYtoA                             ; A holds current sprite Y position.
 
     CP C
     JR NC, .hit                                 ; Jump if A (sprite Y) >= C.
 
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 .hit
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -1083,15 +1104,17 @@ _CheckPlatformHitVertical
 ;  - IX: pointer to #SPR, single sprite to check collision for.
 ;  - IY: pointer to #PLAM
 ; Return:
-;  - A:     #PL_HIT_YES/ #PL_HIT_NO
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
 _PlatformSpriteHit
+
     CALL dbs.SetupArrays2Bank
-    
+
     ; Exit if sprite is not alive
     BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .alive                               ; Jump if sprite is alive.
 
-    LD A, PL_HIT_NO
+    _NO
     RET
 .alive
 

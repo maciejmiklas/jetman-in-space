@@ -63,7 +63,7 @@ ResetPickups
     LD (pickupsSize), A
 
     LD A, PICKUP_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -73,13 +73,13 @@ ResetPickups
 UpdatePickupsOnJetmanMove
 
     LD A, (jt.jetState)
-    CP jt.JETST_RIP
+    CP jt.JETST_RIP_D103
     RET Z
 
     ; ##########################################
     ; Exit if there is no active pickup.
     LD A, (deployed)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     ; ##########################################
@@ -149,7 +149,7 @@ UpdatePickupsOnJetmanMove
     ; Freeze enemies
     CP PI_FREEZE_ENEMIES
     JR NZ, .afterFreeze
-    CALL gc.FreezeEnemies
+    CALL enc.FreezeEnemies
     JR .nextPickup
 .afterFreeze
 
@@ -165,7 +165,7 @@ AnimateFallingPickup
 
     ; Exit if there is no active pickup.
     LD A, (deployed)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     ; ##########################################
@@ -219,7 +219,7 @@ PickupDropCounter
 
     ; Do not deploy next pickup if there is one out there.
     LD A, (deployed)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET NZ
 
     ; ##########################################
@@ -278,7 +278,7 @@ PickupDropCounter
     JR NZ, .afterGunCheck
 
     LD A, (jw.fireDelay)
-    CP jw.JM_FIRE_DELAY_MIN
+    CP jw.JM_FIRE_DELAY_MIN_D3
     JR Z, .deployNext
 .afterGunCheck
 
@@ -310,7 +310,7 @@ _PrepareNextPixkup
 
     ; Hide pickup
     LD A, PICKUP_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;

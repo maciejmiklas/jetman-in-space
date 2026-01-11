@@ -7,10 +7,42 @@
 ;----------------------------------------------------------;
     MODULE sc
 
-SYNC_SL_D192            = 192                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
+SYNC_TOP_D0             = 0
+SYNC_BOTTOM_D192        = 192                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
 TI_CLIP_TOP_D8          = _TI_PIXELS_D8
 TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - _TI_PIXELS_D8
 CLIP_TOP50_D50          = 40
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  #_WaitForScanline                       ;
+;----------------------------------------------------------;
+    MACRO _WaitForScanline line
+
+; Read NextReg $1F - LSB of current raster line.
+    LD BC, _GL_REG_SELECT_H243B                 ; TBBlue Register Select.
+    LD A, _GL_REG_VL_H1F                        ; Port to access - Active Video Line LSB Register.
+    OUT (C), A                                  ; Select NextReg $1F.
+    INC B                                       ; TBBlue Register Access.
+
+; Wait for scanline.
+.waitForScanline
+    IN A, (C)                                   ; Read the raster line LSB into A.
+    CP line
+    JR NZ, .waitForScanline
+
+    ENDM
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                      #SetupScreen                        ;
@@ -110,25 +142,27 @@ ResetClippings
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     #WaitForScanline                     ;
+;                 #WaitForTopScanline                      ;
 ;----------------------------------------------------------;
 ; Pauses executing for single frame, 1/60 or 1/50 of a second.
 ; Based on: https://github.com/robgmoran/DougieDoSource
-WaitForScanline     
+WaitForTopScanline
 
-; Read NextReg $1F - LSB of current raster line.
-    LD BC, _GL_REG_SELECT_H243B                 ; TBBlue Register Select.
-    LD A, _GL_REG_VL_H1F                        ; Port to access - Active Video Line LSB Register.
-    OUT (C), A                                  ; Select NextReg $1F.
-    INC B                                       ; TBBlue Register Access.
-
-; Wait for scanline.
-.waitForScanline
-    IN A, (C)                                   ; Read the raster line LSB into A.
-    CP SYNC_SL_D192
-    JR NZ, .waitForScanline
+    _WaitForScanline SYNC_TOP_D0
 
     RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 #WaitForBottomScanline                   ;
+;----------------------------------------------------------;
+; Pauses executing for single frame, 1/60 or 1/50 of a second.
+; Based on: https://github.com/robgmoran/DougieDoSource
+WaitForBottomScanline
+
+    _WaitForScanline SYNC_BOTTOM_D192
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

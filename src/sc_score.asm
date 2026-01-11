@@ -201,6 +201,7 @@ PrintScore
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
 ;----------------------------------------------------------;
 ;                       _UpdateScore                       ;
 ;----------------------------------------------------------;
@@ -220,7 +221,7 @@ _UpdateScore
     ; #########################################
     ; Update UI, but return if gamebar is hidden
     LD A, (gb.gamebarState)
-    CP gb.GB_VISIBLE
+    CP gb.GB_VISIBLE_D1
     RET NZ
 
     CALL PrintScore

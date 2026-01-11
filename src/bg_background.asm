@@ -83,7 +83,7 @@ HideBackgroundBehindHorizon
     CALL _GetGroundImageLine
 
     ; Do not remove the line if the Jetman is on the ground (offset is 255).
-    CP GBL_RET_A_GND
+    CP _BM_YRES_D255
     RET Z
 
     INC A                                       ; Move image one pixel down (TODO why is that necessary?).
@@ -100,12 +100,10 @@ ShowBackgroundAboveHorizon
     CALL _GetGroundImageLine
 
     ; Do not remove the line if the Jetman is on the ground (offset is 255).
-    CP GBL_RET_A_GND
+    CP _BM_YRES_D255
     RET Z
 
     INC A                                       ; Move image one pixel down (TODO why is that necessary?).
-    LD E, A                                     ; E contains bottom line.
-
     CALL bm.ReplaceImageLine
 
     RET                                         ; ## END of the function ##
@@ -134,14 +132,12 @@ _MoveBackground
 ;----------------------------------------------------------;
 ; Return:
 ;  - A: returns the line number of the background image at ground level based on the horizontal image movement given by #bgOffset
-GBL_RET_A_GND               = _BM_YRES_D256-1
-
 _GetGroundImageLine
 
     ; Calculate the line number that needs to be replaced. It's the line going behind the horizon. It's always the bottom line of the image.
     LD A, (bgOffset)
     LD B, A
-    LD A, _BM_YRES_D256-1
+    LD A, _BM_YRES_D255
     SUB B                                       ; Move A by B (background offset).
 
     RET                                         ; ## END of the function ##

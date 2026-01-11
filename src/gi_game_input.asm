@@ -8,23 +8,6 @@
     MODULE gi
 
 ;----------------------------------------------------------;
-;                     ResetKeysState                       ;
-;----------------------------------------------------------;
-ResetKeysState
-
-    XOR A
-    LD (gid.joyOffCnt), A
-    LD (gid.jetDirection), A
-    LD (gid.joyDirection), A
-    LD (gid.joyPrevDirection), A
-    LD (gid.joyOverheatDelayCnt), A
-    LD (gid.gameInputState), A
-    LD (gid.gameInputPrevState), A
-    LD (gid.breakCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from function keys (throw granade, music off)
@@ -264,7 +247,7 @@ GameOptionsInput
 
     ; Do not detect a break when Jetman is moving.
     LD A, (gid.joyDirection)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notBreak
 
     ; SHIFT pressed?
@@ -481,10 +464,10 @@ _Key_P
 
     LD A, (ms.mainState)
 
-    CP ms.PAUSE
+    CP ms.MS_PAUSE_D30
     JR Z, .pause
 
-    LD A, ms.PAUSE
+    LD A, ms.MS_PAUSE_D30
     CALL ms.SetMainStateAndBackup
     RET
 
@@ -515,7 +498,7 @@ _Key_Break
     INC A
     LD (gid.breakCnt), A
 
-    CP gid.BREAK_CNT
+    CP gid.BREAK_CNT_D50
     RET NZ
 
     ; The break has been pressed long enough to exit the game.
@@ -530,12 +513,12 @@ _GameInputEnd
 
     ; Fire key has been released?
     LD A, (gid.gameInputState)
-    BIT gid.BS_FIRE_BIT, A
+    BIT gid.BS_FIRE_BIT_D0, A
     JR NZ, .afterFireRelease                 ; Jump if fire is pressed now.
 
     ; Fire is not pressed, now check whether it was pressed during the last loop.
     LD A, (gid.gameInputPrevState)
-    BIT gid.BS_FIRE_BIT, A
+    BIT gid.BS_FIRE_BIT_D0, A
     JR Z, .afterFireRelease                  ; Jump if down was not pressed.
 
     ; Fire is not pressed now, but was in previous loop.
@@ -558,12 +541,12 @@ _JoyMoveEnd
     ; ##########################################
     ; Down key has been released?
     LD A, (gid.joyDirection)
-    BIT gid.MOVE_DOWN_BIT, A
+    BIT gid.MOVE_DOWN_BIT_D3, A
     JR NZ, .afterJoyDownRelease                 ; Jump if down is pressed now.
 
     ; Down is not pressed, now check whether it was pressed during the last loop.
     LD A, (gid.joyPrevDirection)
-    BIT gid.MOVE_DOWN_BIT, A
+    BIT gid.MOVE_DOWN_BIT_D3, A
     JR Z, .afterJoyDownRelease                  ; Jump if down was not pressed.
 
     ; Down is not pressed now, but was in previous loop.
@@ -584,7 +567,7 @@ _JoyMoveEnd
 _JoyRight
     ; Update temp state
     LD A, (gid.joyDirection)
-    SET gid.MOVE_RIGHT_BIT, A
+    SET gid.MOVE_RIGHT_BIT_D1, A
     LD (gid.joyDirection), A
 
     ; ##########################################
@@ -599,7 +582,7 @@ _JoyLeft
 
     ; Update #joyDirection state
     LD A, (gid.joyDirection)
-    SET gid.MOVE_LEFT_BIT, A
+    SET gid.MOVE_LEFT_BIT_D0, A
     LD (gid.joyDirection), A
 
     ; ##########################################
@@ -614,7 +597,7 @@ _JoyUp
 
     ; Update #joyDirection state
     LD A, (gid.joyDirection)
-    SET gid.MOVE_UP_BIT, A  
+    SET gid.MOVE_UP_BIT_D2, A  
     LD (gid.joyDirection), A
 
     ; ##########################################
@@ -629,7 +612,7 @@ _JoyDown
 
     ; Update #joyDirection state
     LD A, (gid.joyDirection)
-    SET gid.MOVE_DOWN_BIT, A
+    SET gid.MOVE_DOWN_BIT_D3, A
     LD (gid.joyDirection), A
 
     ; ##########################################
@@ -661,7 +644,7 @@ _JoyFireA
 _JoyFireB
 
     LD A, (gid.gameInputState)
-    SET gid.BS_FIRE_BIT, A
+    SET gid.BS_FIRE_BIT_D0, A
     LD (gid.gameInputState), A
 
     CALL jw.FirePress
@@ -687,7 +670,7 @@ _JoyFireRelease
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     _JoyGrenade                          ;
+;                    _ThrowGranade                         ;
 ;----------------------------------------------------------;
 _ThrowGranade
 

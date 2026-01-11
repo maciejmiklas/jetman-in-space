@@ -9,25 +9,25 @@
 
     ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
 
-TS_DISABLED             = 0
-TS_WAITING              = 1
-TS_DEPLOYING            = 2
-TS_EXPLODES             = 20
-TS_RUNS_EMPTY           = 30
-TS_CARRIES_FUEL         = 31
-thiefState              DB TS_DISABLED
+TS_DISABLED_D0          = 0
+TS_WAITING_D1           = 1
+TS_DEPLOYING_D2         = 2
+TS_EXPLODES_D20         = 20
+TS_RUNS_EMPTY_D30       = 30
+TS_CARRIES_FUEL_D31     = 31
+thiefState              DB TS_DISABLED_D0
 
-THIEF_SIZE              = 1
-FUEL_SPRITE_ID          = 97                    ; Sprite ID for the screen.
-FUEL_SPRITE_REF         = 17                    ; Sprite id from sprite file.
-FUEL_HEIGHT             = 226
-DEPLOY_SIDE_RND         = $30
+THIEF_SIZE_D1           = 1
+FUEL_SPRITE_ID_D97      = 97                    ; Sprite ID for the screen.
+FUEL_SPRITE_REF_D17     = 17                    ; Sprite id from sprite file.
+FUEL_HEIGHT_D226        = 226
+DEPLOY_SIDE_RND_H30     = $30
 
 thiefRespawnDelayCnt    DB 0
-RESPAWN_DELAY           = 22
-RESPAWN_DEPLOYING       = 16
+RESPAWN_DELAY_D22       = 22
+RESPAWN_DEPLOYING_D16   = 16
 
-MIN_FUEL_LEVEL          = 6
+MIN_FUEL_LEVEL_D6       = 6
 
 ;----------------------------------------------------------;
 ;                     DisableFuelThief                     ;
@@ -36,7 +36,7 @@ DisableFuelThief
 
     CALL _HideFuelThief
 
-    LD A, TS_DISABLED
+    LD A, TS_DISABLED_D0
     LD (thiefState), A
 
     CALL _SetupFuelThief
@@ -50,7 +50,7 @@ EnableFuelThief
 
     CALL _HideFuelThief
 
-    LD A, TS_WAITING
+    LD A, TS_WAITING_D1
     LD (thiefState), A
 
     CALL _SetupFuelThief
@@ -64,7 +64,7 @@ ThiefWeaponHit
 
     ; Do not execute it thief is not moving.
     LD A, (thiefState)
-    CP TS_RUNS_EMPTY
+    CP TS_RUNS_EMPTY_D30
     RET C
 
     CALL _LoadSprToIxIy                         ; Load SPR to IX and ENP to IY
@@ -75,17 +75,16 @@ ThiefWeaponHit
     PUSH IX
     CALL jw.ShotsCollision
     POP IX
-    CP jw.SHOT_HIT
     RET NZ
 
     ; Weapon hit confirmed!
-    LD A, TS_EXPLODES
+    LD A, TS_EXPLODES_D20
     LD (thiefState), A
 
     CALL sr.SpriteHit
 
-    LD A, FUEL_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    LD A, FUEL_SPRITE_ID_D97
+    sp.SetIdAndHideSprite
 
     ; Restart deploy countdown.
     XOR A
@@ -100,29 +99,29 @@ ThiefWeaponHit
 ;----------------------------------------------------------;
 RespawnFuelThief
 
-    ; Respawn if #TS_WAITING, #TS_DEPLOYING or #TS_EXPLODES.
+    ; Respawn if #TS_WAITING_D1, #TS_DEPLOYING_D2 or #TS_EXPLODES_D20.
     LD A, (thiefState)
-    CP TS_WAITING
+    CP TS_WAITING_D1
     JR Z, .respawn
 
-    CP TS_DEPLOYING
+    CP TS_DEPLOYING_D2
     JR Z, .respawn
 
-    CP TS_EXPLODES
+    CP TS_EXPLODES_D20
     RET NZ
 .respawn
 
     ; ##########################################
     ; Does the rocket have enough fuel?
     CALL enur.LoadRocketElementCnt
-    CP MIN_FUEL_LEVEL
+    CP MIN_FUEL_LEVEL_D6
     RET C                                       ; Return if rocket does not have enough fuel.
 
     ; ##########################################
     ; Respawn thief only if no rocket tank is deployed for pickup. Otherwise, decrementing the element number would make picking up the 
     ; deployed one impossible.
     CALL enur.LoadRocketState
-    CP ro.ROST_WAIT_DROP
+    CP ro.ROST_WAIT_DROP_D1
     RET NZ
 
     ; ##########################################
@@ -133,10 +132,10 @@ RespawnFuelThief
 
     ; ##########################################
     ; Deploying starts few loops before running, and it's used to play sound before thief starts running.
-    CP RESPAWN_DEPLOYING
+    CP RESPAWN_DEPLOYING_D16
     JR NZ, .afterDeploying
 
-    LD A, TS_DEPLOYING
+    LD A, TS_DEPLOYING_D2
     LD (thiefState), A
 
     ; Reset the deployment countdown for the next fuel element because the thief is active.
@@ -147,22 +146,22 @@ RespawnFuelThief
     ; Respawn thief.
 
     LD A, (thiefRespawnDelayCnt)
-    CP RESPAWN_DELAY
+    CP RESPAWN_DELAY_D22
     RET NZ
 
-    LD A, TS_RUNS_EMPTY
+    LD A, TS_RUNS_EMPTY_D30
     LD (thiefState), A
 
     CALL _LoadSprToIxIy
 
     ; Random left/right deployment.
     LD A, R
-    CP DEPLOY_SIDE_RND
+    CP DEPLOY_SIDE_RND_H30
     JR C, .deployRight
-    LD (IY+ENP.SETUP), enp.ENP_S_LEFT_ALONG 
+    LD (IY+ENP.SETUP), enp.ENP_LEFT_ALONG 
     JR .afterDeploySide
 .deployRight
-    LD (IY+ENP.SETUP), enp.ENP_S_RIGHT_ALONG 
+    LD (IY+ENP.SETUP), enp.ENP_RIGHT_ALONG 
 .afterDeploySide
 
     ; Reset the deployment countdown for the next fuel element because the thief is active.
@@ -178,11 +177,11 @@ AnimateFuelThief
 
     ; Do not execute it thief is not moving/exploding.
     LD A, (thiefState)
-    CP TS_EXPLODES
+    CP TS_EXPLODES_D20
     RET C
 
     LD IX, ena.fuelThiefSpr
-    LD A, THIEF_SIZE
+    LD A, THIEF_SIZE_D1
     LD B, A
     CALL sr.AnimateSprites
 
@@ -195,7 +194,7 @@ MoveFuelThief
 
     ; Do not execute it thief is not moving.
     LD A, (thiefState)
-    CP TS_RUNS_EMPTY
+    CP TS_RUNS_EMPTY_D30
     RET C
 
     ; ##########################################
@@ -204,7 +203,7 @@ MoveFuelThief
 
     ; ##########################################
     ; Move sprite.
-    LD A, THIEF_SIZE
+    LD A, THIEF_SIZE_D1
     LD B, A
     PUSH IX
     CALL enp.MovePatternEnemies
@@ -212,12 +211,12 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the left side of the screen, if he deployed right.
-    BIT enp.ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    BIT enp.ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR NZ, .notHideLeft                        ; Jump if bit is 0 -> deploy left.
 
     LD BC, (IX + SPR.X)
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notHideLeft
     LD A, C
     CP 5
@@ -229,7 +228,7 @@ MoveFuelThief
 
     ; ##########################################
     ; Hide if the thief has reached the right side of the screen (315 =  $13B), if he deployed left.
-    BIT enp.ENP_S_BIT_DEPLOY, (IY + ENP.SETUP)
+    BIT enp.ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
     JR Z, .notHideRight                        ; Jump if bit is 1 -> deploy right.
 
     LD BC, (IX + SPR.X)
@@ -247,7 +246,7 @@ MoveFuelThief
     ; ##########################################
     ; Check if the thief has reached the rocket to steal fuel.
     LD A, (thiefState)                          ; Do not take fuel twice ;)
-    CP TS_RUNS_EMPTY
+    CP TS_RUNS_EMPTY_D30
     JR NZ, .notAtRocket
 
     LD BC, (IX + SPR.X)
@@ -264,18 +263,18 @@ MoveFuelThief
     ; ##########################################
     ; Pickup fuel tank.
     CALL enur.RemoveRocketElement
-    LD A, TS_CARRIES_FUEL
+    LD A, TS_CARRIES_FUEL_D31
     LD (thiefState), A
 .notAtRocket
 
     ; ##########################################
     ; Move fuel tank with thief.
     LD A, (thiefState)
-    CP TS_CARRIES_FUEL
+    CP TS_CARRIES_FUEL_D31
     JR NZ, .notCarryFuel
 
     ; Set the ID of the sprite for the following commands.
-    LD A, FUEL_SPRITE_ID
+    LD A, FUEL_SPRITE_ID_D97
     NEXTREG _SPR_REG_NR_H34, A
 
     ; Set sprite X coordinate.
@@ -289,11 +288,11 @@ MoveFuelThief
     NEXTREG _SPR_REG_ATR2_H37, A
 
     ; Set Y coordinate
-    LD A, FUEL_HEIGHT
+    LD A, FUEL_HEIGHT_D226
     NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position.
 
     ; Set sprite pattern
-    LD A, FUEL_SPRITE_REF
+    LD A, FUEL_SPRITE_REF_D17
     OR _SPR_ATTR3_SHOW                        ; Set show bit.
     NEXTREG _SPR_REG_ATR3_H38, A
 .notCarryFuel
@@ -312,7 +311,7 @@ MoveFuelThief
 _SetupFuelThief
 
     LD IX, ena.fuelThiefSpr
-    LD B, THIEF_SIZE
+    LD B, THIEF_SIZE_D1
     CALL enp.ResetPatternEnemies
 
     XOR A
@@ -326,15 +325,15 @@ _SetupFuelThief
 ;----------------------------------------------------------;
 _HideFuelThief
 
-    LD A, TS_WAITING
+    LD A, TS_WAITING_D1
     LD (thiefState), A
 
     LD IX, ena.fuelThiefSpr
     CALL sr.HideSimpleSprite
 
     ; Hide tank
-    LD A, FUEL_SPRITE_ID
-    CALL sp.SetIdAndHideSprite
+    LD A, FUEL_SPRITE_ID_D97
+    sp.SetIdAndHideSprite
 
     ; Restart deploy countdown
     XOR A

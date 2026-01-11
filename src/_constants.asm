@@ -489,27 +489,27 @@ _GSC_Y_MAX2_D238        = _GSC_Y_MAX_D232 + 4
 
 _BM_XRES_D320           = 320
 _BM_YRES_D256           = 256
+_BM_YRES_D255           = 255
 
 _GND_THICK_D8           = 8                     ; The thickness of the ground (tilemap).
 _GSC_JET_GND_D217       = _GSC_Y_MAX_D232 - _GND_THICK_D8 +1
 
 ; ##############################################
 ; Game bar
-_BAR_TILES              = 6
-_BAR_FULL_SPR           = 176
-_BAR_EMPTY_SPR          = 182
+_BAR_TILES_D6           = 6
+_BAR_FULL_SPR_D176      = 176
+_BAR_EMPTY_SPR_D182     = 182
 
-_BAR_RED_A1_SPR         = 180
-_BAR_RED_A2_SPR         = 181
+_BAR_RED_A1_SPR_D180    = 180
+_BAR_RED_A2_SPR_D181    = 181
 
-_BAR_RED_B1_SPR         = 188
-_BAR_RED_B2_SPR         = 189
-
+_BAR_RED_B1_SPR_D188    = 188
+_BAR_RED_B2_SPR_D189     = 189
 
 ; ##############################################
 ; Game Levels
-_LEVEL_MIN              = 1
-_LEVEL_MAX              = 10
+_LEVEL_MIN_D1           = 1
+_LEVEL_MAX_D10          = 10
 
 ;----------------------------------------------------------;
 ;       Single Enemy and Formation (Pattern Enemy)         ;
@@ -518,18 +518,20 @@ _LEVEL_MAX              = 10
 ; Extends #SPR by additional params.
     STRUCT ENP
 ; Setup bits:
-;  - 0: #ENP_S_BIT_ALONG
-;  - 1: #ENP_S_BIT_DEPLOY
-;  - 2: #ENP_S_BIT_BOUNCE
-;  - 3: #ENP_S_BIT_BOUNCE_ANIM
-;  - 7: #ENP_S_BIT_REVERSE_Y
+;  - 0: #ENP_BIT_ALONG_D0
+;  - 1: #ENP_BIT_DEPLOY_D1
+;  - 2: #ENP_BIT_BOUNCE_D2
+;  - 3: #ENP_BIT_BOUNCE_AN_D3
+;  - 7: #ENP_BIT_REVERSE_Y_D7
 SETUP                   DB
-MOVE_DELAY_CNT          DB                      ; Move delay counter, counting down. Move delay is specified in the move pattern, byte 2, bits 8-5. Bit 0-4 is the repetition counter.
+MOVE_DELAY              DB                      ; Number of frames to skipp.
+MOVE_DELAY_CNT          DB                      ; Counts from MOVE_DELAY to 0.
+MOVE_PX                 DB                      ; Number of pixels to move.
 RESPAWN_DELAY           DB                      ; Number of game loops delaying respawn.
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter.
 RESPAWN_Y               DB                      ; Respawn Y position.
-MOVE_PAT_POINTER        DW                      ; Pointer to the movement pattern (#movePatternXX).
-MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_POINTER. Counts from #MOVE_PAT_STEP_OFFSET to #movePatternXX.
+MOVE_PAT_ADDR           DW                      ; Pointer to the movement pattern (#movePatternXX).
+MOVE_PAT_POS            DB                      ; Position in #MOVE_PAT_ADDR. Counts from #MOVE_PAT_STEP_OFFSET_D1 to #movePatternXX.
 MOVE_PAT_STEP           DB                      ; Counters X,Y from current move pattern.
 MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of single move pattern st Counts towards 0.
     ENDS
@@ -538,7 +540,7 @@ MOVE_PAT_STEP_RCNT      DB                      ; Counter for repetition of sing
     STRUCT ENPS
 RESPAWN_Y               DB                      ; Value for: ENP.RESPAWN_Y
 RESPAWN_DELAY           DB                      ; Value for: ENP.RESPAWN_DELAY
-MOVE_PAT_POINTER        DW                      ; Value for: ENP.MOVE_PAT_POINTER
+MOVE_PAT_ADDR           DW                      ; Value for: ENP.MOVE_PAT_ADDR
 SDB_INIT                DB                      ; Value for: SPR.SDB_INIT
 SETUP                   DB                      ; Value for: ENP.SETUP
     ENDS
@@ -616,8 +618,7 @@ X_OFFSET                DB                      ; X offset (column) from the beg
 SIZE                    DB                      ; Amount of stars.
     ENDS
 
-
 ;----------------------------------------------------------;
 ;                          Rocket                          ;
 ;----------------------------------------------------------;
-_EXHAUST_SPRID_D83       = 83                    ; Sprite ID for exhaust.
+_EXHAUST_SPRID_D83      = 83                    ; Sprite ID for exhaust.

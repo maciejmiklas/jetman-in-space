@@ -13,7 +13,7 @@ JET_X                   DB                      ; X postion of Jetman pointing t
 JET_Y                   DB                      ; Y postion of Jetman pointing to active element.
     ENDS
 
-currentLevel           DB _LEVEL_MIN
+currentLevel           DB _LEVEL_MIN_D1
 
 ;----------------------------------------------------------;
 ;                   LoadMenuLevelSelect                    ;
@@ -24,7 +24,7 @@ LoadMenuLevelSelect
     CALL dbs.SetupMusicBank
     CALL aml.MusicOff
 
-    LD A, ms.MENU_LEVEL
+    LD A, ms.MS_MENU_LEVEL_D14
     CALL ms.SetMainState
 
     CALL js.HideJetSprite
@@ -32,7 +32,7 @@ LoadMenuLevelSelect
     CALL bm.HideImage
 
     ; ##########################################
-    LD A, _LEVEL_MIN
+    LD A, _LEVEL_MIN_D1
     LD (currentLevel), A
     
     ; ##########################################
@@ -71,7 +71,7 @@ LoadMenuLevelSelect
 
     ; Jetman is facing left
     XOR A
-    SET gid.MOVE_LEFT_BIT, A
+    SET gid.MOVE_LEFT_BIT_D0, A
     LD (gid.jetDirection), A
 
     LD A, js.SDB_HOVER
@@ -178,7 +178,7 @@ _PreviousLevel
     ; Decrement #currentLevel by 1, min value is 1.
     LD A, (currentLevel)
     DEC A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD (currentLevel), A

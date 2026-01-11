@@ -35,7 +35,7 @@ NextTileAnimationFrame
 
     ; Increment #currentRowIdx
     LD A, (maxRows)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
     LD B, A
     LD A, (currentRowIdx)

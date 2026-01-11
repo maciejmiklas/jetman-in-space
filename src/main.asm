@@ -10,6 +10,19 @@ STACK_SIZE              = 50
     DEVICE ZXSPECTRUMNEXT                       ; Allow the Next paging and instructions.
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
+  ;  DEFINE PERFORMANCE  1                        ; Enable perofrmance info
+    DEFINE DEBUG_BAR    1                        ; Enable debug bar
+
+; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
+    IFDEF PERFORMANCE
+UPDATE_REFRESH          = 10
+UPDATE_REFRESH_MAX      = 18
+endLine                 DB 0
+endLineMax              DB 0
+endLineCnt              DB UPDATE_REFRESH
+endLineMaxCnt           DB UPDATE_REFRESH_MAX
+    ENDIF
+
 start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
@@ -19,43 +32,84 @@ start
 
     CALL gc.SetupSystem
 
-    LD A, 1
-    LD (ll.currentLevel), A
-    ;CALL gc.LoadCurrentLevel
+   ; LD A, 1
+  ; LD (ll.currentLevel), A
+  ;  CALL gc.LoadCurrentLevel
 
     CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
     CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_MAIN_MENU
+    LD A, aml.MUSIC_MAIN_MENU_D81
     CALL aml.LoadSong
+    JR mainLoop
+
+;----------------------------------------------------------;
+;                 _ReadPerformance                         ;
+;----------------------------------------------------------;
+    MACRO _ReadPerformance
+
+    IFDEF PERFORMANCE
+
+    ; Update #endLine every few loops
+    LD A, (endLineCnt)
+    DEC A
+    LD (endLineCnt), A
+    JR NZ, .endPer                              ; Jump if A != 0
+    LD A, UPDATE_REFRESH
+    LD (endLineCnt), A
+
+    ; Reset #endLineMax to 0 every few loops
+    LD A, (endLineMaxCnt)
+    DEC A
+    LD (endLineMaxCnt), A
+    JR NZ, .afterMaxReset                       ; Jump if A != 0
+    LD A, UPDATE_REFRESH_MAX
+    LD (endLineMaxCnt), A
+    XOR A
+    LD (endLineMax), A
+.afterMaxReset
+
+    ; Read end line.
+    LD  A, $1F
+    LD  BC, $243B
+    OUT (C),A
+    INC B
+    IN A,(C)
+    LD (endLine), A
+
+    LD B, A
+    LD A, (endLineMax)
+    LD C, A
+    LD A, B
+    CP C
+    JR C, .endPer
+    LD (endLineMax), A
+.endPer
+    ENDIF
+
+    ENDM
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;
 ;----------------------------------------------------------;
 mainLoop
 
-    IFDEF PERFORMANCE_BORDER
-        LD  A, _COL_GREEN_D4
-        OUT (_BORDER_IO_HFE), A
-    ENDIF
-
-    CALL sc.WaitForScanline
-
-    IFDEF PERFORMANCE_BORDER
-        LD  A, _COL_RED_D2
-        OUT (_BORDER_IO_HFE), A
-    ENDIF   
+    CALL sc.WaitForTopScanline
 
     CALL ml.MainLoop
 
+    _ReadPerformance
+
+    CALL sc.WaitForBottomScanline
     JR mainLoop
 
 ;----------------------------------------------------------;
 ;                       Includes                           ;
 ;----------------------------------------------------------;
     INCLUDE "_constants.asm"
+    INCLUDE "_macros.asm"
 
     INCLUDE "gid_game_input_data.asm"
     INCLUDE "gi_game_input.asm"
@@ -63,10 +117,7 @@ mainLoop
     INCLUDE "ti_tiles.asm"
     INCLUDE "ut_util.asm"
     INCLUDE "mld_main_loop_data.asm"
-    INCLUDE "ml_main_loop.asm"
-
     INCLUDE "gc_game_cmd.asm"
-
     INCLUDE "er_error.asm"
     INCLUDE "fi_file_io.asm"
     INCLUDE "dbs_bank_setup.asm"
@@ -79,7 +130,6 @@ mainLoop
     INCLUDE "sc_screen.asm"
     INCLUDE "sp_sprite.asm"
     INCLUDE "sr_simple_sprite.asm"
-
     INCLUDE "jt_jet_state.asm"
     INCLUDE "jpo_jet_position.asm"
     INCLUDE "jco_jet_collision.asm"
@@ -103,7 +153,9 @@ mainLoop
     INCLUDE "go_game_over.asm"
     INCLUDE "gr_grenade.asm"
     INCLUDE "enur_enemy_fuel_thief_roc.asm"
-
+    INCLUDE "enc_enemy_cmd.asm"
+    INCLUDE "ml_main_loop.asm"
+    
     ; Imports below use ORG and dedicated memory bank!
 
     ; ################ BANK 28 ################
@@ -177,8 +229,8 @@ mainLoop
     INCLUDE "rod_rocket_data.asm"
     INCLUDE "rof_rocket_fly.asm"
     INCLUDE "ros_rocket_stars.asm"
-    INCLUDE "rot_rocket_asteroids.asm"
-    INCLUDE "rotd_rocket_asteroids_data.asm"
+    INCLUDE "rot_rocket_meteors.asm"
+    INCLUDE "rotd_rocket_meteors_data.asm"
 
     ASSERT $$ == dbs.ROCKET_S6_D36
 

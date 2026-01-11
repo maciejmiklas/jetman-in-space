@@ -16,28 +16,28 @@ SPRITE_ID               DB                      ; Hardware ID of the sprite.
 SPRITE_REF              DB                      ; Sprite pattern number from the sprite file.
     ENDS
 
-rocketState             DB ROST_INACTIVE
+rocketState             DB ROST_INACTIVE_D0
 
-ROST_INACTIVE           = 0
-ROST_WAIT_DROP          = 1                     ; Rocket element (or fuel tank) is waiting for drop from the sky.
+ROST_INACTIVE_D0        = 0
+ROST_WAIT_DROP_D1       = 1                     ; Rocket element (or fuel tank) is waiting for drop from the sky.
 
-ROST_FALL_PICKUP        = 10                    ; Rocket element (or fuel tank) is falling down for pickup.
-ROST_FALL_ASSEMBLY      = 11                    ; Rocket element (or fuel tank) falls towards the rocket for assembly.
-ROST_WAIT_PICKUP        = 12                    ; Rocket element (or fuel tank) is waiting for pickup.
-ROST_CARRY              = 13                    ; Jetman carries rocket element (or fuel tank).
-ROST_TANK_EXPLODE       = 14
+ROST_FALL_PICKUP_D10    = 10                    ; Rocket element (or fuel tank) is falling down for pickup.
+ROST_FALL_ASSEMBLY_D11  = 11                    ; Rocket element (or fuel tank) falls towards the rocket for assembly.
+ROST_WAIT_PICKUP_D12    = 12                    ; Rocket element (or fuel tank) is waiting for pickup.
+ROST_CARRY_D13          = 13                    ; Jetman carries rocket element (or fuel tank).
+ROST_TANK_EXPLODE_D14   = 14
 
-ROST_READY              = 100                   ; Rocket is ready to start and waits only for Jetman.
-ROST_FLY                = 101                   ; Rocket is flying towards an unknown planet. See also #ro.rocketFlyPhase
-ROST_EXPLODE            = 102                   ; Rocket explodes after hitting something.
+ROST_READY_D100         = 100                   ; Rocket is ready to start and waits only for Jetman.
+ROST_FLY_D101           = 101                   ; Rocket is flying towards an unknown planet. See also #ro.rocketFlyPhase
+ROST_EXPLODE_D102       = 102                   ; Rocket explodes after hitting something.
 
 EL_EXH_D1               = 1                     ; Rocket exhaust element, one that is blinking
 EL_MID_D2               = 2
 EL_TIP_D3               = 3                     ; Tip of the rocket.
 
 ; Offsets for rocket elemenst from EL_EXH_D1.
-OFS_MID_D16              = -16
-OFS_TIP_D16              = -32
+OFS_MID_N16              = -16
+OFS_TIP_N32              = -32
 OFS_FLAME_D16            = 16
 
 SPR_PAT_READY1_D60      = 60                    ; Once the rocket is ready, it will start blinking using #SPR_PAT_READY1_D60 and #SPR_PAT_READY2_D61.
@@ -114,7 +114,7 @@ UpdateRocketPosition
     LD A, EL_MID_D2
     CALL MoveIXtoGivenRocketElement
 
-    LD A, OFS_MID_D16
+    LD A, OFS_MID_N16
     CALL UpdateElementPosition
 
     ; ##########################################
@@ -122,7 +122,7 @@ UpdateRocketPosition
     LD A, EL_TIP_D3
     CALL MoveIXtoGivenRocketElement
 
-    LD A, OFS_TIP_D16
+    LD A, OFS_TIP_N32
     CALL UpdateElementPosition
 
     RET                                         ; ## END of the function ##

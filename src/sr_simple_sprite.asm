@@ -47,7 +47,7 @@ SDB_BOUNCE_TOPA         = 211                   ; Play bounce animation by top/b
 SDB_HIDE                = 255                   ; Hides Sprite.
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX).
 
-SDB_SEARCH_LIMIT        = 200
+SDB_SEARCH_LIMIT_D200   = 200
 
 ;----------------------------------------------------------;
 ;                  Sprite Animations                       ;
@@ -82,6 +82,20 @@ srSpriteDB
             DB 48, 49, 50, 48, 49, 50
 
 ;----------------------------------------------------------;
+;                    sr.SetSpriteId                        ;
+;----------------------------------------------------------;
+; Set the ID of the sprite for the following commands.
+; Input:
+;  - IX: pointer to #SPR.
+; Modifies: A
+    MACRO sr.SetSpriteId
+
+    LD A, (IX + SPR.ID)
+    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                 #CheckAnySpriteVisible                   ;
 ;----------------------------------------------------------;
 ; Input:
@@ -98,7 +112,7 @@ CheckAnySpriteVisible
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden).
 
     ; Sprite is visible!
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
     RET
 
 .continue
@@ -108,7 +122,7 @@ CheckAnySpriteVisible
     DJNZ .sprLoop
 
     ; All sprites are hidden, otherwise, we would have found one in the loop.
-    OR 1                                        ; Return NO (Z set).
+    _NO
 
     RET                                         ; ## END of the function ##
 
@@ -137,7 +151,7 @@ ResetSprite
 ;  - A:  sprites size
 KillOneSprite
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -173,7 +187,7 @@ KillOneSprite
 ;  - IX: pointer to #SPR.
 SpriteHit
 
-    CALL SetSpriteId
+    sr.SetSpriteId
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection.
 
     LD A, SDB_EXPLODE
@@ -190,7 +204,7 @@ SpriteHit
 ; Modifies: A, BC, HL
 AnimateSprites
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -201,7 +215,7 @@ AnimateSprites
     JR Z, .continue                             ; Jump if visibility is not set -> hidden, can be reused.
 
     ; Sprite is visible.
-    CALL SetSpriteId                            ; Set the ID of the sprite for the following commands.
+    sr.SetSpriteId
     CALL UpdateSpritePattern
 
     ; Move #SPR.SDB_POINTER to the next sprite pattern.
@@ -215,19 +229,6 @@ AnimateSprites
     ADD IX, DE
     POP BC
     DJNZ .loop                                  ; Jump if B > 0
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      SetSpriteId                         ;
-;----------------------------------------------------------;
-; Input:
-;  - IX: pointer to #SPR.
-; Modifies: A
-SetSpriteId
-
-    LD A, (IX + SPR.ID)
-    NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
     RET                                         ; ## END of the function ##
 
@@ -274,7 +275,7 @@ UpdateSpritePosition
 ;  - A:  sprites size.
 HideAllSimpleSprites
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -299,14 +300,14 @@ HideAllSimpleSprites
 ;  - IX: pointer to #SPR.
 HideSimpleSprite
 
-    CALL SetSpriteId
+    sr.SetSpriteId
 
     LD A, (IX + SPR.STATE)
     RES SPRITE_ST_ACTIVE, A
     RES SPRITE_ST_VISIBLE_BIT, A
     LD (IX + SPR.STATE), A
 
-    HideSprite
+    sp.HideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -351,7 +352,7 @@ UpdateSpritePattern
 
     ; Switch to the next DB record if all bytes from the current one have been used.
     LD A, (IX + SPR.REMAINING)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterRecordChange                   ; Jump if there are still bytes to be processed.
 
     ; ##########################################
@@ -389,7 +390,7 @@ UpdateSpritePattern
 ; Move the sprite by 1-7 pixels to the right or left along the X-axis, depending on D.
 ; Input
 ;  - IX: pointer to #SPR
-;  - D:  do not confuse this parameter with #SPR.STATE, they are different parameters.
+;  - A:  do not confuse this parameter with #SPR.STATE, they are different parameters.
 ;        Configuration, bits:
 ;         - 0-2: Number of pixels to move sprite
 ;         - 3:   #MVX_IN_D_HIDE_BIT
@@ -400,11 +401,15 @@ MVX_IN_D_1PX_HIDE           = %0000'1001        ; Move the sprite by 1 pixel and
 MVX_IN_D_6PX_HIDE           = %0000'1110        ; Move the sprite by 6 pixels and hide on the screen end
 MVX_IN_D_1PX_ROL            = %0000'0001        ; Move the sprite by 1 pixel and roll over sprite when off-screen
 MVX_IN_D_2PX_ROL            = %0000'0010        ; Move the sprite by 2 pixels and roll over sprite when off-screen
+MVX_IN_D_3PX_ROL            = %0000'0011        ; Move the sprite by 3 pixels and roll over sprite when off-screen
 MVX_IN_D_MASK_CNT           = %0000'0111 
 ; Modifies; A, B, HL
+
 MoveX
+
+    LD D, A
+
     ; Load counter for .moveLeftLoop/.moveRightLoop into B.
-    LD A, D
     AND MVX_IN_D_MASK_CNT
     LD B, A
 
@@ -420,10 +425,10 @@ MoveX
     ; ##########################################
     ; Is HL == 0 ? -> in this case do not decrement it ;)
     LD A, H
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .hlNot0
     LD A, L
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .hlNot0
   
     ; HL == 0
@@ -434,12 +439,12 @@ MoveX
 
     ; Check whether a sprite is outside the screen.
     LD A, H
-    CP 0                                        ; H holds MSB from X, if H > 0 than X > 256.
+    OR A                                        ; H holds MSB from X, if H > 0 than X > 256.
     JR NZ, .continueLeftLoop
 
     ; H is 0, check whether L has reached left side of the screen.
     LD A, L
-    CP _GSC_X_MIN_D0
+    OR A                                        ; Same as: CP _GSC_X_MIN_D0
     JR NZ, .continueLeftLoop                    ; Jump if A !=0
 
     ; HL == #_GSC_X_MIN_D0+1
@@ -455,7 +460,7 @@ MoveX
     ; Otherwise, this loop continues moving the spire until it reaches the left edge of the screen and disappears without eventually
     ; triggering collision detection.
     LD A, H
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterLeftSideCheck
     LD A, L
     CP 2
@@ -510,40 +515,41 @@ MoveX
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                           MoveY                          ;
+;                        MoveY                             ;
 ;----------------------------------------------------------;
 ; Move the sprite one pixel up or down, depending on the A.
 ; Input
 ;  - IX: pointer to #SPR
 ;  - A:  MOVE_Y_IN_XXX
-MOVE_Y_IN_UP                = 1                 ; Move up
-MOVE_Y_IN_DOWN              = 0                 ; Move down
-; Return:
-;  - A:     MOVE_RET_XXX
-MOVE_RET_VISIBLE            = 1                 ; Sprite is still visible.
-MOVE_RET_HIDDEN             = 0                 ; Sprite outside screen, or hits ground.
-; Modifies: A
+;  - B:  number of pixels to move.
+MOVE_Y_IN_UP_D1             = 1                 ; Move up
+MOVE_Y_IN_DOWN_D0           = 0                 ; Move down
+;  - YES (visible): Z is reset (JP Z).
+;  - NO (hidden):  Z is set (JP NZ).
+
 MoveY
-    CP MOVE_Y_IN_UP
-    JR Z, .afterMovingUp                        ; Jump if moving up.
+
+    CP MOVE_Y_IN_UP_D1
+    JR Z, .movingUp                             ; Jump if moving up.
 
     ; Moving down - increment Y coordinate
-    LD A, (IX + SPR.Y)  
-    INC A
+    LD A, (IX + SPR.Y)
+    ADD B
 
     ; Check whether a sprite hits ground
     CP _GSC_Y_MAX2_D238
     JR C, .afterMoving                          ; Jump if the sprite is above ground (A < _GSC_Y_MAX2_D238).
 
     ; Sprite hits the ground
-    LD A, MOVE_RET_HIDDEN
     CALL SpriteHit
+
+    _NO
     RET
-.afterMovingUp
+.movingUp
 
     ; Moving up - decrement X coordinate.
     LD A, (IX + SPR.Y)
-    DEC A
+    SUB B
 
     ; Check if sprite is above screen.
     CP _GSC_Y_MIN_D15
@@ -551,13 +557,13 @@ MoveY
 
     ; Sprite is above screen -> hide it.
     CALL HideSimpleSprite
-    LD A, MOVE_RET_HIDDEN
 
+    _NO
     RET
 .afterMoving
 
     LD (IX + SPR.Y), A                          ; Update new X position.
-    LD A, MOVE_RET_VISIBLE
+    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -573,7 +579,7 @@ LoadSpritePattern
 
     ; Find DB record.
     LD HL, srSpriteDB                           ; HL points to the beginning of the DB.
-    LD BC, SDB_SEARCH_LIMIT                     ; Limit CPIR search.
+    LD BC, SDB_SEARCH_LIMIT_D200                     ; Limit CPIR search.
     CPIR                                        ; CPIR will keep increasing HL until it finds a record ID from A.
 
     ; ##########################################
@@ -596,7 +602,7 @@ LoadSpritePattern
 
     ; ##########################################
     ; Ensure that #REMAINING is not 0, because it's counting down.
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .remainingNot0
     LD (IX + SPR.REMAINING), 1                  ; Set it to something > 0
     LD A, er.ERR_001
@@ -608,12 +614,6 @@ LoadSpritePattern
     LD (IX + SPR.SDB_POINTER), HL               ; Update #SPR.SDB_POINTER
 
     RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

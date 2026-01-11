@@ -262,16 +262,16 @@ PLATFORM_SIZE_L5        = 4
 
 ; Level 6
 platformsL6
-    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
-    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 03*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
 
-    pl.PLA {16*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
-    pl.PLA {27*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 09*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+    pl.PLA {17*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}
+    pl.PLA {25*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 09*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
     pl.PLA {24*8/*X_LEFT*/, 28*8/*X_RIGHT*/, 24*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
 
-    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
+    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 04*8/*Y_TOP*/, 11*8/*Y_BOTTOM*/}
+    pl.PLA {35*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
 PLATFORM_SIZE_L6        = 8
 
 ; Level 7
@@ -373,7 +373,7 @@ plTileFileName          DB "assets/00/tiles.map",0
 
 ; Sprite file
 sprFileName             DB "assets/00/sprites_0.spr",0
-astFileName             DB "assets/00/asteroi_0.spr",0
+metFileName             DB "assets/00/meteors_0.spr",0
 SPR_FILE_NR_POS         = 10
 SPR_FILE_BYT_D8192      = _BANK_BYTES_D8192
 

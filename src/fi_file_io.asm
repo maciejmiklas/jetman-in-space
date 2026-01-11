@@ -194,44 +194,6 @@ LoadLevelSelectImageFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                _SetupMenuScoreFileName                   ;
-;----------------------------------------------------------;
-; Input:
-;  - DE: difficulty number as ASCII, for example for level 4: D="0", E="2".
-;  - HL: pointer to file name.
-_SetupMenuScoreFileName
-
-    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
-    LD IX, HL
-    ADD HL, db2.MS_BG_LEVEL_POS
-    LD (HL), D
-    INC HL
-    LD (HL), E
-    POP HL
-    CALL _CopyFileName
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;               _SetupLevelIntroFileName                   ;
-;----------------------------------------------------------;
-; Input:
-;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
-;  - HL: pointer to file name.
-_SetupLevelIntroFileName
-
-    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
-    LD IX, HL
-    ADD HL, db2.LS_BG_LEVEL_POS
-    LD (HL), D
-    INC HL
-    LD (HL), E
-    POP HL
-    CALL _CopyFileName
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;               LoadLevelIntroImageFile                    ;
 ;----------------------------------------------------------;
 ; The screen size is 320x256 (81920 bytes, 80KiB).
@@ -417,14 +379,14 @@ LoadSpritesFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  LoadAsteroidsFile                       ;
+;                  LoadMeteorsFile                       ;
 ;----------------------------------------------------------;
 ; Loadsasteroi_0.spr/asteroi_1.spr
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
-LoadAsteroidsFile
+LoadMeteorsFile
 
-    LD HL, db2.astFileName
+    LD HL, db2.metFileName
     CALL _LoadSpritesFile
 
     RET                                         ; ## END of the function ##
@@ -580,6 +542,44 @@ LoadMenuHardImageFile
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                _SetupMenuScoreFileName                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: difficulty number as ASCII, for example for level 4: D="0", E="2".
+;  - HL: pointer to file name.
+_SetupMenuScoreFileName
+
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
+    LD IX, HL
+    ADD HL, db2.MS_BG_LEVEL_POS
+    LD (HL), D
+    INC HL
+    LD (HL), E
+    POP HL
+    CALL _CopyFileName
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               _SetupLevelIntroFileName                   ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
+;  - HL: pointer to file name.
+_SetupLevelIntroFileName
+
+    PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for _CopyFileName).
+    LD IX, HL
+    ADD HL, db2.LS_BG_LEVEL_POS
+    LD (HL), D
+    INC HL
+    LD (HL), E
+    POP HL
+    CALL _CopyFileName
+
+    RET                                         ; ## END of the function ##
+    
+;----------------------------------------------------------;
 ;                      _CopyFileName                       ;
 ;----------------------------------------------------------;
 ; Input:
@@ -721,13 +721,13 @@ _Load16KTilemap
 
     ; Should we load second file?
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .loadSecond
 
     LD A, C
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .loadSecond
-    
+
     POP BC
     RET                                         ; B and C are 0, do not load second file.
 

@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE go
 
-GAME_OVER_CNT           = 2
+GAME_OVER_CNT_D2        = 2
 fireCnt                 DB 0
 
 ;----------------------------------------------------------;
@@ -16,7 +16,7 @@ fireCnt                 DB 0
 GameOverLoop
 
     LD A, (fireCnt)
-    CP GAME_OVER_CNT
+    CP GAME_OVER_CNT_D2
     RET Z
 
     INC A
@@ -30,7 +30,7 @@ ShowGameOver
 
     XOR A
     LD (fireCnt),A
-    LD A, ms.GAME_OVER
+    LD A, ms.MS_GAME_OVER_D20
     CALL ms.SetMainState
 
     CALL bm.HideImage
@@ -64,7 +64,7 @@ ShowGameOver
     ; ##########################################
     ; Music
     CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_GAME_OVER
+    LD A, aml.MUSIC_GAME_OVER_D80
     CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
@@ -83,7 +83,7 @@ _OnFirePressed
 
     ; Player should not be able to exit the game over screen too quickly, for example, when the auto fire is enabled.
     LD A, (fireCnt)
-    CP GAME_OVER_CNT
+    CP GAME_OVER_CNT_D2
     RET NZ
 
     CALL mms.EnterNewScore

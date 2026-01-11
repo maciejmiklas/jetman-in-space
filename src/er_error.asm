@@ -8,7 +8,7 @@
     MODULE er
 
 errorCnt                DB 0
-ERROR_MAX               = 5                     ; Limit the number of errors shown to the player
+ERROR_MAX_D5            = 5                     ; Limit the number of errors shown to the player
 
 ; Error Codes
 ERR_001                 = $E1                   ; #SPR.REMAINING == 0
@@ -25,7 +25,7 @@ ReportError
     ; Limit the number of errors shown to the player.
     PUSH AF
     LD A, (errorCnt)
-    CP ERROR_MAX
+    CP ERROR_MAX_D5
     JR NZ, .showError
     POP AF
     RET

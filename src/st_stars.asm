@@ -38,7 +38,7 @@ ST_MOVE_DOWN            = 4
 starsState              DB ST_SHOW
 
 ST_L1_MOVE_DEL_D8       = 8                     ; Stars move delay for layer 1.
-ST_L2_MOVE_DEL_D2       = 2                     ; Stars move delay for layer 2.
+ST_L2_MOVE_DEL_D2       = 3                     ; Stars move delay for layer 2.
 
 starsMoveL1Delay        DB ST_L1_MOVE_DEL_D8    ; Delay counter for stars on layer 1 (there are 2 layers of stars).
 starsMoveL2Delay        DB ST_L2_MOVE_DEL_D2    ; Delay counter for stars on layer 2.
@@ -46,17 +46,19 @@ starsMoveL2Delay        DB ST_L2_MOVE_DEL_D2    ; Delay counter for stars on lay
 randColor               DB 0                    ; Rand value from the previous call.
 
 ; Currently rendered palette
-starsPalPoint           DW 0
+starsPalAddr            DW 0
 starsPalSize            DB 0
 starsPalOffset          DB 0
 
 ; Currently rendered stars
-starsDataSize           DB 0
-starsDataPoint          DW 0                    ; Before using: CALL ut.SetupDataArraysBank
-starsDataMaxYPoint      DW 0                    ; Before using: CALL ut.SetupDataArraysBank
+starsSCSize             DB 0                    ; Number of SC elements (star columns).
+starsSCAddr             DW 0
 
-starsData1MaxY          DW 0
-starsData2MaxY          DW 0
+; An array containing the maximum Y value to render the star column to avoid printing over the background image. 
+; The size of this array is equal to the #starsSCSize
+starsMaxY               DW 0
+starsMaxYL1Addr         DW 0                    ; Address for layer 1.
+starsMaxYL2Addr         DW 0                    ; Address for layer 2.
 
 paletteNumber           DB 0                    ; Palette number, values from 0-3
 PALETTE_CNT             = 4
@@ -67,435 +69,83 @@ ST_PAL_L2_SIZE_D8       = 8                     ; Number of colors for stars on 
 ST_PAL_L1_BYTES_D64     = ST_PAL_L1_SIZE_D32*2
 ST_PAL_L2_BYTES_D16     = ST_PAL_L2_SIZE_D8*2
 
-starsPalL1Point         DW 0
-starsPalL2Point         DW 0
+starsPalL1Addr         DW 0
+starsPalL2Addr         DW 0
 
 ;----------------------------------------------------------;
-;                       SetupStars                         ;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     _CanShowStar                         ;
+;----------------------------------------------------------;
+; Input 
+;  - B:  Star y-postion to be checked.
+;  - IY: Points to the current max y postion for the star.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+    MACRO _CanShowStar
+
+    LD A, (IY)                                  ; Load into A max star y-postion
+
+    ; A holds max star y-position and B current
+    CP B
+    JR C, .maxBelowCurrent                      ; Jump if the max position (A) is below the current (B).
+
+.allowed
+    _YES
+    JR .end
+
+.maxBelowCurrent
+
+    ; Stars could be behind the building, in which case it should be hidden, but it's also possible that the star is
+    ; below the building (basement?) in the picture that rolls over to the top of the screen. In this case, the star should be visible.
+    LD A, (bg.bgOffset)                         ; The background image moves down, releasing more room for stars.
+    LD C, A
+    LD A, _SC_RESY1_D255
+    SUB C
+
+    CP B
+    JR NC, .notAllowed2                         ; Jump if the max position (A) is below the current (B).
+    _YES
+    JR .end
+
+.notAllowed2
+    _NO
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                      _GetStarColor                       ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: palette number, values from 0-3.
-;  - DE: array containing max horizontal star position for each column (#SC) for Layer 1.
-;  - HL: same as DE, but for Layer 2.
-SetupStars
-
-    LD (paletteNumber), A
-    LD (starsData1MaxY), DE
-    LD (starsData2MaxY), HL
-    
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    LoadStarsPalette                      ;
-;----------------------------------------------------------;
-LoadStarsPalette
-
-    CALL dbs.SetupArrays1Bank
-
-    ; Palettes for L1/L2 are stored as a continuous array. The pointer to the start of this array is given by #starsPalL1/L2.
-    ; A gives the palette number. To load L1: #starsPalL1+A*32.
-
-    ; Load colors for the stars on layer 1.
-    LD A, (paletteNumber)
-  
-    PUSH AF
-    LD D, A
-    LD E, ST_PAL_L1_BYTES_D64
-    MUL D, E                                    ; DE contains palette offset.
-    LD HL, db1.starsPalL1
-    ADD HL, DE                                  ; HL points to data with palette colors.
-    LD (starsPalL1Point), HL
-    LD A, ST_PAL_L1_SIZE_D32
-    LD B, A
-    CALL bp.WritePalette
-
-    ; ##########################################
-    ; Load colors for the stars on layer 2.
-    POP AF                                      ; A contains palette number.
-    LD D, A
-    LD E, ST_PAL_L2_BYTES_D16
-    MUL D, E                                    ; DE contains palette offset.
-    LD HL, db1.starsPalL2
-    ADD HL, DE                                  ; HL points to data with palette colors.
-    
-    LD (starsPalL2Point), HL
-    LD A, ST_PAL_L2_SIZE_D8
-    LD B, A
-    CALL bp.WritePalette
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        ShowStars                         ;
-;----------------------------------------------------------;
-ShowStars
-
-    LD A, ST_SHOW
-    LD (starsState), A
-
-    ; Render
-    CALL _SetupLayer1
-    CALL _MoveAndRenderStars
-
-    CALL _SetupLayer2
-    CALL _MoveAndRenderStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        HideStars                         ;
-;----------------------------------------------------------;
-HideStars
-
-    LD A, ST_HIDDEN
-    LD (starsState), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       MoveStarsUp                        ;
-;----------------------------------------------------------;
-MoveStarsUp
-
-    ; Move stars only if enabled.
-    LD A, (starsState)
-    CP ST_C_HIDDEN
-    RET C
-
-    ;###########################################
-    ; Update state
-    LD A, ST_MOVE_UP
-    LD (starsState), A
-
-    ;###########################################
-    CALL _MoveStarsL1Up
-    CALL _MoveStarsL2Up
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  MoveFastStarsDown                       ;
-;----------------------------------------------------------;
-MoveFastStarsDown
-
-    ; Update state
-    LD A, ST_MOVE_DOWN
-    LD (starsState), A
-
-    CALL _SetupLayer2
-    CALL _MoveAndRenderStars
-
-    LD A, (mld.counter000FliFLop)
-    CP _GC_FLIP_ON_D1
-    RET NZ
-
-    CALL _MoveAndRenderStars
-
-    CALL _SetupLayer1
-    CALL _MoveAndRenderStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      MoveStarsDown                       ;
-;----------------------------------------------------------;
-MoveStarsDown
-
-    ; Move stars only if enabled.
-    LD A, (starsState)
-    CP ST_C_HIDDEN
-    RET C
-
-    ;###########################################
-    ; Update state
-    LD A, ST_MOVE_DOWN
-    LD (starsState), A
-
-    ;###########################################
-    CALL _MoveStarsL1Down
-    CALL _MoveStarsL2Down
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       BlinkStarsL1                       ;
-;----------------------------------------------------------;
-BlinkStarsL1
-
-    ; Execute stars only if enabled.
-    LD A, (starsState)
-    CP ST_C_HIDDEN
-    RET C
-
-    CALL _SetupLayer1
-    CALL _NextStarsColor
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       BlinkStarsL2                       ;
-;----------------------------------------------------------;
-BlinkStarsL2
-
-    ; Execute stars only if enabled.
-    LD A, (starsState)
-    CP ST_C_HIDDEN
-    RET C
-
-    CALL _SetupLayer2
-    CALL _NextStarsColor
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                    _MoveStarsL1Down                      ;
-;----------------------------------------------------------;
-_MoveStarsL1Down
-
-    ; Delay movement
-    LD A, (starsMoveL1Delay)
-    DEC A
-    LD (starsMoveL1Delay), A
-    CP 0
-    RET NZ                                      ; Do not move yet, wait for 0.
-    
-    ; Reset delay
-    LD A, ST_L1_MOVE_DEL_D8
-    LD (starsMoveL1Delay), A
-
-    ;###########################################
-    ; Render
-    CALL _SetupLayer1
-    CALL _MoveAndRenderStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _MoveStarsL2Down                      ;
-;----------------------------------------------------------;
-_MoveStarsL2Down
-
-    ; Delay movement
-    LD A, (starsMoveL2Delay)
-    DEC A
-    LD (starsMoveL2Delay), A
-    CP 0
-    RET NZ                                      ; Do not move yet, wait for 0.
-    
-    ; Reset delay
-    LD A, ST_L2_MOVE_DEL_D2
-    LD (starsMoveL2Delay), A
-
-    ;###########################################
-    ; Render
-    CALL _SetupLayer2
-    CALL _MoveAndRenderStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _MoveStarsL1Up                       ;
-;----------------------------------------------------------;
-_MoveStarsL1Up
-
-    ; Delay movement
-    LD A, (starsMoveL1Delay)
-    DEC A
-    LD (starsMoveL1Delay), A
-    CP 0
-    RET NZ                                      ; Do not move yet, wait for 0.
-    
-    ; Reset delay
-    LD A, ST_L1_MOVE_DEL_D8
-    LD (starsMoveL1Delay), A
-
-    ;###########################################
-    ; Render
-    CALL _SetupLayer1
-    CALL _MoveAndRenderStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _MoveStarsL2Up                       ;
-;----------------------------------------------------------;
-_MoveStarsL2Up
-
-    ; Delay movement
-    LD A, (starsMoveL2Delay)
-    DEC A
-    LD (starsMoveL2Delay), A
-    CP 0
-    RET NZ                                      ; Do not move yet, wait for 0.
-
-    ; Reset delay
-    LD A, ST_L2_MOVE_DEL_D2
-    LD (starsMoveL2Delay), A
-
-    ;###########################################
-    ; Render
-    CALL _SetupLayer2
-    CALL _MoveAndRenderStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      _SetupLayer1                        ;
-;----------------------------------------------------------;
-_SetupLayer1
-
-    ; Palette
-    LD DE, (starsPalL1Point)
-    LD (starsPalPoint), DE
-
-    LD A, ST_PAL_L1_SIZE_D32
-    LD (starsPalSize), A
-
-    ; The colors for the first layer do not have offset; they are directly after the palette for the image.
-    XOR A
-    LD (starsPalOffset), A
-
-    ; ##########################################
-    ; Data
-    LD DE, db1.starsData1
-    LD (starsDataPoint), DE
-
-    LD A, ST_L1_SIZE_D27
-    LD (starsDataSize), A
-
-    LD DE, (starsData1MaxY)
-    LD (starsDataMaxYPoint), DE
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      _SetupLayer2                        ;
-;----------------------------------------------------------;
-_SetupLayer2
-
-    ; Palette
-    LD DE, (starsPalL2Point)
-    LD (starsPalPoint), DE
-    
-    LD A, ST_PAL_L2_SIZE_D8
-    LD (starsPalSize), A
-
-    ; The colors for stars on layer 2 are stored after those for layer 1.
-    LD A, ST_PAL_L1_SIZE_D32
-    LD (starsPalOffset), A
-
-    ; ##########################################
-    ; Data
-    LD DE, db1.starsData2
-    LD (starsDataPoint), DE
-
-    LD A, ST_L2_SIZE_D16
-    LD (starsDataSize), A
-
-    LD DE, (starsData2MaxY)
-    LD (starsDataMaxYPoint), DE
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _NextStarsColor                      ;
-;----------------------------------------------------------;
-_NextStarsColor
-
-    CALL dbs.SetupArrays1Bank
-    LD HL, (starsDataPoint)
-    LD A, (starsDataSize)
+;  - HL: Points to the source pixel from stars column.
+; Return:
+;  A: contains next star color.
+; Modifies: A, B, C, DE
+    MACRO _GetStarColor
+
+    LD DE, HL                                   ; DE points to the star position in the column.
+    INC DE                                      ; DE points to the color info.
+
+    ; DE points to the color offset from #starsPalAddr. Now, we have to move it to the offset in the layer two palette.
+    ; #btd.palColors points right after the colors registered for the image.
+    LD A, (DE)
     LD B, A
 
-    ; Loop over stars data.
-.columnsLoop
-    PUSH BC
-    LD IX, HL
-
-    ; Move HL to stars pixel data.
-    LD A, SC
-    ADD HL, A
-    LD A, (IX + SC.SIZE)                        ; Number of stars in column.
-    LD B, A
-
-    ;###########################################
-    ; Loop over alls stars in column.
-.starsLoop
-    INC HL                                      ; Move HL after star position to color info.
-
-    ; ##########################################
-    ; Do not change the color always, randomize it.
-
-    LD A, (randColor)
+    LD A, (starsPalOffset)
     LD C, A
-    LD A, R                                     ; Load the random number into A register.
-    LD (randColor), A
-    CP C
-    JR C, .nextStarPixel
 
-    ; ##########################################
-    ; Change the color
-    LD A, (starsPalSize)
-    LD C, A
-    LD A, (HL)                                  ; A contains star color.
-    INC A                                       ; Next color
-    LD (HL), A
-    CP C                                        ; Did we reach the max color and have to reset it?
-    JR NZ, .nextStarPixel
+    LD A, (btd.palColors)
+    ADD B
+    ADD C
 
-    ; Reset color
-    LD A, ST_PAL_FIRST_D1
-    LD (HL), A
-.nextStarPixel
-    INC HL                                      ; Move HL to next star postion.
-    DJNZ .starsLoop
-
-.nextColumn
-    
-    ; Move HL to the next stars column.
-    POP BC
-    DJNZ .columnsLoop
-
-    CALL ShowStars
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  _MoveAndRenderStars                     ;
-;----------------------------------------------------------;
-_MoveAndRenderStars
-
-    CALL dbs.SetupArrays1Bank
-    LD A, (starsDataSize)
-    LD B, A
-    LD HL, (starsDataPoint)
-
-    ; Loop over all stars.
-    LD IY, (starsDataMaxYPoint)
-.columnsLoop
-
-    LD IX, HL
-    PUSH IX, HL, BC
-    CALL _MoveAndRenderStarColumn
-    POP BC, HL, IX
-
-    ; Move HL to the next stars column
-    LD A, SC                                    ; Move HL after SC.
-    ADD HL, A
-
-    LD A, (IX + SC.SIZE)                        ; Move HL after pixel data of the current stars column.
-    ADD HL, A                                   ; 2x because each star has color byte.
-    ADD HL, A
-
-    INC IY                                      ; Move to the next max-y.
-    DJNZ .columnsLoop
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                _MoveAndRenderStarColumn                  ;
@@ -503,13 +153,13 @@ _MoveAndRenderStars
 ; Input 
 ;  - IX: Pointer to SC.
 ;  - IY: Points to the current max y postion for the star.
-_MoveAndRenderStarColumn
+    MACRO _MoveAndRenderStarColumn
 
     ; Assign image bank that will be modified to slot 6.
     LD A, (IX + SC.BANK)
     LD B, A
     LD A, dbs.BMB_ST_BANK_S7_D18                ; First image bank. See "NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9".
-    ADD A, B
+    ADD B
     NEXTREG _MMU_REG_SLOT6_H56, A               ; Assign image bank to slot 6.
 
     ; ##########################################
@@ -582,8 +232,7 @@ _MoveAndRenderStarColumn
     ; Hide star only if it's not being placed on the original image.
     ; B contains a star position before it was moved - that's the one that should be hidden.
     
-    CALL _CanShowStar
-    CP CANSS_YES
+    _CanShowStar
     JR NZ, .afterPaintStar                      ; Skip this star if it cannot be hidden.
 
     ; Hide star
@@ -599,9 +248,7 @@ _MoveAndRenderStarColumn
     ; Print the moved (or not moved if #starsState == ST_SHOW) star if it's not behind something on the image.
 
     LD B, (HL)                                  ; A contains the position of the already moved star.
-    CALL _CanShowStar
-    
-    CP CANSS_YES
+    _CanShowStar
     JR NZ, .afterPaintStar                      ; Skip this star if it cannot be painted.
 
     ; Paint star on new postion
@@ -611,7 +258,7 @@ _MoveAndRenderStarColumn
     POP BC                                      ; Restore B, and keep it for the main loop.
     PUSH BC
     PUSH DE
-    CALL _GetStarColor                          ; Load star color
+    _GetStarColor                          ; Load star color
     POP DE
     LD (DE), A
 
@@ -628,75 +275,452 @@ _MoveAndRenderStarColumn
     
     DJNZ .starsLoop
 
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                     _CanShowStar                         ;
+;                     _MoveStarsL1Up                       ;
 ;----------------------------------------------------------;
-; Input 
-;  - B:  Star y-postion to be checked.
-;  - IY: Points to the current max y postion for the star.
-; Return:
-;  - A with value CANSS_XXX
-; Modifies: A,C
-CANSS_YES           = 1
-CANSS_NO            = 0
+    MACRO _MoveStarsL1Up
 
-_CanShowStar
+    ; Delay movement
+    LD A, (starsMoveL1Delay)
+    DEC A
+    LD (starsMoveL1Delay), A
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .end                                 ; Do not move yet, wait for 0.
 
-    LD A, (IY)                                  ; Load into A max star y-postion
+    ; Reset delay
+    LD A, ST_L1_MOVE_DEL_D8
+    LD (starsMoveL1Delay), A
 
-    ; A holds max star y-position and B current
-    CP B
-    JR C, .notAllowed                           ; Jump if the max position (A) is below the current (B).
+    ;###########################################
+    ; Render
+    CALL _SetupLayer1
+    CALL _MoveAndRenderStars
 
-.allowed
-    LD A, CANSS_YES
-    RET
+.end
+    ENDM                                        ; ## END of the macro ##
 
-.notAllowed
+;----------------------------------------------------------;
+;                     _MoveStarsL2Up                       ;
+;----------------------------------------------------------;
+    MACRO _MoveStarsL2Up
 
-    ; Stars could be behind the building, in which case it should be hidden, but it's also possible that the star is
-    ; below the building (basement?) in the picture that rolls over to the top of the screen. In this case, the star should be visible.
-    LD A, (bg.bgOffset)                         ; The background image moves down, releasing more room for stars.
-    LD C, A
-    LD A, _SC_RESY1_D255
-    SUB C
+    ; Delay movement
+    LD A, (starsMoveL2Delay)
+    DEC A
+    LD (starsMoveL2Delay), A
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .end                                 ; Do not move yet, wait for 0.
 
-    CP B
-    JR NC, .notAllowed2                         ; Jump if the max position (A) is below the current (B).
-    LD A, CANSS_YES
-    RET
+    ; Reset delay
+    LD A, ST_L2_MOVE_DEL_D2
+    LD (starsMoveL2Delay), A
 
-.notAllowed2
-    LD A, CANSS_NO
+    ;###########################################
+    ; Render
+    CALL _SetupLayer2
+    CALL _MoveAndRenderStars
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _MoveStarsL1Down                      ;
+;----------------------------------------------------------;
+    MACRO _MoveStarsL1Down
+
+    ; Delay movement
+    LD A, (starsMoveL1Delay)
+    DEC A
+    LD (starsMoveL1Delay), A
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .end                                 ; Do not move yet, wait for 0.
+
+    ; Reset delay
+    LD A, ST_L1_MOVE_DEL_D8
+    LD (starsMoveL1Delay), A
+
+    ;###########################################
+    ; Render
+    CALL _SetupLayer1
+    CALL _MoveAndRenderStars
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _MoveStarsL2Down                      ;
+;----------------------------------------------------------;
+    MACRO _MoveStarsL2Down
+
+    ; Delay movement
+    LD A, (starsMoveL2Delay)
+    DEC A
+    LD (starsMoveL2Delay), A
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .end                                      ; Do not move yet, wait for 0.
+
+    ; Reset delay
+    LD A, ST_L2_MOVE_DEL_D2
+    LD (starsMoveL2Delay), A
+
+    ;###########################################
+    ; Render
+    CALL _SetupLayer2
+    CALL _MoveAndRenderStars
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _PrepRenderStars                       ;
+;----------------------------------------------------------;
+    MACRO _PrepRenderStars
+
+    ; Move stars only if enabled.
+    LD A, (starsState)
+    CP ST_C_HIDDEN
+    RET C
+
+    CALL dbs.SetupArrays1Bank
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                       SetupStars                         ;
+;----------------------------------------------------------;
+; Input:
+;  - A: palette number, values from 0-3.
+;  - DE: array containing max horizontal star position for each column (#SC) for Layer 1.
+;  - HL: same as DE, but for Layer 2.
+SetupStars
+
+    LD (paletteNumber), A
+    LD (starsMaxYL1Addr), DE
+    LD (starsMaxYL2Addr), HL
     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      _GetStarColor                       ;
+;                    LoadStarsPalette                      ;
 ;----------------------------------------------------------;
-; Input:
-;  - HL: Points to the source pixel from stars column.
-; Return:
-;  A: contains next star color.
-; Modifies: A, B, C, DE
-_GetStarColor
+LoadStarsPalette
 
-    LD DE, HL                                   ; DE points to the star position in the column.
-    INC DE                                      ; DE points to the color info.
+    CALL dbs.SetupArrays1Bank
 
-    ; DE points to the color offset from #starsPalPoint. Now, we have to move it to the offset in the layer two palette.
-    ; #btd.palColors points right after the colors registered for the image.
-    LD A, (DE)
+    ; Palettes for L1/L2 are stored as a continuous array. The pointer to the start of this array is given by #starsPalL1/L2.
+    ; A gives the palette number. To load L1: #starsPalL1+A*32.
+
+    ; Load colors for the stars on layer 1.
+    LD A, (paletteNumber)
+  
+    PUSH AF
+    LD D, A
+    LD E, ST_PAL_L1_BYTES_D64
+    MUL D, E                                    ; DE contains palette offset.
+    LD HL, db1.starsPalL1
+    ADD HL, DE                                  ; HL points to data with palette colors.
+    LD (starsPalL1Addr), HL
+    LD A, ST_PAL_L1_SIZE_D32
+    LD B, A
+    CALL bp.WritePalette
+
+    ; ##########################################
+    ; Load colors for the stars on layer 2.
+    POP AF                                      ; A contains palette number.
+    LD D, A
+    LD E, ST_PAL_L2_BYTES_D16
+    MUL D, E                                    ; DE contains palette offset.
+    LD HL, db1.starsPalL2
+    ADD HL, DE                                  ; HL points to data with palette colors.
+    
+    LD (starsPalL2Addr), HL
+    LD A, ST_PAL_L2_SIZE_D8
+    LD B, A
+    CALL bp.WritePalette
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        ShowStars                         ;
+;----------------------------------------------------------;
+ShowStars
+
+    LD A, ST_SHOW
+    LD (starsState), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        HideStars                         ;
+;----------------------------------------------------------;
+HideStars
+
+    LD A, ST_HIDDEN
+    LD (starsState), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       MoveStarsUp                        ;
+;----------------------------------------------------------;
+MoveStarsUp
+
+    ; Move stars only if enabled.
+    LD A, (starsState)
+    CP ST_C_HIDDEN
+    RET C
+
+    CALL dbs.SetupArrays1Bank
+
+    ;###########################################
+    ; Update state
+    LD A, ST_MOVE_UP
+    LD (starsState), A
+
+    ;###########################################
+    _MoveStarsL1Up
+    _MoveStarsL2Up
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      MoveStarsDown                       ;
+;----------------------------------------------------------;
+MoveStarsDown
+
+    _PrepRenderStars
+
+    ;###########################################
+    ; Update state
+    LD A, ST_MOVE_DOWN
+    LD (starsState), A
+
+    ;###########################################
+    _MoveStarsL1Down
+    _MoveStarsL2Down
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  MoveFastStarsDown                       ;
+;----------------------------------------------------------;
+MoveFastStarsDown
+
+    _PrepRenderStars
+
+    CALL _SetupLayer2
+    CALL _MoveAndRenderStars
+
+    LD A, (mld.counter000FliFLop)
+    CP _GC_FLIP_ON_D1
+    RET NZ
+
+    CALL _MoveAndRenderStars
+
+    CALL _SetupLayer1
+    CALL _MoveAndRenderStars
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      BlinkStars                          ;
+;----------------------------------------------------------;
+BlinkStars
+
+    _PrepRenderStars
+
+    LD A, (starsState)
+    CP ST_SHOW
+
+    ; We would like to execute _MoveAndRenderStars only if there is no movement up/down. If previous state is ST_SHOW, it means that there
+    ; is no movement. Otherwise state should be ST_MOVE_UP/ST_MOVE_DOWN (is cannot be ST_HIDDEN, see _PrepRenderStars).
+    PUSH AF
+
+    JR Z, .afterStateUpdate
+    LD A, ST_SHOW
+    LD (starsState), A
+.afterStateUpdate
+
+    ; Blink L1
+    CALL _SetupLayer1
+    CALL _NextStarsColor
+
+    POP AF
+    PUSH AF
+    CALL Z, _MoveAndRenderStars                 ; Call only when #starsState == ST_SHOW
+
+    ; Blink L2
+    CALL _SetupLayer2
+    CALL _NextStarsColor
+
+    POP AF
+    CALL Z, _MoveAndRenderStars                 ; Call only when #starsState == ST_SHOW
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE FUNCTIONS                      ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      _SetupLayer1                        ;
+;----------------------------------------------------------;
+_SetupLayer1
+
+    ; Palette
+    LD DE, (starsPalL1Addr)
+    LD (starsPalAddr), DE
+
+    LD A, ST_PAL_L1_SIZE_D32
+    LD (starsPalSize), A
+
+    ; The colors for the first layer do not have offset; they are directly after the palette for the image.
+    XOR A
+    LD (starsPalOffset), A
+
+    ; ##########################################
+    ; Data
+    LD DE, db1.starsData1
+    LD (starsSCAddr), DE
+
+    LD A, ST_L1_SIZE_D27
+    LD (starsSCSize), A
+
+    LD DE, (starsMaxYL1Addr)
+    LD (starsMaxY), DE
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      _SetupLayer2                        ;
+;----------------------------------------------------------;
+_SetupLayer2
+
+    ; Palette
+    LD DE, (starsPalL2Addr)
+    LD (starsPalAddr), DE
+    
+    LD A, ST_PAL_L2_SIZE_D8
+    LD (starsPalSize), A
+
+    ; The colors for stars on layer 2 are stored after those for layer 1.
+    LD A, ST_PAL_L1_SIZE_D32
+    LD (starsPalOffset), A
+
+    ; ##########################################
+    ; Data
+    LD DE, db1.starsData2
+    LD (starsSCAddr), DE
+
+    LD A, ST_L2_SIZE_D16
+    LD (starsSCSize), A
+
+    LD DE, (starsMaxYL2Addr)
+    LD (starsMaxY), DE
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                     _NextStarsColor                      ;
+;----------------------------------------------------------;
+_NextStarsColor
+ 
+    LD HL, (starsSCAddr)
+    LD A, (starsSCSize)
     LD B, A
 
-    LD A, (starsPalOffset)
-    LD C, A
+    ; Loop over stars data (SC elements).
+.scLoop
+    PUSH BC
+    LD IX, HL
 
-    LD A, (btd.palColors)
-    ADD B
-    ADD C
+    ; Move HL to stars pixel data.
+    LD A, SC
+    ADD HL, A
+    LD A, (IX + SC.SIZE)                        ; Number of stars in column.
+    LD B, A
+
+    ;###########################################
+    ; Loop over alls stars in column.
+.starsLoop
+    INC HL                                      ; Move HL after star position to color info.
+
+    ; ##########################################
+    ; Do not change the color always, randomize it.
+    LD A, (randColor)
+    LD C, A
+    LD A, R                                     ; Load the random number into A register.
+    LD (randColor), A
+    CP C
+    JR C, .nextStarPixel
+
+    ; ##########################################
+    ; Change the color
+    LD A, (starsPalSize)
+    LD C, A
+    LD A, (HL)                                  ; A contains star color.
+    INC A                                       ; Next color
+    LD (HL), A
+    CP C                                        ; Did we reach the max color and have to reset it?
+    JR NZ, .nextStarPixel
+
+    ; Reset color
+    LD A, ST_PAL_FIRST_D1
+    LD (HL), A
+.nextStarPixel
+    INC HL                                      ; Move HL to next star postion.
+    DJNZ .starsLoop
+
+.nextColumn
+
+    ; Move HL to the next stars column.
+    POP BC
+    DJNZ .scLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  _MoveAndRenderStars                     ;
+;----------------------------------------------------------;
+_MoveAndRenderStars
+
+    LD A, (starsSCSize)
+    LD B, A
+    LD HL, (starsSCAddr)
+
+    ; Loop over all stars.
+    LD IY, (starsMaxY)
+.columnsLoop
+
+    LD IX, HL
+    PUSH IX, HL, BC
+    _MoveAndRenderStarColumn
+    POP BC, HL, IX
+
+    ; Move HL to the next stars column
+    LD A, SC                                    ; Move HL after SC.
+    ADD HL, A
+
+    LD A, (IX + SC.SIZE)                        ; Move HL after pixel data of the current stars column.
+    ADD HL, A                                   ; 2x because each star has color byte.
+    ADD HL, A
+
+    INC IY                                      ; Move to the next max-y.
+
+    DEC B
+    JP NZ, .columnsLoop
 
     RET                                         ; ## END of the function ##
 

@@ -3,7 +3,7 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                     Asteroids Shower                     ;
+;                     Meteors Shower                     ;
 ;----------------------------------------------------------;
     MODULE rotd
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank

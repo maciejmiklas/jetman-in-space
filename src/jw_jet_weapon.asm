@@ -15,22 +15,89 @@ FIRE_THICKNESS_D10      = 10
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter .
 ; reaches #JM_FIRE_DELAY
-JM_FIRE_DELAY_MAX       = 15
-JM_FIRE_DELAY_MIN       = 3
-JM_FIRE_SPEED_UP        = 4
+JM_FIRE_DELAY_MAX_D15   = 15
+JM_FIRE_DELAY_MIN_D3    = 3
+JM_FIRE_SPEED_UP_D4     = 4
 fireDelayCnt            DB 0
-fireDelay               DB JM_FIRE_DELAY_MAX
+fireDelay               DB JM_FIRE_DELAY_MAX_D15
 
 STATE_SHOT_DIR_BIT      = 5                     ; Bit for #SPR.STATE, 1 - shot moves right, 0 - shot moves left.
 
 fireFxDelayCnt          DB 0
-fireFxDelay             DB FIRE_FX_DELAY_INIT
-FIRE_FX_DELAY_INIT      = 2
-FIRE_FX_DELAY_SOUND2    = 5                     ; When delay reaches this value play #af.FX_FIRE2.
+fireFxDelay             DB FIRE_FX_DELAY_INIT_D2
+FIRE_FX_DELAY_INIT_D2   = 2
+FIRE_FX_DELAY_SND2_D5   = 5                     ; When delay reaches this value play #af.FX_FIRE2.
 
 fireFxOn                DB 1
-FIRE_FX_ON              = 1
-FIRE_FX_OFF             = 0
+FIRE_FX_ON_D1            = 1
+FIRE_FX_OFF_D0           = 0
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     _FireDelayDown                       ;
+;----------------------------------------------------------;
+    MACRO _FireDelayDown
+
+    LD A, (fireDelay)
+    CP JM_FIRE_DELAY_MIN_D3
+    JR Z, .end
+
+    DEC A
+    LD (fireDelay), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                        _WeaponFx                         ;
+;----------------------------------------------------------;
+    MACRO _WeaponFx
+
+    ; Do to play FX it it's off.
+    LD A, (fireFxOn)
+    OR A                                        ; Same as: CP FIRE_FX_OFF_D0
+    JR Z, .end
+
+    ; Play FX every few game loops.
+    LD A, (fireFxDelayCnt)
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .decFireFxCnt
+
+    ; The delay counter is done, reset it, and play FX.
+    LD A, (fireFxDelay)
+    LD (fireFxDelayCnt), A
+
+    ; Start playing different FX when the weapon fires at max speed.
+    CP FIRE_FX_DELAY_SND2_D5
+    JR NC, .newSound
+    LD A, af.FX_FIRE1
+    JR .afterNewSound
+.newSound
+    LD A, af.FX_FIRE2
+.afterNewSound
+
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxPlay
+
+    JR .afterFireFx
+.decFireFxCnt
+    DEC A
+    LD (fireFxDelayCnt), A
+.afterFireFx
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                       FlipFireFx                         ;
@@ -52,22 +119,22 @@ ResetWeapon
     LD (fireFxDelayCnt), A
     LD (fireDelayCnt), A
 
-    LD A, JM_FIRE_DELAY_MAX
+    LD A, JM_FIRE_DELAY_MAX_D15
     LD (fireDelay), A
 
-    LD A, FIRE_FX_DELAY_INIT
+    LD A, FIRE_FX_DELAY_INIT_D2
     LD (fireFxDelay), A
 
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     CALL Z, FireSpeedUp
     
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     CALL Z, FireSpeedUp
 
     LD A, (jt.difLevel)
-    CP jt.DIF_HARD
+    CP jt.DIF_HARD_D3
     CALL Z, FireSpeedUp
 
     RET                                         ; ## END of the function ##
@@ -79,13 +146,13 @@ FireSpeedUp
 
     ; Do not speed up the fire (by decreasing the delay) if it's already at max firing speed.
     LD A, (fireDelay)
-    CP JM_FIRE_DELAY_MIN
+    CP JM_FIRE_DELAY_MIN_D3
     RET Z
 
-    LD A, JM_FIRE_SPEED_UP
+    LD A, JM_FIRE_SPEED_UP_D4
     LD B, A
 .loop
-    CALL _FireDelayDown
+    _FireDelayDown
     DJNZ .loop
 
     XOR A
@@ -109,7 +176,7 @@ FireSpeedUp
 ; Modifies: ALL
 CheckHitEnemies
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     LD B, A
@@ -130,7 +197,6 @@ CheckHitEnemies
     PUSH IX
     CALL ShotsCollision
     POP IX
-    CP SHOT_HIT
     JR NZ, .continue                            ; Jump if there is no hit.
 
     ; We have hit!
@@ -161,8 +227,8 @@ HideShots
     LD B, db2.SHOTS_SIZE 
 .shotsLoop
 
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
-    HideSprite
+    sr.SetSpriteId
+    sp.HideSprite
     CALL sr.ResetSprite
 
     ; ##########################################
@@ -181,10 +247,8 @@ HideShots
 ; - DE: X of the sprite.
 ; - C:  Y of the sprite.
 ; Return:
-; - A:   values:
-; Modifies: All
-SHOT_HIT                    = 1
-SHOT_MISS                   = 0
+;  - YES (hit): Z is reset (JP Z).
+;  - NO (miss):  Z is set (JP NZ).
 ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots
@@ -234,7 +298,7 @@ ShotsCollision
     ; We have hit! Hide shot and return.
     CALL sr.HideSimpleSprite
 
-    LD A, SHOT_HIT
+    _YES
     POP DE, BC
     RET
 
@@ -247,7 +311,7 @@ ShotsCollision
     DJNZ .shotsLoop                             ; Jump if B > 0 (loop starts with B = #SPR)
 
     ; There was no hit.
-    LD A, SHOT_MISS
+    _NO
 
     RET                                         ; ## END of the function ##
 
@@ -269,20 +333,20 @@ MoveShots
     JR Z, .continue
 
     ; Shot is visible, move it and update postion.
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
+    sr.SetSpriteId
     
-    LD D, sr.MVX_IN_D_6PX_HIDE
+    LD A, sr.MVX_IN_D_6PX_HIDE
 
     ; Setup move direction for shot.
     BIT STATE_SHOT_DIR_BIT, (IX + SPR.STATE)
     JR Z, .shotDirLeft
 
     ; Shot moves right.
-    SET sr.MVX_IN_D_TOD_DIR_BIT, D
+    SET sr.MVX_IN_D_TOD_DIR_BIT, A
     JR .afterShotDir
 .shotDirLeft
     ; Shot moves left.
-    RES sr.MVX_IN_D_TOD_DIR_BIT, D
+    RES sr.MVX_IN_D_TOD_DIR_BIT, A
 .afterShotDir
 
     CALL sr.MoveX
@@ -294,8 +358,7 @@ MoveShots
 
     ; Check the collision with the platform.
     CALL pl.CheckPlatformWeaponHit
-    CP A, pl.PL_HIT_NO
-    JR Z, .afterPlatformHit
+    JR NZ, .afterPlatformHit
     PUSH IX
     CALL sr.SpriteHit
     CALL gc.PlatformWeaponHit
@@ -404,7 +467,7 @@ FirePress
 
     ; Is Jetman moving left or right?
     LD A, (gid.jetDirection)
-    BIT gid.MOVE_LEFT_BIT, A
+    BIT gid.MOVE_LEFT_BIT_D0, A
     JR NZ, .movingLeft                          ; Jump if Jetman is moving left.
 
     XOR A                                       ; A will hold SPR.STATE.
@@ -448,73 +511,14 @@ FirePress
     LD (IX + SPR.Y), A
 
     ; Setup laser beam pattern, IX already points to the right memory address.
-    CALL sr.SetSpriteId                         ; Set the ID of the sprite for the following commands.
+    sr.SetSpriteId
     CALL sr.ShowSprite
 
     ; Call callback
-    CALL _WeaponFx
+    _WeaponFx
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-
-;----------------------------------------------------------;
-;                        _WeaponFx                         ;
-;----------------------------------------------------------;
-_WeaponFx
-
-    ; Do to play FX it it's off.
-    LD A, (fireFxOn)
-    CP FIRE_FX_ON
-    RET NZ
-
-    ; Play FX every few game loops.
-    LD A, (fireFxDelayCnt)
-    CP 0
-    JR NZ, .decFireFxCnt
-
-    ; The delay counter is done, reset it, and play FX.
-    LD A, (fireFxDelay)
-    LD (fireFxDelayCnt), A
-
-    ; Start playing different FX when the weapon fires at max speed.
-    CP FIRE_FX_DELAY_SOUND2
-    JR NC, .newSound
-    LD A, af.FX_FIRE1
-    JR .afterNewSound
-.newSound
-    LD A, af.FX_FIRE2
-.afterNewSound
-
-    CALL dbs.SetupAyFxsBank
-    CALL af.AfxPlay
-
-    JR .afterFireFx
-.decFireFxCnt
-    DEC A
-    LD (fireFxDelayCnt), A
-.afterFireFx
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _FireDelayDown                       ;
-;----------------------------------------------------------;
-_FireDelayDown
-
-    LD A, (fireDelay)
-    CP JM_FIRE_DELAY_MIN
-    RET Z
-
-    DEC A
-    LD (fireDelay), A
-
-    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

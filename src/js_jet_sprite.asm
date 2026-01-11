@@ -94,7 +94,7 @@ UpdateJetSpritePositionRotation
     LD A, (gid.jetDirection)
     LD D, A
     XOR A                                       ; Clear A to set only rotation/mirror bits
-    BIT gid.MOVE_LEFT_BIT, D                    ; Moving left bit set?
+    BIT gid.MOVE_LEFT_BIT_D0, D                    ; Moving left bit set?
     JR Z, .rotateRight
     SET _SPR_REG_ATR2_MIRX_BIT, A               ; Rotate sprite left
     JR .afterRotate 
@@ -150,14 +150,14 @@ AnimateJetSprite
 
     ; Delay animation.
     LD A, (sprDBDelay)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterAnimationDelay                  ; Jump if delay is off
-    
+
     ; Animation delay is on. Check if counter has reached 0 and needs to be reset.
     LD A, (sprDBDelayCnt)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .decResetDelay
-    
+
     ; Delay counter is 0, reset it
     LD A, (sprDBDelay)
     LD (sprDBDelayCnt), A
@@ -171,9 +171,9 @@ AnimateJetSprite
     ; ##########################################
     ; Switch to the next DB record if all bytes from the current one have been used.
     LD A, (sprDBRemain)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterRecordChange                   ; Jump if there are still bytes to be processed
-    
+
     ; Load new record.
     LD HL, db2.jetSpriteDB                      ; HL points to the beginning of the DB
     LD A, (sprDBNextID)                         ; CPIR will keep increasing HL until it finds the record ID from A
@@ -290,7 +290,7 @@ ChangeJetSpriteOnFlyDown
 
     ; Change animation only if Jetman is flying
     LD A, (jt.jetAir)
-    CP jt.AIR_FLY
+    OR A                                        ; Same as: CP jt.AIR_FLY_D10
     RET NZ
 
     ; Switch to flaying down animation
@@ -306,7 +306,7 @@ ChangeJetSpriteOnFlyUp
 
     ; Change animation only if Jetman is flying.
     LD A, (jt.jetAir)
-    CP jt.AIR_FLY
+    CP jt.AIR_FLY_D10
     RET NZ
 
     ; Switch to flaying animation.

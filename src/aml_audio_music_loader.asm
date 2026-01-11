@@ -9,14 +9,14 @@
     ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
 
 ; Counter for game music from assets\snd.
-gameMusicCnt            DB GAME_MUSIC_MIN
-GAME_MUSIC_MIN          = 1
-GAME_MUSIC_MAX          = 25
+gameMusicCnt            DB GAME_MUSIC_MIN_D1
+GAME_MUSIC_MIN_D1       = 1
+GAME_MUSIC_MAX_D25      = 25
 
-MUSIC_GAME_OVER         = 80
-MUSIC_MAIN_MENU         = 81
-MUSIC_HIGH_SCORE        = 82
-MUSIC_INTRO             = 83
+MUSIC_GAME_OVER_D80     = 80
+MUSIC_MAIN_MENU_D81     = 81
+MUSIC_HIGH_SCORE_D82    = 82
+MUSIC_INTRO_D82         = 83
 
 ;----------------------------------------------------------;
 ;                       FlipOnOff                          ;
@@ -24,7 +24,7 @@ MUSIC_INTRO             = 83
 FlipOnOff
 
     LD A, (am.musicState)
-    CP am.MUSIC_ST_ON
+    CP am.MUSIC_ST_ON_D1
     JR Z, .isOn
     CALL MusicOn
     RET
@@ -37,7 +37,7 @@ FlipOnOff
 ;----------------------------------------------------------;
 MusicOn
 
-    LD A, am.MUSIC_ST_ON
+    LD A, am.MUSIC_ST_ON_D1
     LD (am.musicState), A
 
     RET                                         ; ## END of the function ##
@@ -53,7 +53,7 @@ MusicOff
     LD BC, _GL_REG_SOUND_HFFFD
     OUT (C), A
 
-    LD A, am.MUSIC_ST_OFF
+    LD A, am.MUSIC_ST_OFF_D0
     LD (am.musicState), A
 
     RET                                         ; ## END of the function ##
@@ -61,7 +61,7 @@ MusicOff
 ;----------------------------------------------------------;
 ;                       LoadSong                           ;
 ;----------------------------------------------------------;
-;  - A: song number from "assets/snd/xx.pt3", #GAME_MUSIC_MIN - #GAME_MUSIC_MAX.
+;  - A: song number from "assets/snd/xx.pt3", #GAME_MUSIC_MIN_D1 - #GAME_MUSIC_MAX_D25.
 LoadSong
 
     PUSH AF
@@ -80,10 +80,10 @@ NextGameSong
 
     ; Increase music counter, or overflow to min value.
     LD A, (gameMusicCnt)
-    CP GAME_MUSIC_MAX
+    CP GAME_MUSIC_MAX_D25
     JR NZ, .incMusicCnt
     
-    LD A, GAME_MUSIC_MIN
+    LD A, GAME_MUSIC_MIN_D1
     JR .afterMusicCnt
 
 .incMusicCnt

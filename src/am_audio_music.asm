@@ -100,9 +100,9 @@ NtSkCn	                DB 0
 Volume	                DB 0
 	ENDS
 
-MUSIC_ST_ON             = 1
-MUSIC_ST_OFF            = 0
-musicState              DB MUSIC_ST_OFF
+MUSIC_ST_ON_D1          = 1
+MUSIC_ST_OFF_D0         = 0
+musicState              DB MUSIC_ST_OFF_D0
 
 ;Entry and other points
 ;START initialization
@@ -941,7 +941,7 @@ CH_ONDL
 ;----------------------------------------------------------;
 MusicLoop
     LD A, (musicState)
-    CP MUSIC_ST_ON
+    CP MUSIC_ST_ON_D1
     RET NZ
 PLAY
 

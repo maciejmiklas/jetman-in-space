@@ -7,11 +7,11 @@
 ;----------------------------------------------------------;
     MODULE gb 
 
-GB_VISIBLE              = 1
-GB_HIDDEN               = 0
+GB_VISIBLE_D1           = 1
+GB_HIDDEN_D0            = 0
 GB_TILES_D13            = 320 / 8 * 3
 
-gamebarState            DB GB_VISIBLE
+gamebarState            DB GB_VISIBLE_D1
 
 ;----------------------------------------------------------;
 ;                     HideGameBar                          ;
@@ -19,7 +19,7 @@ gamebarState            DB GB_VISIBLE
 HideGameBar
 
     ; Update state
-    LD A, GB_HIDDEN
+    LD A, GB_HIDDEN_D0
     LD (gamebarState), A
 
     ; ##########################################
@@ -36,7 +36,7 @@ HideGameBar
 ShowGameBar
 
     ; Update state
-    LD A, GB_VISIBLE
+    LD A, GB_VISIBLE_D1
     LD (gamebarState),A
 
     RET                                         ; ## END of the function ##
@@ -44,43 +44,47 @@ ShowGameBar
 ;----------------------------------------------------------;
 ;                      PrintDebug                          ;
 ;----------------------------------------------------------;
+    IFDEF DEBUG_BAR
 PrintDebug
 
     ; Return if gamebar is hidden
     LD A, (gamebarState)
-    CP GB_VISIBLE
-    RET NZ
-/*
+    OR A
+    RET Z
+
+    IFDEF PERFORMANCE
     ; ##########################################
     LD BC, 40
     LD H, 0
-    LD A, (jpo.jetX)
+    LD A, (endLine)
     LD L, A
     CALL ut.PrintNumber
 
     ; ##########################################
     LD BC, 46
     LD H, 0
-    LD A, (jpo.jetY)
+    LD A, (endLineMax)
     LD L, A
     CALL ut.PrintNumber
+    ENDIF
 
+/*
     ; ##########################################
     LD BC, 60
     LD H, 0
-    LD A, (ro.rocX)
+    LD A, (enp.moveDel)
     LD L, A
     CALL ut.PrintNumber
 
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (ro.rocY)
+    LD A, (enp.movePx)
     LD L, A
     CALL ut.PrintNumber
 */
     RET                                         ; ## END of the function ##
-
+    ENDIF
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

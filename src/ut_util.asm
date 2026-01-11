@@ -57,10 +57,10 @@ NumTo99Str
     LD D, B                                     ; D = tens digit (BCD)
     LD E, A                                     ; E = units digit (BCD)
     LD A, D
-    ADD A,'0'                                   ; Convert tens to ASCII
+    ADD A, '0'                                  ; Convert tens to ASCII
     LD D, A
     LD A, E
-    ADD A,'0'                                   ; Convert units to ASCII
+    ADD A, '0'                                  ; Convert units to ASCII
     LD E, A
     ; D and E now contain the ASCII digits
 
@@ -73,12 +73,12 @@ NumTo99Str
 ;  - #dmaPortAAddress: Address from
 ;  - #dmaPortBAddress: Address to
 ;  - #dmaTransferSize: Number of bytes to copy
-CopyRam:
+CopyRam
     LD HL, dmaProgram                          ; HL = pointer to DMA program
     LD B, dmaProgramSize                       ; B = size of the code
     LD C, _DMA_PORT_H6B                        ; C = $6B (zxnDMA port)
     OTIR                                       ; Upload DMA program
-    
+
     RET
 
 ;----------------------------------------------------------;
@@ -92,7 +92,7 @@ Add8To32
     ; Add 8-bit value to the second DW, LO byte.
     LD B, A                                     ; Copy the 8-bit value into B (used for carry handling).
     LD A, (HL)                                  ; Load the least significant byte (LSB) of the second DW (LO).
-    ADD A, B                                    ; Add the 8-bit value to the LSB.
+    ADD B                                       ; Add the 8-bit value to the LSB.
     LD (HL), A                                  ; Store the result back to memory.
     INC HL                                      ; Move to the next byte.
 
@@ -223,18 +223,18 @@ PrintNumber
 HlEqual0
 
     LD A, H                                     ; Check if H == B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notEqual                            ; Jump if H != B
     LD A, L                                     ; Check if L == B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notEqual                            ; Jump if L == B
-    
+
     ; H == 0 and L == 0
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
     RET
 
 .notEqual
-    OR 1                                        ; Return NO (Z set).
+    _NO
 
     RET                                         ; ## END of the function ##
 
@@ -280,7 +280,6 @@ Pause
     CALL CountdownBC
 
     DEC A
-    CP 0
     JP NZ, .loop
 
     POP IY, IX, HL, DE, BC, AF
@@ -299,7 +298,7 @@ CountdownBC
 .loop:
     DEC BC                                      ; DEC BC from 65000 to 0
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JP NZ,.loop
 
     POP IY, IX, HL, DE, BC, AF

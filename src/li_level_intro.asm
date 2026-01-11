@@ -15,8 +15,43 @@ sourceTilesRowMax       DB 0
 tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti._TI_PIXELS_D8-1).
 
-animateDelayCnt         DB ANIMATE_DELAY        ; Start scrolling without a delay.
-ANIMATE_DELAY           = 50
+animateDelayCnt         DB ANIMATE_DELAY_D50        ; Start scrolling without a delay.
+ANIMATE_DELAY_D50       = 50
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+
+;----------------------------------------------------------;
+;                   _ResetLevelIntro                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A:  Number of horizontal lines in source tilemap (40xA)
+    MACRO _ResetLevelIntro
+
+    LD (sourceTilesRowMax), A
+
+    LD A, ti.TI_VTILES_D32-1
+    LD (screenTilesRow), A
+
+    XOR A
+    LD (tileOffset), A
+    LD (sourceTilesRow), A
+    LD (tilePixelCnt), A
+
+    LD A, ANIMATE_DELAY_D50
+    LD (animateDelayCnt), A
+    
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                   #LoadLevelIntro                        ;
@@ -27,10 +62,10 @@ ANIMATE_DELAY           = 50
 ;  - HL: size of second tiles file (first one has 8KiB).
 LoadLevelIntro
 
-    CALL _ResetLevelIntro
+    _ResetLevelIntro
 
     ; Update state
-    LD A, ms.LEVEL_INTRO
+    LD A, ms.MS_LEVEL_INTRO_D10
     CALL ms.SetMainState
 
     ; ##########################################
@@ -84,10 +119,10 @@ LoadLevelIntro
 ;----------------------------------------------------------;
 AnimateLevelIntroTextScroll
    
-    ; Delay animation (text scrolling) until the counter has reached ANIMATE_DELAY. When this happens, the animation runs at full speed 
+    ; Delay animation (text scrolling) until the counter has reached ANIMATE_DELAY_D50. When this happens, the animation runs at full speed 
     ; until the delay counter has been reset. It occurs when the next text line from Tilemap is being loaded.
     LD A, (animateDelayCnt)
-    CP ANIMATE_DELAY
+    CP ANIMATE_DELAY_D50
     JR Z, .afterAnimateDelay
     INC A
     LD (animateDelayCnt), A
@@ -132,28 +167,6 @@ _KeyExitIntro
 
     CALL gc.LoadCurrentLevel
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _ResetLevelIntro                       ;
-;----------------------------------------------------------;
-; Input:
-;  - A:  Number of horizontal lines in source tilemap (40xA)
-_ResetLevelIntro
-
-    LD (sourceTilesRowMax), A
-
-    LD A, ti.TI_VTILES_D32-1
-    LD (screenTilesRow), A
-
-    XOR A
-    LD (tileOffset), A
-    LD (sourceTilesRow), A
-    LD (tilePixelCnt), A
-
-    LD A, ANIMATE_DELAY
-    LD (animateDelayCnt), A
-    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

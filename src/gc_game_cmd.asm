@@ -16,12 +16,73 @@ JSTAND_START_D15        = 15
 JM_RESPAWN_X_D100       = 100
 JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
-KILL_FEW                = 7
-
-freezeEnemiesCnt        DW 0
-FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
-
 FUEL_THIEF_ACTIVE_LEV   = 5
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                      _StartLevel                         ;
+;----------------------------------------------------------;
+    MACRO _StartLevel
+
+    LD A, ms.MS_GAME_ACTIVE_D1
+    CALL ms.SetMainState
+
+    CALL gb.ShowGameBar
+    CALL sc.PrintScore
+
+    CALL dbs.SetupRocketBank
+    CALL roa.StartRocketAssembly
+
+    CALL ti.ResetTilemapOffset
+    CALL jo.ResetJetpackOverheating
+    CALL jl.SetupLives
+
+    LD A, ms.MS_GAME_ACTIVE_D1
+    CALL ms.SetMainState
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.NextGameSong
+
+    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
+    CALL RespawnJet
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _InitLevelLoad                        ;
+;----------------------------------------------------------;
+    MACRO _InitLevelLoad
+
+    CALL _HideGame
+    CALL gid.ResetKeysState
+    CALL td.ResetTimeOfDay
+
+    CALL dbs.SetupRocketBank
+    CALL ros.ResetRocketStars
+
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.EnableFuelThief
+
+    CALL dbs.SetupTileAnimationBank
+    CALL ta.DisableTileAnimation
+
+    CALL enc.InitEnemies
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                  StartGameWithIntro                      ;
@@ -34,7 +95,7 @@ StartGameWithIntro
 
     ; Show intro only for the first level.
     LD A, (ll.currentLevel)
-    CP _LEVEL_MIN
+    CP _LEVEL_MIN_D1
     JR Z, .intro
     CALL LoadCurrentLevel
     RET
@@ -46,7 +107,7 @@ StartGameWithIntro
 
     ; Music on
     CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_INTRO
+    LD A, aml.MUSIC_INTRO_D82
     CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
@@ -80,7 +141,7 @@ SetupSystem
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    LD A, ms.MENU_MAIN
+    LD A, ms.MS_MENU_MAIN_D11
     CALL ms.SetMainState
 
     CALL _HideGame
@@ -140,9 +201,9 @@ LoadNextLevel
 ;----------------------------------------------------------;
 LoadCurrentLevel
 
-    CALL _InitLevelLoad
+    _InitLevelLoad
     CALL ll.LoadCurrentLevel
-    CALL _StartLevel
+    _StartLevel
 
     LD A, (ll.currentLevel)
     CP FUEL_THIEF_ACTIVE_LEV
@@ -187,7 +248,7 @@ RocketFLyStartPhase1
 
     CALL rof.RocketFLyStartPhase1
 
-    LD A, ms.FLY_ROCKET
+    LD A, ms.MS_FLY_ROCKET_D3
     CALL ms.SetMainState
 
     CALL sc.BoardRocket
@@ -235,7 +296,7 @@ RocketFLyStartPhase4
     CALL fi.LoadTileStarsSprFile
     POP DE
 
-    CALL fi.LoadAsteroidsFile
+    CALL fi.LoadMeteorsFile
     CALL sp.LoadSpritesFPGA
 
     ; Load tilemap palette
@@ -383,11 +444,11 @@ JetPlatformTakesOff
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE                     ; Check if Jetman is on the ground/platform.
+    OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0. Check if Jetman is on the ground/platform.
     RET Z
 
     ; Jetman is taking off.
-    LD A, jt.AIR_FLY
+    LD A, jt.AIR_FLY_D10
     CALL jt.SetJetStateAir
 
     ; Play takeoff animation.
@@ -426,9 +487,9 @@ PlayFuelThiefFx
     CALL dbs.SetupPatternEnemyBank
     LD A, (enu.thiefState)
 
-    CP enu.TS_DEPLOYING
+    CP enu.TS_DEPLOYING_D2
     JR Z, .play
-    CP enu.TS_RUNS_EMPTY
+    CP enu.TS_RUNS_EMPTY_D30
     RET NZ
 .play
 
@@ -440,100 +501,18 @@ PlayFuelThiefFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     WeaponHitEnemy                       ;
+;                   RocketHitsMeteor                     ;
 ;----------------------------------------------------------;
-WeaponHitEnemy
-
-    CALL dbs.SetupArrays2Bank
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-
-    LD A, (ens.singleEnemySize)
-    LD IX, ena.singleEnemySprites
-    CALL jw.CheckHitEnemies
-
-    ; ##########################################
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL jw.CheckHitEnemies
-
-    ; ##########################################
-    CALL dbs.SetupFollowingEnemyBank
-
-    LD IX, fe.fEnemySprites
-    LD A, (fe.fEnemySize)
-    CALL jw.CheckHitEnemies
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   RocketHitsAsteroid                     ;
-;----------------------------------------------------------;
-RocketHitsAsteroid
+RocketHitsMeteor
 
     CALL rof.StartRocketExplosion
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     AnimateEnemies                       ;
-;----------------------------------------------------------;
-AnimateEnemies
-
-    ; Animate single enemy
-    CALL dbs.SetupPatternEnemyBank
-
-    LD A, (ens.singleEnemySize)
-    LD IX, ena.singleEnemySprites
-    CALL sr.AnimateSprites
-
-    ; ##########################################
-    ; Animate formation enemy
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL sr.AnimateSprites
-
-    ; ##########################################
-    CALL dbs.SetupFollowingEnemyBank
-
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
-    CALL sr.AnimateSprites
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      KillOneEnemy                        ;
-;----------------------------------------------------------;
-KillOneEnemy
-
-    ; Kill single enemy
-    CALL dbs.SetupPatternEnemyBank
-    LD A, (ens.singleEnemySize)
-    LD IX, ena.singleEnemySprites
-    CALL sr.KillOneSprite
-
-    ; ##########################################
-    ; Kill formation enemy
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL sr.KillOneSprite
-
-    ; ##########################################
-    ; Kill following enemy
-    CALL dbs.SetupFollowingEnemyBank
-
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
-    CALL sr.KillOneSprite
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                JetmanEnemiesCollision                    ;
 ;----------------------------------------------------------;
-JetmanEnemiesCollision
+    MACRO JetmanEnemiesCollision
 
     CALL dbs.SetupArrays2Bank
 
@@ -556,23 +535,8 @@ JetmanEnemiesCollision
     LD IX, fe.fEnemySprites
     CALL jco.EnemiesCollision
 
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     KillFewEnemies                       ;
-;----------------------------------------------------------;
-KillFewEnemies
-
-    LD B, KILL_FEW
-.killLoop
-    PUSH BC
-
-    CALL KillOneEnemy
-
-    POP BC
-    DJNZ .killLoop
-
-    RET                                         ; ## END of the function ##
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                      EnemyHit                            ;
@@ -654,12 +618,12 @@ EnemyHitsJet
     ; ##########################################
     ; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy.
     LD A, (jt.jetState)                         
-    CP jt.JETST_RIP
+    CP jt.JETST_RIP_D103
     RET Z                                       ; Exit if RIP.
 
     ; ##########################################
     ; Is Jetman invincible? If so, just kill the enemy.
-    CP jt.JETST_INV
+    CP jt.JETST_INV_D102
     RET Z                                       ; Exit if invincible.
 
     ; ##########################################
@@ -696,9 +660,9 @@ RespawnJet
     LD (jpo.jetY), A
 
     ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
-    CALL bm.CopyImageData
     CALL jt.SetJetStateRespawn
     CALL jco.MakeJetInvincible
+    CALL bm.CopyImageData
     CALL bg.UpdateBackgroundOnJetmanMove
 
     CALL dbs.SetupRocketBank
@@ -831,83 +795,6 @@ JetPicksJar
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   FreezeEnemies                          ;
-;----------------------------------------------------------;
-FreezeEnemies
-
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_FREEZE_ENEMIES
-    CALL af.AfxPlay
-
-    LD DE, FREEZE_ENEMIES_CNT
-    LD (freezeEnemiesCnt), DE
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     RespawnEnemy                         ;
-;----------------------------------------------------------;
-RespawnEnemy
-
-    ; Enemies frozen and cannot move/respawn?
-    LD DE, (freezeEnemiesCnt)
-
-    LD A, D
-    CP 0
-    RET NZ
-
-    LD A, E
-    CP 0
-    RET NZ
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.RespawnNextSingleEnemy
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.RespawnFollowingEnemy
-    
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      MoveEnemies                         ;
-;----------------------------------------------------------;
-MoveEnemies
-
-    ; Pattern enemies are immune to freeze
-    CALL dbs.SetupPatternEnemyBank
-    CALL enf.MoveFormationEnemies
-
-    ; Enemies frozen and cannot move?
-    LD DE, (freezeEnemiesCnt)
-    
-    ; DE == 0 ?
-    LD A, D
-    CP 0
-    JR NZ, .decFreezeCnt
-
-    ; D == 0, now check E
-    LD A, E
-    CP 0
-    JR Z, .afterFreeze
-
-.decFreezeCnt
-    DEC DE
-    LD (freezeEnemiesCnt), DE
-    RET
-.afterFreeze
-
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    CALL ens.MoveSingleEnemies
-    CALL enf.MoveFormationEnemies
-
-    CALL dbs.SetupFollowingEnemyBank
-    CALL fe.MoveFollowingEnemies
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                       JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
@@ -998,11 +885,11 @@ MovementInactivity
     ; ##########################################
     ; Should Jetman hover?
     LD A, (jt.jetAir)
-    CP jt.JT_STATE_INACTIVE                     ; Is Jetman in the air?
+    OR A                                        ; Is Jetman in the air (same as CP jt.JT_STATE_INACTIVE_D0 but faster) ?
     JR Z, .afterHoover                          ; Jump if not flaying.
 
     LD A, (jt.jetAir)
-    CP jt.AIR_HOOVER                            ; Jetman is in the air, but is he hovering already?
+    CP jt.AIR_HOOVER_D11                            ; Jetman is in the air, but is he hovering already?
     JR Z, .afterHoover                          ; Jump if already hovering.
 
     ; Jetman is in the air, not hovering, but is he not moving long enough?
@@ -1011,7 +898,7 @@ MovementInactivity
     JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering.
 
     ; Jetman starts to hover!
-    LD A, jt.AIR_HOOVER
+    LD A, jt.AIR_HOOVER_D11
     CALL jt.SetJetStateAir
 
     LD A, js.SDB_HOVER
@@ -1022,11 +909,11 @@ MovementInactivity
     ; ##########################################
     ; Jetman is not hovering, but should he stand?
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE                     ; Is Jetman on the ground already?
+    CP jt.JT_STATE_INACTIVE_D0                     ; Is Jetman on the ground already?
     RET Z                                       ; Jump if not on the ground.
 
     LD A, (jt.jetGnd)
-    CP jt.GND_STAND                             ; Jetman is on the ground, but is he standing already?
+    CP jt.GND_STAND_D53                             ; Jetman is on the ground, but is he standing already?
     RET Z                                       ; Jump if already standing.
 
     ; ##########################################
@@ -1036,7 +923,7 @@ MovementInactivity
     JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing.
     
     ; Transition from walking to standing.
-    LD A, jt.GND_STAND
+    LD A, jt.GND_STAND_D53
     CALL jt.SetJetStateGnd
 
     LD A, js.SDB_STAND                          ; Change animation.
@@ -1047,10 +934,10 @@ MovementInactivity
     ; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
     ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
     LD A, (jt.jetGnd)
-    CP jt.GND_WALK
+    CP jt.GND_WALK_D51
     RET NZ                                      ; Jump if not walking.
     
-    CP jt.GND_JSTAND
+    CP jt.GND_JSTAND_D52
     RET Z                                       ; Jump already j-standing (just standing - for a short time).
 
     LD A, (jm.jetInactivityCnt)
@@ -1058,7 +945,7 @@ MovementInactivity
     RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing.
 
     ; Stop walking immediately and stand still.
-    LD A, jt.GND_JSTAND
+    LD A, jt.GND_JSTAND_D52
     CALL jt.SetJetStateGnd
 
     LD A, js.SDB_JSTAND                         ; Change animation.
@@ -1170,7 +1057,7 @@ _HideGame
     CALL ti.ResetTilemapOffset
     CALL ti.CleanAllTiles
     CALL ki.ResetKeyboard
-    CALL _HideEnemies
+    CALL enc.HideEnemies
 
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
@@ -1185,87 +1072,6 @@ _HideGame
     CALL rof.ResetAndDisableFlyRocket
 
     CALL sc.ResetClippings
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _InitLevelLoad                        ;
-;----------------------------------------------------------;
-_InitLevelLoad
-
-    CALL _HideGame
-    CALL gi.ResetKeysState
-    CALL td.ResetTimeOfDay
-
-    CALL dbs.SetupRocketBank
-    CALL ros.ResetRocketStars
-
-    CALL dbs.SetupPatternEnemyBank
-    CALL enu.EnableFuelThief
-
-    CALL dbs.SetupTileAnimationBank
-    CALL ta.DisableTileAnimation
-
-    XOR A
-    LD (freezeEnemiesCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      _StartLevel                         ;
-;----------------------------------------------------------;
-_StartLevel
-
-    LD A, ms.GAME_ACTIVE
-    CALL ms.SetMainState
-
-    CALL gb.ShowGameBar
-    CALL sc.PrintScore
-
-    CALL dbs.SetupRocketBank
-    CALL roa.StartRocketAssembly
-
-    CALL ti.ResetTilemapOffset
-    CALL jo.ResetJetpackOverheating
-    CALL jl.SetupLives
-
-    LD A, ms.GAME_ACTIVE
-    CALL ms.SetMainState
-
-    ; Music on
-    CALL dbs.SetupMusicBank
-    CALL aml.NextGameSong
-
-    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
-    CALL RespawnJet
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _HideEnemies                         ;
-;----------------------------------------------------------;
-_HideEnemies
-
-    ; Hide single enemies.
-    CALL dbs.SetupPatternEnemyBank
-
-    LD A, ena.ENEMY_SINGLE_SIZE
-    LD IX, ena.singleEnemySprites
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide formation enemies.
-    LD A, ena.ENEMY_FORMATION_SIZE
-    LD IX, ena.formationEnemySprites
-    CALL sr.HideAllSimpleSprites
-
-    ; ##########################################
-    ; Hide following enemies.
-    CALL dbs.SetupFollowingEnemyBank
-    
-    LD A, fe.FOLLOWING_FENEMY_SIZE
-    LD IX, fe.fEnemySprites
-    CALL sr.HideAllSimpleSprites
 
     RET                                         ; ## END of the function ##
 

@@ -1,0 +1,226 @@
+/*
+  Copyright (c) 2025 Maciej Miklas
+  Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
+*/
+;----------------------------------------------------------;
+;                    Enemy Command                         ;
+;----------------------------------------------------------;
+    MODULE enc
+KILL_FEW                = 7
+
+freezeEnemiesCnt        DW 0
+FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
+
+;----------------------------------------------------------;
+;                      InitEnemies                         ;
+;----------------------------------------------------------;
+InitEnemies
+
+    XOR A
+    LD (freezeEnemiesCnt), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 CheckEnemyWeaponHit                      ;
+;----------------------------------------------------------;
+CheckEnemyWeaponHit
+
+    CALL dbs.SetupArrays2Bank
+
+    ; ##########################################
+    CALL dbs.SetupPatternEnemyBank
+
+    LD A, (ens.singleEnemySize)
+    LD IX, ena.singleEnemySprites
+    CALL jw.CheckHitEnemies
+
+    ; ##########################################
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL jw.CheckHitEnemies
+
+    ; ##########################################
+    CALL dbs.SetupFollowingEnemyBank
+
+    LD IX, fe.fEnemySprites
+    LD A, (fe.fEnemySize)
+    CALL jw.CheckHitEnemies
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      HideEnemies                         ;
+;----------------------------------------------------------;
+HideEnemies
+
+    ; Hide single enemies.
+    CALL dbs.SetupPatternEnemyBank
+
+    LD A, ena.ENEMY_SINGLE_SIZE
+    LD IX, ena.singleEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+    ; ##########################################
+    ; Hide formation enemies.
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+    ; ##########################################
+    ; Hide following enemies.
+    CALL dbs.SetupFollowingEnemyBank
+    
+    LD A, fe.FOLLOWING_FENEMY_SIZE
+    LD IX, fe.fEnemySprites
+    CALL sr.HideAllSimpleSprites
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     AnimateEnemies                       ;
+;----------------------------------------------------------;
+AnimateEnemies
+
+    ; Animate single enemy
+    CALL dbs.SetupPatternEnemyBank
+
+    LD A, (ens.singleEnemySize)
+    LD IX, ena.singleEnemySprites
+    CALL sr.AnimateSprites
+
+    ; ##########################################
+    ; Animate formation enemy
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL sr.AnimateSprites
+
+    ; ##########################################
+    CALL dbs.SetupFollowingEnemyBank
+
+    LD A, (fe.fEnemySize)
+    LD IX, fe.fEnemySprites
+    CALL sr.AnimateSprites
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     KillFewEnemies                       ;
+;----------------------------------------------------------;
+KillFewEnemies
+
+    LD B, KILL_FEW
+.killLoop
+    PUSH BC
+
+    CALL KillOneEnemy
+
+    POP BC
+    DJNZ .killLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      KillOneEnemy                        ;
+;----------------------------------------------------------;
+KillOneEnemy
+
+    ; Kill single enemy
+    CALL dbs.SetupPatternEnemyBank
+    LD A, (ens.singleEnemySize)
+    LD IX, ena.singleEnemySprites
+    CALL sr.KillOneSprite
+
+    ; ##########################################
+    ; Kill formation enemy
+    LD A, ena.ENEMY_FORMATION_SIZE
+    LD IX, ena.formationEnemySprites
+    CALL sr.KillOneSprite
+
+    ; ##########################################
+    ; Kill following enemy
+    CALL dbs.SetupFollowingEnemyBank
+
+    LD A, (fe.fEnemySize)
+    LD IX, fe.fEnemySprites
+    CALL sr.KillOneSprite
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                   FreezeEnemies                          ;
+;----------------------------------------------------------;
+FreezeEnemies
+
+    CALL dbs.SetupAyFxsBank
+    LD A, af.FX_FREEZE_ENEMIES
+    CALL af.AfxPlay
+
+    LD DE, FREEZE_ENEMIES_CNT
+    LD (freezeEnemiesCnt), DE
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     RespawnEnemy                         ;
+;----------------------------------------------------------;
+RespawnEnemy
+
+    ; Enemies frozen and cannot move/respawn?
+    LD DE, (freezeEnemiesCnt)
+
+    LD A, D
+    OR A                                        ; Same as CP 0, but faster.
+    RET NZ
+
+    LD A, E
+    OR A                                        ; Same as CP 0, but faster.
+    RET NZ
+
+    ; ##########################################
+    CALL dbs.SetupPatternEnemyBank
+    CALL ens.RespawnNextSingleEnemy
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.RespawnFollowingEnemy
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      MoveEnemies                         ;
+;----------------------------------------------------------;
+MoveEnemies
+
+    ; Enemies frozen and cannot move?
+    LD DE, (freezeEnemiesCnt)
+    
+    ; DE == 0 ?
+    LD A, D
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .decFreezeCnt
+
+    ; D == 0, now check E
+    LD A, E
+    OR A                                        ; Same as CP 0, but faster.
+    JR Z, .afterFreeze
+
+.decFreezeCnt
+    DEC DE
+    LD (freezeEnemiesCnt), DE
+    RET
+.afterFreeze
+
+    ; ##########################################
+    CALL dbs.SetupPatternEnemyBank
+    CALL ens.MoveSingleEnemies
+    CALL enf.MoveFormationEnemies
+
+    CALL dbs.SetupFollowingEnemyBank
+    CALL fe.MoveFollowingEnemies
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       ENDMODULE                          ;
+;----------------------------------------------------------;
+    ENDMODULE

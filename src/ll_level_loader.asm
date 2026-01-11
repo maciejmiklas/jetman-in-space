@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE ll
 
-currentLevel            DB _LEVEL_MIN           ; Int value 1-10.
+currentLevel            DB _LEVEL_MIN_D1           ; Int value 1-10.
 currentLevelStr         DW 0                    ; string value  01-10.
 
     STRUCT LL
@@ -53,7 +53,7 @@ TIP_DATA                DW                      ; Address of layer 2 palette dat
 PIC_SIZE                DB                      ; Number of pickups.
 PIC_DATA                DW                      ; Pointer to pickups array, each entry of #PI_SPR_XXX.
 
-; Asteroids
+; Meteors
 AD_DEP_DATA             DW                      ; Pointer to #asDeploy.
 AS_MOV_DATA             DW                      ; Pointer to #randMov.
     ENDS
@@ -72,6 +72,65 @@ levels
     LL {"10", 1,        db1.starsData1MaxYL10, db1.starsData2MaxYL10, db2.PLATFORM_SIZE_L10, db2.platformsL10, rod.ROCKET_X_L10, rod.rocketElL10, db1.tilePaletteStars10Bin, ena.SINGLE_ENEMIES_L10, ens.NEXT_RESP_DEL, ena.singleEnemiesL10, fed.FENEMY_SIZE_L8, fed.fEnemyL08, ena.ENEMY_FORMATION_SIZE, 0,       ena.enemyFormationL10, tad.TILEMAP_ANIM_ROWS_L8, tad.tilemapAnimationRowsL8, db1.TILE_PAL_SIZE_L1, db1.tilePalette1Bin, db2.PICKUPS_L6_SIZE, db2.pickupsL6, rotd.asDeploy1, rotd.randMov1}
 
 tilePaletteStarsAddr    DW 0
+
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                     PRIVATE MACROS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                _LoadDataByLevelNumber                    ;
+;----------------------------------------------------------;
+; Input:
+;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
+    MACRO _LoadDataByLevelNumber
+
+    LD (jt.levelNumber), DE
+
+    PUSH DE
+    CALL fi.LoadBgImageFile
+    POP DE
+
+    ; ##########################################
+    ; Load platform tile map. DE is set to level number
+    PUSH DE
+    CALL fi.LoadPlatformsTilemapFile
+    POP DE
+
+    ; ##########################################
+    ; Load stars tile map. DE is set to level number
+    PUSH DE
+    CALL fi.LoadRocketStarsTilemapFile
+    POP DE
+
+    ; ##########################################
+    ; Copy tile definitions (sprite file) to expected memory
+    PUSH DE
+    CALL fi.LoadTilePlatformsSprFile
+    POP DE
+
+    ; ##########################################
+    ; Load sprites. DE is set to level number
+    PUSH DE
+    CALL fi.LoadSpritesFile
+    CALL sp.LoadSpritesFPGA
+    POP DE
+
+    ; ##########################################
+    ; Load palettes
+    CALL fi.LoadBgPaletteFile
+    CALL btd.CreateTodPalettes
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
 ;                  LoadCurrentLevel                        ;
@@ -104,7 +163,7 @@ LoadCurrentLevel
     PUSH IX
     LD DE, (IX + LL.LNUM)
     LD (currentLevelStr), DE
-    CALL _LoadDataByLevelNumber
+    _LoadDataByLevelNumber
     POP IX
 
     ; ##########################################
@@ -126,11 +185,11 @@ LoadCurrentLevel
     POP IX
 
     ; ##########################################
-    ; Asteroids
+    ; Meteors
     PUSH IX
     LD DE, (IX + LL.AD_DEP_DATA)
     LD HL, (IX + LL.AS_MOV_DATA)
-    CALL rot.SetupAsteroids
+    CALL rot.SetupMeteors
     POP IX
     
     ; ##########################################
@@ -163,7 +222,7 @@ LoadCurrentLevel
     CALL dbs.SetupFollowingEnemyBank
 
     LD A, (IX + LL.FE_SIZE)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR Z, .followingDisabled
 
     LD DE, (IX + LL.FE_DATA)
@@ -237,7 +296,7 @@ LoadUnlockLevel
 ;----------------------------------------------------------;
 ResetLevelPlaying
 
-    LD A, _LEVEL_MIN
+    LD A, _LEVEL_MIN_D1
     LD (currentLevel), A
 
     RET                                         ; ## END of the function ##
@@ -264,7 +323,7 @@ UnlockNextLevel
     LD (currentLevel), A
 
     ; Player has finished the last level, restart at  1, but do not store the unlock level.
-    CP _LEVEL_MAX + 1
+    CP _LEVEL_MAX_D10 + 1
     JR Z, .resetCurrentLevel
 
     ; ##########################################
@@ -291,58 +350,8 @@ UnlockNextLevel
     RET
 
 .resetCurrentLevel
-    LD A, _LEVEL_MIN
+    LD A, _LEVEL_MIN_D1
     LD (currentLevel), A
-
-    RET                                         ; ## END of the function ##
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                _LoadDataByLevelNumber                    ;
-;----------------------------------------------------------;
-; Input:
-;  - DE: Level number as ASCII, for example for level 4: D="0", E="4"
-_LoadDataByLevelNumber
-
-    LD (jt.levelNumber), DE
-
-    PUSH DE
-    CALL fi.LoadBgImageFile
-    POP DE
-
-    ; ##########################################
-    ; Load platform tile map. DE is set to level number
-    PUSH DE
-    CALL fi.LoadPlatformsTilemapFile
-    POP DE
-
-    ; ##########################################
-    ; Load stars tile map. DE is set to level number
-    PUSH DE
-    CALL fi.LoadRocketStarsTilemapFile
-    POP DE
-
-    ; ##########################################
-    ; Copy tile definitions (sprite file) to expected memory
-    PUSH DE
-    CALL fi.LoadTilePlatformsSprFile
-    POP DE
-
-    ; ##########################################
-    ; Load sprites. DE is set to level number
-    PUSH DE
-    CALL fi.LoadSpritesFile
-    CALL sp.LoadSpritesFPGA
-    POP DE
-
-    ; ##########################################
-    ; Load palettes
-    CALL fi.LoadBgPaletteFile
-    CALL btd.CreateTodPalettes
 
     RET                                         ; ## END of the function ##
 

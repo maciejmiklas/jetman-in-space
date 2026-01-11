@@ -36,19 +36,220 @@ CARRY_ADJUSTY_D10       = 10
 
 BAR_TILE_START         = 25*2                   ; *2 because each tile takes 2 bytes.
 BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap.
-BAR_TILE_PAL           = $60
+BAR_TILE_PAL_H30           = $60
 
-BAR_ICON               = 36
+BAR_ICON_D38               = 36
 BAR_ICON_RAM_START     = BAR_RAM_START - 2
-BAR_ICON_PAL           = $00
+BAR_ICON_PAL_H00           = $00
 DROP_MARGX_D8          = 8
 
 EL_EXH_Y_POS_D234      = 234                     ; Assembly height of the rocket's exhaust.
 
 rocAssemblyX           DB 0
 
+
 ;----------------------------------------------------------;
-;                        SetupRocket                       ;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                 _JetmanDropsRocketElement                ;
+;----------------------------------------------------------;
+    MACRO _JetmanDropsRocketElement
+
+    ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
+    LD BC, (jpo.jetX)
+    LD A, (rocAssemblyX)
+    SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit.
+    CP DROP_MARGX_D8
+    JR NC, .end
+
+    ; ##########################################
+    ; To drop rocket element Jetman's height has to be within bounds: #dropMinY < #jpo.jetY < #RO_DROP_Y_MAX_D180.
+    LD A, (dropMinY)
+    LD B, A
+    LD A, (jpo.jetY)
+    CP RO_DROP_Y_MAX_D180
+    JR NC, .end
+
+    CP B
+    JR C, .end
+
+    ; ##########################################
+    ; Jetman drops rocket element.
+    LD A, ro.ROST_FALL_ASSEMBLY_D11
+    LD (ro.rocketState), A
+
+    ; ##########################################
+    ; Store the height of the drop so that the element can keep falling from this location into the assembly place.
+    CALL _SetIXtoCurrentRocketElement           ; Set IX to current #rocket postion.
+    LD A, (jpo.jetY)
+    LD (ro.rocY), A
+
+    ; ##########################################
+    CALL gc.RocketElementDrop
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _MoveWithJetman                       ;
+;----------------------------------------------------------;
+; Move the element to the current Jetman's position.
+    MACRO _MoveWithJetman
+
+    ; Set the ID of the sprite for the following commands.
+    LD A, (IX + ro.RO.SPRITE_ID)
+    NEXTREG _SPR_REG_NR_H34, A
+
+    ; ##########################################
+    ; Set sprite X coordinate.
+    LD BC, (jpo.jetX)
+    LD A, C     
+    NEXTREG _SPR_REG_X_H35, A                   ; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion.
+    
+    ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
+    LD A, B                                     ; Load MSB from X into A.
+    NEXTREG _SPR_REG_ATR2_H37, A
+
+    ; ##########################################
+    ; Set Y coordinate
+    LD A, (jpo.jetY)
+    ADD CARRY_ADJUSTY_D10
+    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position.
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                     _BoardRocket                         ;
+;----------------------------------------------------------;
+    MACRO _BoardRocket
+
+    ; Return if rocket is not ready for boarding.
+    LD A, (ro.rocketState)
+    CP ro.ROST_READY_D100
+    JR NZ, .end
+
+    ; ##########################################
+    ; Jetman collision with first (lowest) rocket element triggers liftoff.
+    LD BC, (rocAssemblyX)                       ; X of the element.
+    LD B, 0
+    LD D, EL_EXH_Y_POS_D234                     ; Y of the element.
+    CALL jco.JetmanElementCollision
+    JR NZ, .end
+
+    ; ##########################################
+    ; Jetman boards the rocket!
+    LD A, ro.ROST_FLY_D101
+    LD (ro.rocketState), A
+
+    ; Update the rocket's coordinates to start flying from the proper location.
+    LD HL, 0
+    LD A, (rocAssemblyX)
+    LD L, A
+    LD (ro.rocX), HL
+    LD A, EL_EXH_Y_POS_D234
+    LD (ro.rocY), A
+
+    ; ##########################################
+    ; Lift off!
+    CALL gc.RocketFLyStartPhase1
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _CarryRocketElement                    ;
+;----------------------------------------------------------;
+    MACRO _CarryRocketElement
+
+    ; Return if the state does not match.
+    LD A, (ro.rocketState)
+    CP ro.ROST_CARRY_D13
+    JR NZ, .end
+
+    CALL _SetIXtoCurrentRocketElement
+    _MoveWithJetman
+    _JetmanDropsRocketElement
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                  _PickupRocketElement                    ;
+;----------------------------------------------------------;
+    MACRO _PickupRocketElement
+
+    ; Return if there is no element/tank to pick up. Status must be #ro.ROST_WAIT_PICKUP_D12 or #ro.ROST_FALL_PICKUP_D10.
+    LD A, (ro.rocketState)
+    CP ro.ROST_WAIT_PICKUP_D12
+    JR Z, .afterStatusCheck
+
+    CP ro.ROST_FALL_PICKUP_D10
+    JR NZ, .end
+
+.afterStatusCheck
+
+    ; ##########################################
+    ;  Exit if RiP.
+    LD A, (jt.jetState)
+    CP jt.JETST_RIP_D103
+    JR Z, .end
+
+    ; ##########################################
+    ; Set IX to current #rocket postion.
+    CALL _SetIXtoCurrentRocketElement
+
+    ; ##########################################
+    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
+    LD BC, (IX + ro.RO.DROP_X)                     ; X of the element.
+    LD B, 0
+    LD DE, (ro.rocY)                               ; Y of the element.
+    LD D, E
+    CALL jco.JetmanElementCollision
+    JR NZ, .end
+
+     ; ##########################################
+    ; Call game command with pickup info.
+    LD A, (ro.rocketState)
+    CP ro.ROST_FALL_PICKUP_D10
+    JR NZ, .pickupOnGround
+    CALL gc.RocketElementPickupInAir
+.pickupOnGround
+    CALL gc.RocketElementPickup
+
+    ; ##########################################
+    ; Jetman picks up element/tank. Update state to reflect it and return.
+    LD A, ro.ROST_CARRY_D13
+    LD (ro.rocketState), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _ShowAssemblyBarIcon                   ;
+;----------------------------------------------------------;
+    MACRO _ShowAssemblyBarIcon
+
+    LD HL, BAR_ICON_RAM_START
+
+    LD (HL), BAR_ICON_D38                           ; Set tile id.
+    INC HL
+    LD (HL), BAR_ICON_PAL_H00                       ; Set palette for tile.
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                     SetupRocket                          ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A: X coordinate for rocket assembly.
@@ -59,7 +260,7 @@ SetupRocket
     LD (ro.rocketElPtr), HL
 
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     RET NZ
 
     LD A, RO_DROP_Y_MIN_EASY_D30
@@ -91,7 +292,7 @@ ResetAndDisableRocket
 
     XOR A
     LD A, (IX + ro.RO.SPRITE_ID)
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     ; ##########################################
     ; Next rocket element
@@ -110,7 +311,7 @@ AssemblyRocketForDebug
     LD A, EL_TANK6_D9
     LD (rocketElementCnt), A
 
-    LD A, ro.ROST_READY
+    LD A, ro.ROST_READY_D100
     LD (ro.rocketState), A
 
     LD A, EL_EXH_Y_POS_D234
@@ -123,7 +324,7 @@ AssemblyRocketForDebug
 ;----------------------------------------------------------;
 StartRocketAssembly
 
-    LD A, ro.ROST_WAIT_DROP
+    LD A, ro.ROST_WAIT_DROP_D1
     LD (ro.rocketState), A
 
     RET                                         ; ## END of the function ##
@@ -133,9 +334,9 @@ StartRocketAssembly
 ;----------------------------------------------------------;
 UpdateRocketOnJetmanMove
 
-    CALL _PickupRocketElement
-    CALL _CarryRocketElement
-    CALL _BoardRocket
+    _PickupRocketElement
+    _CarryRocketElement
+    _BoardRocket
 
     RET                                         ; ## END of the function ##
 
@@ -153,21 +354,21 @@ IsFuelDeployed
 
     ; Element count is correct, it could be fuel, but is it really out there?
     LD A, (ro.rocketState)
-    CP ro.ROST_FALL_PICKUP
+    CP ro.ROST_FALL_PICKUP_D10
     JR Z, .isFuel
 
-    CP ro.ROST_WAIT_PICKUP
+    CP ro.ROST_WAIT_PICKUP_D12
     JR Z, .isFuel
 
-    CP ro.ROST_FALL_ASSEMBLY
+    CP ro.ROST_FALL_ASSEMBLY_D11
     JR Z, .isFuel
 
 .notFuel
-    OR 1                                        ; Return NO (Z set).
+    _NO
     RET
 
 .isFuel
-    XOR A                                       ; Return YES (Z is reset).
+    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -179,7 +380,7 @@ CheckHitTank
 
     ; Not tank hit on easy
     LD A, (jt.difLevel)
-    CP jt.DIF_EASY
+    CP jt.DIF_EASY_D1
     RET Z
 
     ; Is the thank out there?
@@ -188,7 +389,7 @@ CheckHitTank
 
     ; Is tank already exploding?
     LD A, (ro.rocketState)
-    CP ro.ROST_TANK_EXPLODE
+    CP ro.ROST_TANK_EXPLODE_D14
     RET Z                                       ; Return if tank is already exploding.
 
     ; ##########################################
@@ -199,7 +400,7 @@ CheckHitTank
     ;  1) #ro.RO.DROP_X: when elements drop for pickup by Jetman.
     ;  2) #roxX when building the rocket.
     LD A, (ro.rocketState)
-    CP ro.ROST_FALL_ASSEMBLY
+    CP ro.ROST_FALL_ASSEMBLY_D11
     JR Z, .assembly
     
     ; Falling rocket element for pickup
@@ -216,7 +417,6 @@ CheckHitTank
     LD A, (ro.rocY)
     LD C, A
     CALL jw.ShotsCollision
-    CP jw.SHOT_HIT
     RET NZ
 
     ; ##########################################
@@ -224,7 +424,7 @@ CheckHitTank
     XOR A
     LD (explodeTankCnt), A
 
-    LD A, ro.ROST_TANK_EXPLODE
+    LD A, ro.ROST_TANK_EXPLODE_D14
     LD (ro.rocketState), A
 
     ; ##########################################
@@ -239,7 +439,7 @@ AnimateTankExplode
 
     ; Return if tank is not exploding.
     LD A, (ro.rocketState)
-    CP ro.ROST_TANK_EXPLODE
+    CP ro.ROST_TANK_EXPLODE_D14
     RET NZ
 
     ; Is explosion over?
@@ -248,7 +448,7 @@ AnimateTankExplode
     JR NZ, .keepExploding
 
     ; Explosion is over.
-    LD A, ro.ROST_WAIT_DROP
+    LD A, ro.ROST_WAIT_DROP_D1
     LD (ro.rocketState), A
 
     CALL _ResetRocketElement
@@ -286,7 +486,7 @@ ResetCarryingRocketElement
 
     ; Return if the state does not match carry.
     LD A, (ro.rocketState)
-    CP ro.ROST_CARRY
+    CP ro.ROST_CARRY_D13
     RET NZ
 
     CALL _ResetRocketElement
@@ -300,7 +500,7 @@ RocketElementFallsForPickup
 
     ; Return if there is no fall.
     LD A, (ro.rocketState)
-    CP ro.ROST_FALL_PICKUP
+    CP ro.ROST_FALL_PICKUP_D10
     RET NZ                                      ; Return if falling bit is not set.
 
     CALL _SetIXtoCurrentRocketElement           ; Set IX to current #rocket postion.
@@ -328,7 +528,7 @@ RocketElementFallsForPickup
     RET NZ                                      ; No, keep falling down.
     
     ; Yes, element has reached landing postion.
-    LD A, ro.ROST_WAIT_PICKUP
+    LD A, ro.ROST_WAIT_PICKUP_D12
     LD (ro.rocketState), A
 
     RET                                         ; ## END of the function ##
@@ -340,7 +540,7 @@ BlinkRocketReady
 
     ; Return if rocket is not ready.
     LD A, (ro.rocketState)
-    CP ro.ROST_READY
+    CP ro.ROST_READY_D100
     RET NZ  
 
     ; Set the ID of the sprite for the following commands.
@@ -368,7 +568,7 @@ RocketElementFallsForAssembly
 
     ; Return if there is no assembly
     LD A, (ro.rocketState)
-    CP ro.ROST_FALL_ASSEMBLY
+    CP ro.ROST_FALL_ASSEMBLY_D11
     RET NZ                                      ; Return if assembly bit is not set.
 
     ; ##########################################
@@ -407,7 +607,7 @@ RocketElementFallsForAssembly
 
     ; ##########################################
     ; Yes, element has reached landing postion, set state for next drop.
-    LD A, ro.ROST_WAIT_DROP
+    LD A, ro.ROST_WAIT_DROP_D1
     LD (ro.rocketState), A
 
     ; ##########################################
@@ -418,7 +618,7 @@ RocketElementFallsForAssembly
 
     ; We are dropping fuel already, hide the fuel sprite as it has reached the rocket.
     LD A, (IX + ro.RO.SPRITE_ID)
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -429,7 +629,7 @@ DropNextRocketElement
     
     ; Check state.
     LD A, (ro.rocketState)
-    CP ro.ROST_WAIT_DROP
+    CP ro.ROST_WAIT_DROP_D1
     RET NZ
 
     ; ##########################################
@@ -459,7 +659,7 @@ DropNextRocketElement
     LD (rocketElementCnt), A
     CALL _UpdateFuelProgressBar
 
-    LD A, ro.ROST_READY
+    LD A, ro.ROST_READY_D100
     LD (ro.rocketState), A
 
     CALL gc.RocketReady
@@ -475,7 +675,7 @@ DropNextRocketElement
     CALL _UpdateFuelProgressBar
 
     ; We are going to drop the next element -> set falling state.
-    LD A, ro.ROST_FALL_PICKUP
+    LD A, ro.ROST_FALL_PICKUP_D10
     LD (ro.rocketState), A
 
     ; Drop next rocket element/tank, first set IX to current #rocket postion.
@@ -499,7 +699,7 @@ RemoveRocketElement
     CALL _UpdateFuelProgressBar
 
     ; Change state
-    LD A, ro.ROST_WAIT_DROP
+    LD A, ro.ROST_WAIT_DROP_D1
     LD (ro.rocketState), A
 
     XOR A
@@ -531,139 +731,6 @@ _SetIXtoCurrentRocketElement
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  _PickupRocketElement                    ;
-;----------------------------------------------------------;
-_PickupRocketElement
-
-    ; Return if there is no element/tank to pick up. Status must be #ro.ROST_WAIT_PICKUP or #ro.ROST_FALL_PICKUP.
-    LD A, (ro.rocketState)
-    CP ro.ROST_WAIT_PICKUP
-    JR Z, .afterStatusCheck
-
-    CP ro.ROST_FALL_PICKUP
-    RET NZ
-    
-.afterStatusCheck
-
-    ; ##########################################
-    ;  Exit if RiP.
-    LD A, (jt.jetState)
-    CP jt.JETST_RIP
-    RET Z
-
-    ; ##########################################
-    ; Set IX to current #rocket postion.
-    CALL _SetIXtoCurrentRocketElement
-
-    ; ##########################################
-    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
-    LD BC, (IX + ro.RO.DROP_X)                     ; X of the element.
-    LD B, 0
-    LD DE, (ro.rocY)                               ; Y of the element.
-    LD D, E
-    CALL jco.JetmanElementCollision
-    RET NZ
-
-     ; ##########################################
-    ; Call game command with pickup info.
-    LD A, (ro.rocketState)
-    CP ro.ROST_FALL_PICKUP
-    JR NZ, .pickupOnGround
-    CALL gc.RocketElementPickupInAir
-.pickupOnGround
-    CALL gc.RocketElementPickup
-
-    ; ##########################################
-    ; Jetman picks up element/tank. Update state to reflect it and return.
-    LD A, ro.ROST_CARRY
-    LD (ro.rocketState), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _MoveWithJetman                       ;
-;----------------------------------------------------------;
-; Move the element to the current Jetman's position.
-_MoveWithJetman
-
-    ; Set the ID of the sprite for the following commands.
-    LD A, (IX + ro.RO.SPRITE_ID)
-    NEXTREG _SPR_REG_NR_H34, A
-
-    ; ##########################################
-    ; Set sprite X coordinate.
-    LD BC, (jpo.jetX)
-    LD A, C     
-    NEXTREG _SPR_REG_X_H35, A                   ; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion.
-    
-    ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
-    LD A, B                                     ; Load MSB from X into A.
-    NEXTREG _SPR_REG_ATR2_H37, A
-
-    ; ##########################################
-    ; Set Y coordinate
-    LD A, (jpo.jetY)
-    ADD CARRY_ADJUSTY_D10
-    NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position.
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _JetmanDropsRocketElement                ;
-;----------------------------------------------------------;
-_JetmanDropsRocketElement
-
-    ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
-    LD BC, (jpo.jetX)
-    LD A, (rocAssemblyX)
-    SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit.
-    CP DROP_MARGX_D8
-    RET NC
-
-    ; ##########################################
-    ; To drop rocket element Jetman's height has to be within bounds: #dropMinY < #jpo.jetY < #RO_DROP_Y_MAX_D180.
-    LD A, (dropMinY)
-    LD B, A
-    LD A, (jpo.jetY)
-    CP RO_DROP_Y_MAX_D180
-    RET NC
-
-    CP B
-    RET C
-
-    ; ##########################################
-    ; Jetman drops rocket element.
-    LD A, ro.ROST_FALL_ASSEMBLY
-    LD (ro.rocketState), A
-
-    ; ##########################################
-    ; Store the height of the drop so that the element can keep falling from this location into the assembly place.
-    CALL _SetIXtoCurrentRocketElement           ; Set IX to current #rocket postion.
-    LD A, (jpo.jetY)
-    LD (ro.rocY), A
-
-    ; ##########################################
-    CALL gc.RocketElementDrop
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                   _CarryRocketElement                    ;
-;----------------------------------------------------------;
-_CarryRocketElement
-
-    ; Return if the state does not match.
-    LD A, (ro.rocketState)
-    CP ro.ROST_CARRY
-    RET NZ
-
-    CALL _SetIXtoCurrentRocketElement
-    CALL _MoveWithJetman
-    CALL _JetmanDropsRocketElement
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 _ResetRocketElement                      ;
 ;----------------------------------------------------------;
 _ResetRocketElement
@@ -673,47 +740,10 @@ _ResetRocketElement
 
     ; Hide rocket element sprite.
     LD A, (IX + ro.RO.SPRITE_ID)
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     ; Reset the state and decrement element counter -> we will drop this element again.
     CALL RemoveRocketElement
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     _BoardRocket                         ;
-;----------------------------------------------------------;
-_BoardRocket
-
-    ; Return if rocket is not ready for boarding.
-    LD A, (ro.rocketState)
-    CP ro.ROST_READY
-    RET NZ
-
-    ; ##########################################
-    ; Jetman collision with first (lowest) rocket element triggers liftoff.
-    LD BC, (rocAssemblyX)                       ; X of the element.
-    LD B, 0
-    LD D, EL_EXH_Y_POS_D234                     ; Y of the element.
-    CALL jco.JetmanElementCollision
-    RET NZ
-
-    ; ##########################################
-    ; Jetman boards the rocket!
-    LD A, ro.ROST_FLY
-    LD (ro.rocketState), A
-
-    ; Update the rocket's coordinates to start flying from the proper location.
-    LD HL, 0
-    LD A, (rocAssemblyX)
-    LD L, A
-    LD (ro.rocX), HL
-    LD A, EL_EXH_Y_POS_D234
-    LD (ro.rocY), A
-
-    ; ##########################################
-    ; Lift off!
-    CALL gc.RocketFLyStartPhase1
 
     RET                                         ; ## END of the function ##
 
@@ -724,7 +754,7 @@ _UpdateFuelProgressBar
 
     ; Return if gamebar is hidden.
     LD A, (gb.gamebarState)
-    CP gb.GB_VISIBLE
+    CP gb.GB_VISIBLE_D1
     RET NZ
 
     ; ##########################################
@@ -736,7 +766,7 @@ _UpdateFuelProgressBar
     ; ##########################################
     ; Show icon on first load only.
     JR NZ, .afterIcon
-    CALL _ShowHeatBarIcon
+    _ShowAssemblyBarIcon
 .afterIcon
 
     ; ##########################################
@@ -749,16 +779,16 @@ _UpdateFuelProgressBar
     SUB EL_PROGRESS_START
     CP B
     JR C, .emptyBar                             ; Jump if B < (#rocketElementCnt-EL_TANK1_D4).
-    LD A, _BAR_FULL_SPR
+    LD A, _BAR_FULL_SPR_D176
     JR .afterBar
 .emptyBar
-    LD A, _BAR_EMPTY_SPR
+    LD A, _BAR_EMPTY_SPR_D182
 .afterBar
     ADD B
     
     LD (HL), A                                  ; Set tile id.
     INC HL
-    LD (HL), BAR_TILE_PAL                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL_H30                       ; Set palette for tile.
     INC HL
 
     ; ##########################################
@@ -769,19 +799,6 @@ _UpdateFuelProgressBar
     JR NZ, .tilesLoop
 
     RET                                         ; ## END of the function #
-
-;----------------------------------------------------------;
-;                    _ShowHeatBarIcon                      ;
-;----------------------------------------------------------;
-_ShowHeatBarIcon
-
-    LD HL, BAR_ICON_RAM_START
-
-    LD (HL), BAR_ICON                           ; Set tile id.
-    INC HL
-    LD (HL), BAR_ICON_PAL                       ; Set palette for tile.
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

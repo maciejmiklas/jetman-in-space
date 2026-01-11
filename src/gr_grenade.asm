@@ -32,13 +32,13 @@ GrenadePickup
 UseGrenade
 
     LD A, (grenadeCount)
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET Z
 
     DEC A
     LD (grenadeCount), A
 
-    CALL gc.KillFewEnemies
+    CALL enc.KillFewEnemies
 
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_GRENADE_EXPLODE

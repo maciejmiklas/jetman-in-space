@@ -50,6 +50,214 @@ ROC_Y_MAX_LO_H36        = $2C
 ROC_Y_MAX_HI_H1         = $1
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  _UpdateRocketFlyPhase                   ;
+;----------------------------------------------------------;
+; Input:
+;  - HL: current #rocketDistance value.
+    MACRO _UpdateRocketFlyPhase
+
+    ; Phase 2?
+    LD A, H
+    CP ro.PHASE_2_ALTITUDE_HI
+    JR NZ, .not2
+
+    LD A, L
+    CP ro.PHASE_2_ALTITUDE_LO
+    JR NZ, .not2
+
+    ; Rocket has reached pahse 2.
+    LD A, ro.PHASE_2
+    LD (ro.rocketFlyPhase), A
+    CALL gc.RocketFLyStartPhase2
+.not2
+
+    ; ##########################################
+    ; Phase 3?
+    LD A, H
+    CP ro.PHASE_3_ALTITUDE_HI
+    JR NZ, .not3
+
+    LD A, L
+    CP ro.PHASE_3_ALTITUDE_LO
+    JR NZ, .not3
+
+    ; Rocket has reached pahse 3.
+    LD A, ro.PHASE_3
+    LD (ro.rocketFlyPhase), A
+.not3
+
+    ; ##########################################
+    ; Phase 4?
+    LD A, H
+    CP ro.PHASE_4_ALTITUDE_HI
+    JR NZ, .not4
+
+    LD A, L
+    CP ro.PHASE_4_ALTITUDE_LO
+    JR NZ, .not4
+
+    ; Rocket has reached pahse 4.
+    LD A, ro.PHASE_4
+    LD (ro.rocketFlyPhase), A
+    CALL _RocketFLyStartPhase4
+    CALL gc.RocketFLyStartPhase4
+
+.not4
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                  _MoveFlyingRocket                       ;
+;----------------------------------------------------------;
+    MACRO _MoveFlyingRocket
+
+    ; Slow down rocket movement speed while taking off.
+    ; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
+    ; with a given delay. When the current section ends, the following section begins, but with decrement delay. During each section, 
+    ; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
+
+    ; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.
+    LD A, (rocketFlyDelayCnt)
+    OR A                                        ; Same as CP 0, but faster.
+    JR Z, .afterDelay
+
+    ; Decrement delay counter.
+    LD A, (rocketFlyDelay)
+    DEC A
+    LD (rocketFlyDelay), A
+
+    OR A                                        ; Same as CP 0, but faster.
+    JP NZ, .end                                 ; Return if delay counter has not been reached.
+
+    ; The counter reached 0, reset it and increment the distance counter.
+    LD A, (rocketFlyDelayCnt)
+    LD (rocketFlyDelay), A
+
+    LD A, (rocketDelayDistance)
+    INC A
+    LD (rocketDelayDistance), A
+
+    CP RO_FLY_DELAY_DIST_D5
+    JR NZ, .afterDelay                          ; Jump if rocket should still move with current delay.
+
+    ; The rocket traveled far enough, decrement the delay for the next section.
+    LD A, (rocketFlyDelayCnt)
+    DEC A
+    LD (rocketFlyDelayCnt), A
+    LD (rocketFlyDelay), A
+
+    XOR A
+    LD (rocketDelayDistance), A
+.afterDelay
+
+     ; ##########################################
+     ; Execute when in phase 2 or 3
+    LD A, (ro.rocketFlyPhase)
+    PUSH AF
+    AND ro.PHASE_2_3
+    JR Z, .afterBoosting
+
+    CALL gc.RocketFLyPhase2and3
+    POP AF
+    JR .notFlygin
+.afterBoosting
+    POP AF
+
+    CP ro.PHASE_4
+    JR C, .notFlygin
+    CALL gc.RocketFLyPhase4
+.notFlygin
+
+    ; ##########################################
+    ; Increment total distance.
+    LD HL, (rocketDistance)
+    INC HL
+    LD (rocketDistance), HL
+
+    PUSH HL
+    _UpdateRocketFlyPhase
+    POP HL
+
+    ; ##########################################
+    ; The current position of rocket elements is stored in #ro.rocAssemblyX and #ro.RO.Y 
+    ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
+
+    LD IX, (ro.rocketElPtr)                               ; Load the pointer to rocket into IX.
+
+    ; ##########################################
+    ; Did the rocket reach the middle of the screen, and should it stop moving?
+    LD A, (ro.rocketFlyPhase)
+    CP ro.PHASE_3
+    JR C, .keepMoving
+
+    ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
+    LD D, (IX + ro.RO.SPRITE_REF)
+    CALL ro.UpdateRocketSpritePattern
+
+    JR .end
+
+    ; Keep moving
+.keepMoving
+
+    ; ##########################################
+    ; Update Y position.
+    LD A, (ro.rocY)
+    DEC A
+    LD (ro.rocY), A
+
+    CALL ro.UpdateRocketPosition
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                _ControlFlyingRocket                      ;
+;----------------------------------------------------------;
+    MACRO _ControlFlyingRocket
+
+    CALL _ProcessJoystickInput
+
+    ; ##########################################
+    ; Increment total distance.
+    LD HL, (rocketDistance)
+    INC HL
+    LD (rocketDistance), HL
+
+    ; ##########################################
+    ; Has the rocket reached the meteor, and should the explosion sequence begin?
+    LD A, H
+    CP EXPLODE_Y_HI_H4
+    JR NZ, .notAtExpolodeDistance
+
+    LD A, L
+    CP EXPLODE_Y_LO_H7E
+    JR C, .notAtExpolodeDistance
+
+    CALL StartRocketExplosion
+    JR .end
+.notAtExpolodeDistance
+
+    ; ##########################################
+    CALL ro.UpdateRocketPosition
+    CALL gc.RocketFLyPhase4
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;               ResetAndDisableFlyRocket                   ;
 ;----------------------------------------------------------;
 ResetAndDisableFlyRocket
@@ -114,13 +322,13 @@ FlyRocket
     CP ro.PHASE_4
     JR NZ,.notPhase4
 
-    CALL _ControlFlyingRocket
+    _ControlFlyingRocket
 
-    JR .afterPhaseCase
+    JP .afterPhaseCase
 .notPhase4
 
     PUSH AF
-    CALL _MoveFlyingRocket
+    _MoveFlyingRocket
     POP AF
 
      ; ##########################################
@@ -158,11 +366,11 @@ StartRocketExplosion
     ; ##########################################
     ; Hide exhaust
     LD A, _EXHAUST_SPRID_D83                     ; Hide sprite on display.
-    CALL sp.SetIdAndHideSprite
+    sp.SetIdAndHideSprite
 
     ; ##########################################
     ; Update state
-    LD A, ro.ROST_EXPLODE
+    LD A, ro.ROST_EXPLODE_D102
     LD (ro.rocketState), A
 
     RET                                         ; ## END of the function ##
@@ -301,200 +509,6 @@ AnimateRocketExhaust
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                _ControlFlyingRocket                      ;
-;----------------------------------------------------------;
-_ControlFlyingRocket
-
-    CALL _ProcessJoystickInput
-
-    ; ##########################################
-    ; Increment total distance.
-    LD HL, (rocketDistance)
-    INC HL
-    LD (rocketDistance), HL
-
-    ; ##########################################
-    ; Has the rocket reached the asteroid, and should the explosion sequence begin?
-    LD A, H
-    CP EXPLODE_Y_HI_H4
-    JR NZ, .notAtExpolodeDistance
-
-    LD A, L
-    CP EXPLODE_Y_LO_H7E
-    JR C, .notAtExpolodeDistance
-
-    CALL StartRocketExplosion
-    RET
-.notAtExpolodeDistance
-
-    ; ##########################################
-    CALL ro.UpdateRocketPosition
-
-    CALL gc.RocketFLyPhase4
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  _MoveFlyingRocket                       ;
-;----------------------------------------------------------;
-_MoveFlyingRocket
-
-    ; Slow down rocket movement speed while taking off.
-    ; The rocket slowly accelerates, and the whole process is divided into sections. During each section, the rocket travels some distance 
-    ; with a given delay. When the current section ends, the following section begins, but with decrement delay. During each section, 
-    ; the rocket moves by the same amount of pixels on the Y axis, only the delay decrements with each following section.
-
-    ; #rocketFlyDelayCnt == 0 when the whole delay sequence is over.
-    LD A, (rocketFlyDelayCnt)
-    CP 0
-    JR Z, .afterDelay
-
-    ; Decrement delay counter.
-    LD A, (rocketFlyDelay)
-    DEC A
-    LD (rocketFlyDelay), A
-
-    CP 0
-    RET NZ                                      ; Return if delay counter has not been reached.
-    
-    ; The counter reached 0, reset it and increment the distance counter.
-    LD A, (rocketFlyDelayCnt)
-    LD (rocketFlyDelay), A
-
-    LD A, (rocketDelayDistance)
-    INC A
-    LD (rocketDelayDistance), A
-
-    CP RO_FLY_DELAY_DIST_D5
-    JR NZ, .afterDelay                          ; Jump if rocket should still move with current delay.
-
-    ; The rocket traveled far enough, decrement the delay for the next section.
-    LD A, (rocketFlyDelayCnt)
-    DEC A
-    LD (rocketFlyDelayCnt), A
-    LD (rocketFlyDelay), A
-
-    XOR A
-    LD (rocketDelayDistance), A
-.afterDelay
-
-     ; ##########################################
-     ; Execute when in phase 2 or 3
-    LD A, (ro.rocketFlyPhase)
-    PUSH AF
-    AND ro.PHASE_2_3
-    JR Z, .afterBoosting
-
-    CALL gc.RocketFLyPhase2and3
-    POP AF
-    JR .notFlygin
-.afterBoosting
-    POP AF
-
-    CP ro.PHASE_4
-    JR C, .notFlygin
-    CALL gc.RocketFLyPhase4
-.notFlygin
-
-    ; ##########################################
-    ; Increment total distance.
-    LD HL, (rocketDistance)
-    INC HL
-    LD (rocketDistance), HL
-
-    PUSH HL
-    CALL _UpdateRocketFlyPhase
-    POP HL
-
-    ; ##########################################
-    ; The current position of rocket elements is stored in #ro.rocAssemblyX and #ro.RO.Y 
-    ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
-
-    LD IX, (ro.rocketElPtr)                               ; Load the pointer to rocket into IX.
-
-    ; ##########################################
-    ; Did the rocket reach the middle of the screen, and should it stop moving?
-    LD A, (ro.rocketFlyPhase)
-    CP ro.PHASE_3
-    JR C, .keepMoving
-
-    ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
-    LD D, (IX + ro.RO.SPRITE_REF)
-    CALL ro.UpdateRocketSpritePattern
-
-    RET
-
-    ; Keep moving
-.keepMoving
-
-    ; ##########################################
-    ; Update Y position.
-    LD A, (ro.rocY)
-    DEC A
-    LD (ro.rocY), A
-
-    CALL ro.UpdateRocketPosition
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  _UpdateRocketFlyPhase                   ;
-;----------------------------------------------------------;
-; Input:
-;  - HL: current #rocketDistance value.
-_UpdateRocketFlyPhase
-
-    ; Phase 2?
-    LD A, H
-    CP ro.PHASE_2_ALTITUDE_HI
-    JR NZ, .not2
-
-    LD A, L
-    CP ro.PHASE_2_ALTITUDE_LO
-    JR NZ, .not2
-
-    ; Rocket has reached pahse 2.
-    LD A, ro.PHASE_2
-    LD (ro.rocketFlyPhase), A
-    CALL gc.RocketFLyStartPhase2
-.not2
-
-    ; ##########################################
-    ; Phase 3?
-    LD A, H
-    CP ro.PHASE_3_ALTITUDE_HI
-    JR NZ, .not3
-
-    LD A, L
-    CP ro.PHASE_3_ALTITUDE_LO
-    JR NZ, .not3
-
-    ; Rocket has reached pahse 3.
-    LD A, ro.PHASE_3
-    LD (ro.rocketFlyPhase), A
-.not3
-
-    ; ##########################################
-    ; Phase 4?
-    LD A, H
-    CP ro.PHASE_4_ALTITUDE_HI
-    JR NZ, .not4
-
-    LD A, L
-    CP ro.PHASE_4_ALTITUDE_LO
-    JR NZ, .not4
-
-    ; Rocket has reached pahse 4.
-    LD A, ro.PHASE_4
-    LD (ro.rocketFlyPhase), A
-    CALL _RocketFLyStartPhase4
-    CALL gc.RocketFLyStartPhase4
-
-.not4
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                 _RocketFLyStartPhase4                    ;
 ;----------------------------------------------------------;
 _RocketFLyStartPhase4
@@ -622,7 +636,7 @@ _JoyLeft
 
     LD BC, (ro.rocX)
     LD A, B
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterMinX
     LD A, C
     CP ROC_X_MIN_D10
@@ -636,7 +650,7 @@ _JoyLeft
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterDec
 
     CALL ros.DecTileOffsetX
@@ -668,7 +682,7 @@ _JoyRight
     ; ##########################################
     LD A, (decTileDelayCnt)
     DEC A
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterDec
 
     CALL ros.IncTileOffsetX

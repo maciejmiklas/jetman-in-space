@@ -21,6 +21,122 @@ stepDuration            DB TOD_DAY_DURATION     ; Counts toward 0, when reached,
 stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_NIGHT_DAY.
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                        MACROS                            ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                  _NextStepDayToNight                     ;
+;----------------------------------------------------------;
+    MACRO _NextStepDayToNight
+
+    ; Decrement counter and execute next step if not 0, otherwise, change direction from day->night to night->day.
+    LD A, (step)
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .nextStep
+
+    ; ##########################################
+    ; Counter has reached 0, reverse direction.
+
+    LD A, TOD_STEPS_D4
+    LD (step), A
+
+    ; Reverse from day->night to night->day.
+    LD A, TOD_DIR_NIGHT_DAY
+    LD (stepDir), A
+
+    LD A, 1                                 ; Switching should be short.
+    LD (stepDuration), A
+
+    CALL gc.NightEnds
+    JR .end
+
+.nextStep
+    ; ##########################################
+    ; Execute the next step, first, reset the counter for its duration.
+
+    ; Duration for the next step.
+    LD A, TOD_STEP_DURATION
+    LD (stepDuration), A
+
+    CALL gc.NextDayToNight
+
+    ; Decrement step
+    LD A, (step)
+    DEC A
+    LD (step), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _NextStepFullDay                       ;
+;----------------------------------------------------------;
+    MACRO _NextStepFullDay
+
+    ; Switching should be short.
+    LD A, 1
+    LD (stepDuration), A
+
+    ; Reverse from night->day to day->night.
+    LD A, TOD_DIR_DAY_NIGHT
+    LD (stepDir), A
+
+    LD A, TOD_STEPS_D4
+    LD (step), A    
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                   _NextStepNightToDay                    ;
+;----------------------------------------------------------;
+    MACRO _NextStepNightToDay
+
+    ; Decrement counter and execute next step if not 0, otherwise, change direction from night->day to day->night.
+    LD A, (step)
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .nextStep
+
+    ; ##########################################
+    ; Counter has reached 0, switch to full day.
+
+    LD A, TOD_DIR_FULL_DAY
+    LD (stepDir), A
+
+    LD A, TOD_DAY_DURATION
+    LD (stepDuration), A
+
+    CALL gc.ChangeToFullDay
+
+    JR .end
+
+.nextStep
+    ; ##########################################
+    ; Execute the next step, first, reset the counter for its duration.
+
+    ; Duration for the next step.
+    LD A, TOD_STEP_DURATION
+    LD (stepDuration), A
+
+    CALL gc.NextNightToDay
+
+    ; Decrement step
+    LD A, (step)
+    DEC A
+    LD (step), A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                     ResetTimeOfDay                       ;
 ;----------------------------------------------------------;
 ResetTimeOfDay
@@ -46,7 +162,7 @@ NextTimeOfDayTrigger
     DEC A
     LD (stepDuration), A
 
-    CP 0
+    OR A                                        ; Same as CP 0, but faster.
     RET NZ                                      ; Keep counting down.
 
     ; ##########################################
@@ -59,7 +175,7 @@ NextTimeOfDayTrigger
     JR NZ, .notFullDay
 
     ; Yes, it's full day.
-    CALL _NextStepFullDay
+    _NextStepFullDay
     RET
 .notFullDay
     ; It's not a full day, so it must be day->night or night->day.
@@ -67,120 +183,13 @@ NextTimeOfDayTrigger
     CP TOD_DIR_DAY_NIGHT
     JR Z, .transitionDayToNight
 
-    CALL _NextStepNightToDay
+    _NextStepNightToDay
     RET
 
 .transitionDayToNight
-    CALL _NextStepDayToNight
+    _NextStepDayToNight
 
     RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE FUNCTIONS                      ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                   _NextStepFullDay                       ;
-;----------------------------------------------------------;
-_NextStepFullDay
-
-    ; Switching should be short.
-    LD A, 1
-    LD (stepDuration), A
-
-    ; Reverse from night->day to day->night.
-    LD A, TOD_DIR_DAY_NIGHT
-    LD (stepDir), A
-
-    LD A, TOD_STEPS_D4
-    LD (step), A    
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  _NextStepDayToNight                     ;
-;----------------------------------------------------------;
-_NextStepDayToNight
-
-    ; Decrement counter and execute next step if not 0, otherwise, change direction from day->night to night->day.
-    LD A, (step)
-    CP 0
-    JR NZ, .nextStep
-
-    ; ##########################################
-    ; Counter has reached 0, reverse direction.
-
-    LD A, TOD_STEPS_D4
-    LD (step), A
-
-    ; Reverse from day->night to night->day.
-    LD A, TOD_DIR_NIGHT_DAY
-    LD (stepDir), A
-
-    LD A, 1                                 ; Switching should be short.
-    LD (stepDuration), A
-
-    CALL gc.NightEnds
-    RET
-
-.nextStep
-    ; ##########################################
-    ; Execute the next step, first, reset the counter for its duration.
-
-    ; Duration for the next step.
-    LD A, TOD_STEP_DURATION
-    LD (stepDuration), A
-
-    CALL gc.NextDayToNight
-
-    ; Decrement step
-    LD A, (step)
-    DEC A
-    LD (step), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 _NextStepNightToDay                      ;
-;----------------------------------------------------------;
-_NextStepNightToDay
-
-    ; Decrement counter and execute next step if not 0, otherwise, change direction from night->day to day->night.
-    LD A, (step)
-    CP 0
-    JR NZ, .nextStep
-
-    ; ##########################################
-    ; Counter has reached 0, switch to full day.
-
-    LD A, TOD_DIR_FULL_DAY
-    LD (stepDir), A
-
-    LD A, TOD_DAY_DURATION
-    LD (stepDuration), A
-
-    CALL gc.ChangeToFullDay
-
-    RET
-
-.nextStep
-    ; ##########################################
-    ; Execute the next step, first, reset the counter for its duration.
-
-    ; Duration for the next step.
-    LD A, TOD_STEP_DURATION
-    LD (stepDuration), A
-
-    CALL gc.NextNightToDay
-
-    ; Decrement step
-    LD A, (step)
-    DEC A
-    LD (step), A
-
-    RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
