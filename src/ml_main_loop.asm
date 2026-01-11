@@ -200,14 +200,6 @@
     CALL rof.FlyRocketSound
 
     ; ##########################################
-    LD A, (ro.rocketFlyPhase)
-    AND ro.PHASE_2_3
-    JR Z, .notPhase2_3
-
-    CALL bg.HideBackgroundBars
-.notPhase2_3
-
-    ; ##########################################
     ; Phase 4
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
