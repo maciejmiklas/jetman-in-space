@@ -7,7 +7,6 @@
 ;----------------------------------------------------------;
     MODULE ml 
 
-
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                        MACROS                            ;
@@ -15,7 +14,7 @@
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                         _Loop000                         ;
+;                       _Loop000                           ;
 ;----------------------------------------------------------;
     MACRO _Loop000
 
@@ -121,6 +120,8 @@
 ;----------------------------------------------------------;
     MACRO _Loop000OnMainMenu
 
+    LD A, (ms.mainState)
+
     ; Execute if main menu or level select menu is inactive.
     CP ms.MS_MENU_MAIN_D11
     JR Z, .executeMainMenu
@@ -188,7 +189,8 @@
     CALL dbs.SetupRocketBank
 
     ; Return if rocket is not flying. #ms.mainState has also similar state: #MS_FLY_ROCKET_D3, but its not the same!
-    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but #ro.rocketState == #ro.ROST_EXPLODE_D102 and not #ro.ROST_FLY_D101.
+    ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but 
+    ; #ro.rocketState == #ro.ROST_EXPLODE_D102 and not #ro.ROST_FLY_D101.
     LD A, (ro.rocketState)
     CP ro.ROST_FLY_D101
     JR NZ, .end
@@ -225,14 +227,13 @@
     MACRO _Loop002
 
     ; Increment the counter.
-    LD A, (mld.counter002)          ; TODO counters should count towards 0, to compare use OR A
-    INC A
+    LD A, (mld.counter002)
+    DEC A
     LD (mld.counter002), A
-    CP mld.COUNTER002_MAX
     JR NZ, .end
 
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER002_MAX
     LD (mld.counter002), A
 
     ; ##########################################
@@ -278,13 +279,12 @@
 
     ; Increment the counter.
     LD A, (mld.counter005)
-    INC A
+    DEC A
     LD (mld.counter005), A
-    CP mld.COUNTER005_MAX
     JR NZ, .end
 
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER005_MAX
     LD (mld.counter005), A
 
     ; ##########################################
@@ -330,13 +330,12 @@
 
     ; Increment the counter.
     LD A, (mld.counter008)
-    INC A
+    DEC A
     LD (mld.counter008), A
-    CP mld.COUNTER008_MAX
     JP NZ, .end
 
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER008_MAX
     LD (mld.counter008), A
 
     ; ##########################################
@@ -472,13 +471,12 @@
 
     ; Increment the counter
     LD A, (mld.counter010)
-    INC A
+    DEC A
     LD (mld.counter010), A
-    CP mld.COUNTER010_MAX
     JR NZ, .end
 
     ; Reset the counter
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER010_MAX
     LD (mld.counter010), A
 
 
@@ -516,14 +514,13 @@
 
     ; Increment the counter.
     LD A, (mld.counter025)
-    INC A
+    DEC A
     LD (mld.counter025), A
-    CP mld.COUNTER025_MAX
     JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER025_MAX
     LD (mld.counter025), A
 
     ; ##########################################
@@ -557,14 +554,13 @@
 
     ; Increment the counter.
     LD A, (mld.counter040)
-    INC A
+    DEC A
     LD (mld.counter040), A
-    CP mld.COUNTER040_MAX
     JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER040_MAX
     LD (mld.counter040), A
 
     ; ##########################################
@@ -608,14 +604,13 @@
 
     ; Increment the counter.
     LD A, (mld.counter050)
-    INC A
+    DEC A
     LD (mld.counter050), A
-    CP mld.COUNTER050_MAX
     JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER050_MAX
     LD (mld.counter050), A
 
     ; ##########################################
@@ -674,14 +669,13 @@
 
     ; Increment the counter.
     LD A, (mld.counter075)
-    INC A
+    DEC A
     LD (mld.counter075), A
-    CP mld.COUNTER075_MAX
     JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, mld.COUNTER075_MAX
     LD (mld.counter075), A
 
     ; ##########################################
@@ -733,14 +727,13 @@
 
     ; Increment the counter.
     LD A, (mld.counter150)
-    INC A
+    DEC A
     LD (mld.counter150), A
-    CP mld.counter150_MAX
     JR NZ, .end
 
     ; ##########################################
     ; Reset the counter.
-    XOR A                                       ; Set A to 0
+    LD A, 
     LD (mld.counter150), A
 
     ; ##########################################
