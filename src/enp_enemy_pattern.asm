@@ -175,48 +175,6 @@ BOUNCE_H_MARG_D3        = 3
     LD A, SPEED_PX_MAX_D3
     SUB B
 
-     ; Change speed based on difficulty.
-    LD B, A
-
-    LD A, (jt.difLevel)
-
-    CP jt.DIF_NORMAL_D2
-    JR Z, .onNormal
-
-    CP jt.DIF_EASY_D1
-    JR Z, .onEasy
-
-    CP jt.DIF_HARD_D3
-    JR Z, .onhard
-
-    ; Speed up movement on hard.
-.onhard
-
-    LD A, C
-    CP MOVE_DELAY_SK1
-    JR NZ, .notSk1Hard
-    LD A, SPEED_PX_MIN_D1
-    JR .end
-.notSk1Hard
-    LD A, B
-
-    INC A
-    JR .end
-
-    ; Slow dowm movement on easy.
-.onEasy
-    LD A, B
-
-    CP SPEED_PX_MIN_D1
-    JR Z, .end
-
-    DEC A
-    JR .end
-
-    ; No spped change on normal.
-.onNormal
-    LD A, B
-
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -902,13 +860,6 @@ _SetupDelayAndMoveSpeed
     PUSH AF
 
     ; Setup delay.
-    ; On hard there is no delay
-    LD B, A
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD_D3
-    JR Z, .noDelay
-
-    LD A, B
     CP MOVE_DELAY_SK1
     JR NZ, .noDelay
     LD A, DELAY_SK1_D2

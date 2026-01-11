@@ -54,7 +54,7 @@
 
     LD A, (ms.mainState)
     CP ms.MS_GAME_ACTIVE_D1
-    JR NZ, .end
+    JP NZ, .end
 
     CALL gi.JetMovementInput
     CALL gi.GameOptionsInput
@@ -79,7 +79,14 @@
     CALL fe.UpdateFollowingJetman
 
     CALL enc.CheckEnemyWeaponHit
+
+    ; ##########################################
+    ; Easy
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY_D1
+    JR Z, .easy
     CALL enc.MoveEnemies
+.easy
 
     ; ##########################################
     ; Faster movement speed for Jetman on hard.
@@ -211,23 +218,57 @@
     ENDM                                        ; ## END of the macro ##
 
 
+;----------------------------------------------------------;
+;                      _Loop002                            ;
+;----------------------------------------------------------;
+; Tick rate: 1/25s
+    MACRO _Loop002
 
+    ; Increment the counter.
+    LD A, (mld.counter002)          ; TODO counters should count towards 0, to compare use OR A
+    INC A
+    LD (mld.counter002), A
+    CP mld.COUNTER002_MAX
+    JR NZ, .end
 
+    ; Reset the counter.
+    XOR A                                       ; Set A to 0
+    LD (mld.counter002), A
 
+    ; ##########################################
+    ; CALL functions that need to be updated every xx-th loop.
+    _Loop002OnActiveGame
 
+.end
+    ENDM                                        ; ## END of the macro ##
 
+;----------------------------------------------------------;
+;                 _Loop002OnActiveGame                     ;
+;----------------------------------------------------------;
+    MACRO _Loop002OnActiveGame
 
+    LD A, (ms.mainState)
+    CP ms.MS_GAME_ACTIVE_D1
+    JR NZ, .end
 
+    ; ##########################################
+    ; Easy
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY_D1
+    JR NZ, .notEasy
 
+    CALL enc.MoveEnemies
+.notEasy
 
+    ; Hard
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
 
+    CALL enc.MoveEnemies
+.notHard
 
-
-
-
-
-
-
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                        _Loop005                          ;
@@ -767,6 +808,7 @@
 MainLoop
 
     _Loop000
+    _Loop002
     _Loop005
     _Loop008
     _Loop010
