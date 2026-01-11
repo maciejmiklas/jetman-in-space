@@ -261,13 +261,6 @@
     CALL enc.MoveEnemies
 .notEasy
 
-    ; Hard
-    CP jt.DIF_HARD_D3
-    JR NZ, .notHard
-
-    CALL enc.MoveEnemies
-.notHard
-
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -318,6 +311,14 @@
 
     CALL dbs.SetupArrays2Bank
     CALL pi.AnimateFallingPickup
+
+    ; Hard
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
+
+    CALL enc.MoveEnemies
+.notHard
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -450,16 +451,6 @@
     CALL enu.AnimateFuelThief
 
     CALL enc.AnimateEnemies
-
-    ; ##########################################
-    ; Hard
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD_D3
-    JR NZ, .notHard
-
-    CALL enc.RespawnEnemy
-
-.notHard
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -700,6 +691,15 @@
     ; ##########################################
     CALL jo.JetpackOverheatFx
     CALL gc.PlayFuelThiefFx
+
+    ; ##########################################
+    ; Hard
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
+
+    CALL enc.RespawnEnemy
+.notHard
 
 .end
     ENDM                                        ; ## END of the macro ##
