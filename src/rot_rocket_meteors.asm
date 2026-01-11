@@ -3,14 +3,14 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                     Asteroids Shower                     ;
+;                     Meteors Shower                     ;
 ;----------------------------------------------------------;
     MODULE rot
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
 
-; Asteroid sprite takes almost a complete 16K sprite file (asteroi_0.spr/asteroi_1.spr). Each asteroid sprite is a matrix of 3x3 sprites 
+; Meteor sprite takes almost a complete 16K sprite file (asteroi_0.spr/asteroi_1.spr). Each meteor sprite is a matrix of 3x3 sprites 
 ; (a composite sprite with an anchor). A single animation frame (pattern) occupies 6 slots (3*2=6) in the sprite file. 
-; Each asteroid has 5 animation patterns. For an asteroid of size 3x2 requires 30 (3*2*5) slots in the sprite file. 
+; Each meteor has 5 animation patterns. For an meteor of size 3x2 requires 30 (3*2*5) slots in the sprite file. 
 ; Patterns are stored horizontally, one after another. For example, for the 3x2, we have the following IDs:
 ;
 ; - animation pattern 1:
@@ -21,11 +21,11 @@
 ;  6 7  8
 ;  9 10 11
 
-AS_PATTERNS             = 5                     ; Number of frames for asteroid sprite.
+AS_PATTERNS             = 5                     ; Number of frames for meteor sprite.
 AS_SIZE                 = 3                     ; Number of 16x16 elemets building sprite in vertical/horizontal position (3x3).
 spSize                  DB 9                    ; Nuimber of 16x16 elemets building sprite.
 
-; Sprite data for each active asteroid.
+; Sprite data for each active meteor.
     STRUCT AS
 SID                     DB                      ; Sprite ID for the first sprite element, the following IDs will be incremented from this one.
 X                       DW
@@ -36,7 +36,7 @@ MOVE_PAT                DB                      ; MP1, MP2 or MP3
 ACTIVE                  DB
     ENDS
 
-; This structure will be copied over AS  (only matching keys) when a particular asteroid is deployed. 
+; This structure will be copied over AS  (only matching keys) when a particular meteor is deployed. 
     STRUCT ASD
 X                       DW
 Y                       DB
@@ -51,7 +51,7 @@ AS_ACTIVE_NO            = 0
 MP1                     = 1                     ; Increment Y
 MP2                     = 2                     ; Increment Y,  decrement X
 
-asteroids                                       ; Rocket has sprite ID 80-89
+meteors                                       ; Rocket has sprite ID 80-89
 ;       SID  X  Y  PAT MOVE_SPD MOVE_PAT ACTIVE
     AS {00,  0, 0, 0,  0,       0,       0}
     AS {10,  0, 0, 0,  0,       0,       0}
@@ -65,7 +65,7 @@ asteroids                                       ; Rocket has sprite ID 80-89
 asDeployAddr            DW 0                    ; Pointer to #ASD array, must contain 7 elements.
 AS_DEPLOY_SIZE          = 7
 
-; This list is used to adjust asteroid's speeds over time. It contains pairs, let's call the elements in each pair A and B. For example: 
+; This list is used to adjust meteor's speeds over time. It contains pairs, let's call the elements in each pair A and B. For example: 
 ; "A,B, A,B, ... A,B". A loop runs every few seconds, each iteration takes the next AB pair from this list and applies it to the element 
 ; from ASD list. A gives an index in the ASD list (starts from 0), and B is the applied value. B will be added or subtracted 
 ; from ASD.MOVE_SPD. In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
@@ -85,7 +85,7 @@ COL_ADD_X_N17           = -17
 ;----------------------------------------------------------;
 CheckRocketCollision
 
-    LD IX, asteroids
+    LD IX, meteors
     LD B, AS_DEPLOY_SIZE
 
 .asLoop
@@ -94,20 +94,20 @@ CheckRocketCollision
     ; Check Y collision.
     LD A, (ro.rocY)                             ; Y of the rocket.
     ADD COL_ADD_Y_N25
-    LD C, (IX + AS.Y)                           ; Y of the asteroid.
+    LD C, (IX + AS.Y)                           ; Y of the meteor.
 
-    ; Is rocket above or below the asteroid?
+    ; Is rocket above or below the meteor?
     LD E, COL_MARGIN_Y_D30
     CP C
-    JR C, .above                                ; Jump if roc-y < asteroid-y
+    JR C, .above                                ; Jump if roc-y < meteor-y
 
-    ; Rocket is below the asteroid.
+    ; Rocket is below the meteor.
     SUB C
     CP E
-    JR C, .collisionOnY                            ; Jump if A - C < E (the distance between the rocket and the asteroid is smaller than the margin)
+    JR C, .collisionOnY                            ; Jump if A - C < E (the distance between the rocket and the meteor is smaller than the margin)
     JR .asLoopNext
 
-    ; Rocket is above the asteroid.
+    ; Rocket is above the meteor.
 .above
 
     ; Swap A and C to avoid negative value
@@ -126,9 +126,9 @@ CheckRocketCollision
 
     LD DE, (ro.rocX)                             ; X of the rocket.
     ADD DE, COL_ADD_X_N17
-    LD HL, (IX + AS.X)                           ; X of the asteroid.
+    LD HL, (IX + AS.X)                           ; X of the meteor.
 
-    ; Check whether the rocket is horizontal with the asteroid.
+    ; Check whether the rocket is horizontal with the meteor.
     SBC HL, DE
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
     LD A, H
@@ -146,7 +146,7 @@ CheckRocketCollision
 
 .asLoopNext
     ; ##########################################
-    ; Asteroid loop logic.
+    ; Meteor loop logic.
 
     ; Move IX to next AS record.
     LD DE, AS
@@ -156,18 +156,18 @@ CheckRocketCollision
 
 .collisionFound
 
-    CALL gc.RocketHitsAsteroid
+    CALL gc.RocketHitsMeteor
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     SetupAsteroids                       ;
+;                     SetupMeteors                       ;
 ;----------------------------------------------------------;
 ; Remember to set #spH and #spV
 ; Input:
 ; - DE: pointer to be sotred in #asDeployAddr
 ; - HL: pointer to be sotred in #randMovAddr
-SetupAsteroids
+SetupMeteors
 
     LD (asDeployAddr), DE
     LD (randMovAddr), HL
@@ -176,8 +176,8 @@ SetupAsteroids
     LD (randMovPos), A
 
     ; ##########################################
-    ; Reset asteroid data.
-    LD IX, asteroids
+    ; Reset meteor data.
+    LD IX, meteors
     LD IY, DE
     LD B, AS_DEPLOY_SIZE
 .asLoop
@@ -198,9 +198,9 @@ SetupAsteroids
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  ChangeAsteroidSpeed                     ;
+;                  ChangeMeteorSpeed                     ;
 ;----------------------------------------------------------;
-ChangeAsteroidSpeed
+ChangeMeteorSpeed
 
     ; HL will point to #randMov based on #randMovPos
     LD A, (randMovPos)
@@ -216,7 +216,7 @@ ChangeAsteroidSpeed
     LD C, (HL)
 
     ; IX will point to ASD given by offset from B.
-    LD HL, asteroids
+    LD HL, meteors
     LD D, B
     LD E, AS
     MUL D, E
@@ -252,15 +252,15 @@ ChangeAsteroidSpeed
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   DeployNextAsteroid                     ;
+;                   DeployNextMeteor                     ;
 ;----------------------------------------------------------;
-DeployNextAsteroid
+DeployNextMeteor
 
-    LD IX, asteroids
+    LD IX, meteors
     LD IY, (asDeployAddr)
 
     ; ##########################################
-    ; We are looking for inactive asteroid to deploy.
+    ; We are looking for inactive meteor to deploy.
     LD B, AS_DEPLOY_SIZE
 .asLoop
     LD A, (IY + ASD.ACTIVE)
@@ -280,7 +280,7 @@ DeployNextAsteroid
 .foundAs
 
     ; ##########################################
-    ; Deploy the asteroid given by IX, but first copy the initial data from the template provided by IY.
+    ; Deploy the meteor given by IX, but first copy the initial data from the template provided by IY.
 
     LD (IY + ASD.ACTIVE), AS_ACTIVE_YES
     LD (IX + AS.ACTIVE), AS_ACTIVE_YES
@@ -298,7 +298,7 @@ DeployNextAsteroid
     LD (IX + AS.MOVE_PAT), A
 
     ; ##########################################
-    ; Set up the asteroid's sprite.
+    ; Set up the meteor's sprite.
     ; There are 2 loops, H goes from 0 to #spH-1, L from 0 to #spV-1
 
     XOR A
@@ -382,18 +382,18 @@ DeployNextAsteroid
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      MoveAsteroids                       ;
+;                       MoveMeteors                       ;
 ;----------------------------------------------------------;
-MoveAsteroids
+MoveMeteors
 
-    LD IX, asteroids
+    LD IX, meteors
     LD B, AS_DEPLOY_SIZE
 
 .asLoop
     PUSH BC
 
     ; ##########################################
-    ; Is asteroid active?
+    ; Is meteor active?
     LD A, (IX + AS.ACTIVE)
     CP AS_ACTIVE_YES
     JR NZ, .asLoopNext
@@ -433,7 +433,7 @@ MoveAsteroids
 
 .asLoopNext
     ; ##########################################
-    ; Asteroid loop logic.
+    ; Meteor loop logic.
     
     ; Move IX to next AS record.
     LD DE, AS
@@ -444,18 +444,18 @@ MoveAsteroids
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  AnimateAsteroids                        ;
+;                  AnimateMeteors                        ;
 ;----------------------------------------------------------;
-AnimateAsteroids
+AnimateMeteors
 
-    LD IX, asteroids
+    LD IX, meteors
     LD B, AS_DEPLOY_SIZE
 
 .asLoop
     PUSH BC
 
     ; ##########################################
-    ; Is asteroid active?
+    ; Is meteor active?
     LD A, (IX + AS.ACTIVE)
     CP AS_ACTIVE_YES
     JR NZ, .asLoopNext
@@ -515,7 +515,7 @@ AnimateAsteroids
 
 .asLoopNext
     ; ##########################################
-    ; Asteroid loop logic.
+    ; Meteor loop logic.
     
     ; Move IX to next AS record.
     LD DE, AS

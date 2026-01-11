@@ -296,7 +296,7 @@ RocketFLyStartPhase4
     CALL fi.LoadTileStarsSprFile
     POP DE
 
-    CALL fi.LoadAsteroidsFile
+    CALL fi.LoadMeteorsFile
     CALL sp.LoadSpritesFPGA
 
     ; Load tilemap palette
@@ -501,9 +501,9 @@ PlayFuelThiefFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   RocketHitsAsteroid                     ;
+;                   RocketHitsMeteor                     ;
 ;----------------------------------------------------------;
-RocketHitsAsteroid
+RocketHitsMeteor
 
     CALL rof.StartRocketExplosion
 

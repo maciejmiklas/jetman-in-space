@@ -379,14 +379,14 @@ LoadSpritesFile
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  LoadAsteroidsFile                       ;
+;                  LoadMeteorsFile                       ;
 ;----------------------------------------------------------;
 ; Loadsasteroi_0.spr/asteroi_1.spr
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
-LoadAsteroidsFile
+LoadMeteorsFile
 
-    LD HL, db2.astFileName
+    LD HL, db2.metFileName
     CALL _LoadSpritesFile
 
     RET                                         ; ## END of the function ##

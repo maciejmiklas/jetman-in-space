@@ -205,7 +205,7 @@
     CP ro.PHASE_4
     JR NZ, .notPhase4
 
-    CALL rot.MoveAsteroids
+    CALL rot.MoveMeteors
 .notPhase4
 
     ; ##########################################
@@ -370,7 +370,7 @@
     CALL st.BlinkStars
 
     CALL dbs.SetupRocketBank
-    CALL rot.AnimateAsteroids
+    CALL rot.AnimateMeteors
     CALL rof.AnimateRocketExplosion
 
 .end
@@ -418,7 +418,7 @@
     CP ro.PHASE_4
     JR NZ, .end
 
-    CALL rot.AnimateAsteroids
+    CALL rot.AnimateMeteors
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -656,7 +656,7 @@
     CP ro.PHASE_4
     JR NZ, .end
 
-    CALL rot.DeployNextAsteroid
+    CALL rot.DeployNextMeteor
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -733,7 +733,7 @@
 
     ; ##########################################
     ; Reset the counter.
-    LD A, 
+    LD A, mld.counter150_MAX
     LD (mld.counter150), A
 
     ; ##########################################
@@ -754,9 +754,9 @@
 
     ; ##########################################
     CALL dbs.SetupRocketBank
-    CALL rot.ChangeAsteroidSpeed
+    CALL rot.ChangeMeteorSpeed
 
-    ; When flying a rocket and avoiding asteroids, the score increases with asteroid speed change.
+    ; When flying a rocket and avoiding meteors, the score increases with meteor speed change.
     CALL sc.HitEnemy2
 
 .end

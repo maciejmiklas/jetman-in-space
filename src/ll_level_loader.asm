@@ -53,7 +53,7 @@ TIP_DATA                DW                      ; Address of layer 2 palette dat
 PIC_SIZE                DB                      ; Number of pickups.
 PIC_DATA                DW                      ; Pointer to pickups array, each entry of #PI_SPR_XXX.
 
-; Asteroids
+; Meteors
 AD_DEP_DATA             DW                      ; Pointer to #asDeploy.
 AS_MOV_DATA             DW                      ; Pointer to #randMov.
     ENDS
@@ -185,11 +185,11 @@ LoadCurrentLevel
     POP IX
 
     ; ##########################################
-    ; Asteroids
+    ; Meteors
     PUSH IX
     LD DE, (IX + LL.AD_DEP_DATA)
     LD HL, (IX + LL.AS_MOV_DATA)
-    CALL rot.SetupAsteroids
+    CALL rot.SetupMeteors
     POP IX
     
     ; ##########################################

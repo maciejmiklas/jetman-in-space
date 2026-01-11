@@ -231,7 +231,7 @@ ROC_Y_MAX_HI_H1         = $1
     LD (rocketDistance), HL
 
     ; ##########################################
-    ; Has the rocket reached the asteroid, and should the explosion sequence begin?
+    ; Has the rocket reached the meteor, and should the explosion sequence begin?
     LD A, H
     CP EXPLODE_Y_HI_H4
     JR NZ, .notAtExpolodeDistance

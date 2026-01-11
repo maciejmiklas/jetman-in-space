@@ -229,8 +229,8 @@ mainLoop
     INCLUDE "rod_rocket_data.asm"
     INCLUDE "rof_rocket_fly.asm"
     INCLUDE "ros_rocket_stars.asm"
-    INCLUDE "rot_rocket_asteroids.asm"
-    INCLUDE "rotd_rocket_asteroids_data.asm"
+    INCLUDE "rot_rocket_meteors.asm"
+    INCLUDE "rotd_rocket_meteors_data.asm"
 
     ASSERT $$ == dbs.ROCKET_S6_D36
 
