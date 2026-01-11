@@ -408,6 +408,7 @@
     CALL dbs.SetupRocketBank
     CALL rof.AnimateRocketExhaust
     CALL rof.BlinkFlyingRocket
+
     CALL enc.AnimateEnemies
 
     ; ##########################################
@@ -733,7 +734,7 @@
 
     ; ##########################################
     ; Reset the counter.
-    LD A, mld.counter150_MAX
+    LD A, mld.COUNTER150_MAX
     LD (mld.counter150), A
 
     ; ##########################################
