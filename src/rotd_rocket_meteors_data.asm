@@ -3,7 +3,7 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                     Meteors Shower                     ;
+;                     Meteor Shower                        ;
 ;----------------------------------------------------------;
     MODULE rotd
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
@@ -64,12 +64,9 @@ asDeploy4
     rot.ASD {200, 000, 1,       rot.MP1,     rot.AS_ACTIVE_NO} ; 5
     rot.ASD {300, 200, 4,       rot.MP2,     rot.AS_ACTIVE_NO} ; 6
 
-
 randMov4                DB 0,2,  3,2,  5,2,  0,2|$80,  3,2|$80,  5,2|$80,  1,1,  2,1,  4,1,  6,1|$80,  2,1|$80,  4,1|$80 
                         DB 1,1|$80,  0,1,  2,1|$80,  5,1, 5,1,  5,1|$80,  6,1|$80
                         DB 0,2, 1,2, 2,3, 3,2, 4,1, 5,3, 6,2, 0,1, 3,2, 5,3
-
-
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
