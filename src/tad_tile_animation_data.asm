@@ -902,14 +902,14 @@ tilemapAnimationRow1L9
     TF{1067*2/*POS*/, 080/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
     TF{1068*2/*POS*/, 081/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
 
-    TF{0741*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
-    TF{0742*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
-    TF{0781*2/*POS*/, 082/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
-    TF{0782*2/*POS*/, 083/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
-    TF{0821*2/*POS*/, 096/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
-    TF{0822*2/*POS*/, 097/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
-    TF{0861*2/*POS*/, 098/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
-    TF{0862*2/*POS*/, 099/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0502*2/*POS*/, 082/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0503*2/*POS*/, 083/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0542*2/*POS*/, 096/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0543*2/*POS*/, 097/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0582*2/*POS*/, 098/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0583*2/*POS*/, 099/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
 
     TF{1257*2/*POS*/, 134/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 1
     TF{1258*2/*POS*/, 135/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 1
@@ -935,14 +935,14 @@ tilemapAnimationRow2L9
     TF{1067*2/*POS*/, 084/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
     TF{1068*2/*POS*/, 085/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
 
-    TF{0741*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
-    TF{0742*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
-    TF{0781*2/*POS*/, 086/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
-    TF{0782*2/*POS*/, 087/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
-    TF{0821*2/*POS*/, 100/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
-    TF{0822*2/*POS*/, 101/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
-    TF{0861*2/*POS*/, 102/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
-    TF{0862*2/*POS*/, 103/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0502*2/*POS*/, 086/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0503*2/*POS*/, 087/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0542*2/*POS*/, 100/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0543*2/*POS*/, 101/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0582*2/*POS*/, 102/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0583*2/*POS*/, 103/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
 
     TF{1257*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 2
     TF{1258*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 2
@@ -968,14 +968,14 @@ tilemapAnimationRow3L9
     TF{1067*2/*POS*/, 088/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
     TF{1068*2/*POS*/, 089/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
 
-    TF{0741*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
-    TF{0742*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
-    TF{0781*2/*POS*/, 090/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
-    TF{0782*2/*POS*/, 091/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
-    TF{0821*2/*POS*/, 104/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
-    TF{0822*2/*POS*/, 105/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
-    TF{0861*2/*POS*/, 106/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
-    TF{0862*2/*POS*/, 107/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0502*2/*POS*/, 090/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0503*2/*POS*/, 091/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0542*2/*POS*/, 104/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0543*2/*POS*/, 105/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0582*2/*POS*/, 106/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0583*2/*POS*/, 107/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
 
     TF{1257*2/*POS*/, 150/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 3
     TF{1258*2/*POS*/, 151/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 3
@@ -1001,14 +1001,14 @@ tilemapAnimationRow4L9
     TF{1067*2/*POS*/, 080/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
     TF{1068*2/*POS*/, 081/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
 
-    TF{0741*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
-    TF{0742*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
-    TF{0781*2/*POS*/, 094/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
-    TF{0782*2/*POS*/, 095/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
-    TF{0821*2/*POS*/, 108/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
-    TF{0822*2/*POS*/, 109/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
-    TF{0861*2/*POS*/, 110/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
-    TF{0862*2/*POS*/, 111/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0502*2/*POS*/, 094/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0503*2/*POS*/, 095/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0542*2/*POS*/, 108/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0543*2/*POS*/, 109/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0582*2/*POS*/, 110/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0583*2/*POS*/, 111/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
 
     TF{1257*2/*POS*/, 139/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 4
     TF{1258*2/*POS*/, 142/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 4
@@ -1034,14 +1034,14 @@ tilemapAnimationRow5L9
     TF{1067*2/*POS*/, 084/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
     TF{1068*2/*POS*/, 085/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
 
-    TF{0741*2/*POS*/, 112/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
-    TF{0742*2/*POS*/, 113/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
-    TF{0781*2/*POS*/, 114/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
-    TF{0782*2/*POS*/, 115/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
-    TF{0821*2/*POS*/, 128/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
-    TF{0822*2/*POS*/, 129/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
-    TF{0861*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
-    TF{0862*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0462*2/*POS*/, 112/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0463*2/*POS*/, 113/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0502*2/*POS*/, 114/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0503*2/*POS*/, 115/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0542*2/*POS*/, 128/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0543*2/*POS*/, 129/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0582*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0583*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
 
     TF{1257*2/*POS*/, 153/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 5
     TF{1258*2/*POS*/, 156/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 5
@@ -1067,14 +1067,14 @@ tilemapAnimationRow6L9
     TF{1067*2/*POS*/, 088/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
     TF{1068*2/*POS*/, 089/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
 
-    TF{0741*2/*POS*/, 116/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
-    TF{0742*2/*POS*/, 117/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
-    TF{0781*2/*POS*/, 118/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
-    TF{0782*2/*POS*/, 119/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
-    TF{0821*2/*POS*/, 132/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
-    TF{0822*2/*POS*/, 133/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
-    TF{0861*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
-    TF{0862*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0462*2/*POS*/, 116/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0463*2/*POS*/, 117/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0502*2/*POS*/, 118/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0503*2/*POS*/, 119/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0542*2/*POS*/, 132/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0543*2/*POS*/, 133/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0582*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0583*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
 
     TF{1257*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 6
     TF{1258*2/*POS*/, 158/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 6

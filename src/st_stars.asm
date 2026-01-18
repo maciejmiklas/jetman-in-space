@@ -72,6 +72,10 @@ ST_PAL_L2_BYTES_D16     = ST_PAL_L2_SIZE_D8*2
 starsPalL1Addr         DW 0
 starsPalL2Addr         DW 0
 
+STARSM_FULL             = 0                     ; Stars fill the screen, covering the background.
+STARSM_HIDE             = 1                     ; Stars hide behind the background.
+starsMode               DB STARSM_HIDE
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                        MACROS                            ;

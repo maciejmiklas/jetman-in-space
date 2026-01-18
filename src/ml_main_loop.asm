@@ -567,8 +567,11 @@
     ; ##########################################
     CALL dbs.SetupRocketBank
     CALL roa.DropNextRocketElement
-    
-    CALL td.NextTimeOfDayTrigger
+
+    LD A, (st.starsMode)
+    OR A
+    CALL NZ, td.NextTimeOfDayPhase
+
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
 
     CALL dbs.SetupArrays2Bank

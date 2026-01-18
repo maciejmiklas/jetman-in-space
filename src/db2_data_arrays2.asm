@@ -302,7 +302,7 @@ PLATFORM_SIZE_L8        = 2
 platformsL9
     pl.PLA {03*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
     pl.PLA {21*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
-    pl.PLA {11*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 22*8/*Y_BOTTOM*/}
+    pl.PLA {11*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
     pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
     pl.PLA {31*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
 PLATFORM_SIZE_L9        = 5

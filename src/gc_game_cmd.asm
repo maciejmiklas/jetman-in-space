@@ -829,7 +829,11 @@ JetMovesUp
     ; The #UpdateBackgroundOnJetmanMove calculates #bgOffset, which is used to hide the background line behind the horizon.
     ; To avoid glitches, like not hidden lines, we always have to first hide the line and then calculate the #bgOffset. This will introduce 
     ; a one pixel delay, but at the same time, it ensures that the previously hidden line will get repainted by direction change.
-    CALL bg.HideBackgroundBehindHorizon
+
+    LD A, (st.starsMode)
+    OR A
+    CALL NZ, bg.HideBackgroundBehindHorizon
+
     CALL bg.UpdateBackgroundOnJetmanMove
     CALL st.MoveStarsDown
 
