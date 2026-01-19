@@ -12,6 +12,11 @@
 ; When it reaches #HOVER_START_D250, Jetman will start hovering.
 jetInactivityCnt        DB 0
 
+; Start times to change animations.
+HOVER_START_D250        = 250
+STAND_START_D30         = 30
+JSTAND_START_D15        = 15
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                        MACROS                            ;
@@ -67,10 +72,94 @@ jetInactivityCnt        DB 0
     ENDM                                        ; ## END of the macro #
 
 ;----------------------------------------------------------;
+;                  _MovementInactivity                     ;
+;----------------------------------------------------------;
+; It gets executed as a last procedure after the input has been processed, and there was no movement from joystick.
+    MACRO _MovementInactivity
+
+    ; Increment inactivity counter.
+    LD A, (jetInactivityCnt)
+    INC A
+    LD (jetInactivityCnt), A 
+
+    ; ##########################################
+    ; Should Jetman hover?
+    LD A, (jt.jetAir)
+    OR A                                        ; Is Jetman in the air (same as CP jt.JT_STATE_INACTIVE_D0 but faster) ?
+    JR Z, .afterHoover                          ; Jump if not flaying.
+
+    LD A, (jt.jetAir)
+    CP jt.AIR_HOOVER_D11                            ; Jetman is in the air, but is he hovering already?
+    JR Z, .afterHoover                          ; Jump if already hovering.
+
+    ; Jetman is in the air, not hovering, but is he not moving long enough?
+    LD A, (jetInactivityCnt)
+    CP HOVER_START_D250
+    JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering.
+
+    ; Jetman starts to hover!
+    LD A, jt.AIR_HOOVER_D11
+    CALL jt.SetJetStateAir
+
+    LD A, js.SDB_HOVER
+    CALL js.ChangeJetSpritePattern
+    JR .end                                     ; Already hovering, do not check standing.
+.afterHoover
+
+    ; ##########################################
+    ; Jetman is not hovering, but should he stand?
+    LD A, (jt.jetGnd)
+    CP jt.JT_STATE_INACTIVE_D0                  ; Is Jetman on the ground already?
+    JR Z, .end                                  ; Jump if not on the ground.
+
+    LD A, (jt.jetGnd)
+    CP jt.GND_STAND_D53                         ; Jetman is on the ground, but is he standing already?
+    JR Z, .end                                  ; Jump if already standing.
+
+    ; ##########################################
+    ; Jetman is on the ground and does not move, but is he not moving long enough?
+    LD A, (jetInactivityCnt)
+    CP STAND_START_D30
+    JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing.
+    
+    ; Transition from walking to standing.
+    LD A, jt.GND_STAND_D53
+    CALL jt.SetJetStateGnd
+
+    LD A, js.SDB_STAND                          ; Change animation.
+    CALL js.ChangeJetSpritePattern
+    JR .end
+.afterStand
+
+    ; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
+    ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
+    LD A, (jt.jetGnd)
+    CP jt.GND_WALK_D51
+    JR NZ, .end                                 ; Jump if not walking.
+    
+    CP jt.GND_JSTAND_D52
+    JR Z, .end                                  ; Jump already j-standing (just standing - for a short time).
+
+    LD A, (jetInactivityCnt)
+    CP JSTAND_START_D15
+    JR NC, .end                                 ; Jump if Jetman stands for too short to trigger j-standing.
+
+    ; Stop walking immediately and stand still.
+    LD A, jt.GND_JSTAND_D52
+    CALL jt.SetJetStateGnd
+
+    LD A, js.SDB_JSTAND                         ; Change animation.
+    CALL js.ChangeJetSpritePattern
+
+.end
+    ENDM                                        ; ## END of the macro #
+
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PUBLIC FUNCTIONS                       ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
 
 ;----------------------------------------------------------;
 ;                      #JoyMoveUp                          ;
@@ -280,7 +369,7 @@ JoystickMoveProcessed
 
 .inactive
 
-    CALL gc.MovementInactivity
+     _MovementInactivity
 
     RET                                         ; ## END of the function ##
 
