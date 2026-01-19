@@ -36,6 +36,8 @@ I want to give a shout-out to the following, without them, I would have been los
 * [Chroma Noir] (https://v3x3d.itch.io/chroma-noir)
 * [Industrial Tileset] (https://atomicrealm.itch.io/industrial-tileset)
 * [Meteors] (https://opengameart.org/content/meteors)
+* [RPG Icons] (https://merchant-shade.itch.io/16x16-mixed-rpg-icons)
+
 
 
 # Licensing

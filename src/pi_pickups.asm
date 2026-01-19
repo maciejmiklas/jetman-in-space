@@ -173,6 +173,7 @@ AnimateFallingPickup
     LD A, (deployedY)
     CP _GSC_Y_MAX2_D238
     JR NZ, .afterGroundCheck
+
     ; Pickup is already on the ground, so moving it is unnecessary. In case of life, hide it once it has reached the ground.
     LD A, (deployed)
     CP PI_SPR_LIFE
