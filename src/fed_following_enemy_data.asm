@@ -8,7 +8,6 @@
     MODULE fed
     ; ### TO USE THIS MODULE: CALL dbs.SetupFollowingEnemyBank ###
 
-
 ; ##############################################
 ; Level 8
 fEnemyL08

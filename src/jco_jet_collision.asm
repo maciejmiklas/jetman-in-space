@@ -9,8 +9,8 @@
 
 ; Margins for collision Jetman - enemy
 MARG_HOR_D12            = 12
-MARG_VERT_UP_D18        = 18
-MARG_VERT_LOW_D15       = 15
+MARG_VERT_UP_D18        = 15
+MARG_VERT_LOW_D15       = 12
 MARG_VERT_KICK_D25      = 25
 
 RIP_MOVE_LEFT_D0        = 0
@@ -376,8 +376,7 @@ _CheckCollision
     RET
 .keepCheckingX
     LD A, L
-    LD B, MARG_HOR_D12
-    CP B
+    CP MARG_HOR_D12
     JR C, .checkX                               ; Jump if there is horizontal collision, check vertical.
 
     ; L >= D (Horizontal thickness of the enemy) -> no collision.

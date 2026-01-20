@@ -8,7 +8,7 @@
     MODULE sc
 
 SYNC_TOP_D0             = 0
-SYNC_BOTTOM_D192        = 150                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
+SYNC_BOTTOM_D192        = 192                   ; Sync to scanline 192, scanline on the frame (256 > Y > 192) might be skipped on 60Hz.
 TI_CLIP_TOP_D8          = _TI_PIXELS_D8
 TI_CLIP_BOTTOM_D247     = _SC_RESY1_D255 - _TI_PIXELS_D8
 CLIP_TOP50_D50          = 40

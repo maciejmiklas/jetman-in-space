@@ -574,17 +574,17 @@ MoveY
 ; Input:
 ;  - IX: pointer to #SPR
 ;  - A:  ID in #srSpriteDB
-; Modifies: A, BC, HL
 LoadSpritePattern
 
     ; Find DB record.
     LD HL, srSpriteDB                           ; HL points to the beginning of the DB.
-    LD BC, SDB_SEARCH_LIMIT_D200                     ; Limit CPIR search.
+    LD BC, SDB_SEARCH_LIMIT_D200                ; Limit CPIR search.
     CPIR                                        ; CPIR will keep increasing HL until it finds a record ID from A.
 
     ; ##########################################
     ; Make sure that we've found a record.
     JR Z, .found
+    LD B, A
     LD A, er.ERR_003
     CALL er.ReportError
     RET
@@ -592,7 +592,7 @@ LoadSpritePattern
 
     ; ##########################################
     ;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
-    LD A, (HL)  
+    LD A, (HL)
     ADD SDB_SUB                                 ; Add 100 because DB value had  -100, to avoid collision with ID.
     LD (IX + SPR.NEXT), A                       ; Update #SPR.NEXT
 
