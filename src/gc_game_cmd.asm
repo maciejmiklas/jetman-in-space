@@ -519,15 +519,15 @@ RocketHitsMeteor
     CALL jco.EnemiesCollision
 
     ; ##########################################
-    LD A, ena.ENEMY_FORMATION_SIZE
+    LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL jco.EnemiesCollision
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
 
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
+    LD A, (fed.fEnemySize)
+    LD IX, fed.fEnemySprites
     CALL jco.EnemiesCollision
 
 .end

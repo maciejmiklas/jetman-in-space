@@ -24,7 +24,7 @@ BM_16KBANK_D9           = 9                     ; 16K bank 9 = 8k bank 18.
 CopyImageData
 
     ; We will copy 10x full bank, from slot 6 to slot 7
-    LD DE, _BANK_BYTES_D8192 : LD (ut.dmaTransferSize), DE
+    LD DE, _BANK_BYTES_D8192    : LD (ut.dmaTransferSize), DE
     LD DE, _RAM_SLOT6_STA_HC000 : LD (ut.dmaPortAAddress), DE
     LD DE, _RAM_SLOT7_STA_HE000 : LD (ut.dmaPortBAddress), DE
 

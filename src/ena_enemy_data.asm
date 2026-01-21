@@ -260,7 +260,7 @@ formationEnemySprites
     SPR {65, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf05}
     SPR {66, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf06}
     SPR {67, sr.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf07}
-ENEMY_FORMATION_SIZE    = 7
+ENEMY_FORMATION_SIZE_D10    = 7
 
 ;----------------------------------------------------------;
 ;                         Enemies                          ;
