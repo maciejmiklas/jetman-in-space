@@ -212,7 +212,7 @@ SpriteHit
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection.
 
     LD A, SDB_EXPLODE
-    CALL LoadSpritePattern                     ; Enemy explodes.
+    CALL LoadSpritePattern                      ; Enemy explodes.
     
     RET                                         ; ## END of the function ##
 
