@@ -541,12 +541,9 @@ RocketHitsMeteor
 ;  - IX: Pointer to enemy's #SPR.
 EnemyHit
     CALL dbs.SetupArrays2Bank
-
     CALL sr.SpriteHit
 
-   
     ; Checkt what enemy has been hit.
-
     ; ##########################################
     ; Enemy 1?
     LD A, (IX + SPR.SDB_INIT)

@@ -81,6 +81,27 @@ srSpriteDB
     SPR_REC {SDB_BOUNCE_TOPA, SDB_ENEMY1A-SDB_SUB, 6}
             DB 48, 49, 50, 48, 49, 50
 
+
+;----------------------------------------------------------;
+;             sr.CheckSpriteHiddenOrDaying                 ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: pointer to #SPR.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+    MACRO sr.CheckSpriteHiddenOrDaying
+
+    LD A, (IX + SPR.STATE)
+    BIT sr.SPRITE_ST_VISIBLE_BIT, A
+    JR Z, .end                                  ; Jump if sprite is hidden.
+
+    ; Es sprite exploding right now?
+    BIT sr.SPRITE_ST_ACTIVE_BIT, A
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
 ;----------------------------------------------------------;
 ;                    sr.SetSpriteId                        ;
 ;----------------------------------------------------------;

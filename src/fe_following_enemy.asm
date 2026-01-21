@@ -209,8 +209,10 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 ;  - IY: pointer to #FE
     MACRO _MoveEnemy
 
-    _BounceOfPlatform                     ; Should enemy bounce of the platform?
-
+    sr.CheckSpriteHiddenOrDaying 
+    JR Z, .doNotBump                            ; Jump if enemy is exploding.
+    _BounceOfPlatform                           ; Should enemy bounce of the platform?
+.doNotBump
     ; ##########################################
     ; Move X - left/right
 
