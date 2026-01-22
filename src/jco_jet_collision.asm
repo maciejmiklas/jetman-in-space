@@ -7,11 +7,11 @@
 ;----------------------------------------------------------;
     MODULE jco
 
-; Margins for collision Jetman - enemy
-MARG_HOR_D12            = 12
-MARG_VERT_UP_D18        = 15
-MARG_VERT_LOW_D15       = 12
-MARG_VERT_KICK_D25      = 25
+; Margins for collision Jetman <-> enemy
+MARG_HORIZ_D10          = 10                    ; Left/right margin.
+MARG_VERT_UP_D15        = 15                    ; Upper maring.
+MARG_VERT_LOW_D11       = 11                    ; Lowwer maring.
+MARG_VERT_KICK_D25      = 25                    ; Start kicking (Jetman is right above the enemy).
 
 RIP_MOVE_LEFT_D0        = 0
 RIP_MOVE_RIGHT_D1       = 1
@@ -159,8 +159,8 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
 
     ; ################################
     ; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die.
-    LD D, MARG_VERT_UP_D18
-    LD E, MARG_VERT_LOW_D15
+    LD D, MARG_VERT_UP_D15
+    LD E, MARG_VERT_LOW_D11
     CALL _CheckCollision
     JR NZ, .end
 
@@ -376,7 +376,7 @@ _CheckCollision
     RET
 .keepCheckingX
     LD A, L
-    CP MARG_HOR_D12
+    CP MARG_HORIZ_D10
     JR C, .checkX                               ; Jump if there is horizontal collision, check vertical.
 
     ; L >= D (Horizontal thickness of the enemy) -> no collision.

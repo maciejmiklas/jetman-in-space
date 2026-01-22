@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Converts 'nxt' file to 4 bit 4x4 tilemap sprite file
 # 'nxt' was created with: .\gfx2next.exe -tile-size=8x8 -colors-4bit -preview -map-y .\chroma-noir.bmp
 
