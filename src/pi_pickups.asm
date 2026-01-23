@@ -237,6 +237,17 @@ PickupDropCounter
     LD (deployDelayCnt), A
 
     ; ##########################################
+    ; Drop gun if fire speed is not yet at max speed.
+    LD A, (jw.fireDelay)
+    CP jw.JM_FIRE_DELAY_MIN_D3
+    JR Z, .afterGunCheck
+
+    LD A, PI_SPR_GUN
+    LD (deployed), A
+    RET
+.afterGunCheck
+
+    ; ##########################################
     ; Load into A the value of next deployment sprite (#PI_SPR_XXXX)
 
 .deployNext
@@ -271,17 +282,6 @@ PickupDropCounter
     LD (lifeDeployed), A
     JR .setupDeply
 .afterLifeCheck
-
-    ; ##########################################
-    ; Do not deply gun if fire speed is already at max level.
-    LD A, (deployed)
-    CP PI_SPR_GUN
-    JR NZ, .afterGunCheck
-
-    LD A, (jw.fireDelay)
-    CP jw.JM_FIRE_DELAY_MIN_D3
-    JR Z, .deployNext
-.afterGunCheck
 
     ; ##########################################
 .setupDeply
