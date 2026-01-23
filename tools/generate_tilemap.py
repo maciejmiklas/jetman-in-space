@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # make sure that image consists of 8x8 pixels tiles (show 8x8 grid im gimp)
 # .\gfx2next.exe -tile-size=8x8 -colors-4bit -preview -map-y .\image.bmp
 # python generate_tilemap.py --base-id 2 --start-line 5 --offset 3 --tiles-per-line 16 --lines 13

@@ -533,6 +533,10 @@ _MoveEnemyX
 ;  - IX: pointer to #SPR holding data for single sprite that will be moved
 _MoveEnemy
 
+    ; Do not move enemy if dying.
+    sr.CheckSpriteHiddenOrDaying
+    RET Z
+
     ; Set sprite ID in hardware
     sr.SetSpriteId
 

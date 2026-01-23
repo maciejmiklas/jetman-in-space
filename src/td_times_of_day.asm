@@ -153,9 +153,9 @@ ResetTimeOfDay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  NextTimeOfDayTrigger                    ;
+;                   NextTimeOfDayPhase                     ;
 ;----------------------------------------------------------;
-NextTimeOfDayTrigger
+NextTimeOfDayPhase
 
     ; Decrement count and return if not reached 0
     LD A, (stepDuration)

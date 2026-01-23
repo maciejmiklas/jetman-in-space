@@ -32,9 +32,9 @@ start
 
     CALL gc.SetupSystem
 
-   ; LD A, 1
-  ; LD (ll.currentLevel), A
-  ;  CALL gc.LoadCurrentLevel
+    LD A, 9
+    LD (ll.currentLevel), A
+    ;CALL gc.LoadCurrentLevel
 
     CALL gc.LoadMainMenu
 

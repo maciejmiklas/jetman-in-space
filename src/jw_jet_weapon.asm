@@ -182,14 +182,10 @@ CheckHitEnemies
     LD B, A
 .loop                                           ; Loop over every enemy.
     PUSH BC                                     ; Preserve B for loop counter.
-    LD A, (IX + SPR.STATE)
-    BIT sr.SPRITE_ST_VISIBLE_BIT, A
-    JR Z, .continue                             ; Jump if enemy is hidden.
 
-    ; Skip collision detection if the enemy is not alive - it has hit something already, and it's exploding.
-    BIT sr.SPRITE_ST_ACTIVE_BIT, A
-    JR Z, .continue 
-    
+    sr.CheckSpriteHiddenOrDaying 
+    JR Z, .continue                             ; Jump if enemy is hidden or exploding.
+
     ; Enemy is visible, check collision with leaser beam.
     LD DE, (IX + SPR.X)                      ; X of the enemy.
     LD C, (IX + SPR.Y)                       ; Y of the enemy.

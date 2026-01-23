@@ -24,7 +24,7 @@ jetAir                  DB JT_STATE_INACTIVE_D0    ; Game start, Jetman standing
 ; States for Jetman on the platform/ground
 GND_WALK_D51            = 51                    ; Jetman walks on the ground.
 GND_JSTAND_D52          = 52                    ; Jetman stands on the ground for a very short time, not enough to switch to #GND_STAND_D53.
-GND_STAND_D53            = 53                    ; Jetman stands on the ground.
+GND_STAND_D53           = 53                    ; Jetman stands on the ground.
 
 jetGnd                  DB GND_STAND_D53
 

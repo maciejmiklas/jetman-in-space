@@ -7,11 +7,6 @@
 ;----------------------------------------------------------;
     MODULE gc
 
-; Start times to change animations.
-HOVER_START_D250        = 250
-STAND_START_D30         = 30
-JSTAND_START_D15        = 15
-
 ; Respawn location.
 JM_RESPAWN_X_D100       = 100
 JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
@@ -125,7 +120,7 @@ SetupSystem
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
-    LD B, db1.TILE_PAL_SIZE_L1
+    LD B, db1.TILE_PAL_SIZE_1
     CALL ti.LoadTilemap9bitPalette
 
     ; Load sprites from any level for mein menu.
@@ -152,7 +147,7 @@ LoadMainMenu
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
-    LD B, db1.TILE_PAL_SIZE_L1
+    LD B, db1.TILE_PAL_SIZE_1
     CALL ti.LoadTilemap9bitPalette
 
     CALL sc.ResetClippings
@@ -524,15 +519,15 @@ RocketHitsMeteor
     CALL jco.EnemiesCollision
 
     ; ##########################################
-    LD A, ena.ENEMY_FORMATION_SIZE
+    LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL jco.EnemiesCollision
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
 
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
+    LD A, (fed.fEnemySize)
+    LD IX, fed.fEnemySprites
     CALL jco.EnemiesCollision
 
 .end
@@ -546,12 +541,9 @@ RocketHitsMeteor
 ;  - IX: Pointer to enemy's #SPR.
 EnemyHit
     CALL dbs.SetupArrays2Bank
-
     CALL sr.SpriteHit
 
-   
     ; Checkt what enemy has been hit.
-
     ; ##########################################
     ; Enemy 1?
     LD A, (IX + SPR.SDB_INIT)
@@ -829,7 +821,11 @@ JetMovesUp
     ; The #UpdateBackgroundOnJetmanMove calculates #bgOffset, which is used to hide the background line behind the horizon.
     ; To avoid glitches, like not hidden lines, we always have to first hide the line and then calculate the #bgOffset. This will introduce 
     ; a one pixel delay, but at the same time, it ensures that the previously hidden line will get repainted by direction change.
-    CALL bg.HideBackgroundBehindHorizon
+
+    LD A, (st.starsMode)
+    OR A
+    CALL NZ, bg.HideBackgroundBehindHorizon
+
     CALL bg.UpdateBackgroundOnJetmanMove
     CALL st.MoveStarsDown
 
@@ -867,89 +863,6 @@ JetBumpsIntoPlatform
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_BUMP_PLATFORM
     CALL af.AfxPlay
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                  MovementInactivity                      ;
-;----------------------------------------------------------;
-; TODO move to another file
-; It gets executed as a last procedure after the input has been processed, and there was no movement from joystick.
-MovementInactivity
-
-    ; Increment inactivity counter.
-    LD A, (jm.jetInactivityCnt)
-    INC A
-    LD (jm.jetInactivityCnt), A 
-
-    ; ##########################################
-    ; Should Jetman hover?
-    LD A, (jt.jetAir)
-    OR A                                        ; Is Jetman in the air (same as CP jt.JT_STATE_INACTIVE_D0 but faster) ?
-    JR Z, .afterHoover                          ; Jump if not flaying.
-
-    LD A, (jt.jetAir)
-    CP jt.AIR_HOOVER_D11                            ; Jetman is in the air, but is he hovering already?
-    JR Z, .afterHoover                          ; Jump if already hovering.
-
-    ; Jetman is in the air, not hovering, but is he not moving long enough?
-    LD A, (jm.jetInactivityCnt)
-    CP HOVER_START_D250
-    JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering.
-
-    ; Jetman starts to hover!
-    LD A, jt.AIR_HOOVER_D11
-    CALL jt.SetJetStateAir
-
-    LD A, js.SDB_HOVER
-    CALL js.ChangeJetSpritePattern
-    RET                     ; Already hovering, do not check standing.
-.afterHoover
-
-    ; ##########################################
-    ; Jetman is not hovering, but should he stand?
-    LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE_D0                     ; Is Jetman on the ground already?
-    RET Z                                       ; Jump if not on the ground.
-
-    LD A, (jt.jetGnd)
-    CP jt.GND_STAND_D53                             ; Jetman is on the ground, but is he standing already?
-    RET Z                                       ; Jump if already standing.
-
-    ; ##########################################
-    ; Jetman is on the ground and does not move, but is he not moving long enough?
-    LD A, (jm.jetInactivityCnt)
-    CP STAND_START_D30
-    JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing.
-    
-    ; Transition from walking to standing.
-    LD A, jt.GND_STAND_D53
-    CALL jt.SetJetStateGnd
-
-    LD A, js.SDB_STAND                          ; Change animation.
-    CALL js.ChangeJetSpritePattern
-    RET
-.afterStand
-
-    ; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
-    ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
-    LD A, (jt.jetGnd)
-    CP jt.GND_WALK_D51
-    RET NZ                                      ; Jump if not walking.
-    
-    CP jt.GND_JSTAND_D52
-    RET Z                                       ; Jump already j-standing (just standing - for a short time).
-
-    LD A, (jm.jetInactivityCnt)
-    CP JSTAND_START_D15
-    RET NC                                      ; Jump if Jetman stands for too short to trigger j-standing.
-
-    ; Stop walking immediately and stand still.
-    LD A, jt.GND_JSTAND_D52
-    CALL jt.SetJetStateGnd
-
-    LD A, js.SDB_JSTAND                         ; Change animation.
-    CALL js.ChangeJetSpritePattern
 
     RET                                         ; ## END of the function ##
 

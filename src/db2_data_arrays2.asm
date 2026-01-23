@@ -170,33 +170,29 @@ PICKUPS_L1_SIZE             = 1
 
 ; Pickups for Level 2
 pickupsL2
-    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND
-PICKUPS_L2_SIZE             = 7
+    DB pi.PI_SPR_DIAMOND
+PICKUPS_L2_SIZE             = 1
 
 ; Pickups for Level 3
 pickupsL3
-    DB pi.PI_SPR_LIFE, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN
-    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN
-PICKUPS_L3_SIZE             = 10
+    DB pi.PI_SPR_LIFE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND
+PICKUPS_L3_SIZE             = 5
 
 ; Pickups for Level 4
 pickupsL4
-    DB  pi.PI_SPR_LIFE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN
-    DB pi.PI_SPR_DIAMOND,  pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND
-PICKUPS_L4_SIZE             = 12
+    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND
+PICKUPS_L4_SIZE             = 4
 
 ; Pickups for Level 5
 pickupsL5
-    DB pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN
-    DB pi.PI_SPR_GRENADE,  pi.PI_SPR_GUN, pi.PI_SPR_JAR
-PICKUPS_L5_SIZE             = 10
+    DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_JAR, pi.PI_SPR_LIFE
+PICKUPS_L5_SIZE             = 6
 
 ; Pickups for Level 6-10
 pickupsL6
-    DB pi.PI_SPR_GUN, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN
-    DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GUN, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_JAR
-    DB pi.PI_SPR_GUN, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GUN, pi.PI_SPR_GRENADE,  pi.PI_SPR_GUN, pi.PI_SPR_LIFE
-PICKUPS_L6_SIZE             = 21
+    DB pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE
+    DB pi.PI_SPR_JAR, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE, pi.PI_SPR_LIFE
+PICKUPS_L6_SIZE             = 10
 
 ;----------------------------------------------------------;
 ;                          Platforms                       ;
@@ -300,20 +296,12 @@ PLATFORM_SIZE_L8        = 2
 
 ; Level 9
 platformsL9
-    pl.PLA {09*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 07*8/*Y_TOP*/, 07*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 12*8/*Y_BOTTOM*/}
-
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 08*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-    pl.PLA {15*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 13*8/*Y_TOP*/, 14*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 19*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
-    pl.PLA {22*8/*X_LEFT*/, 22*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 28*8/*Y_BOTTOM*/}
-PLATFORM_SIZE_L9        = 11
+    pl.PLA {03*8/*X_LEFT*/, 15*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
+    pl.PLA {21*8/*X_LEFT*/, 36*8/*X_RIGHT*/, 27*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
+    pl.PLA {11*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+    pl.PLA {31*8/*X_LEFT*/, 32*8/*X_RIGHT*/, 06*8/*Y_TOP*/, 09*8/*Y_BOTTOM*/}
+PLATFORM_SIZE_L9        = 5
 
 ; Level 10
 platformsL10

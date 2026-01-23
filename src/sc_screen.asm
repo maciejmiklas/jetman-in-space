@@ -148,7 +148,7 @@ ResetClippings
 ; Based on: https://github.com/robgmoran/DougieDoSource
 WaitForTopScanline
 
-    _WaitForScanline SYNC_TOP_D0
+   ; _WaitForScanline SYNC_TOP_D0
 
     RET                                         ; ## END of the function ##
 

@@ -12,7 +12,7 @@ EMP                     = 198
 
 ; ##############################################
 ; Level 1
-tilemapAnimationRow1L1
+tilemapAnimationSet1L1
     DB 14
     TF{1200*2/*POS*/, 032/*TID*/, $20/*PAL*/}   ; Bat A - frame 1
     TF{1164*2/*POS*/, 033/*TID*/, $00/*PAL*/}   ; Bat B - frame 3
@@ -30,7 +30,7 @@ tilemapAnimationRow1L1
     TF{1230*2/*POS*/, 027/*TID*/, $20/*PAL*/}   ; Grass D - frame 3
     TF{1217*2/*POS*/, 032/*TID*/, $30/*PAL*/}   ; Bat H - frame 1
 
-tilemapAnimationRow2L1
+tilemapAnimationSet2L1
     DB 14
     TF{1200*2/*POS*/, 034/*TID*/, $20/*PAL*/}   ; Bat A - frame 2
     TF{1164*2/*POS*/, 032/*TID*/, $00/*PAL*/}   ; Bat B - frame 1
@@ -48,7 +48,7 @@ tilemapAnimationRow2L1
     TF{1230*2/*POS*/, 024/*TID*/, $20/*PAL*/}   ; Grass D - frame 1
     TF{1217*2/*POS*/, 034/*TID*/, $30/*PAL*/}   ; Bat H - frame 2
 
-tilemapAnimationRow3L1
+tilemapAnimationSet3L1
     DB 14
     TF{1200*2/*POS*/, 033/*TID*/, $20/*PAL*/}   ; Bat A - frame 3
     TF{1164*2/*POS*/, 034/*TID*/, $00/*PAL*/}   ; Bat B - frame 2
@@ -66,14 +66,14 @@ tilemapAnimationRow3L1
     TF{1230*2/*POS*/, 025/*TID*/, $20/*PAL*/}   ; Grass D - frame 2
     TF{1217*2/*POS*/, 033/*TID*/, $30/*PAL*/}   ; Bat H - frame 3
 
-tilemapAnimationRowsL1
-    DW tilemapAnimationRow1L1, tilemapAnimationRow2L1, tilemapAnimationRow3L1
+tilemapAnimationL1
+    DW tilemapAnimationSet1L1, tilemapAnimationSet2L1, tilemapAnimationSet3L1
 
 TILEMAP_ANIM_ROWS_L1    = 3
 
 ; ##############################################
 ; Level 2
-tilemapAnimationRow1L2
+tilemapAnimationSet1L2
     DB 46
     TF{1221*2/*POS*/, 046/*TID*/, $40/*PAL*/}   ; Campfire Left A - frame 1
     TF{1222*2/*POS*/, 047/*TID*/, $40/*PAL*/}   ; Campfire Right A - frame 1
@@ -129,7 +129,7 @@ tilemapAnimationRow1L2
     TF{1188*2/*POS*/, EMP/*TID*/, $70/*PAL*/}   ; Smoke D - frame 1
     TF{1108*2/*POS*/, EMP/*TID*/, $70/*PAL*/}   ; Smoke D - frame 1
 
-tilemapAnimationRow2L2
+tilemapAnimationSet2L2
     DB 46
     TF{1221*2/*POS*/, 044/*TID*/, $40/*PAL*/}   ; Campfire Left A - frame 2
     TF{1222*2/*POS*/, 045/*TID*/, $40/*PAL*/}   ; Campfire Right A - frame 2
@@ -182,7 +182,7 @@ tilemapAnimationRow2L2
     TF{1188*2/*POS*/, EMP/*TID*/, $70/*PAL*/}   ; Smoke D - frame 1
     TF{1148*2/*POS*/, 028/*TID*/, $70/*PAL*/}   ; Smoke D - frame 1
 
-tilemapAnimationRow3L2
+tilemapAnimationSet3L2
     DB 46
     TF{1221*2/*POS*/, 030/*TID*/, $40/*PAL*/}   ; Campfire Left A - frame 3
     TF{1222*2/*POS*/, 031/*TID*/, $40/*PAL*/}   ; Campfire Right A - frame 3
@@ -235,14 +235,14 @@ tilemapAnimationRow3L2
     TF{1108*2/*POS*/, EMP/*TID*/, $70/*PAL*/}   ; Smoke D - frame 1
     TF{1148*2/*POS*/, EMP/*TID*/, $70/*PAL*/}   ; Smoke D - frame 1
 
-tilemapAnimationRowsL2
-    DW tilemapAnimationRow1L2, tilemapAnimationRow2L2, tilemapAnimationRow3L2
+tilemapAnimationL2
+    DW tilemapAnimationSet1L2, tilemapAnimationSet2L2, tilemapAnimationSet3L2
 
 TILEMAP_ANIM_ROWS_L2    = 3
 
 ; ##############################################
 ; Level 3
-tilemapAnimationRow1L3
+tilemapAnimationSet1L3
     DB 22
     TF{1120*2/*POS*/, 032/*TID*/, $20/*PAL*/}   ; Bat A - frame 1
     TF{1161*2/*POS*/, 033/*TID*/, $20/*PAL*/}   ; Bat B - frame 3
@@ -269,7 +269,7 @@ tilemapAnimationRow1L3
     TF{1238*2/*POS*/, 024/*TID*/, $20/*PAL*/}   ; Grass M - frame 1
     TF{1239*2/*POS*/, 048/*TID*/, $70/*PAL*/}   ; Grass N - frame 1
 
-tilemapAnimationRow2L3
+tilemapAnimationSet2L3
     DB 22
     TF{1120*2/*POS*/, 034/*TID*/, $20/*PAL*/}   ; Bat A - frame 2
     TF{1161*2/*POS*/, 032/*TID*/, $20/*PAL*/}   ; Bat B - frame 1
@@ -296,7 +296,7 @@ tilemapAnimationRow2L3
     TF{1238*2/*POS*/, 025/*TID*/, $20/*PAL*/}   ; Grass M - frame 2
     TF{1239*2/*POS*/, 049/*TID*/, $70/*PAL*/}   ; Grass N - frame 2
 
-tilemapAnimationRow3L3
+tilemapAnimationSet3L3
     DB 22
     TF{1120*2/*POS*/, 033/*TID*/, $20/*PAL*/}   ; Bat A - frame 3
     TF{1161*2/*POS*/, 034/*TID*/, $20/*PAL*/}   ; Bat B - frame 2
@@ -323,15 +323,15 @@ tilemapAnimationRow3L3
     TF{1238*2/*POS*/, 027/*TID*/, $20/*PAL*/}   ; Grass M - frame 3
     TF{1239*2/*POS*/, 050/*TID*/, $70/*PAL*/}   ; Grass N - frame 3
 
-tilemapAnimationRowsL3
-    DW tilemapAnimationRow1L3, tilemapAnimationRow2L3, tilemapAnimationRow3L3
+tilemapAnimationL3
+    DW tilemapAnimationSet1L3, tilemapAnimationSet2L3, tilemapAnimationSet3L3
 
 TILEMAP_ANIM_ROWS_L3    = 3
 
 ; ##############################################
 ; Level 5
 
-tilemapAnimationRow1L5
+tilemapAnimationSet1L5
     DB 19
     TF{1217*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 1
     TF{1220*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 1
@@ -354,7 +354,7 @@ tilemapAnimationRow1L5
     TF{1195*2/*POS*/, 125/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 6
     TF{0650*2/*POS*/, 039/*TID*/, $10/*PAL*/}   ; Tool A - Frame 1
 
-tilemapAnimationRow2L5
+tilemapAnimationSet2L5
     DB 14
     TF{1217*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 2
     TF{1220*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 2
@@ -372,7 +372,7 @@ tilemapAnimationRow2L5
     TF{1194*2/*POS*/, 132/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 7
     TF{1195*2/*POS*/, 133/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 7
 
-tilemapAnimationRow3L5
+tilemapAnimationSet3L5
     DB 19
     TF{1217*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 3
     TF{1220*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 3
@@ -395,7 +395,7 @@ tilemapAnimationRow3L5
     TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 8
     TF{0650*2/*POS*/, 052/*TID*/, $10/*PAL*/}   ; Tool A - Frame 2
 
-tilemapAnimationRow4L5
+tilemapAnimationSet4L5
     DB 19
     TF{1217*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 4
     TF{1220*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 4
@@ -418,7 +418,7 @@ tilemapAnimationRow4L5
     TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 1
     TF{0945*2/*POS*/, 039/*TID*/, $10/*PAL*/}   ; Tool B - Frame 1
 
-tilemapAnimationRow5L5
+tilemapAnimationSet5L5
     DB 15
     TF{1217*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 5
     TF{1220*2/*POS*/, 085/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 5
@@ -437,7 +437,7 @@ tilemapAnimationRow5L5
     TF{1235*2/*POS*/, 095/*TID*/, $10/*PAL*/}   ; Saw B - Element Down 4 - frame 2
     TF{0650*2/*POS*/, 042/*TID*/, $10/*PAL*/}   ; Tool A - Frame 3
 
-tilemapAnimationRow6L5
+tilemapAnimationSet6L5
     DB 19
     TF{1217*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 6
     TF{1220*2/*POS*/, 084/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 6
@@ -460,7 +460,7 @@ tilemapAnimationRow6L5
     TF{1195*2/*POS*/, 101/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 3
     TF{0945*2/*POS*/, 052/*TID*/, $10/*PAL*/}   ; Tool B - Frame 2
 
-tilemapAnimationRow7L5
+tilemapAnimationSet7L5
     DB 18
     TF{1217*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 7
     TF{1220*2/*POS*/, 081/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 7
@@ -482,7 +482,7 @@ tilemapAnimationRow7L5
     TF{1194*2/*POS*/, 108/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 3 - frame 4
     TF{1195*2/*POS*/, 109/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 4
 
-tilemapAnimationRow8L5
+tilemapAnimationSet8L5
     DB 19
     TF{1217*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Left - frame 8
     TF{1220*2/*POS*/, 080/*TID*/, $30/*PAL*/}   ; Pos Light Right - frame 8
@@ -505,15 +505,14 @@ tilemapAnimationRow8L5
     TF{1195*2/*POS*/, 117/*TID*/, $10/*PAL*/}   ; Saw B - Element Up 4 - frame 5
     TF{0945*2/*POS*/, 042/*TID*/, $10/*PAL*/}   ; Tool B - Frame 3
 
-tilemapAnimationRowsL5
-    DW tilemapAnimationRow1L5, tilemapAnimationRow2L5, tilemapAnimationRow3L5, tilemapAnimationRow4L5, tilemapAnimationRow5L5, tilemapAnimationRow6L5, tilemapAnimationRow7L5, tilemapAnimationRow8L5
-
+tilemapAnimationL5
+    DW tilemapAnimationSet1L5, tilemapAnimationSet2L5, tilemapAnimationSet3L5, tilemapAnimationSet4L5, tilemapAnimationSet5L5
+    DW tilemapAnimationSet6L5, tilemapAnimationSet7L5, tilemapAnimationSet8L5
 TILEMAP_ANIM_ROWS_L5    = 8
-
 
 ; ##############################################
 ; Level 6
-tilemapAnimationRow1L6
+tilemapAnimationSet1L6
     DB 25
     TF{0885*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 1
     TF{0886*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 1
@@ -543,7 +542,7 @@ tilemapAnimationRow1L6
     TF{1194*2/*POS*/, 124/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 6
     TF{1195*2/*POS*/, 125/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 6
 
-tilemapAnimationRow2L6
+tilemapAnimationSet2L6
     DB 23
 
     TF{0885*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 2
@@ -572,7 +571,7 @@ tilemapAnimationRow2L6
     TF{1194*2/*POS*/, 132/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 7
     TF{1195*2/*POS*/, 133/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 7
 
-tilemapAnimationRow3L6
+tilemapAnimationSet3L6
     DB 25
     TF{0885*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 3
     TF{0886*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 3
@@ -602,7 +601,7 @@ tilemapAnimationRow3L6
     TF{1194*2/*POS*/, 140/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 8
     TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 8
 
-tilemapAnimationRow4L6
+tilemapAnimationSet4L6
     DB 25
     TF{0885*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 4
     TF{0886*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 4
@@ -632,7 +631,7 @@ tilemapAnimationRow4L6
     TF{1194*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 1
     TF{1195*2/*POS*/, EMP/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 1
 
-tilemapAnimationRow5L6
+tilemapAnimationSet5L6
     DB 21
     TF{0885*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 1
     TF{0886*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 1
@@ -658,7 +657,7 @@ tilemapAnimationRow5L6
 
     TF{1235*2/*POS*/, 095/*TID*/, $10/*PAL*/}   ; Saw A - Element Down 4 - frame 2
 
-tilemapAnimationRow6L6
+tilemapAnimationSet6L6
     DB 25
     TF{0885*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 2
     TF{0886*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 2
@@ -688,7 +687,7 @@ tilemapAnimationRow6L6
     TF{1194*2/*POS*/, 100/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 3
     TF{1195*2/*POS*/, 101/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 3
 
-tilemapAnimationRow7L6
+tilemapAnimationSet7L6
     DB 25
     TF{0885*2/*POS*/, 168/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 3
     TF{0886*2/*POS*/, 169/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 3
@@ -718,7 +717,7 @@ tilemapAnimationRow7L6
     TF{1194*2/*POS*/, 108/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 4
     TF{1195*2/*POS*/, 109/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 4
 
-tilemapAnimationRow8L6
+tilemapAnimationSet8L6
     DB 25
     TF{0885*2/*POS*/, 190/*TID*/, $10/*PAL*/}   ; Pole Light Left C - frame 4
     TF{0886*2/*POS*/, 191/*TID*/, $10/*PAL*/}   ; Pole Light Right C - frame 4
@@ -748,14 +747,15 @@ tilemapAnimationRow8L6
     TF{1194*2/*POS*/, 116/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 3 - frame 5
     TF{1195*2/*POS*/, 117/*TID*/, $10/*PAL*/}   ; Saw A - Element Up 4 - frame 5
 
-tilemapAnimationRowsL6
-    DW tilemapAnimationRow1L6, tilemapAnimationRow2L6, tilemapAnimationRow3L6, tilemapAnimationRow4L6, tilemapAnimationRow5L6, tilemapAnimationRow6L6, tilemapAnimationRow7L6, tilemapAnimationRow8L6
+tilemapAnimationL6
+    DW tilemapAnimationSet1L6, tilemapAnimationSet2L6, tilemapAnimationSet3L6, tilemapAnimationSet4L6, tilemapAnimationSet5L6
+    DW tilemapAnimationSet6L6, tilemapAnimationSet7L6, tilemapAnimationSet8L6
 
 TILEMAP_ANIM_ROWS_L6    = 8
 
 ; ##############################################
 ; Level 8
-tilemapAnimationRow1L8
+tilemapAnimationSet1L8
     DB 35
     TF{1162*2/*POS*/, 135/*TID*/, $70/*PAL*/}   ; Torch A - frame 1
     TF{1132*2/*POS*/, 133/*TID*/, $70/*PAL*/}   ; Torch B - frame 1
@@ -796,7 +796,7 @@ tilemapAnimationRow1L8
     TF{1165*2/*POS*/, 147/*TID*/, $70/*PAL*/}   ; Windows - frame 1
     TF{1169*2/*POS*/, 147/*TID*/, $70/*PAL*/}   ; Windows - frame 1
 
-tilemapAnimationRow2L8
+tilemapAnimationSet2L8
     DB 35
     TF{1162*2/*POS*/, 138/*TID*/, $70/*PAL*/}   ; Torch A - frame 2
     TF{1132*2/*POS*/, 136/*TID*/, $70/*PAL*/}   ; Torch B - frame 2
@@ -837,7 +837,7 @@ tilemapAnimationRow2L8
     TF{1165*2/*POS*/, 150/*TID*/, $70/*PAL*/}   ; Windows - frame 2
     TF{1169*2/*POS*/, 150/*TID*/, $70/*PAL*/}   ; Windows - frame 2
 
-tilemapAnimationRow3L8
+tilemapAnimationSet3L8
     DB 34
     TF{1162*2/*POS*/, 139/*TID*/, $70/*PAL*/}   ; Torch A - frame 3
     TF{1132*2/*POS*/, 137/*TID*/, $70/*PAL*/}   ; Torch B - frame 3
@@ -877,14 +877,218 @@ tilemapAnimationRow3L8
     TF{1165*2/*POS*/, 151/*TID*/, $70/*PAL*/}   ; Windows - frame 3
     TF{1169*2/*POS*/, 151/*TID*/, $70/*PAL*/}   ; Windows - frame 3
 
-tilemapAnimationRowsL8
-    DW tilemapAnimationRow1L8, tilemapAnimationRow2L8, tilemapAnimationRow3L8
-
+tilemapAnimationL8
+    DW tilemapAnimationSet1L8, tilemapAnimationSet2L8, tilemapAnimationSet3L8
 TILEMAP_ANIM_ROWS_L8    = 3
 
-    ; ##########################################
     ASSERT $$ == dbs.TILE_ANIMATION_D34         ; Data should remain in the same bank
 
+; ##############################################
+; Level 9
+tilemapAnimationSet1L9
+    DB 25
+    TF{1160*2/*POS*/, 048/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+    TF{1161*2/*POS*/, 049/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+    TF{1200*2/*POS*/, 050/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+    TF{1201*2/*POS*/, 051/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+
+    TF{0987*2/*POS*/, 064/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{0988*2/*POS*/, 065/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1027*2/*POS*/, 066/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1028*2/*POS*/, 067/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1067*2/*POS*/, 080/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1068*2/*POS*/, 081/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0502*2/*POS*/, 082/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0503*2/*POS*/, 083/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0542*2/*POS*/, 096/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0543*2/*POS*/, 097/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0582*2/*POS*/, 098/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+    TF{0583*2/*POS*/, 099/*TID*/, $40/*PAL*/}   ; Robot C - frame 1
+
+    TF{1257*2/*POS*/, 134/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 1
+    TF{1258*2/*POS*/, 135/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 1
+    TF{1259*2/*POS*/, 138/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 1
+
+    TF{0485*2/*POS*/, 164/*TID*/, $10/*PAL*/}   ; Tower A - frame 1
+    TF{0486*2/*POS*/, 165/*TID*/, $10/*PAL*/}   ; Tower A - frame 1
+
+    TF{0271*2/*POS*/, 164/*TID*/, $10/*PAL*/}   ; Tower B - frame 1
+    TF{0272*2/*POS*/, 165/*TID*/, $10/*PAL*/}   ; Tower B - frame 1
+
+tilemapAnimationSet2L9
+    DB 25
+    TF{1160*2/*POS*/, 052/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+    TF{1161*2/*POS*/, 053/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+    TF{1200*2/*POS*/, 054/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+    TF{1201*2/*POS*/, 055/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+
+    TF{0987*2/*POS*/, 068/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{0988*2/*POS*/, 069/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1027*2/*POS*/, 070/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1028*2/*POS*/, 071/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1067*2/*POS*/, 084/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1068*2/*POS*/, 085/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0502*2/*POS*/, 086/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0503*2/*POS*/, 087/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0542*2/*POS*/, 100/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0543*2/*POS*/, 101/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0582*2/*POS*/, 102/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+    TF{0583*2/*POS*/, 103/*TID*/, $40/*PAL*/}   ; Robot C - frame 2
+
+    TF{1257*2/*POS*/, 148/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 2
+    TF{1258*2/*POS*/, 149/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 2
+    TF{1259*2/*POS*/, 152/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 2
+
+    TF{0485*2/*POS*/, 060/*TID*/, $10/*PAL*/}   ; Tower A - frame 2
+    TF{0486*2/*POS*/, 061/*TID*/, $10/*PAL*/}   ; Tower A - frame 2
+
+    TF{0271*2/*POS*/, 060/*TID*/, $10/*PAL*/}   ; Tower B - frame 2
+    TF{0272*2/*POS*/, 061/*TID*/, $10/*PAL*/}   ; Tower B - frame 2
+
+tilemapAnimationSet3L9
+    DB 25
+    TF{1160*2/*POS*/, 056/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+    TF{1161*2/*POS*/, 057/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+    TF{1200*2/*POS*/, 058/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+    TF{1201*2/*POS*/, 059/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+
+    TF{0987*2/*POS*/, 072/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{0988*2/*POS*/, 073/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1027*2/*POS*/, 074/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1028*2/*POS*/, 075/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1067*2/*POS*/, 088/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1068*2/*POS*/, 089/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0502*2/*POS*/, 090/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0503*2/*POS*/, 091/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0542*2/*POS*/, 104/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0543*2/*POS*/, 105/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0582*2/*POS*/, 106/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+    TF{0583*2/*POS*/, 107/*TID*/, $40/*PAL*/}   ; Robot C - frame 3
+
+    TF{1257*2/*POS*/, 150/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 3
+    TF{1258*2/*POS*/, 151/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 3
+    TF{1259*2/*POS*/, 154/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 3
+
+    TF{0485*2/*POS*/, 164/*TID*/, $10/*PAL*/}   ; Tower A - frame 1
+    TF{0486*2/*POS*/, 165/*TID*/, $10/*PAL*/}   ; Tower A - frame 1
+
+    TF{0271*2/*POS*/, 164/*TID*/, $10/*PAL*/}   ; Tower B - frame 1
+    TF{0272*2/*POS*/, 165/*TID*/, $10/*PAL*/}   ; Tower B - frame 1
+
+tilemapAnimationSet4L9
+    DB 25
+    TF{1160*2/*POS*/, 048/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+    TF{1161*2/*POS*/, 049/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+    TF{1200*2/*POS*/, 050/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+    TF{1201*2/*POS*/, 051/*TID*/, $40/*PAL*/}   ; Robot A - frame 1
+
+    TF{0987*2/*POS*/, 064/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{0988*2/*POS*/, 065/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1027*2/*POS*/, 066/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1028*2/*POS*/, 067/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1067*2/*POS*/, 080/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+    TF{1068*2/*POS*/, 081/*TID*/, $40/*PAL*/}   ; Robot B - frame 1
+
+    TF{0462*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0463*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0502*2/*POS*/, 094/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0503*2/*POS*/, 095/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0542*2/*POS*/, 108/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0543*2/*POS*/, 109/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0582*2/*POS*/, 110/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+    TF{0583*2/*POS*/, 111/*TID*/, $40/*PAL*/}   ; Robot C - frame 4
+
+    TF{1257*2/*POS*/, 139/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 4
+    TF{1258*2/*POS*/, 142/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 4
+    TF{1259*2/*POS*/, 143/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 4
+
+    TF{0485*2/*POS*/, 060/*TID*/, $10/*PAL*/}   ; Tower A - frame 2
+    TF{0486*2/*POS*/, 061/*TID*/, $10/*PAL*/}   ; Tower A - frame 2
+
+    TF{0271*2/*POS*/, 060/*TID*/, $10/*PAL*/}   ; Tower B - frame 2
+    TF{0272*2/*POS*/, 061/*TID*/, $10/*PAL*/}   ; Tower B - frame 2
+
+tilemapAnimationSet5L9
+    DB 25
+    TF{1160*2/*POS*/, 052/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+    TF{1161*2/*POS*/, 053/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+    TF{1200*2/*POS*/, 054/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+    TF{1201*2/*POS*/, 055/*TID*/, $40/*PAL*/}   ; Robot A - frame 2
+
+    TF{0987*2/*POS*/, 068/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{0988*2/*POS*/, 069/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1027*2/*POS*/, 070/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1028*2/*POS*/, 071/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1067*2/*POS*/, 084/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+    TF{1068*2/*POS*/, 085/*TID*/, $40/*PAL*/}   ; Robot B - frame 2
+
+    TF{0462*2/*POS*/, 112/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0463*2/*POS*/, 113/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0502*2/*POS*/, 114/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0503*2/*POS*/, 115/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0542*2/*POS*/, 128/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0543*2/*POS*/, 129/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0582*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+    TF{0583*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 5
+
+    TF{1257*2/*POS*/, 153/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 5
+    TF{1258*2/*POS*/, 156/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 5
+    TF{1259*2/*POS*/, 157/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 5
+
+    TF{0485*2/*POS*/, 164/*TID*/, $10/*PAL*/}   ; Tower A - frame 1
+    TF{0486*2/*POS*/, 165/*TID*/, $10/*PAL*/}   ; Tower A - frame 1
+
+    TF{0271*2/*POS*/, 164/*TID*/, $10/*PAL*/}   ; Tower B - frame 1
+    TF{0272*2/*POS*/, 165/*TID*/, $10/*PAL*/}   ; Tower B - frame 1
+
+tilemapAnimationSet6L9
+    DB 25
+    TF{1160*2/*POS*/, 056/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+    TF{1161*2/*POS*/, 057/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+    TF{1200*2/*POS*/, 058/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+    TF{1201*2/*POS*/, 059/*TID*/, $40/*PAL*/}   ; Robot A - frame 3
+
+    TF{0987*2/*POS*/, 072/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{0988*2/*POS*/, 073/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1027*2/*POS*/, 074/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1028*2/*POS*/, 075/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1067*2/*POS*/, 088/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+    TF{1068*2/*POS*/, 089/*TID*/, $40/*PAL*/}   ; Robot B - frame 3
+
+    TF{0462*2/*POS*/, 116/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0463*2/*POS*/, 117/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0502*2/*POS*/, 118/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0503*2/*POS*/, 119/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0542*2/*POS*/, 132/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0543*2/*POS*/, 133/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0582*2/*POS*/, 130/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+    TF{0583*2/*POS*/, 131/*TID*/, $40/*PAL*/}   ; Robot C - frame 6
+
+    TF{1257*2/*POS*/, 155/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 6
+    TF{1258*2/*POS*/, 158/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 6
+    TF{1259*2/*POS*/, 159/*TID*/, $10/*PAL*/}   ; Launch Pad - frame 6
+
+    TF{0485*2/*POS*/, 060/*TID*/, $10/*PAL*/}   ; Tower A - frame 2
+    TF{0486*2/*POS*/, 061/*TID*/, $10/*PAL*/}   ; Tower A - frame 2
+
+    TF{0271*2/*POS*/, 060/*TID*/, $10/*PAL*/}   ; Tower B - frame 2
+    TF{0272*2/*POS*/, 061/*TID*/, $10/*PAL*/}   ; Tower B - frame 2
+
+tilemapAnimationL9
+    DW tilemapAnimationSet1L9, tilemapAnimationSet2L9, tilemapAnimationSet3L9, tilemapAnimationSet4L9, tilemapAnimationSet5L9
+    DW tilemapAnimationSet6L9
+TILEMAP_ANIM_ROWS_L9    = 6
+
+    ASSERT $$ == dbs.TILE_ANIMATION_D34         ; Data should remain in the same bank
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

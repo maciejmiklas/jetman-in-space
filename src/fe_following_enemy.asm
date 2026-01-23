@@ -40,50 +40,6 @@ BOUNCE_H_MARG_D2        = 2
 
 FOLLOW_OFF_MIN_D40      = 40
 
-; Sprites, used by single enemies (#spriteExXX).
-fEnemySprites
-    SPR {089/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {099/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
-    SPR {100/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
-    SPR {101/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
-    SPR {102/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy05/*EXT_DATA_POINTER*/}
-    SPR {103/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy06/*EXT_DATA_POINTER*/}
-    SPR {104/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy07/*EXT_DATA_POINTER*/}
-    SPR {105/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy08/*EXT_DATA_POINTER*/}
-    SPR {106/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy09/*EXT_DATA_POINTER*/}
-    SPR {107/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy10/*EXT_DATA_POINTER*/}
-fEnemySize              BYTE 1
-FOLLOWING_FENEMY_SIZE   = 10
-
-fEnemy01
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy02
-    FE {STATE_DEPLOY_LEFT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy03
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy04
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy05
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy06
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy07
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy08
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy09
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
-
-fEnemy10
-    FE {STATE_DEPLOY_RIGHT /*STATE*/, 080/*RESPAWN_Y*/, 01/*RESPAWN_DELAY*/, 00/*MOVE_DELAY*/, 0,0,0,0,0,0}
 
 ; Each line contains a single set of 4 "angles", which will be applied to the enemy when it changes direction. Each angle lasts for
 ; 0.5 seconds (_MainLoop025OnActiveGame -> NextFollowingAngle), and afterwards, the next one is taken until we reach the last one.
@@ -253,7 +209,12 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 ;  - IY: pointer to #FE
     MACRO _MoveEnemy
 
-    _BounceOfPlatform                     ; Should enemy bounce of the platform?
+    ; Do not move enemy if dying.
+    sr.CheckSpriteHiddenOrDaying
+    JP Z, .end
+
+    ; Should enemy bounce of the platform?
+    _BounceOfPlatform
 
     ; ##########################################
     ; Move X - left/right
@@ -517,7 +478,7 @@ DisableFollowingEnemies
 
     XOR A
     LD (anglesLineIdx), A
-    LD (fEnemySize), A
+    LD (fed.fEnemySize), A
 
     RET                                         ; ## END of the function ##
 
@@ -530,7 +491,7 @@ DisableFollowingEnemies
 SetupFollowingEnemies
 
     LD B, A             ; Counter for .enemyLoop
-    LD (fEnemySize), A
+    LD (fed.fEnemySize), A
 
     XOR A
     LD (anglesLineIdx), A
@@ -538,7 +499,7 @@ SetupFollowingEnemies
     ; ##########################################
     ; Copy #FES to #FE for each active enemy.
 
-    LD IY, fEnemy01
+    LD IY, fed.fEnemy01
 .enemyLoop
 
     LD A, (IX + FES.STATE)
@@ -576,8 +537,8 @@ SetupFollowingEnemies
 NextFollowingAngle
 
     ; Iterate over all enemies.
-    LD IX, fEnemySprites
-    LD A, (fEnemySize)
+    LD IX, fed.fEnemySprites
+    LD A, (fed.fEnemySize)
  
     ; Do not execute if there are no active enemies (disabled).
     OR A                                        ; Same as CP 0, but faster.
@@ -595,10 +556,10 @@ NextFollowingAngle
 
     POP BC
 
-    ; Move IX to the beginning of the next #fEnemySprites.
+    ; Move IX to the beginning of the next #fed.fEnemySprites.
     LD DE, SPR
     ADD IX, DE
-    DJNZ .enemyLoop                             ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize).
+    DJNZ .enemyLoop                             ; Jump if B > 0 (loop starts with B = #fed.fEnemySpritesSize).
 
     RET                                         ; ## END of the function ##
 
@@ -609,8 +570,8 @@ NextFollowingAngle
 UpdateFollowingJetman
 
     ; Iterate over all enemies
-    LD IX, fEnemySprites
-    LD A, (fEnemySize)
+    LD IX, fed.fEnemySprites
+    LD A, (fed.fEnemySize)
 
     ; Do not execute if there are no active enemies (disabled)
     OR A                                        ; Same as CP 0, but faster.
@@ -629,10 +590,10 @@ UpdateFollowingJetman
 
     POP BC
 
-    ; Move IX to the beginning of the next #fEnemySprites
+    ; Move IX to the beginning of the next #fed.fEnemySprites
     LD DE, SPR
     ADD IX, DE
-    DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
+    DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fed.fEnemySpritesSize)
 
     RET                                         ; ## END of the function ##
 
@@ -643,8 +604,8 @@ UpdateFollowingJetman
 RespawnFollowingEnemy
 
     ; Iterate over all enemies to find the first hidden, respawn it, and exit function.
-    LD IX, fEnemySprites
-    LD A, (fEnemySize)
+    LD IX, fed.fEnemySprites
+    LD A, (fed.fEnemySize)
 
     ; Do not execute if there are no active enemies (disabled)
     OR A                                        ; Same as CP 0, but faster.
@@ -659,10 +620,10 @@ RespawnFollowingEnemy
 
     RET Z                                       ; Exit after respawning first enemy
 
-    ; Move IX to the beginning of the next #fEnemySprites
+    ; Move IX to the beginning of the next #fed.fEnemySprites
     LD DE, SPR
     ADD IX, DE
-    DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fEnemySpritesSize)
+    DJNZ .sprLoop                               ; Jump if B > 0 (loop starts with B = #fed.fEnemySpritesSize)
 
     RET                                         ; ## END of the function ##
 
@@ -672,8 +633,8 @@ RespawnFollowingEnemy
 MoveFollowingEnemies
 
     ; Loop ever all enemies skipping hidden
-    LD IX, fEnemySprites
-    LD A, (fEnemySize)
+    LD IX, fed.fEnemySprites
+    LD A, (fed.fEnemySize)
 
     ; Do not execute if there are no active enemies (disabled)
     OR A                                        ; Same as CP 0, but faster.
@@ -747,8 +708,8 @@ MoveFollowingEnemies
 ;                    _ResetSprites                         ;
 ;----------------------------------------------------------;
 _ResetSprites
-    LD IX, (fEnemySprites)
-    LD B, (FOLLOWING_FENEMY_SIZE)
+    LD IX, (fed.fEnemySprites)
+    LD B, (fed.FOLLOWING_FENEMY_SIZE)
 
 .spriteLoop
 

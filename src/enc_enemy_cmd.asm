@@ -36,15 +36,15 @@ CheckEnemyWeaponHit
     CALL jw.CheckHitEnemies
 
     ; ##########################################
-    LD A, ena.ENEMY_FORMATION_SIZE
+    LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL jw.CheckHitEnemies
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
 
-    LD IX, fe.fEnemySprites
-    LD A, (fe.fEnemySize)
+    LD IX, fed.fEnemySprites
+    LD A, (fed.fEnemySize)
     CALL jw.CheckHitEnemies
 
     RET                                         ; ## END of the function ##
@@ -63,7 +63,7 @@ HideEnemies
 
     ; ##########################################
     ; Hide formation enemies.
-    LD A, ena.ENEMY_FORMATION_SIZE
+    LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL sr.HideAllSimpleSprites
 
@@ -71,8 +71,8 @@ HideEnemies
     ; Hide following enemies.
     CALL dbs.SetupFollowingEnemyBank
     
-    LD A, fe.FOLLOWING_FENEMY_SIZE
-    LD IX, fe.fEnemySprites
+    LD A, fed.FOLLOWING_FENEMY_SIZE
+    LD IX, fed.fEnemySprites
     CALL sr.HideAllSimpleSprites
 
     RET                                         ; ## END of the function ##
@@ -91,15 +91,15 @@ AnimateEnemies
 
     ; ##########################################
     ; Animate formation enemy
-    LD A, ena.ENEMY_FORMATION_SIZE
+    LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL sr.AnimateSprites
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
 
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
+    LD A, (fed.fEnemySize)
+    LD IX, fed.fEnemySprites
     CALL sr.AnimateSprites
 
     RET                                         ; ## END of the function ##
@@ -133,7 +133,7 @@ KillOneEnemy
 
     ; ##########################################
     ; Kill formation enemy
-    LD A, ena.ENEMY_FORMATION_SIZE
+    LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL sr.KillOneSprite
 
@@ -141,8 +141,8 @@ KillOneEnemy
     ; Kill following enemy
     CALL dbs.SetupFollowingEnemyBank
 
-    LD A, (fe.fEnemySize)
-    LD IX, fe.fEnemySprites
+    LD A, (fed.fEnemySize)
+    LD IX, fed.fEnemySprites
     CALL sr.KillOneSprite
 
     RET                                         ; ## END of the function ##

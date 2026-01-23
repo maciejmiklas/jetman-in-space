@@ -65,7 +65,7 @@ srSpriteDB
     SPR_REC {SDB_ENEMY1, SDB_ENEMY1-SDB_SUB, 24}
             DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
     SPR_REC {SDB_ENEMY1A, SDB_ENEMY1A-SDB_SUB, 03}
-            DB 45,46, 47
+            DB 45, 46, 47
     SPR_REC {SDB_ENEMY2, SDB_ENEMY2-SDB_SUB, 03}
             DB 48, 49, 50
     SPR_REC {SDB_ENEMY3, SDB_ENEMY3-SDB_SUB, 03}
@@ -80,6 +80,27 @@ srSpriteDB
             DB 34, 35, 36, 34, 35, 36
     SPR_REC {SDB_BOUNCE_TOPA, SDB_ENEMY1A-SDB_SUB, 6}
             DB 48, 49, 50, 48, 49, 50
+
+
+;----------------------------------------------------------;
+;             sr.CheckSpriteHiddenOrDaying                 ;
+;----------------------------------------------------------;
+; Input:
+;  - IX: pointer to #SPR.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+    MACRO sr.CheckSpriteHiddenOrDaying
+
+    LD A, (IX + SPR.STATE)
+    BIT sr.SPRITE_ST_VISIBLE_BIT, A
+    JR Z, .end                                  ; Jump if sprite is hidden.
+
+    ; Es sprite exploding right now?
+    BIT sr.SPRITE_ST_ACTIVE_BIT, A
+
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                    sr.SetSpriteId                        ;
@@ -191,7 +212,7 @@ SpriteHit
     RES SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)  ; Sprite is dying; turn off collision detection.
 
     LD A, SDB_EXPLODE
-    CALL LoadSpritePattern                     ; Enemy explodes.
+    CALL LoadSpritePattern                      ; Enemy explodes.
     
     RET                                         ; ## END of the function ##
 
@@ -574,17 +595,17 @@ MoveY
 ; Input:
 ;  - IX: pointer to #SPR
 ;  - A:  ID in #srSpriteDB
-; Modifies: A, BC, HL
 LoadSpritePattern
 
     ; Find DB record.
     LD HL, srSpriteDB                           ; HL points to the beginning of the DB.
-    LD BC, SDB_SEARCH_LIMIT_D200                     ; Limit CPIR search.
+    LD BC, SDB_SEARCH_LIMIT_D200                ; Limit CPIR search.
     CPIR                                        ; CPIR will keep increasing HL until it finds a record ID from A.
 
     ; ##########################################
     ; Make sure that we've found a record.
     JR Z, .found
+    LD B, A
     LD A, er.ERR_003
     CALL er.ReportError
     RET
@@ -592,7 +613,7 @@ LoadSpritePattern
 
     ; ##########################################
     ;  Now, HL points to the next byte after the ID of the record, which contains data for the new animation pattern.
-    LD A, (HL)  
+    LD A, (HL)
     ADD SDB_SUB                                 ; Add 100 because DB value had  -100, to avoid collision with ID.
     LD (IX + SPR.NEXT), A                       ; Update #SPR.NEXT
 
