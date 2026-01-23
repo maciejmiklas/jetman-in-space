@@ -34,9 +34,9 @@ start
 
     LD A, 9
     LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
+    ;CALL gc.LoadCurrentLevel
 
- ;   CALL gc.LoadMainMenu
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
