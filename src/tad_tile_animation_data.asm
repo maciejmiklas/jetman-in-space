@@ -1105,19 +1105,20 @@ tilemapAnimationSet1L10
     TF{0790*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 1
     TF{0950*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 1
     TF{1013*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 1
-    TF{1053*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 1
-    TF{0803*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 1
-    TF{0684*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 1
-    TF{0808*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 1
-    TF{0973*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 1
-    TF{0813*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 1
-    TF{0963*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 1
-    TF{0968*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 1
-    TF{0825*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 1
-    TF{0985*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 1
-    TF{0990*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 1
-    TF{0665*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 1
-    TF{0830*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 1
+
+    TF{1053*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 8
+    TF{0803*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 8
+    TF{0684*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 8
+    TF{0808*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 8
+    TF{0973*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 8
+    TF{0813*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 8
+    TF{0963*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 8
+    TF{0968*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 8
+    TF{0825*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 8
+    TF{0985*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 8
+    TF{0990*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 8
+    TF{0665*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 8
+    TF{0830*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 8
 
 tilemapAnimationSet2L10
     DB 26
@@ -1134,19 +1135,20 @@ tilemapAnimationSet2L10
     TF{0790*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 2
     TF{0950*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 2
     TF{1013*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 2
-    TF{1053*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 2
-    TF{0803*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 2
-    TF{0684*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 2
-    TF{0808*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 2
-    TF{0973*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 2
-    TF{0813*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 2
-    TF{0963*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 2
-    TF{0968*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 2
-    TF{0825*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 2
-    TF{0985*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 2
-    TF{0990*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 2
-    TF{0665*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 2
-    TF{0830*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 2
+
+    TF{1053*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 7
+    TF{0803*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 7
+    TF{0684*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 7
+    TF{0808*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 7
+    TF{0973*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 7
+    TF{0813*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 7
+    TF{0963*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 7
+    TF{0968*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 7
+    TF{0825*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 7
+    TF{0985*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 7
+    TF{0990*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 7
+    TF{0665*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 7
+    TF{0830*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 7
 
 tilemapAnimationSet3L10
     DB 26
@@ -1163,18 +1165,20 @@ tilemapAnimationSet3L10
     TF{0790*2/*POS*/, 068/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 3
     TF{0950*2/*POS*/, 068/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 3
     TF{1013*2/*POS*/, 068/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 3
-    TF{1053*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 3
-    TF{0803*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 3
-    TF{0684*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 3
-    TF{0973*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 3
-    TF{0813*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 3
-    TF{0963*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 3
-    TF{0968*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 3
-    TF{0825*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 3
-    TF{0985*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 3
-    TF{0990*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 3
-    TF{0665*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 3
-    TF{0830*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 3
+
+    TF{1053*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 6
+    TF{0803*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 6
+    TF{0684*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 6
+    TF{0808*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 6
+    TF{0973*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 6
+    TF{0813*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 6
+    TF{0963*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 6
+    TF{0968*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 6
+    TF{0825*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 6
+    TF{0985*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 6
+    TF{0990*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 6
+    TF{0665*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 6
+    TF{0830*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 6
 
 tilemapAnimationSet4L10
     DB 26
@@ -1191,19 +1195,20 @@ tilemapAnimationSet4L10
     TF{0790*2/*POS*/, 069/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 4
     TF{0950*2/*POS*/, 069/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 4
     TF{1013*2/*POS*/, 069/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 4
-    TF{1053*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 4
-    TF{0803*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 4
-    TF{0684*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 4
-    TF{0808*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 4
-    TF{0973*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 4
-    TF{0813*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 4
-    TF{0963*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 4
-    TF{0968*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 4
-    TF{0825*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 4
-    TF{0985*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 4
-    TF{0990*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 4
-    TF{0665*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 4
-    TF{0830*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 4
+
+    TF{1053*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 5
+    TF{0803*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 5
+    TF{0684*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 5
+    TF{0808*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 5
+    TF{0973*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 5
+    TF{0813*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 5
+    TF{0963*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 5
+    TF{0968*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 5
+    TF{0825*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 5
+    TF{0985*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 5
+    TF{0990*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 5
+    TF{0665*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 5
+    TF{0830*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 5
 
 tilemapAnimationSet5L10
     DB 26
@@ -1220,19 +1225,20 @@ tilemapAnimationSet5L10
     TF{0790*2/*POS*/, 072/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 5
     TF{0950*2/*POS*/, 072/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 5
     TF{1013*2/*POS*/, 072/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 5
-    TF{1053*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 5
-    TF{0803*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 5
-    TF{0684*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 5
-    TF{0808*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 5
-    TF{0973*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 5
-    TF{0813*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 5
-    TF{0963*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 5
-    TF{0968*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 5
-    TF{0825*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 5
-    TF{0985*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 5
-    TF{0990*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 5
-    TF{0665*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 5
-    TF{0830*2/*POS*/, 074/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 5
+
+    TF{1053*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 4
+    TF{0803*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 4
+    TF{0684*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 4
+    TF{0808*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 4
+    TF{0973*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 4
+    TF{0813*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 4
+    TF{0963*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 4
+    TF{0968*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 4
+    TF{0825*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 4
+    TF{0985*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 4
+    TF{0990*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 4
+    TF{0665*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 4
+    TF{0830*2/*POS*/, 071/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 4
 
 tilemapAnimationSet6L10
     DB 26
@@ -1249,19 +1255,19 @@ tilemapAnimationSet6L10
     TF{0790*2/*POS*/, 073/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 6
     TF{0950*2/*POS*/, 073/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 6
     TF{1013*2/*POS*/, 073/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 6
-    TF{1053*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 6
-    TF{0803*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 6
-    TF{0684*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 6
-    TF{0808*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 6
-    TF{0973*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 6
-    TF{0813*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 6
-    TF{0963*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 6
-    TF{0968*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 6
-    TF{0825*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 6
-    TF{0985*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 6
-    TF{0990*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 6
-    TF{0665*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 6
-    TF{0830*2/*POS*/, 075/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 6
+
+    TF{1053*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 3
+    TF{0803*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 3
+    TF{0684*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 3
+    TF{0973*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 3
+    TF{0813*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 3
+    TF{0963*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 3
+    TF{0968*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 3
+    TF{0825*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 3
+    TF{0985*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 3
+    TF{0990*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 3
+    TF{0665*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 3
+    TF{0830*2/*POS*/, 070/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 3
 
 tilemapAnimationSet7L10
     DB 26
@@ -1278,19 +1284,20 @@ tilemapAnimationSet7L10
     TF{0790*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 7
     TF{0950*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 7
     TF{1013*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 7
-    TF{1053*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 7
-    TF{0803*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 7
-    TF{0684*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 7
-    TF{0808*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 7
-    TF{0973*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 7
-    TF{0813*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 7
-    TF{0963*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 7
-    TF{0968*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 7
-    TF{0825*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 7
-    TF{0985*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 7
-    TF{0990*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 7
-    TF{0665*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 7
-    TF{0830*2/*POS*/, 078/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 7
+
+    TF{1053*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 2
+    TF{0803*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 2
+    TF{0684*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 2
+    TF{0808*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 2
+    TF{0973*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 2
+    TF{0813*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 2
+    TF{0963*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 2
+    TF{0968*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 2
+    TF{0825*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 2
+    TF{0985*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 2
+    TF{0990*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 2
+    TF{0665*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 2
+    TF{0830*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 2
 
 tilemapAnimationSet8L10
     DB 26
@@ -1307,19 +1314,21 @@ tilemapAnimationSet8L10
     TF{0790*2/*POS*/, 077/*TID*/, $30/*PAL*/}   ; Collumn Down K - frame 8
     TF{0950*2/*POS*/, 077/*TID*/, $30/*PAL*/}   ; Collumn Down L - frame 8
     TF{1013*2/*POS*/, 077/*TID*/, $30/*PAL*/}   ; Collumn Down M - frame 8
-    TF{1053*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 8
-    TF{0803*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 8
-    TF{0684*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 8
-    TF{0808*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 8
-    TF{0973*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 8
-    TF{0813*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 8
-    TF{0963*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 8
-    TF{0968*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 8
-    TF{0825*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 8
-    TF{0985*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 8
-    TF{0990*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 8
-    TF{0665*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 8
-    TF{0830*2/*POS*/, 079/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 8
+
+    TF{1053*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up A - frame 1
+    TF{0803*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up B - frame 1
+    TF{0684*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up C - frame 1
+    TF{0808*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up D - frame 1
+    TF{0973*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up E - frame 1
+    TF{0813*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up F - frame 1
+    TF{0963*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up G - frame 1
+    TF{0968*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up H - frame 1
+    TF{0825*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up I - frame 1
+    TF{0985*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up J - frame 1
+    TF{0990*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up K - frame 1
+    TF{0665*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up L - frame 1
+    TF{0830*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Collumn Up M - frame 1
+
 
 tilemapAnimationL10
     DW tilemapAnimationSet1L10, tilemapAnimationSet2L10, tilemapAnimationSet3L10, tilemapAnimationSet4L10
