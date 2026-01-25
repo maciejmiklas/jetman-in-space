@@ -1089,7 +1089,7 @@ TILEMAP_ANIM_ROWS_L9    = 6
 ; ##############################################
 ; Level 10
 tilemapAnimationSet1L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 1
     TF{0768*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 1
     TF{0608*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 1
@@ -1127,9 +1127,11 @@ tilemapAnimationSet1L10
     TF{0744*2/*POS*/, 144/*TID*/, $30/*PAL*/}   ; Platform F - frame 1
     TF{0737*2/*POS*/, 152/*TID*/, $30/*PAL*/}   ; Platform G - frame 1
     TF{0741*2/*POS*/, 128/*TID*/, $30/*PAL*/}   ; Platform H - frame 1
+    TF{0733*2/*POS*/, 096/*TID*/, $30/*PAL*/}   ; Platform I - frame 1
+    TF{0745*2/*POS*/, 112/*TID*/, $30/*PAL*/}   ; Platform J - frame 1
 
 tilemapAnimationSet2L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 2
     TF{0768*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 2
     TF{0608*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 2
@@ -1167,9 +1169,11 @@ tilemapAnimationSet2L10
     TF{0744*2/*POS*/, 145/*TID*/, $30/*PAL*/}   ; Platform F - frame 2
     TF{0737*2/*POS*/, 153/*TID*/, $30/*PAL*/}   ; Platform G - frame 2
     TF{0741*2/*POS*/, 129/*TID*/, $30/*PAL*/}   ; Platform H - frame 2
+    TF{0733*2/*POS*/, 097/*TID*/, $30/*PAL*/}   ; Platform I - frame 2
+    TF{0745*2/*POS*/, 113/*TID*/, $30/*PAL*/}   ; Platform J - frame 2
 
 tilemapAnimationSet3L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 068/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 3
     TF{0768*2/*POS*/, 068/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 3
     TF{0608*2/*POS*/, 068/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 3
@@ -1207,9 +1211,11 @@ tilemapAnimationSet3L10
     TF{0744*2/*POS*/, 146/*TID*/, $30/*PAL*/}   ; Platform F - frame 3
     TF{0737*2/*POS*/, 154/*TID*/, $30/*PAL*/}   ; Platform G - frame 3
     TF{0741*2/*POS*/, 130/*TID*/, $30/*PAL*/}   ; Platform H - frame 3
+    TF{0733*2/*POS*/, 098/*TID*/, $30/*PAL*/}   ; Platform I - frame 3
+    TF{0745*2/*POS*/, 114/*TID*/, $30/*PAL*/}   ; Platform J - frame 3
 
 tilemapAnimationSet4L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 069/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 4
     TF{0768*2/*POS*/, 069/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 4
     TF{0608*2/*POS*/, 069/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 4
@@ -1247,9 +1253,11 @@ tilemapAnimationSet4L10
     TF{0744*2/*POS*/, 147/*TID*/, $30/*PAL*/}   ; Platform F - frame 4
     TF{0737*2/*POS*/, 155/*TID*/, $30/*PAL*/}   ; Platform G - frame 4
     TF{0741*2/*POS*/, 131/*TID*/, $30/*PAL*/}   ; Platform H - frame 4
+    TF{0733*2/*POS*/, 099/*TID*/, $30/*PAL*/}   ; Platform I - frame 4
+    TF{0745*2/*POS*/, 115/*TID*/, $30/*PAL*/}   ; Platform J - frame 4
 
 tilemapAnimationSet5L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 072/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 5
     TF{0768*2/*POS*/, 072/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 5
     TF{0608*2/*POS*/, 072/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 5
@@ -1287,9 +1295,11 @@ tilemapAnimationSet5L10
     TF{0744*2/*POS*/, 148/*TID*/, $30/*PAL*/}   ; Platform F - frame 5
     TF{0737*2/*POS*/, 156/*TID*/, $30/*PAL*/}   ; Platform G - frame 5
     TF{0741*2/*POS*/, 132/*TID*/, $30/*PAL*/}   ; Platform H - frame 5
+    TF{0733*2/*POS*/, 100/*TID*/, $30/*PAL*/}   ; Platform I - frame 5
+    TF{0745*2/*POS*/, 116/*TID*/, $30/*PAL*/}   ; Platform J - frame 5
 
 tilemapAnimationSet6L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 073/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 6
     TF{0768*2/*POS*/, 073/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 6
     TF{0608*2/*POS*/, 073/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 6
@@ -1326,9 +1336,11 @@ tilemapAnimationSet6L10
     TF{0744*2/*POS*/, 149/*TID*/, $30/*PAL*/}   ; Platform F - frame 6
     TF{0737*2/*POS*/, 157/*TID*/, $30/*PAL*/}   ; Platform G - frame 6
     TF{0741*2/*POS*/, 133/*TID*/, $30/*PAL*/}   ; Platform H - frame 6
+    TF{0733*2/*POS*/, 101/*TID*/, $30/*PAL*/}   ; Platform I - frame 6
+    TF{0745*2/*POS*/, 117/*TID*/, $30/*PAL*/}   ; Platform J - frame 6
 
 tilemapAnimationSet7L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 7
     TF{0768*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 7
     TF{0608*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 7
@@ -1366,9 +1378,11 @@ tilemapAnimationSet7L10
     TF{0744*2/*POS*/, 150/*TID*/, $30/*PAL*/}   ; Platform F - frame 7
     TF{0737*2/*POS*/, 158/*TID*/, $30/*PAL*/}   ; Platform G - frame 7
     TF{0741*2/*POS*/, 134/*TID*/, $30/*PAL*/}   ; Platform H - frame 7
+    TF{0733*2/*POS*/, 102/*TID*/, $30/*PAL*/}   ; Platform I - frame 7
+    TF{0745*2/*POS*/, 118/*TID*/, $30/*PAL*/}   ; Platform J - frame 7
 
 tilemapAnimationSet8L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 077/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 8
     TF{0768*2/*POS*/, 077/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 8
     TF{0608*2/*POS*/, 077/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 8
@@ -1406,9 +1420,11 @@ tilemapAnimationSet8L10
     TF{0744*2/*POS*/, 151/*TID*/, $30/*PAL*/}   ; Platform F - frame 8
     TF{0737*2/*POS*/, 159/*TID*/, $30/*PAL*/}   ; Platform G - frame 8
     TF{0741*2/*POS*/, 135/*TID*/, $30/*PAL*/}   ; Platform H - frame 8
+    TF{0733*2/*POS*/, 103/*TID*/, $30/*PAL*/}   ; Platform I - frame 8
+    TF{0745*2/*POS*/, 119/*TID*/, $30/*PAL*/}   ; Platform J - frame 8
 
 tilemapAnimationSet9L10
-    DB 34
+    DB 36
     TF{0763*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down A - frame 7
     TF{0768*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down B - frame 7
     TF{0608*2/*POS*/, 076/*TID*/, $30/*PAL*/}   ; Collumn Down C - frame 7
@@ -1446,6 +1462,8 @@ tilemapAnimationSet9L10
     TF{0744*2/*POS*/, 166/*TID*/, $30/*PAL*/}   ; Platform F - frame 9
     TF{0737*2/*POS*/, 170/*TID*/, $30/*PAL*/}   ; Platform G - frame 9
     TF{0741*2/*POS*/, 171/*TID*/, $30/*PAL*/}   ; Platform H - frame 9
+    TF{0733*2/*POS*/, 164/*TID*/, $30/*PAL*/}   ; Platform I - frame 9
+    TF{0745*2/*POS*/, 165/*TID*/, $30/*PAL*/}   ; Platform J - frame 9
 
 tilemapAnimationSet10L10
     DB 26
