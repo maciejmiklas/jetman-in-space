@@ -400,7 +400,7 @@ singleEnemiesL7
     ENPS {220,        010,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        010,          movePattern08,   sr.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
 
-SINGLE_ENEMIES_L7       = 6 
+SINGLE_ENEMIES_L7       = 6
 enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN/*SETUP*/}
 
 ; ##############################################
@@ -419,7 +419,15 @@ SINGLE_ENEMIES_L9       = 8
 
 ; ##############################################
 ; Level 10
-enemyFormationL10 ENPS {0/*RESPAWN_Y*/, enp.RESPAWN_OFF_D255/*RESPAWN_DELAY*/, movePattern01D0/*MOVE_PAT_POINTER*/, sr.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
+singleEnemiesL10
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {224,        015,          movePattern01D2,   sr.SDB_ENEMY1   enp.ENP_LEFT_HIT  }
+    ENPS {224,        020,          movePattern01D1,   sr.SDB_ENEMY1   enp.ENP_RIGHT_HIT }
+    ENPS {165,        023,          movePattern01D1,   sr.SDB_ENEMY1   enp.ENP_LEFT_HIT  }
+    ENPS {165,        020,          movePattern01D2,   sr.SDB_ENEMY1   enp.ENP_RIGHT_HIT }
+    ENPS {144,        030,          movePattern01D3,   sr.SDB_ENEMY1   enp.ENP_LEFT_HIT  }
+    ENPS {144,        025,          movePattern01D1,   sr.SDB_ENEMY1   enp.ENP_RIGHT_HIT }
+SINGLE_ENEMIES_L10       = 6
 
 ;----------------------------------------------------------;
 ;                      Fuel Thief                          ;
