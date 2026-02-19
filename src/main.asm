@@ -129,7 +129,6 @@ mainLoop
     INCLUDE "gb_game_bar.asm"
     INCLUDE "sc_screen.asm"
     INCLUDE "sp_sprite.asm"
-    INCLUDE "sr_simple_sprite.asm"
     INCLUDE "jt_jet_state.asm"
     INCLUDE "jpo_jet_position.asm"
     INCLUDE "jco_jet_collision.asm"

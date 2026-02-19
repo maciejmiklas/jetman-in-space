@@ -113,7 +113,7 @@ RespawnFormation
     ; deployment are still visible.
     LD IX, ena.formationEnemySprites
     LD A, (enf.formationSize): LD B, A
-    CALL sr.CheckAnySpriteVisible
+    CALL sp.CheckAnySpriteVisible
     RET Z                                       ; Return if at least one sprite is visible.
 
 .afterStillAliveCheck

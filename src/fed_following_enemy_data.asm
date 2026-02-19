@@ -10,16 +10,16 @@
 
 ; Sprites, used by single enemies (#spriteExXX).
 fEnemySprites
-    SPR {089/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
-    SPR {099/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
-    SPR {100/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
-    SPR {101/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
-    SPR {102/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy05/*EXT_DATA_POINTER*/}
-    SPR {103/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy06/*EXT_DATA_POINTER*/}
-    SPR {104/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy07/*EXT_DATA_POINTER*/}
-    SPR {105/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy08/*EXT_DATA_POINTER*/}
-    SPR {106/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy09/*EXT_DATA_POINTER*/}
-    SPR {107/*ID*/, sr.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy10/*EXT_DATA_POINTER*/}
+    SPR {089/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy01/*EXT_DATA_POINTER*/}
+    SPR {099/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy02/*EXT_DATA_POINTER*/}
+    SPR {100/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy03/*EXT_DATA_POINTER*/}
+    SPR {101/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy04/*EXT_DATA_POINTER*/}
+    SPR {102/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy05/*EXT_DATA_POINTER*/}
+    SPR {103/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy06/*EXT_DATA_POINTER*/}
+    SPR {104/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy07/*EXT_DATA_POINTER*/}
+    SPR {105/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy08/*EXT_DATA_POINTER*/}
+    SPR {106/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy09/*EXT_DATA_POINTER*/}
+    SPR {107/*ID*/, sp.SDB_ENEMY1A/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fEnemy10/*EXT_DATA_POINTER*/}
 fEnemySize              BYTE 1
 FOLLOWING_FENEMY_SIZE   = 10                    ; Max size
 

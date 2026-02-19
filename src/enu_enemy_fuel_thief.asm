@@ -81,7 +81,7 @@ ThiefWeaponHit
     LD A, TS_EXPLODES_D20
     LD (thiefState), A
 
-    CALL sr.SpriteHit
+    CALL sp.SpriteHit
 
     LD A, FUEL_SPRITE_ID_D97
     sp.SetIdAndHideSprite
@@ -183,7 +183,7 @@ AnimateFuelThief
     LD IX, ena.fuelThiefSpr
     LD A, THIEF_SIZE_D1
     LD B, A
-    CALL sr.AnimateSprites
+    CALL sp.AnimateSprites
 
     RET                                         ; ## END of the function ##
 
@@ -329,7 +329,7 @@ _HideFuelThief
     LD (thiefState), A
 
     LD IX, ena.fuelThiefSpr
-    CALL sr.HideSimpleSprite
+    CALL sp.HideSimpleSprite
 
     ; Hide tank
     LD A, FUEL_SPRITE_ID_D97

@@ -541,13 +541,13 @@ RocketHitsMeteor
 ;  - IX: Pointer to enemy's #SPR.
 EnemyHit
     CALL dbs.SetupArrays2Bank
-    CALL sr.SpriteHit
+    CALL sp.SpriteHit
 
     ; Checkt what enemy has been hit.
     ; ##########################################
     ; Enemy 1?
     LD A, (IX + SPR.SDB_INIT)
-    CP sr.SDB_ENEMY1
+    CP sp.SDB_ENEMY1
     JR NZ, .afterHitEnemy1
 
     ; Yes, enemy 1 hot git.
@@ -563,7 +563,7 @@ EnemyHit
      ; ##########################################
     ; Enemy 2?
     LD A, (IX + SPR.SDB_INIT)
-    CP sr.SDB_ENEMY2
+    CP sp.SDB_ENEMY2
     JR NZ, .afterHitEnemy2
 
     ; Yes, enemy 2 hot git.
@@ -579,10 +579,10 @@ EnemyHit
     ; ##########################################
     ; Enemy 3/1A?
     LD A, (IX + SPR.SDB_INIT)
-    CP sr.SDB_ENEMY3
+    CP sp.SDB_ENEMY3
     JR Z, .hit3
 
-    CP sr.SDB_ENEMY1A 
+    CP sp.SDB_ENEMY1A 
     RET NZ
 
 .hit3
@@ -605,7 +605,7 @@ EnemyHitsJet
     CALL dbs.SetupArrays2Bank
     
     ; Destroy the enemy.
-    CALL sr.SpriteHit
+    CALL sp.SpriteHit
 
     ; ##########################################
     ; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy.
