@@ -32,13 +32,11 @@ I want to give a shout-out to the following, without them, I would have been los
 * [Master484](http://m484games.ucoz.com)
 * [Vortex Tracker II Volutar](https://volutar.myds.me/vortextracker)
 * [500 Pixel Bullet 24x24]( https://bit.ly/4aiZHZ4)
-* [Corey Archer] (https://opengameart.org/content/top-down-pokemon-esque-sprites)
-* [Chroma Noir] (https://v3x3d.itch.io/chroma-noir)
-* [Industrial Tileset] (https://atomicrealm.itch.io/industrial-tileset)
-* [Meteors] (https://opengameart.org/content/meteors)
-* [RPG Icons] (https://merchant-shade.itch.io/16x16-mixed-rpg-icons)
-
-
+* [Corey Archer](https://opengameart.org/content/top-down-pokemon-esque-sprites)
+* [Chroma Noir](https://v3x3d.itch.io/chroma-noir)
+* [Industrial Tileset](https://atomicrealm.itch.io/industrial-tileset)
+* [Meteors](https://opengameart.org/content/meteors)
+* [RPG Icons](https://merchant-shade.itch.io/16x16-mixed-rpg-icons)
 
 # Licensing
 - Source code in /src is licensed under Apache-2.0 (see LICENSE).

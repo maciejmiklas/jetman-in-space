@@ -32,7 +32,7 @@ LoadMenuLevelSelect
     CALL bm.HideImage
 
     ; ##########################################
-    LD A, _LEVEL_MIN_D1
+    LD A, (ll.currentLevel)
     LD (currentLevel), A
     
     ; ##########################################
