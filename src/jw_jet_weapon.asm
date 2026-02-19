@@ -264,7 +264,7 @@ ShotsCollision
     JR Z, .continueShotsLoop
 
     ; Compare X coordinate of the sprite and the shot, HL holds X of the sprite.
-    LD HL, (IX + SPR.X)                      ; X of the shot.
+    LD HL, (IX + SPR.X)                         ; X of the shot.
     
     ; Subtracts DE from HL and check whether the result is less than or equal to A.
     SBC DE, HL
@@ -281,7 +281,7 @@ ShotsCollision
     JR C, .continueShotsLoop                    ; Jump if A(#FIRE_THICKNESS_D10) < L.
     
     ; We are here because the shot is horizontal with the enemy, now check the vertical match.
-    LD A, (IX + SPR.Y)                       ; A holds Y from the shot.
+    LD A, (IX + SPR.Y)                          ; A holds Y from the shot.
 
     ; Subtracts C from A and check whether the result is less than or equal to #FIRE_THICKNESS_D10.
     SUB C
@@ -321,11 +321,17 @@ MoveShots
     LD IX, db2.shots
     LD B, db2.SHOTS_SIZE
 
+
+
 .shootsLoop
     PUSH BC                                     ; Preserve B for loop counter.
 
     ; Skip hidden shoots.
     BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    JR Z, .continue 
+
+    ; Skip shot that is not active - it has hit something already, and it's exploding.
+    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .continue
 
     ; Shot is visible, move it and update postion.
@@ -347,10 +353,6 @@ MoveShots
 
     CALL sr.MoveX
     CALL sr.UpdateSpritePosition
-
-    ; Skip collision detection if the shot is not alive - it has hit something already, and it's exploding.
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
-    JR Z, .afterPlatformHit               ; Exit if sprite is not alive.
 
     ; Check the collision with the platform.
     CALL pl.CheckPlatformWeaponHit
@@ -394,19 +396,16 @@ AnimateShots
 
     CALL dbs.SetupArrays2Bank
     LD IX, db2.shots
-    LD B, db2.SHOTS_SIZE
+    LD A, db2.SHOTS_SIZE
     CALL sr.AnimateSprites
 
     RET                                         ; ## END of the function ##
 
-tmp db 0
 ;----------------------------------------------------------;
 ;                       FireReleased                       ;
 ;----------------------------------------------------------;
 FireReleased
 
-    push af:ld a, (tmp): inc a: ld (tmp), a:pop af
-    
     ; Reset Fire-Fx delay, so that FX plays immediately after the fire has been pressed again.
     XOR A
     LD (fireFxDelayCnt), A
