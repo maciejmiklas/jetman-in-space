@@ -720,9 +720,9 @@ JetPicksGun
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      JetPicksLife                        ;
+;                      JetExtraLife                        ;
 ;----------------------------------------------------------;
-JetPicksLife
+JetExtraLife
 
     CALL sc.PickupRegular
 

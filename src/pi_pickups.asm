@@ -26,7 +26,7 @@ deployedX               DB 0                ; Pickup X postion.
 deployedY               DB 0                ; Pickup Y postion.
 
 deployDelayCnt          DB 0
-DEPLOY_DELAY            = 5
+DEPLOY_DELAY            = 20
 
 pickupsPtr              DW 0
 pickupsSize             DB 0
@@ -137,7 +137,7 @@ UpdatePickupsOnJetmanMove
     ; Life
     CP PI_SPR_LIFE
     JR NZ, .afterLife
-    CALL gc.JetPicksLife
+    CALL gc.JetExtraLife
     JR .nextPickup
 .afterLife
 

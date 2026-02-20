@@ -15,6 +15,9 @@ HIT_ENEMY1              = 50
 HIT_ENEMY2              = 100
 HIT_ENEMY3              = 150
 
+EXTRA_LIVE              = 30000
+nextExtraLive           DW EXTRA_LIVE
+
 PICKUP_ROCKET           = 200
 
 PICKUP_ROCKET_AIR       = 250
@@ -203,6 +206,35 @@ PrintScore
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                 _CheckExtraLive                          ;
+;----------------------------------------------------------;
+    MACRO _CheckExtraLive
+
+    LD HL, (scoreLo)
+    LD DE, (nextExtraLive)
+
+    ; Grant extra live if HL > DE, or H > D and L > E
+
+    ; Check if H > D
+    LD A, H
+    CP D
+    JR C, .end                                  ; Jump if H < D
+
+    LD A, L
+    CP H
+    JR C, .end                                  ; Jump if L < E
+
+    ; Extra live!
+    LD DE, EXTRA_LIVE
+    ADD HL, DE
+    LD (nextExtraLive), HL
+
+    CALL gc.JetExtraLife
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                       _UpdateScore                       ;
 ;----------------------------------------------------------;
 ; Input
@@ -210,6 +242,7 @@ PrintScore
 ;  - B: repeat
 _UpdateScore
 
+    ; This will also update scoreHi due to everflow in ut.Add8To32.
 .loop
     PUSH BC
     LD HL, scoreLo
@@ -217,6 +250,8 @@ _UpdateScore
     CALL ut.Add8To32
     POP BC
     DJNZ .loop
+
+     _CheckExtraLive
 
     ; #########################################
     ; Update UI, but return if gamebar is hidden
