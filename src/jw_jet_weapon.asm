@@ -224,7 +224,7 @@ HideShots
 .shotsLoop
 
     sp.SetSpriteId
-    sp.HideSprite
+    sp.HideSpriteReg
     CALL sp.ResetSprite
 
     ; ##########################################
@@ -292,7 +292,7 @@ ShotsCollision
     JR C, .continueShotsLoop                    ; Jump if A(#FIRE_THICKNESS_D10) < D
 
     ; We have hit! Hide shot and return.
-    CALL sp.HideSimpleSprite
+    CALL sp.HideSprite
 
     _YES
     POP DE, BC

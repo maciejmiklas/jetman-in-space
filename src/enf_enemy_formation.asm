@@ -9,12 +9,12 @@
 
     ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
 
-; The enemy formation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #ENEMY_FORMATION_SIZE_D10
+; The enemy formation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #ENEMY_FORMATION_SIZE_D7
 ; determines the amount. The deployment starts when #respawnDelayCnt will reach #respawnDelay. 
 ; There is also a delay in respawning each enemy in the formation (#ENPS.RESPAWN_DELAY). It will define the distance between single
 ; enemies in the formation.
 
-spritesCnt              DB 0                    ; Counter for #ENEMY_FORMATION_SIZE_D10.
+spritesCnt              DB 0                    ; Counter for #ENEMY_FORMATION_SIZE_D7.
 respawnDelay            DB 0                    ; Delay to respawn the whole formation.
 respawnDelayCnt         DB 0                    ; Counter for #respawnDelay.
 formationSize           DB 0
@@ -53,7 +53,8 @@ SetupEnemyFormation
 
     ; ##########################################
     PUSH IX                                     ; Keep method param.
-    LD A, (enf.formationSize): LD B, A 
+    LD A, (enf.formationSize)
+    LD B, A
     LD IX, ena.formationEnemySprites
     CALL enp.ResetPatternEnemies
     POP IX
@@ -66,8 +67,10 @@ SetupEnemyFormation
     ; ##########################################
     ; Copy one given #ENPS to all #ENP.
     LD IY, ena.spriteExEf01                     ; Points to first #ENP.
-    LD A, (enf.formationSize): LD B, A          ; Enemies size (number of #ENP structs).
+    LD A, (enf.formationSize)                   ; Enemies size (number of #ENP structs).
+    LD B, A
 .enpLoop
+
     CALL enp.ResetEnp
     CALL enp.CopyEnpsToEnp
 
@@ -78,11 +81,12 @@ SetupEnemyFormation
     DJNZ .enpLoop
 
     ; ##########################################
-    ; Copy one given #ENPS to all #SPR.
+    ; Copy #ENPS.SDB_INIT over all #SPR.SDB_INIT
     LD IY, ena.formationEnemySprites            ; Pointer to #SPR array.
-    LD A, (enf.formationSize): LD B, A          ; Enemies size (number of #SPR structs).
-.sprLoop
+    LD A, (enf.formationSize)                   ; Enemies size (number of #SPR structs).
+    LD B, A
     LD A, (IX + ENPS.SDB_INIT)
+.sprLoop
     LD (IY + SPR.SDB_INIT), A
 
     ; Move IY to next array position.
@@ -109,10 +113,11 @@ RespawnFormation
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .afterStillAliveCheck
 
-    ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous.
+    ; The respawn delay timer is 0. We could start a new deployment, but first, we must check whether some enemies from the previous
     ; deployment are still visible.
     LD IX, ena.formationEnemySprites
-    LD A, (enf.formationSize): LD B, A
+    LD A, (enf.formationSize)
+    LD B, A
     CALL sp.CheckAnySpriteVisible
     RET Z                                       ; Return if at least one sprite is visible.
 
@@ -129,6 +134,7 @@ RespawnFormation
     JR Z, .startRespawn                         ; Jump if #RESPAWN_DELAY == #respawnDelayCnt.
     INC A                                       ; Increment delay timer and return.
     LD (respawnDelayCnt), A
+
     RET
 .startRespawn                                   ; #RESPAWN_DELAY == #respawnDelayCnt -> deployment is active.
 
@@ -136,10 +142,11 @@ RespawnFormation
     ; Formation deployment in progress.....
 
     ; Check if deployment is over -> the last sprite has been deployed.
+    LD A, (enf.formationSize)
+    LD B, A
     LD A, (spritesCnt)
-    LD A, (enf.formationSize): LD B, A 
     CP B
-    JR C, .deployNextEnemy                      ; Jump if #spritesCnt < #ENEMY_FORMATION_SIZE_D10 -> There are still enemies that need to be deployed.
+    JR C, .deployNextEnemy                      ; Jump if #spritesCnt < #ENEMY_FORMATION_SIZE_D7 -> There are still enemies that need to be deployed.
     
     ; Deployment is over, reset formation counters.
     XOR A

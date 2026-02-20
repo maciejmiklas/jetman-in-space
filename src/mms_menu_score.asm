@@ -527,7 +527,7 @@ _SetScoreToReadOnly
 
     ; Hide cursor
     LD IX, menuScoreCursor
-    CALL sp.HideSimpleSprite
+    CALL sp.HideSprite
 
     RET                                         ; ## END of the function ##
 

@@ -59,13 +59,13 @@ HideEnemies
 
     LD A, ena.ENEMY_SINGLE_SIZE
     LD IX, ena.singleEnemySprites
-    CALL sp.HideAllSimpleSprites
+    CALL sp.HideAllSprites
 
     ; ##########################################
     ; Hide formation enemies.
     LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
-    CALL sp.HideAllSimpleSprites
+    CALL sp.HideAllSprites
 
     ; ##########################################
     ; Hide following enemies.
@@ -73,7 +73,7 @@ HideEnemies
     
     LD A, fed.FOLLOWING_FENEMY_SIZE
     LD IX, fed.fEnemySprites
-    CALL sp.HideAllSimpleSprites
+    CALL sp.HideAllSprites
 
     RET                                         ; ## END of the function ##
 

@@ -86,9 +86,9 @@ SDB_SEARCH_LIMIT_D200   = 200
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                    sp.HideSprite                         ;
+;                   sp.HideSpriteReg                       ;
 ;----------------------------------------------------------;
-    MACRO sp.HideSprite
+    MACRO sp.HideSpriteReg
 
     NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE
 
@@ -281,12 +281,12 @@ UpdateSpritePosition
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 HideAllSimpleSprites                     ;
+;                     HideAllSprites                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: pointer to #SPR.
 ;  - A:  sprites size.
-HideAllSimpleSprites
+HideAllSprites
 
     OR A                                        ; Same as CP 0, but faster.
     RET Z
@@ -294,7 +294,7 @@ HideAllSimpleSprites
     LD B, A
 .spriteLoop
     PUSH BC
-    CALL HideSimpleSprite
+    CALL HideSprite
 
     ; Move IX to the beginning of the next #SPR.
     LD DE, SPR
@@ -306,12 +306,12 @@ HideAllSimpleSprites
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    HideSimpleSprite                      ;
+;                       HideSprite                         ;
 ;----------------------------------------------------------;
 ; Hide Sprite given by IX.
 ; Input
 ;  - IX: pointer to #SPR.
-HideSimpleSprite
+HideSprite
 
     sp.SetSpriteId
 
@@ -320,7 +320,7 @@ HideSimpleSprite
     RES SPRITE_ST_VISIBLE_BIT, A
     LD (IX + SPR.STATE), A
 
-    sp.HideSprite
+    sp.HideSpriteReg
 
     RET                                         ; ## END of the function ##
 
@@ -373,7 +373,7 @@ UpdateSpritePattern
     LD A, (IX + SPR.NEXT)
     CP SDB_HIDE                                 ; The next animation record can have value #SDB_HIDE which means: hide it.
     JR NZ, .afterHide
-    CALL HideSimpleSprite
+    CALL HideSprite
     RET
 .afterHide
 
@@ -484,7 +484,7 @@ MoveX
     JR .afterMoving
 
 .hideSpriteL
-    CALL HideSimpleSprite                       ; Hide sprite
+    CALL HideSprite                       ; Hide sprite
     RET
 
     ; ##########################################
@@ -519,7 +519,7 @@ MoveX
     JR .afterMoving
 
 .hideSpriteR
-    CALL HideSimpleSprite                       ; Hide sprite.
+    CALL HideSprite                       ; Hide sprite.
     RET
 
 .afterMoving
@@ -569,7 +569,7 @@ MoveY
     JR NC, .afterMoving                         ; Jump if the enemy is below max screen postion (A >= _GSC_Y_MIN_D15).
 
     ; Sprite is above screen -> hide it.
-    CALL HideSimpleSprite
+    CALL HideSprite
 
     _NO
     RET
@@ -757,7 +757,7 @@ spSpriteDMAProgramLength = $ - spSpriteDMAProgram
 
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
 
-    sp.HideSprite
+    sp.HideSpriteReg
 
     ENDM                                        ; ## END of the macro ##
 ;----------------------------------------------------------;

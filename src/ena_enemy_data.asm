@@ -260,7 +260,7 @@ formationEnemySprites
     SPR {65, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf05}
     SPR {66, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf06}
     SPR {67, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf07}
-ENEMY_FORMATION_SIZE_D10    = 7
+ENEMY_FORMATION_SIZE_D7    = 7
 
 ;----------------------------------------------------------;
 ;                         Enemies                          ;
@@ -323,6 +323,7 @@ singleEnemiesL3
     ENPS {200,        028,          movePattern02D3,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {200,        044,          movePattern02D3,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
 SINGLE_ENEMIES_L3       = 20
+
 enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY3/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
 
 ; ##############################################
@@ -399,8 +400,8 @@ singleEnemiesL7
     ENPS {150,        013,          movePattern08,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
-
 SINGLE_ENEMIES_L7       = 6
+
 enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN/*SETUP*/}
 
 ; ##############################################

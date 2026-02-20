@@ -329,7 +329,7 @@ _HideFuelThief
     LD (thiefState), A
 
     LD IX, ena.fuelThiefSpr
-    CALL sp.HideSimpleSprite
+    CALL sp.HideSprite
 
     ; Hide tank
     LD A, FUEL_SPRITE_ID_D97

@@ -203,11 +203,11 @@ AbsA
 ;        For B=5 -> First characters starts at 40px (5*8) in first line, for B=41 first characters starts in second line.
 PrintNumber
 
-    PUSH BC, DE, IX, IY
+    PUSH AF, BC, DE, IX, IY
     
     CALL tx.PrintNum16
     
-    POP IY, IX, DE, BC
+    POP IY, IX, DE, BC, AF
     
     RET                                         ; ## END of the function ##
 
