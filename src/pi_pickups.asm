@@ -16,6 +16,8 @@ PI_SPR_GRENADE          = 42                ; Collect and expolode.
 PI_FREEZE_ENEMIES       = 43                ; Freeze enemies.
 PI_SPR_GUN              = 44                ; Improve weapon.
 
+; We want to bring fire speed up quickly. Therefore, at the beginning, there are only weapon drops, but not up to the max firing speed.
+DROP_GUN_CNT            = 10
 pickupsArrayPos         DB 0
 
 deployed                DB 0                ; Currently deployed sprite reference from spr-file(#PI_SPR_XXX), 0 for none.
@@ -24,7 +26,7 @@ deployedX               DB 0                ; Pickup X postion.
 deployedY               DB 0                ; Pickup Y postion.
 
 deployDelayCnt          DB 0
-DEPLOY_DELAY            = 10
+DEPLOY_DELAY            = 5
 
 pickupsPtr              DW 0
 pickupsSize             DB 0
@@ -237,14 +239,14 @@ PickupDropCounter
     LD (deployDelayCnt), A
 
     ; ##########################################
-    ; Drop gun if fire speed is not yet at max speed.
+    ; Drop gun if fire speed is not yet at high speed.
     LD A, (jw.fireDelay)
-    CP jw.JM_FIRE_DELAY_MIN_D3
-    JR Z, .afterGunCheck
+    CP DROP_GUN_CNT
+    JR C, .afterGunCheck
 
     LD A, PI_SPR_GUN
     LD (deployed), A
-    RET
+    JR .setupDeply
 .afterGunCheck
 
     ; ##########################################
@@ -288,7 +290,7 @@ PickupDropCounter
     ; Setup X,Y postion
     XOR A
     LD (deployedY), A
-    
+
     LD A, R
     LD (deployedX), A
 

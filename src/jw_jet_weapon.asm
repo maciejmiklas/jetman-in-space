@@ -17,7 +17,7 @@ FIRE_THICKNESS_D10      = 10
 ; reaches #JM_FIRE_DELAY
 JM_FIRE_DELAY_MAX_D15   = 15
 JM_FIRE_DELAY_MIN_D3    = 3
-JM_FIRE_SPEED_UP_D4     = 4
+JM_FIRE_SPEED_UP_D3     = 3
 fireDelayCnt            DB 0
 fireDelay               DB JM_FIRE_DELAY_MAX_D15
 
@@ -149,7 +149,7 @@ FireSpeedUp
     CP JM_FIRE_DELAY_MIN_D3
     RET Z
 
-    LD A, JM_FIRE_SPEED_UP_D4
+    LD A, JM_FIRE_SPEED_UP_D3
     LD B, A
 .loop
     _FireDelayDown

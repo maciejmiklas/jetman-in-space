@@ -175,24 +175,24 @@ PICKUPS_L2_SIZE             = 1
 
 ; Pickups for Level 3
 pickupsL3
-    DB pi.PI_SPR_LIFE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND
+    DB pi.PI_SPR_LIFE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE,  pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND
 PICKUPS_L3_SIZE             = 5
 
 ; Pickups for Level 4
 pickupsL4
-    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND
-PICKUPS_L4_SIZE             = 4
+    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND
+PICKUPS_L4_SIZE             = 5
 
 ; Pickups for Level 5
 pickupsL5
-    DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GRENADE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_JAR, pi.PI_SPR_LIFE
-PICKUPS_L5_SIZE             = 6
+    DB pi.PI_SPR_STRAWBERRY, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_JAR, pi.PI_SPR_LIFE
+PICKUPS_L5_SIZE             = 7
 
 ; Pickups for Level 6-10
 pickupsL6
-    DB pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE
-    DB pi.PI_SPR_JAR, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE, pi.PI_SPR_LIFE
-PICKUPS_L6_SIZE             = 10
+    DB pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY,pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE
+    DB pi.PI_SPR_JAR, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_LIFE
+PICKUPS_L6_SIZE             = 12
 
 ;----------------------------------------------------------;
 ;                          Platforms                       ;

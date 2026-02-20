@@ -68,14 +68,14 @@ PrintDebug
     CALL ut.PrintNumber
     ENDIF
 
-/*
+
     ; ##########################################
     LD BC, 60
     LD H, 0
-    LD A, (enp.moveDel)
+    LD A, (jw.fireDelay)
     LD L, A
     CALL ut.PrintNumber
-
+/*
     ; ##########################################
     LD BC, 66
     LD H, 0
