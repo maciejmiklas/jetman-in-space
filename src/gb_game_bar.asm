@@ -71,9 +71,7 @@ PrintDebug
 
     ; ##########################################
     LD BC, 60
-    LD H, 0
-    LD A, (jw.fireDelay)
-    LD L, A
+    LD HL, (sc.nextExtraLive)
     CALL ut.PrintNumber
 /*
     ; ##########################################
