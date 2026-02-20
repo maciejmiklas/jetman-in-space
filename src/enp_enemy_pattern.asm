@@ -264,7 +264,7 @@ ResetEnp
 ResetPatternEnemies
 
 .enemyLoop
-    CALL sr.ResetSprite
+    CALL sp.ResetSprite
 
     ; Load extra data for this sprite to IY.
     LD DE, (IX + SPR.EXT_DATA_POINTER)
@@ -301,7 +301,7 @@ MovePatternEnemies
 
     ; Ignore this sprite if it's hidden.
     LD A, (IX + SPR.STATE)
-    AND sr.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility.
+    AND sp.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden).
 
@@ -356,7 +356,7 @@ MovePatternEnemies
 ; Modifies: all
 RespawnPatternEnemy
 
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterVisibilityCheck                 ; Skip this sprite if it's already visible.
 
     _NO
@@ -399,7 +399,7 @@ RespawnPatternEnemy
     ; ##########################################
     ; Respawn enemy, first mark it as visible.
     LD A, (IX + SPR.STATE)
-    CALL sr.SetStateVisible
+    CALL sp.SetStateVisible
 
     ; Reset counters and move pattern.
     LD (IY + ENP.RESPAWN_DELAY_CNT), 0
@@ -419,18 +419,18 @@ RespawnPatternEnemy
 
     ; Deploy right
     LD BC, _GSC_X_MAX_D315
-    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Mirror sprite, because it deploys on the right and moves to the left side.
+    SET sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Mirror sprite, because it deploys on the right and moves to the left side.
     JR .afterLR
 
     ; Deploy left
 .deployLeft
-    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Do not mirror sprite (this could be set if in another level it was moving right).
+    RES sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Do not mirror sprite (this could be set if in another level it was moving right).
     LD BC, _GSC_X_MIN_D0
 
 .afterLR
     LD (IX + SPR.X), BC
-    sr.SetSpriteId
-    CALL sr.ShowSprite
+    sp.SetSpriteId
+    CALL sp.ShowSprite
 
     _YES
 
@@ -451,7 +451,7 @@ _FlipReverseY
     XOR ENP_REVERSE_Y
     LD (IY + ENP.SETUP), A
 
-    LD A, sr.SDB_BOUNCE_TOP
+    LD A, sp.SDB_BOUNCE_TOP
     CALL _PlayBounceAnimation
 
     RET                                         ; ## END of the function ##
@@ -460,14 +460,14 @@ _FlipReverseY
 ;                 _PlayBounceAnimation                     ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: hit side sr.SDB_BOUNCE_SIDE or sr.SDB_BOUNCE_TOP
+;  - A: hit side sp.SDB_BOUNCE_SIDE or sp.SDB_BOUNCE_TOP
 _PlayBounceAnimation
 
     BIT ENP_BIT_BOUNCE_AN_D3, (IY + ENP.SETUP)
     RET Z
 
     PUSH BC, HL
-    CALL sr.LoadSpritePattern
+    CALL sp.LoadSpritePattern
     POP HL, BC
 
     RET                                         ; ## END of the function ##
@@ -508,7 +508,7 @@ _MoveEnemyX
 .moveRight
 
     ; Reverse bit not set, now really move right.
-    SET sr.MVX_IN_D_TOD_DIR_BIT, A
+    SET sp.MVX_IN_D_TOD_DIR_BIT, A
     JR .execMove
 
     ; ##########################################
@@ -516,12 +516,12 @@ _MoveEnemyX
 .moveLeft
 
     ; Reverse bit not set, now really move left.
-    RES sr.MVX_IN_D_TOD_DIR_BIT, A
+    RES sp.MVX_IN_D_TOD_DIR_BIT, A
 
 .execMove
 
     PUSH HL
-    CALL sr.MoveX
+    CALL sp.MoveX
     POP HL
 
     RET                                         ; ## END of the function ##
@@ -534,11 +534,11 @@ _MoveEnemyX
 _MoveEnemy
 
     ; Do not move enemy if dying.
-    sr.CheckSpriteHiddenOrDaying
+    sp.CheckSpriteHiddenOrDaying
     RET Z
 
     ; Set sprite ID in hardware
-    sr.SetSpriteId
+    sp.SetSpriteId
 
     ; Load #ENP for this sprite to IY
     LD BC, (IX + SPR.EXT_DATA_POINTER)
@@ -552,12 +552,12 @@ _MoveEnemy
 
     ; ##########################################
     ; Is enemy alive?
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .afterAliveCheck                     ; Jump if sprite is alive.
 
     ; Sprite is not alive -> move it horizontally while it's exploding.
     CALL _MoveEnemyX
-    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
+    CALL sp.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
 
     RET                                         ; Return - enemy is exploding.
 .afterAliveCheck
@@ -598,18 +598,18 @@ _MoveEnemy
 .bounceL
     ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction.
     RES ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
-    SET sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
+    SET sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
 
-    LD A, sr.SDB_BOUNCE_SIDE
+    LD A, sp.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
 
     JR .afterBounceSetup
 .bounceR
     ; Enemy bounces from the platform's right side.
     SET ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
-    RES sr.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
+    RES sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE); Turn sprite.
 
-    LD A, sr.SDB_BOUNCE_SIDE
+    LD A, sp.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
 
 .afterBounceSetup
@@ -628,7 +628,7 @@ _MoveEnemy
 
     ; Avoid collision with the platform by moving along it
     CALL _MoveEnemyX
-    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
+    CALL sp.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
     RET                                         ; Return, sprite moves along platform.
 .afterMoveAlong
 
@@ -685,8 +685,8 @@ _MoveEnemy
     CALL _FlipReverseY
 
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
-    LD A, sr.MOVE_Y_IN_UP_D1
-    CALL sr.MoveY
+    LD A, sp.MOVE_Y_IN_UP_D1
+    CALL sp.MoveY
 
     JP .afterChangeY
 
@@ -694,8 +694,8 @@ _MoveEnemy
     ; Bouncing not necessary, finally move down
 
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
-    LD A, sr.MOVE_Y_IN_DOWN_D0
-    CALL sr.MoveY
+    LD A, sp.MOVE_Y_IN_DOWN_D0
+    CALL sp.MoveY
     JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
 
     RET                                         ; Stop moving this sprite, it's hidden.
@@ -716,20 +716,20 @@ _MoveEnemy
     CALL _FlipReverseY
 
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
-    LD A, sr.MOVE_Y_IN_DOWN_D0
-    CALL sr.MoveY
+    LD A, sp.MOVE_Y_IN_DOWN_D0
+    CALL sp.MoveY
     JR .afterChangeY
 .afterBounceMoveUp
 
     ; Bouncing not necessary, finally move up
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
-    LD A, sr.MOVE_Y_IN_UP_D1
-    CALL sr.MoveY
+    LD A, sp.MOVE_Y_IN_UP_D1
+    CALL sp.MoveY
     JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
     RET                                         ; Stop moving this sprite, it's hidden.
 
 .afterChangeY
-    CALL sr.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
+    CALL sp.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
 
     ; Check if X and Y have reached 0 in move pattern.
     LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains pattern counter.
@@ -803,7 +803,7 @@ _MoveEnemy
 
     CALL pl.PlatformSpriteHit
     RET NZ                                      ; Return if there is no collision
-    CALL sr.SpriteHit                           ; Explode!
+    CALL sp.SpriteHit                           ; Explode!
 
     RET                                         ; ## END of the function ##
 

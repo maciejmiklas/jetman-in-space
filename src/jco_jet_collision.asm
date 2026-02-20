@@ -114,11 +114,11 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     MACRO _EnemyCollision
 
     ; Exit if enemy is not alive.
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .end
 
     ; Exit if enemy is not visible.
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .end
 
     ; ################################

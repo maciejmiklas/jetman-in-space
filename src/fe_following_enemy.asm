@@ -30,10 +30,10 @@ STATE_SKIP_RESET_MASK   = %1'00'11'00'1
 SKIP_XY_DEC_X           = %0'00'00'01'0
 SKIP_XY_DEC_Y           = %0'01'00'00'0
 
-STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sr.MOVE_Y_IN_UP_D1/#sr.MOVE_Y_IN_DOWN_D0, 1-move up, 0-move down.
+STATE_DIR_Y_BIT         = 3                     ; Corresponds to #sp.MOVE_Y_IN_UP_D1/#sp.MOVE_Y_IN_DOWN_D0, 1-move up, 0-move down.
 STATE_DIR_Y_MASK        = %000'0'1'000          ; Reset all but #STATE_DIR_Y_BIT 
 
-STATE_DIR_X_BIT         = 4                     ; Corresponds to #sr.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right).
+STATE_DIR_X_BIT         = 4                     ; Corresponds to #sp.MVX_IN_D_TOD_DIR_BIT, 1-move right (deploy left), 0-move left (deploy right).
 STATE_DIR_X_MASK        = %000'1'0'000          ; Reset all but #STATE_DIR_BIT 
 
 BOUNCE_H_MARG_D2        = 2
@@ -101,8 +101,8 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 .afterBounced
 
     ; Bounce animation
-    LD A, sr.SDB_BOUNCE_TOP
-    CALL sr.LoadSpritePattern
+    LD A, sp.SDB_BOUNCE_TOP
+    CALL sp.LoadSpritePattern
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -118,10 +118,10 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     MACRO _TryRespawnNextFollowingEnemy
 
     ; Skip this sprite if it's already visible/active
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterAliveCheck                      ; Jump if not visible
 
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .afterAliveCheck                      ; Jump if not active
 
     _NO
@@ -166,7 +166,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
     LD A, (IX + SPR.STATE)
 
-    CALL sr.SetStateVisible
+    CALL sp.SetStateVisible
 
     ; Reset counters
     XOR A                                       ; Set A to 0
@@ -193,8 +193,8 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
 .afterLR
     LD (IX + SPR.X), BC
-    sr.SetSpriteId
-    CALL sr.ShowSprite
+    sp.SetSpriteId
+    CALL sp.ShowSprite
 
     _YES
 
@@ -210,7 +210,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     MACRO _MoveEnemy
 
     ; Do not move enemy if dying.
-    sr.CheckSpriteHiddenOrDaying
+    sp.CheckSpriteHiddenOrDaying
     JP Z, .end
 
     ; Should enemy bounce of the platform?
@@ -249,14 +249,14 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 .afterSkipX
 
     ; ##########################################
-    ; Move on X left or right. The direction is being copied from FE.STATE to D as a parameter for #sr.MoveX
+    ; Move on X left or right. The direction is being copied from FE.STATE to D as a parameter for #sp.MoveX
     LD A, D                                     ; D contains (IY + FE.STATE)
     AND STATE_DIR_X_MASK
     LD B, A
 
-    LD A, sr.MVX_IN_D_1PX_ROL
+    LD A, sp.MVX_IN_D_1PX_ROL
     OR B
-    CALL sr.MoveX
+    CALL sp.MoveX
 
 .afterMoveX
 
@@ -299,21 +299,21 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     JR NZ, .moveUp                              ; Jump if bit #STATE_DIR_Y_BIT == 1
 
     ; Move down
-    LD A, sr.MOVE_Y_IN_DOWN_D0
+    LD A, sp.MOVE_Y_IN_DOWN_D0
     JR .afterMoveYDir
 
     ; Move up
 .moveUp
-    LD A, sr.MOVE_Y_IN_UP_D1
+    LD A, sp.MOVE_Y_IN_UP_D1
 
 .afterMoveYDir
     ; ##########################################
     LD B, 1
-    CALL sr.MoveY                               ; A contains #MOVE_Y_IN_DOWN_D0/UP
+    CALL sp.MoveY                               ; A contains #MOVE_Y_IN_DOWN_D0/UP
 .afterMoveY
 
-    sr.SetSpriteId
-    CALL sr.UpdateSpritePosition
+    sp.SetSpriteId
+    CALL sp.UpdateSpritePosition
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -351,25 +351,25 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 
 .hitLeft
     RES STATE_DIR_X_BIT, (IY + FE.STATE)        ; Move left, because enemy was moving right to hit platform from the left side
-    LD A, sr.SDB_BOUNCE_SIDEA                   ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    LD A, sp.SDB_BOUNCE_SIDEA                   ; Bounce animation for #sp.LoadSpritePattern at .bounced
     JR .bounced
 
 .hitRight
     SET STATE_DIR_X_BIT, (IY + FE.STATE)        ; Move right, because enemy was moving left to hit platform from the right side
-    LD A, sr.SDB_BOUNCE_SIDEA                   ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    LD A, sp.SDB_BOUNCE_SIDEA                   ; Bounce animation for #sp.LoadSpritePattern at .bounced
     JR .bounced
 
 .hitTop
     SET STATE_DIR_Y_BIT, (IY + FE.STATE)        ; Move up, because enemy was moving down to hit platform from the top
-    LD A, sr.SDB_BOUNCE_TOPA                    ; Bounce animation for #sr.LoadSpritePattern at .bounced
+    LD A, sp.SDB_BOUNCE_TOPA                    ; Bounce animation for #sp.LoadSpritePattern at .bounced
     JR .bounced
 
 .hitBottom
     RES STATE_DIR_Y_BIT, (IY + FE.STATE)        ; Move down, because enemy was moving up to hit the platform from the bottom
-    LD A, sr.SDB_BOUNCE_TOPA                    ; Bounce animation for #sr.LoadSpritePattern below
+    LD A, sp.SDB_BOUNCE_TOPA                    ; Bounce animation for #sp.LoadSpritePattern below
 
 .bounced
-    CALL sr.LoadSpritePattern
+    CALL sp.LoadSpritePattern
 
     ; Disable following until the enemy is far from the platform
     CALL _EnemyDirectionChanged
@@ -387,7 +387,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     MACRO _UpdateFollowingEnemy
 
     ; Return if enemy is not visible
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .end
 
     ; ##########################################
@@ -649,7 +649,7 @@ MoveFollowingEnemies
     ; Move single enemy
 
     ; Ignore if enemy is not visible
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JP Z, .continue
 
     ; Load extra data for this sprite to IY
@@ -716,7 +716,7 @@ _ResetSprites
     LD A, (IX + SPR.ID)
     sp.SetIdAndHideSprite
 
-    CALL sr.ResetSprite
+    CALL sp.ResetSprite
 
     ; Move IX to the next sprite
     LD DE, IX
@@ -735,7 +735,7 @@ _ResetSprites
 _NextFollowingAngle
 
     ; Return if enemy is not visible
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     RET Z
 
     ; Set index to the next angle, assuming that we still have not reached the last one

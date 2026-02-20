@@ -59,13 +59,13 @@ HideEnemies
 
     LD A, ena.ENEMY_SINGLE_SIZE
     LD IX, ena.singleEnemySprites
-    CALL sr.HideAllSimpleSprites
+    CALL sp.HideAllSprites
 
     ; ##########################################
     ; Hide formation enemies.
     LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
-    CALL sr.HideAllSimpleSprites
+    CALL sp.HideAllSprites
 
     ; ##########################################
     ; Hide following enemies.
@@ -73,7 +73,7 @@ HideEnemies
     
     LD A, fed.FOLLOWING_FENEMY_SIZE
     LD IX, fed.fEnemySprites
-    CALL sr.HideAllSimpleSprites
+    CALL sp.HideAllSprites
 
     RET                                         ; ## END of the function ##
 
@@ -87,20 +87,20 @@ AnimateEnemies
 
     LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
-    CALL sr.AnimateSprites
+    CALL sp.AnimateSprites
 
     ; ##########################################
     ; Animate formation enemy
     LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
-    CALL sr.AnimateSprites
+    CALL sp.AnimateSprites
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
 
     LD A, (fed.fEnemySize)
     LD IX, fed.fEnemySprites
-    CALL sr.AnimateSprites
+    CALL sp.AnimateSprites
 
     RET                                         ; ## END of the function ##
 
@@ -129,13 +129,13 @@ KillOneEnemy
     CALL dbs.SetupPatternEnemyBank
     LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
-    CALL sr.KillOneSprite
+    CALL sp.KillOneSprite
 
     ; ##########################################
     ; Kill formation enemy
     LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
-    CALL sr.KillOneSprite
+    CALL sp.KillOneSprite
 
     ; ##########################################
     ; Kill following enemy
@@ -143,7 +143,7 @@ KillOneEnemy
 
     LD A, (fed.fEnemySize)
     LD IX, fed.fEnemySprites
-    CALL sr.KillOneSprite
+    CALL sp.KillOneSprite
 
     RET                                         ; ## END of the function ##
 

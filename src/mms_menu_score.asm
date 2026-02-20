@@ -46,7 +46,7 @@ tileChar                DB ASCII_A              ; Currently visible character fr
 scoreLine               DB $FF                  ; Score line where user enters the name, 1 - first place, 9 - last place.
 
 menuScoreCursor
-    SPR {10/*ID*/, sr.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+    SPR {10/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -101,9 +101,9 @@ menuScoreCursor
     XOR A
     LD IX, menuScoreCursor
 
-    sr.SetSpriteId
-    CALL sr.SetStateVisible
-    CALL sr.ShowSprite
+    sp.SetSpriteId
+    CALL sp.SetStateVisible
+    CALL sp.ShowSprite
 
     ; ##########################################
     ; Show enter tile on the end the of score line.
@@ -277,8 +277,8 @@ AnimateCursor
     RET Z
 
     LD IX, menuScoreCursor
-    sr.SetSpriteId
-    CALL sr.UpdateSpritePattern
+    sp.SetSpriteId
+    CALL sp.UpdateSpritePattern
 
     RET                                         ; ## END of the function ##
     
@@ -527,7 +527,7 @@ _SetScoreToReadOnly
 
     ; Hide cursor
     LD IX, menuScoreCursor
-    CALL sr.HideSimpleSprite
+    CALL sp.HideSprite
 
     RET                                         ; ## END of the function ##
 
@@ -577,7 +577,7 @@ _UpdateCursor
     LD (IX + SPR.Y), E
 
     ; ##########################################
-    CALL sr.UpdateSpritePosition
+    CALL sp.UpdateSpritePosition
 
     RET                                         ; ## END of the function ##
 

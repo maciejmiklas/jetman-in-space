@@ -32,11 +32,11 @@ start
 
     CALL gc.SetupSystem
 
-    ;LD A, 10
-    ;LD (ll.currentLevel), A
-    ;CALL gc.LoadCurrentLevel
+    LD A, 3
+    LD (ll.currentLevel), A
+    CALL gc.LoadCurrentLevel
 
-    CALL gc.LoadMainMenu
+    ;CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music
@@ -99,9 +99,7 @@ mainLoop
     CALL sc.WaitForTopScanline
 
     CALL ml.MainLoop
-
     _ReadPerformance
-
     CALL sc.WaitForBottomScanline
     JR mainLoop
 
@@ -129,7 +127,6 @@ mainLoop
     INCLUDE "gb_game_bar.asm"
     INCLUDE "sc_screen.asm"
     INCLUDE "sp_sprite.asm"
-    INCLUDE "sr_simple_sprite.asm"
     INCLUDE "jt_jet_state.asm"
     INCLUDE "jpo_jet_position.asm"
     INCLUDE "jco_jet_collision.asm"

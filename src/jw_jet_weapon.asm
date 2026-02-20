@@ -17,7 +17,7 @@ FIRE_THICKNESS_D10      = 10
 ; reaches #JM_FIRE_DELAY
 JM_FIRE_DELAY_MAX_D15   = 15
 JM_FIRE_DELAY_MIN_D3    = 3
-JM_FIRE_SPEED_UP_D4     = 4
+JM_FIRE_SPEED_UP_D3     = 3
 fireDelayCnt            DB 0
 fireDelay               DB JM_FIRE_DELAY_MAX_D15
 
@@ -149,7 +149,7 @@ FireSpeedUp
     CP JM_FIRE_DELAY_MIN_D3
     RET Z
 
-    LD A, JM_FIRE_SPEED_UP_D4
+    LD A, JM_FIRE_SPEED_UP_D3
     LD B, A
 .loop
     _FireDelayDown
@@ -183,7 +183,7 @@ CheckHitEnemies
 .loop                                           ; Loop over every enemy.
     PUSH BC                                     ; Preserve B for loop counter.
 
-    sr.CheckSpriteHiddenOrDaying 
+    sp.CheckSpriteHiddenOrDaying 
     JR Z, .continue                             ; Jump if enemy is hidden or exploding.
 
     ; Enemy is visible, check collision with leaser beam.
@@ -223,9 +223,9 @@ HideShots
     LD B, db2.SHOTS_SIZE 
 .shotsLoop
 
-    sr.SetSpriteId
-    sp.HideSprite
-    CALL sr.ResetSprite
+    sp.SetSpriteId
+    sp.HideSpriteReg
+    CALL sp.ResetSprite
 
     ; ##########################################
     ; Move IX to the beginning of the next #shotsXX.
@@ -256,11 +256,11 @@ ShotsCollision
     LD A, (IX + SPR.STATE)
 
     ; Skip hidden laser shoots for collision detection.
-    BIT sr.SPRITE_ST_VISIBLE_BIT, A
+    BIT sp.SPRITE_ST_VISIBLE_BIT, A
     JR Z, .continueShotsLoop
 
     ; Skip inactive laser shoots for collision detection.
-    BIT sr.SPRITE_ST_ACTIVE_BIT, A
+    BIT sp.SPRITE_ST_ACTIVE_BIT, A
     JR Z, .continueShotsLoop
 
     ; Compare X coordinate of the sprite and the shot, HL holds X of the sprite.
@@ -292,7 +292,7 @@ ShotsCollision
     JR C, .continueShotsLoop                    ; Jump if A(#FIRE_THICKNESS_D10) < D
 
     ; We have hit! Hide shot and return.
-    CALL sr.HideSimpleSprite
+    CALL sp.HideSprite
 
     _YES
     POP DE, BC
@@ -327,38 +327,38 @@ MoveShots
     PUSH BC                                     ; Preserve B for loop counter.
 
     ; Skip hidden shoots.
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .continue 
 
     ; Skip shot that is not active - it has hit something already, and it's exploding.
-    BIT sr.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .continue
 
     ; Shot is visible, move it and update postion.
-    sr.SetSpriteId
+    sp.SetSpriteId
     
-    LD A, sr.MVX_IN_D_6PX_HIDE
+    LD A, sp.MVX_IN_D_6PX_HIDE
 
     ; Setup move direction for shot.
     BIT STATE_SHOT_DIR_BIT, (IX + SPR.STATE)
     JR Z, .shotDirLeft
 
     ; Shot moves right.
-    SET sr.MVX_IN_D_TOD_DIR_BIT, A
+    SET sp.MVX_IN_D_TOD_DIR_BIT, A
     JR .afterShotDir
 .shotDirLeft
     ; Shot moves left.
-    RES sr.MVX_IN_D_TOD_DIR_BIT, A
+    RES sp.MVX_IN_D_TOD_DIR_BIT, A
 .afterShotDir
 
-    CALL sr.MoveX
-    CALL sr.UpdateSpritePosition
+    CALL sp.MoveX
+    CALL sp.UpdateSpritePosition
 
     ; Check the collision with the platform.
     CALL pl.CheckPlatformWeaponHit
     JR NZ, .afterPlatformHit
     PUSH IX
-    CALL sr.SpriteHit
+    CALL sp.SpriteHit
     CALL gc.PlatformWeaponHit
     POP IX
 .afterPlatformHit
@@ -397,7 +397,7 @@ AnimateShots
     CALL dbs.SetupArrays2Bank
     LD IX, db2.shots
     LD A, db2.SHOTS_SIZE
-    CALL sr.AnimateSprites
+    CALL sp.AnimateSprites
 
     RET                                         ; ## END of the function ##
 
@@ -449,7 +449,7 @@ FirePress
 .findLoop
 
     ; Check whether the current #shotsX is not visible and can be reused.
-    BIT sr.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
     JR Z, .afterFound                           ; Jump if visibility is not set -> hidden, can be reused.
 
     ; Move HL to the beginning of the next #shotsX (see "LD DE, SPR" above).
@@ -498,7 +498,7 @@ FirePress
 
 .afterMoving
 
-    CALL sr.SetStateVisible                     ; It will show sprite and store state from A.
+    CALL sp.SetStateVisible                     ; It will show sprite and store state from A.
 
     ; Set Y coordinate for laser beam
     LD A, (jpo.jetY)
@@ -506,8 +506,8 @@ FirePress
     LD (IX + SPR.Y), A
 
     ; Setup laser beam pattern, IX already points to the right memory address.
-    sr.SetSpriteId
-    CALL sr.ShowSprite
+    sp.SetSpriteId
+    CALL sp.ShowSprite
 
     ; Call callback
     _WeaponFx
