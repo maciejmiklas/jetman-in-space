@@ -38,7 +38,7 @@ P_ENEMY_BANK_S6_B31     = 31                    ; Slot 6, Pattern Enemies.
 AY_FX_S6_D32            = 32                    ; Slot 6, FX sound.
 AY_MCODE_S6_D33         = 33                    ; Slot 6, music code, music binary is in AY_MCODE_S6_D33.
 TILE_ANIMATION_D34      = 34                    ; Slot 6, tile animation.
-STORAGE_S6_D35          = 35                    ; Slot 6, game data storage.
+CODE1_S6_D35          = 35                    ; Slot 6, game data storage.
 ROCKET_S6_D36           = 36                    ; Slot 6, rocket.
 
 ; ################ Dynamic Data #################
@@ -69,11 +69,11 @@ SetupRocketBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   SetupStorageBank                       ;
+;                   SetupCode1Bank                       ;
 ;----------------------------------------------------------;
-SetupStorageBank
+SetupCode1Bank
 
-    NEXTREG _MMU_REG_SLOT6_H56, STORAGE_S6_D35
+    NEXTREG _MMU_REG_SLOT6_H56, CODE1_S6_D35
 
     RET                                         ; ## END of the function ##
 

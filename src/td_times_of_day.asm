@@ -8,17 +8,20 @@
     MODULE td
 
 TOD_STEPS_D4            = 4                     ; Total number of steps (times of the day) from day to night.
-TOD_STEP_DURATION       = 20                    ; Duration of a single time of day, except for a full day.
-TOD_DAY_DURATION        = 10                    ; Duration of the full day.
+TOD_STEP_DURATION_D20   = 20                    ; Duration of a single time of day, except for a full day.
+TOD_DAY_DURATION_D10    = 30                    ; Duration of the full day.
 
 ; State for #stepDir indicating the direction of the change: from day to night, night to day, or full day.
-TOD_DIR_DAY_NIGHT       = 1                     ; Environment changes from day to night.
-TOD_DIR_NIGHT_DAY       = 2                     ; Environment changes from night to day.
-TOD_DIR_FULL_DAY        = 3                     ; It's a full day.
+TOD_DIR_DAY_NIGHT_D1    = 1                     ; Environment changes from day to night.
+TOD_DIR_NIGHT_DAY_D2    = 2                     ; Environment changes from night to day.
+TOD_DIR_FULL_DAY_D3     = 3                     ; It's a full day.
+
+TOD_LIMITV_1_D1          = 1
+TOD_LIMITV_2_D0          = 0
 
 step                    DB TOD_STEPS_D4         ; Counts from TOD_STEPS_D4 (inclusive) to 0 (exclusive).
-stepDuration            DB TOD_DAY_DURATION     ; Counts toward 0, when reached, the next #step executes.
-stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_NIGHT_DAY.
+stepDuration            DB TOD_DAY_DURATION_D10 ; Counts toward 0, when reached, the next #step executes.
+stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DIR_NIGHT_DAY_D2.
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -43,7 +46,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     LD (step), A
 
     ; Reverse from day->night to night->day.
-    LD A, TOD_DIR_NIGHT_DAY
+    LD A, TOD_DIR_NIGHT_DAY_D2
     LD (stepDir), A
 
     LD A, 1                                 ; Switching should be short.
@@ -57,7 +60,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     ; Execute the next step, first, reset the counter for its duration.
 
     ; Duration for the next step.
-    LD A, TOD_STEP_DURATION
+    LD A, TOD_STEP_DURATION_D20
     LD (stepDuration), A
 
     CALL gc.NextDayToNight
@@ -66,6 +69,18 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     LD A, (step)
     DEC A
     LD (step), A
+
+    ; ##########################################
+    ; Limit visibility
+    CP TOD_LIMITV_1_D1
+    JR NZ, .notLimit1
+    CALL gc.NightLimitVisibility1
+.notLimit1
+
+    CP TOD_LIMITV_2_D0
+    JR NZ, .notLimit0
+    CALL gc.NightLimitVisibility2
+.notLimit0
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -80,7 +95,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     LD (stepDuration), A
 
     ; Reverse from night->day to day->night.
-    LD A, TOD_DIR_DAY_NIGHT
+    LD A, TOD_DIR_DAY_NIGHT_D1
     LD (stepDir), A
 
     LD A, TOD_STEPS_D4
@@ -102,10 +117,10 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     ; ##########################################
     ; Counter has reached 0, switch to full day.
 
-    LD A, TOD_DIR_FULL_DAY
+    LD A, TOD_DIR_FULL_DAY_D3
     LD (stepDir), A
 
-    LD A, TOD_DAY_DURATION
+    LD A, TOD_DAY_DURATION_D10
     LD (stepDuration), A
 
     CALL gc.ChangeToFullDay
@@ -117,7 +132,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT    ; TOD_DIR_DAY_NIGHT or TOD_DIR_N
     ; Execute the next step, first, reset the counter for its duration.
 
     ; Duration for the next step.
-    LD A, TOD_STEP_DURATION
+    LD A, TOD_STEP_DURATION_D20
     LD (stepDuration), A
 
     CALL gc.NextNightToDay
@@ -144,10 +159,10 @@ ResetTimeOfDay
     LD A, TOD_STEPS_D4
     LD (step), A
 
-    LD A, TOD_DAY_DURATION
+    LD A, TOD_DAY_DURATION_D10
     LD (stepDuration), A
 
-    LD A, TOD_DIR_DAY_NIGHT
+    LD A, TOD_DIR_DAY_NIGHT_D1
     LD (stepDir), A
 
     RET                                         ; ## END of the function ##
@@ -171,7 +186,7 @@ NextTimeOfDayPhase
     LD A, (stepDir)
     
     ; Full day?
-    CP TOD_DIR_FULL_DAY
+    CP TOD_DIR_FULL_DAY_D3
     JR NZ, .notFullDay
 
     ; Yes, it's full day.
@@ -180,7 +195,7 @@ NextTimeOfDayPhase
 .notFullDay
     ; It's not a full day, so it must be day->night or night->day.
 
-    CP TOD_DIR_DAY_NIGHT
+    CP TOD_DIR_DAY_NIGHT_D1
     JR Z, .transitionDayToNight
 
     _NextStepNightToDay

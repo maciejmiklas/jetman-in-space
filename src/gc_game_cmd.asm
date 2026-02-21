@@ -811,6 +811,9 @@ JetMoves
     CALL dbs.SetupArrays2Bank
     CALL pi.UpdatePickupsOnJetmanMove
 
+    CALL dbs.SetupCode1Bank
+    CALL nv.UpdateJetVisibility 
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -882,7 +885,29 @@ JoyWillEnable
 ExitGameToMainMenu
 
     CALL LoadMainMenu
-    
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 NightLimitVisibility1                    ;
+;----------------------------------------------------------;
+NightLimitVisibility1
+
+    CALL dbs.SetupCode1Bank
+    LD A, nv.VISIBILITY_LIMIT_1
+    CALL nv.LimitJetVisibility
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                NightLimitVisibility2                     ;
+;----------------------------------------------------------;
+NightLimitVisibility2
+
+    CALL dbs.SetupCode1Bank
+    LD A, nv.VISIBILITY_LIMIT_2
+    CALL nv.LimitJetVisibility
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -895,6 +920,9 @@ NightEnds
     ; but there is no palette on that address. We have to move the back palette addresses by one palette so that it points to the last 
     ; palette containing colors for the darkest night.
     CALL btd.PrevTodPaletteAddr
+
+    CALL dbs.SetupCode1Bank
+    CALL nv.LimitJetVisibilityOff
 
     RET                                         ; ## END of the function ##
 
@@ -926,6 +954,7 @@ NextNightToDay
 ;----------------------------------------------------------;
 ; Called when the lighting condition has changed to a full day.
 ChangeToFullDay
+
     CALL btd.ResetPaletteArrd
     CALL btd.LoadCurrentTodPalette
 

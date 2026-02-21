@@ -78,7 +78,7 @@ SetupScreen
 SetClipTop50
 
     ; Reset clip index.
-    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_VAL
+    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_ALL
 
     ; Clip Window layer 2
     NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_X1_D0
@@ -119,7 +119,7 @@ SetClipTilesHorizontal
 ResetClippings
 
     ; Reset clip index.
-    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_VAL
+    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_ALL
 
     ; Clip Window layer 2
     NEXTREG _DC_REG_L2_CLIP_H18, _CLIP_FULL_X1_D0
