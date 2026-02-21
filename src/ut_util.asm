@@ -74,12 +74,13 @@ NumTo99Str
 ;  - #dmaPortBAddress: Address to
 ;  - #dmaTransferSize: Number of bytes to copy
 CopyRam
+
     LD HL, dmaProgram                          ; HL = pointer to DMA program
     LD B, dmaProgramSize                       ; B = size of the code
     LD C, _DMA_PORT_H6B                        ; C = $6B (zxnDMA port)
     OTIR                                       ; Upload DMA program
 
-    RET
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       Add8To32                           ;
@@ -108,17 +109,40 @@ Add8To32
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                          HLdivC                          ;
+;----------------------------------------------------------;
+; http://z80-heaven.wikidot.com/math#toc12
+; Input:
+;  - HL: numerator
+;  - C:  denominator
+; Return:
+;  - HL: reslut HL/C
+HLdivC
+
+    LD B,16
+    XOR A
+    ADD HL,HL
+    RLA
+    CP C
+    JR C,$+4
+    INC L
+    SUB C
+    DJNZ $-7
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                          CdivD                           ;
 ;----------------------------------------------------------;
 ; http://z80-heaven.wikidot.com/math#toc12
-CdivD
-
 ; Input:
 ;  - C: numerator
 ;  - D: denominator
 ; Return:
 ;  - A: remainder
 ;  - C: result C/D
+CdivD
+
     LD B,8
     XOR A
     SLA C

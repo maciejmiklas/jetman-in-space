@@ -71,16 +71,26 @@ PrintDebug
 
     ; ##########################################
     LD BC, 60
-    LD HL, (sc.nextExtraLive)
+    LD H, 0
+    LD A, (td.step)
+    LD L, A
     CALL ut.PrintNumber
 /*
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (enp.movePx)
+    LD A, (nv.tmp1)
+    LD L, A
+    CALL ut.PrintNumber
+
+    ; ##########################################
+    LD BC, 72
+    LD H, 0
+    LD A, (nv.tmp2)
     LD L, A
     CALL ut.PrintNumber
 */
+
     RET                                         ; ## END of the function ##
     ENDIF
 ;----------------------------------------------------------;

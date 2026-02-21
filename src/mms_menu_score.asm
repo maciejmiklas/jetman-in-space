@@ -61,7 +61,7 @@ menuScoreCursor
     MACRO _StoreNewScore
 
     ; Set IX to #db2.highScore that will be updated.
-    CALL dbs.SetupStorageBank
+    CALL dbs.SetupCode1Bank
     LD A, (scoreLine)
 
     ; Does the user qualify for the scoreboard?
@@ -126,7 +126,7 @@ menuScoreCursor
 ; Prints structure from #db2.highScore
     MACRO _PrintWholeScore
 
-    CALL dbs.SetupStorageBank
+    CALL dbs.SetupCode1Bank
 
     LD B, LINES_D10
 .placesLoop
@@ -148,7 +148,7 @@ menuScoreCursor
 ;  A: contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
     MACRO _CalculateScoreLine
 
-    CALL dbs.SetupStorageBank
+    CALL dbs.SetupCode1Bank
 
     ; Compare the new score starting from the bottom line (nr 9) until we find a line in the score that is larger than the current score.
     LD B, LINES_D10-1
@@ -536,7 +536,7 @@ _SetScoreToReadOnly
 ;----------------------------------------------------------;
 _UpdateCursor
 
-    CALL dbs.SetupStorageBank
+    CALL dbs.SetupCode1Bank
 
     ; Calculate X postion
     LD DE, (nameChPos)
@@ -688,7 +688,7 @@ _SetDeToEnterTiRam
 ;----------------------------------------------------------;
 _StoreCurrentChar
 
-    CALL dbs.SetupStorageBank
+    CALL dbs.SetupCode1Bank
 
      ; DE will point to RAM containing the character the user currently enters.
     LD A, (scoreLine)

@@ -64,7 +64,7 @@ _PERIPHERAL_04_H09      = $09
 ; 4rd write – Y2 position
 
 _CLIP_FULL_X1_D0           = 0
-_CLIP_FULL_X2_D159         = 159                   ; For 320x256 the the X coords are internally doubled.
+_CLIP_FULL_X2_D159         = 159                ; For 320x256 the the X coords are internally doubled.
 _CLIP_FULL_Y1_D0           = 0
 _CLIP_FULL_FULLY2_D255     = 255
 
@@ -85,7 +85,7 @@ _GL_REG_CLIP_TI_H1   = $1B
 ;  - 1: reset the sprite clip index.
 ;  - 0: reset the Layer 2 clip index.
 _GL_REG_CLIP_CTR_H1C    = $1C
-_GL_REG_CLIP_VAL        = %0000'1111
+_GL_REG_CLIP_ALL        = %0000'1111
 
 ;----------------------------------------------------------;
 ;                   Display Control                        ;

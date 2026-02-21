@@ -287,7 +287,7 @@ LoadUnlockLevel
     LD A, (jt.difLevel)
     DEC A                                       ; Diff level counts 1-3, for offset we need 0-2
 
-    CALL dbs.SetupStorageBank
+    CALL dbs.SetupCode1Bank
     LD DE, so.unlockedLevel
     ADD DE, A
     LD A, (DE)
@@ -332,7 +332,7 @@ UnlockNextLevel
     ; ##########################################
     ; Update the unlock level
     PUSH AF
-    CALL dbs.SetupStorageBank
+    CALL dbs.SetupCode1Bank
 
     ; Move DE to the #unlockedLevel for the current difficulty level.
     LD DE, so.unlockedLevel

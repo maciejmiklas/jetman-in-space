@@ -32,10 +32,10 @@ start
 
     CALL gc.SetupSystem
 
-    ;LD A, 3
+    ;LD A, 1
     ;LD (ll.currentLevel), A
     ;CALL gc.LoadCurrentLevel
-
+    
     CALL gc.LoadMainMenu
 
     ; ##########################################
@@ -211,11 +211,12 @@ mainLoop
     ASSERT $$ == dbs.TILE_ANIMATION_D34
 
     ; ################ BANK  35 ################
-    ; TO USE THIS MODULE: CALL dbs.SetupStorageBank
-    MMU _RAM_SLOT6, dbs.STORAGE_S6_D35
+    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
+    MMU _RAM_SLOT6, dbs.CODE1_S6_D35
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "so_storage.asm"
-    ASSERT $$ == dbs.STORAGE_S6_D35
+    INCLUDE "nv_night_visibility.asm"
+    ASSERT $$ == dbs.CODE1_S6_D35
 
     ; ################ BANK  36 ################
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
