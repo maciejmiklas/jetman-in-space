@@ -86,7 +86,6 @@ _GL_REG_CLIP_TI_H1   = $1B
 ;  - 0: reset the Layer 2 clip index.
 _GL_REG_CLIP_CTR_H1C    = $1C
 _GL_REG_CLIP_ALL        = %0000'1111
-_GL_REG_CLIP_SPTI       = %0000'1010            ; Clip tilemap + sprites
 
 ;----------------------------------------------------------;
 ;                   Display Control                        ;

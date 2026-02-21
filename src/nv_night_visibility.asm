@@ -12,14 +12,7 @@ VISIBILITY_LIMIT_1      = 100
 VISIBILITY_LIMIT_2      = 50
 VISIBILITY_LIMIT_OFF    = 0
 
-visibilityLimit DW VISIBILITY_LIMIT_2
-
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                        MACROS                            ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
+visibilityLimit DW VISIBILITY_LIMIT_OFF
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -27,8 +20,6 @@ visibilityLimit DW VISIBILITY_LIMIT_2
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
-tmp1 db 0
-tmp2 db 0
 ;----------------------------------------------------------;
 ;                   UpdateJetVisibility                    ;
 ;----------------------------------------------------------;
@@ -95,29 +86,29 @@ UpdateJetVisibility
 
     ; ##########################################
     ; Reset clip index.
-    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_SPTI
+    NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_ALL
 
     ; Clip window sprites, tilemap and layer 2.
 
     LD A, D
     NEXTREG _GL_REG_CLIP_SPR_H19, A 
     NEXTREG _GL_REG_CLIP_TI_H1, A
-    NEXTREG _DC_REG_L2_CLIP_H18, A
+   ; NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, E
     NEXTREG _GL_REG_CLIP_SPR_H19, A
     NEXTREG _GL_REG_CLIP_TI_H1, A
-    NEXTREG _DC_REG_L2_CLIP_H18, A
+    ;NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, H
     NEXTREG _GL_REG_CLIP_SPR_H19, A
     NEXTREG _GL_REG_CLIP_TI_H1, A
-    NEXTREG _DC_REG_L2_CLIP_H18, A
+    ;NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, L
     NEXTREG _GL_REG_CLIP_SPR_H19, A
     NEXTREG _GL_REG_CLIP_TI_H1, A
-    NEXTREG _DC_REG_L2_CLIP_H18, A
+    ;NEXTREG _DC_REG_L2_CLIP_H18, A
 
     RET                                         ; ## END of the function ##
 
@@ -129,6 +120,7 @@ UpdateJetVisibility
 LimitJetVisibility
 
     LD (visibilityLimit), A
+    CALL UpdateJetVisibility
 
     RET                                         ; ## END of the function ##
 

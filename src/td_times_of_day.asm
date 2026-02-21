@@ -9,7 +9,7 @@
 
 TOD_STEPS_D4            = 4                     ; Total number of steps (times of the day) from day to night.
 TOD_STEP_DURATION_D20   = 20                    ; Duration of a single time of day, except for a full day.
-TOD_DAY_DURATION_D10    = 30                    ; Duration of the full day.
+TOD_DAY_DURATION_D10    = 40                    ; Duration of the full day.
 
 ; State for #stepDir indicating the direction of the change: from day to night, night to day, or full day.
 TOD_DIR_DAY_NIGHT_D1    = 1                     ; Environment changes from day to night.
@@ -99,7 +99,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     LD (stepDir), A
 
     LD A, TOD_STEPS_D4
-    LD (step), A    
+    LD (step), A
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -141,6 +141,10 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     LD A, (step)
     DEC A
     LD (step), A
+
+    CP TOD_DIR_NIGHT_DAY_D2
+    JR NZ, .end
+    CALL gc.NightLimitVisibilityOff
 
 .end
     ENDM                                        ; ## END of the macro ##

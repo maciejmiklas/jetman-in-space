@@ -68,14 +68,14 @@ PrintDebug
     CALL ut.PrintNumber
     ENDIF
 
-    CALL dbs.SetupCode1Bank
+
     ; ##########################################
     LD BC, 60
     LD H, 0
-    LD A, (jpo.jetY)
+    LD A, (td.step)
     LD L, A
     CALL ut.PrintNumber
-
+/*
     ; ##########################################
     LD BC, 66
     LD H, 0
@@ -89,7 +89,7 @@ PrintDebug
     LD A, (nv.tmp2)
     LD L, A
     CALL ut.PrintNumber
-
+*/
 
     RET                                         ; ## END of the function ##
     ENDIF

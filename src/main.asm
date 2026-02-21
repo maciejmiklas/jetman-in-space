@@ -32,13 +32,11 @@ start
 
     CALL gc.SetupSystem
 
-    LD A, 1
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    CALL dbs.SetupCode1Bank
+    ;LD A, 1
+    ;LD (ll.currentLevel), A
+    ;CALL gc.LoadCurrentLevel
     
-    ;CALL gc.LoadMainMenu
+    CALL gc.LoadMainMenu
 
     ; ##########################################
     ; Music

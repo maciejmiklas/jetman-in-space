@@ -70,6 +70,8 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 
     CALL enc.InitEnemies
 
+    CALL NightLimitVisibilityOff
+
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -150,7 +152,7 @@ LoadMainMenu
     LD B, db1.TILE_PAL_SIZE_1
     CALL ti.LoadTilemap9bitPalette
 
-    CALL sc.ResetClippings
+    CALL NightLimitVisibilityOff
 
     RET                                         ; ## END of the function ##
 
@@ -256,6 +258,8 @@ RocketFLyStartPhase1
     CALL dbs.SetupPatternEnemyBank
     CALL enu.DisableFuelThief
     CALL jw.HideShots
+
+    CALL NightLimitVisibilityOff
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
@@ -911,6 +915,16 @@ NightLimitVisibility2
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;              NightLimitVisibilityOff                     ;
+;----------------------------------------------------------;
+NightLimitVisibilityOff
+
+    CALL dbs.SetupCode1Bank
+    CALL nv.LimitJetVisibilityOff
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                         NightEnds                        ;
 ;----------------------------------------------------------;
 NightEnds
@@ -921,8 +935,7 @@ NightEnds
     ; palette containing colors for the darkest night.
     CALL btd.PrevTodPaletteAddr
 
-    CALL dbs.SetupCode1Bank
-    CALL nv.LimitJetVisibilityOff
+    CALL NightLimitVisibility1
 
     RET                                         ; ## END of the function ##
 
