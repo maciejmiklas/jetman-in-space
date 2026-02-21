@@ -34,9 +34,10 @@ tmp2 db 0
 ;----------------------------------------------------------;
 UpdateJetVisibility
 
+
     LD A, (visibilityLimit)
-    XOR A
-    RET NZ
+    OR A                                        ; Same as CP 0, but faster.
+    RET Z
 
     ; ##########################################
     ; Store horizontal cipping into DE.
@@ -83,7 +84,6 @@ UpdateJetVisibility
     XOR A                                       ; Borrow happened => clamp to 0.
 .storeYH
     LD H, A
-    ld (tmp1), A
 
     ; Calculate y-end as L.
     LD A, (jpo.jetY)
@@ -92,49 +92,31 @@ UpdateJetVisibility
     LD A, _CLIP_FULL_FULLY2_D255                ; Borrow happened => clamp to 255.
 .storeYL
     LD L, A
-    ld (tmp2), A
 
     ; ##########################################
     ; Reset clip index.
     NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_SPTI
 
-    ; Clip window sprites.
+    ; Clip window sprites, tilemap and layer 2.
+
     LD A, D
-    NEXTREG _GL_REG_CLIP_SPR_H19, A
-
-    LD A, E
-    NEXTREG _GL_REG_CLIP_SPR_H19, A
-
-    LD A, H
-    NEXTREG _GL_REG_CLIP_SPR_H19, A
-
-    LD A, L
-    NEXTREG _GL_REG_CLIP_SPR_H19, A
-
-    ; Clip window tilemap.
-    LD A, D
+    NEXTREG _GL_REG_CLIP_SPR_H19, A 
     NEXTREG _GL_REG_CLIP_TI_H1, A
-
-    LD A, E
-    NEXTREG _GL_REG_CLIP_TI_H1, A
-
-    LD A, H
-    NEXTREG _GL_REG_CLIP_TI_H1, A
-
-    LD A, L
-    NEXTREG _GL_REG_CLIP_TI_H1, A
-
-    ; Clip Window layer 2
-    LD A, D
     NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, E
+    NEXTREG _GL_REG_CLIP_SPR_H19, A
+    NEXTREG _GL_REG_CLIP_TI_H1, A
     NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, H
+    NEXTREG _GL_REG_CLIP_SPR_H19, A
+    NEXTREG _GL_REG_CLIP_TI_H1, A
     NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, L
+    NEXTREG _GL_REG_CLIP_SPR_H19, A
+    NEXTREG _GL_REG_CLIP_TI_H1, A
     NEXTREG _DC_REG_L2_CLIP_H18, A
 
     RET                                         ; ## END of the function ##

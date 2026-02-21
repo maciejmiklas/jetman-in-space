@@ -37,9 +37,6 @@ start
     CALL gc.LoadCurrentLevel
 
     CALL dbs.SetupCode1Bank
-
-    LD A, nv.VISIBILITY_LIMIT_2
-    CALL nv.LimitJetVisibility
     
     ;CALL gc.LoadMainMenu
 
