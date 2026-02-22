@@ -1385,7 +1385,7 @@ tilemapAnimationSet12L7
     TF{1258*2/*POS*/, 084/*TID*/, $50/*PAL*/}   ; Lunch pad B - frame 12
 
 tilemapAnimationSet13L7
-    DB 29
+    DB 30
     TF{0290*2/*POS*/, 068/*TID*/, $40/*PAL*/}   ; Collumn Down A - frame 3
     TF{0650*2/*POS*/, 068/*TID*/, $40/*PAL*/}   ; Collumn Down B - frame 3
     TF{0530*2/*POS*/, 068/*TID*/, $40/*PAL*/}   ; Collumn Down C - frame 3
@@ -1451,8 +1451,8 @@ tilemapAnimationSet14L7
     TF{0787*2/*POS*/, 078/*TID*/, $40/*PAL*/}   ; Collumn Up K - frame 7
     TF{0507*2/*POS*/, 078/*TID*/, $40/*PAL*/}   ; Collumn Up L - frame 7
     TF{1067*2/*POS*/, 078/*TID*/, $40/*PAL*/}   ; Collumn Up M - frame 7
-    TF{1257*2/*POS*/, 081/*TID*/, $50/*PAL*/}   ; Lunch pad A - frame 13
-    TF{1258*2/*POS*/, 163/*TID*/, $50/*PAL*/}   ; Lunch pad B - frame 13
+    TF{1257*2/*POS*/, 081/*TID*/, $50/*PAL*/}   ; Lunch pad A - frame 14
+    TF{1258*2/*POS*/, 163/*TID*/, $50/*PAL*/}   ; Lunch pad B - frame 14
 
 tilemapAnimationL7
     DW tilemapAnimationSet1L7, tilemapAnimationSet2L7, tilemapAnimationSet3L7, tilemapAnimationSet4L7
