@@ -1,5 +1,8 @@
 <img src="/img/cover.jpg" width="800px"/>
 
+> [!TIP]
+> [DOWNLOAD SECTION](https://github.com/maciejmiklas/jetman-in-space/releases)
+
 > [!NOTE]
 > Click on the image below to play the video
 
