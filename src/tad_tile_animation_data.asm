@@ -329,6 +329,33 @@ tilemapAnimationL3
 TILEMAP_ANIM_ROWS_L3    = 3
 
 ; ##############################################
+; Level 4
+
+tilemapAnimationSet1L4
+    DB 2
+    TF{1216*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Lamp left - frame 1
+    TF{1221*2/*POS*/, 064/*TID*/, $30/*PAL*/}   ; Lamp right - frame 1
+
+tilemapAnimationSet2L4
+    DB 2
+    TF{1216*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Lamp left - frame 2
+    TF{1221*2/*POS*/, 065/*TID*/, $30/*PAL*/}   ; Lamp right - frame 2
+
+tilemapAnimationSet3L4
+    DB 2
+    TF{1216*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Lamp left - frame 3
+    TF{1221*2/*POS*/, 066/*TID*/, $30/*PAL*/}   ; Lamp right - frame 3
+
+tilemapAnimationSe43L4
+    DB 2
+    TF{1216*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Lamp left - frame 4
+    TF{1221*2/*POS*/, 067/*TID*/, $30/*PAL*/}   ; Lamp right - frame 3
+
+tilemapAnimationL4
+    DW tilemapAnimationSet1L4, tilemapAnimationSet2L4, tilemapAnimationSet3L4, tilemapAnimationSe43L4
+TILEMAP_ANIM_ROWS_L4    = 4
+
+; ##############################################
 ; Level 5
 
 tilemapAnimationSet1L5

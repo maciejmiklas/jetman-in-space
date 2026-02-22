@@ -9,7 +9,7 @@
     module so
    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
 
-unlockedLevel           DB 7,8,10             ; There are three difficulty levels, unlocked independently.
+unlockedLevel           DB 10,10,10             ; There are three difficulty levels, unlocked independently.
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
 highScore                                       ; This score does not show on screen, it's only there for the sorting ;)
