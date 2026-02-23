@@ -566,6 +566,37 @@ _ProcessJoystickInput
     CALL Z, _JoyDown
 
     ; ##########################################
+    ; Row: G, F, D, S, T, A
+
+    LD A, _KB_G_TO_A_HFD
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+
+    ; Key A
+    BIT 0, A                                    ; A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    CALL Z, _JoyLeft
+    POP AF
+
+    ; Key S
+    BIT 1, A                                    ; A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    CALL Z, _JoyDown
+    POP AF
+
+    ; Key D
+    BIT 2, A                                    ; D
+    CALL Z, _JoyRight
+
+       ; ##########################################
+    ; Row T...Q
+    LD A, _KB_T_TO_Q_HFB
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+
+    ; Key W
+    BIT 1, A                                    ; W
+    CALL Z, _JoyUp
+    
+    ; ##########################################
     ; Read Kempston input
 
     ; Joystick right
