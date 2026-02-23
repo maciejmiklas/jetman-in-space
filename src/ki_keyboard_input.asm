@@ -126,14 +126,14 @@ KeyboardInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 1, A                                    ; Bit 1 reset -> Z pressed.
     JR Z, .pressFire
-
+/*
     ; ##########################################
     ; Key SPACE pressed ?
     LD A, _KB_B_TO_SPC_H7F
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
     JR Z, .pressFire
-
+*/
     ; ##########################################
     ; Key ENTER pressed ?
     LD A, _KB_H_TO_ENT_HBF

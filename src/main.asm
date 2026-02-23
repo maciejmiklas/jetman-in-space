@@ -32,7 +32,7 @@ start
 
     CALL gc.SetupSystem
 
-    ;LD A, 1
+    ;LD A, 3
     ;LD (ll.currentLevel), A
     ;CALL gc.LoadCurrentLevel
     
