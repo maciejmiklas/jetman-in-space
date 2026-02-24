@@ -9,7 +9,7 @@
 
 fileHandle              DEFB 0
 fileNameBuf             DB "0000000000000000000000000"
-FILE_SIZE               = 25
+FILE_SIZE_D25           = 25
 
 ; Open a file.
 ; Input:
@@ -32,8 +32,9 @@ FILE_SIZE               = 25
 ; Output (failure):
 ;    - Fc: 0
 ;    - A : Error code
-F_OPEN                  = $9A
-F_OPEN_B_READ           = $01                   ; Access mode: read + exists
+F_OPEN_H9A              = $9A
+F_OPEN_B_READ_H01       = $01                   ; Access mode: read + exists
+F_OPEN_B_WR_CREAT_H0A   = $0A                   ; Access mode: write + open existing or create
 
 ; Close a file or directory
 ; Input:
@@ -44,7 +45,7 @@ F_OPEN_B_READ           = $01                   ; Access mode: read + exists
 ; Output (failure):
 ;   - Fc: 1
 ;   - A:  Error code
-F_CLOSE                 = $9B
+F_CLOSE_H9B             = $9B
 
 ; Read bytes from file
 ; NOTES:
@@ -61,41 +62,60 @@ F_CLOSE                 = $9B
 ;   - Fc: 1
 ;   - BC: Bytes actually read.
 ;   - A:  Error code.
-F_READ                  = $9D
+F_READ_H9D              = $9D
 
-F_CMD                   = $08
+; Write bytes to file
+; Input:
+;   - A:  File handle.
+;   - IX: address of data to write.
+;   - BC: number of bytes to write.
+; Output (success):
+;   - Fc:  0
+;   - BC:  Bytes actually written.
+; Output (failure):
+;   - Fc: 1
+;   - BC:  Bytes actually written.
+;   - A:   Error code.
+F_WRITE_H9E             = $9E
 
+F_CMD_H08               = $08
 
 ;----------------------------------------------------------;
-;                         FileOpen                        ;
+;                       FileOpenRead                       ;
 ;----------------------------------------------------------;
-FileOpen
+FileOpenRead
 
-    ; Set params for F_OPEN.
-    LD IX, fileNameBuf
-    LD A, '*'                                   ; Read from default drive.
-    LD B, F_OPEN_B_READ                         ; Open file.
-    RST F_CMD: DB F_OPEN                        ; Execute command.
-    CALL C, _IOError                            ; Handle errors.
-
-    LD (fileHandle), A
+    LD B, F_OPEN_B_READ_H01                     ; Open file.
+    CALL _FileOpen
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      CopyFileName                       ;
+;                      FileOpenWrite                       ;
 ;----------------------------------------------------------;
+; Open a file for writing, create if it does not exist. Uses default drive '*', filename from #fileNameBuf.
+; On success stores handle to #fileHandle.
+FileOpenWrite
+
+    LD B, F_OPEN_B_WR_CREAT_H0A                 ; Write + open or create
+    CALL _FileOpen
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                         FileWrite                        ;
+;----------------------------------------------------------;
+; Write BC bytes from IX into the currently opened file,
+; then closes the file.
 ; Input:
-;  - HL: pointer to file name
-CopyFileName
+;   - IX: address of data to write
+;   - BC: number of bytes to write
+FileWrite
 
-    PUSH BC, DE
-
-    LD BC, FILE_SIZE
-    LD DE, fileNameBuf
-    LDIR
-
-    POP DE, BC
+    LD A, (fileHandle)
+    RST F_CMD_H08: DB F_WRITE_H9E
+    CALL C, _IOError                            ; Handle errors
+    CALL _FileClose
 
     RET                                         ; ## END of the function ##
 
@@ -109,12 +129,28 @@ CopyFileName
 FileRead
 
     LD A, (fileHandle)
-    RST F_CMD: DB F_READ
+    RST F_CMD_H08: DB F_READ_H9D
     CALL C, _IOError                            ; Handle errors.
     CALL _FileClose
 
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                       CopyFileName                       ;
+;----------------------------------------------------------;
+; Input:
+;  - HL: pointer to file name
+CopyFileName
+
+    PUSH BC, DE
+
+    LD BC, FILE_SIZE_D25
+    LD DE, fileNameBuf
+    LDIR
+
+    POP DE, BC
+
+    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
@@ -122,12 +158,28 @@ FileRead
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                        _FileOpen                         ;
+;----------------------------------------------------------;
+; Input:
+; - B: F_OPEN_B_XXX
+_FileOpen
+
+    LD IX, fileNameBuf
+    LD A, '*'                                   ; Default drive
+    RST F_CMD_H08: DB F_OPEN_H9A
+    CALL C, _IOError
+
+    LD (fileHandle), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        _FileClose                        ;
 ;----------------------------------------------------------;
 _FileClose
 
     LD A, (fileHandle)
-    RST F_CMD: DB F_CLOSE
+    RST F_CMD_H08: DB F_CLOSE_H9B
 
     RET                                         ; ## END of the function ##
     

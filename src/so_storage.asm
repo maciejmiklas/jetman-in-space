@@ -9,6 +9,7 @@
     module so
    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
 
+storageStart
 unlockedLevel           DB 10,10,10             ; There are three difficulty levels, unlocked independently.
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
@@ -17,7 +18,7 @@ highScore                                       ; This score does not show on sc
 ; Easy
     DW $FFFF
     DW $FFFF
-    DB "   FREDUS    "
+    DB "   RREDUS    "
    
     DW 00000
     DW 09000
@@ -137,6 +138,28 @@ highScore                                       ; This score does not show on sc
     DW 01000
     DB "   FRED      "
 
+STORAGE_BYTES        = $ - storageStart
+
+fileName         DB "game.sav",0
+
+;----------------------------------------------------------;
+;                        WriteToSd                         ;
+;----------------------------------------------------------;
+WriteToSd
+
+    ; Copy filename into buffer
+    LD  HL, fileName
+    CALL fi.CopyFileName
+
+    ; Open for write (create if missing)
+    CALL fi.FileOpenWrite
+
+    ; Prepare data
+    LD  IX, storageStart
+    LD  BC, STORAGE_BYTES
+    CALL fi.FileWrite
+
+    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

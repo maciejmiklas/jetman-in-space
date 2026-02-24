@@ -71,7 +71,7 @@ LoadLevelSelectPalFile
     ; Prepare file name for Level given by DE.
     LD HL, db2.levelSelectPalFileName
     CALL _SetupLevelIntroFileName
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     CALL dbs.SetupPaletteBank
@@ -115,7 +115,7 @@ LoadMenuScorePalFile
     ; Prepare file name for Level given by DE.
     LD HL, db2.menuScorePalFileName
     CALL _SetupMenuScoreFileName
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     CALL dbs.SetupPaletteBank
@@ -148,7 +148,7 @@ LoadMusicFile
     POP HL
 
     CALL fi.CopyFileName
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     CALL dbs.SetupMusicBank                     ; Setup slot 7 to load music binary.
@@ -225,7 +225,7 @@ LoadBgPaletteFile
     POP HL
 
     CALL fi.CopyFileName
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     CALL dbs.SetupPaletteBank
@@ -251,7 +251,7 @@ LoadPlatformsTilemapFile
     POP HL
     CALL fi.CopyFileName
 
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     LD IX, ti.TI_MAP_RAM_H5B00
@@ -277,7 +277,7 @@ LoadTileStarsSprFile
 
     LD HL, fi.fileNameBuf
     CALL _SetFileLevelNumber
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     LD IX, ti.TI_DEF_RAM_H6500
     LD BC, db2.SPR_TILE_BYT_D6400
@@ -301,7 +301,7 @@ LoadTilePlatformsSprFile
 
     LD HL, fi.fileNameBuf
     CALL _SetFileLevelNumber
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     LD IX, ti.TI_DEF_RAM_H6500
     LD BC, db2.SPR_TILE_BYT_D6400
@@ -379,7 +379,7 @@ LoadMenuGameplayTilemapFile
     CALL fi.CopyFileName
 
     ; Open file
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     LD IX, ti.TI_MAP_RAM_H5B00
@@ -398,7 +398,7 @@ LoadMenuKeysTilemapFile
 
     LD HL, db2.mmkTileFileName
     CALL fi.CopyFileName
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     LD IX, ti.TI_MAP_RAM_H5B00
@@ -463,7 +463,7 @@ _LoadSpritesFile
 
     LD A, "0"
     CALL _PrepareFileOpenForSprites
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file.
     LD IX, sp.SP_ADDR_HC000
@@ -476,7 +476,7 @@ _LoadSpritesFile
 
     LD A, "1"
     CALL _PrepareFileOpenForSprites
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     LD IX, _RAM_SLOT7_STA_HE000
@@ -497,7 +497,7 @@ _LoadSpritesFile
 ; Modifies: HL, IX
 _SetFileLevelNumber
 
-    LD IX, HL                                   ; Param for fi.FileOpen.
+    LD IX, HL                                   ; Param for fi.FileOpenRead.
     ADD HL, db2.LEVEL_FILE_POS                  ; Move HL to "assets/".
     LD (HL), D                                  ; Set first number.
     INC HL
@@ -560,7 +560,7 @@ _LoadImageToTempRam
     NEXTREG _MMU_REG_SLOT6_H56, A
 
     ; Open file
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     LD IX, _RAM_SLOT6_STA_HC000
@@ -606,7 +606,7 @@ _LoadPalFileByName
     CALL dbs.SetupArrays2Bank
 
     CALL fi.CopyFileName
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     ; Read file
     CALL dbs.SetupPaletteBank
@@ -629,7 +629,7 @@ _Load8KTilemap
     ; Read file.
     LD HL, fi.fileNameBuf
     CALL _SetFileLevelNumber
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
     
     LD IX, _RAM_SLOT7_STA_HE000
     LD BC, TI8K_FILE_BYT_D7680
@@ -655,7 +655,7 @@ _Load16KTilemap
     ; Read file.
     LD A, "0"
     CALL _Prepare16KTilemapFile
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
     
     LD IX, _RAM_SLOT6_STA_HC000
     LD BC, TI16_FILE1_BYT_D8192
@@ -683,7 +683,7 @@ _Load16KTilemap
     ; Read file.
     LD A, "1"
     CALL _Prepare16KTilemapFile
-    CALL fi.FileOpen
+    CALL fi.FileOpenRead
 
     LD IX, _RAM_SLOT7_STA_HE000
     POP BC

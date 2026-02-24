@@ -37,6 +37,8 @@ start
     ;CALL gc.LoadCurrentLevel
     
     CALL gc.LoadMainMenu
+
+    CALL so.WriteToSd
     JR mainLoop
 
 ;----------------------------------------------------------;
