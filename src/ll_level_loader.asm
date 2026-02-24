@@ -91,37 +91,37 @@ tilePaletteStarsAddr    DW 0
     LD (jt.levelNumber), DE
 
     PUSH DE
-    CALL fi.LoadBgImageFile
+    CALL ar.LoadBgImageFile
     POP DE
 
     ; ##########################################
     ; Load platform tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadPlatformsTilemapFile
+    CALL ar.LoadPlatformsTilemapFile
     POP DE
 
     ; ##########################################
     ; Load stars tile map. DE is set to level number
     PUSH DE
-    CALL fi.LoadRocketStarsTilemapFile
+    CALL ar.LoadRocketStarsTilemapFile
     POP DE
 
     ; ##########################################
     ; Copy tile definitions (sprite file) to expected memory
     PUSH DE
-    CALL fi.LoadTilePlatformsSprFile
+    CALL ar.LoadTilePlatformsSprFile
     POP DE
 
     ; ##########################################
     ; Load sprites. DE is set to level number
     PUSH DE
-    CALL fi.LoadSpritesFile
+    CALL ar.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
     POP DE
 
     ; ##########################################
     ; Load palettes
-    CALL fi.LoadBgPaletteFile
+    CALL ar.LoadBgPaletteFile
     CALL btd.CreateTodPalettes
 
 .end

@@ -16,18 +16,18 @@ LoadMenuGameplay
     CALL _PreLoadMenu
 
     ; Load tiles with manual
-    CALL fi.LoadMenuGameplayTilemapFile
+    CALL ar.LoadMenuGameplayTilemapFile
     
     ; Load palette
     LD D, "m"
     LD E, "g"
     PUSH DE
-    CALL fi.LoadBgPaletteFile
+    CALL ar.LoadBgPaletteFile
     CALL bp.LoadDefaultPalette
     POP DE
 
     ; Load background image
-    CALL fi.LoadBgImageFile
+    CALL ar.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -52,18 +52,18 @@ LoadMenuKeys
     CALL _PreLoadMenu
 
     ; Load tiles with manual
-    CALL fi.LoadMenuKeysTilemapFile
+    CALL ar.LoadMenuKeysTilemapFile
 
     ; Load palette
     LD D, "m"
     LD E, "k"
     PUSH DE
-    CALL fi.LoadBgPaletteFile
+    CALL ar.LoadBgPaletteFile
     CALL bp.LoadDefaultPalette
     POP DE
 
     ; Load background image
-    CALL fi.LoadBgImageFile
+    CALL ar.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################

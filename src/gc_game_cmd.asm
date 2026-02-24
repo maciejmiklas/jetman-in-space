@@ -128,7 +128,7 @@ SetupSystem
     ; Load sprites from any level for mein menu.
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadSpritesFile
+    CALL ar.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     RET                                         ; ## END of the function ##
@@ -292,10 +292,10 @@ RocketFLyStartPhase4
 
     LD DE, (jt.levelNumber)
     PUSH DE
-    CALL fi.LoadTileStarsSprFile
+    CALL ar.LoadTileStarsSprFile
     POP DE
 
-    CALL fi.LoadMeteorsFile
+    CALL ar.LoadMeteorsFile
     CALL sp.LoadSpritesFPGA
 
     ; Load tilemap palette

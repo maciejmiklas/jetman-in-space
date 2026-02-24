@@ -335,13 +335,13 @@ _SetupMenuScore
     LD E, A
 
     PUSH DE
-    CALL fi.LoadMenuScorePalFile
+    CALL ar.LoadMenuScorePalFile
     CALL bp.LoadDefaultPalette
     POP DE
 
     ; ###########################################
     ; Load background image
-    CALL fi.LoadMenuScoreImageFile
+    CALL ar.LoadMenuScoreImageFile
     CALL bm.CopyImageData
 
     ; ###########################################

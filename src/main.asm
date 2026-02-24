@@ -112,6 +112,7 @@ mainLoop
     INCLUDE "gc_game_cmd.asm"
     INCLUDE "er_error.asm"
     INCLUDE "fi_file_io.asm"
+    INCLUDE "ar_asset_reader.asm"
     INCLUDE "dbs_bank_setup.asm"
     INCLUDE "ll_level_loader.asm"
     INCLUDE "st_stars.asm"
