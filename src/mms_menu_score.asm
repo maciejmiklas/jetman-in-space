@@ -242,7 +242,8 @@ EnterNewScore
     CALL dbs.SetupMusicBank
     LD A, aml.MUSIC_HIGH_SCORE_D82
     CALL aml.LoadSong
-    
+    CALL aml.MusicOn
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

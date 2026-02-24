@@ -37,12 +37,6 @@ start
     ;CALL gc.LoadCurrentLevel
     
     CALL gc.LoadMainMenu
-
-    ; ##########################################
-    ; Music
-    CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_MAIN_MENU_D81
-    CALL aml.LoadSong
     JR mainLoop
 
 ;----------------------------------------------------------;
