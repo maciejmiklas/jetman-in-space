@@ -108,6 +108,12 @@ LoadMainMenu
     CALL js.ShowJetSprite
 
     ; ##########################################
+    ; Music
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_MAIN_MENU_D81
+    CALL aml.LoadSong
+    
+    ; ##########################################
     ; Music on
     CALL dbs.SetupMusicBank
     CALL aml.MusicOn

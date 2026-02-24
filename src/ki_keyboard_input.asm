@@ -126,14 +126,7 @@ KeyboardInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 1, A                                    ; Bit 1 reset -> Z pressed.
     JR Z, .pressFire
-/*
-    ; ##########################################
-    ; Key SPACE pressed ?
-    LD A, _KB_B_TO_SPC_H7F
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
-    JR Z, .pressFire
-*/
+
     ; ##########################################
     ; Key ENTER pressed ?
     LD A, _KB_H_TO_ENT_HBF
@@ -147,6 +140,34 @@ KeyboardInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 4, A                                    ; Bit 4 reset -> Left pressed.
     JR Z, .pressLeft
+
+    ; ##########################################
+    ; Key A
+    LD A, _KB_G_TO_A_HFD
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 0, A
+    JR Z, .pressLeft
+
+    ; ##########################################
+    ; Key S
+    LD A, _KB_G_TO_A_HFD
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 1, A
+    JR Z, .pressDown
+
+    ; ##########################################
+    ; Key D
+    LD A, _KB_G_TO_A_HFD
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 2, A
+    JR Z, .pressRight
+
+    ; ##########################################
+    ;Key W
+    LD A, _KB_T_TO_Q_HFB
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 1, A                                    ; W
+    JR Z, .pressUp
 
     RET                                         ; None of the keys pressed.
 

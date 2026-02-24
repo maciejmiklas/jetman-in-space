@@ -55,7 +55,7 @@ JetMovementInput
     IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     BIT 0, A                                    ; Bit 0 set -> Right pressed.
-    CALL NZ, _JoyRight  
+    CALL NZ, _JoyRight
     POP AF
 
     ; Joystick left
@@ -89,6 +89,37 @@ JetMovementInput
     
     BIT 1, A                                    ; Bit 1 reset -> Z pressed.
     CALL Z, _JoyFireB
+
+    ; ##########################################
+    ; Row: G, F, D, S, T, A
+
+    LD A, _KB_G_TO_A_HFD
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+
+    ; Key A
+    BIT 0, A                                    ; A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    CALL Z, _JoyLeft
+    POP AF
+
+    ; Key S
+    BIT 1, A                                    ; A
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    CALL Z, _JoyDown
+    POP AF
+
+    ; Key D
+    BIT 2, A                                    ; D
+    CALL Z, _JoyRight
+
+    ; ##########################################
+    ; Row T...Q
+    LD A, _KB_T_TO_Q_HFB
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+
+    ; Key W
+    BIT 1, A                                    ; W
+    CALL Z, _JoyUp
 
     ; ##########################################
     CALL _JoyMoveEnd
@@ -127,40 +158,7 @@ GameOptionsInput
     LD A, _KB_H_TO_ENT_HBF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 0, A                                    ; Bit 0 reset -> ENTER pressed.
-    CALL Z, _JoyFireA
-
-    ; ##########################################
-    ; Row T...Q
-    LD A, _KB_T_TO_Q_HFB
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-
-    ; Key Q
-    BIT 0, A                                    ; Q
-    CALL Z, _Key_Q
-    POP AF
-
-    ; Key W
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 1, A                                    ; W
-    CALL Z, _Key_W
-    POP AF  
-
-    ; Key E
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 2, A                                    ; E
-    CALL Z, _Key_E
-    POP AF
-
-    ; Key R
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 3, A                                    ; R
-    CALL Z, _Key_R
-    POP AF
-
-    ; Key T
-    BIT 4, A                                    ; T
-    CALL Z, _Key_T
+    CALL Z, _JoyFireB 
 
     ; ##########################################
     ; Row: Y...P
@@ -172,28 +170,6 @@ GameOptionsInput
     BIT 0, A                                    ; P
     CALL Z, _Key_P
     POP AF
-
-    ; Key O
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 1, A                                    ; O
-    CALL Z, _Key_O
-    POP AF
-
-    ; Key I
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 2, A                                    ; I
-    CALL Z, _Key_I
-    POP AF
-
-    ; Key U
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    BIT 3, A                                    ; U
-    CALL Z, _Key_U
-    POP AF
-
-    ; Key Y
-    BIT 4, A                                    ; Y
-    CALL Z, _Key_Y
 
     ; ##########################################
     ; Row: G, F, D, S, T, A
@@ -207,17 +183,14 @@ GameOptionsInput
     CALL Z, _Key_F
     POP AF
 
-    ; Key D
-    BIT 2, A                                    ; D
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    CALL Z, _Key_D
-    POP AF
+    ; ##########################################
+    ; Row T...Q
+    LD A, _KB_T_TO_Q_HFB
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
 
-    ; Key S
-    BIT 1, A                                    ; S
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    CALL Z, _Key_S
-    POP AF
+    ; Key R
+    BIT 3, A                                    ; R
+    CALL Z, _Key_R
 
     ; ##########################################
     ; Row: B, M, M, FULL-STOP, SPACE
@@ -262,7 +235,6 @@ GameOptionsInput
 .notSpace
 .notBreak
 
-
     ; ##########################################
     CALL _GameInputEnd
 
@@ -279,20 +251,19 @@ GameOptionsInput
 ;----------------------------------------------------------;
 _Key_D
 
-    CALL ki.CanProcessKeyInput
-    RET NZ
+    RET                                         ; ## END of the function ##
 
-    LD HL, (jco.invincibleCnt)
-    LD A, (jt.jetState)
-    LD A,B
-    LD A, (js.sprState)
+;----------------------------------------------------------;
+;                        _Key_W                            ;
+;----------------------------------------------------------;
+_Key_W
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        _Key_S                            ;
+;                        _Key_R                            ;
 ;----------------------------------------------------------;
-_Key_S
+_Key_R
 
     CALL ki.CanProcessKeyInput
     RET NZ
@@ -324,132 +295,6 @@ _Key_M
 
     CALL dbs.SetupMusicBank
     CALL aml.FlipOnOff
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_Q                            ;
-;----------------------------------------------------------;
-_Key_Q
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 1
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_W                            ;
-;----------------------------------------------------------;
-_Key_W
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 2
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_E                            ;
-;----------------------------------------------------------;
-_Key_E
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 3
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_R                            ;
-;----------------------------------------------------------;
-_Key_R
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 4
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_T                            ;
-;----------------------------------------------------------;
-_Key_T
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 5
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_Y                            ;
-;----------------------------------------------------------;
-_Key_Y
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 6
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_U                            ;
-;----------------------------------------------------------;
-_Key_U
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 7
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_I                            ;
-;----------------------------------------------------------;
-_Key_I
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 8
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_O                            ;
-;----------------------------------------------------------;
-_Key_O
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    LD A, 9
-    LD (ll.currentLevel), A
-    CALL gc.LoadCurrentLevel
 
     RET                                         ; ## END of the function ##
 
