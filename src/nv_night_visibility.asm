@@ -8,8 +8,8 @@
     MODULE nv
    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
 
-VISIBILITY_LIMIT_1      = 100
-VISIBILITY_LIMIT_2      = 50
+VISIBILITY_LIMIT_1      = 140
+VISIBILITY_LIMIT_2      = 80
 VISIBILITY_LIMIT_OFF    = 0
 
 visibilityLimit DW VISIBILITY_LIMIT_OFF
@@ -24,7 +24,6 @@ visibilityLimit DW VISIBILITY_LIMIT_OFF
 ;                   UpdateJetVisibility                    ;
 ;----------------------------------------------------------;
 UpdateJetVisibility
-
 
     LD A, (visibilityLimit)
     OR A                                        ; Same as CP 0, but faster.

@@ -42,12 +42,12 @@ LoadMenuLevelSelect
     CALL ut.NumTo99Str                          ; Load A into DE as Text
 
     PUSH DE
-    CALL fi.LoadLevelSelectPalFile
+    CALL ar.LoadLevelSelectPalFile
     CALL bp.LoadDefaultPalette
     POP DE
     
     ; Load image
-    CALL fi.LoadLevelSelectImageFile
+    CALL ar.LoadLevelSelectImageFile
     CALL bm.CopyImageData
 
     ; ##########################################

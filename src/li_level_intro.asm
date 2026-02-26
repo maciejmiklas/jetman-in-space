@@ -76,20 +76,20 @@ LoadLevelIntro
 
     ; ##########################################
     ; Load palette
-    CALL fi.LoadIntroPalFile
+    CALL ar.LoadIntroPalFile
     CALL bp.LoadDefaultPalette
 
     ; ##########################################
     ; Load background image
     POP DE
-    CALL fi.LoadLevelIntroImageFile
+    CALL ar.LoadLevelIntroImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
     ; Tilemap with story
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadLevelIntroTilemapFile
+    CALL ar.LoadLevelIntroTilemapFile
     CALL _NextTilesRow
     CALL _NextTilesRow
 

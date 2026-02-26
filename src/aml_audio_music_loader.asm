@@ -67,7 +67,7 @@ LoadSong
     PUSH AF
     CALL aml.MusicOff
     POP AF
-    CALL fi.LoadMusicFile
+    CALL ar.LoadMusicFile
     CALL am.InitMusic
     CALL aml.MusicOn
 

@@ -253,6 +253,64 @@
     CALL enc.MoveEnemies
 .notEasy
 
+    ; ##########################################
+    ; Faster movement speed for Jetman on normal.
+    LD A, (jt.difLevel)
+    CP jt.DIF_NORMAL_D2
+    JR NZ, .notNormal
+
+    ; Do not speed up animations, like falling from the platform.
+    LD A, (gid.joyOffCnt)
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .notNormal
+
+    CALL gi.JetMovementInput
+.notNormal
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                      _Loop003                            ;
+;----------------------------------------------------------;
+; Tick rate: 1/20s
+    MACRO _Loop003
+
+    ; Increment the counter.
+    LD A, (mld.counter003)
+    DEC A
+    LD (mld.counter003), A
+    JR NZ, .end
+
+    ; Reset the counter.
+    LD A, mld.COUNTER003_MAX
+    LD (mld.counter003), A
+
+    ; ##########################################
+    ; CALL functions that need to be updated every xx-th loop.
+    _Loop003OnActiveGame
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _Loop003OnActiveGame                     ;
+;----------------------------------------------------------;
+    MACRO _Loop003OnActiveGame
+
+    LD A, (ms.mainState)
+    CP ms.MS_GAME_ACTIVE_D1
+    JR NZ, .end
+
+     ; ##########################################
+    ; Extra enemy speed on hard.
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
+
+    CALL enc.MoveEnemies
+.notHard
+
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -303,14 +361,6 @@
 
     CALL dbs.SetupArrays2Bank
     CALL pi.AnimateFallingPickup
-
-    ; Hard
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD_D3
-    JR NZ, .notHard
-
-    CALL enc.MoveEnemies
-.notHard
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -798,6 +848,7 @@ MainLoop
 
     _Loop000
     _Loop002
+    _Loop003
     _Loop005
     _Loop008
     _Loop010

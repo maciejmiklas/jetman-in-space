@@ -335,13 +335,13 @@ _SetupMenuScore
     LD E, A
 
     PUSH DE
-    CALL fi.LoadMenuScorePalFile
+    CALL ar.LoadMenuScorePalFile
     CALL bp.LoadDefaultPalette
     POP DE
 
     ; ###########################################
     ; Load background image
-    CALL fi.LoadMenuScoreImageFile
+    CALL ar.LoadMenuScoreImageFile
     CALL bm.CopyImageData
 
     ; ###########################################
@@ -364,7 +364,7 @@ _JoyFire
     RET
 .enter
 
-    ; Return if cursor is at ENTER
+    ; Return if cursor is not at ENTER.
     LD A, (nameChPos)
     CP NAME_CH_POS_ENTER
     RET NZ
@@ -372,6 +372,8 @@ _JoyFire
     ; ##########################################
     ; User finished entering his name
     CALL _SetScoreToReadOnly
+
+    CALL gc.HighScoreChanged
 
     ; FX
     CALL dbs.SetupAyFxsBank

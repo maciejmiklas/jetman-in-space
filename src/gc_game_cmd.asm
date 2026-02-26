@@ -128,7 +128,7 @@ SetupSystem
     ; Load sprites from any level for mein menu.
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadSpritesFile
+    CALL ar.LoadSpritesFile
     CALL sp.LoadSpritesFPGA
 
     RET                                         ; ## END of the function ##
@@ -188,6 +188,9 @@ LoadNextLevel
 
     CALL ll.UnlockNextLevel
     CALL LoadCurrentLevel
+
+    CALL dbs.SetupCode1Bank
+    CALL so.WriteToSd
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
@@ -292,10 +295,10 @@ RocketFLyStartPhase4
 
     LD DE, (jt.levelNumber)
     PUSH DE
-    CALL fi.LoadTileStarsSprFile
+    CALL ar.LoadTileStarsSprFile
     POP DE
 
-    CALL fi.LoadMeteorsFile
+    CALL ar.LoadMeteorsFile
     CALL sp.LoadSpritesFPGA
 
     ; Load tilemap palette
@@ -676,6 +679,8 @@ RespawnJet
 
     CALL js.ShowJetSprite
 
+    CALL JetMoves
+
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
@@ -981,6 +986,16 @@ GameOver
 
     CALL go.ShowGameOver
     CALL jl.ResetLives
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  HighScoreChanged                        ;
+;----------------------------------------------------------;
+HighScoreChanged
+
+    CALL dbs.SetupCode1Bank
+    CALL so.WriteToSd
 
     RET                                         ; ## END of the function ##
 

@@ -38,20 +38,20 @@ ShowGameOver
     ; Copy tile definitions (sprite file) to expected memory.
     LD D, "m"
     LD E, "a"
-    CALL fi.LoadTilePlatformsSprFile
+    CALL ar.LoadTilePlatformsSprFile
 
     ; Load palette
     LD D, "g"
     LD E, "o"
     PUSH DE
 
-    CALL fi.LoadBgPaletteFile
+    CALL ar.LoadBgPaletteFile
     CALL bp.LoadDefaultPalette
 
     POP DE
 
     ; Load background image
-    CALL fi.LoadBgImageFile
+    CALL ar.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################

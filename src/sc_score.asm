@@ -15,7 +15,7 @@ HIT_ENEMY1              = 50
 HIT_ENEMY2              = 100
 HIT_ENEMY3              = 150
 
-EXTRA_LIVE              = 20000
+EXTRA_LIVE              = 30000
 nextExtraLive           DW EXTRA_LIVE
 
 PICKUP_ROCKET           = 200

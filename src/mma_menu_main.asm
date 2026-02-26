@@ -87,7 +87,7 @@ LoadMainMenu
     ; Load sprites from any level
     LD D, "0"
     LD E, "1"
-    CALL fi.LoadSpritesFile
+    CALL ar.LoadSpritesFile
 
     ; ##########################################
     ; Setup Jetman sprite
@@ -122,7 +122,7 @@ LoadMainMenu
     ; Copy tile definitions (sprite file) to expected memory
     LD D, "m"
     LD E, "a"
-    CALL fi.LoadTilePlatformsSprFile
+    CALL ar.LoadTilePlatformsSprFile
 
     RET                                         ; ## END of the function ##
 
@@ -147,12 +147,12 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Load palette.
-    CALL fi.LoadEasyPalFile
+    CALL ar.LoadEasyPalFile
     CALL bp.LoadDefaultPalette
 
     ; ##########################################
     ; Load background image.
-    CALL fi.LoadMenuEasyImageFile
+    CALL ar.LoadMenuEasyImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -189,14 +189,14 @@ _LoadMenuNormal
     LD E, "a"
     PUSH DE
 
-    CALL fi.LoadBgPaletteFile
+    CALL ar.LoadBgPaletteFile
     CALL bp.LoadDefaultPalette
 
     POP DE
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadBgImageFile
+    CALL ar.LoadBgImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
@@ -230,12 +230,12 @@ _LoadMenuHard
 
     ; ##########################################
     ; Load palette
-    CALL fi.LoadHardPalFile
+    CALL ar.LoadHardPalFile
     CALL bp.LoadDefaultPalette
 
     ; ##########################################
     ; Load background image
-    CALL fi.LoadMenuHardImageFile
+    CALL ar.LoadMenuHardImageFile
     CALL bm.CopyImageData
 
     ; ##########################################
