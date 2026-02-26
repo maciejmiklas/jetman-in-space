@@ -68,7 +68,7 @@ PrintDebug
     CALL ut.PrintNumber
     ENDIF
 
-    CALL dbs.SetupCode1Bank
+/*
     ; ##########################################
     LD BC, 60
     LD H, 0
@@ -76,7 +76,6 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
 
-/*
     ; ##########################################
     LD BC, 66
     LD H, 0

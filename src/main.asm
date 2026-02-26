@@ -51,6 +51,7 @@ start
     JR .checksumLoop
 .checksumOk
 
+    CALL so.WriteToSd
 
     ;LD A, 3
     ;LD (ll.currentLevel), A
