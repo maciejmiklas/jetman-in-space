@@ -68,7 +68,7 @@ PrintDebug
     CALL ut.PrintNumber
     ENDIF
 
-    CALL dbs.SetupCode1Bank
+/*
     ; ##########################################
     LD BC, 60
     LD HL, (so.checksumVerify)
@@ -80,7 +80,7 @@ PrintDebug
     LD A, (so.checksumEasy)
     LD L, A
     CALL ut.PrintNumber
-/*
+
     ; ##########################################
     LD BC, 72
     LD H, 0

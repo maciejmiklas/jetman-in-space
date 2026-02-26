@@ -189,6 +189,9 @@ LoadNextLevel
     CALL ll.UnlockNextLevel
     CALL LoadCurrentLevel
 
+    CALL dbs.SetupCode1Bank
+    CALL so.WriteToSd
+
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
@@ -981,6 +984,16 @@ GameOver
 
     CALL go.ShowGameOver
     CALL jl.ResetLives
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  HighScoreChanged                        ;
+;----------------------------------------------------------;
+HighScoreChanged
+
+    CALL dbs.SetupCode1Bank
+    CALL so.WriteToSd
 
     RET                                         ; ## END of the function ##
 

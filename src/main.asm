@@ -32,13 +32,32 @@ start
 
     CALL gc.SetupSystem
 
+    CALL dbs.SetupCode1Bank
+    CALL so.ReadFromSd
+
+    ; If the checksum fails, we display a STOP sign, and the game does not load. 
+    JP Z, .checksumOk
+
+    LD D, "s"
+    LD E, "t"
+    PUSH DE
+    CALL ar.LoadBgPaletteFile
+    CALL bp.LoadDefaultPalette
+    POP DE
+
+    CALL ar.LoadBgImageFile
+    CALL bm.CopyImageData
+.checksumLoop
+    JR .checksumLoop
+.checksumOk
+
+
     ;LD A, 3
     ;LD (ll.currentLevel), A
     ;CALL gc.LoadCurrentLevel
-    
-    CALL gc.LoadMainMenu
 
-    CALL so.WriteToSd
+    CALL gc.LoadMainMenu
+    
     JR mainLoop
 
 ;----------------------------------------------------------;
@@ -85,7 +104,7 @@ start
 .endPer
     ENDIF
 
-    ENDM
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                      Main Loop                           ;

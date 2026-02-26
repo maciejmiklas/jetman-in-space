@@ -10,7 +10,7 @@
    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
 
 storageStart
-unlockedLevel           DB 10,10,10             ; There are three difficulty levels, unlocked independently.
+unlockedLevel           DB 1,1,1             ; There are three difficulty levels, unlocked independently.
 UNLOCK_SIZE             = $ - unlockedLevel
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
@@ -176,11 +176,68 @@ fileName                DB "game.sav",0
     ADD DE, A
 
 .end
-    ENDM
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                     _VerifyChecksums                     ;
+;----------------------------------------------------------;
+; Return:
+;  - YES: checksum is correct, Z is reset (JP Z).
+;  - NO:  checksum is wrong, Z is set (JP NZ).
+    MACRO _VerifyChecksums
+
+    _CalculateChecksum unlockedLevel, UNLOCK_SIZE
+    LD B, A
+    LD A, (checksumUnlock)
+    CP B
+    JP NZ, .error
+
+    _CalculateChecksum highScoreEasy, HIGHSCORE_EASY
+    LD B, A
+    LD A, (checksumEasy)
+    CP B
+    JP NZ, .error
+
+    _CalculateChecksum highScoreNormal, HIGHSCORE_NORMAL
+    LD B, A
+    LD A, (checksumNormal)
+    CP B
+    JR NZ, .error
+
+    _CalculateChecksum highScoreHard, HIGHSCORE_HARD
+    LD B, A
+    LD A, (checksumHard)
+    CP B
+    JR NZ, .error
+
+    _CalculateChecksumVerify
+    LD HL, (checksumVerify)
+
+    LD C, D
+    LD A, H
+    CP C
+    JR NZ, .error
+
+    LD C, E
+    LD A, L
+    CP C
+    JR NZ, .error
+
+    JR .end
+
+.error
+    _NO
+    JR .end
+
+    _YES
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;               _CalculateChecksumVerify                   ;
 ;----------------------------------------------------------;
+; Return:
+;  - DE: contains checksum
     MACRO _CalculateChecksumVerify
 
     _RES_DE
@@ -190,14 +247,14 @@ fileName                DB "game.sav",0
     _AddChecksum checksumNormal
     _AddChecksum checksumHard
 
-    LD (checksumVerify), DE
-
-    ENDM
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _CalculateChecksum                      ;
 ;----------------------------------------------------------;
-    MACRO _CalculateChecksum data, dataSize, checksum
+; Return:
+; - A: checksum 
+    MACRO _CalculateChecksum data, dataSize
 
     LD B, dataSize
     LD IX, data
@@ -222,9 +279,8 @@ fileName                DB "game.sav",0
     DJNZ .loop
 
     LD A, L
-    LD (checksum), A
 
-    ENDM
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -233,17 +289,50 @@ fileName                DB "game.sav",0
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                       ReadFromSd                         ;
+;----------------------------------------------------------;
+; Return:
+;  - YES: checksum is correct, Z is reset (JP Z).
+;  - NO:  checksum is wrong, Z is set (JP NZ).
+ReadFromSd
+
+    ; Copy filename into buffer
+    LD  HL, fileName
+    CALL fi.CopyFileName
+
+    ; Open for read
+    CALL fi.FileOpenReadNoCheck
+    RET C                                       ; Do not read if the file does not exist.
+
+    ; Prepare data
+    LD  IX, storageStart
+    LD  BC, STORAGE_BYTES
+    CALL fi.FileRead
+
+    _VerifyChecksums
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        WriteToSd                         ;
 ;----------------------------------------------------------;
 WriteToSd
 
-    _CalculateChecksum unlockedLevel, UNLOCK_SIZE, checksumUnlock
-    _CalculateChecksum highScoreEasy, HIGHSCORE_EASY, checksumEasy
-    _CalculateChecksum highScoreNormal, HIGHSCORE_NORMAL, checksumNormal
-    _CalculateChecksum highScoreHard, HIGHSCORE_HARD, checksumHard
+    _CalculateChecksum unlockedLevel, UNLOCK_SIZE
+    LD (checksumUnlock), A
+
+    _CalculateChecksum highScoreEasy, HIGHSCORE_EASY
+    LD (checksumEasy), A
+
+    _CalculateChecksum highScoreNormal, HIGHSCORE_NORMAL
+    LD (checksumNormal), A
+
+    _CalculateChecksum highScoreHard, HIGHSCORE_HARD
+    LD (checksumHard), A
 
     _CalculateChecksumVerify
-    
+    LD (checksumVerify), DE
+
     ; Copy filename into buffer
     LD  HL, fileName
     CALL fi.CopyFileName

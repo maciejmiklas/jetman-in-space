@@ -87,6 +87,19 @@ FileOpenRead
 
     LD B, F_OPEN_B_READ_H01                     ; Open file.
     CALL _FileOpen
+    CALL C, _IOError
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    FileOpenReadNoCheck                   ;
+;----------------------------------------------------------;
+; Return:
+; - CF: set if file does not exists.
+FileOpenReadNoCheck
+
+    LD B, F_OPEN_B_READ_H01                     ; Open file.
+    CALL _FileOpen
 
     RET                                         ; ## END of the function ##
 
@@ -99,6 +112,7 @@ FileOpenWrite
 
     LD B, F_OPEN_B_WR_CREAT_H0A                 ; Write + open or create
     CALL _FileOpen
+    CALL C, _IOError
 
     RET                                         ; ## END of the function ##
 
@@ -167,8 +181,6 @@ _FileOpen
     LD IX, fileNameBuf
     LD A, '*'                                   ; Default drive
     RST F_CMD_H08: DB F_OPEN_H9A
-    CALL C, _IOError
-
     LD (fileHandle), A
 
     RET                                         ; ## END of the function ##
