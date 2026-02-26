@@ -110,7 +110,7 @@ FileOpenReadNoCheck
 ; On success stores handle to #fileHandle.
 FileOpenWrite
 
-    LD B, F_OPEN_B_WR_CREAT_H0A                 ; Write + open or create
+    LD B, F_OPEN_B_WR_CREAT_H0A                 ; Write + open or create.
     CALL _FileOpen
     CALL C, _IOError
 
@@ -129,6 +129,7 @@ FileWrite
     LD A, (fileHandle)
     RST F_CMD_H08: DB F_WRITE_H9E
     CALL C, _IOError                            ; Handle errors
+
     CALL _FileClose
 
     RET                                         ; ## END of the function ##
@@ -145,6 +146,7 @@ FileRead
     LD A, (fileHandle)
     RST F_CMD_H08: DB F_READ_H9D
     CALL C, _IOError                            ; Handle errors.
+
     CALL _FileClose
 
     RET                                         ; ## END of the function ##

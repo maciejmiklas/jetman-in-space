@@ -679,6 +679,8 @@ RespawnJet
 
     CALL js.ShowJetSprite
 
+    CALL JetMoves
+
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;

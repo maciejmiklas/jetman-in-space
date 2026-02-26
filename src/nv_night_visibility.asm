@@ -25,7 +25,6 @@ visibilityLimit DW VISIBILITY_LIMIT_OFF
 ;----------------------------------------------------------;
 UpdateJetVisibility
 
-
     LD A, (visibilityLimit)
     OR A                                        ; Same as CP 0, but faster.
     RET Z

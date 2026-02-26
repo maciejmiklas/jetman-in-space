@@ -68,34 +68,24 @@ PrintDebug
     CALL ut.PrintNumber
     ENDIF
 
-/*
+    CALL dbs.SetupCode1Bank
     ; ##########################################
     LD BC, 60
-    LD HL, (so.checksumVerify)
+    LD H, 0
+    LD A, (so.tmp)
+    LD L, A
     CALL ut.PrintNumber
 
+/*
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (so.checksumEasy)
-    LD L, A
-    CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 72
-    LD H, 0
-    LD A, (so.checksumNormal)
-    LD L, A
-    CALL ut.PrintNumber
-
-    ; ##########################################
-    LD BC, 80
-    LD H, 0
-    LD A, (so.checksumHard)
+    LD A, (enu.thiefRespawnDelayCnt)
     LD L, A
     CALL ut.PrintNumber
 */
     RET                                         ; ## END of the function ##
+
     ENDIF
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
