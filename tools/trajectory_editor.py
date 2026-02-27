@@ -1,13 +1,13 @@
 import pygame
 import sys
-import fileReader
-import bezier
-import math
 import os
-
+import argparse
+from math import comb
 
 class app:
-    def __init__(self):
+
+    def __init__(self, tilemap_path: str):
+        self.tilemap_path = tilemap_path
         self.grid = [40, 32]
         self.screenSizeMultiply = 3
         self.box_size = (320 / 40) * self.screenSizeMultiply
@@ -21,6 +21,40 @@ class app:
 
         self.startApp()
 
+    def bezier_curve(self, points, steps=100):
+        n = len(points) - 1
+        curve = []
+
+        for step in range(steps + 1):
+            t = step / steps
+            x, y = 0.0, 0.0
+
+            for i, (px, py) in enumerate(points):
+                coeff = comb(n, i) * (1 - t) ** (n - i) * t ** i
+                x += coeff * px
+                y += coeff * py
+
+            curve.append((x, y))
+
+        return curve
+
+    def read_tilemap(self, filename, width, height):
+        tilemap = []
+        tile_count = (width * height) * 2
+        start_offset = 0x00
+
+        with open(filename, "rb") as file:
+            file.seek(start_offset)
+            data = file.read(tile_count)
+
+        for i, byte in enumerate(data):
+            if i % 2 != 0:
+                continue
+            if byte == 57:
+                tilemap.append(0)
+            else:
+                tilemap.append(1)
+        return tilemap
 
     def drawGrid(self): #drawing grid to see the map clearly
         for i in range(self.grid[0]):
@@ -30,7 +64,7 @@ class app:
     
 
     def startApp(self): # starts the app
-        self.map = fileReader.read_tilemap("assets/01/tiles.map", self.grid[0], self.grid[1])
+        self.map = self.read_tilemap(self.tilemap_path, self.grid[0], self.grid[1])
         self.map[0] = 1
         self.draw_map()
 
@@ -53,7 +87,7 @@ class app:
                 if event.key == pygame.K_a: # adding a point for the curve
                     self.points.append(pygame.mouse.get_pos())
                 if event.key == pygame.K_s: # drawing the curve form points
-                    self.curve = bezier.bezier_curve(self.points)
+                    self.curve = self.bezier_curve(self.points)
                     self.curveToMove(self.curve)
                     
                     
@@ -171,13 +205,17 @@ class app:
             for i in result:
                 file.write(i[0] + " 0000" + str(i[1]))
                 file.write("\n")
-        
-
-
-            
-                
-
 
 if __name__ == "__main__":
     pygame.init()
-    window = app()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-tm", "--tilemap",
+        required=True,
+        help="Path to tiles.map",
+    )
+    args = parser.parse_args()
+
+    window = app(args.tilemap)
+
