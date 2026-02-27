@@ -225,7 +225,6 @@ class TrajectoryEditor:
         #self.draw_curve(self.curve)
 
         full = self.join_points_with_lines(self.points)
-        print(">>", len(full))
         self.draw_points(full)
 
         pygame.display.flip()
