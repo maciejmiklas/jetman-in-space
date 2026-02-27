@@ -17,16 +17,19 @@ class Point:
     x: int
     y: int
 
+    # true for user inserted point, false for generated point.
+    user: bool = True
+
     @classmethod
-    def from_tuple(cls, inp: tuple[float, float]) -> "Point":
-        return cls(round(inp[0]), round(inp[1]))
+    def from_tuple(cls, inp: tuple[float, float], user=True) -> "Point":
+        return cls(round(inp[0]), round(inp[1]), user)
 
 
 # Keys:
-# a - add point
-# s - draw a curve
-# c - clear points
-# e - edit point
+# A - add point
+# S - draw a curve
+# C - clear points
+# E - edit point
 class TrajectoryEditor:
 
     def __init__(self, tilemap_path: str, ui_scale=3):
@@ -69,6 +72,89 @@ class TrajectoryEditor:
             curve.append((x, y))
 
         return curve
+
+    @staticmethod
+    def join_points_with_lines(points: list[Point]) -> list[Point]:
+        """
+        Returns a new list of integer Points that contains all intermediate points
+        on straight lines between consecutive input points (inclusive).
+
+        Input points (user-inserted) keep user=True in the output.
+        Generated intermediate points have user=False.
+        """
+        if not points:
+            return []
+        if len(points) == 1:
+            return [points[0]]
+
+        def bresenham(a: Point, b: Point) -> list[Point]:
+            x0, y0 = a.x, a.y
+            x1, y1 = b.x, b.y
+
+            dx = abs(x1 - x0)
+            dy = abs(y1 - y0)
+            sx = 1 if x0 < x1 else -1
+            sy = 1 if y0 < y1 else -1
+
+            err = dx - dy
+            out: list[Point] = []
+
+            while True:
+                is_endpoint = (x0 == a.x and y0 == a.y) or (x0 == b.x and y0 == b.y)
+                if x0 == a.x and y0 == a.y:
+                    user_flag = a.user
+                elif x0 == b.x and y0 == b.y:
+                    user_flag = b.user
+                else:
+                    user_flag = False
+
+                out.append(Point(x0, y0, user_flag if is_endpoint else False))
+
+                if x0 == x1 and y0 == y1:
+                    break
+
+                e2 = 2 * err
+                if e2 > -dy:
+                    err -= dy
+                    x0 += sx
+                if e2 < dx:
+                    err += dx
+                    y0 += sy
+
+            return out
+
+        out: list[Point] = []
+        for i in range(len(points) - 1):
+            segment = bresenham(points[i], points[i + 1])
+            if i > 0:
+                segment = segment[1:]  # avoid duplicating the shared endpoint
+            out.extend(segment)
+
+        return out
+
+    def scale_to_screen(self, points: list[Point]) -> list[Point]:
+        """
+        Scale the points to the screen/ui resolution.
+        """
+        return [
+            Point(
+                x=round(p.x * self.ui_scale),
+                y=round(p.y * self.ui_scale),
+            )
+            for p in points
+        ]
+
+    def scale_to_native(self, points: list[Point]) -> list[Point]:
+        """
+        Scale the points to the native resolution of the game (320x256).
+        """
+        return [
+            Point(
+                x=round(p.x / self.ui_scale),
+                y=round(p.y / self.ui_scale),
+            )
+            for p in points
+        ]
 
     @staticmethod
     def read_tilemap(filename: str, width: int, height: int) -> list[int]:
@@ -156,7 +242,13 @@ class TrajectoryEditor:
 
     def on_key_add_point(self):
         self.points.append(Point.from_tuple(pygame.mouse.get_pos()))
+        native = self.scale_to_native(self.points)
+        screen = self.scale_to_screen(native)
+        print("AAAA")
         print(self.points)
+        print(screen)
+        print(native)
+
 
     def drag_point(self):
         if self.point_to_drag is not None:
@@ -187,16 +279,18 @@ class TrajectoryEditor:
 
         self.draw_grid()
 
-    # ToBase2 converts an integer num into a binary string, left‑padded with zeros to a fixed width b (default b=3),
-    # with one extra behavior: it clamps any value > 7 down to 7.
-    # ToBase2(0)  -> "000"
-    # ToBase2(1)  -> "001"
-    # ToBase2(2)  -> "010"
-    # ToBase2(5)  -> "101"
-    # ToBase2(7)  -> "111"
-    # ToBase2(9)  -> "111"
     @staticmethod
     def to_base2(num: int, b=3):
+        """
+        ToBase2 converts an integer num into a binary string, left‑padded with zeros to a fixed width b (default b=3),
+        with one extra behavior: it clamps any value > 7 down to 7.
+            ToBase2(0) -> "000"
+            ToBase2(1) -> "001"
+            ToBase2(2) -> "010"
+            ToBase2(5) -> "101"
+            ToBase2(7) -> "111"
+            ToBase2(9) -> "111"
+        """
         if num > 7:
             num = 7
         if num < 0:
@@ -244,10 +338,12 @@ class TrajectoryEditor:
                 file.write(", ")
         print("Created ", entry_cnd, "entries.")
 
-    # IN: ['00100010', '00100010', '00100010', '00100010', '00010010', '00010010', '00010010', '00010010', '00010010',...
-    # OUT: [['00100010', 3], ['00010010', 4], ['00000010', 15], ['00000010', 1], ['10010010', 15], ['10010010', 4],...
     @staticmethod
     def reduce_curve_bin(curve_bin: list[str]) -> list[Step]:
+        """
+        # IN: ['00100010', '00100010', '00100010', '00100010', '00010010', '00010010', '00010010', '00010010',...
+        # OUT: [['00100010', 3], ['00010010', 4], ['00000010', 15], ['00000010', 1], ['10010010', 15],...
+        """
         result = []
         count = 0
         for i in range(1, len(curve_bin)):
@@ -261,13 +357,15 @@ class TrajectoryEditor:
                 count = 0
         return result
 
-    # The output list has the same length as the input list. Input list contains the coordinates of the curve points.
-    # The output list contains the binary representation of the curve points, but not as coordinates, but the number of
-    # steps to travel from the current point to the next point.
-    # Example:
-    # IN: [[72.993485776, 327.936370984], [80.927648784, 324.006986056], [88.79730132799999, 320.25300695199996]
-    # OUT: ['10010010', '10010010', '10010010', '10010010', '10010010', '10010010', '00000010', '00000010', '00000010'
     def curve_to_bin(self, curve: list[PointFl]) -> list[str]:
+        """
+        The output list has the same length as the input list. Input list contains the coordinates of the curve points.
+        The output list contains the binary representation of the curve points, but not as coordinates, but the number
+        of steps to travel from the current point to the next point.
+        Example:
+            IN: [[72.993485776, 327.936370984], [80.927648784, 324.006986056], [88.79730132799999, 320.25300695199996], ...
+            OUT: ['10010010', '10010010', '10010010', '10010010', '10010010', '10010010', '00000010', '00000010', ...
+        """
         tab = []
         for i in range(len(curve) - 1):
             movement = ""
