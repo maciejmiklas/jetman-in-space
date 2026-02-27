@@ -12,10 +12,14 @@ PointFl: TypeAlias = tuple[float, float]
 Step: TypeAlias = tuple[str, int]
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Point:
     x: int
     y: int
+
+    @classmethod
+    def from_tuple(cls, inp: tuple[float, float]) -> "Point":
+        return cls(round(inp[0]), round(inp[1]))
 
 
 # Keys:
@@ -31,12 +35,16 @@ class TrajectoryEditor:
         self.ui_scale = 3
         self.reduce_by = 5
         self.box_size = (320 / 40) * self.ui_scale
-        self.points = []
+
+        # Points inserted by the user
+        self.points: list[Point] = []
+
+        # Point being moved by the user
+        self.point_to_move: int | None = None
 
         # gird has the size of the tilemap: 40x32, but counts from 0, so 39x41
         self.mouse_to_grid: Point = Point(0, 0)
         self.curve = [[0, 0], [0, 0]]
-        self.point_to_move = None
         self.screen = pygame.display.set_mode((320 * self.ui_scale, 256 * self.ui_scale))
 
         self.start_app()
@@ -44,7 +52,7 @@ class TrajectoryEditor:
     #  computes a Bezier curve defined by a list of control points (param points) and returns a list of sampled points
     #  along that smooth curve.
     @staticmethod
-    def bezier_curve(points: list[PointFl], steps=500) -> list[PointFl]:
+    def bezier_curve(points: list[Point], steps=500) -> list[PointFl]:
         n = len(points) - 1
         curve = []
 
@@ -52,10 +60,10 @@ class TrajectoryEditor:
             t = step / steps
             x, y = 0.0, 0.0
 
-            for i, (px, py) in enumerate(points):
+            for i, p in enumerate(points):
                 coeff = comb(n, i) * (1 - t) ** (n - i) * t ** i
-                x += coeff * px
-                y += coeff * py
+                x += coeff * p.x
+                y += coeff * p.y
 
             curve.append((x, y))
 
@@ -100,7 +108,7 @@ class TrajectoryEditor:
         if len(c1) > 1:
             pygame.draw.lines(self.screen, (0, 255, 0), False, c1, 2)
         for i in range(len(self.points)):
-            pygame.draw.rect(self.screen, (0, 255, 0), (self.points[i][0], self.points[i][1], 5, 5))
+            pygame.draw.rect(self.screen, (0, 255, 0), (self.points[i].x, self.points[i].y, 5, 5))
 
     def main_loop(self):  # makes a main loop for the program
         self.mouse_to_grid = Point(round(pygame.mouse.get_pos()[0] // self.box_size),
@@ -109,28 +117,21 @@ class TrajectoryEditor:
         event = pygame.event.wait()
         self.draw_map()
         if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+            self.on_exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:  # adding a point for the curve
-                self.points.append(pygame.mouse.get_pos())
-            if event.key == pygame.K_s:  # drawing the curve form points
-                self.curve = self.bezier_curve(self.points)
-                self.curve_to_asm(self.curve)
+                self.on_key_add_point()
 
-            if event.key == pygame.K_c:
-                self.points = []
-                self.curve = []
-            if event.key == pygame.K_e:
-                if self.point_to_move != None:
-                    self.point_to_move = None
-                else:
-                    for i in range(len(self.points)):
-                        if pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 1, 1).colliderect(
-                                pygame.Rect(self.points[i][0], self.points[i][1], 15, 15)):
-                            self.point_to_move = i
-        if self.point_to_move != None:
-            self.points[self.point_to_move] = pygame.mouse.get_pos()
+            elif event.key == pygame.K_s:  # drawing the curve form points
+                self.on_key_draw_curve()
+
+            elif event.key == pygame.K_c:
+                self.on_key_clear()
+
+            elif event.key == pygame.K_e:
+                self.on_key_move_point()
+
+        self.move_point()
 
         if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.x < self.grid[0] and self.mouse_to_grid.y < self.grid[
             1]:
@@ -138,6 +139,35 @@ class TrajectoryEditor:
 
         self.draw_curve(self.curve)
         pygame.display.flip()
+
+    @staticmethod
+    def on_exit():
+        pygame.quit()
+        sys.exit()
+
+    def on_key_clear(self):
+        self.points = []
+        self.curve = []
+
+    def on_key_draw_curve(self):
+        self.curve = self.bezier_curve(self.points)
+        self.curve_to_asm(self.curve)
+
+    def on_key_add_point(self):
+        self.points.append(Point.from_tuple(pygame.mouse.get_pos()))
+
+    def move_point(self):
+        if self.point_to_move is not None:
+            self.points[self.point_to_move] = Point.from_tuple(pygame.mouse.get_pos())
+
+    def on_key_move_point(self):
+        if self.point_to_move is not None:
+            self.point_to_move = None
+        else:
+            for i in range(len(self.points)):
+                if pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 1, 1).colliderect(
+                        pygame.Rect(self.points[i].x, self.points[i].y, 10, 10)):
+                    self.point_to_move = i
 
     def draw_map(self):  # draw the map from file
         for y in range(self.grid[1]):
@@ -245,7 +275,6 @@ class TrajectoryEditor:
             x = round(c1[0] - c0[0])
             y = round(c1[1] - c0[1])
 
-            print(x, y)
             if y < 0:
                 movement += "0'"
                 y = -y
