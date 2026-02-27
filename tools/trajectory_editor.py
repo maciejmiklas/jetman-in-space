@@ -30,6 +30,7 @@ class Point:
 class TrajectoryEditor:
 
     def __init__(self, tilemap_path: str, ui_scale=3):
+        self.tilemap: list[int] = []
         self.tilemap_path = tilemap_path
         self.grid = [40, 32]
         self.ui_scale = ui_scale
@@ -70,8 +71,8 @@ class TrajectoryEditor:
         return curve
 
     @staticmethod
-    def read_tilemap(filename: str, width: int, height: int):
-        tilemap = []
+    def read_tilemap(filename: str, width: int, height: int) -> list[int]:
+        tilemap: list[int] = []
         tile_count = (width * height) * 2
         start_offset = 0x00
 
@@ -97,9 +98,9 @@ class TrajectoryEditor:
                              (0, i * self.box_size, self.grid[0] * self.box_size, self.box_size), 1)
 
     def start_app(self):  # starts the app
-        self.map = self.read_tilemap(self.tilemap_path, self.grid[0], self.grid[1])
-        self.map[0] = 1
-        self.draw_map()
+        self.tilemap = self.read_tilemap(self.tilemap_path, self.grid[0], self.grid[1])
+        self.tilemap[0] = 1
+        self.draw_tilemap()
 
         while True:
             self.main_loop()
@@ -115,7 +116,7 @@ class TrajectoryEditor:
                                    round(pygame.mouse.get_pos()[1] // self.box_size))
 
         event = pygame.event.wait()
-        self.draw_map()
+        self.draw_tilemap()
         if event.type == pygame.QUIT:
             self.on_exit()
         if event.type == pygame.KEYDOWN:
@@ -135,7 +136,7 @@ class TrajectoryEditor:
 
         if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.x < self.grid[0] and self.mouse_to_grid.y < self.grid[
             1]:
-            self.map[int(self.mouse_to_grid.x + self.mouse_to_grid.y * self.grid[0])] = 0
+            self.tilemap[int(self.mouse_to_grid.x + self.mouse_to_grid.y * self.grid[0])] = 0
 
         self.draw_curve(self.curve)
         pygame.display.flip()
@@ -170,11 +171,11 @@ class TrajectoryEditor:
                         pygame.Rect(self.points[i].x, self.points[i].y, 10, 10)):
                     self.point_to_drag = i
 
-    def draw_map(self):  # draw the map from file
+    def draw_tilemap(self):  # draw the map from file
         for y in range(self.grid[1]):
             for x in range(self.grid[0]):
                 try:
-                    if self.map[y * self.grid[0] + x] == 0:
+                    if self.tilemap[y * self.grid[0] + x] == 0:
                         pygame.draw.rect(self.screen, (0, 0, 0),
                                          (x * self.box_size, y * self.box_size, self.box_size, self.box_size))
                     else:
