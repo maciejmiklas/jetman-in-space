@@ -39,6 +39,9 @@ class Point:
     def from_screen_tuple(cls, inp: tuple[float, float], user=True) -> "Point":
         return cls(round(inp[0]), round(inp[1]), round(inp[0] / Point.UI_SCALE), round(inp[1] / Point.UI_SCALE), user)
 
+    @staticmethod
+    def to_native_tuples(points: list["Point"]) -> list[tuple[int, int]]:
+        return [(p.xn, p.yn) for p in points]
 
 # Keys:
 # A - add point
@@ -225,6 +228,7 @@ class TrajectoryEditor:
         #self.draw_curve(self.curve)
 
         full = self.join_points_with_lines(self.points)
+        print(Point.to_native_tuples(full))
         self.draw_points(full)
 
         pygame.display.flip()
