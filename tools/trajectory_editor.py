@@ -4,7 +4,7 @@ import os
 import sys
 from dataclasses import dataclass
 from math import comb
-from typing import TypeAlias
+from typing import TypeAlias, ClassVar
 
 import pygame
 
@@ -14,15 +14,30 @@ Step: TypeAlias = tuple[str, int]
 
 @dataclass(frozen=True, slots=True)
 class Point:
-    x: int
-    y: int
+    # screen coordinates of the point.
+    xs: int
+    ys: int
 
-    # true for user inserted point, false for generated point.
+    # native coordinates of the point (320x256).
+    xn: int = 0
+    yn: int = 0
+
+    # true for a user inserted point, false for a generated point.
     user: bool = True
 
+    UI_SCALE: ClassVar[int] = 3
+
     @classmethod
-    def from_tuple(cls, inp: tuple[float, float], user=True) -> "Point":
-        return cls(round(inp[0]), round(inp[1]), user)
+    def from_native(cls, xn: int, yn: int, user=True) -> "Point":
+        return cls(xn * Point.UI_SCALE, yn * Point.UI_SCALE, xn, yn, user)
+
+    @classmethod
+    def from_screen(cls, xs: int, ys: int, user=True) -> "Point":
+        return cls(xs, ys, round(xs / Point.UI_SCALE), round(ys / Point.UI_SCALE), user)
+
+    @classmethod
+    def from_screen_tuple(cls, inp: tuple[float, float], user=True) -> "Point":
+        return cls(round(inp[0]), round(inp[1]), round(inp[0] / Point.UI_SCALE), round(inp[1] / Point.UI_SCALE), user)
 
 
 # Keys:
@@ -36,9 +51,9 @@ class TrajectoryEditor:
         self.tilemap: list[int] = []
         self.tilemap_path = tilemap_path
         self.grid = [40, 32]
-        self.ui_scale = ui_scale
+        Point.UI_SCALE = ui_scale
         self.reduce_by = 5
-        self.box_size = (320 / 40) * self.ui_scale
+        self.box_size = (320 / 40) * Point.UI_SCALE
 
         # Points inserted by the user
         self.points: list[Point] = []
@@ -49,7 +64,7 @@ class TrajectoryEditor:
         # gird has the size of the tilemap: 40x32, but counts from 0, so 39x41
         self.mouse_to_grid: Point = Point(0, 0)
         self.curve = [[0, 0], [0, 0]]
-        self.screen = pygame.display.set_mode((320 * self.ui_scale, 256 * self.ui_scale))
+        self.screen = pygame.display.set_mode((320 * Point.UI_SCALE, 256 * Point.UI_SCALE))
 
         self.start_app()
 
@@ -66,8 +81,8 @@ class TrajectoryEditor:
 
             for i, p in enumerate(points):
                 coeff = comb(n, i) * (1 - t) ** (n - i) * t ** i
-                x += coeff * p.x
-                y += coeff * p.y
+                x += coeff * p.xs
+                y += coeff * p.ys
 
             curve.append((x, y))
 
@@ -88,8 +103,8 @@ class TrajectoryEditor:
             return [points[0]]
 
         def bresenham(a: Point, b: Point) -> list[Point]:
-            x0, y0 = a.x, a.y
-            x1, y1 = b.x, b.y
+            x0, y0 = a.xn, a.yn
+            x1, y1 = b.xn, b.yn
 
             dx = abs(x1 - x0)
             dy = abs(y1 - y0)
@@ -100,15 +115,15 @@ class TrajectoryEditor:
             out: list[Point] = []
 
             while True:
-                is_endpoint = (x0 == a.x and y0 == a.y) or (x0 == b.x and y0 == b.y)
-                if x0 == a.x and y0 == a.y:
+                is_endpoint = (x0 == a.xn and y0 == a.yn) or (x0 == b.xn and y0 == b.yn)
+                if x0 == a.xn and y0 == a.yn:
                     user_flag = a.user
-                elif x0 == b.x and y0 == b.y:
+                elif x0 == b.xn and y0 == b.yn:
                     user_flag = b.user
                 else:
                     user_flag = False
 
-                out.append(Point(x0, y0, user_flag if is_endpoint else False))
+                out.append(Point.from_native(x0, y0, user_flag if is_endpoint else False))
 
                 if x0 == x1 and y0 == y1:
                     break
@@ -131,30 +146,6 @@ class TrajectoryEditor:
             out.extend(segment)
 
         return out
-
-    def scale_to_screen(self, points: list[Point]) -> list[Point]:
-        """
-        Scale the points to the screen/ui resolution.
-        """
-        return [
-            Point(
-                x=round(p.x * self.ui_scale),
-                y=round(p.y * self.ui_scale),
-            )
-            for p in points
-        ]
-
-    def scale_to_native(self, points: list[Point]) -> list[Point]:
-        """
-        Scale the points to the native resolution of the game (320x256).
-        """
-        return [
-            Point(
-                x=round(p.x / self.ui_scale),
-                y=round(p.y / self.ui_scale),
-            )
-            for p in points
-        ]
 
     @staticmethod
     def read_tilemap(filename: str, width: int, height: int) -> list[int]:
@@ -195,7 +186,14 @@ class TrajectoryEditor:
         if len(c1) > 1:
             pygame.draw.lines(self.screen, (0, 255, 0), False, c1, 2)
         for i in range(len(self.points)):
-            pygame.draw.rect(self.screen, (0, 255, 0), (self.points[i].x, self.points[i].y, 5, 5))
+            pygame.draw.rect(self.screen, (0, 255, 0), (self.points[i].xs, self.points[i].ys, 5, 5))
+
+    def draw_points(self, points: list[Point]):
+        for i in range(len(points)):
+            point = points[i]
+            color = (0, 255, 0) if point.user else (0, 0, 255)
+            ps = 4 if point.user else Point.UI_SCALE
+            pygame.draw.rect(self.screen, color, (point.xs, point.ys, ps, ps))
 
     def main_loop(self):  # makes a main loop for the program
         self.mouse_to_grid = Point(round(pygame.mouse.get_pos()[0] // self.box_size),
@@ -220,11 +218,16 @@ class TrajectoryEditor:
 
         self.drag_point()
 
-        if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.x < self.grid[0] and self.mouse_to_grid.y < self.grid[
+        if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.xs < self.grid[0] and self.mouse_to_grid.ys < self.grid[
             1]:
-            self.tilemap[int(self.mouse_to_grid.x + self.mouse_to_grid.y * self.grid[0])] = 0
+            self.tilemap[int(self.mouse_to_grid.xs + self.mouse_to_grid.ys * self.grid[0])] = 0
 
-        self.draw_curve(self.curve)
+        #self.draw_curve(self.curve)
+
+        full = self.join_points_with_lines(self.points)
+        print(">>", len(full))
+        self.draw_points(full)
+
         pygame.display.flip()
 
     @staticmethod
@@ -241,18 +244,11 @@ class TrajectoryEditor:
         self.curve_to_asm(self.curve)
 
     def on_key_add_point(self):
-        self.points.append(Point.from_tuple(pygame.mouse.get_pos()))
-        native = self.scale_to_native(self.points)
-        screen = self.scale_to_screen(native)
-        print("AAAA")
-        print(self.points)
-        print(screen)
-        print(native)
-
+        self.points.append(Point.from_screen_tuple(pygame.mouse.get_pos()))
 
     def drag_point(self):
         if self.point_to_drag is not None:
-            self.points[self.point_to_drag] = Point.from_tuple(pygame.mouse.get_pos())
+            self.points[self.point_to_drag] = Point.from_screen_tuple(pygame.mouse.get_pos())
 
     def on_key_move_point(self):
         if self.point_to_drag is not None:
@@ -260,7 +256,7 @@ class TrajectoryEditor:
         else:
             for i in range(len(self.points)):
                 if pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 1, 1).colliderect(
-                        pygame.Rect(self.points[i].x, self.points[i].y, 10, 10)):
+                        pygame.Rect(self.points[i].xs, self.points[i].ys, 10, 10)):
                     self.point_to_drag = i
 
     def draw_tilemap(self):  # draw the map from file
@@ -369,8 +365,8 @@ class TrajectoryEditor:
         tab = []
         for i in range(len(curve) - 1):
             movement = ""
-            c1 = [curve[i + 1][0] / self.ui_scale, curve[i + 1][1] / self.ui_scale]
-            c0 = [curve[i][0] / self.ui_scale, curve[i][1] / self.ui_scale]
+            c1 = [curve[i + 1][0] / Point.UI_SCALE, curve[i + 1][1] / Point.UI_SCALE]
+            c0 = [curve[i][0] / Point.UI_SCALE, curve[i][1] / Point.UI_SCALE]
 
             x = round(c1[0] - c0[0])
             y = round(c1[1] - c0[1])
