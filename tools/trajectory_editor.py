@@ -29,18 +29,18 @@ class Point:
 # e - edit point
 class TrajectoryEditor:
 
-    def __init__(self, tilemap_path: str):
+    def __init__(self, tilemap_path: str, ui_scale=3):
         self.tilemap_path = tilemap_path
         self.grid = [40, 32]
-        self.ui_scale = 3
+        self.ui_scale = ui_scale
         self.reduce_by = 5
         self.box_size = (320 / 40) * self.ui_scale
 
         # Points inserted by the user
         self.points: list[Point] = []
 
-        # Point being moved by the user
-        self.point_to_move: int | None = None
+        # Point being dragged by the user/mause.
+        self.point_to_drag: int | None = None
 
         # gird has the size of the tilemap: 40x32, but counts from 0, so 39x41
         self.mouse_to_grid: Point = Point(0, 0)
@@ -49,7 +49,7 @@ class TrajectoryEditor:
 
         self.start_app()
 
-    #  computes a Bezier curve defined by a list of control points (param points) and returns a list of sampled points
+    #  computes a Bézier curve defined by a list of control points (param points) and returns a list of sampled points
     #  along that smooth curve.
     @staticmethod
     def bezier_curve(points: list[Point], steps=500) -> list[PointFl]:
@@ -131,7 +131,7 @@ class TrajectoryEditor:
             elif event.key == pygame.K_e:
                 self.on_key_move_point()
 
-        self.move_point()
+        self.drag_point()
 
         if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.x < self.grid[0] and self.mouse_to_grid.y < self.grid[
             1]:
@@ -155,19 +155,20 @@ class TrajectoryEditor:
 
     def on_key_add_point(self):
         self.points.append(Point.from_tuple(pygame.mouse.get_pos()))
+        print(self.points)
 
-    def move_point(self):
-        if self.point_to_move is not None:
-            self.points[self.point_to_move] = Point.from_tuple(pygame.mouse.get_pos())
+    def drag_point(self):
+        if self.point_to_drag is not None:
+            self.points[self.point_to_drag] = Point.from_tuple(pygame.mouse.get_pos())
 
     def on_key_move_point(self):
-        if self.point_to_move is not None:
-            self.point_to_move = None
+        if self.point_to_drag is not None:
+            self.point_to_drag = None
         else:
             for i in range(len(self.points)):
                 if pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 1, 1).colliderect(
                         pygame.Rect(self.points[i].x, self.points[i].y, 10, 10)):
-                    self.point_to_move = i
+                    self.point_to_drag = i
 
     def draw_map(self):  # draw the map from file
         for y in range(self.grid[1]):
@@ -301,6 +302,12 @@ if __name__ == "__main__":
         required=True,
         help="Path to tiles.map",
     )
+    parser.add_argument(
+        "-sc", "--scale",
+        required=False,
+        default=3,
+        help="UI scale",
+    )
     args = parser.parse_args()
 
-    window = TrajectoryEditor(args.tilemap)
+    window = TrajectoryEditor(args.tilemap, int(args.scale))
