@@ -3,8 +3,6 @@ import argparse
 import os
 import sys
 from dataclasses import dataclass
-from distutils.file_util import write_file
-from math import comb
 from typing import TypeAlias, ClassVar
 
 import pygame
@@ -104,6 +102,46 @@ class App:
         self.curve: list[Coordinate] | None = None
         self.start_app()
 
+    def start_app(self):  # starts the app
+        self.tilemap = self.read_tilemap(self.tilemap_path, self.grid[0], self.grid[1])
+        self.tilemap[0] = 1
+        self.draw_tilemap()
+
+        while True:
+            self.main_loop()
+
+    def main_loop(self):  # makes a main loop for the program
+        self.mouse_to_grid = Point(round(pygame.mouse.get_pos()[0] // self.box_size),
+                                   round(pygame.mouse.get_pos()[1] // self.box_size))
+
+        event = pygame.event.wait()
+        self.draw_tilemap()
+        if event.type == pygame.QUIT:
+            self.on_exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:  # adding a point for the curve
+                self.on_key_add_point()
+
+            elif event.key == pygame.K_s:  # drawing the curve form points
+                self.on_key_store()
+
+            elif event.key == pygame.K_c:
+                self.on_key_clear()
+
+            elif event.key == pygame.K_e:
+                self.on_key_move_point()
+
+        self.drag_point()
+
+        if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.screen.x < self.grid[
+            0] and self.mouse_to_grid.screen.y < self.grid[
+            1]:
+            self.tilemap[int(self.mouse_to_grid.screen.x + self.mouse_to_grid.screen.y * self.grid[0])] = 0
+
+        self.curve = self.join_points_with_lines(self.points)
+        self.draw_points(self.curve)
+        pygame.display.flip()
+
     @staticmethod
     def to_base2(num: int, b=3):
         """
@@ -129,26 +167,6 @@ class App:
             wynik = str(int(test % 2)) + wynik
             test = test // 2
         return ('0' * (b - len(wynik))) + wynik
-
-    #  computes a Bézier curve defined by a list of control points (param points) and returns a list of sampled points
-    #  along that smooth curve.
-    @staticmethod
-    def bezier_curve(points: list[Coordinate], steps=500) -> list[PointFl]:
-        n = len(points) - 1
-        curve = []
-
-        for step in range(steps + 1):
-            t = step / steps
-            x, y = 0.0, 0.0
-
-            for i, p in enumerate(points):
-                coeff = comb(n, i) * (1 - t) ** (n - i) * t ** i
-                x += coeff * p.screen.x
-                y += coeff * p.screen.y
-
-            curve.append((x, y))
-
-        return curve
 
     @staticmethod
     def join_points_with_lines(points: list[Coordinate]) -> list[Coordinate]:
@@ -216,29 +234,8 @@ class App:
             dis_x = App.to_base2(dis.x)
             dis_y = App.to_base2(dis.y)
             asm.append(
-                f"{'1' if dis.x > 0 else '0'}'{dis_x}'{'1' if dis.y > 0 else '0'}'{dis_y},$3{dis.repeat:X}")
+                f"%{'1' if dis.x > 0 else '0'}'{dis_x}'{'1' if dis.y > 0 else '0'}'{dis_y},$3{dis.repeat:X}")
         return asm
-
-    @staticmethod
-    def write_file(asm: list[str]):
-        file_name = "trajectory.asm"
-        if os.path.exists(file_name):
-            os.remove(file_name)
-
-        with open(file_name, "w") as file:
-            for el in asm:
-                file.write(el)
-                file.write(", ")
-        print("Created ", len(asm), "entries.")
-
-    def store(self):
-        if not self.curve:
-            return
-
-        native = Coordinate.to_native(self.curve)
-        distances = self.points_to_distances(native)
-        asm = self.distances_to_asm(distances)
-        write_file(asm)
 
     @staticmethod
     def points_to_distances(points: list[Point]) -> list[Distance]:
@@ -304,6 +301,41 @@ class App:
         distances.append(Distance(x=current_chunk[0], y=current_chunk[1], repeat=repeat_count))
         return distances
 
+    def draw_grid(self):  # drawing grid to see the map clearly
+        for i in range(self.grid[0]):
+            pygame.draw.rect(self.screen, (255, 100, 40),
+                             (i * self.box_size, 0, self.box_size, self.grid[1] * self.box_size), 1)
+        for i in range(self.grid[1]):
+            pygame.draw.rect(self.screen, (255, 100, 40),
+                             (0, i * self.box_size, self.grid[0] * self.box_size, self.box_size), 1)
+
+    def draw_points(self, points: list[Coordinate]):
+        for i in range(len(points)):
+            point = points[i]
+            color = (0, 255, 0) if point.user else (0, 0, 255)
+            ps = 4 if point.user else Coordinate.UI_SCALE
+            pygame.draw.rect(self.screen, color, (point.screen.x, point.screen.y, ps, ps))
+
+    @staticmethod
+    def write_file(asm: list[str]):
+        file_name = "trajectory.asm"
+        if os.path.exists(file_name):
+            os.remove(file_name)
+
+        with open(file_name, "w") as file:
+            file.write(f"DB {len(asm)}, ")
+            file.write(", ".join(asm))
+        print("Created ", len(asm), "entries.")
+
+    def store(self):
+        if not self.curve:
+            return
+
+        native = Coordinate.to_native(self.curve)
+        distances = self.points_to_distances(native)
+        asm = self.distances_to_asm(distances)
+        self.write_file(asm)
+
     @staticmethod
     def read_tilemap(filename: str, width: int, height: int) -> list[int]:
         tilemap: list[int] = []
@@ -323,66 +355,21 @@ class App:
                 tilemap.append(1)
         return tilemap
 
-    def draw_grid(self):  # drawing grid to see the map clearly
-        for i in range(self.grid[0]):
-            pygame.draw.rect(self.screen, (255, 100, 40),
-                             (i * self.box_size, 0, self.box_size, self.grid[1] * self.box_size), 1)
-        for i in range(self.grid[1]):
-            pygame.draw.rect(self.screen, (255, 100, 40),
-                             (0, i * self.box_size, self.grid[0] * self.box_size, self.box_size), 1)
+    def draw_tilemap(self):  # draw the map from file
+        for y in range(self.grid[1]):
+            for x in range(self.grid[0]):
+                try:
+                    if self.tilemap[y * self.grid[0] + x] == 0:
+                        pygame.draw.rect(self.screen, (0, 0, 0),
+                                         (x * self.box_size, y * self.box_size, self.box_size, self.box_size))
+                    else:
+                        pygame.draw.rect(self.screen, (255, 255, 255),
+                                         (x * self.box_size, y * self.box_size, self.box_size, self.box_size))
+                except:
+                    pygame.draw.rect(self.screen, (0, 255, 0),
+                                     (x * self.box_size, y * self.box_size, self.box_size, self.box_size))
 
-    def start_app(self):  # starts the app
-        self.tilemap = self.read_tilemap(self.tilemap_path, self.grid[0], self.grid[1])
-        self.tilemap[0] = 1
-        self.draw_tilemap()
-
-        while True:
-            self.main_loop()
-
-    def draw_curve(self, c1):
-        if len(c1) > 1:
-            pygame.draw.lines(self.screen, (0, 255, 0), False, c1, 2)
-        for i in range(len(self.points)):
-            pygame.draw.rect(self.screen, (0, 255, 0), (self.points[i].screen.x, self.points[i].screen.y, 5, 5))
-
-    def draw_points(self, points: list[Coordinate]):
-        for i in range(len(points)):
-            point = points[i]
-            color = (0, 255, 0) if point.user else (0, 0, 255)
-            ps = 4 if point.user else Coordinate.UI_SCALE
-            pygame.draw.rect(self.screen, color, (point.screen.x, point.screen.y, ps, ps))
-
-    def main_loop(self):  # makes a main loop for the program
-        self.mouse_to_grid = Point(round(pygame.mouse.get_pos()[0] // self.box_size),
-                                   round(pygame.mouse.get_pos()[1] // self.box_size))
-
-        event = pygame.event.wait()
-        self.draw_tilemap()
-        if event.type == pygame.QUIT:
-            self.on_exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:  # adding a point for the curve
-                self.on_key_add_point()
-
-            elif event.key == pygame.K_s:  # drawing the curve form points
-                self.on_store()
-
-            elif event.key == pygame.K_c:
-                self.on_key_clear()
-
-            elif event.key == pygame.K_e:
-                self.on_key_move_point()
-
-        self.drag_point()
-
-        if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.screen.x < self.grid[
-            0] and self.mouse_to_grid.screen.y < self.grid[
-            1]:
-            self.tilemap[int(self.mouse_to_grid.screen.x + self.mouse_to_grid.screen.y * self.grid[0])] = 0
-
-        self.curve = self.join_points_with_lines(self.points)
-        self.draw_points(self.curve)
-        pygame.display.flip()
+        self.draw_grid()
 
     @staticmethod
     def on_exit():
@@ -393,7 +380,7 @@ class App:
         self.points = []
         self.curve = []
 
-    def on_store(self):
+    def on_key_store(self):
         self.store()
 
     def on_key_add_point(self):
@@ -411,108 +398,6 @@ class App:
                 if pygame.Rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], 1, 1).colliderect(
                         pygame.Rect(self.points[i].screen.x, self.points[i].screen.y, 10, 10)):
                     self.point_to_drag = i
-
-    def draw_tilemap(self):  # draw the map from file
-        for y in range(self.grid[1]):
-            for x in range(self.grid[0]):
-                try:
-                    if self.tilemap[y * self.grid[0] + x] == 0:
-                        pygame.draw.rect(self.screen, (0, 0, 0),
-                                         (x * self.box_size, y * self.box_size, self.box_size, self.box_size))
-                    else:
-                        pygame.draw.rect(self.screen, (255, 255, 255),
-                                         (x * self.box_size, y * self.box_size, self.box_size, self.box_size))
-                except:
-                    pygame.draw.rect(self.screen, (0, 255, 0),
-                                     (x * self.box_size, y * self.box_size, self.box_size, self.box_size))
-
-        self.draw_grid()
-
-    #  down-samples a dense list of curve points into a shorter list whare distance between points is less than 7.
-    def reduce_curve(self, curve: list[PointFl], tab=None) -> list[PointFl]:
-        if tab is None:
-            tab = []
-        maxi = 0
-        if len(curve) > 0:
-            for i in range(1, len(curve)):
-                x, y = curve[i][0] - curve[0][0], curve[i][1] - curve[0][1]
-                if x > self.reduce_by or y > self.reduce_by:
-                    maxi = i - 1
-                    tab.append([curve[i - 1][0], curve[i - 1][1]])
-                    break
-        else:
-            return tab
-        return self.reduce_curve(curve[maxi + 1:], tab)
-
-    def curve_to_asm(self, curve_full: list[PointFl]):
-        curve = self.reduce_curve(curve_full, [])
-        curve_bin = self.curve_to_bin(curve)
-
-        result = self.reduce_curve_bin(curve_bin)
-        trajectory_file_name = "trajectory.asm"
-        if os.path.exists("trajectory.asm"):
-            os.remove(trajectory_file_name)
-
-        entry_cnd = 0
-        with open(trajectory_file_name, "w") as file:
-            for i in result:
-                entry_cnd = entry_cnd + 1
-                file.write("%" + i[0] + ",$3" + f"{i[1]:X}")
-                file.write(", ")
-        print("Created ", entry_cnd, "entries.")
-
-    @staticmethod
-    def reduce_curve_bin(curve_bin: list[str]) -> list[Step]:
-        """
-        # IN: ['00100010', '00100010', '00100010', '00100010', '00010010', '00010010', '00010010', '00010010',...
-        # OUT: [['00100010', 3], ['00010010', 4], ['00000010', 15], ['00000010', 1], ['10010010', 15],...
-        """
-        result = []
-        count = 0
-        for i in range(1, len(curve_bin)):
-            if curve_bin[i] == curve_bin[i - 1]:
-                count += 1
-                if count == 15:
-                    result.append([curve_bin[i - 1], count])
-                    count = 0
-            else:
-                result.append([curve_bin[i - 1], count])
-                count = 0
-        return result
-
-    def curve_to_bin(self, curve: list[PointFl]) -> list[str]:
-        """
-        The output list has the same length as the input list. Input list contains the coordinates of the curve points.
-        The output list contains the binary representation of the curve points, but not as coordinates, but the number
-        of steps to travel from the current point to the next point.
-        Example:
-            IN: [[72.993485776, 327.936370984], [80.927648784, 324.006986056], [88.79730132799999, 320.25300695199996], ...
-            OUT: ['10010010', '10010010', '10010010', '10010010', '10010010', '10010010', '00000010', '00000010', ...
-        """
-        tab = []
-        for i in range(len(curve) - 1):
-            movement = ""
-            c1 = [curve[i + 1][0] / Coordinate.UI_SCALE, curve[i + 1][1] / Coordinate.UI_SCALE]
-            c0 = [curve[i][0] / Coordinate.UI_SCALE, curve[i][1] / Coordinate.UI_SCALE]
-
-            x = round(c1[0] - c0[0])
-            y = round(c1[1] - c0[1])
-
-            if y < 0:
-                movement += "0'"
-                y = -y
-            else:
-                movement += "1'"
-            movement += App.to_base2(y)
-
-            if x < 0:
-                movement += "'0'"
-                x = -x
-            else:
-                movement += "'1'"
-            movement += App.to_base2(x)
-            tab.append(movement)
-        return tab
 
 
 if __name__ == "__main__":
