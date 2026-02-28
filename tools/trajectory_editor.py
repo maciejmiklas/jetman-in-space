@@ -228,7 +228,8 @@ class TrajectoryEditor:
         #self.draw_curve(self.curve)
 
         full = self.join_points_with_lines(self.points)
-        print(Point.to_native_tuples(full))
+        native = Point.to_native_tuples(full)
+        print(native)
         self.draw_points(full)
 
         pygame.display.flip()
