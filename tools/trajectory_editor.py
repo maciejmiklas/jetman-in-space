@@ -87,7 +87,6 @@ class App:
         self.tilemap_path = tilemap_path
         self.grid = [40, 32]
         Coordinate.UI_SCALE = ui_scale
-        self.reduce_by = 5
         self.box_size = (320 / 40) * Coordinate.UI_SCALE
 
         # Points inserted by the user
@@ -158,15 +157,15 @@ class App:
             num = 7
         if num < 0:
             test = -num // 2
-            wynik = str(int(-num % 2))
+            res = str(int(-num % 2))
         else:
             test = num // 2
-            wynik = str(int(num % 2))
+            res = str(int(num % 2))
 
         while test > 0:
-            wynik = str(int(test % 2)) + wynik
+            res = str(int(test % 2)) + res
             test = test // 2
-        return ('0' * (b - len(wynik))) + wynik
+        return ('0' * (b - len(res))) + res
 
     @staticmethod
     def join_points_with_lines(points: list[Coordinate]) -> list[Coordinate]:
@@ -192,7 +191,7 @@ class App:
             sy = 1 if y0 < y1 else -1
 
             err = dx - dy
-            out: list[Coordinate] = []
+            br_out: list[Coordinate] = []
 
             while True:
                 is_endpoint = (x0 == a.native.x and y0 == a.native.y) or (x0 == b.native.x and y0 == b.native.y)
@@ -203,7 +202,7 @@ class App:
                 else:
                     user_flag = False
 
-                out.append(Coordinate.from_native(x0, y0, user_flag if is_endpoint else False))
+                br_out.append(Coordinate.from_native(x0, y0, user_flag if is_endpoint else False))
 
                 if x0 == x1 and y0 == y1:
                     break
@@ -216,7 +215,7 @@ class App:
                     err += dx
                     y0 += sy
 
-            return out
+            return br_out
 
         out: list[Coordinate] = []
         for i in range(len(points) - 1):
