@@ -99,6 +99,8 @@ class App:
         self.mouse_to_grid: Point = Point(0, 0)
         self.screen = pygame.display.set_mode((320 * Coordinate.UI_SCALE, 256 * Coordinate.UI_SCALE))
         self.curve: list[Coordinate] | None = None
+        pygame.font.init()
+        self.font = pygame.font.SysFont(None, 28)
         self.start_app()
 
     def start_app(self):  # starts the app
@@ -132,13 +134,19 @@ class App:
 
         self.drag_point()
 
-        if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.screen.x < self.grid[
-            0] and self.mouse_to_grid.screen.y < self.grid[
+        if pygame.mouse.get_pressed()[0] and self.mouse_to_grid.x < self.grid[
+            0] and self.mouse_to_grid.y < self.grid[
             1]:
-            self.tilemap[int(self.mouse_to_grid.screen.x + self.mouse_to_grid.screen.y * self.grid[0])] = 0
+            self.tilemap[int(self.mouse_to_grid.x + self.mouse_to_grid.y * self.grid[0])] = 0
 
         self.curve = self.join_points_with_lines(self.points)
         self.draw_points(self.curve)
+
+        # Get mouse position and render it
+        pos = Coordinate.from_screen_tuple(pygame.mouse.get_pos())
+        text_surface = self.font.render(f"({pos.native.x}, {pos.native.y})", True, (255, 255, 255))
+        self.screen.blit(text_surface, (150, 10))
+
         pygame.display.flip()
 
     @staticmethod
@@ -233,7 +241,7 @@ class App:
             dis_x = App.to_base2(dis.x)
             dis_y = App.to_base2(dis.y)
             asm.append(
-                f"%{'1' if dis.x > 0 else '0'}'{dis_x}'{'1' if dis.y > 0 else '0'}'{dis_y},$3{dis.repeat:X}")
+                f"%{'1' if dis.y > 0 else '0'}'{dis_y}'{'1' if dis.x > 0 else '0'}'{dis_x},$2{dis.repeat:X}")
         return asm
 
     @staticmethod
@@ -285,16 +293,16 @@ class App:
             return []
 
         current_chunk = chunks[0]
-        repeat_count = 0
+        repeat_count = 1
 
         for i in range(1, len(chunks)):
             # Max repeat value is 15
-            if chunks[i] == current_chunk and repeat_count < 15:
+            if chunks[i] == current_chunk and repeat_count < 16:
                 repeat_count += 1
             else:
                 distances.append(Distance(x=current_chunk[0], y=current_chunk[1], repeat=repeat_count))
                 current_chunk = chunks[i]
-                repeat_count = 0
+                repeat_count = 1
 
         # Append the last accumulated distance
         distances.append(Distance(x=current_chunk[0], y=current_chunk[1], repeat=repeat_count))
@@ -322,7 +330,7 @@ class App:
             os.remove(file_name)
 
         with open(file_name, "w") as file:
-            file.write(f"DB {len(asm)}, ")
+            file.write(f"DB {len(asm*2)}, ")
             file.write(", ".join(asm))
         print("Created ", len(asm), "entries.")
 
@@ -331,7 +339,9 @@ class App:
             return
 
         native = Coordinate.to_native(self.curve)
+        print(native)
         distances = self.points_to_distances(native)
+        print(distances)
         asm = self.distances_to_asm(distances)
         self.write_file(asm)
 
