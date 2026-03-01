@@ -161,6 +161,10 @@ movePattern21
 ;         horizontal         45deg up
     DB 4, %0'000'1'111,$2F,  %0'111'1'111,$3F 
 
+; Horizontal, variable speed
+movePattern22
+    DB 4, %0'000'1'111,$04, %0'000'1'111,$81  
+
 ;----------------------------------------------------------;
 ;                     Single enemies                       ;
 ;----------------------------------------------------------;
@@ -330,6 +334,8 @@ enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE
 ; Level 4
 singleEnemiesL4
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {176,        5,          movePattern22,   sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG  }
+
     ENPS {010,        025,          movePattern02D3,   sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG  }
     ENPS {010,        030,          movePattern02D2,   sp.SDB_ENEMY1 enp.ENP_RIGHT_ALONG }
     ENPS {020,        029,          movePattern13D1,   sp.SDB_ENEMY3 enp.ENP_LEFT_ALONG  }
@@ -351,7 +357,7 @@ singleEnemiesL4
     ENPS {227,        020,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_RIGHT_ALONG }
     ENPS {227,        040,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_LEFT_HIT    }
 
-SINGLE_ENEMIES_L4       = 17
+SINGLE_ENEMIES_L4       = 1;17
 enemyFormationL4 ENPS {085/*RESPAWN_Y*/, 8/*RESPAWN_DELAY*/, movePattern17/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
 
 ; ##############################################

@@ -339,9 +339,7 @@ class App:
             return
 
         native = Coordinate.to_native(self.curve)
-        print(native)
         distances = self.points_to_distances(native)
-        print(distances)
         asm = self.distances_to_asm(distances)
         self.write_file(asm)
 

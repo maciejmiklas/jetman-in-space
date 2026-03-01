@@ -113,13 +113,14 @@ MOVE_PAT_DELAY_MASK     = %1111'0000
 ;  - delay 2 moves by 1 pixel (normal speed)
 ;  - delay 3 skips 1 pixel
 ; When the delay is 0, the enemy moves at the maximum speed of 3px/frame. Delay 1 slows down to 2px, 2 to 1px, and 3 to 0.5px.
-MOVE_DELAY_3PX          = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame
-MOVE_DELAY_2PX          = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame
-MOVE_DELAY_1PX          = %0010'0000            ; Delay 2 moves the enemy by 1 pixel during a single frame
-MOVE_DELAY_SK1          = %0011'0000            ; Delay 3 moves the enemy by 0.5 pixel during a single frame
-DEC_MOVE_DELAY          = %0001'0000 
+MOVE_DELAY_3PX          = %0000'0000            ; Delay 0 moves the enemy by 3 pixels during a single frame.
+MOVE_DELAY_2PX          = %0001'0000            ; Delay 1 moves the enemy by 2 pixels during a single frame.
+MOVE_DELAY_1PX          = %0010'0000            ; Delay 2 moves the enemy by 1 pixel during a single frame.
+MOVE_DELAY_SK1          = %0011'0000            ; Delay 3 skips 1 frame, 4 skipps 2 frames, 5 skipps 3 frames, and so on.
 
-DELAY_SK1_D2            = 2
+DEL_SKIP_START_D3       = 3                     ; Start skipping frames from this delay.
+
+DEC_MOVE_DELAY          = %0001'0000 
 
 SPEED_PX_MIN_D1         = 1
 SPEED_PX_MAX_D3         = 3
@@ -145,7 +146,6 @@ BOUNCE_H_MARG_D3        = 3
 ;  - A: delay counter from configuration (bits 8-5 with mask MOVE_PAT_DELAY_MASK).
 ; Return:
 ;  - A: the number of pixels that the enemy should move.
-;
     MACRO _LoadMovePx
 
     LD C, A
@@ -155,11 +155,12 @@ BOUNCE_H_MARG_D3        = 3
     SUB DEC_MOVE_DELAY
 .notSK1
 
-    ; Now A contains delay in bits 7-5, for example for delay 3: %0010'0000, we move those bits to the right to have value 0-3
-    SRL A
-    SRL A
-    SRL A
-    SRL A
+    ; Now A contains delay in bits 7-5, for example for delay 3: %0010'0000, we get %0000'0010,
+    SRL A: SRL A: SRL A: SRL A
+
+    ; For delay > 3 we have to still move by 1 pixel
+    CP SPEED_PX_MAX_D3
+    JR NC, .delayOver3
 
     ; Now %0010'0000 was changed to %0000'0010, A has following values:
     ;  - delay 0 = 0
@@ -174,6 +175,10 @@ BOUNCE_H_MARG_D3        = 3
     LD B, A
     LD A, SPEED_PX_MAX_D3
     SUB B
+    JR .end
+
+.delayOver3
+    LD A, SPEED_PX_MIN_D1
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -295,7 +300,7 @@ ResetPatternEnemies
 MovePatternEnemies
 
     ; ##########################################
-    ; Loop ever all enemies skipping hidden 
+    ; Loop ever all enemies skipping hidden.
 .enemyLoop
     PUSH BC                                     ; Preserve B for loop counter.
 
@@ -853,7 +858,7 @@ _RestartMovePattern
 ;  - delay 0 moves by 3 pixels: ENP.MOVE_DELAY = 0,  ENP.MOVE_PX =3
 ;  - delay 1 moves by 2 pixels: ENP.MOVE_DELAY = 0,  ENP.MOVE_PX =2
 ;  - delay 2 moves by 1 pixel:  ENP.MOVE_DELAY = 0,  ENP.MOVE_PX =1
-;  - delay 3 skips 1 pixel:     ENP.MOVE_DELAY = 1,  ENP.MOVE_PX =1
+;  - delay > 3 skips X pixels:  ENP.MOVE_DELAY = X,  ENP.MOVE_PX =1
 ;
 ; Input:
 ;  - A: delay counter from configuration (bits 8-5 with mask MOVE_PAT_DELAY_MASK).
@@ -862,13 +867,16 @@ _SetupDelayAndMoveSpeed
     AND MOVE_PAT_DELAY_MASK                     ; Leave only delay counter bits.
     PUSH AF
 
-    ; Setup delay.
-    CP MOVE_DELAY_SK1
-    JR NZ, .noDelay
-    LD A, DELAY_SK1_D2
+    ; Move relay bits to get real number: %0011'0000 -> %0000'0011 
+    RRA: RRA: RRA: RRA
+
+    CP DEL_SKIP_START_D3                        ; Skipping frames starts from delay 3
+    JR C, .noDelay
+    SUB DEL_SKIP_START_D3-1
     JR .store
 .noDelay
     XOR A
+
 .store
     LD (IY + ENP.MOVE_DELAY_CNT), A
     LD (IY + ENP.MOVE_DELAY), A

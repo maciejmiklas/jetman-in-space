@@ -53,7 +53,7 @@ start
 
     CALL so.WriteToSd
 
-    LD A, 2
+    LD A, 4
     LD (ll.currentLevel), A
     CALL gc.LoadCurrentLevel
 
