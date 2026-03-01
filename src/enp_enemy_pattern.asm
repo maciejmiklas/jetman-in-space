@@ -27,25 +27,29 @@
 ; a platform, fly along it, or bounce from it.
 
 ; Values for #ENP.SETUP
-ENP_BIT_ALONG_D0      = 0                       ; 1 - avoid platforms by flying along them, 0 - hit platform.
-ENP_BIT_DEPLOY_D1     = 1                       ; 1 - deploy enemy on the left, 0 - on the right.
-ENP_BIT_BOUNCE_D2     = 2                       ; 1 - bounce from platforms, if set #ENP_BIT_ALONG_D0 is ignored, 0 - disabled.
-ENP_BIT_BOUNCE_AN_D3  = 3                       ; 1 - enable extra bouncing animation (sprites 34,35,36).
-ENP_BIT_REVERSE_Y_D7  = 7                       ; 1 - reverses bit #ENP_BIT_DEPLOY_D1, set during runtime when enemy hits platform from L/R.
+ENP_BIT_ALONG_D0        = 0                     ; 1 - avoid platforms by flying along them, 0 - hit platform.
+ENP_BIT_DEPLOY_D1       = 1                     ; 1 - deploy enemy on the left, 0 - on the right.
+ENP_BIT_BOUNCE_D2       = 2                     ; 1 - bounce from platforms, if set #ENP_BIT_ALONG_D0 is ignored, 0 - disabled.
+ENP_BIT_BOUNCE_AN_D3    = 3                     ; 1 - enable extra bouncing animation (sprites 34,35,36).
+ENP_BIT_RESET_X_D4      = 4                     ; 1 - reset the move pattern when reaching the end of the horizontal screen.
+ENP_BIT_REVERSE_Y_D7    = 7                     ; 1 - reverses bit #ENP_BIT_DEPLOY_D1, set during runtime when enemy hits platform from L/R.
 
-ENP_LEFT_ALONG        = %0000'0'0'1'1 
-ENP_RIGHT_ALONG       = %0000'0'0'0'1 
+ENP_LEFT_ALONG          = %000'0'0'0'1'1 
+ENP_RIGHT_ALONG         = %000'0'0'0'0'1 
 
-ENP_LEFT_HIT          = %0000'0'0'1'0 
-ENP_RIGHT_HIT         = %0000'0'0'0'0 
+ENP_LEFT_ALONG_RP       = %000'1'0'0'1'1        ; ENP_LEFT_ALONG + reset pattern one end of X.
+ENP_RIGHT_ALONG_RP      = %000'1'0'0'0'1        ; ENP_RIGHT_ALONG + reset pattern one end of X.
 
-ENP_LEFT_BOUNCE       = %0000'0'1'1'0 
-ENP_RIGHT_BOUNCE      = %0000'0'1'0'0 
+ENP_LEFT_HIT            = %000'0'0'0'1'0 
+ENP_RIGHT_HIT           = %000'0'0'0'0'0 
 
-ENP_LEFT_BOUNCE_AN    = %0000'1'1'1'0         ; Deploy left, bounce, animate bounce effect.
-ENP_RIGHT_BOUNCE_AN   = %0000'1'1'0'0 
+ENP_LEFT_BOUNCE         = %000'0'0'1'1'0 
+ENP_RIGHT_BOUNCE        = %000'0'0'1'0'0 
 
-ENP_REVERSE_Y         = %1'0000000 
+ENP_LEFT_BOUNCE_AN      = %000'0'1'1'1'0        ; Deploy left, bounce, animate bounce effect.
+ENP_RIGHT_BOUNCE_AN     = %000'0'1'1'0'0 
+
+ENP_REVERSE_Y           = %1'0000000 
 
 MOVE_DELAY_CNT_INC      = %0001'0000 
 
@@ -132,6 +136,25 @@ BOUNCE_H_MARG_D3        = 3
 ;                     PRIVATE MACROS                       ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+; Input
+;  - IX: pointer to #SPR.
+;  - IY: pointer to #ENP.
+;  - HL: points to the current move pattern.
+    MACRO _MoveXAndRestart
+
+    CALL _MoveEnemyX
+    JP Z, .end                                  ; Jump if spite is still moving.
+
+    ; The enemy has reached the edge of the screen on X - should we restart the move pattern?
+    BIT ENP_BIT_RESET_X_D4, (IY + ENP.SETUP)
+    JR Z, .end                                  ; Jump if restart is not set.
+
+    CALL _RestartMovePattern
+    CALL DoRespawnPatternEnemy
+    RET
+
+.end
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                       _LoadMovePx                        ;
@@ -402,7 +425,20 @@ RespawnPatternEnemy
 .afterEnemyRespawnDelay
 
     ; ##########################################
-    ; Respawn enemy, first mark it as visible.
+    CALL DoRespawnPatternEnemy
+    _YES
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 DoRespawnPatternEnemy                    ;
+;----------------------------------------------------------;
+; Respawn single or formation
+; Input:
+;  - IX: pointer to #SPR holding data for single enemy.
+DoRespawnPatternEnemy
+
+   ; Respawn enemy, first mark it as visible.
     LD A, (IX + SPR.STATE)
     CALL sp.SetStateVisible
 
@@ -436,8 +472,6 @@ RespawnPatternEnemy
     LD (IX + SPR.X), BC
     sp.SetSpriteId
     CALL sp.ShowSprite
-
-    _YES
 
     RET                                         ; ## END of the function ##
 
@@ -485,7 +519,9 @@ _PlayBounceAnimation
 ;  - IX: pointer to #SPR.
 ;  - IY: pointer to #ENP.
 ;  - HL: points to the current move pattern.
-; Modifies: A, BC
+; Return:
+;  - YES: sprite still moving, Z is reset (JP Z).
+;  - NO:  sprite has reached the edge of the screen (roll over or hide), Z is set (JP NZ).
 _MoveEnemyX
 
     ; Load movement speed into A
@@ -561,7 +597,7 @@ _MoveEnemy
     JR NZ, .afterAliveCheck                     ; Jump if sprite is alive.
 
     ; Sprite is not alive -> move it horizontally while it's exploding.
-    CALL _MoveEnemyX
+    _MoveXAndRestart
     CALL sp.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
 
     RET                                         ; Return - enemy is exploding.
@@ -631,8 +667,8 @@ _MoveEnemy
 
     JR NZ, .afterMoveAlong                      ; Jump if there is no collision.
 
-    ; Avoid collision with the platform by moving along it
-    CALL _MoveEnemyX
+    ; Avoid collision with the platform by moving along it.
+    _MoveXAndRestart
     CALL sp.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
     RET                                         ; Return, sprite moves along platform.
 .afterMoveAlong
@@ -649,7 +685,7 @@ _MoveEnemy
     SUB MOVE_PAT_X_ADD                          ; Decrement X counter by 1.
     LD (IY + ENP.MOVE_PAT_STEP), A
 
-    CALL _MoveEnemyX
+    _MoveXAndRestart
 .afterMoveLR
 
     ; ##########################################
@@ -760,11 +796,11 @@ _MoveEnemy
     JR .checkPlatformHit
 
 .nextMovePattern
+
     ; ##########################################
     ; Setup next move pattern
     LD A, (IY + ENP.MOVE_PAT_POS)               ; A contains the current position in the move pattern.
-
-    ADD MOVE_STEP_SIZE_D2                          ; Increment the position to the next pattern and store it.
+    ADD MOVE_STEP_SIZE_D2                       ; Increment the position to the next pattern and store it.
     LD (IY + ENP.MOVE_PAT_POS), A
 
     ; Check if we should restart the move pattern, as it might have reached the last element.
@@ -847,7 +883,6 @@ _RestartMovePattern
     ; Set delay counter
     LD A, B
     CALL _SetupDelayAndMoveSpeed
-
 
     RET                                         ; ## END of the function ##
 

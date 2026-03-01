@@ -410,13 +410,15 @@ UpdateSpritePattern
 ;         - 4:   #MVX_IN_D_TOD_DIR_BIT
 MVX_IN_D_HIDE_BIT           = 3                 ; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen.
 MVX_IN_D_TOD_DIR_BIT        = 4                 ; 1 - move from right side of the screen to the left, 0 - move left -> right.
-MVX_IN_D_1PX_HIDE           = %0000'1001        ; Move the sprite by 1 pixel and hide on the screen end
-MVX_IN_D_6PX_HIDE           = %0000'1110        ; Move the sprite by 6 pixels and hide on the screen end
-MVX_IN_D_1PX_ROL            = %0000'0001        ; Move the sprite by 1 pixel and roll over sprite when off-screen
-MVX_IN_D_2PX_ROL            = %0000'0010        ; Move the sprite by 2 pixels and roll over sprite when off-screen
-MVX_IN_D_3PX_ROL            = %0000'0011        ; Move the sprite by 3 pixels and roll over sprite when off-screen
+MVX_IN_D_1PX_HIDE           = %0000'1001        ; Move the sprite by 1 pixel and hide on the screen end.
+MVX_IN_D_6PX_HIDE           = %0000'1110        ; Move the sprite by 6 pixels and hide on the screen end. 
+MVX_IN_D_1PX_ROL            = %0000'0001        ; Move the sprite by 1 pixel and roll over sprite when off-screen.
+MVX_IN_D_2PX_ROL            = %0000'0010        ; Move the sprite by 2 pixels and roll over sprite when off-screen.
+MVX_IN_D_3PX_ROL            = %0000'0011        ; Move the sprite by 3 pixels and roll over sprite when off-screen.
 MVX_IN_D_MASK_CNT           = %0000'0111 
-; Modifies; A, B, HL
+; Return:
+;  - YES: sprite still moving, Z is reset (JP Z).
+;  - NO:  sprite has reached the edge of the screen (roll over or hide), Z is set (JP NZ).
 
 MoveX
 
@@ -465,7 +467,7 @@ MoveX
     JR NZ, .hideSpriteL
 
     LD HL, _GSC_X_MAX_D315                      ; Roll over.
-    JR .afterMoving
+    JR .rollOver
 
 .continueLeftLoop
 
@@ -484,7 +486,8 @@ MoveX
     JR .afterMoving
 
 .hideSpriteL
-    CALL HideSprite                       ; Hide sprite
+    CALL HideSprite                             ; Hide sprite
+    _NO
     RET
 
     ; ##########################################
@@ -512,17 +515,23 @@ MoveX
     ; Roll over.
     LD H, 0
     LD L, _GSC_X_MIN_D0
-    JR .afterMoving
+    JR .rollOver
 
 .continueRightLoop
     DJNZ .moveRightLoop                         ; Jump if B > 0
     JR .afterMoving
 
 .hideSpriteR
-    CALL HideSprite                       ; Hide sprite.
+    CALL HideSprite                             ; Hide sprite.
+    _NO
     RET
 
+.rollOver
+    _NO
+    JR .updatePos
 .afterMoving
+    _YES
+.updatePos
     LD (IX + SPR.X), HL                         ; Update new X position.
 
     RET                                         ; ## END of the function ##
