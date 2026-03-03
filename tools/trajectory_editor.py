@@ -82,7 +82,7 @@ class Coordinate:
 # E - edit point
 class App:
 
-    def __init__(self, tilemap_path: str, ui_scale=3):
+    def __init__(self, tilemap_path: str, ui_scale=3, deploy_left=True):
         self.tilemap: list[int] = []
         self.tilemap_path = tilemap_path
         self.grid = [40, 32]
@@ -101,6 +101,7 @@ class App:
         self.curve: list[Coordinate] | None = None
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 28)
+        self.deploy_left = deploy_left
         self.start_app()
 
     def start_app(self):  # starts the app
@@ -233,15 +234,16 @@ class App:
             out.extend(segment)
 
         return out
-
     @staticmethod
-    def distances_to_asm(distances: list[Distance]) -> list[str]:
+    def distances_to_asm(depl_left, distances: list[Distance]) -> list[str]:
         asm: list[str] = []
+        x_dir_neg = '1' if depl_left else '0'
+        x_dir_pos = '0' if depl_left else '1'
         for dis in distances:
             dis_x = App.to_base2(dis.x)
             dis_y = App.to_base2(dis.y)
             asm.append(
-                f"%{'1' if dis.y > 0 else '0'}'{dis_y}'{'1' if dis.x > 0 else '0'}'{dis_x},$2{dis.repeat:X}")
+                f"%{'1' if dis.y > 0 else '0'}'{dis_y}'{x_dir_neg if dis.x > 0 else x_dir_pos}'{dis_x},$2{dis.repeat:1X}")
         return asm
 
     @staticmethod
@@ -267,7 +269,7 @@ class App:
 
         # Aggregate deltas into chunks of max size 7
         # Assuming dx, dy are either 1, 0, or -1 per step from Bresenham
-        chunks = []
+        chunks:tuple[int, int] = []
         current_dx, current_dy = 0, 0
 
         for dx, dy in deltas:
@@ -288,16 +290,16 @@ class App:
             chunks.append((current_dx, current_dy))
 
         # Reduce consecutive identical distances using the `repeat` field
-        distances = []
+        distances:list[Distance] = []
         if not chunks:
             return []
 
-        current_chunk = chunks[0]
+        current_chunk:tuple[int, int] = chunks[0]
         repeat_count = 1
 
         for i in range(1, len(chunks)):
             # Max repeat value is 15
-            if chunks[i] == current_chunk and repeat_count < 16:
+            if chunks[i] == current_chunk and repeat_count < 15:
                 repeat_count += 1
             else:
                 distances.append(Distance(x=current_chunk[0], y=current_chunk[1], repeat=repeat_count))
@@ -340,7 +342,7 @@ class App:
 
         native = Coordinate.to_native(self.curve)
         distances = self.points_to_distances(native)
-        asm = self.distances_to_asm(distances)
+        asm = self.distances_to_asm(self.deploy_left, distances)
         self.write_file(asm)
 
     @staticmethod
@@ -356,7 +358,7 @@ class App:
         for i, byte in enumerate(data):
             if i % 2 != 0:
                 continue
-            if byte == 57:
+            if byte == 57 or byte == 198:
                 tilemap.append(0)
             else:
                 tilemap.append(1)
@@ -422,6 +424,11 @@ if __name__ == "__main__":
         default=3,
         help="UI scale",
     )
+    parser.add_argument(
+        "-dr", "--deploy_right",
+        action="store_true",
+        help="Set for right deolyment, defalut is left.",
+    )
     args = parser.parse_args()
 
-    window = App(args.tilemap, int(args.scale))
+    window = App(args.tilemap, int(args.scale), deploy_left=not args.deploy_right)

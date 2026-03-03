@@ -43,6 +43,9 @@ ENP_RIGHT_ALONG_RP      = %000'1'0'0'0'1        ; ENP_RIGHT_ALONG + reset patter
 ENP_LEFT_HIT            = %000'0'0'0'1'0 
 ENP_RIGHT_HIT           = %000'0'0'0'0'0 
 
+ENP_LEFT_HIT_RP         = %000'1'0'0'1'0        ; ENP_LEFT_HIT + reset pattern one end of X.
+ENP_RIGHT_HIT_RP        = %000'1'0'0'0'0        ; ENP_RIGHT_HIT + reset pattern one end of X.
+
 ENP_LEFT_BOUNCE         = %000'0'0'1'1'0 
 ENP_RIGHT_BOUNCE        = %000'0'0'1'0'0 
 
