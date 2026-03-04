@@ -51,19 +51,6 @@ movePattern02D2
 movePattern02D3
     DB 2, %1'001'1'111,$30
 
-; 18deg up, delay 0
-movePattern03D0
-    DB 2, %0'001'1'111,$20
-
-; 5* horizontal, 2x 45deg down
-movePattern05
-    DB 4, %0'000'1'111,$05, %1'111'1'111,$02
-
-; Half sinus
-movePattern06
-    DB 32, %0'010'1'001,$22, %0'011'1'010,$22, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31   ; going up
-        DB %1'001'1'101,$21, %1'001'1'100,$22, %1'001'1'011,$22, %1'010'1'011,$23, %1'011'1'011,$11, %1'100'1'011,$11, %1'011'1'010,$12, %1'010'1'001,$01   ; going down
-
 ; Sinus
 movePattern07
     DB 64, %0'010'1'001,$32, %0'011'1'010,$32, %0'100'1'011,$31, %0'011'1'011,$31, %0'010'1'011,$33, %0'001'1'011,$32, %0'001'1'100,$32, %0'001'1'101,$31   ; going up, above X
@@ -81,53 +68,13 @@ movePattern09
 ;         45deg up slow    45deg down slow   45deg up slow   45deg down slow  45deg up fast   45deg down fast
     DB 12, %0'001'1'011,$41, %1'001'1'011,$41, %0'001'1'011,$41, %1'001'1'011,$41, %0'001'1'011,$31, %1'001'1'011,$31
 
-movePattern11
-;         45deg down         horizontal        horizontal       horizontal         45deg up
-    DB 10, %1'111'1'111,$0F, %0'000'1'111,$1F, %0'000'1'111,$2F, %0'000'1'111,$1F, %0'011'1'011,$3F 
-
-; 34deg up, delay 2
-movePattern12D2
-    DB 2, %0'011'1'111,$20 
-
-; 34deg up, delay 1
-movePattern12D1
-    DB 2, %0'011'1'111,$10 
-
-; 34deg down, delay 0
-movePattern13D0
-    DB 2, %1'011'1'111,$00 
-
 ; 34deg down, delay 1
 movePattern13D1
     DB 2, %1'011'1'111,$10 
 
-; 34deg down, delay 2
-movePattern13D2
-    DB 2, %1'011'1'111,$20 
-
 ; 34deg down, delay 3
 movePattern13D3
     DB 2, %1'011'1'111,$30 
-
-; 34deg down, delay 4
-movePattern13D4
-    DB 2, %1'011'1'111,$40 
-
-; 45deg down, delay 0
-movePattern14D0
-    DB 2, %1'001'1'001,$00 
-
-; 45deg down, delay 1
-movePattern14D1
-    DB 2, %1'001'1'001,$10 
-
-; 45deg down, delay 2
-movePattern14D2
-    DB 2, %1'001'1'001,$20 
-
-; 45deg up, delay 1
-movePattern15D1
-    DB 2, %0'001'1'001,$10 
 
 ; 45deg up, delay 2
 movePattern15D2
@@ -136,10 +83,6 @@ movePattern15D2
 movePattern16
 ;         horizontal        45deg up
     DB 4, %0'000'1'111,$0C, %0'111'1'111,$19 
-
-movePattern17
-;           horizontal fast  horizontal slow    34deg down        horizontal        34deg up
-    DB 10, %0'000'1'111,$1A, %0'000'1'111,$45, %1'011'1'111,$05, %0'000'1'111,$29, %0'011'1'111,37
 
 movePattern18
 ;         horizontal        45deg down
@@ -157,9 +100,93 @@ movePattern20
         DB %0'001'1'101,$21, %0'001'1'100,$22, %0'001'1'011,$22, %0'010'1'011,$23, %0'011'1'011,$21, %0'100'1'011,$31, %0'011'1'010,$32, %0'010'1'001,$32   ; going up, below X
         DB %1'111'1'111,$2F 
 
-movePattern21
-;         horizontal         45deg up
-    DB 4, %0'000'1'111,$2F,  %0'111'1'111,$3F 
+movePattern22
+    DB 16*2 + 2 + 19*2
+    ; Phase 1
+    DB %1'111'1'101,$22, %1'111'1'111,$21, %1'011'1'110,$21, %0'110'1'111,$21, %0'111'1'100,$21, %0'111'1'011,$23, %0'111'1'100,$22 
+    DB %0'100'1'111,$21, %0'000'1'111,$21, %1'110'1'111,$21, %1'111'1'100,$21, %1'111'1'110,$21, %1'101'1'111,$21, %1'011'1'111,$21 
+    DB %0'000'1'111,$F1, %0'000'0'111,$F1 
+    ; Phase 2
+    DB %0'000'1'111,$04 
+    ; Phase 3
+    DB %0'000'1'111,$21, %1'101'1'111,$21, %1'111'1'101,$24, %1'101'1'111,$21, %1'001'1'111,$21, %0'001'1'101,$21, %1'100'1'111,$21 
+    DB %1'101'1'111,$21, %1'011'1'111,$21, %0'011'1'111,$21, %0'111'1'100,$21, %0'111'1'001,$21, %0'111'1'010,$21, %0'111'1'101,$21 
+    DB %0'111'1'100,$21, %0'111'1'101,$21, %0'101'1'111,$21, %0'000'1'111,$0F, %0'000'1'101,$2F 
+    
+movePattern23
+    DB 18*2
+    DB %1'100'1'111,$21, %1'111'1'110,$21, %1'111'1'100,$21, %1'111'1'111,$21, %1'110'1'111,$21, %1'011'1'111,$21, %1'010'1'110,$21 
+    DB %0'011'1'111,$21, %0'111'1'111,$21, %0'111'1'101,$21, %0'111'1'110,$21, %0'111'1'111,$21, %0'110'1'111,$21, %0'010'1'111,$21 
+    DB %1'011'1'111,$21, %1'100'1'111,$A1, %1'000'1'011,$A1, %0'000'1'101,$03
+
+movePattern24
+    DB 128, %0'000'1'111,$2B, %1'010'1'111,$21, %1'011'1'111,$21, %1'111'1'111,$21, %1'111'1'001,$21, %1'111'0'101,$21, %1'100'0'111,$21 
+    DB %1'011'0'111,$21, %1'001'0'111,$23, %1'010'0'111,$21, %1'110'0'111,$21, %1'111'0'011,$21, %1'111'1'100,$21, %1'010'1'111,$22  
+    DB %0'000'1'111,$21, %1'011'1'111,$21, %1'111'1'111,$21, %1'111'1'100,$21, %1'111'1'011,$21, %1'111'1'101,$21, %1'111'1'111,$21 
+    DB %1'011'1'111,$21, %0'010'1'111,$22, %0'001'1'111,$22, %0'001'1'101,$21, %1'110'1'110,$21, %1'111'0'011,$21, %1'111'0'101,$21  
+    DB %1'111'0'001,$21, %1'111'1'011,$21, %1'111'1'111,$21, %1'110'1'111,$21, %1'100'1'111,$21, %1'011'1'111,$21, %1'100'1'111,$21  
+    DB %1'001'1'111,$22, %0'000'1'111,$2D, %0'011'1'111,$21, %0'111'1'111,$21, %0'111'1'001,$21, %0'101'1'001,$21, %0'111'0'110,$21  
+    DB %0'100'0'111,$22, %0'101'0'010,$21, %0'111'1'111,$21, %0'111'1'110,$22, %0'111'0'010,$21, %0'100'0'111,$21, %0'001'0'111,$21  
+    DB %0'000'0'111,$22, %0'001'0'111,$21, %0'000'0'111,$21, %0'011'0'111,$22, %0'101'0'111,$21, %0'110'0'111,$21, %0'111'0'101,$21  
+    DB %0'111'0'100,$22, %0'111'0'011,$21, %0'111'0'001,$22, %0'111'0'000,$21, %0'111'1'010,$21, %0'111'1'111,$21, %0'000'1'111,$2F 
+    DB %0'000'1'001,$21 
+
+movePattern25
+    DB 146, %0'000'1'111,$2F, %0'000'1'111,$21, %0'010'1'111,$22, %0'111'1'111,$21, %0'111'1'100,$21, %0'111'1'010,$23, %0'111'1'011,$21 
+    DB %0'111'1'001,$22, %0'111'1'011,$21, %0'111'1'100,$21, %0'101'1'111,$21, %0'001'1'110,$21, %1'111'1'101,$21, %1'111'1'011,$21 
+    DB %1'110'1'111,$21, %1'010'1'111,$21, %1'001'1'111,$21, %0'000'1'111,$23, %1'001'1'111,$21, %0'000'1'111,$24, %0'001'1'111,$21 
+    DB %0'000'1'111,$21, %1'001'1'111,$21, %1'101'1'111,$21, %1'111'1'001,$21, %1'111'0'001,$21, %1'111'0'010,$22, %1'111'0'011,$21 
+    DB %1'111'0'100,$21, %1'110'0'111,$21, %1'011'0'111,$21, %0'000'0'111,$2F, %0'000'0'111,$21, %1'001'0'111,$21, %0'000'0'111,$2F 
+    DB %0'101'0'111,$21, %0'111'0'110,$21, %0'111'0'100,$21, %0'111'0'010,$21, %0'111'0'001,$23, %0'111'1'001,$21, %0'111'1'011,$21 
+    DB %0'111'1'111,$21, %0'111'0'001,$22, %0'111'0'011,$21, %0'111'1'001,$21, %0'111'1'101,$21, %0'100'1'111,$21, %1'100'1'111,$21 
+    DB %1'111'1'100,$21, %1'111'1'011,$23, %1'111'1'111,$21, %1'010'1'101,$21, %0'111'1'111,$21, %0'011'1'111,$21, %1'001'1'111,$21 
+    DB %1'111'1'100,$21, %1'111'1'011,$21, %1'100'1'110,$21, %0'100'1'111,$21, %0'000'1'111,$21, %1'001'1'111,$21, %1'010'1'111,$21 
+    DB %1'111'1'110,$21, %1'111'1'011,$22, %1'111'1'101,$21, %1'111'1'100,$22, %1'111'1'110,$21, %1'111'1'111,$21, %0'000'1'111,$2B 
+    DB %1'001'1'111,$21, %0'000'1'111,$2A, %0'000'1'101,$21 
+
+movePattern26
+   DB 86, %0'000'1'111,$26, %1'001'1'111,$21, %1'100'1'111,$21, %1'101'1'111,$21, %1'111'1'001,$21, %1'111'0'000,$25, %1'110'0'111,$21 
+   DB %1'011'0'111,$22, %1'100'0'111,$21, %1'011'0'111,$21, %1'111'0'101,$21, %1'111'0'000,$28, %1'111'1'111,$21, %1'010'1'111,$21 
+   DB %1'011'1'111,$22, %1'010'1'111,$21, %1'111'1'100,$21, %1'111'0'000,$26, %1'111'0'111,$21, %1'110'0'111,$21, %1'100'0'101,$21 
+   DB %0'110'0'111,$21, %0'101'0'111,$21, %0'111'0'110,$21, %0'111'0'000,$26, %0'111'1'111,$21, %0'010'1'111,$21, %0'011'1'111,$22 
+   db %0'010'1'111,$21, %0'111'1'100,$21, %0'111'0'000,$28, %0'111'0'111,$21, %0'011'0'111,$22, %0'010'0'111,$21, %0'011'0'111,$21 
+   DB %0'111'0'100,$21, %0'111'0'000,$26, %0'100'1'111,$21, %0'010'1'111,$21, %0'011'1'111,$21, %0'001'1'011,$21, %0'000'0'111,$2
+   DB %0'000'0'110,$21 
+
+movePattern27
+    DB 50, %0'000'1'111,$24, %1'001'1'111,$21, %1'100'1'111,$21, %1'111'1'111,$21, %1'111'1'000,$2D, %1'110'0'111,$21, %1'010'0'111,$23 
+    DB %1'111'0'100,$21, %1'111'1'000,$25, %1'111'0'001,$21, %1'111'1'000,$26, %1'111'1'011,$21, %1'101'1'111,$21, %1'101'1'110,$21 
+    DB %0'101'1'111,$22, %0'111'1'110,$21, %0'111'1'000,$2C, %0'111'0'110,$21, %0'010'0'111,$23, %0'001'0'111,$21, %0'111'0'010,$21 
+    DB %0'111'1'000,$2D, %0'101'0'111,$21, %0'100'0'111,$21, %0'001'0'010,$21
+
+; horizontal right, Saw wave
+movePattern28
+;          horizontal.        45deg up          45deg up           45deg down        45deg down      45deg down
+    DB 12, %0'000'1'111,$21, %0'001'1'011,$2F, %0'001'1'011,$2F, %1'001'1'011,$2F, %1'001'1'011,$2F, %1'001'1'011,$2F 
+
+movePattern29
+    DB 44, %0'000'1'111,$2A, %1'110'1'111,$21, %1'111'1'110,$22, %1'111'1'101,$21, %1'011'1'011,$21, %0'111'1'110,$24, %0'111'1'101,$21 
+    DB %0'011'1'011,$21, %1'111'1'010,$21, %1'111'1'011,$21, %1'111'1'010,$22, %1'111'1'011,$21, %1'111'1'010,$22, %1'111'1'011,$21 
+    DB %1'111'1'010,$22, %1'111'1'011,$21, %1'100'1'001,$21, %0'111'1'110,$21, %0'111'1'101,$21, %0'111'1'110,$22, %0'111'1'101,$21 
+    DB %0'010'1'010,$21
+
+movePattern30
+    DB 10, %0'111'0'110,$21, %0'001'0'101,$21, %1'111'0'111,$21, %0'101'0'111,$21, %0'010'0'011,$21 
+
+movePattern31
+    DB 172, %0'000'1'111,$29, %1'101'1'111,$21, %1'111'1'101,$21, %1'111'1'110,$21, %1'111'1'101,$22, %1'111'1'110,$21, %1'111'1'101,$22 
+    DB %1'111'1'100,$21, %1'111'1'011,$21, %1'111'1'010,$21, %1'111'1'001,$21, %1'111'0'001,$21, %1'111'0'010,$21, %1'111'0'001,$21 
+    DB %1'111'0'010,$21, %1'111'0'001,$22, %1'111'1'001,$21, %1'111'1'010,$21, %1'111'1'101,$21, %1'110'1'111,$21, %1'100'1'111,$21 
+    DB %1'011'1'111,$21, %1'001'1'111,$21, %0'000'1'111,$21, %1'001'1'111,$21, %0'001'1'111,$22, %0'010'1'111,$22, %0'011'1'111,$21 
+    DB %0'111'1'100,$22, %0'111'1'010,$21, %0'111'1'001,$21, %0'111'0'000,$21, %0'110'1'001,$21, %0'111'0'010,$22, %0'111'0'101,$21 
+    DB %0'110'0'111,$21, %0'011'0'111,$21, %0'001'0'111,$21, %0'010'0'111,$21, %0'001'0'111,$21, %1'001'0'111,$22, %1'010'0'111,$21 
+    DB %1'011'0'111,$21, %1'111'0'110,$21, %1'111'0'101,$21, %1'111'0'011,$21, %1'111'0'010,$21, %1'111'0'011,$21, %1'101'0'001,$21 
+    DB %1'111'1'011,$21, %1'111'1'010,$21, %1'111'1'011,$21, %1'101'1'111,$21, %1'100'1'111,$22, %1'001'1'111,$21, %0'001'1'111,$24 
+    DB %0'010'1'111,$21, %0'011'1'111,$21, %0'111'1'110,$21, %0'111'1'100,$21, %0'111'1'011,$21, %0'110'1'011,$21, %0'111'0'011,$21 
+    DB %0'111'0'010,$22, %0'110'0'111,$21, %0'111'0'111,$21, %0'101'0'111,$21, %0'010'0'111,$21, %0'001'0'111,$21, %0'011'0'111,$21 
+    DB %0'111'0'110,$21, %0'111'0'100,$21, %0'111'0'000,$22, %0'111'1'111,$21, %0'101'1'111,$21, %0'010'1'111,$21, %0'011'1'111,$21 
+    DB %0'010'1'111,$21, %0'011'1'111,$22, %0'111'1'111,$21, %0'111'1'100,$21, %0'110'1'111,$21, %0'010'1'111,$21, %0'001'1'111,$22 
+    DB %0'000'1'111,$2B, %0'000'1'100,$21 
 
 ;----------------------------------------------------------;
 ;                     Single enemies                       ;
@@ -330,65 +357,68 @@ enemyFormationL3 ENPS {130/*RESPAWN_Y*/, 5/*RESPAWN_DELAY*/, movePattern07/*MOVE
 ; Level 4
 singleEnemiesL4
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
-    ENPS {010,        025,          movePattern02D3,   sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG  }
-    ENPS {010,        030,          movePattern02D2,   sp.SDB_ENEMY1 enp.ENP_RIGHT_ALONG }
-    ENPS {020,        029,          movePattern13D1,   sp.SDB_ENEMY3 enp.ENP_LEFT_ALONG  }
-    ENPS {010,        025,          movePattern13D3,   sp.SDB_ENEMY2 enp.ENP_RIGHT_ALONG }
-    ENPS {010,        027,          movePattern18,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG  }
-    ENPS {010,        032,          movePattern18,     sp.SDB_ENEMY1 enp.ENP_RIGHT_ALONG }
+    ENPS {010,        020,          movePattern02D3,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE    }
+    ENPS {010,        035,          movePattern02D2,   sp.SDB_ENEMY1 enp.ENP_RIGHT_ALONG    }
+    ENPS {020,        015,          movePattern13D1,   sp.SDB_ENEMY3 enp.ENP_LEFT_BOUNCE    }
+    ENPS {010,        035,          movePattern13D3,   sp.SDB_ENEMY2 enp.ENP_RIGHT_BOUNCE   }
+    ENPS {010,        020,          movePattern18,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG     }
+    ENPS {010,        020,          movePattern18,     sp.SDB_ENEMY1 enp.ENP_RIGHT_ALONG    }
 
-    ENPS {127,        018,          movePattern01D2,   sp.SDB_ENEMY3 enp.ENP_LEFT_HIT    }
-    ENPS {127,        015,          movePattern01D3,   sp.SDB_ENEMY3 enp.ENP_RIGHT_HIT   }
-    ENPS {165,        025,          movePattern01D1,   sp.SDB_ENEMY2 enp.ENP_LEFT_HIT    }
-    ENPS {165,        020,          movePattern01D1,   sp.SDB_ENEMY2 enp.ENP_RIGHT_HIT   }
+    ENPS {168,        030,          movePattern22,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG_RP  }
+    ENPS {128,        025,          movePattern22,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG_RP  }
+    ENPS {127,        015,          movePattern01D3,   sp.SDB_ENEMY3 enp.ENP_RIGHT_HIT      }
+    ENPS {165,        020,          movePattern01D1,   sp.SDB_ENEMY2 enp.ENP_RIGHT_HIT      }
 
-    ENPS {103,        010,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
-    ENPS {144,        012,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT   }
-    ENPS {144,        018,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
-    ENPS {185,        015,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT   }
-    ENPS {185,        009,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT    }
+    ;NPS {103,        010,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT       }
+    ENPS {144,        012,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT      }
+    ENPS {144,        018,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT       }
+    ENPS {185,        015,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT      }
+    ENPS {185,        009,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT       }
     
-    ENPS {227,        020,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_RIGHT_ALONG }
-    ENPS {227,        040,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_LEFT_HIT    }
+    ENPS {227,        020,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_RIGHT_ALONG    }
+    ENPS {227,        040,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_LEFT_HIT       }
 
 SINGLE_ENEMIES_L4       = 17
-enemyFormationL4 ENPS {085/*RESPAWN_Y*/, 8/*RESPAWN_DELAY*/, movePattern17/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_ALONG/*SETUP*/}
+enemyFormationL4 ENPS {085/*RESPAWN_Y*/, 8/*RESPAWN_DELAY*/, movePattern23/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_ALONG_RP/*SETUP*/}
 
 ; ##############################################
 ; Level 5
 singleEnemiesL5
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
-    ENPS {020,        013,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+
+    ENPS {020,        013,          movePattern25,   sp.SDB_ENEMY1   enp.ENP_LEFT_HIT_RP  }
     ENPS {030,        040,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {060,        023,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {070,        026,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
-    ENPS {080,        020,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {080,        020,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {100,        018,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {120,        023,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {120,        023,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {130,        040,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {150,        030,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {150,        030,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {140,        018,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {180,        027,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {190,        023,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {190,        023,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {200,        030,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        015,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {120,        020,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {120,        020,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        016,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
 SINGLE_ENEMIES_L5       = 15
+enemyFormationL5 ENPS {175/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern25/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_HIT_RP/*SETUP*/}
 
 ; ##############################################
 ; Level 6
 singleEnemiesL6
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
-    ENPS {020,        040,          movePattern02D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
-    ENPS {070,        014,          movePattern02D2,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
-    ENPS {150,        010,          movePattern02D1,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
-    ENPS {224,        010,          movePattern15D2,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN }
-
-    ENPS {020,        010,          movePattern02D2,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
-    ENPS {120,        002,          movePattern01D3,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
-    ENPS {224,        010,          movePattern15D2,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
-SINGLE_ENEMIES_L6       = 6
+    ENPS {005,        010,          movePattern26,    sp.SDB_ENEMY1 enp.ENP_LEFT_HIT_RP     }
+    ENPS {005,        010,          movePattern27,    sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT_RP    }
+    ENPS {070,        015,          movePattern28,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {150,        020,          movePattern28,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {224,        015,          movePattern28,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {010,        023,          movePattern29,    sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {120,        012,          movePattern29,    sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {224,        025,          movePattern01D1,  sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+SINGLE_ENEMIES_L6       = 8
+enemyFormationL6 ENPS {10/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern31/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT_RP/*SETUP*/}
 
 ; ##############################################
 ; Level 7
@@ -401,7 +431,6 @@ singleEnemiesL7
     ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
 SINGLE_ENEMIES_L7       = 6
-
 enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN/*SETUP*/}
 
 ; ##############################################

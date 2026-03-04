@@ -118,10 +118,12 @@ v1 dw 0
 ;----------------------------------------------------------;
     MACRO _PRI1
 
+    PUSH AF, BC, DE, IX, IY
     ld a, (v1)
     inc a
     ld (v1),a
     _PRF1
+    POP IY, IX, DE, BC, AF
 
     ENDM                                        ; ## END of the macro ##
 

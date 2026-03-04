@@ -69,10 +69,11 @@ PrintDebug
     ENDIF
 
 /*
+    CALL dbs.SetupPatternEnemyBank
     ; ##########################################
     LD BC, 60
     LD H, 0
-    LD A, (so.tmp)
+    LD A, (enp.tmp)
     LD L, A
     CALL ut.PrintNumber
 
