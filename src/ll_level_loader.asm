@@ -291,7 +291,6 @@ LoadUnlockLevel
     LD DE, so.unlockedLevel
     ADD DE, A
     LD A, (DE)
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

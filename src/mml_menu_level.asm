@@ -39,6 +39,7 @@ LoadMenuLevelSelect
     ; Load background palette
     CALL dbs.SetupCode1Bank
     CALL ll.LoadUnlockLevel
+
     CALL ut.NumTo99Str                          ; Load A into DE as Text
 
     PUSH DE

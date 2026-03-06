@@ -153,7 +153,7 @@ checksumVerify          DW 0
 
 STORAGE_BYTES           = $ - storageStart
 
-fileName                DB "game.sav",0
+fileName                DB "jetman.sav",0
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
