@@ -73,25 +73,29 @@ LoadLevelIntro
     CALL dbs.SetupArrays2Bank
     LD (db2.introSecondFileSize), HL
     CALL sc.SetClipTilesHorizontal
+    POP DE
 
     ; ##########################################
     ; Load palette
+    PUSH DE
     CALL ar.LoadIntroPalFile
     CALL bp.LoadDefaultPalette
+    POP DE
 
     ; ##########################################
     ; Load background image
-    POP DE
+    PUSH DE
     CALL ar.LoadLevelIntroImageFile
     CALL bm.CopyImageData
+    POP DE
 
     ; ##########################################
     ; Tilemap with story
-    LD D, "0"
-    LD E, "1"
+    PUSH DE
     CALL ar.LoadLevelIntroTilemapFile
     CALL _NextTilesRow
     CALL _NextTilesRow
+    POP DE
 
     ; ##########################################
     ; Setup joystick input
@@ -176,6 +180,12 @@ _KeyExitIntro
 ; the bottom row on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to 
 ; calculate the new position of the bottom row (#screenTilesRow). We also need to read the next row from the source tilemap (#sourceTilesRow).
 _NextTilesRow
+
+    ; #sourceTilesRowMax is set to 0 when scrolling is done.
+    LD A, (sourceTilesRowMax)
+    OR A                                        ; Same as CP 0, but faster.
+    RET Z
+
     CALL dbs.Setup16KTilemapBank
 
     ; ##########################################
@@ -214,9 +224,10 @@ _NextTilesRow
     CP B
     JR NZ, .afterResetStarsRow                  ; Jump if #sourceTilesRow != #sourceTilesRowMax.
 
-    ; Reset counter.
+    ; Scrolling is done
     XOR A
-    LD (sourceTilesRow), A
+    LD (sourceTilesRowMax), A
+    RET
 .afterResetStarsRow
 
     ; ##########################################

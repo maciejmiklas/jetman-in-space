@@ -20,6 +20,36 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                   _LoadGameEndStory                      ;
+;----------------------------------------------------------;
+    MACRO _LoadGameEndStory
+
+    CALL _HideGame
+
+    LD D, "1"
+    LD E, "0"
+    LD HL, 6608                                 ; Size of intro_1.map.
+    LD A, 185                                   ; Total number of lines in intro_0.map and intro_1.map.
+    CALL li.LoadLevelIntro
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _LoadLevel1Intro                      ;
+;----------------------------------------------------------;
+    MACRO _LoadLevel1Intro
+
+    CALL _HideGame
+
+    LD D, "0"
+    LD E, "1"
+    LD HL, 4048                                 ; Size of intro_1.map.
+    LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
+    CALL li.LoadLevelIntro
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                      _StartLevel                         ;
 ;----------------------------------------------------------;
     MACRO _StartLevel
@@ -47,7 +77,6 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
 
-.end
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -100,7 +129,8 @@ StartGameWithIntro
 .intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
-    CALL LoadLevel1Intro
+    _LoadLevel1Intro
+    _LoadGameEndStory
 
     ; Music on
     CALL dbs.SetupMusicBank
@@ -155,22 +185,6 @@ LoadMainMenu
     CALL NightLimitVisibilityOff
 
     RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                     LoadLevel1Intro                      ;
-;----------------------------------------------------------;
-LoadLevel1Intro
-
-    CALL _HideGame
-
-    LD D, "0"
-    LD E, "1"
-    LD HL, 4048                                 ; Size of intro_1.map.
-    LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
-    CALL li.LoadLevelIntro
-
-    RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;               BackgroundPaletteLoaded                    ;

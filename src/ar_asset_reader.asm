@@ -183,9 +183,14 @@ LoadBgImageFile
 ;----------------------------------------------------------;
 ;                     LoadIntroPalFile                     ;
 ;----------------------------------------------------------;
+; Input:
+;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadIntroPalFile
 
     LD HL, db2.introPalFileName
+    PUSH HL
+    CALL _SetFileLevelNumber
+    POP HL
     CALL _LoadPalFileByName
 
     RET                                         ; ## END of the function ##
