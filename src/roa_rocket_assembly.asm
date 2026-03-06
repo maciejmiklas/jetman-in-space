@@ -89,7 +89,7 @@ rocAssemblyX           DB 0
     LD (ro.rocY), A
 
     ; ##########################################
-    CALL gc.RocketElementDrop
+    JP gc.RocketElementDrop                     ; WARNING: call will not return!
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -428,7 +428,7 @@ CheckHitTank
     LD (ro.rocketState), A
 
     ; ##########################################
-    CALL gc.RocketTankHit
+    JP gc.RocketTankHit                         ; WARNING: call will not return!
 
     RET                                         ; ## END of the function ##
 

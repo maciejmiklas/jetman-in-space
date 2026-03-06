@@ -90,7 +90,7 @@ ThiefWeaponHit
     XOR A
     LD (thiefRespawnDelayCnt), A
 
-    CALL gc.FuelThiefHit
+    JP gc.FuelThiefHit                          ; WARNING: call will not return!
 
     RET                                         ; ## END of the function ##
 

@@ -299,7 +299,7 @@ FlyRocketSound
     XOR A
     LD (soundRepeatDelay), A
 
-    CALL gc.PlayRocketSound
+    JP gc.PlayRocketSound                       ; WARNING: call will not return!
 
     RET                                         ; ## END of the function ##
 
@@ -467,10 +467,8 @@ AnimateRocketExplosion
 .explodingEnds
 
     ; sequence is over, load next level.
-    CALL gc.LoadNextLevel
-
+    JP gc.LoadNextLevel                         ; WARNING: call will not return!
     RET                                         ; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                  AnimateRocketExhaust                    ;
 ;----------------------------------------------------------;

@@ -130,7 +130,6 @@ StartGameWithIntro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
     _LoadLevel1Intro
-    _LoadGameEndStory
 
     ; Music on
     CALL dbs.SetupMusicBank
@@ -200,13 +199,19 @@ BackgroundPaletteLoaded
 ;----------------------------------------------------------;
 LoadNextLevel
 
+    ; Last level done?
+    LD A, (ll.currentLevel)
+    CP _LEVEL_MAX_D10
+    _LoadGameEndStory
+    RET
+    JR NZ,.notLastLevel
+
+.notLastLevel
     CALL ll.UnlockNextLevel
     CALL LoadCurrentLevel
 
     CALL dbs.SetupCode1Bank
     CALL so.WriteToSd
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -238,8 +243,6 @@ FuelThiefHit
     CALL af.AfxPlay
 
     CALL sc.HitEnemy3
-
-    CALL dbs.SetupPatternEnemyBank              ; Stack jumps back to enemy.
 
     RET                                         ; ## END of the function ##
 
@@ -277,8 +280,6 @@ RocketFLyStartPhase1
     CALL jw.HideShots
 
     CALL NightLimitVisibilityOff
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -368,8 +369,6 @@ RocketTankHit
     LD A, af.FX_EXPLODE_TANK
     CALL af.AfxPlay
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -434,8 +433,6 @@ PlayRocketSound
     LD A, af.FX_ROCKET_FLY
     CALL af.AfxPlay
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -448,8 +445,6 @@ RocketElementDrop
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_ROCKET_EL_DROP
     CALL af.AfxPlay
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
