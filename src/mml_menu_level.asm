@@ -34,14 +34,13 @@ LoadMenuLevelSelect
     ; ##########################################
     LD A, (ll.currentLevel)
     LD (currentLevel), A
-
+    
     ; ##########################################
     ; Load background palette
     CALL dbs.SetupCode1Bank
     CALL ll.LoadUnlockLevel
-    break
-    CALL ut.NumTo99Str                          ; Load A into DE as Text.
-    break
+    CALL ut.NumTo99Str                          ; Load A into DE as Text
+
     PUSH DE
     CALL ar.LoadLevelSelectPalFile
     CALL bp.LoadDefaultPalette

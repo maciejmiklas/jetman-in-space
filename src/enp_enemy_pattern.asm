@@ -139,6 +139,103 @@ BOUNCE_H_MARG_D3        = 3
 ;                     PRIVATE MACROS                       ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                       _CanMoveOnX                        ;
+;----------------------------------------------------------;
+; Input
+;  - IY: pointer to #ENP.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+    MACRO _CanMoveOnX
+
+    ; Check if counter for X has already reached 0, or is set to 0.
+    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
+    LD C, A
+    AND MOVE_PAT_X_MASK                         ; Reset all but X.
+    OR A                                        ; Same as CP 0, but faster.
+    JR Z, .no                                   ; Jump if the counter for X has reached 0.
+
+    ; If the X counter is smaller than the Y counter, decrease the X counter every second animation frame. By doing so, we are trying to 
+    ; avoid a situation where, at the beginning, both increase by the same amount, giving movement at a 45-degree angle, and, at the end, 
+    ; the movement must continue at 90 degrees because one counter has already reached 0.
+
+    ; A already contains an X counter, a number from 0 to 7.
+    LD B, A
+ 
+    ; Load into A value from the Y counter. C contains MOVE_PAT_STEP.
+    LD A, C
+    AND MOVE_PAT_Y_MASK
+    RRA: RRA: RRA: RRA                          ; Move counter bits to get real number: %0011'0000 -> %0000'0011.
+    OR A                                        ; Move on X when Y-conter is already 0.
+    JR Z, .yes
+
+    ; A contains Y counter, B the X counter.
+    SUB B                                       ; A contains Y-cnt - X-cnt
+    JP M, .yes                                  ; Jump to .yes if Y-cnt - X-cnt < 0 -> X-cnt > Y-cnt
+
+    ; X-cnt < Y-cnt, skipp every second move on X, so that Y-counter can catch up.
+    LD A, (mld.counter000FliFLop)
+    CP _GC_FLIP_ON_D1
+    JR Z, .no
+
+.yes
+    _YES
+    JR .end
+.no
+    _NO
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                       _CanMoveOnY                        ;
+;----------------------------------------------------------;
+; Input
+;  - IY: pointer to #ENP.
+; Return:
+;  - YES: Z is reset (JP Z).
+;  - NO:  Z is set (JP NZ).
+    MACRO _CanMoveOnY
+
+    ; Check if counter for Y has already reached 0, or is set to 0.
+    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
+    LD C, A
+    AND MOVE_PAT_Y_MASK                         ; Reset all but Y.
+    OR A                                        ; Same as CP 0, but faster.
+    JR Z, .no                                   ; Jump if the counter for X has reached 0.
+
+    ; Same logic as for _CanMoveOnX, only flip X with Y.
+    ; B will contain value from Y-counter as decimal value 0-7. 
+    RRA: RRA: RRA: RRA                          ; Move counter bits to get real number: %0011'0000 -> %0000'0011.
+    LD B, A
+
+    ; Load into A value from the X counter. C contains MOVE_PAT_STEP.
+    LD A, C
+    AND MOVE_PAT_X_MASK
+    OR A                                        ; Move on Y when X-conter is already 0.
+    JR Z, .yes
+    
+    ; A contains X counter, B the Y counter.
+    SUB B                                       ; A contains X-cnt - Y-cnt
+    JP M, .yes                                  ; Jump to .yes if X-cnt - Y-cnt < 0 -> Y-cnt > X-cnt
+
+    ; X-cnt < Y-cnt, skipp every second move on X, so that Y-counter can catch up.
+    LD A, (mld.counter000FliFLop)
+    CP _GC_FLIP_ON_D1
+    JR Z, .no
+
+.yes
+    _YES
+    JR .end
+.no
+    _NO
+.end
+    ENDM                                        ; ## END of the macro ##
+    
+;----------------------------------------------------------;
+;                   _MoveXAndRestart                       ;
+;----------------------------------------------------------;
 ; Input
 ;  - IX: pointer to #SPR.
 ;  - IY: pointer to #ENP.
@@ -677,11 +774,8 @@ _MoveEnemy
 .afterMoveAlong
 
     ; ##########################################
-    ; Check if counter for X has already reached 0, or is set to 0.
-    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
-    AND MOVE_PAT_X_MASK                         ; Reset all but X.
-    OR A                                        ; Same as CP 0, but faster.
-    JR Z, .afterMoveLR                          ; Jump if the counter for X has reached 0
+    _CanMoveOnX
+    JR NZ, .afterMoveX                          ; Jump if movement on X is not possible.
 
     ; Decrement X counter
     LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
@@ -689,14 +783,11 @@ _MoveEnemy
     LD (IY + ENP.MOVE_PAT_STEP), A
 
     _MoveXAndRestart
-.afterMoveLR
+.afterMoveX
 
     ; ##########################################
-    ; Check if counter for Y has already reached 0, or is set to 0.
-    LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
-    AND MOVE_PAT_Y_MASK                         ; Reset all but Y.
-    OR A                                        ; Same as CP 0, but faster.
-    JP Z, .afterChangeY                         ; Jump if the counter for Y has reached 0.
+    _CanMoveOnY
+    JP NZ, .afterMoveY                          ; Jump if movement on Y is not possible.
 
     ; Enemy should move on Y
     LD A, (IY + ENP.MOVE_PAT_STEP)              ; A contains current X,Y counters.
@@ -732,7 +823,7 @@ _MoveEnemy
     LD A, sp.MOVE_Y_IN_UP_D1
     CALL sp.MoveY
 
-    JP .afterChangeY
+    JP .afterMoveY
 
 .afterBounceMoveDown
     ; Bouncing not necessary, finally move down
@@ -740,7 +831,7 @@ _MoveEnemy
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sp.MOVE_Y_IN_DOWN_D0
     CALL sp.MoveY
-    JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
+    JR Z, .afterMoveY                         ; Jump is sprite is not hidden.
 
     RET                                         ; Stop moving this sprite, it's hidden.
 
@@ -762,17 +853,17 @@ _MoveEnemy
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sp.MOVE_Y_IN_DOWN_D0
     CALL sp.MoveY
-    JR .afterChangeY
+    JR .afterMoveY
 .afterBounceMoveUp
 
     ; Bouncing not necessary, finally move up
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sp.MOVE_Y_IN_UP_D1
     CALL sp.MoveY
-    JR Z, .afterChangeY                         ; Jump is sprite is not hidden.
+    JR Z, .afterMoveY                         ; Jump is sprite is not hidden.
     RET                                         ; Stop moving this sprite, it's hidden.
 
-.afterChangeY
+.afterMoveY
     CALL sp.UpdateSpritePosition                ; Move sprite to new X,Y coordinates.
 
     ; Check if X and Y have reached 0 in move pattern.
@@ -905,7 +996,7 @@ _SetupDelayAndMoveSpeed
     AND MOVE_PAT_DELAY_MASK                     ; Leave only delay counter bits.
     PUSH AF
 
-    ; Move relay bits to get real number: %0011'0000 -> %0000'0011 
+    ; Move delay bits to get real number: %0011'0000 -> %0000'0011 
     RRA: RRA: RRA: RRA
 
     CP DEL_SKIP_START_D3                        ; Skipping frames starts from delay 3

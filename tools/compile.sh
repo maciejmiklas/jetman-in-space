@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd /Users/mmiklas/Development/ZX_Spectrum/prj/jetman-in-space
-sjasmplus src/main.asm --lst=bin/jetmal.lst --zxnext=cspect --outprefix=bin/ || {
+sjasmplus src/main.asm --lst=bin/jetmal.lst -DDEBUG --zxnext=cspect --outprefix=bin/ || {
   echo "Build failed, exiting" >&2
   exit 1
 }
