@@ -281,6 +281,8 @@ RocketFLyStartPhase1
 
     CALL NightLimitVisibilityOff
 
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
