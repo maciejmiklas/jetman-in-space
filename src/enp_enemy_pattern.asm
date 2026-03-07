@@ -427,17 +427,16 @@ ResetPatternEnemies
 ; Modifies: ALL
 MovePatternEnemies
 
-    ; ##########################################
     ; Loop ever all enemies skipping hidden.
 .enemyLoop
-    PUSH BC                                     ; Preserve B for loop counter.
 
     ; Ignore this sprite if it's hidden.
     LD A, (IX + SPR.STATE)
     AND sp.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility.
     OR A                                        ; Same as CP 0, but faster.
-    JR Z, .continue                             ; Jump if visibility is not set (sprite is hidden).
+    JR Z, .continueNoPop                         ; Jump if visibility is not set (sprite is hidden).
 
+    PUSH BC                                     ; Preserve B for loop counter.
     ; Load ENP for this sprite to IY.
     LD BC, (IX + SPR.EXT_DATA_POINTER)
     LD IY, BC
@@ -460,18 +459,16 @@ MovePatternEnemies
 
     ; ##########################################
     ; Sprite is visible, move it!
-    PUSH IY
     CALL _MoveEnemy
-    POP IY
 
-.continue
     ; ##########################################
+.continue
+    POP BC
+.continueNoPop
     ; Move IX to the beginning of the next #SPR.
     LD DE, SPR
     ADD IX, DE
 
-    ; ##########################################
-    POP BC
     DJNZ .enemyLoop
 
     RET                                         ; ## END of the function ##

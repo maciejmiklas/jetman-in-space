@@ -431,7 +431,7 @@ singleEnemiesL7
     ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
 SINGLE_ENEMIES_L7       = 6
-enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern02D2/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_BOUNCE_AN/*SETUP*/}
+enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern19/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
 ; ##############################################
 ; Level 9
