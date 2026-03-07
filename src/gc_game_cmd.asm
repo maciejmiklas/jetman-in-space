@@ -20,6 +20,42 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                   _LoadGameEndStory                      ;
+;----------------------------------------------------------;
+    MACRO _LoadGameEndStory
+ 
+    LD D, "1"
+    LD E, "0"
+    LD HL, 6608                                 ; Size of intro_1.map.
+    LD A, 185                                   ; Total number of lines in intro_0.map and intro_1.map.
+    CALL li.LoadLevelIntro
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_INTRO_D82
+    CALL aml.LoadSong
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _LoadLevel1Intro                      ;
+;----------------------------------------------------------;
+    MACRO _LoadLevel1Intro
+
+    LD D, "0"
+    LD E, "1"
+    LD HL, 4048                                 ; Size of intro_1.map.
+    LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
+    CALL li.LoadLevelIntro
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_INTRO_D82
+    CALL aml.LoadSong
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                      _StartLevel                         ;
 ;----------------------------------------------------------;
     MACRO _StartLevel
@@ -47,7 +83,6 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
 
-.end
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -100,12 +135,8 @@ StartGameWithIntro
 .intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
-    CALL LoadLevel1Intro
-
-    ; Music on
-    CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_INTRO_D82
-    CALL aml.LoadSong
+    CALL _HideGame
+    _LoadLevel1Intro
 
     RET                                         ; ## END of the function ##
 
@@ -125,7 +156,7 @@ SetupSystem
     LD B, db1.TILE_PAL_SIZE_1
     CALL ti.LoadTilemap9bitPalette
 
-    ; Load sprites from any level for mein menu.
+    ; Load sprites from first level for mein menu.
     LD D, "0"
     LD E, "1"
     CALL ar.LoadSpritesFile
@@ -157,22 +188,6 @@ LoadMainMenu
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     LoadLevel1Intro                      ;
-;----------------------------------------------------------;
-LoadLevel1Intro
-
-    CALL _HideGame
-
-    LD D, "0"
-    LD E, "1"
-    LD HL, 4048                                 ; Size of intro_1.map.
-    LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
-    CALL li.LoadLevelIntro
-
-    RET                                         ; ## END of the function ##
-
-
-;----------------------------------------------------------;
 ;               BackgroundPaletteLoaded                    ;
 ;----------------------------------------------------------;
 BackgroundPaletteLoaded
@@ -186,13 +201,27 @@ BackgroundPaletteLoaded
 ;----------------------------------------------------------;
 LoadNextLevel
 
+    ; Last level done?
+    LD A, (ll.currentLevel)
+    CP _LEVEL_MAX_D10
+    JR NZ, .notLastLevel
+
+    ; Last level finished, load end of the game and continue on the first.
+    CALL _HideGame
+
+    LD A, _LEVEL_MIN_D1
+    LD (ll.currentLevel), A
+
+    _LoadGameEndStory
+
+    RET
+
+.notLastLevel
     CALL ll.UnlockNextLevel
     CALL LoadCurrentLevel
 
     CALL dbs.SetupCode1Bank
     CALL so.WriteToSd
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -224,8 +253,6 @@ FuelThiefHit
     CALL af.AfxPlay
 
     CALL sc.HitEnemy3
-
-    CALL dbs.SetupPatternEnemyBank              ; Stack jumps back to enemy.
 
     RET                                         ; ## END of the function ##
 
@@ -320,7 +347,6 @@ RocketFLyStartPhase4
 RocketFLyPhase2and3
 
     CALL ros.ScrollStarsOnFlyRocket
-    CALL st.MoveFastStarsDown
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
@@ -337,7 +363,7 @@ RocketFLyPhase4
     CALL ros.ScrollStarsOnFlyRocket
     CALL rot.CheckRocketCollision
 
-    CALL st.MoveFastStarsDown
+    CALL st.MoveStarsDownFast
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
@@ -353,8 +379,6 @@ RocketTankHit
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_EXPLODE_TANK
     CALL af.AfxPlay
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -420,8 +444,6 @@ PlayRocketSound
     LD A, af.FX_ROCKET_FLY
     CALL af.AfxPlay
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -434,8 +456,6 @@ RocketElementDrop
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_ROCKET_EL_DROP
     CALL af.AfxPlay
-
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 

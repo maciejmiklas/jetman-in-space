@@ -8,7 +8,7 @@
     MODULE ki
 
 userInputDelayCnt       DB 0
-USER_INPUT_DELAY_D15    = 15
+USER_INPUT_DELAY_D10    = 10
 
 userInputInactiveCnt    DB 0
 USER_INPUT_RESET_D5     = 5
@@ -29,7 +29,7 @@ KeyboardInputLastLoop
 
     ; Do not reset #userInputDelayCnt if already at #USER_INPUT_DELAY_D15.
     LD A, (userInputDelayCnt)
-    CP USER_INPUT_DELAY_D15
+    CP USER_INPUT_DELAY_D10
     RET Z
 
     LD A, (userInputInactiveCnt)
@@ -43,7 +43,7 @@ KeyboardInputLastLoop
     XOR A
     LD (userInputInactiveCnt), A
 
-    LD A, USER_INPUT_DELAY_D15
+    LD A, USER_INPUT_DELAY_D10
     LD (userInputDelayCnt), A
 
     RET                                         ; ## END of the function ##
@@ -58,7 +58,7 @@ ResetKeyboard
     XOR A
     LD (userInputInactiveCnt), A
 
-    LD A, USER_INPUT_DELAY_D15
+    LD A, USER_INPUT_DELAY_D10
     LD (userInputDelayCnt), A
     
     LD DE, _DummyFunction
@@ -242,7 +242,7 @@ CanProcessKeyInput
 
     ; Delay user input processing
     LD A, (userInputDelayCnt)
-    CP USER_INPUT_DELAY_D15
+    CP USER_INPUT_DELAY_D10
     JR Z, .processInput
     INC A
     LD (userInputDelayCnt), A

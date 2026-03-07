@@ -73,14 +73,14 @@ PrintDebug
     ; ##########################################
     LD BC, 60
     LD H, 0
-    LD A, (enp.tmp)
+    LD A, (enp.tmp1)
     LD L, A
     CALL ut.PrintNumber
 
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (enu.thiefRespawnDelayCnt)
+    LD A, (enp.tmp2)
     LD L, A
     CALL ut.PrintNumber
 */

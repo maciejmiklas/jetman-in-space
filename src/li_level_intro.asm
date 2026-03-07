@@ -15,7 +15,7 @@ sourceTilesRowMax       DB 0
 tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti._TI_PIXELS_D8-1).
 
-animateDelayCnt         DB ANIMATE_DELAY_D50        ; Start scrolling without a delay.
+animateDelayCnt         DB ANIMATE_DELAY_D50    ; Start scrolling without a delay.
 ANIMATE_DELAY_D50       = 50
 
 ;----------------------------------------------------------;
@@ -69,29 +69,33 @@ LoadLevelIntro
     CALL ms.SetMainState
 
     ; ##########################################
+    ; Tilemap with story
+
     PUSH DE
     CALL dbs.SetupArrays2Bank
     LD (db2.introSecondFileSize), HL
     CALL sc.SetClipTilesHorizontal
-
-    ; ##########################################
-    ; Load palette
-    CALL ar.LoadIntroPalFile
-    CALL bp.LoadDefaultPalette
-
-    ; ##########################################
-    ; Load background image
     POP DE
-    CALL ar.LoadLevelIntroImageFile
-    CALL bm.CopyImageData
 
-    ; ##########################################
-    ; Tilemap with story
-    LD D, "0"
-    LD E, "1"
+    PUSH DE
     CALL ar.LoadLevelIntroTilemapFile
     CALL _NextTilesRow
     CALL _NextTilesRow
+    POP DE
+
+    ; ##########################################
+    ; Load palette
+    PUSH DE
+    CALL ar.LoadIntroPalFile
+    CALL bp.LoadDefaultPalette
+    POP DE
+
+    ; ##########################################
+    ; Load background image
+    PUSH DE
+    CALL ar.LoadLevelIntroImageFile
+    CALL bm.CopyImageData
+    POP DE
 
     ; ##########################################
     ; Setup joystick input
@@ -111,6 +115,18 @@ LoadLevelIntro
 
     LD DE, _KeyExitIntro
     LD (ki.callbackRight), DE
+
+    ; ##########################################
+    ; Copy tile definitions (sprite file) to expected memory.
+    LD D, "m"
+    LD E, "a"
+    CALL ar.LoadTilePlatformsSprFile
+
+    ; Load tilemap menu palette.
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.TILE_PAL_SIZE_1
+    CALL ti.LoadTilemap9bitPalette
 
     RET                                         ; ## END of the function ##
 
@@ -176,6 +192,12 @@ _KeyExitIntro
 ; the bottom row on the screen. But as the tilemap moved by 8 pixels, so did the bottom row. Each time the method is called, we have to 
 ; calculate the new position of the bottom row (#screenTilesRow). We also need to read the next row from the source tilemap (#sourceTilesRow).
 _NextTilesRow
+
+    ; #sourceTilesRowMax is set to 0 when scrolling is done.
+    LD A, (sourceTilesRowMax)
+    OR A                                        ; Same as CP 0, but faster.
+    RET Z
+
     CALL dbs.Setup16KTilemapBank
 
     ; ##########################################
@@ -214,9 +236,10 @@ _NextTilesRow
     CP B
     JR NZ, .afterResetStarsRow                  ; Jump if #sourceTilesRow != #sourceTilesRowMax.
 
-    ; Reset counter.
+    ; Scrolling is done
     XOR A
-    LD (sourceTilesRow), A
+    LD (sourceTilesRowMax), A
+    RET
 .afterResetStarsRow
 
     ; ##########################################

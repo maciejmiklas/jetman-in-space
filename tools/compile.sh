@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd /Users/mmiklas/Development/ZX_Spectrum/prj/jetman-in-space
-sjasmplus src/main.asm --lst=bin/jetmal.lst --zxnext=cspect --outprefix=bin/ || {
+sjasmplus src/main.asm --lst=bin/jetmal.lst -DDEBUG --zxnext=cspect --outprefix=bin/ || {
   echo "Build failed, exiting" >&2
   exit 1
 }
@@ -12,4 +12,4 @@ cp -fr /Users/mmiklas/Development/ZX_Spectrum/prj/jetman-in-space/bin/assets /Vo
 cd /Users/mmiklas/Development/ZX_Spectrum/opt/cspect
 
 # -fullscreen
-mono cspect.exe -brk -w6 -zxnext -nextrom -mmc=/Users/mmiklas/Development/ZX_Spectrum/opt/cspect-next/cspect-next-2g.img -map=/Users/mmiklas/Development/ZX_Spectrum/prj/jetman-in-space/bin/jetman.map
+mono cspect.exe -dscale -brk -w6 -zxnext -nextrom -mmc=/Users/mmiklas/Development/ZX_Spectrum/opt/cspect-next/cspect-next-2g.img -map=/Users/mmiklas/Development/ZX_Spectrum/prj/jetman-in-space/bin/jetman.map
