@@ -198,7 +198,7 @@
     ; ##########################################
     CALL rof.FlyRocket
     CALL rof.FlyRocketSound
-
+    
     ; ##########################################
     ; Phase 4
     LD A, (ro.rocketFlyPhase)
@@ -208,7 +208,7 @@
     CALL rot.MoveMeteors
     CALL st.MoveStarsDown
 .notPhase4
-
+  
 .end
     ENDM                                        ; ## END of the macro ##
 

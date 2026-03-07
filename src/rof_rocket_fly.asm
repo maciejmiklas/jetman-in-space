@@ -11,10 +11,6 @@
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5
 
-; Max rocket fly distance, when reached, it will explode.
-EXPLODE_Y_HI_H4         = $F0
-EXPLODE_Y_LO_H7E        = $FF
-
 rocketExplodeCnt        DB 0                    ; Counts from 1 to RO_EXPLODE_SIZE (both inclusive).
 RO_EXPLODE_SIZE         = 28                    ; Amount of explosion frames stored in #rocketExplodeDB[1-3].
 
@@ -181,9 +177,7 @@ ROC_Y_MAX_HI_H1         = $1
     INC HL
     LD (rocketDistance), HL
 
-    PUSH HL
     _UpdateRocketFlyPhase
-    POP HL
 
     ; ##########################################
     ; The current position of rocket elements is stored in #ro.rocAssemblyX and #ro.RO.Y 
@@ -229,20 +223,6 @@ ROC_Y_MAX_HI_H1         = $1
     LD HL, (rocketDistance)
     INC HL
     LD (rocketDistance), HL
-
-    ; ##########################################
-    ; Has the rocket reached the meteor, and should the explosion sequence begin?
-    LD A, H
-    CP EXPLODE_Y_HI_H4
-    JR NZ, .notAtExpolodeDistance
-
-    LD A, L
-    CP EXPLODE_Y_LO_H7E
-    JR C, .notAtExpolodeDistance
-
-    CALL StartRocketExplosion
-    JR .end
-.notAtExpolodeDistance
 
     ; ##########################################
     CALL ro.UpdateRocketPosition

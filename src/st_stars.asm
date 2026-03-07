@@ -515,9 +515,9 @@ MoveStarsDown
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  MoveFastStarsDown                       ;
+;                  MoveStarsDownFast                       ;
 ;----------------------------------------------------------;
-MoveFastStarsDown
+MoveStarsDownFast
 
     _PrepRenderStars
 

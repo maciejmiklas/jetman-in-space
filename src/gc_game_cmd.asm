@@ -23,14 +23,17 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;                   _LoadGameEndStory                      ;
 ;----------------------------------------------------------;
     MACRO _LoadGameEndStory
-
-    CALL _HideGame
-
+ 
     LD D, "1"
     LD E, "0"
     LD HL, 6608                                 ; Size of intro_1.map.
     LD A, 185                                   ; Total number of lines in intro_0.map and intro_1.map.
     CALL li.LoadLevelIntro
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_INTRO_D82
+    CALL aml.LoadSong
 
     ENDM                                        ; ## END of the macro ##
 
@@ -39,13 +42,16 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
     MACRO _LoadLevel1Intro
 
-    CALL _HideGame
-
     LD D, "0"
     LD E, "1"
     LD HL, 4048                                 ; Size of intro_1.map.
     LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
     CALL li.LoadLevelIntro
+
+    ; Music on
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_INTRO_D82
+    CALL aml.LoadSong
 
     ENDM                                        ; ## END of the macro ##
 
@@ -129,12 +135,8 @@ StartGameWithIntro
 .intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
+    CALL _HideGame
     _LoadLevel1Intro
-
-    ; Music on
-    CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_INTRO_D82
-    CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
 
@@ -202,9 +204,17 @@ LoadNextLevel
     ; Last level done?
     LD A, (ll.currentLevel)
     CP _LEVEL_MAX_D10
+    JR NZ, .notLastLevel
+
+    ; Last level finished, load end of the game and continue on the first.
+    CALL _HideGame
+
+    LD A, _LEVEL_MIN_D1
+    LD (ll.currentLevel), A
+
     _LoadGameEndStory
+
     RET
-    JR NZ,.notLastLevel
 
 .notLastLevel
     CALL ll.UnlockNextLevel
@@ -337,7 +347,6 @@ RocketFLyStartPhase4
 RocketFLyPhase2and3
 
     CALL ros.ScrollStarsOnFlyRocket
-    CALL st.MoveFastStarsDown
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
@@ -354,7 +363,7 @@ RocketFLyPhase4
     CALL ros.ScrollStarsOnFlyRocket
     CALL rot.CheckRocketCollision
 
-    CALL st.MoveFastStarsDown
+    CALL st.MoveStarsDownFast
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 

@@ -333,12 +333,11 @@ UnlockNextLevel
     PUSH AF
     CALL dbs.SetupCode1Bank
 
-    ; Move DE to the #unlockedLevel for the current difficulty level.
+    ; Move DE to the #unlockedLevel for the current difficulty.
     LD DE, so.unlockedLevel
-
     LD A, (jt.difLevel)
     DEC A
-    ADD DE, A                                   ; DE points to the current value with unlocked level
+    ADD DE, A                                   ; DE points to the level based on difficulty.
 
     ; Update unlocked level only if the new value is > than the current one.
     LD A, (DE)
@@ -348,6 +347,14 @@ UnlockNextLevel
     ; We have to make sure that we do not overwrite the unlocked level with a lower value.
     CP B
     RET C
+
+    ; Make sure that unlock level is within the range (no prevent data corruption).
+    CP _LEVEL_MIN_D1
+    RET C
+
+    CP _LEVEL_MAX_D10+1
+    RET NC
+
     LD (DE), A
     RET
 

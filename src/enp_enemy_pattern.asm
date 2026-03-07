@@ -32,7 +32,7 @@ ENP_BIT_DEPLOY_D1       = 1                     ; 1 - deploy enemy on the left, 
 ENP_BIT_BOUNCE_D2       = 2                     ; 1 - bounce from platforms, if set #ENP_BIT_ALONG_D0 is ignored, 0 - disabled.
 ENP_BIT_BOUNCE_AN_D3    = 3                     ; 1 - enable extra bouncing animation (sprites 34,35,36).
 ENP_BIT_RESET_X_D4      = 4                     ; 1 - reset the move pattern when reaching the end of the horizontal screen.
-ENP_BIT_REVERSE_Y_D7    = 7                     ; 1 - reverses bit #ENP_BIT_DEPLOY_D1, set during runtime when enemy hits platform from L/R.
+ENP_BIT_REVERSE_Y_D7    = 7                     ; 1 - reverses bit #ENP_BIT_DEPLOY_D1, set during runtime when enemy hits platform (see ENP_REVERSE_Y).
 
 ENP_LEFT_ALONG          = %000'0'0'0'1'1 
 ENP_RIGHT_ALONG         = %000'0'0'0'0'1 
@@ -57,6 +57,7 @@ ENP_REVERSE_Y           = %1'0000000
 MOVE_DELAY_CNT_INC      = %0001'0000 
 
 RESPAWN_OFF_D255        = 255
+SKIP_MOVE_D2            = 2
 
 ; The move pattern is stored as a byte array. The first byte in this array holds the size in bytes of the whole pattern. 
 ; Each pattern step takes 2 bytes so that the size will be 24 for movement consisting of 12 patterns.
@@ -140,6 +141,7 @@ BOUNCE_H_MARG_D3        = 3
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+
 ;----------------------------------------------------------;
 ;                       _CanMoveOnX                        ;
 ;----------------------------------------------------------;
@@ -204,6 +206,9 @@ BOUNCE_H_MARG_D3        = 3
     AND MOVE_PAT_Y_MASK                         ; Reset all but Y.
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .no                                   ; Jump if the counter for X has reached 0.
+
+    BIT ENP_BIT_BOUNCE_D2, (IY + ENP.SETUP)
+    JR NZ, .yes                                 ; Jump if bounce is not set (optimization does not work right in this case).
 
     ; Same logic as for _CanMoveOnX, only flip X with Y.
     ; B will contain value from Y-counter as decimal value 0-7. 
@@ -706,7 +711,7 @@ _MoveEnemy
     ; ##########################################
     ; Should enemy bounce of the platform?
     BIT ENP_BIT_BOUNCE_D2, (IY + ENP.SETUP)
-    JR Z, .afterBounceSetup                        ; Jump if bounce is not set.
+    JR Z, .afterBounce                          ; Jump if bounce is not set.
 
     ; Check the collision with the platform
     PUSH IX, IY, HL
@@ -717,7 +722,7 @@ _MoveEnemy
     POP HL, IY, IX
 
     OR A                                        ; Same as CP pl.PL_DHIT_NO_D0
-    JR Z, .afterBounceSetup
+    JR Z, .afterBounce
 
     CP pl.PL_DHIT_LEFT_D1
     JR Z, .bounceL
@@ -734,8 +739,7 @@ _MoveEnemy
 .bounceHorizontal
     ; Enemy bounces from the platform's top/bottom, reverse movement
     CALL _FlipReverseY                        ; Revert reverse
-
-    JR .afterBounceSetup
+    JR .moveEnemy
 .bounceL
     ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction.
     RES ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
@@ -744,7 +748,7 @@ _MoveEnemy
     LD A, sp.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
 
-    JR .afterBounceSetup
+    JR .moveEnemy
 .bounceR
     ; Enemy bounces from the platform's right side.
     SET ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
@@ -752,8 +756,8 @@ _MoveEnemy
 
     LD A, sp.SDB_BOUNCE_SIDE
     CALL _PlayBounceAnimation
-
-.afterBounceSetup
+    JR .moveEnemy
+.afterBounce
 
     ; ##########################################
     ; Should the enemy move along the platform to avoid collision?
@@ -773,6 +777,7 @@ _MoveEnemy
     RET                                         ; Return, sprite moves along platform.
 .afterMoveAlong
 
+.moveEnemy
     ; ##########################################
     _CanMoveOnX
     JR NZ, .afterMoveX                          ; Jump if movement on X is not possible.
@@ -831,12 +836,11 @@ _MoveEnemy
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sp.MOVE_Y_IN_DOWN_D0
     CALL sp.MoveY
-    JR Z, .afterMoveY                         ; Jump is sprite is not hidden.
+    JR Z, .afterMoveY                           ; Jump is sprite is not hidden.
 
     RET                                         ; Stop moving this sprite, it's hidden.
 
 .moveUp
-
     ; ##########################################
     ; Move  up, but first, check whether the enemy bounces off the top of the screen.
     BIT ENP_BIT_BOUNCE_D2, (IY + ENP.SETUP)
@@ -860,7 +864,7 @@ _MoveEnemy
     LD B, (IY + ENP.MOVE_PX)                     ; Load movement speed into B for MoveY
     LD A, sp.MOVE_Y_IN_UP_D1
     CALL sp.MoveY
-    JR Z, .afterMoveY                         ; Jump is sprite is not hidden.
+    JR Z, .afterMoveY                           ; Jump is sprite is not hidden.
     RET                                         ; Stop moving this sprite, it's hidden.
 
 .afterMoveY
@@ -890,7 +894,6 @@ _MoveEnemy
     JR .checkPlatformHit
 
 .nextMovePattern
-
     ; ##########################################
     ; Setup next move pattern
     LD A, (IY + ENP.MOVE_PAT_POS)               ; A contains the current position in the move pattern.
@@ -935,7 +938,6 @@ _MoveEnemy
 ; Check platform hit independent of move-along-bit. The margin for move-along is more significant than one for the hit. Sprite can hit 
 ; the platform where it's impossible to avoid a collision, such as a front hit.
 .checkPlatformHit
-
     CALL pl.PlatformSpriteHit
     RET NZ                                      ; Return if there is no collision
     CALL sp.SpriteHit                           ; Explode!

@@ -10,7 +10,7 @@
    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
 
 storageStart
-unlockedLevel           DB 10,10,10                ; There are three difficulty levels, unlocked independently.
+unlockedLevel           DB 10,10,10             ; There are three difficulty levels, unlocked independently.
 UNLOCK_SIZE             = $ - unlockedLevel
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
@@ -316,7 +316,6 @@ ReadFromSd
 
     RET                                         ; ## END of the function ##
 
-tmp db 0
 ;----------------------------------------------------------;
 ;                        WriteToSd                         ;
 ;----------------------------------------------------------;
@@ -348,10 +347,6 @@ WriteToSd
     LD  IX, storageStart
     LD  BC, STORAGE_BYTES
     CALL fi.FileWrite
-
-    ld a, (tmp)
-    inc a
-    ld (tmp),a
 
     RET                                         ; ## END of the function ##
 
