@@ -97,7 +97,7 @@ LoadTilemap9bitPalette
     ;  - 7:   0 = enable auto increment on write.
     NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
     NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0.
-   
+
 .loop
     LD A, (HL)                                  ; Load RRRGGGBB into A.
     INC HL                                      ; Increment to next entry.

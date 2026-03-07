@@ -30,6 +30,7 @@ MoveFormationEnemies
     RET Z
 
     LD B, A
+
     LD IX, ena.formationEnemySprites
     CALL enp.MovePatternEnemies
 
