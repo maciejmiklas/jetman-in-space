@@ -338,7 +338,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Check for platform hit.
 
-    ; Params for _PlatformHit.
+    ; Params for _AnyPlatformHit.
     LD HL, jpo.jetX
 
     LD IY, (platformsPtr)
@@ -481,7 +481,7 @@ JetPlatformHitOnJoyMove
 ;                    ResetJoyOffBump                       ;
 ;----------------------------------------------------------;
 ResetJoyOffBump
-    
+
     CALL dbs.SetupArrays2Bank
 
     ; Do not reset if already done.
@@ -496,7 +496,7 @@ ResetJoyOffBump
     CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .reset                               ; Reset immediately if walking.
     
-    ; Call _PlatformHit to check whether Jetman is close to the platform. now, we will load the params for this method.
+    ; Call _AnyPlatformHit to check whether Jetman is close to the platform. now, we will load the params for this method.
     LD HL, jpo.jetX
 
     LD IY, (platformsPtr)
@@ -505,7 +505,7 @@ ResetJoyOffBump
     LD B, A
 
     LD IX, db2.jetAwayMargin
-    CALL _PlatformHit
+    CALL _AnyPlatformHit
     RET Z                                        ; Jetman is close to platform - do not reset the bump.
 
 .reset
@@ -526,6 +526,8 @@ ResetJoyOffBump
 ;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteHit
 
+    CALL dbs.SetupArrays2Bank
+
     LD IY, db2.spriteHitMargin
     JP _PlatformSpriteHit
 
@@ -539,6 +541,8 @@ PlatformSpriteHit
 ;  - YES: Z is reset (JP Z). Sprite hits the platform.
 ;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteClose
+
+    CALL dbs.SetupArrays2Bank
 
     LD IY, db2.closeMargin
     JP _PlatformSpriteHit
@@ -554,6 +558,8 @@ PlatformSpriteClose
 ;  - NO:  Z is set (JP NZ). No collision.
 CheckPlatformWeaponHit
 
+    CALL dbs.SetupArrays2Bank
+
     LD IY, db2.shotHitMargin
     JP _PlatformSpriteHit
 
@@ -561,6 +567,8 @@ CheckPlatformWeaponHit
 ;               MoveJetOnFallingFromPlatform               ;
 ;----------------------------------------------------------;
 MoveJetOnFallingFromPlatform
+
+    CALL dbs.SetupArrays2Bank
 
     ; Is Jetman falling from the platform on the right side?
     LD A, (jt.jetAir)
@@ -596,6 +604,8 @@ MoveJetOnFallingFromPlatform
 ;----------------------------------------------------------;
 MoveJetOnHitPlatformBelow
 
+    CALL dbs.SetupArrays2Bank
+
     ; Jetman hits the platform from the bottom?
     LD A, (jt.jetAir)
     CP jt.AIR_BUMP_BOTTOM_D16
@@ -628,6 +638,8 @@ MoveJetOnHitPlatformBelow
 ;                       JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
+
+    CALL dbs.SetupArrays2Bank
 
     ; Ignore landing if Jetman is already on the ground.
     LD A, (jt.jetGnd)
@@ -668,6 +680,8 @@ JetLanding
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 PlatformBounceOff
 
+    CALL dbs.SetupArrays2Bank
+
     LD IY, (platformsPtr)
 
     LD A, (platformsSize)
@@ -683,6 +697,8 @@ PlatformBounceOff
 ;                 MoveJetOnPlatformSideHit                 ;
 ;----------------------------------------------------------;
 MoveJetOnPlatformSideHit
+
+    CALL dbs.SetupArrays2Bank
 
     ; Is Jetman bumping into the platform from the right?
     LD A, (jt.jetAir)
@@ -804,9 +820,14 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
 
 _PlatformDirectionHit
 
-    CALL dbs.SetupArrays2Bank
 .loopOverPlatforms
     PUSH BC
+
+    ; ##########################################
+    ; Quick check if we are close to the platform.
+    CALL _PlatformHit
+    JP NZ, .continue
+
     ; ##########################################
     ; Check the collision from the left side of the platform.
 
@@ -814,7 +835,7 @@ _PlatformDirectionHit
 
     JR NZ, .afterHitLeft
 
-    ; We have a hit from the left side, now check whether Jetman is within the vertical bounds of the platform.
+    ; We have a hit from the left side, now check whether sprite is within the vertical bounds of the platform.
     CALL _CheckPlatformHitVertical
     JR NZ, .afterHitLeft
 
@@ -828,7 +849,7 @@ _PlatformDirectionHit
     _CheckPlatformHitRight
     JR NZ, .afterHitRight
 
-    ; We have a hit from the right side, now check whether Jetman is within the vertical bounds of the platform.
+    ; We have a hit from the right side, now check whether sprite is within the vertical bounds of the platform.
     CALL _CheckPlatformHitVertical
     JR NZ, .afterHitRight
 
@@ -842,7 +863,7 @@ _PlatformDirectionHit
     _CheckPlatformHitTop
     JR NZ, .afterHitTop
 
-    ; We have a hit from the top side, now check whether Jetman is within the horizontal bounds of the platform.
+    ; We have a hit from the top side, now check whether sprite is within the horizontal bounds of the platform.
     CALL _CheckPlatformHitHorizontal
 
     JR NZ, .afterHitTop
@@ -853,7 +874,6 @@ _PlatformDirectionHit
 
     ; ##########################################
     ; Check the collision from the bottom side of the platform.
-
     _CheckPlatformHitBottom
     JR NZ, .afterHitBottom
 
@@ -866,6 +886,7 @@ _PlatformDirectionHit
     JR .endLoopOverPlatforms
 .afterHitBottom
 
+.continue
     ; ##########################################
     ; Loop over platforms.
     
@@ -887,7 +908,7 @@ _PlatformDirectionHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     _PlatformHit                         ;
+;                   _AnyPlatformHit                        ;
 ;----------------------------------------------------------;
 ; Check whether the sprite given by coordinates hits one of the platforms. It does not provide direction, just an indication that 
 ; there was a hit. To get directions use #_PlatformDirectionHit.
@@ -904,12 +925,39 @@ _PlatformDirectionHit
 ;
 ; Modifies:  A, BC, DE, IY
 ; Unchanged: HL, IX
-_PlatformHit
+_AnyPlatformHit
 
-    CALL dbs.SetupArrays2Bank
 .loopOverPlatforms
 
-    ; ##########################################
+    CALL _PlatformHit
+    RET Z
+
+    LD DE, PLA
+    ADD IY, DE
+    DJNZ .loopOverPlatforms                     ; decrement B until all platforms have been evaluated.
+
+    _NO
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                      _PlatformHit                        ;
+;----------------------------------------------------------;
+; Check whether the sprite given by coordinates hits one of the platforms. It does not provide direction, just an indication that 
+; there was a hit. To get directions use #_PlatformDirectionHit.
+; Input:
+;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
+;  - IY: set to current platform from #PLA list.
+;  - B:  number of elements in #PLA list.
+;  - IX: pointer to #PLAM.
+; Return:
+;  - YES: Z is reset (JP Z). Sprite hits the platform.
+;  - NO:  Z is set (JP NZ). No collision.
+;  - B:  the current value of the platform counter. It counts from the maximum amount of platforms to zero.
+;
+; Modifies: A, HL, DE, C
+_PlatformHit
+
     ; Check the collision from the left side of the platform.
 
     ; HL points to memory location containing X, now we load into HL its value.
@@ -932,7 +980,7 @@ _PlatformHit
 
     POP HL
 
-    JP M, .continueLoopOverPlatforms            ; continue (no collision) if HL - DE < 0.
+    JP M, .noCollision                          ; Jump if no collision (HL - DE < 0).
 
     ; ##########################################
     ; Sprite is on the left from the platform's left corner. Now check whether it's not over the end.
@@ -950,7 +998,7 @@ _PlatformHit
     SBC HL, DE                                  ; HL - DE
     POP HL
 
-    JP M, .continueLoopOverPlatforms            ; continue (no collision) if HL - DE < 0.
+    JP M, .noCollision                          ; Jump if no collision (HL - DE < 0).
 
     ; Sprite is within the platform's horizontal position. Now check whether it's within vertical bounds.
 
@@ -967,7 +1015,7 @@ _PlatformHit
     SUB (IX + PLAM.Y_TOP)                       ; Add platform top margin.
 
     CP C                                        ; Compare [Y sprite] position to [Y start].
-    JR NC, .continueLoopOverPlatforms           ; Jump if sprite < [Y platform start].
+    JR NC, .noCollision                           ; Jump if sprite < [Y platform start].
 
     ; ##########################################
     ; Check platform's bottom level.
@@ -975,18 +1023,14 @@ _PlatformHit
     ADD (IX + PLAM.Y_BOTTOM)                    ; Add platform bottom margin.
 
     CP C
-    JR C, .continueLoopOverPlatforms            ; Jump if sprite > [Y end].
+    JR C, .noCollision                          ; Jump if sprite > [Y end].
 
     ; ##########################################
     ; Sprite hits the platform!
     _YES
     RET
 
-.continueLoopOverPlatforms
-    LD DE, PLA
-    ADD IY, DE
-    DJNZ .loopOverPlatforms                     ; decrement B until all platforms have been evaluated.
-
+.noCollision
     _NO
 
     RET                                         ; ## END of the function ##
@@ -1107,8 +1151,6 @@ _CheckPlatformHitVertical
 ;  - NO:  Z is set (JP NZ). No collision.
 _PlatformSpriteHit
 
-    CALL dbs.SetupArrays2Bank
-
     ; Exit if sprite is not alive
     BIT sp.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR NZ, .alive                               ; Jump if sprite is alive.
@@ -1119,7 +1161,7 @@ _PlatformSpriteHit
 
     PUSH IX
 
-    ; Params for _PlatformHit.
+    ; Params for _AnyPlatformHit.
     LD HL, IX
     ADD HL, SPR.X
 
@@ -1129,7 +1171,7 @@ _PlatformSpriteHit
     LD A, (platformsSize)
     LD B, A
 
-    CALL _PlatformHit
+    CALL _AnyPlatformHit
 
     POP IX
 
