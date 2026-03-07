@@ -156,7 +156,7 @@ SetupSystem
     LD B, db1.TILE_PAL_SIZE_1
     CALL ti.LoadTilemap9bitPalette
 
-    ; Load sprites from any level for mein menu.
+    ; Load sprites from first level for mein menu.
     LD D, "0"
     LD E, "1"
     CALL ar.LoadSpritesFile

@@ -15,7 +15,7 @@ sourceTilesRowMax       DB 0
 tileOffset              DB 0                    ; Runs from 0 to 255, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tilePixelCnt            DB 0                    ; Runs from 0 to 7 (#ti._TI_PIXELS_D8-1).
 
-animateDelayCnt         DB ANIMATE_DELAY_D50        ; Start scrolling without a delay.
+animateDelayCnt         DB ANIMATE_DELAY_D50    ; Start scrolling without a delay.
 ANIMATE_DELAY_D50       = 50
 
 ;----------------------------------------------------------;
@@ -69,10 +69,18 @@ LoadLevelIntro
     CALL ms.SetMainState
 
     ; ##########################################
+    ; Tilemap with story
+
     PUSH DE
     CALL dbs.SetupArrays2Bank
     LD (db2.introSecondFileSize), HL
     CALL sc.SetClipTilesHorizontal
+    POP DE
+
+    PUSH DE
+    CALL ar.LoadLevelIntroTilemapFile
+    CALL _NextTilesRow
+    CALL _NextTilesRow
     POP DE
 
     ; ##########################################
@@ -87,14 +95,6 @@ LoadLevelIntro
     PUSH DE
     CALL ar.LoadLevelIntroImageFile
     CALL bm.CopyImageData
-    POP DE
-
-    ; ##########################################
-    ; Tilemap with story
-    PUSH DE
-    CALL ar.LoadLevelIntroTilemapFile
-    CALL _NextTilesRow
-    CALL _NextTilesRow
     POP DE
 
     ; ##########################################
@@ -115,6 +115,18 @@ LoadLevelIntro
 
     LD DE, _KeyExitIntro
     LD (ki.callbackRight), DE
+
+    ; ##########################################
+    ; Copy tile definitions (sprite file) to expected memory.
+    LD D, "m"
+    LD E, "a"
+    CALL ar.LoadTilePlatformsSprFile
+
+    ; Load tilemap menu palette.
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.TILE_PAL_SIZE_1
+    CALL ti.LoadTilemap9bitPalette
 
     RET                                         ; ## END of the function ##
 
