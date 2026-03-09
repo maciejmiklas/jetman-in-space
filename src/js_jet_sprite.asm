@@ -290,7 +290,7 @@ ChangeJetSpriteOnFlyDown
 
     ; Change animation only if Jetman is flying
     LD A, (jt.jetAir)
-    OR A                                        ; Same as: CP jt.AIR_FLY_D10
+    CP jt.AIR_FLY_D10
     RET NZ
 
     ; Switch to flaying down animation

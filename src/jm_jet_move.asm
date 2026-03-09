@@ -301,7 +301,7 @@ JoyMoveDown
     ; We have direction change!
     LD A, (gid.jetDirection)                    ; Update #jetState by resetting Up/Hover and setting down.
     RES gid.MOVE_UP_BIT_D2, A
-    SET gid.MOVE_DOWN_BIT_D3, A    
+    SET gid.MOVE_DOWN_BIT_D3, A
     LD (gid.jetDirection), A
     
     CALL js.ChangeJetSpriteOnFlyDown
