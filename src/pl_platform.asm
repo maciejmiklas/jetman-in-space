@@ -825,7 +825,9 @@ _PlatformDirectionHit
 
     ; ##########################################
     ; Quick check if we are close to the platform.
+    PUSH BC
     CALL _PlatformHit
+    POP BC
     JP NZ, .continue
 
     ; ##########################################
@@ -928,8 +930,9 @@ _PlatformDirectionHit
 _AnyPlatformHit
 
 .loopOverPlatforms
-
+    PUSH BC
     CALL _PlatformHit
+    POP BC
     RET Z
 
     LD DE, PLA
@@ -953,9 +956,8 @@ _AnyPlatformHit
 ; Return:
 ;  - YES: Z is reset (JP Z). Sprite hits the platform.
 ;  - NO:  Z is set (JP NZ). No collision.
-;  - B:  the current value of the platform counter. It counts from the maximum amount of platforms to zero.
 ;
-; Modifies: A, HL, DE, C
+; Modifies: A, HL, DE, BC
 _PlatformHit
 
     ; Check the collision from the left side of the platform.
@@ -964,45 +966,35 @@ _PlatformHit
     PUSH HL                                     ; Keep HL for later use.
 
     ; Load the sprite's X position into HL and push it into the stack so that we can use HL for something else.
-    LD DE, (HL)
-    LD HL, DE                                   ; HL holds X postion of the sprite.
-    PUSH HL
+    LD BC, (HL)
 
     ; Subtracting the left margin from the left side of the platform will move the left margin to the left and increment the platform's left width.
     LD HL, (IY + PLA.X_LEFT)                    ; HL holds start of the platform (left side).
     LD DE, (IX + PLAM.X_LEFT)                   ; DE holds left margin.
     SBC HL, DE
     LD DE, HL
-    POP HL
 
     ; Now DE contains the left coordinate of the platform inclusive margin, and HL the sprite's X.
+    LD HL, BC
     SBC HL, DE                                  ; HL - DE
-
-    POP HL
-
-    JP M, .noCollision                          ; Jump if no collision (HL - DE < 0).
+    JP M, .noCollisionPopHL                     ; Jump if no collision (HL - DE < 0).
 
     ; ##########################################
     ; Sprite is on the left from the platform's left corner. Now check whether it's not over the end.
-    LD DE, (HL)                                 ; DE holds X postion of the sprite.
-
-    PUSH HL
     LD HL, (IY + PLA.X_RIGHT)                   ; HL holds end of the platform (right side).
 
     ; Add margin to  HL (platform right).
-    PUSH DE
     LD DE, (IX + PLAM.X_RIGHT)
     ADD HL, DE
-    POP DE
 
+    LD DE, BC                                   ; DE holds X postion of the sprite.
     SBC HL, DE                                  ; HL - DE
+    JP M, .noCollisionPopHL                     ; Jump if no collision (HL - DE < 0).
     POP HL
 
-    JP M, .noCollision                          ; Jump if no collision (HL - DE < 0).
-
-    ; Sprite is within the platform's horizontal position. Now check whether it's within vertical bounds.
-
     ; ##########################################
+    ; Sprite is within the platform's horizontal position. Now check whether it's within vertical bounds.
+    ;
     ; Check platform's top level.
     ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
     LD DE, HL
@@ -1029,6 +1021,9 @@ _PlatformHit
     ; Sprite hits the platform!
     _YES
     RET
+
+.noCollisionPopHL
+    POP HL
 
 .noCollision
     _NO

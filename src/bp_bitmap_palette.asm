@@ -141,7 +141,6 @@ SetupPaletteLoad
 ;  - DE: given color with decremented brightness.
 BrightnessDown
 
-    ; ##########################################
     ; Decrement red color (RRR'xxx'xx)
     LD A, E
     AND PAL2_RRR_MASK                       ; Reset all bits but red.
