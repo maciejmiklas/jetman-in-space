@@ -57,7 +57,7 @@ LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7.
 EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image.
 AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
 PAL2_BANK_S6_D87        = 87                   ; Slot 6. Layer 2 pallettes.
-
+PAL_TI_BANK_S6_D88      = 88                   ; Slot 6. Tilemap pallettes.
 
 ;----------------------------------------------------------;
 ;                    SetupRocketBank                       ;
@@ -180,9 +180,9 @@ SetupArrays2Bank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    SetupPaletteBank                      ;
+;                  SetupBgPaletteBank                      ;
 ;----------------------------------------------------------;
-SetupPaletteBank
+SetupBgPaletteBank
 
     ; Memory bank (8KiB) containing layer 2 palette data
     NEXTREG _MMU_REG_SLOT6_H56, PAL2_BANK_S6_D87
@@ -190,6 +190,15 @@ SetupPaletteBank
     ; Memory bank (8KiB) containing layer 2 palettes with brightness for times of the day
     NEXTREG _MMU_REG_SLOT7_H57, PAL2_BR_BANK_S7_D70
     
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  SetupTiPaletteBank                      ;
+;----------------------------------------------------------;
+SetupTiPaletteBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, PAL_TI_BANK_S6_D88
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

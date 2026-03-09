@@ -126,7 +126,7 @@ LoadLevelIntro
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
     LD B, db1.TILE_PAL_SIZE_1
-    CALL ti.LoadTilemap9bitPalette
+    CALL ti.LoadTilemapPalette
 
     RET                                         ; ## END of the function ##
 

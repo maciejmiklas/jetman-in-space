@@ -74,7 +74,7 @@ LoadLevelSelectPalFile
     CALL fi.FileOpenRead
 
     ; Read file
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
 
     LD IX, bp.DEFAULT_PAL_ADDR
     LD BC, bp.PAL_BYTES_D512
@@ -118,7 +118,7 @@ LoadMenuScorePalFile
     CALL fi.FileOpenRead
 
     ; Read file
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
 
     LD IX, bp.DEFAULT_PAL_ADDR
     LD BC, bp.PAL_BYTES_D512
@@ -235,7 +235,7 @@ LoadBgPaletteFile
     CALL fi.FileOpenRead
 
     ; Read file
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
 
     LD IX, bp.DEFAULT_PAL_ADDR
     LD BC, bp.PAL_BYTES_D512
@@ -617,7 +617,7 @@ _LoadPalFileByName
     CALL fi.FileOpenRead
 
     ; Read file
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
 
     LD IX, bp.DEFAULT_PAL_ADDR
     LD BC, bp.PAL_BYTES_D512

@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE btd
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupPaletteBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupBgPaletteBank ###
 
 palColors               DB 0                    ; Amount of colors in background palette, max 255-40 for stars.
 todPalAddr              DW 0                    ; Pointer to current brightness palette.
@@ -163,7 +163,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
     DJNZ .loopCopyColor
 
     CALL gc.BackgroundPaletteLoaded
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -178,7 +178,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
 ;                      NextTodPalette                      ;
 ;----------------------------------------------------------;
 NextTodPalette
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
 
     LD HL, (todPalAddr)
     LD A, (palColors)
@@ -197,7 +197,7 @@ NextTodPalette
 ;                      PrevTodPalette                      ;
 ;----------------------------------------------------------;
 PrevTodPalette
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
     
     LD HL, (todPalAddr)
     LD A, (palColors)
@@ -212,7 +212,7 @@ PrevTodPalette
 ;----------------------------------------------------------;
 PrevTodPaletteAddr
     
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
 
     ; Moves #todPalAddr to the previous palette.
     LD HL, (todPalAddr) 
@@ -226,7 +226,7 @@ PrevTodPaletteAddr
 ;----------------------------------------------------------;
 LoadCurrentTodPalette
 
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
     CALL bp.SetupPaletteLoad
 
     LD HL, PAL_ADDR

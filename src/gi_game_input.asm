@@ -247,20 +247,6 @@ GameOptionsInput
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                        _Key_D                            ;
-;----------------------------------------------------------;
-_Key_D
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _Key_W                            ;
-;----------------------------------------------------------;
-_Key_W
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                        _Key_R                            ;
 ;----------------------------------------------------------;
 _Key_R
@@ -268,9 +254,10 @@ _Key_R
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL dbs.SetupRocketBank
-    CALL roa.AssemblyRocketForDebug
-
+    ;CALL dbs.SetupRocketBank
+    ;CALL roa.AssemblyRocketForDebug
+     CALL ti.LoadTilemapPaletteForDay
+     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -281,8 +268,9 @@ _Key_N
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL _NextSong
-
+    ;CALL _NextSong
+     CALL ti.LoadTilemapPaletteForNight1
+     
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -293,8 +281,9 @@ _Key_M
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL dbs.SetupMusicBank
-    CALL aml.FlipOnOff
+    ;CALL dbs.SetupMusicBank
+    ;CALL aml.FlipOnOff
+     CALL ti.LoadTilemapPaletteForNight2
 
     RET                                         ; ## END of the function ##
 

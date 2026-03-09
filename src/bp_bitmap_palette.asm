@@ -54,7 +54,7 @@ DEFAULT_PAL_ADDR      = _RAM_SLOT7_STA_HE000
 ;----------------------------------------------------------;
 LoadDefaultPalette
 
-    CALL dbs.SetupPaletteBank
+    CALL dbs.SetupBgPaletteBank
     LD HL, DEFAULT_PAL_ADDR
     LD B, PAL_COLORS_D252
     CALL LoadPalette

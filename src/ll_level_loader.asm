@@ -254,7 +254,7 @@ LoadCurrentLevel
     CALL dbs.SetupArrays1Bank
     LD HL, (IX + LL.TIP_DATA)
     LD B, (IX + LL.TIP_SIZE)
-    CALL ti.LoadTilemap9bitPalette
+    CALL ti.LoadTilemapPaletteWithTimesOfDay
     POP IX
 
     ; ##########################################

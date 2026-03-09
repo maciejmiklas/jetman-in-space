@@ -154,7 +154,7 @@ SetupSystem
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
     LD B, db1.TILE_PAL_SIZE_1
-    CALL ti.LoadTilemap9bitPalette
+    CALL ti.LoadTilemapPalette
 
     ; Load sprites from first level for mein menu.
     LD D, "0"
@@ -181,7 +181,7 @@ LoadMainMenu
     CALL dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
     LD B, db1.TILE_PAL_SIZE_1
-    CALL ti.LoadTilemap9bitPalette
+    CALL ti.LoadTilemapPalette
 
     CALL NightLimitVisibilityOff
 
@@ -332,7 +332,7 @@ RocketFLyStartPhase4
     CALL dbs.SetupArrays1Bank
     LD HL, (ll.tilePaletteStarsAddr)
     LD B, db1.STARS_PAL_BYTES
-    CALL ti.LoadTilemap9bitPalette
+    CALL ti.LoadTilemapPalette
 
     CALL sc.SetClipTop50
 
@@ -926,6 +926,8 @@ NightLimitVisibility1
     LD A, nv.VISIBILITY_LIMIT_1
     CALL nv.LimitJetVisibility
 
+    CALL ti.LoadTilemapPaletteForNight1
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -937,6 +939,8 @@ NightLimitVisibility2
     LD A, nv.VISIBILITY_LIMIT_2
     CALL nv.LimitJetVisibility
 
+    CALL ti.LoadTilemapPaletteForNight2
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -946,6 +950,8 @@ NightLimitVisibilityOff
 
     CALL dbs.SetupCode1Bank
     CALL nv.LimitJetVisibilityOff
+
+    CALL ti.LoadTilemapPaletteForDay
 
     RET                                         ; ## END of the function ##
 

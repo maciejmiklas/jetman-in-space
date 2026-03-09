@@ -63,6 +63,11 @@ TI_DEF_RAM_H6500        = TI_MAP_RAM_H5B00 + TI_MAP_BYTES_D2560 ; Tile definitio
 TI_DEF_BANK_OFFSET      = (TI_DEF_RAM_H6500 - _RAM_SLOT2_STA_H4000) >> 8
     ASSERT TI_DEF_BANK_OFFSET = $25
 
+TI_PAL_DARK1_HC000      = _RAM_SLOT6_STA_HC000 ; RAM start tile map palette for dark-1
+TI_PAL_DARK2_HC200      = TI_PAL_DARK1_HC000+512 ; RAM start tile map palette for dark-2
+
+paletteBytes            DB 0
+paletteDayAddress       DW 0
 ;----------------------------------------------------------;
 ;                         SetupTiles                       ;
 ;----------------------------------------------------------;
@@ -82,13 +87,94 @@ SetupTiles
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   LoadTilemap9bitPalette                 ;
+;                 LoadTilemapPaletteForDay                 ;
+;----------------------------------------------------------;
+LoadTilemapPaletteForDay
+
+    CALL dbs.SetupArrays1Bank
+    LD A, (paletteBytes)
+    CP 0
+    RET Z
+    LD B, A
+    LD HL, (paletteDayAddress)
+    CALL LoadTilemapPalette
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               LoadTilemapPaletteForNight1                ;
+;----------------------------------------------------------;
+LoadTilemapPaletteForNight1
+
+    CALL dbs.SetupTiPaletteBank
+    LD A, (paletteBytes)
+    LD B, A
+    LD HL, TI_PAL_DARK1_HC000
+    CALL LoadTilemapPalette
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               LoadTilemapPaletteForNight2                ;
+;----------------------------------------------------------;
+LoadTilemapPaletteForNight2
+
+    CALL dbs.SetupTiPaletteBank
+    LD A, (paletteBytes)
+    LD B, A
+    LD HL, TI_PAL_DARK2_HC200
+    CALL LoadTilemapPalette
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;             LoadTilemapPaletteWithTimesOfDay             ;
+;----------------------------------------------------------;
+; Input:
+; - B:  number bytes to copy (each color takes two bytes).
+; - HL: address of layer 2 palette data.
+LoadTilemapPaletteWithTimesOfDay
+
+    LD A, B
+    LD (paletteBytes), A
+    LD (paletteDayAddress), HL
+
+    CALL dbs.SetupTiPaletteBank
+    LD IX, TI_PAL_DARK1_HC000
+    LD IY, TI_PAL_DARK2_HC200
+    PUSH BC, HL
+.loop
+    PUSH BC
+
+    LD DE, (HL)
+    CALL bp.BrightnessDown
+    LD (IX), DE
+
+    CALL bp.BrightnessDown
+    LD (IY), DE
+
+    INC HL
+    INC HL
+    INC IX
+    INC IX
+    INC IY
+    INC IY
+    POP BC
+    DJNZ .loop                                  ; Repeat until B=0.
+    POP HL, BC
+
+    CALL LoadTilemapPalette
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     LoadTilemapPalette                   ;
 ;----------------------------------------------------------;
 ; Copy 9 bit palette.
 ; Input:
 ; - B:  number bytes to copy (each color takes two bytes).
 ; - HL: address of layer 2 palette data.
-LoadTilemap9bitPalette
+LoadTilemapPalette
 
     ; Bits
     ;  - 0:   1 = Enable ULANext mode.
@@ -99,38 +185,15 @@ LoadTilemap9bitPalette
     NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0.
 
 .loop
-    LD A, (HL)                                  ; Load RRRGGGBB into A.
-    INC HL                                      ; Increment to next entry.
+    LD DE, (HL)
+    INC HL
+    INC HL
+
+    LD A, E                                  ; Load RRRGGGBB into A.
     NEXTREG _DC_REG_LA2_PAL_VAL_H44, A          ; First byte of palette.
 
-    LD A, (HL)                                  ; Load 0000000B into A.
-    INC HL 
+    LD A, D                                  ; Load 0000000B into A.
     NEXTREG _DC_REG_LA2_PAL_VAL_H44, A          ; Second byte of palette.
-    DJNZ .loop                                  ; Repeat until B=0.
-
-    RET
-
-;----------------------------------------------------------;
-;                  LoadTilemap8bitPalette                  ;
-;----------------------------------------------------------;
-; Copy 8 bit palette.
-; Input:
-; - B:  number colors to copy (one color = one byte).
-; - HL: address of layer 2 palette data.
-LoadTilemap8bitPalette
-
-    ; Bits
-    ;  - 0:   1 = Enable ULANext mode.
-    ;  - 1-3: 0 = First palette.
-    ;  - 6-4: 011 = Tilemap first palette.
-    ;  - 7:   0 = enable auto increment on write.
-    NEXTREG _DC_REG_LA2_PAL_CTR_H43, %0'011'000'1 
-    NEXTREG _DC_REG_LA2_PAL_IDX_H40, 0          ; Start with color index 0.
-    
-.loop
-    LD A, (HL)                                  ; Load RRRGGGBB into A.
-    INC HL                                      ; Increment to next entry.
-    NEXTREG _DC_REG_LA2_PAL_VAL_H41, A          ; Send entry to Next HW.
     DJNZ .loop                                  ; Repeat until B=0.
 
     RET                                         ; ## END of the function ##
