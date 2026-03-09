@@ -254,10 +254,9 @@ _Key_R
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    ;CALL dbs.SetupRocketBank
-    ;CALL roa.AssemblyRocketForDebug
-     CALL ti.LoadTilemapPaletteForDay
-     
+    CALL dbs.SetupRocketBank
+    CALL roa.AssemblyRocketForDebug
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -268,9 +267,8 @@ _Key_N
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    ;CALL _NextSong
-     CALL ti.LoadTilemapPaletteForNight1
-     
+    CALL _NextSong
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -281,9 +279,8 @@ _Key_M
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    ;CALL dbs.SetupMusicBank
-    ;CALL aml.FlipOnOff
-     CALL ti.LoadTilemapPaletteForNight2
+    CALL dbs.SetupMusicBank
+    CALL aml.FlipOnOff
 
     RET                                         ; ## END of the function ##
 

@@ -151,6 +151,7 @@ LoadTilemapPaletteWithTimesOfDay
     LD (IX), DE
 
     CALL bp.BrightnessDown
+    CALL bp.BrightnessDown
     LD (IY), DE
 
     INC HL
