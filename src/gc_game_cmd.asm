@@ -481,7 +481,6 @@ JetPlatformTakesOff
     LD A, pl.PLATFORM_WALK_INACTIVE
     LD (pl.platformWalkNumber), A
 
-    CALL js.ChangeJetSpriteOnFlyUp
 
     ; Play FX
     CALL dbs.SetupAyFxsBank

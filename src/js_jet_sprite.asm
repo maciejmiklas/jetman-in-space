@@ -23,16 +23,16 @@ SDB_RIP                 = 208                   ; Jetman got hit
 SDB_T_WF                = 220                   ; Transition: walking -> flaying
 SDB_T_FS                = 221                   ; Transition: flaying -> standing
 SDB_T_FW                = 222                   ; Transition: flaying -> walking
-SDB_T_KF                = 223                   ; Transition: kinking -> flying
-SDB_T_KO                = 224                   ; Transition: kinking -> hovering
+SDB_T_KF                = 223                   ; Transition: kicking -> flying
+SDB_T_KO                = 224                   ; Transition: kicking -> hovering
 
 SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds ID and not OFF_NX (see record doc below, look for: OFF_NX)
 SDB_FRAME_SIZE          = 2
 
 sprDBIdx                DW 0                    ; Current position in DB
 sprDBRemain             DB 0                    ; Amount of bytes that have to be still processed from the current record
-sprDBCurrentID          DB SDB_STAND            ; Active animation
-sprDBNextID             DB SDB_STAND            ; ID in #jetSpriteDB for next animation/DB record
+sprDBCurrentId          DB SDB_STAND            ; Active animation
+sprDBNextId             DB SDB_STAND            ; ID in #jetSpriteDB for next animation/DB record
 sprDBDelay              DB 0                    ; Value from #DELAY
 sprDBDelayCnt           DB 0                    ; Counter from #sprDBDelay to 0
 
@@ -124,14 +124,14 @@ ChangeJetSpritePattern
 
     ; Do not change the animation if the same animation is already playing, it will restart it
     LD B, A
-    LD A, (sprDBCurrentID)
+    LD A, (sprDBCurrentId)
     CP B
     RET Z
 
     LD A, B                                     ; Restore method param
 
-    LD (sprDBNextID), A                         ; Next animation record
-    LD (sprDBCurrentID), A
+    LD (sprDBNextId), A                         ; Next animation record
+    LD (sprDBCurrentId), A
 
     XOR A                                       ; Set A to 0
     LD (sprDBRemain), A                         ; No more bytes to process within the current DB record will cause the fast switch to the next
@@ -176,15 +176,15 @@ AnimateJetSprite
 
     ; Load new record.
     LD HL, db2.jetSpriteDB                      ; HL points to the beginning of the DB
-    LD A, (sprDBNextID)                         ; CPIR will keep increasing HL until it finds the record ID from A
-    LD (sprDBCurrentID), A                      ; Store current animation
+    LD A, (sprDBNextId)                         ; CPIR will keep increasing HL until it finds the record ID from A
+    LD (sprDBCurrentId), A                      ; Store current animation
     LD BC, 0                                    ; Do not limit CPIR search
     CPIR
 
     ; Now we are at the correct DB position containing the following sprite pattern and will load it into the registry.
     LD A, (HL)                                  ; Update next pointer to next animation record
     ADD SDB_SUB                                 ; Add 100 because DB value had  -100, to avoid collision with ID
-    LD (sprDBNextID), A 
+    LD (sprDBNextId), A 
 
     INC HL                                      ; HL points to [SIZE]
     LD A, (HL)                                  ; Update SIZE
