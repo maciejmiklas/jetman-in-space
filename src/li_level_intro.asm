@@ -219,7 +219,7 @@ _NextTilesRow
     LD E, _TI_H_BYTES_D80
     MUL D, E                                    ; DE contains #screenTilesRow * _TI_H_BYTES_D80.
     PUSH HL                                     ; Keep HL because it already contains proper source tiles address.
-    LD HL, ti.TI_MAP_RAM_H5B00                   ; Now HL contains memory offset to tiles.
+    LD HL, ti.TI_MAP_RAM_H5B00                  ; Now HL contains memory offset to tiles.
     ADD HL, DE
     LD DE, HL
     POP HL
