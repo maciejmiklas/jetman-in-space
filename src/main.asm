@@ -53,8 +53,8 @@ start
 
     CALL so.WriteToSd
 
-    LD A, 1: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
-    ;CALL gc.LoadMainMenu
+    ;LD A, 1: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
+    CALL gc.LoadMainMenu
     
     JR mainLoop
 

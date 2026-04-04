@@ -9,7 +9,7 @@
     ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
 
 ; Counter for game music from assets\snd.
-gameMusicCnt            DB 254
+gameMusicCnt            DB 0
 
 MUSIC_GAME_OVER_D80     = 10
 MUSIC_MAIN_MENU_D81     = 3
@@ -55,8 +55,8 @@ FlipOnOff
 ;----------------------------------------------------------;
 MusicOn
 
-    ;LD A, R
-    ;LD (gameMusicCnt), A
+    LD A, R
+    LD (gameMusicCnt), A
 
     LD A, am.MUSIC_ST_ON_D1
     LD (am.musicState), A
