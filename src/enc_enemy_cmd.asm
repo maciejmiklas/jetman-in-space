@@ -190,7 +190,7 @@ RespawnEnemy
 ;                      MoveEnemies                         ;
 ;----------------------------------------------------------;
 MoveEnemies
-
+    ret
     ; Enemies frozen and cannot move?
     LD DE, (freezeEnemiesCnt)
     

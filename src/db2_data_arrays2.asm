@@ -368,7 +368,7 @@ hardPalFileName         DB "assets/ma/hard.nxp",0
 lbpFileName             DB "assets/00/bg.nxp",0
 
 ; Level music file
-sndFileName             DB "assets/snd/00.pt3",0
+sndFileName             DB "assets/snd/000.pt3",0
 SND_NR_POS              = 11                    ; Position of song number (01-99) in the file name
 
 ; Level intro file

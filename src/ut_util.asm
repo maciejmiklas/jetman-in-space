@@ -33,6 +33,53 @@ dmaPortBAddress
     DB %1'00001'11                              ; WR6 - enable DMA
 dmaProgramSize = $-dmaProgram
 
+; Z80
+;----------------------------------------------------------;
+;                       NumTo999Str                        ;
+;----------------------------------------------------------;
+; Input:
+;   - A: 0..255
+; Output:
+;   - C: ASCII hundreds
+;   - D: ASCII tens
+;   - E: ASCII units
+
+NumTo999Str
+    PUSH AF
+
+    ; Hundreds (0,1,2)
+    LD C,'0'
+    CP 200
+    JR C, .lt200
+    SUB 200
+    INC C                                       ; '1'
+    INC C                                       ; '2'
+.lt200:
+    CP 100
+    JR C, .lt100
+    SUB 100
+    INC C                                       ; +1 hundred
+.lt100:
+
+    ; Now A < 100. Compute tens by repeated subtraction.
+    LD B,0
+.tensLoop:
+    CP 10
+    JR C, .tensDone
+    SUB 10
+    INC B
+    JR .tensLoop
+.tensDone:
+    LD D,B
+    ADD A,'0'                                   ; units -> ASCII
+    LD E,A
+    LD A,D
+    ADD A,'0'                                   ; tens -> ASCII
+    LD D,A
+
+    POP AF
+    RET
+
 
 ;----------------------------------------------------------;
 ;                      NumTo99Str                          ;

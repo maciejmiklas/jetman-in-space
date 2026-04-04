@@ -7,8 +7,8 @@
 ;----------------------------------------------------------;
 ; Lots of documentation copied from https://wiki.specnext.dev
 
-gameVersion             DB "V0.8 UNDER CONSTRUCTION"
-GAME_VERSION_SIZE       = 25
+gameVersion             DB "V0.9"
+GAME_VERSION_SIZE       = 4
 
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
