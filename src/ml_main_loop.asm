@@ -671,6 +671,9 @@
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.NextFollowingAngle
 
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicTimerTick
+
 .end
     ENDM                                        ; ## END of the macro ##
 

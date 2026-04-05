@@ -9,14 +9,31 @@
     ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
 
 ; Counter for game music from assets\snd.
-gameMusicCnt            DB GAME_MUSIC_MIN_D1
-GAME_MUSIC_MIN_D1       = 1
-GAME_MUSIC_MAX_D25      = 25
+gameMusicCnt            DB 0
 
-MUSIC_GAME_OVER_D80     = 80
-MUSIC_MAIN_MENU_D81     = 81
-MUSIC_HIGH_SCORE_D82    = 82
-MUSIC_INTRO_D82         = 83
+MUSIC_GAME_OVER_D80     = 10
+MUSIC_MAIN_MENU_D81     = 3
+MUSIC_HIGH_SCORE_D82    = 4
+MUSIC_INTRO_D82         = 1
+
+NEXT_MUSIC_SEC          = 180
+nextMusicTimeCnt        DB NEXT_MUSIC_SEC
+
+;----------------------------------------------------------;
+;                    MusicTimerTick                        ;
+;----------------------------------------------------------;
+MusicTimerTick
+
+    LD A, (nextMusicTimeCnt)
+    CP 0
+    JR Z, .resetCnt
+    DEC A
+    LD (nextMusicTimeCnt), A
+    RET
+.resetCnt
+    CALL NextGameSong
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                       FlipOnOff                          ;
@@ -30,12 +47,16 @@ FlipOnOff
     RET
 .isOn
     CALL MusicOff
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                         MusicOn                          ;
 ;----------------------------------------------------------;
 MusicOn
+
+    LD A, R
+    LD (gameMusicCnt), A
 
     LD A, am.MUSIC_ST_ON_D1
     LD (am.musicState), A
@@ -78,17 +99,11 @@ LoadSong
 ;----------------------------------------------------------;
 NextGameSong
 
-    ; Increase music counter, or overflow to min value.
-    LD A, (gameMusicCnt)
-    CP GAME_MUSIC_MAX_D25
-    JR NZ, .incMusicCnt
-    
-    LD A, GAME_MUSIC_MIN_D1
-    JR .afterMusicCnt
+    LD A, NEXT_MUSIC_SEC
+    LD (nextMusicTimeCnt), A
 
-.incMusicCnt
+    LD A, (gameMusicCnt)
     INC A
-.afterMusicCnt
     LD (gameMusicCnt), A
 
     CALL LoadSong

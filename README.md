@@ -18,10 +18,10 @@
     
 <img src="/img/scr5.jpg" width="640px"/>
    
-
 I want to give a shout-out to the following, without them, I would have been lost in space!
-* [Ilya Abrosimov](https://zxart.ee/eng/authors/e/ea)
-* [Oleg Nikitin](https://zxart.ee/eng/authors/n/nq)
+* [Oleg Nikitin (NQ)](https://zxart.ee/eng/authors/n/nq)
+* [Ilya Abrosimov (EA)](https://zxart.ee/eng/authors/e/ea)
+* [Vortex Tracker II Volutar](https://volutar.myds.me/vortextracker)
 * [ZX Spectrum Next Assembly Developer Guide](https://github.com/tomaz/zx-next-dev-guide)
 * [Remy's ZX Spectrum Tools](https://zx.remysharp.com)
 * [DougieDoSource](https://github.com/robgmoran/DougieDoSource)
@@ -30,7 +30,6 @@ I want to give a shout-out to the following, without them, I would have been los
 * [Gfx2Next](https://github.com/benbaker76/Gfx2Next)
 * [Threetwosevensixseven](https://github.com/Threetwosevensixseven/ayfxedit-improved)
 * [Master484](http://m484games.ucoz.com)
-* [Vortex Tracker II Volutar](https://volutar.myds.me/vortextracker)
 * [500 Pixel Bullet 24x24]( https://bit.ly/4aiZHZ4)
 * [Corey Archer](https://opengameart.org/content/top-down-pokemon-esque-sprites)
 * [Chroma Noir](https://v3x3d.itch.io/chroma-noir)

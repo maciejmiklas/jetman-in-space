@@ -19,7 +19,7 @@ TI_RAM_START            = ti.TI_MAP_RAM_H5B00 + FACE_TI_POS_BYTE_D30
 RED_FACE_LIVES_D1       = 3                     ; Show face when #lives < than this value.
 JET_POS_LEFT_D100       = 100                   ; Face looks to the left, if Jetman postion is < 100.
 JET_POS_RIGHT_D200      = 200                   ; Face looks to the right, if Jetman postion is > 100.
-JET_LIVES_D5            = 5
+JET_LIVES_D5            = 3
 
     ; TODO 50 lives for easy
     DB "If you read this text, it means that you have reached forbidden memory space."

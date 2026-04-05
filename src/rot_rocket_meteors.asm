@@ -159,7 +159,6 @@ CheckRocketCollision
     RET
 .collisionFound
 
-    break
     CALL gc.RocketHitsMeteor
 
     RET                                         ; ## END of the function ##

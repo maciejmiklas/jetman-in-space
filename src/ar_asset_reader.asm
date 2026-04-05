@@ -133,18 +133,20 @@ LoadMenuScorePalFile
 ;  - A: song number from "assets/snd/xx.pt3".
 LoadMusicFile
 
-    CALL dbs.SetupArrays2Bank                    ; Setup slot 7 to load arrays.
+    CALL dbs.SetupArrays2Bank                   ; Setup slot 7 to load arrays.
 
-    CALL ut.NumTo99Str                          ; DE now contains ASCII of value from A.
+    CALL ut.NumTo999Str                         ; C,D,E now contains ASCII of value from A.
 
     LD HL, db2.sndFileName
     PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for fi.CopyFileName).
     LD IX, HL                                   ; Param for #_LoadImageToTempRam.
     ADD HL, db2.SND_NR_POS                      ; Move HL to ""assets/snd/".
 
-    LD (HL), D                                  ; Set first number.
+    LD (HL), C                                  ; Set 1 number.
     INC HL
-    LD (HL), E                                  ; Set second number.
+    LD (HL), D                                  ; Set 2 number.
+    INC HL
+    LD (HL), E                                  ; Set 3 number.
     POP HL
 
     CALL fi.CopyFileName
