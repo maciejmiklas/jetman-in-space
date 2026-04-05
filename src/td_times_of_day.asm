@@ -75,6 +75,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     CP TOD_LIMITV_1_D1
     JR NZ, .notLimit1
     CALL gc.NightLimitVisibility1
+    JR .end
 .notLimit1
 
     CP TOD_LIMITV_2_D0

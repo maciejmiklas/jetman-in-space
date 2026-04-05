@@ -77,10 +77,11 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
 /*
+    CALL dbs.SetupCode1Bank
     ; ##########################################
     LD BC, 66
     LD H, 0
-    LD A, (enp.tmp2)
+    LD A, (nv.visibilityLimit)
     LD L, A
     CALL ut.PrintNumber
 */

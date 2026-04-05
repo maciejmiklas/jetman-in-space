@@ -13,7 +13,7 @@ PI_SPR_DIAMOND          = 39                ; Extra points.
 PI_SPR_JAR              = 40                ; Colls down jetpack's rocket exhaust.
 PI_SPR_STRAWBERRY       = 41                ; Jetman invincible.
 PI_SPR_GRENADE          = 42                ; Collect and expolode.
-PI_FREEZE_ENEMIES       = 43                ; Freeze enemies.
+PI_FREEZE_ENEMIES       = 43                 ; Freeze enemies.
 PI_SPR_GUN              = 44                ; Improve weapon.
 
 ; We want to bring fire speed up quickly. Therefore, at the beginning, there are only weapon drops, but not up to the max firing speed.

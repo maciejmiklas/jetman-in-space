@@ -42,6 +42,10 @@ LoadMainMenu
     CALL js.InitJetSprite
 
     ; ##########################################
+    LD A, MENU_EL_MIN
+    LD (menuPos), A
+
+    ; ##########################################
     ; Update menu state
     LD A, ms.MS_MENU_MAIN_D11
     CALL ms.SetMainState
@@ -105,6 +109,7 @@ LoadMainMenu
     CALL _LoadStaticMenuText
     CALL _SetIXToActiveMenu
     CALL _UpdateJetPostion
+    CALL js.UpdateJetSpritePositionRotation
     CALL js.ShowJetSprite
 
     ; ##########################################

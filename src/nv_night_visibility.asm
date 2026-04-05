@@ -92,22 +92,18 @@ UpdateJetVisibility
     LD A, D
     NEXTREG _GL_REG_CLIP_SPR_H19, A 
     NEXTREG _GL_REG_CLIP_TI_H1, A
-   ; NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, E
     NEXTREG _GL_REG_CLIP_SPR_H19, A
     NEXTREG _GL_REG_CLIP_TI_H1, A
-    ;NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, H
     NEXTREG _GL_REG_CLIP_SPR_H19, A
     NEXTREG _GL_REG_CLIP_TI_H1, A
-    ;NEXTREG _DC_REG_L2_CLIP_H18, A
 
     LD A, L
     NEXTREG _GL_REG_CLIP_SPR_H19, A
     NEXTREG _GL_REG_CLIP_TI_H1, A
-    ;NEXTREG _DC_REG_L2_CLIP_H18, A
 
     RET                                         ; ## END of the function ##
 

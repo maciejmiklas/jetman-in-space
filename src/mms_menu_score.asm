@@ -168,7 +168,7 @@ menuScoreCursor
     CP D
     JR Z, .byte1                                ; Bytes from the current line and the new score are equal -> check the next byte.
     JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up.
-    JR C, .break                                ; New score is < than value in current line -> break search.
+    JR C, .bre                                  ; New score is < than value in current line -> bre search.
 
 .byte1
     ; Compare score byte: [DB][THIS][DB][DB]
@@ -177,7 +177,7 @@ menuScoreCursor
     CP D
     JR Z, .byte2                                ; Bytes from the current line and the new score are equal -> check the next byte
     JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up
-    JR C, .break                                ; New score is < than value in current line -> break search
+    JR C, .bre                                  ; New score is < than value in current line -> bre search
 
 .byte2
      LD IY, sc.scoreLo
@@ -187,16 +187,16 @@ menuScoreCursor
     CP D
     JR Z, .byte3                                ; Bytes from the current line and the new score are equal -> check the next byte.
     JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up.
-    JR C, .break                                ; New score is < than value in current line -> break search.
+    JR C, .bre                                  ; New score is < than value in current line -> bre search.
 
 .byte3
     ; Compare score byte: [DB][DB][DB][THIS]
     LD A, (IY)                                  ; #sc.scoreLo:              [DB][THIS]
     LD D, (IX+2)                                ; #highScore[line]: [DB][DB][DB][THIS]
     CP D
-    JR Z, .break                                ; 4 bytes from the new score and current line are equal -> take this line.
+    JR Z, .bre                                  ; 4 bytes from the new score and current line are equal -> take this line.
     JR NC, .nextScoreLine                       ; New score is > than value in current line -> go one line up.
-    JR C, .break                                ; New score is < than value in current line -> break search.
+    JR C, .bre                                  ; New score is < than value in current line -> bre search.
 
     ; ##########################################
 .nextScoreLine
@@ -204,7 +204,7 @@ menuScoreCursor
 
     ; ##########################################
     ; Update found the line, but it still could be out of the scoreboard (A > 9)!
-.break
+.bre
     LD A, B
     INC A
     LD (scoreLine), A
