@@ -75,10 +75,10 @@ RAND_MOVE_SIZE_D30      = 30                    ; 30 elements, 60 bytes.
 RAND_MOVE_EL_D2         = 2
 RAND_SIGN_BIT_D7        = 7
 
-COL_MARGIN_Y_D30        = 30
-COL_ADD_Y_N25           = -25
-COL_MARGIN_X_D20        = 20
-COL_ADD_X_N17           = -17
+COL_MARGIN_Y_D35        = 35
+COL_ADD_Y_N30           = -30
+COL_MARGIN_X_D26        = 25
+COL_ADD_X_N22           = -22
 
 ;----------------------------------------------------------;
 ;                CheckRocketCollision                      ;
@@ -98,11 +98,11 @@ CheckRocketCollision
     ; ##########################################
     ; Check Y collision.
     LD A, (ro.rocY)                             ; Y of the rocket.
-    ADD COL_ADD_Y_N25
+    ADD COL_ADD_Y_N30
     LD C, (IX + MET.Y)                          ; Y of the meteor.
 
     ; Is rocket above or below the meteor?
-    LD E, COL_MARGIN_Y_D30
+    LD E, COL_MARGIN_Y_D35
     CP C
     JR C, .above                                ; Jump if roc-y < meteor-y
 
@@ -130,7 +130,7 @@ CheckRocketCollision
     ; We have collision on Y, not check X.
 
     LD DE, (ro.rocX)                             ; X of the rocket.
-    ADD DE, COL_ADD_X_N17
+    ADD DE, COL_ADD_X_N22
     LD HL, (IX + MET.X)                          ; X of the meteor.
 
     ; Check whether the rocket is horizontal with the meteor.
@@ -145,7 +145,7 @@ CheckRocketCollision
 
 .keepCheckingX
     LD A, L
-    CP COL_MARGIN_X_D20
+    CP COL_MARGIN_X_D26
     JR C, .collisionFound
 
 .metLoopNext
