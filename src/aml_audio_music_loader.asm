@@ -16,7 +16,7 @@ MUSIC_MAIN_MENU_D81     = 3
 MUSIC_HIGH_SCORE_D82    = 4
 MUSIC_INTRO_D82         = 1
 
-NEXT_MUSIC_SEC          = 30
+NEXT_MUSIC_SEC          = 180
 nextMusicTimeCnt        DB NEXT_MUSIC_SEC
 
 ;----------------------------------------------------------;
