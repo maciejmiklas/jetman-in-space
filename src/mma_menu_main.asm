@@ -42,8 +42,32 @@ LoadMainMenu
     CALL js.InitJetSprite
 
     ; ##########################################
+    ; Load sprites from any level
+    LD D, "0"
+    LD E, "1"
+    CALL ar.LoadSpritesFile
+
+    ; ##########################################
+    ; Music
+    CALL dbs.SetupMusicBank
+    LD A, aml.MUSIC_MAIN_MENU_D81
+    CALL aml.LoadSong
+
+
+    CALL SwitchToMainMenu
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                    SwitchToMainMenu                      ;
+;----------------------------------------------------------;
+SwitchToMainMenu
+
     LD A, MENU_EL_MIN
     LD (menuPos), A
+
+    CALL ti.CleanAllTiles
 
     ; ##########################################
     ; Update menu state
@@ -88,12 +112,6 @@ LoadMainMenu
     CALL ti.PrintText
 
     ; ##########################################
-    ; Load sprites from any level
-    LD D, "0"
-    LD E, "1"
-    CALL ar.LoadSpritesFile
-
-    ; ##########################################
     ; Setup Jetman sprite
     CALL jt.SetJetStateInactive
 
@@ -113,21 +131,15 @@ LoadMainMenu
     CALL js.ShowJetSprite
 
     ; ##########################################
-    ; Music
-    CALL dbs.SetupMusicBank
-    LD A, aml.MUSIC_MAIN_MENU_D81
-    CALL aml.LoadSong
-    
-    ; ##########################################
-    ; Music on
-    CALL dbs.SetupMusicBank
-    CALL aml.MusicOn
-
-    ; ##########################################
     ; Copy tile definitions (sprite file) to expected memory
     LD D, "m"
     LD E, "a"
     CALL ar.LoadTilePlatformsSprFile
+
+    ; ##########################################
+    ; Music on
+    CALL dbs.SetupMusicBank
+    CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
 

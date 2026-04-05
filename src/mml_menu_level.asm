@@ -102,7 +102,7 @@ _ConfirmSelection
     LD A, (currentLevel)
     LD (ll.currentLevel), A
     
-    CALL gc.LoadMainMenu
+    CALL mma.SwitchToMainMenu
 
     RET                                         ; ## END of the function ##
 

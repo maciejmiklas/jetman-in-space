@@ -51,12 +51,20 @@ FlipOnOff
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         MusicOn                          ;
+;                      RandIngameSong                      ;
 ;----------------------------------------------------------;
-MusicOn
+RandIngameSong
 
     LD A, R
     LD (gameMusicCnt), A
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                         MusicOn                          ;
+;----------------------------------------------------------;
+MusicOn
 
     LD A, am.MUSIC_ST_ON_D1
     LD (am.musicState), A

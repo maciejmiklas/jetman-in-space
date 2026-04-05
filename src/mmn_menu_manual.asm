@@ -34,7 +34,7 @@ LoadMenuGameplay
     ; Setup joystick
     CALL ki.ResetKeyboard
 
-    LD DE, gc.LoadMainMenu
+    LD DE, mma.SwitchToMainMenu
     LD (ki.callbackFire), DE
 
     ; ##########################################
@@ -70,7 +70,7 @@ LoadMenuKeys
     ; Setup joystick
     CALL ki.ResetKeyboard
 
-    LD DE, gc.LoadMainMenu
+    LD DE, mma.SwitchToMainMenu
     LD (ki.callbackFire), DE
 
     ; ##########################################

@@ -277,7 +277,6 @@ ClearBottomTileLine
 ;  - A: tile line to be cleaned, from 0 (top of the screen) to 31 (bottom).
 ClearTileLine
 
-
     ; DE will contain the tile memory offset to the tile line given by A.
     LD E, A
     LD D, _TI_H_BYTES_D80

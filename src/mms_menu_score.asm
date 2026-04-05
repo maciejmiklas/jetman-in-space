@@ -360,7 +360,7 @@ _JoyFire
     JR NZ, .enter
 
     ; Read-only mode, exit.
-    CALL gc.LoadMainMenu
+    CALL mma.SwitchToMainMenu
     RET
 .enter
 

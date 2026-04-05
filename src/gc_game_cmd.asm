@@ -116,7 +116,6 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
-
 ;----------------------------------------------------------;
 ;                  StartGameWithIntro                      ;
 ;----------------------------------------------------------;
@@ -124,6 +123,7 @@ StartGameWithIntro
 
     ; Music off
     CALL dbs.SetupMusicBank
+    CALL aml.RandIngameSong
     CALL aml.MusicOff
 
     ; Show intro only for the first level.
