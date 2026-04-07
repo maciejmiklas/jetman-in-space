@@ -15,9 +15,9 @@ FIRE_THICKNESS_D10      = 10
 
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter .
 ; reaches #JM_FIRE_DELAY
-JM_FIRE_DELAY_MAX_D15   = 15
-JM_FIRE_DELAY_MIN_D3    = 3
-JM_FIRE_SPEED_UP_D3     = 3
+JM_FIRE_DELAY_MAX_D15   = 16
+JM_FIRE_DELAY_MIN_D3    = 2
+JM_FIRE_SPEED_UP_D3     = 5
 fireDelayCnt            DB 0
 fireDelay               DB JM_FIRE_DELAY_MAX_D15
 
@@ -321,8 +321,6 @@ MoveShots
     LD IX, db2.shots
     LD B, db2.SHOTS_SIZE
 
-
-
 .shootsLoop
     PUSH BC                                     ; Preserve B for loop counter.
 
@@ -401,23 +399,13 @@ AnimateShots
 
     RET                                         ; ## END of the function ##
 
+
 ;----------------------------------------------------------;
 ;                       FireReleased                       ;
 ;----------------------------------------------------------;
 FireReleased
 
     ; Reset Fire-Fx delay, so that FX plays immediately after the fire has been pressed again.
-    XOR A
-    LD (fireFxDelayCnt), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                       FireRelease                        ;
-;----------------------------------------------------------;
-FireRelease
-
-    ; Reset Fire-Fx delay, so that FX plays imedatelly after the fire has been pressed again.
     XOR A
     LD (fireFxDelayCnt), A
 

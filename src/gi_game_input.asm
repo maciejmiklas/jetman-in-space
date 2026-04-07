@@ -16,6 +16,7 @@ JetMovementInput
 
     XOR A
     LD (gid.joyDirection), A
+    LD (gid.gameInputState), A
 
     ; ##########################################
     ; Row: 1, 2, 3, 4, 5, read left arrow key
@@ -123,6 +124,7 @@ JetMovementInput
 
     ; ##########################################
     CALL _JoyMoveEnd
+    CALL _GameInputEnd
 
     RET                                         ; ## END of the function ##
 
@@ -132,9 +134,6 @@ JetMovementInput
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement.
 ; Keys are always processed at the same speed. Also, only one option key is being processed during a single loop.
 GameOptionsInput
-
-    XOR A
-    LD (gid.gameInputState), A
 
     ; ##########################################
     ; Read Kempston input
@@ -234,9 +233,6 @@ GameOptionsInput
 
 .notSpace
 .notBreak
-
-    ; ##########################################
-    CALL _GameInputEnd
 
     RET                                         ; ## END of the function ##
 

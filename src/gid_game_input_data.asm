@@ -12,7 +12,7 @@
 joyOffCnt           DB 0
 
 ; Possible move directions##
-MOVE_INACTIVE_D0         = 0                     ; No movement.
+MOVE_INACTIVE_D0        = 0                     ; No movement.
 
 MOVE_LEFT_BIT_D0        = 0                     ; Bit 0 - Jetman moving left, facing left.
 MOVE_LEFT_MASK          = %0000'0001
