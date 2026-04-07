@@ -8,7 +8,6 @@
     MODULE roa
     ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
 
-RO_DROP_NEXT_D10        = 10                    ; Drop next element delay.
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element.
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element.
 RO_DROP_Y_MIN_EASY_D30  = 30
@@ -16,7 +15,8 @@ dropMinY                DB RO_DROP_Y_MIN_D130
 
 RO_DOWN_SPR_ID_D80      = 80                    ; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 
-; Number of _MainLoop040 cycles to drop next rocket module.
+; Number of seconds to drop next rocket module.
+RO_DROP_NEXT_D20        = 20                    ; Drop next element delay in seconds.
 dropNextDelay           DB 0
 
 ; It counts from EL_EXH_D1 to EL_TANK6_D9, both inclusive. After the rocket is ready for takeoff, it is set to EL_TANK6_D9+1 to light up
@@ -34,19 +34,18 @@ EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
 EL_PROGRESS_START       = EL_TANK1_D4+1
 CARRY_ADJUSTY_D10       = 10
 
-BAR_TILE_START         = 25*2                   ; *2 because each tile takes 2 bytes.
-BAR_RAM_START          = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap.
-BAR_TILE_PAL_H30           = $60
+BAR_TILE_START          = 25*2                   ; *2 because each tile takes 2 bytes.
+BAR_RAM_START           = ti.TI_MAP_RAM_H5B00 + BAR_TILE_START ; HL points to screen memory containing tilemap.
+BAR_TILE_PAL_H30        = $60
 
-BAR_ICON_D38               = 36
-BAR_ICON_RAM_START     = BAR_RAM_START - 2
-BAR_ICON_PAL_H00           = $00
-DROP_MARGX_D8          = 8
+BAR_ICON_D38            = 36
+BAR_ICON_RAM_START      = BAR_RAM_START - 2
+BAR_ICON_PAL_H00        = $00
+DROP_MARGX_D8           = 8
 
-EL_EXH_Y_POS_D234      = 234                     ; Assembly height of the rocket's exhaust.
+EL_EXH_Y_POS_D234       = 234                     ; Assembly height of the rocket's exhaust.
 
-rocAssemblyX           DB 0
-
+rocAssemblyX            DB 0
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -626,7 +625,7 @@ RocketElementFallsForAssembly
 ;                  DropNextRocketElement                   ;
 ;----------------------------------------------------------;
 DropNextRocketElement
-    
+
     ; Check state.
     LD A, (ro.rocketState)
     CP ro.ROST_WAIT_DROP_D1
@@ -637,7 +636,7 @@ DropNextRocketElement
     LD A, (dropNextDelay)
     INC A
     LD (dropNextDelay), A
-    CP RO_DROP_NEXT_D10
+    CP RO_DROP_NEXT_D20
     RET NZ                                      ; Jump if #nextCnt !=  #DROP_NEXT_MAX
 
     ; The counter has reached the required value, reset it first.

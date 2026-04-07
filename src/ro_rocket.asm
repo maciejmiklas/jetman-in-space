@@ -48,7 +48,7 @@ SPR_PAT_READY2_D61      = 61
 rocX                    DW 0                    ; 0-320px
 rocY                    DB 0                    ; 0-256px
 
-rocketElPtr            DW 0                     ; Pointer to 9x RO.
+rocketElPtr             DW 0                    ; Pointer to 9x RO.
 
 /*
 Rocket fly phases:

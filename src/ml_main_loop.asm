@@ -615,20 +615,12 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL dbs.SetupRocketBank
-    CALL roa.DropNextRocketElement
 
     LD A, (st.starsMode)
     OR A
     CALL NZ, td.NextTimeOfDayPhase
 
     CALL ti.ResetTilemapOffset                  ; When intro ends quickly tilemap is sometimes off, this helps
-
-    CALL dbs.SetupArrays2Bank
-    CALL pi.PickupDropCounter
-
-    CALL dbs.SetupPatternEnemyBank
-    CALL enu.RespawnFuelThief
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -673,6 +665,15 @@
 
     CALL dbs.SetupMusicBank
     CALL aml.MusicTimerTick
+
+    CALL dbs.SetupArrays2Bank
+    CALL pi.PickupDropCounter
+
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.RespawnFuelThief
+
+    CALL dbs.SetupRocketBank
+    CALL roa.DropNextRocketElement
 
 .end
     ENDM                                        ; ## END of the macro ##

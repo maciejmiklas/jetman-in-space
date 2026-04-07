@@ -326,7 +326,7 @@ JetInvincible
     JR .afterInvEndSound
 .invEndSound
     CALL dbs.SetupAyFxsBank
-    LD A, af.FX_PICKUP_STRAWBERRY
+    LD A, af.FX_JET_NORMAL
     CALL af.AfxPlay
 .afterInvEndSound
 

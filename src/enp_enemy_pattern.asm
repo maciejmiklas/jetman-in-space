@@ -433,7 +433,7 @@ MovePatternEnemies
     LD A, (IX + SPR.STATE)
     AND sp.SPRITE_ST_VISIBLE                    ; Reset all bits but visibility.
     OR A                                        ; Same as CP 0, but faster.
-    JR Z, .continueNoPop                         ; Jump if visibility is not set (sprite is hidden).
+    JR Z, .continueNoPop                        ; Jump if visibility is not set (sprite is hidden).
 
     PUSH BC                                     ; Preserve B for loop counter.
     ; Load ENP for this sprite to IY.

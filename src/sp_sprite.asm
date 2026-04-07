@@ -79,7 +79,7 @@ SDB_SEARCH_LIMIT_D200   = 200
     BIT sp.SPRITE_ST_VISIBLE_BIT, A
     JR Z, .end                                  ; Jump if sprite is hidden.
 
-    ; Es sprite exploding right now?
+    ; Is sprite exploding right now?
     BIT sp.SPRITE_ST_ACTIVE_BIT, A
 
 .end
@@ -209,6 +209,28 @@ SpriteHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     sp.AnimateSprite                     ;
+;----------------------------------------------------------;
+; Input
+;  - IX: pointer to #SPR.
+    MACRO sp.AnimateSprite
+
+    BIT sp.SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
+    JR Z, .end                                  ; Jump if visibility is not set -> hidden, can be reused.
+
+    ; Sprite is visible.
+    sp.SetSpriteId
+    CALL sp.UpdateSpritePattern
+
+    ; Move #SPR.SDB_POINTER to the next sprite pattern.
+    LD HL, (IX + SPR.SDB_POINTER)
+    INC HL
+    LD (IX + SPR.SDB_POINTER), HL
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                      AnimateSprites                      ;
 ;----------------------------------------------------------;
 ; Input
@@ -224,19 +246,8 @@ AnimateSprites
 .loop
     PUSH BC                                     ; Preserve B for loop counter.
 
-    BIT SPRITE_ST_VISIBLE_BIT, (IX + SPR.STATE)
-    JR Z, .continue                             ; Jump if visibility is not set -> hidden, can be reused.
+    sp.AnimateSprite
 
-    ; Sprite is visible.
-    sp.SetSpriteId
-    CALL UpdateSpritePattern
-
-    ; Move #SPR.SDB_POINTER to the next sprite pattern.
-    LD HL, (IX + SPR.SDB_POINTER)
-    INC HL
-    LD (IX + SPR.SDB_POINTER), HL
-
-.continue
     ; Move HL to the beginning of the next #shotsX.
     LD DE, SPR
     ADD IX, DE

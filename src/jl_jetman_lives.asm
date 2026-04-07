@@ -19,11 +19,10 @@ TI_RAM_START            = ti.TI_MAP_RAM_H5B00 + FACE_TI_POS_BYTE_D30
 RED_FACE_LIVES_D1       = 2                     ; Show face when #lives < than this value.
 JET_POS_LEFT_D100       = 100                   ; Face looks to the left, if Jetman postion is < 100.
 JET_POS_RIGHT_D200      = 200                   ; Face looks to the right, if Jetman postion is > 100.
-JET_LIVES_D5            = 3
+JET_LIVES_D3            = 3
 
-    ; TODO 50 lives for easy
     DB "If you read this text, it means that you have reached forbidden memory space."
-lives                   DB JET_LIVES_D5
+lives                   DB JET_LIVES_D3
     DB "The script stored here will format the SD Card in the next 60 seconds!"
     DB "I would suggest a quick reset ;)"
 ;----------------------------------------------------------;
@@ -62,7 +61,7 @@ LifeDown
 ;----------------------------------------------------------;
 ResetLives
 
-    LD A, JET_LIVES_D5
+    LD A, JET_LIVES_D3
     LD (lives), A
 
     RET                                         ; ## END of the function ##

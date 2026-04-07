@@ -255,6 +255,8 @@ FuelThiefHit
 
     CALL sc.HitEnemy3
 
+    CALL dbs.SetupPatternEnemyBank              ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

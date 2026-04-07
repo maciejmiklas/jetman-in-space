@@ -26,7 +26,7 @@ deployedX               DB 0                ; Pickup X postion.
 deployedY               DB 0                ; Pickup Y postion.
 
 deployDelayCnt          DB 0
-DEPLOY_DELAY            = 20
+DEPLOY_DELAY_D15        = 15
 
 pickupsPtr              DW 0
 pickupsSize             DB 0
@@ -230,7 +230,7 @@ PickupDropCounter
     LD A, (deployDelayCnt)
     INC A
     LD (deployDelayCnt), A
-    CP DEPLOY_DELAY
+    CP DEPLOY_DELAY_D15
     RET NZ
 
     ; ##########################################

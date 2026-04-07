@@ -67,24 +67,26 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
     ENDIF
-
-
-    CALL dbs.SetupMusicBank
+/*
     ; ##########################################
+    CALL dbs.SetupMusicBank
     LD BC, 60
     LD H, 0
     LD A, (aml.gameMusicCnt)
     LD L, A
     CALL ut.PrintNumber
+ */
 /*
-    CALL dbs.SetupCode1Bank
     ; ##########################################
-    LD BC, 66
+    CALL dbs.SetupPatternEnemyBank
+    LD BC, 60
     LD H, 0
-    LD A, (nv.visibilityLimit)
+    LD A, (enu.tmp)
     LD L, A
     CALL ut.PrintNumber
 */
+
+
     RET                                         ; ## END of the function ##
 
     ENDIF
