@@ -46,11 +46,8 @@ joyOverheatDelayCnt     DB 0                    ; The delay counter for joystick
 breakCnt                DB 0
 BREAK_CNT_D50           = 50
 
-; Button state keeps state for 8 buttons.
-; The button state for the current game loop is reset before the keys are processed in the current game loop.
-joyMoveState            DB 0
-joyMoveStatePrevState   DB 0                    ; Keeps state from the previous game loop.
-JMS_FIRE_BIT_D0         = 0
+fireOffCnt              DB 0
+FIRE_RELEASED_D5        = 5
 
 moveDistance            DB 1
 MOVE_1PX                = 1

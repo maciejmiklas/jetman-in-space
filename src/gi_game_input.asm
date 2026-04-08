@@ -7,8 +7,6 @@
 ;----------------------------------------------------------;
     MODULE gi
 
-tmp1 db 0
-tmp2 db 0
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE MACROS                         ;
@@ -16,9 +14,9 @@ tmp2 db 0
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   _JoyFireRelease                        ;
+;                   _JoyFireReleased                       ;
 ;----------------------------------------------------------;
-    MACRO _JoyFireRelease
+    MACRO _JoyFireReleased
 
     CALL jw.FireReleased
 
@@ -71,31 +69,13 @@ tmp2 db 0
     LD A, (gid.joyDirection)
     LD (gid.joyPrevDirection), A
 
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                   _JoyMoveStateEnd                       ;
-;----------------------------------------------------------;
-    MACRO _JoyMoveStateEnd
-
-    ; Fire key has been released?
-    LD A, (gid.joyMoveState)
-    BIT gid.JMS_FIRE_BIT_D0, A
-    JR NZ, .afterFireRelease                 ; Jump if fire is pressed now.
-
-    ; Fire is not pressed, now check whether it was pressed during the last loop.
-    LD A, (gid.joyMoveStatePrevState)
-    BIT gid.JMS_FIRE_BIT_D0, A
-    JR Z, .afterFireRelease                  ; Jump if down was not pressed.
-
-    ; Fire is not pressed now, but was in previous loop.
-    _JoyFireRelease
-.afterFireRelease 
-
     ; ##########################################
-    LD A, (gid.joyMoveState)
-    LD (gid.joyMoveStatePrevState), A
-
+    ; Handle fire released.
+    LD A, (gid.fireOffCnt)
+    CP gid.FIRE_RELEASED_D5
+    JR NZ, .fireNorReleased
+    _JoyFireReleased
+.fireNorReleased
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -103,7 +83,6 @@ tmp2 db 0
 ;                   PUBLIC FUNCTIONS                       ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
 
 ;----------------------------------------------------------;
 ;                    JetMovementInput                      ;
@@ -113,13 +92,18 @@ tmp2 db 0
 ; Input:
 ; - A: number of movement steps
 JetMovementInput
-    call ut.Pause
-    ld a, (tmp1): inc a: ld (tmp1),a
+
     LD (gid.moveDistance), A
 
     XOR A
     LD (gid.joyDirection), A
-    LD (gid.joyMoveState), A
+
+    LD A, (gid.fireOffCnt)
+    CP gid.FIRE_RELEASED_D5+1
+    JR Z, .afterFireOffCnt
+    INC A
+    LD (gid.fireOffCnt), A
+.afterFireOffCnt
 
     ; ##########################################
     ; Row: 1, 2, 3, 4, 5, read left arrow key
@@ -227,7 +211,6 @@ JetMovementInput
 
     ; ##########################################
     _JoyMoveEnd
-    _JoyMoveStateEnd
 
     RET                                         ; ## END of the function ##
 
@@ -546,10 +529,8 @@ _JoyFireA
 ;----------------------------------------------------------;
 _JoyFireB
 
-    ld a, (tmp2): inc a: ld (tmp2),a
-    LD A, (gid.joyMoveState)
-    SET gid.JMS_FIRE_BIT_D0, A
-    LD (gid.joyMoveState), A
+    XOR A
+    LD (gid.fireOffCnt), A
 
     CALL jw.FirePress
 
