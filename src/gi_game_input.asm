@@ -7,6 +7,8 @@
 ;----------------------------------------------------------;
     MODULE gi
 
+tmp1 db 0
+tmp2 db 0
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE MACROS                         ;
@@ -71,8 +73,6 @@
 
     ENDM                                        ; ## END of the macro ##
 
-
-
 ;----------------------------------------------------------;
 ;                   _JoyMoveStateEnd                       ;
 ;----------------------------------------------------------;
@@ -104,16 +104,18 @@
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
-tmp1 db 0     
-tmp2 db 0 
+
 ;----------------------------------------------------------;
 ;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from function keys (throw granade, music off)
 ; Function keys are always processed at the same speed.
+; Input:
+; - A: number of movement steps
 JetMovementInput
     call ut.Pause
     ld a, (tmp1): inc a: ld (tmp1),a
+    LD (gid.moveDistance), A
 
     XOR A
     LD (gid.joyDirection), A
@@ -226,8 +228,6 @@ JetMovementInput
     ; ##########################################
     _JoyMoveEnd
     _JoyMoveStateEnd
-
-     ld a, (tmp2): inc a: ld (tmp2),a
 
     RET                                         ; ## END of the function ##
 
@@ -446,6 +446,13 @@ _JoyRight
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveRight
+    RET
+.move2Px
+    CALL jm.JoyMoveRight
     CALL jm.JoyMoveRight
 
     RET                                         ; ## END of the function ##
@@ -461,6 +468,13 @@ _JoyLeft
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveLeft
+    RET
+.move2Px
+    CALL jm.JoyMoveLeft
     CALL jm.JoyMoveLeft
 
     RET                                         ; ## END of the function ##
@@ -476,6 +490,13 @@ _JoyUp
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveUp
+    RET
+.move2Px
+    CALL jm.JoyMoveUp
     CALL jm.JoyMoveUp
 
     RET                                         ; ## END of the function ##
@@ -491,6 +512,13 @@ _JoyDown
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveDown
+    RET
+.move2Px
+    CALL jm.JoyMoveDown
     CALL jm.JoyMoveDown
 
     RET                                         ; ## END of the function ##
@@ -518,6 +546,7 @@ _JoyFireA
 ;----------------------------------------------------------;
 _JoyFireB
 
+    ld a, (tmp2): inc a: ld (tmp2),a
     LD A, (gid.joyMoveState)
     SET gid.JMS_FIRE_BIT_D0, A
     LD (gid.joyMoveState), A

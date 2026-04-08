@@ -52,6 +52,10 @@ joyMoveState            DB 0
 joyMoveStatePrevState   DB 0                    ; Keeps state from the previous game loop.
 JMS_FIRE_BIT_D0         = 0
 
+moveDistance            DB 1
+MOVE_1PX                = 1
+MOVE_2PX                = 2
+
 ;----------------------------------------------------------;
 ;                     ResetKeysState                       ;
 ;----------------------------------------------------------;
