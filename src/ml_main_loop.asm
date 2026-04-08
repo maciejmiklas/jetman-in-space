@@ -56,6 +56,22 @@
     JP NZ, .end
 
     CALL gi.JetMovementInput
+
+    ; ##########################################
+    ; Faster movement speed for Jetman on hard.
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
+
+    ; Do not speed up animations, like falling from the platform.
+    LD A, (gid.joyOffCnt)
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .notHard
+
+    CALL gi.JetMovementInput
+.notHard
+
+
     CALL gi.GameOptionsInput
 
     CALL jco.JetRip
@@ -86,20 +102,6 @@
     JR Z, .easy
     CALL enc.MoveEnemies
 .easy
-
-    ; ##########################################
-    ; Faster movement speed for Jetman on hard.
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD_D3
-    JR NZ, .notHard
-
-    ; Do not speed up animations, like falling from the platform.
-    LD A, (gid.joyOffCnt)
-    OR A                                        ; Same as CP 0, but faster.
-    JR NZ, .notHard
-
-    CALL gi.JetMovementInput
-.notHard
 
     ; ##########################################
     ; Bumping from platforms.
@@ -245,15 +247,6 @@
     JR NZ, .end
 
     ; ##########################################
-    ; Easy
-    LD A, (jt.difLevel)
-    CP jt.DIF_EASY_D1
-    JR NZ, .notEasy
-
-    CALL enc.MoveEnemies
-.notEasy
-
-    ; ##########################################
     ; Faster movement speed for Jetman on normal.
     LD A, (jt.difLevel)
     CP jt.DIF_NORMAL_D2
@@ -266,6 +259,15 @@
 
     CALL gi.JetMovementInput
 .notNormal
+
+    ; ##########################################
+    ; Easy
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY_D1
+    JR NZ, .notEasy
+
+    CALL enc.MoveEnemies
+.notEasy
 
 .end
     ENDM                                        ; ## END of the macro ##

@@ -43,14 +43,14 @@ joyPrevDirection        DB MOVE_INACTIVE_D0
 
 joyOverheatDelayCnt     DB 0                    ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
 
-; Button state keeps state for 8 buttons.
-; The button state for the current game loop is reset before the keys are processed in the current game loop.
-gameInputState          DB 0
-gameInputPrevState      DB 0                    ; Keeps state from the previous game loop.
-BS_FIRE_BIT_D0          = 0
-
 breakCnt                DB 0
 BREAK_CNT_D50           = 50
+
+; Button state keeps state for 8 buttons.
+; The button state for the current game loop is reset before the keys are processed in the current game loop.
+joyMoveState            DB 0
+joyMoveStatePrevState   DB 0                    ; Keeps state from the previous game loop.
+JMS_FIRE_BIT_D0         = 0
 
 ;----------------------------------------------------------;
 ;                     ResetKeysState                       ;
@@ -63,8 +63,6 @@ ResetKeysState
     LD (joyDirection), A
     LD (joyPrevDirection), A
     LD (joyOverheatDelayCnt), A
-    LD (gameInputState), A
-    LD (gameInputPrevState), A
     LD (breakCnt), A
 
     RET                                         ; ## END of the function ##
