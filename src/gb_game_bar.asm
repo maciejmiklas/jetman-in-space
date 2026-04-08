@@ -76,15 +76,6 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
  */
-/*
-    ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
-    LD BC, 60
-    LD H, 0
-    LD A, (enu.tmp)
-    LD L, A
-    CALL ut.PrintNumber
-*/
 
 
     RET                                         ; ## END of the function ##

@@ -8,14 +8,102 @@
     MODULE gi
 
 ;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PRIVATE MACROS                         ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                   _JoyFireReleased                       ;
+;----------------------------------------------------------;
+    MACRO _JoyFireReleased
+
+    CALL jw.FireReleased
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    _ThrowGranade                         ;
+;----------------------------------------------------------;
+    MACRO _ThrowGranade
+
+    CALL gr.UseGrenade
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                      _NextSong                           ;
+;----------------------------------------------------------;
+    MACRO _NextSong
+
+    CALL dbs.SetupMusicBank
+    CALL aml.NextGameSong
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                        _JoyEnd                           ;
+;----------------------------------------------------------;
+    MACRO _JoyMoveEnd
+
+    CALL jm.JoystickMoveProcessed
+
+    ; ##########################################
+    ; Down key has been released?
+    LD A, (gid.joyDirection)
+    BIT gid.MOVE_DOWN_BIT_D3, A
+    JR NZ, .afterJoyDownRelease                 ; Jump if down is pressed now.
+
+    ; Down is not pressed, now check whether it was pressed during the last loop.
+    LD A, (gid.joyPrevDirection)
+    BIT gid.MOVE_DOWN_BIT_D3, A
+    JR Z, .afterJoyDownRelease                  ; Jump if down was not pressed.
+
+    ; Down is not pressed now, but was in previous loop.
+    CALL jm.JoyMoveDownRelease
+.afterJoyDownRelease
+
+    ; ##########################################
+    ; Update previous state
+
+    LD A, (gid.joyDirection)
+    LD (gid.joyPrevDirection), A
+
+    ; ##########################################
+    ; Handle fire released.
+    LD A, (gid.fireOffCnt)
+    CP gid.FIRE_RELEASED_D5
+    JR NZ, .fireNorReleased
+    _JoyFireReleased
+.fireNorReleased
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+;                   PUBLIC FUNCTIONS                       ;
+;----------------------------------------------------------;
+;----------------------------------------------------------;
+
+;----------------------------------------------------------;
 ;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from function keys (throw granade, music off)
 ; Function keys are always processed at the same speed.
+; Input:
+; - A: number of movement steps
 JetMovementInput
+
+    LD (gid.moveDistance), A
 
     XOR A
     LD (gid.joyDirection), A
+
+    LD A, (gid.fireOffCnt)
+    CP gid.FIRE_RELEASED_D5+1
+    JR Z, .afterFireOffCnt
+    INC A
+    LD (gid.fireOffCnt), A
+.afterFireOffCnt
 
     ; ##########################################
     ; Row: 1, 2, 3, 4, 5, read left arrow key
@@ -122,7 +210,7 @@ JetMovementInput
     CALL Z, _JoyUp
 
     ; ##########################################
-    CALL _JoyMoveEnd
+    _JoyMoveEnd
 
     RET                                         ; ## END of the function ##
 
@@ -132,9 +220,6 @@ JetMovementInput
 ; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement.
 ; Keys are always processed at the same speed. Also, only one option key is being processed during a single loop.
 GameOptionsInput
-
-    XOR A
-    LD (gid.gameInputState), A
 
     ; ##########################################
     ; Read Kempston input
@@ -213,7 +298,7 @@ GameOptionsInput
     BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
     JR NZ, .notSpace
 
-    CALL _ThrowGranade
+    _ThrowGranade
 
     ; ##########################################
     ; Key Break = SPACE + SHIFT, space is down, now check SHIFT
@@ -234,9 +319,6 @@ GameOptionsInput
 
 .notSpace
 .notBreak
-
-    ; ##########################################
-    CALL _GameInputEnd
 
     RET                                         ; ## END of the function ##
 
@@ -267,7 +349,7 @@ _Key_N
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL _NextSong
+    _NextSong
 
     RET                                         ; ## END of the function ##
 
@@ -338,61 +420,6 @@ _Key_Break
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   _GameInputEnd                          ;
-;----------------------------------------------------------;
-_GameInputEnd
-
-    ; Fire key has been released?
-    LD A, (gid.gameInputState)
-    BIT gid.BS_FIRE_BIT_D0, A
-    JR NZ, .afterFireRelease                 ; Jump if fire is pressed now.
-
-    ; Fire is not pressed, now check whether it was pressed during the last loop.
-    LD A, (gid.gameInputPrevState)
-    BIT gid.BS_FIRE_BIT_D0, A
-    JR Z, .afterFireRelease                  ; Jump if down was not pressed.
-
-    ; Fire is not pressed now, but was in previous loop.
-    CALL _JoyFireRelease
-.afterFireRelease 
-
-    ; ##########################################
-    LD A, (gid.gameInputState)
-    LD (gid.gameInputPrevState), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                        _JoyEnd                           ;
-;----------------------------------------------------------;
-_JoyMoveEnd
-
-    CALL jm.JoystickMoveProcessed
-
-    ; ##########################################
-    ; Down key has been released?
-    LD A, (gid.joyDirection)
-    BIT gid.MOVE_DOWN_BIT_D3, A
-    JR NZ, .afterJoyDownRelease                 ; Jump if down is pressed now.
-
-    ; Down is not pressed, now check whether it was pressed during the last loop.
-    LD A, (gid.joyPrevDirection)
-    BIT gid.MOVE_DOWN_BIT_D3, A
-    JR Z, .afterJoyDownRelease                  ; Jump if down was not pressed.
-
-    ; Down is not pressed now, but was in previous loop.
-    CALL jm.JoyMoveDownRelease
-.afterJoyDownRelease
-
-    ; ##########################################
-    ; Update previous state
-
-    LD A, (gid.joyDirection)
-    LD (gid.joyPrevDirection), A
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                        _JoyRight                         ;
 ;----------------------------------------------------------;
 _JoyRight
@@ -402,6 +429,13 @@ _JoyRight
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveRight
+    RET
+.move2Px
+    CALL jm.JoyMoveRight
     CALL jm.JoyMoveRight
 
     RET                                         ; ## END of the function ##
@@ -417,6 +451,13 @@ _JoyLeft
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveLeft
+    RET
+.move2Px
+    CALL jm.JoyMoveLeft
     CALL jm.JoyMoveLeft
 
     RET                                         ; ## END of the function ##
@@ -432,6 +473,13 @@ _JoyUp
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveUp
+    RET
+.move2Px
+    CALL jm.JoyMoveUp
     CALL jm.JoyMoveUp
 
     RET                                         ; ## END of the function ##
@@ -447,6 +495,13 @@ _JoyDown
     LD (gid.joyDirection), A
 
     ; ##########################################
+    LD A, (gid.moveDistance)
+    CP gid.MOVE_2PX
+    JR Z, .move2Px
+    CALL jm.JoyMoveDown
+    RET
+.move2Px
+    CALL jm.JoyMoveDown
     CALL jm.JoyMoveDown
 
     RET                                         ; ## END of the function ##
@@ -465,7 +520,7 @@ _JoyDownRelease
 ;----------------------------------------------------------;
 _JoyFireA
 
-    CALL _ThrowGranade
+    _ThrowGranade
 
     RET                                         ; ## END of the function ##
 
@@ -474,9 +529,8 @@ _JoyFireA
 ;----------------------------------------------------------;
 _JoyFireB
 
-    LD A, (gid.gameInputState)
-    SET gid.BS_FIRE_BIT_D0, A
-    LD (gid.gameInputState), A
+    XOR A
+    LD (gid.fireOffCnt), A
 
     CALL jw.FirePress
 
@@ -487,37 +541,10 @@ _JoyFireB
 ;----------------------------------------------------------;
 _JoyFireC
 
-    CALL _NextSong
+    _NextSong
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                   _JoyFireRelease                        ;
-;----------------------------------------------------------;
-_JoyFireRelease
-
-    CALL jw.FireReleased
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                    _ThrowGranade                         ;
-;----------------------------------------------------------;
-_ThrowGranade
-
-    CALL gr.UseGrenade
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                      _NextSong                           ;
-;----------------------------------------------------------;
-_NextSong
-
-    CALL dbs.SetupMusicBank
-    CALL aml.NextGameSong
-
-    RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

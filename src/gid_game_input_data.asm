@@ -12,7 +12,7 @@
 joyOffCnt           DB 0
 
 ; Possible move directions##
-MOVE_INACTIVE_D0         = 0                     ; No movement.
+MOVE_INACTIVE_D0        = 0                     ; No movement.
 
 MOVE_LEFT_BIT_D0        = 0                     ; Bit 0 - Jetman moving left, facing left.
 MOVE_LEFT_MASK          = %0000'0001
@@ -43,14 +43,15 @@ joyPrevDirection        DB MOVE_INACTIVE_D0
 
 joyOverheatDelayCnt     DB 0                    ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
 
-; Button state keeps state for 8 buttons.
-; The button state for the current game loop is reset before the keys are processed in the current game loop.
-gameInputState          DB 0
-gameInputPrevState      DB 0                    ; Keeps state from the previous game loop.
-BS_FIRE_BIT_D0          = 0
-
 breakCnt                DB 0
 BREAK_CNT_D50           = 50
+
+fireOffCnt              DB 0
+FIRE_RELEASED_D5        = 5
+
+moveDistance            DB 1
+MOVE_1PX                = 1
+MOVE_2PX                = 2
 
 ;----------------------------------------------------------;
 ;                     ResetKeysState                       ;
@@ -63,8 +64,6 @@ ResetKeysState
     LD (joyDirection), A
     LD (joyPrevDirection), A
     LD (joyOverheatDelayCnt), A
-    LD (gameInputState), A
-    LD (gameInputPrevState), A
     LD (breakCnt), A
 
     RET                                         ; ## END of the function ##

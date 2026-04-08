@@ -55,7 +55,39 @@
     CP ms.MS_GAME_ACTIVE_D1
     JP NZ, .end
 
+    ; ##########################################
+    ; Process the joystick direction movement to control Jetman in the game. Easy moves 1px, normal 1.5px, hard 2px.
+
+    ; Do not speed up animations, like falling from the platform.
+    LD A, (gid.joyOffCnt)
+    OR A                                        ; Same as CP 0, but faster.
+    JR NZ, .moveOnePixel
+
+    ; Hard?
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
+    LD A, gid.MOVE_2PX                          ; Move on hard 2px/frame.
+    JR .calltMovementInput
+.notHard
+
+    ; A bit faster movement speed for Jetman on normal (every second frame).
+    LD A, (jt.difLevel)
+    CP jt.DIF_NORMAL_D2
+    JR NZ, .moveOnePixel
+
+    ; It's normal, but speed up only every second frame.
+    LD A, (mld.counter000FliFLop)
+    CP _GC_FLIP_ON_D1
+    JR Z, .moveOnePixel
+    LD A, gid.MOVE_2PX
+    JR .calltMovementInput
+.moveOnePixel
+    LD A, gid.MOVE_1PX
+.calltMovementInput
     CALL gi.JetMovementInput
+
+     ; ##########################################
     CALL gi.GameOptionsInput
 
     CALL jco.JetRip
@@ -86,20 +118,6 @@
     JR Z, .easy
     CALL enc.MoveEnemies
 .easy
-
-    ; ##########################################
-    ; Faster movement speed for Jetman on hard.
-    LD A, (jt.difLevel)
-    CP jt.DIF_HARD_D3
-    JR NZ, .notHard
-
-    ; Do not speed up animations, like falling from the platform.
-    LD A, (gid.joyOffCnt)
-    OR A                                        ; Same as CP 0, but faster.
-    JR NZ, .notHard
-
-    CALL gi.JetMovementInput
-.notHard
 
     ; ##########################################
     ; Bumping from platforms.
@@ -252,20 +270,6 @@
 
     CALL enc.MoveEnemies
 .notEasy
-
-    ; ##########################################
-    ; Faster movement speed for Jetman on normal.
-    LD A, (jt.difLevel)
-    CP jt.DIF_NORMAL_D2
-    JR NZ, .notNormal
-
-    ; Do not speed up animations, like falling from the platform.
-    LD A, (gid.joyOffCnt)
-    OR A                                        ; Same as CP 0, but faster.
-    JR NZ, .notNormal
-
-    CALL gi.JetMovementInput
-.notNormal
 
 .end
     ENDM                                        ; ## END of the macro ##
