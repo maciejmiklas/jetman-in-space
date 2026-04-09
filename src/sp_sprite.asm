@@ -86,6 +86,18 @@ SDB_SEARCH_LIMIT_D200   = 200
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
+;                   sp.ShowSpriteReg                       ;
+;----------------------------------------------------------;
+; Input:
+;  - A: sprite pattern number.
+    MACRO sp.ShowSpriteReg
+
+    OR _SPR_ATTR3_SHOW                          ; Store pattern number into Sprite Attribute.
+    NEXTREG _SPR_REG_ATR3_H38, A
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                   sp.HideSpriteReg                       ;
 ;----------------------------------------------------------;
     MACRO sp.HideSpriteReg
@@ -403,8 +415,7 @@ UpdateSpritePattern
     ; Set sprite pattern
     LD HL, (IX + SPR.SDB_POINTER)               ; HL points to a memory location holding a pointer to the current DB position with the next sprite pattern.
     LD A, (HL)                                  ; A holds the next sprite pattern.
-    OR _SPR_ATTR3_SHOW                          ; Store pattern number into Sprite Attribute.
-    NEXTREG _SPR_REG_ATR3_H38, A
+    sp.ShowSpriteReg
 
     RET                                         ; ## END of the function ##
 

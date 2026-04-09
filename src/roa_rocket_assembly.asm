@@ -211,7 +211,14 @@ rocAssemblyX            DB 0
     CALL jco.JetmanElementCollision
     JR NZ, .end
 
-     ; ##########################################
+    ; ##########################################
+    ; Show the rocket element sprite in case it is not visible due to blinking when waiting on the ground/platform.
+    LD A, (IX + ro.RO.SPRITE_ID)
+    NEXTREG _SPR_REG_NR_H34, A
+    LD A, (IX + ro.RO.SPRITE_REF)
+    sp.ShowSpriteReg
+
+    ; ##########################################
     ; Call game command with pickup info.
     LD A, (ro.rocketState)
     CP ro.ROST_FALL_PICKUP_D10
@@ -468,8 +475,7 @@ AnimateTankExplode
     ADD B
 
     ; Set sprite pattern.
-    OR _SPR_ATTR3_SHOW                        ; Set show bit
-    NEXTREG _SPR_REG_ATR3_H38, A
+    sp.ShowSpriteReg
 
     ; Increment #explodeTankCnt
     LD A, (explodeTankCnt)
@@ -533,9 +539,36 @@ RocketElementFallsForPickup
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    BlinkRocketReady                      ;
+;            BlinkRocketElementForPickup                   ;
 ;----------------------------------------------------------;
-BlinkRocketReady
+BlinkRocketElementForPickup
+
+    LD A, (ro.rocketState)
+    CP ro.ROST_WAIT_PICKUP_D12
+    RET NZ
+
+    ; ##########################################
+    CALL _SetIXtoCurrentRocketElement           ; Set IX to current #rocket postion.
+
+    ; Set the ID of the sprite for the following commands.
+    LD A, (IX + ro.RO.SPRITE_ID)
+    NEXTREG _SPR_REG_NR_H34, A
+
+    LD A, (mld.counter008FliFLop)
+    CP _GC_FLIP_ON_D1
+    JR Z, .showElement
+    sp.HideSpriteReg
+    RET
+.showElement   
+    LD A, (IX + ro.RO.SPRITE_REF)
+    sp.ShowSpriteReg
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;               BlinkRocketReadyForTakeoff                 ;
+;----------------------------------------------------------;
+BlinkRocketReadyForTakeoff
 
     ; Return if rocket is not ready.
     LD A, (ro.rocketState)
@@ -555,8 +588,7 @@ BlinkRocketReady
 .flip   
     LD A, ro.SPR_PAT_READY2_D61
 .afterSet
-    OR _SPR_ATTR3_SHOW                        ; Set visibility bit
-    NEXTREG _SPR_REG_ATR3_H38, A
+    sp.ShowSpriteReg
 
     RET                                         ; ## END of the function ##
 
@@ -587,8 +619,7 @@ RocketElementFallsForAssembly
     ; ##########################################
     ; Set sprite pattern.
     LD A, (IX + ro.RO.SPRITE_REF)
-    OR _SPR_ATTR3_SHOW                        ; Set show bit.
-    NEXTREG _SPR_REG_ATR3_H38, A
+    sp.ShowSpriteReg
 
     ; ##########################################
     ; Sprite Y coordinate, increment until the destination has been reached.

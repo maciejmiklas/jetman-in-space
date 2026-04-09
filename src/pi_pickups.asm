@@ -26,7 +26,7 @@ deployedX               DB 0                ; Pickup X postion.
 deployedY               DB 0                ; Pickup Y postion.
 
 deployDelayCnt          DB 0
-DEPLOY_DELAY_D15        = 15
+DEPLOY_DELAY_D10        = 10
 
 pickupsPtr              DW 0
 pickupsSize             DB 0
@@ -36,6 +36,7 @@ LIVE_DEPLOYED_YES       = 1
 LIVE_DEPLOYED_NO        = 1
 
 PICKUP_SPRITE_ID        = 90
+PICKUP_GND_LEVEL        = _GSC_Y_MAX2_D238-5
 
 ;----------------------------------------------------------;
 ;                    SetupPickups                          ;
@@ -99,7 +100,7 @@ UpdatePickupsOnJetmanMove
     ; ##########################################
     ; Pickup in the air?
     LD A, (deployedY)
-    CP _GSC_Y_MAX2_D238
+    CP PICKUP_GND_LEVEL
     CALL NZ, gc.JetPicksInAir
 
     ; ##########################################
@@ -173,14 +174,30 @@ AnimateFallingPickup
     ; ##########################################
     ; Update y postion (falling down).
     LD A, (deployedY)
-    CP _GSC_Y_MAX2_D238
+    CP PICKUP_GND_LEVEL
     JR NZ, .afterGroundCheck
 
     ; Pickup is already on the ground, so moving it is unnecessary. In case of life, hide it once it has reached the ground.
     LD A, (deployed)
     CP PI_SPR_LIFE
-    RET NZ
+    JR Z, .lifeReachedGround
 
+    ; Pickup is on the ground - start blinking.
+    
+    ; Set the ID of the sprite for the following commands.
+    LD A, PICKUP_SPRITE_ID
+    NEXTREG _SPR_REG_NR_H34, A
+
+    LD A, (mld.counter005FliFLop)
+    CP _GC_FLIP_ON_D1
+    JR Z, .showPickupOnGround
+    sp.HideSpriteReg
+    RET
+.showPickupOnGround
+    LD A, (deployed)
+    sp.ShowSpriteReg
+    RET
+.lifeReachedGround
     ; Life has reached the ground - hide it.
     CALL _PrepareNextPixkup
     RET
@@ -199,8 +216,7 @@ AnimateFallingPickup
     
     ; Set sprite pattern.
     LD A, (deployed)
-    OR _SPR_ATTR3_SHOW                        ; Set show bit.
-    NEXTREG _SPR_REG_ATR3_H38, A
+    sp.ShowSpriteReg
 
     ; Sprite X coordinate from A param.
     LD A, (deployedX)
@@ -230,7 +246,7 @@ PickupDropCounter
     LD A, (deployDelayCnt)
     INC A
     LD (deployDelayCnt), A
-    CP DEPLOY_DELAY_D15
+    CP DEPLOY_DELAY_D10
     RET NZ
 
     ; ##########################################
