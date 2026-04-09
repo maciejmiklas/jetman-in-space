@@ -46,13 +46,13 @@ LoadMainMenu
     LD D, "0"
     LD E, "1"
     CALL ar.LoadSpritesFile
+    CALL sp.LoadSpritesFPGA
 
     ; ##########################################
     ; Music
     CALL dbs.SetupMusicBank
     LD A, aml.MUSIC_MAIN_MENU_D81
     CALL aml.LoadSong
-
 
     CALL SwitchToMainMenu
 
