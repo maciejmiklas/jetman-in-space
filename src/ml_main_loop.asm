@@ -485,8 +485,9 @@
     CALL jw.AnimateShots
 
     CALL dbs.SetupRocketBank
-    CALL roa.BlinkRocketReady
+    CALL roa.BlinkRocketReadyForTakeoff
     CALL roa.AnimateTankExplode
+    CALL roa.BlinkRocketElementForPickup
 
     CALL jo.AnimateJetpackOverheat
 

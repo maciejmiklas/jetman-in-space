@@ -359,8 +359,7 @@ MoveFuelThief
 
     ; Set sprite pattern
     LD A, FUEL_SPRITE_REF_D17
-    OR _SPR_ATTR3_SHOW                        ; Set show bit.
-    NEXTREG _SPR_REG_ATR3_H38, A
+    sp.ShowSpriteReg
 .notCarryFuel
 
     RET                                         ; ## END of the function ##
