@@ -747,6 +747,11 @@
     CALL gc.PlayFuelThiefFx
 
     ; ##########################################
+    CALL dbs.SetupRocketBank
+    CALL ro.IsReadyForTakeoff
+    CALL Z, gc.RocketReady
+
+    ; ##########################################
     ; Hard
     LD A, (jt.difLevel)
     CP jt.DIF_HARD_D3

@@ -885,8 +885,6 @@ RocketReady
     LD A, af.FX_ROCKET_READY
     CALL af.AfxPlay
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

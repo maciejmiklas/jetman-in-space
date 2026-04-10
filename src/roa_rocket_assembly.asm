@@ -593,6 +593,20 @@ BlinkRocketReadyForTakeoff
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;               SoundRocketReadyForTakeoff                 ;
+;----------------------------------------------------------;
+SoundRocketReadyForTakeoff
+
+    ; Return if rocket is not ready.
+    LD A, (ro.rocketState)
+    CP ro.ROST_READY_D100
+    RET NZ
+
+    CALL gc.RocketReady 
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;              RocketElementFallsForAssembly               ;
 ;----------------------------------------------------------;
 RocketElementFallsForAssembly
@@ -691,8 +705,6 @@ DropNextRocketElement
 
     LD A, ro.ROST_READY_D100
     LD (ro.rocketState), A
-
-    CALL gc.RocketReady
 
     RET
 
