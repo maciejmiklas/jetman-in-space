@@ -96,7 +96,6 @@
     JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
-    CALL jco.JetInvincible
 
     CALL dbs.SetupRocketBank
     CALL roa.CheckHitTank
@@ -247,6 +246,12 @@
     LD (mld.counter002), A
 
     ; ##########################################
+    ; 1 -> 0 and 0 -> 1
+    LD A, (mld.counter002FliFLop)
+    XOR 1
+    LD (mld.counter002FliFLop), A
+
+    ; ##########################################
     ; CALL functions that need to be updated every xx-th loop.
     _Loop002OnActiveGame
 
@@ -271,6 +276,8 @@
     CALL enc.MoveEnemies
 .notEasy
 
+    ; ##########################################
+    CALL jco.JetInvincible
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -358,10 +365,10 @@
     JR NZ, .end
 
     ; ##########################################
+    CALL jo.UpdateJetpackOverheating
+
     CALL dbs.SetupRocketBank
     CALL roa.RocketElementFallsForAssembly
-
-    CALL jo.UpdateJetpackOverheating
 
     CALL dbs.SetupArrays2Bank
     CALL pi.AnimateFallingPickup

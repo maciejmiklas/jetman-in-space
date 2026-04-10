@@ -322,21 +322,25 @@ JetInvincible
     CP JM_INV_BLINK_D100
 
     ; Play sound when invincibility ends.
-    JR Z, .invEndSound
-    JR .afterInvEndSound
-.invEndSound
+    JR C, .playEndSound
+    JR .afterPlayEndSound
+.playEndSound
+
+    LD A, (mld.counter008FliFLop)
+    CP _GC_FLIP_ON_D1
+    JR NZ, .afterPlayEndSound
     CALL dbs.SetupAyFxsBank
     LD A, af.FX_JET_NORMAL
     CALL af.AfxPlay
-.afterInvEndSound
+.afterPlayEndSound
 
     JR NC, .blinkFast                           ; #invincibleCnt > #JM_INV_BLINK_D100 -> blink fast.
 
     ;  #invincibleCnt < #JM_INV_BLINK_D100 -> blink slow (invincibility is almost over).
-    LD A, (mld.counter005FliFLop)
+    LD A, (mld.counter008FliFLop)
     JR .afterBlinkSet
 .blinkFast  
-    LD A, (mld.counter000FliFLop)
+    LD A, (mld.counter002FliFLop)
 .afterBlinkSet
 
     CALL js.BlinkJetSprite
