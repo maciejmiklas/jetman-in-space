@@ -116,6 +116,7 @@ NextGameSong
 
     RET                                         ; ## END of the function ##
 
+preloadBorderCol DB 0
 ;----------------------------------------------------------;
 ;                    PreloadIngameMusic                    ;
 ;----------------------------------------------------------;
@@ -134,6 +135,9 @@ PreloadIngameMusic
     ; ##########################################
     LD B, dbs.AY_MI_BANKS_40
 .loop
+
+    _LOADING
+
     PUSH BC
 
     CALL dbs.NextInGameMusicBank
@@ -150,6 +154,8 @@ PreloadIngameMusic
     DJNZ .loop
 
     CALL dbs.ResetInGameMusicBank
+
+    _LOADING_END
 
     RET                                         ; ## END of the function ##
 
