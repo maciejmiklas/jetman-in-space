@@ -136,7 +136,7 @@ PreloadIngameMusic
     LD B, dbs.AY_MI_BANKS_40
 .loop
 
-    _LOADING
+    CALL ut.Loading
 
     PUSH BC
 
@@ -155,7 +155,7 @@ PreloadIngameMusic
 
     CALL dbs.ResetInGameMusicBank
 
-    _LOADING_END
+    CALL ut.LoadingEnd
 
     RET                                         ; ## END of the function ##
 

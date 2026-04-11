@@ -283,6 +283,9 @@ RocketFLyStartPhase1
     LD A, ms.MS_FLY_ROCKET_D3
     CALL ms.SetMainState
 
+    CALL dbs.SetupMusicCommonBank
+    CALL aml.MusicOff
+
     CALL sc.BoardRocket
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
