@@ -42,7 +42,7 @@ CODE1_S6_D35            = 35                    ; Slot 6, game data storage.
 ROCKET_S6_D36           = 36                    ; Slot 6, rocket.
 
 ; ################ Dynamic Data #################
-PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D87.
+PAL2_BR_BANK_S7_D70     = 70                    ; Slot 7. Layer 2 brightness change for pallettes from PAL2_BANK_S6_D86.
 SPR_BANK1_S6_D71        = 71
 SPR_BANK2_S7_D72        = 72
 
@@ -55,9 +55,69 @@ BMA_EN_BANK_S6_D82  = BMA_ST_BANK_S6_D73+BM_BANKS_D10-1; -1 because inclusive.
 LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB.
 LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7.
 EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image.
-AY_MBIN_S7_D86          = 86                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
-PAL2_BANK_S6_D87        = 87                   ; Slot 6. Layer 2 pallettes.
-PAL_TI_BANK_S6_D88      = 88                   ; Slot 6. Tilemap pallettes.
+PAL2_BANK_S6_D86        = 86                   ; Slot 6. Layer 2 pallettes.
+PAL_TI_BANK_S6_D87      = 87                   ; Slot 6. Tilemap pallettes.
+AY_MBIN_S7_D88          = 88                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
+
+; Music preloads 40 titles into 40 banks, for fast switching during the game.
+AY_MIBIN_S7_ST_D89      = 89                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
+AY_MIBIN_S7_EN_D129     = 129
+AY_MI_BANKS_40          = AY_MIBIN_S7_EN_D129 - AY_MIBIN_S7_ST_D89
+    ASSERT AY_MI_BANKS_40 = 40
+ingameMusicBank         DB AY_MIBIN_S7_ST_D89
+
+;----------------------------------------------------------;
+;                  ResetInGameMusicBank                    ;
+;----------------------------------------------------------;
+; Return:
+;  - A: current game music bank for pt3 -1.
+ResetInGameMusicBank
+
+    LD A, AY_MIBIN_S7_ST_D89-1
+    LD (ingameMusicBank), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                  NextInGameMusicBank                     ;
+;----------------------------------------------------------;
+; Return:
+;  - A: current game music bank for pt3.
+NextInGameMusicBank
+
+    LD A, (ingameMusicBank)
+    INC A
+    CP AY_MIBIN_S7_EN_D129+1
+    JR NZ, .afterBankInc
+    LD A, AY_MIBIN_S7_ST_D89
+.afterBankInc
+    LD (ingameMusicBank), A
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                  SetupInGameMusicBank                    ;
+;----------------------------------------------------------;
+; Return:
+;  - A: current game music bank for pt3.
+SetupInGameMusicBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
+
+    LD A, (ingameMusicBank)
+    NEXTREG _MMU_REG_SLOT7_H57, A               ; Binary loaded from file
+
+    RET                                         ; ## END of the function ## 
+
+;----------------------------------------------------------;
+;                   SetupMusicCommonBank                    ;
+;----------------------------------------------------------;
+SetupMusicCommonBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
+    NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D88  ; Binary loaded from file
+
+    RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
 ;                    SetupRocketBank                       ;
@@ -101,16 +161,6 @@ SetupPatternEnemyBank
 SetupEmptyImageBank
 
     NEXTREG _MMU_REG_SLOT6_H56, EMPTY_IMG_S6_D85
-
-    RET                                         ; ## END of the function ## 
-
-;----------------------------------------------------------;
-;                      SetupMusicBank                      ;
-;----------------------------------------------------------;
-SetupMusicBank
-
-    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
-    NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D86  ; Binary loaded from file
 
     RET                                         ; ## END of the function ## 
 
@@ -185,7 +235,7 @@ SetupArrays2Bank
 SetupBgPaletteBank
 
     ; Memory bank (8KiB) containing layer 2 palette data
-    NEXTREG _MMU_REG_SLOT6_H56, PAL2_BANK_S6_D87
+    NEXTREG _MMU_REG_SLOT6_H56, PAL2_BANK_S6_D86
 
     ; Memory bank (8KiB) containing layer 2 palettes with brightness for times of the day
     NEXTREG _MMU_REG_SLOT7_H57, PAL2_BR_BANK_S7_D70
@@ -197,7 +247,7 @@ SetupBgPaletteBank
 ;----------------------------------------------------------;
 SetupTiPaletteBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, PAL_TI_BANK_S6_D88
+    NEXTREG _MMU_REG_SLOT6_H56, PAL_TI_BANK_S6_D87
 
     RET                                         ; ## END of the function ##
 

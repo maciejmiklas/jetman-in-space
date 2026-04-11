@@ -224,7 +224,7 @@ menuScoreCursor
 EnterNewScore
 
     ; Music off
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
 
     XOR A                                       ; Enable user name input
@@ -239,7 +239,7 @@ EnterNewScore
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     LD A, aml.MUSIC_HIGH_SCORE_D82
     CALL aml.LoadSong
     CALL aml.MusicOn
@@ -252,7 +252,7 @@ EnterNewScore
 LoadMenuScore
 
     ; Music off
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
 
     ; Read only mode.
@@ -263,7 +263,7 @@ LoadMenuScore
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -382,7 +382,7 @@ _JoyFire
 
     ; ##########################################
     ; Music for main menu
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     LD A, aml.MUSIC_MAIN_MENU_D81
     CALL aml.LoadSong
 

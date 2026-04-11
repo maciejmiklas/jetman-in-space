@@ -63,7 +63,7 @@ ShowGameOver
 
     ; ##########################################
     ; Music
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     LD A, aml.MUSIC_GAME_OVER_D80
     CALL aml.LoadSong
 

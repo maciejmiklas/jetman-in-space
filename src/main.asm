@@ -210,7 +210,7 @@ mainLoop
     ASSERT $$ == dbs.AY_FX_S6_D32
 
     ; ################ BANK  33 ################
-    ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
+    ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank
     MMU _RAM_SLOT6, dbs.AY_MCODE_S6_D33
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "am_audio_music.asm"

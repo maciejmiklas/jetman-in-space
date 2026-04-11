@@ -33,9 +33,6 @@
     
     CALL dbs.SetupAyFxsBank
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing.
-    
-    CALL dbs.SetupMusicBank
-    CALL am.MusicLoop
 
     _Loop000OnActiveGame
     _Loop000OnMainMenu
@@ -53,7 +50,11 @@
 
     LD A, (ms.mainState)
     CP ms.MS_GAME_ACTIVE_D1
-    JP NZ, .end
+    JP NZ, .notInGame
+
+    ; ##########################################
+    CALL dbs.SetupInGameMusicBank
+    CALL am.MusicLoop
 
     ; ##########################################
     ; Process the joystick direction movement to control Jetman in the game. Easy moves 1px, normal 1.5px, hard 2px.
@@ -128,6 +129,11 @@
     CALL pl.MoveJetOnFallingFromPlatform
     CALL pl.MoveJetOnHitPlatformBelow
 .endJoyOn
+    JR .end
+
+.notInGame
+    CALL dbs.SetupMusicCommonBank
+    CALL am.MusicLoop
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -675,7 +681,7 @@
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.NextFollowingAngle
 
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicTimerTick
 
     CALL dbs.SetupArrays2Bank

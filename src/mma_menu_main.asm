@@ -50,7 +50,7 @@ LoadMainMenu
 
     ; ##########################################
     ; Music
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     LD A, aml.MUSIC_MAIN_MENU_D81
     CALL aml.LoadSong
 
@@ -137,7 +137,7 @@ SwitchToMainMenu
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -154,7 +154,7 @@ SwitchToMainMenu
 _LoadMenuEasy
  
     ; Music off
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
 
     ; ##########################################
@@ -182,7 +182,7 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -193,7 +193,7 @@ _LoadMenuEasy
 _LoadMenuNormal
 
     ; Music off
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
 
     ; Hide current image
@@ -227,7 +227,7 @@ _LoadMenuNormal
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -238,7 +238,7 @@ _LoadMenuNormal
 _LoadMenuHard
  
     ; Music off
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
 
     ; Hide current image
@@ -265,7 +265,7 @@ _LoadMenuHard
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
