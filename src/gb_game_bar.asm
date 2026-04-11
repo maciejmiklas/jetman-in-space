@@ -69,7 +69,7 @@ PrintDebug
     ENDIF
 /*
     ; ##########################################
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     LD BC, 60
     LD H, 0
     LD A, (aml.gameMusicCnt)

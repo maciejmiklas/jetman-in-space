@@ -39,7 +39,7 @@ LoadMenuGameplay
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -75,7 +75,7 @@ LoadMenuKeys
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -92,7 +92,7 @@ LoadMenuKeys
 _PreLoadMenu
 
     ; Music of
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
 
     LD A, ms.MS_MENU_MANUAL_D12

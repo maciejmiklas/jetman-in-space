@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE am
 
-    ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
+    ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank
 
 ;Vortex Tracker II v1.0 PT3 player for ZX Spectrum
 ;ROM version (specially for Axor)

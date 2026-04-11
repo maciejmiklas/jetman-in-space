@@ -31,7 +31,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL li.LoadLevelIntro
 
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     LD A, aml.MUSIC_INTRO_D82
     CALL aml.LoadSong
 
@@ -49,7 +49,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL li.LoadLevelIntro
 
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     LD A, aml.MUSIC_INTRO_D82
     CALL aml.LoadSong
 
@@ -77,7 +77,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL ms.SetMainState
 
     ; Music on
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.NextGameSong
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
@@ -123,10 +123,10 @@ StartGameWithIntro
 
      CALL sc.ResetScore
 
-    ; Music off
-    CALL dbs.SetupMusicBank
-    CALL aml.RandIngameSong
+    ; Music
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
+    CALL aml.PreloadIngameMusic
 
     ; Show intro only for the first level.
     LD A, (ll.currentLevel)
@@ -1040,7 +1040,7 @@ _HideGame
 
     CALL sp.ResetAllSprites
 
-    CALL dbs.SetupMusicBank
+    CALL dbs.SetupMusicCommonBank
     CALL aml.MusicOff
 
     CALL bm.HideImage

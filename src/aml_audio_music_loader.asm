@@ -6,7 +6,7 @@
 ;                   Vortex Tracker II                      ;
 ;----------------------------------------------------------;
     MODULE aml
-    ; TO USE THIS MODULE: CALL dbs.SetupMusicBank
+    ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank
 
 ; Counter for game music from assets\snd.
 gameMusicCnt            DB 0
@@ -55,17 +55,6 @@ FlipOnOff
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      RandIngameSong                      ;
-;----------------------------------------------------------;
-RandIngameSong
-
-    LD A, R
-    LD (gameMusicCnt), A
-
-    RET                                         ; ## END of the function ##
-
-
-;----------------------------------------------------------;
 ;                         MusicOn                          ;
 ;----------------------------------------------------------;
 MusicOn
@@ -111,6 +100,8 @@ LoadSong
 ;----------------------------------------------------------;
 NextGameSong
 
+    CALL aml.MusicOff
+
     LD A, NEXT_MUSIC_SEC
     LD (nextMusicTimeCnt), A
 
@@ -118,7 +109,47 @@ NextGameSong
     INC A
     LD (gameMusicCnt), A
 
-    CALL LoadSong
+    CALL dbs.NextInGameMusicBank
+    CALL dbs.SetupInGameMusicBank
+    CALL am.InitMusic
+    CALL aml.MusicOn
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    PreloadIngameMusic                    ;
+;----------------------------------------------------------;
+PreloadIngameMusic
+    CALL dbs.ResetInGameMusicBank
+
+    ; Initialize the music counter to a random value if it hasn't already been set.
+    LD A, (gameMusicCnt)
+    CP 0
+    JR NZ, .afterInitMusicCnt
+    LD A, R
+    LD (gameMusicCnt), A
+.afterInitMusicCnt
+    LD C, A
+
+    ; ##########################################
+    LD B, dbs.AY_MI_BANKS_40
+.loop
+    PUSH BC
+
+    CALL dbs.NextInGameMusicBank
+    LD B, A
+    LD A, C
+    CALL ar.LoadMusicBankFile
+
+    POP BC
+
+    ; Increment song numnber for #LoadMusicBankFile
+    LD A, C
+    INC A
+    LD C, A
+    DJNZ .loop
+
+    CALL dbs.ResetInGameMusicBank
 
     RET                                         ; ## END of the function ##
 

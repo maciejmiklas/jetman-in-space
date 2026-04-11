@@ -130,9 +130,19 @@ LoadMenuScorePalFile
 ;                     LoadMusicFile                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A: song number from "assets/snd/xx.pt3".
+;  - A: song number from "assets/snd/xxx.pt3".
 LoadMusicFile
+    LD B, dbs.AY_MBIN_S7_D88
 
+;----------------------------------------------------------;
+;                   LoadMusicBankFile                      ;
+;----------------------------------------------------------;
+; Input:
+;  - A: song number from "assets/snd/xxx.pt3".
+;  - B: bank number to store pt3 file
+LoadMusicBankFile
+
+    PUSH BC
     CALL dbs.SetupArrays2Bank                   ; Setup slot 7 to load arrays.
 
     CALL ut.NumTo999Str                         ; C,D,E now contains ASCII of value from A.
@@ -140,7 +150,7 @@ LoadMusicFile
     LD HL, db2.sndFileName
     PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for fi.CopyFileName).
     LD IX, HL                                   ; Param for #_LoadImageToTempRam.
-    ADD HL, db2.SND_NR_POS                      ; Move HL to ""assets/snd/".
+    ADD HL, db2.SND_NR_POS                      ; Move HL to "assets/snd/".
 
     LD (HL), C                                  ; Set 1 number.
     INC HL
@@ -153,8 +163,11 @@ LoadMusicFile
     CALL fi.FileOpenRead
 
     ; Read file
-    CALL dbs.SetupMusicBank                     ; Setup slot 7 to load music binary.
-    LD IX, am.MUSIC_BIN_ADDR_HE000              ; Song bin takes whole bank.
+    POP BC
+    LD A, B
+    NEXTREG _MMU_REG_SLOT7_H57, A               ; Binary loaded from file.
+
+    LD IX, am.MUSIC_BIN_ADDR_HE000              ; Song bin takes the whole bank.
     LD BC, _BANK_BYTES_D8192                    ; Read always 8KiB, this will read a whole song and some garbage.
     CALL fi.FileRead
 
