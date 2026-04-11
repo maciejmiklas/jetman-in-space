@@ -121,6 +121,8 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
 StartGameWithIntro
 
+     CALL sc.ResetScore
+
     ; Music off
     CALL dbs.SetupMusicBank
     CALL aml.RandIngameSong
@@ -1068,6 +1070,8 @@ _HideGame
     CALL rof.ResetAndDisableFlyRocket
 
     CALL sc.ResetClippings
+
+    CALL NightLimitVisibilityOff
 
     RET                                         ; ## END of the function ##
 

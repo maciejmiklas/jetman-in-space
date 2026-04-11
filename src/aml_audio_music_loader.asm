@@ -24,6 +24,10 @@ nextMusicTimeCnt        DB NEXT_MUSIC_SEC
 ;----------------------------------------------------------;
 MusicTimerTick
 
+    LD A, (am.musicState)
+    CP am.MUSIC_ST_OFF_D0
+    RET Z
+
     LD A, (nextMusicTimeCnt)
     CP 0
     JR Z, .resetCnt
