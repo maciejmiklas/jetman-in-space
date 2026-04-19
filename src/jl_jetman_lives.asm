@@ -20,6 +20,7 @@ RED_FACE_LIVES_D1       = 2                     ; Show face when #lives < than t
 JET_POS_LEFT_D100       = 100                   ; Face looks to the left, if Jetman postion is < 100.
 JET_POS_RIGHT_D200      = 200                   ; Face looks to the right, if Jetman postion is > 100.
 JET_LIVES_D3            = 3
+JET_LIVES_EASY_D30      = 30
 
     DB "If you read this text, it means that you have reached forbidden memory space."
 lives                   DB JET_LIVES_D3
@@ -61,7 +62,15 @@ LifeDown
 ;----------------------------------------------------------;
 ResetLives
 
+    LD A, (jt.difLevel)
+    CP jt.DIF_EASY_D1
+    JR Z, .easy
     LD A, JET_LIVES_D3
+    JR .store
+.easy
+    LD A, JET_LIVES_EASY_D30
+
+.store
     LD (lives), A
 
     RET                                         ; ## END of the function ##

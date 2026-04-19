@@ -122,6 +122,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 StartGameWithIntro
 
      CALL sc.ResetScore
+     CALL jl.ResetLives
 
     ; Music
     CALL dbs.SetupMusicCommonBank
@@ -178,7 +179,6 @@ LoadMainMenu
     CALL _HideGame
     CALL sc.ResetScore
     CALL mma.LoadMainMenu
-    CALL jl.ResetLives
 
     ; Load tilemap menu palette.
     CALL dbs.SetupArrays1Bank
@@ -282,6 +282,9 @@ RocketFLyStartPhase1
 
     LD A, ms.MS_FLY_ROCKET_D3
     CALL ms.SetMainState
+
+    CALL dbs.SetupMusicCommonBank
+    CALL aml.MusicOff
 
     CALL sc.BoardRocket
     CALL jt.SetJetStateInactive

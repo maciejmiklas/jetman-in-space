@@ -78,8 +78,30 @@ NumTo999Str
     LD D,A
 
     POP AF
-    RET
 
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       Loading                            ;
+;----------------------------------------------------------;
+Loading
+
+    LD A, R
+    AND 7
+    OUT  (0xFE), A                              ; change border color (0..7)
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    LoadingEnd                            ;
+;----------------------------------------------------------;
+LoadingEnd
+
+    ; restore border to black (color 0)
+    XOR A
+    OUT (0xFE), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                      NumTo99Str                          ;
