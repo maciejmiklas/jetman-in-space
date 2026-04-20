@@ -78,12 +78,13 @@ menuScoreCursor
     ; Copy score from game to the line.
     LD HL, (sc.scoreHi)
     LD (IX), HL
-
     INC IX
     INC IX
 
     LD HL, (sc.scoreLo)
     LD (IX), HL
+    INC IX
+    INC IX
 
     ; ##########################################
     ; Clear users name.
@@ -345,7 +346,7 @@ _SetupMenuScore
     CALL bm.CopyImageData
 
     ; ###########################################
-    _PrintWholeScore
+   _PrintWholeScore
     
     RET                                         ; ## END of the function ##
 
@@ -616,7 +617,6 @@ _PrintScoreLine
     INC IX
     INC IX
     LD HL, (IX)
-
     ADD DE, _16BIT_CHARS_D5                     ; DE points to LO byte from high score.
     LD BC, DE
     PUSH DE
