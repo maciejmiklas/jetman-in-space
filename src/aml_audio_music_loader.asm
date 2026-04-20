@@ -126,7 +126,16 @@ PreloadIngameMusic
     LD A, (gameMusicCnt)
     CP 0
     JR NZ, .afterInitMusicCnt
+
+    ; Makre random more random.
+    LD A, (ll.currentLevel)
+    LD B, A
+.randGameMusicCntLoop
     LD A, R
+    ADD C
+    LD C, A
+    DJNZ .randGameMusicCntLoop
+
     LD (gameMusicCnt), A
 .afterInitMusicCnt
     LD C, A
