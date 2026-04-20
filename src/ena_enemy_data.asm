@@ -21,35 +21,35 @@
 
 ; Horizontal, max speed
 movePattern01D0
-    DB 2, %0'000'1'111,$00
+    DB 2, %0'000'1'111,$00 
 
 ; Horizontal, delay 1
 movePattern01D1
-    DB 2, %0'000'1'111,$10
+    DB 2, %0'000'1'111,$10 
 
 ; Horizontal, delay 2
 movePattern01D2
-    DB 2, %0'000'1'111,$20
+    DB 2, %0'000'1'111,$20 
 
 ; Horizontal, delay 3
 movePattern01D3
-    DB 2, %0'000'1'111,$3A
+    DB 2, %0'000'1'111,$3A 
 
 ; 18deg down, delay 0
 movePattern02D0
-    DB 2, %1'001'1'111,$00
+    DB 2, %1'001'1'111,$00 
 
 ; 18deg down, delay 1
 movePattern02D1
-    DB 2, %1'001'1'111,$10
+    DB 2, %1'001'1'111,$10 
 
 ; 18deg down, delay 2
 movePattern02D2
-    DB 2, %1'001'1'111,$20
+    DB 2, %1'001'1'111,$20 
 
 ; 18deg down, delay 3
 movePattern02D3
-    DB 2, %1'001'1'111,$30
+    DB 2, %1'001'1'111,$30 
 
 ; Sinus
 movePattern07
@@ -144,20 +144,6 @@ movePattern25
     DB %1'111'1'110,$21, %1'111'1'011,$22, %1'111'1'101,$21, %1'111'1'100,$22, %1'111'1'110,$21, %1'111'1'111,$21, %0'000'1'111,$2B 
     DB %1'001'1'111,$21, %0'000'1'111,$2A, %0'000'1'101,$21 
 
-movePattern26
-   DB 86, %0'000'1'111,$26, %1'001'1'111,$21, %1'100'1'111,$21, %1'101'1'111,$21, %1'111'1'001,$21, %1'111'0'000,$25, %1'110'0'111,$21 
-   DB %1'011'0'111,$22, %1'100'0'111,$21, %1'011'0'111,$21, %1'111'0'101,$21, %1'111'0'000,$28, %1'111'1'111,$21, %1'010'1'111,$21 
-   DB %1'011'1'111,$22, %1'010'1'111,$21, %1'111'1'100,$21, %1'111'0'000,$26, %1'111'0'111,$21, %1'110'0'111,$21, %1'100'0'101,$21 
-   DB %0'110'0'111,$21, %0'101'0'111,$21, %0'111'0'110,$21, %0'111'0'000,$26, %0'111'1'111,$21, %0'010'1'111,$21, %0'011'1'111,$22 
-   db %0'010'1'111,$21, %0'111'1'100,$21, %0'111'0'000,$28, %0'111'0'111,$21, %0'011'0'111,$22, %0'010'0'111,$21, %0'011'0'111,$21 
-   DB %0'111'0'100,$21, %0'111'0'000,$26, %0'100'1'111,$21, %0'010'1'111,$21, %0'011'1'111,$21, %0'001'1'011,$21, %0'000'0'111,$2
-   DB %0'000'0'110,$21 
-
-movePattern27
-    DB 50, %0'000'1'111,$24, %1'001'1'111,$21, %1'000'1'111,$21, %1'111'1'111,$21, %1'111'1'000,$2D, %1'110'0'111,$21, %1'010'0'111,$23 
-    DB %1'111'0'100,$21, %1'111'1'000,$25, %1'111'0'001,$21, %1'111'1'000,$26, %1'111'1'011,$21, %1'101'1'111,$21, %1'101'1'110,$21 
-    DB %0'101'1'111,$22, %0'111'1'110,$21, %0'111'1'000,$2C, %0'111'0'110,$21, %0'010'0'111,$23, %0'001'0'111,$21, %0'111'0'010,$21 
-    DB %0'111'1'000,$2D, %0'101'0'111,$21, %0'100'0'111,$21, %0'001'0'010,$21
 
 ; horizontal right, Saw wave
 movePattern28
@@ -408,16 +394,24 @@ enemyFormationL5 ENPS {175/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern25/*MOVE
 ; ##############################################
 ; Level 6
 singleEnemiesL6
-    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
-    ENPS {005,        010,          movePattern26,    sp.SDB_ENEMY1 enp.ENP_LEFT_HIT_RP     }
-    ENPS {005,        010,          movePattern27,    sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT_RP    }
-    ENPS {070,        015,          movePattern28,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {150,        020,          movePattern28,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {224,        015,          movePattern28,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {010,        023,          movePattern29,    sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
-    ENPS {120,        012,          movePattern29,    sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
-    ENPS {224,        025,          movePattern01D1,  sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
-SINGLE_ENEMIES_L6       = 8
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR     SDB_INIT      SETUP
+    ENPS {001,        013,          movePattern02D2,  sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {072,        015,          movePattern02D2,  sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {140,        005,          movePattern02D1,  sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {220,        015,          movePattern18,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {001,        020,          movePattern02D1,  sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {216,        011,          movePattern15D2,  sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {220,        010,          movePattern19,    sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
+    ENPS {220,        008,          movePattern19,    sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
+    ENPS {160,        012,          movePattern19,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {070,        010,          movePattern19,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {016,        030,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
+    ENPS {016,        020,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
+    ENPS {110,        015,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
+    ENPS {160,        010,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
+    ENPS {220,        030,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
+    ENPS {220,        025,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
+SINGLE_ENEMIES_L6       = 16
 enemyFormationL6 ENPS {10/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern31/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT_RP/*SETUP*/}
 
 ; ##############################################

@@ -56,8 +56,8 @@ fEnemy10
 ; ##############################################
 ; Level 5
 fEnemyL05
-    FES {STATE_DEPLOY_RIGHT /*STATE*/, 030/*RESPAWN_Y*/, 15/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/}
-    FES {STATE_DEPLOY_LEFT  /*STATE*/, 025/*RESPAWN_Y*/, 25/*RESPAWN_DELAY*/, 01/*MOVE_DELAY*/}
+    FES {STATE_DEPLOY_RIGHT /*STATE*/, 015/*RESPAWN_Y*/, 15/*RESPAWN_DELAY*/, 02/*MOVE_DELAY*/}
+    FES {STATE_DEPLOY_LEFT  /*STATE*/, 005/*RESPAWN_Y*/, 25/*RESPAWN_DELAY*/, 01/*MOVE_DELAY*/}
 FENEMY_SIZE_L5          = 2
 
 ; ##############################################

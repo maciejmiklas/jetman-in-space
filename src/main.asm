@@ -53,7 +53,9 @@ start
 
     CALL so.WriteToSd
 
-    ;LD A, 5: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
+    ;CALL dbs.SetupMusicCommonBank: CALL aml.MusicOff: CALL aml.PreloadIngameMusic ; set AY_MI_BANKS_40 to 1
+    ;LD A, 6: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
+
     CALL gc.LoadMainMenu
     
     JR mainLoop

@@ -11,10 +11,10 @@
 ; Counter for game music from assets\snd.
 gameMusicCnt            DB 0
 
-MUSIC_GAME_OVER_D80     = 10
-MUSIC_MAIN_MENU_D81     = 3
-MUSIC_HIGH_SCORE_D82    = 4
-MUSIC_INTRO_D82         = 1
+MUSIC_GAME_OVER_D10     = 10
+MUSIC_MAIN_MENU_D3      = 3
+MUSIC_HIGH_SCORE_D4     = 4
+MUSIC_INTRO_D1          = 1
 
 NEXT_MUSIC_SEC          = 180
 nextMusicTimeCnt        DB NEXT_MUSIC_SEC
@@ -116,7 +116,6 @@ NextGameSong
 
     RET                                         ; ## END of the function ##
 
-preloadBorderCol DB 0
 ;----------------------------------------------------------;
 ;                    PreloadIngameMusic                    ;
 ;----------------------------------------------------------;

@@ -51,7 +51,7 @@ LoadMainMenu
     ; ##########################################
     ; Music
     CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_MAIN_MENU_D81
+    LD A, aml.MUSIC_MAIN_MENU_D3
     CALL aml.LoadSong
 
     CALL SwitchToMainMenu

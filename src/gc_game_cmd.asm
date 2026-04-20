@@ -32,7 +32,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 
     ; Music on
     CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_INTRO_D82
+    LD A, aml.MUSIC_INTRO_D1
     CALL aml.LoadSong
 
     ENDM                                        ; ## END of the macro ##
@@ -50,7 +50,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 
     ; Music on
     CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_INTRO_D82
+    LD A, aml.MUSIC_INTRO_D1
     CALL aml.LoadSong
 
     ENDM                                        ; ## END of the macro ##
