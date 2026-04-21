@@ -11,9 +11,9 @@
 scoreHi                  DW 0
 scoreLo                  DW 0
 
-HIT_ENEMY1              = 50
-HIT_ENEMY2              = 100
-HIT_ENEMY3              = 150
+HIT_ENEMY1              = 20
+HIT_ENEMY2              = 21
+HIT_ENEMY3              = 22
 
 EXTRA_LIVE              = 30000
 nextExtraLive           DW EXTRA_LIVE
@@ -124,7 +124,7 @@ HitRocketTank
 
     LD HL, (scoreLo)
     
-    ; Decrement H by 2 and set L to 0 (if possible).
+    ; Decrement H by 3 and set L to 0 (if possible).
     LD A, H
     CP 3
     RET C

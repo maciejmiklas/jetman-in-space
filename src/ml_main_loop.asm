@@ -132,9 +132,15 @@
     JR .end
 
 .notInGame
+    LD A, (ms.mainState)
+    CP ms.MS_PAUSE_D30
+    JP Z, .pause
     CALL dbs.SetupMusicCommonBank
+    JR .afterPause
+.pause
+    CALL dbs.SetupInGameMusicBank
+.afterPause
     CALL am.MusicLoop
-
 .end
     ENDM                                        ; ## END of the macro ##
 
