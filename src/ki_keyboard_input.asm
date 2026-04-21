@@ -7,8 +7,11 @@
 ;----------------------------------------------------------;
     MODULE ki
 
+INPUT_DELAY_GAME_D30    = 30
+INPUT_DELAY_MENU_D7     = 5
+
 userInputDelayCnt       DB 0
-USER_INPUT_DELAY_D10    = 7
+userInputDelay          DB INPUT_DELAY_MENU_D7
 
 userInputInactiveCnt    DB 0
 USER_INPUT_RESET_D5     = 5
@@ -20,6 +23,26 @@ callbackDown            DW _DummyFunction
 callbackFire            DW _DummyFunction
 
 ;----------------------------------------------------------;
+;                 SetupKeyboardForGame                     ;
+;----------------------------------------------------------;
+SetupKeyboardForGame
+
+    LD A, INPUT_DELAY_GAME_D30
+    LD (userInputDelay), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 SetupKeyboardForMenu                     ;
+;----------------------------------------------------------;
+SetupKeyboardForMenu
+
+    LD A, INPUT_DELAY_MENU_D7
+    LD (userInputDelay), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                 KeyboardInputLastLoop                    ;
 ;----------------------------------------------------------;
 KeyboardInputLastLoop
@@ -28,8 +51,10 @@ KeyboardInputLastLoop
     ; execute immediately.
 
     ; Do not reset #userInputDelayCnt if already at #USER_INPUT_DELAY_D15.
+    LD A, (userInputDelay)
+    LD B, A
     LD A, (userInputDelayCnt)
-    CP USER_INPUT_DELAY_D10
+    CP B
     RET Z
 
     LD A, (userInputInactiveCnt)
@@ -43,7 +68,7 @@ KeyboardInputLastLoop
     XOR A
     LD (userInputInactiveCnt), A
 
-    LD A, USER_INPUT_DELAY_D10
+    LD A, (userInputDelay)
     LD (userInputDelayCnt), A
 
     RET                                         ; ## END of the function ##
@@ -58,7 +83,7 @@ ResetKeyboard
     XOR A
     LD (userInputInactiveCnt), A
 
-    LD A, USER_INPUT_DELAY_D10
+    LD A, userInputDelay
     LD (userInputDelayCnt), A
     
     LD DE, _DummyFunction
@@ -241,8 +266,11 @@ CanProcessKeyInput
     LD (userInputInactiveCnt), A
 
     ; Delay user input processing
+    LD A, (userInputDelay)
+    LD B, A
+
     LD A, (userInputDelayCnt)
-    CP USER_INPUT_DELAY_D10
+    CP B
     JR Z, .processInput
     INC A
     LD (userInputDelayCnt), A

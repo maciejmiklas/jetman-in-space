@@ -60,6 +60,8 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
     MACRO _StartLevel
 
+    CALL ki.SetupKeyboardForGame
+
     LD A, ms.MS_GAME_ACTIVE_D1
     CALL ms.SetMainState
 
@@ -172,6 +174,8 @@ SetupSystem
 ;                      LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
+
+    CALL ki.SetupKeyboardForMenu
 
     LD A, ms.MS_MENU_MAIN_D11
     CALL ms.SetMainState
@@ -1040,6 +1044,8 @@ HighScoreChanged
 ;                        _HideGame                         ;
 ;----------------------------------------------------------;
 _HideGame
+
+    CALL ki.SetupKeyboardForMenu
 
     CALL sp.ResetAllSprites
 

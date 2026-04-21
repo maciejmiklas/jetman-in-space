@@ -27,6 +27,9 @@
 ;----------------------------------------------------------;
     MACRO _ThrowGranade
 
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
     CALL gr.UseGrenade
 
     ENDM                                        ; ## END of the macro ##
@@ -264,9 +267,7 @@ GameOptionsInput
 
     ; Key F
     BIT 3, A                                    ; F
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     CALL Z, _Key_F
-    POP AF
 
     ; ##########################################
     ; Row T...Q
@@ -275,7 +276,13 @@ GameOptionsInput
 
     ; Key R
     BIT 3, A                                    ; R
+    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     CALL Z, _Key_R
+    POP AF
+
+    ; Key R
+    BIT 0, A                                    ; Q
+    CALL Z, _Key_Q
 
     ; ##########################################
     ; Row: B, M, M, FULL-STOP, SPACE
@@ -327,6 +334,17 @@ GameOptionsInput
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
+;----------------------------------------------------------;
+;                        _Key_Q                            ;
+;----------------------------------------------------------;
+_Key_Q
+
+    CALL dbs.SetupInGameMusicBank
+    LD A, (aml.gameMusicCnt)
+    _DEB
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                        _Key_R                            ;
@@ -515,6 +533,7 @@ _JoyDownRelease
 
     RET                                         ; ## END of the function ## 
 
+
 ;----------------------------------------------------------;
 ;                       _JoyFireA                          ;
 ;----------------------------------------------------------;
@@ -540,6 +559,9 @@ _JoyFireB
 ;                       _JoyFireC                          ;
 ;----------------------------------------------------------;
 _JoyFireC
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
 
     _NextSong
 
