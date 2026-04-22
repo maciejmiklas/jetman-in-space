@@ -44,7 +44,7 @@ joyPrevDirection        DB MOVE_INACTIVE_D0
 joyOverheatDelayCnt     DB 0                    ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
 
 breakCnt                DB 0
-BREAK_CNT_D50           = 50
+BREAK_CNT_D3            = 3
 
 fireOffCnt              DB 0
 FIRE_RELEASED_D5        = 5

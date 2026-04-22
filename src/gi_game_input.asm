@@ -280,7 +280,7 @@ GameOptionsInput
     CALL Z, _Key_R
     POP AF
 
-    ; Key R
+    ; Key Q
     BIT 0, A                                    ; Q
     CALL Z, _Key_Q
 
@@ -429,7 +429,7 @@ _Key_Break
     INC A
     LD (gid.breakCnt), A
 
-    CP gid.BREAK_CNT_D50
+    CP gid.BREAK_CNT_D3
     RET NZ
 
     ; The break has been pressed long enough to exit the game.
