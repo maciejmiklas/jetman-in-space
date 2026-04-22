@@ -275,8 +275,8 @@ GameOptionsInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
 
     ; Key R
-    BIT 3, A                                    ; R
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 3, A                                    ; R
     CALL Z, _Key_R
     POP AF
 

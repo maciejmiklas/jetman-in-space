@@ -377,9 +377,7 @@ _JoyFire
     CALL gc.HighScoreChanged
 
     ; FX
-    CALL dbs.SetupAyFxsBank
-    LD A, af.MENU_ENTER
-    CALL af.AfxPlay
+    _AFX af.MENU_ENTER
 
     ; ##########################################
     ; Music for main menu
@@ -414,9 +412,7 @@ _JoyDown
     CALL _StoreCurrentChar
 
     ; FX
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_FIRE2
-    CALL af.AfxPlay
+    _AFX af.FX_FIRE2
 
     RET                                         ; ## END of the function ##
 
@@ -445,9 +441,7 @@ _JoyUp
     CALL _StoreCurrentChar
 
     ; FX
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_FIRE1
-    CALL af.AfxPlay
+    _AFX af.FX_FIRE1
 
     RET                                         ; ## END of the function ##
 
@@ -469,9 +463,7 @@ _JoyLeft
     LD (tileChar), A
 
     ; FX
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_MENU_MOVE
-    CALL af.AfxPlay
+    _AFX af.FX_MENU_MOVE
 
     CALL _UpdateCursor
 
@@ -495,9 +487,7 @@ _JoyRight
     LD (tileChar), A
 
     ; FX
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_MENU_MOVE
-    CALL af.AfxPlay
+    _AFX af.FX_MENU_MOVE
 
     CALL _UpdateCursor
 

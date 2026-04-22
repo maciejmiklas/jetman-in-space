@@ -39,11 +39,7 @@ UseGrenade
     LD (grenadeCount), A
 
     CALL enc.KillFewEnemies
-
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_GRENADE_EXPLODE
-    CALL af.AfxPlay
-
+    _AFX af.FX_GRENADE_EXPLODE
     CALL _UpdateGamebar
 
     RET                                         ; ## END of the function ##

@@ -940,6 +940,8 @@ CH_ONDL
 ;                         MusicLoop                        ;
 ;----------------------------------------------------------;
 MusicLoop
+    ld a, (gb.tMusicLoop):inc a:ld(gb.tMusicLoop),a
+
     LD A, (musicState)
     CP MUSIC_ST_ON_D1
     RET NZ

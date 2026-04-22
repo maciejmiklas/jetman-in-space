@@ -687,7 +687,7 @@
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.NextFollowingAngle
 
-    CALL dbs.SetupMusicCommonBank
+    CALL dbs.SetupInGameMusicBank
     CALL aml.MusicTimerTick
 
     CALL dbs.SetupArrays2Bank

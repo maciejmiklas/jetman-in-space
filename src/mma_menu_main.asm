@@ -313,9 +313,7 @@ _UpdateSelection
     LD A, js.SDB_T_KO
     CALL js.ChangeJetSpritePattern
 
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_MENU_MOVE
-    CALL af.AfxPlay
+    _AFX af.FX_MENU_MOVE
 
     RET                                         ; ## END of the function ##
 
@@ -478,9 +476,7 @@ _JoyFire
 
     ; ##########################################
     ; Wrong key hit, play sound
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_JET_KILL
-    CALL af.AfxPlay
+    _AFX af.FX_JET_KILL
 
     RET                                         ; ## END of the function ##
 

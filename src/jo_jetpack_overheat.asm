@@ -164,9 +164,7 @@ BAR_ICON_PAL_H00       = $00
     CALL jt.SetJetState
     LD (jt.jetState), A
 
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_JET_OVERHEAT
-    CALL af.AfxPlay
+    _AFX af.FX_JET_OVERHEAT
 
 .afterTempCheck
 
@@ -282,9 +280,7 @@ JetpackOverheatFx
     OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0
     RET NZ
 
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_JET_OVERHEAT
-    CALL af.AfxPlay
+    _AFX af.FX_JET_OVERHEAT
 
     RET                                         ; ## END of the function ##
 

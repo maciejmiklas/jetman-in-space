@@ -95,13 +95,14 @@ NextInGameMusicBank
 
     RET                                         ; ## END of the function ## 
 
+tSetupInGameMusicBank db 0
 ;----------------------------------------------------------;
 ;                  SetupInGameMusicBank                    ;
 ;----------------------------------------------------------;
 ; Return:
 ;  - A: current game music bank for pt3.
 SetupInGameMusicBank
-
+    ld a, (tSetupInGameMusicBank):inc a:ld(tSetupInGameMusicBank),a
     NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
 
     LD A, (ingameMusicBank)
@@ -109,10 +110,12 @@ SetupInGameMusicBank
 
     RET                                         ; ## END of the function ## 
 
+tSetupMusicCommonBank db 0
 ;----------------------------------------------------------;
-;                   SetupMusicCommonBank                    ;
+;                   SetupMusicCommonBank                   ;
 ;----------------------------------------------------------;
 SetupMusicCommonBank
+    ld a, (tSetupMusicCommonBank):inc a:ld(tSetupMusicCommonBank),a
 
     NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
     NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D88  ; Binary loaded from file

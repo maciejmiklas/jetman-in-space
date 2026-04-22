@@ -152,9 +152,7 @@ KillOneEnemy
 ;----------------------------------------------------------;
 FreezeEnemies
 
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_FREEZE_ENEMIES
-    CALL af.AfxPlay
+    _AFX af.FX_FREEZE_ENEMIES
 
     LD DE, FREEZE_ENEMIES_CNT
     LD (freezeEnemiesCnt), DE

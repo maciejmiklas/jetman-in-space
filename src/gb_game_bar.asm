@@ -41,6 +41,7 @@ ShowGameBar
 
     RET                                         ; ## END of the function ##
 
+tMusicLoop db 0
 ;----------------------------------------------------------;
 ;                      PrintDebug                          ;
 ;----------------------------------------------------------;
@@ -67,6 +68,25 @@ PrintDebug
     LD L, A
     CALL ut.PrintNumber
     ENDIF
+
+
+    LD BC, 40
+    LD H, 0
+    LD A, (dbs.tSetupMusicCommonBank)
+    LD L, A
+    CALL ut.PrintNumber
+
+    LD BC, 46
+    LD H, 0
+    LD A, (dbs.tSetupInGameMusicBank)
+    LD L, A
+    CALL ut.PrintNumber
+
+    LD BC, 52
+    LD H, 0
+    LD A, (tMusicLoop)
+    LD L, A
+    CALL ut.PrintNumber
 
     RET                                         ; ## END of the function ##
 
