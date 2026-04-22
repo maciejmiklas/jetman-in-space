@@ -10,7 +10,7 @@
    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
 
 storageStart
-unlockedLevel           DB 1,7,1                ; There are three difficulty levels, unlocked independently.
+unlockedLevel           DB 1,1,1                ; There are three difficulty levels, unlocked independently.
 UNLOCK_SIZE             = $ - unlockedLevel
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
