@@ -69,6 +69,7 @@ MET_DEPLOY_SIZE         = 7
 ; "A,B, A,B, ... A,B". A loop runs every few seconds, each iteration takes the next AB pair from this list and applies it to the element 
 ; from MED list. A gives an index in the MED list (starts from 0), and B is the applied value. B will be added or subtracted 
 ; from MED.MOVE_SPD. In the latter case,bit 7 has to be set. B has a value from -127 to +127 (x|$80), but reasonable values are +/-5.
+; For example: 3,1|$80 the $80 will set bit 7 to 1.
 randMovAddr             DW 0
 randMovPos              DB 0
 RAND_MOVE_SIZE_D30      = 30                    ; 30 elements, 60 bytes.
