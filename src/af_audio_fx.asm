@@ -126,22 +126,6 @@ SetupAyFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       SetAy3ToMono                       ;
-;----------------------------------------------------------;
-; To use this function: CALL dbs.SetupAyFxsBank
-;
-; Configure AY3 as mono; call after PlayNextDawSong.
-SetAy3ToMono
-
-    LD A, _PERIPHERAL_04_H09
-    CALL ut.ReadNextReg
-
-    SET 7, A
-    NEXTREG _PERIPHERAL_04_H09, A
-        
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                         AfxFrame                         ;
 ;----------------------------------------------------------;
 ; To use this function: CALL dbs.SetupAyFxsBank

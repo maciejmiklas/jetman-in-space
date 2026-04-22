@@ -11,7 +11,7 @@ STACK_SIZE              = 50
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
-;    DEFINE DEBUG_BAR    1                        ; Enable debug bar
+    DEFINE DEBUG_BAR    1                        ; Enable debug bar
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -27,6 +27,8 @@ start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
 
+    NEXTREG _GL_REG_PERIPHERAL2_H06, $10000000  ; Disable NMI menu
+    
     CALL dbs.SetupAyFxsBank
     CALL af.SetupAyFx
 

@@ -13,7 +13,17 @@ GAME_VERSION_SIZE       = 4
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
 ;----------------------------------------------------------;
-_GL_REG_TURBO_H07       = 11                ; Bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
+; Bits:
+;  - 7: Enable turbo mode (0 = disabled, 1 = enabled) (0 after a PoR or Hard-reset)
+;  - 6: DMA mode (0 = zxn dma, 1 = z80 dma) (Only ZX Next board, 0 after a PoR or Hard-reset)
+;  - 5: Enable Lightpen (1 = enabled)(0 after a PoR or Hard-reset)
+;  - 4: DivMMC automatic paging (1 = enabled)(0 after a PoR or Hard-reset)
+;  - 3: Enable Multiface (1 = enabled)(0 after a PoR or Hard-reset)
+;  - 2: PS/2 mode (0 = keyboard, 1 = mouse) (exchanges the keyboard/mouse pins on the PS/2 connector) (0 after a PoR or Hard-reset)
+;  -1-0: Audio chip mode (00 = YM, 01 = AY, 1X = Disabled)
+_GL_REG_PERIPHERAL2_H06 = $6 
+
+_GL_REG_TURBO_H07       = $7                ; Bit 1-0 = Turbo (00 = 3.5MHz, 01 = 7MHz, 10 = 14MHz, 11 = 28Mhz)
 
 _GL_REG_TRANP_COL_H14   = $14               ; Global transparency color.
 _GL_REG_SELECT_H243B    = $243B             ; This Port is used to set the register number.
@@ -31,7 +41,6 @@ _GL_REG_VL_H1F          = $1F               ; Active video line (LSB).
 ;     - 10: AY2.
 ;     - 11: AY1.
 _GL_REG_SOUND_HFFFD     = $FFFD             ; AY reg
-
 
 ;----------------------------------------------------------;
 ;                 Peripheral Control                       ;
@@ -51,7 +60,6 @@ _GL_REG_SOUND_HFFFD     = $FFFD             ; AY reg
 ; - 10 = scanlines 50%.
 ; - 11 = scanlines 25%.
 _PERIPHERAL_04_H09      = $09
-
 
 ;----------------------------------------------------------;
 ;                     Clip Window                          ;
@@ -75,7 +83,7 @@ _DC_REG_L2_CLIP_H18     = $18
 _GL_REG_CLIP_SPR_H19    = $19
 
 ; Clip window tilemap.
-_GL_REG_CLIP_TI_H1   = $1B
+_GL_REG_CLIP_TI_H1      = $1B
 
 ; Clip window control.
 ; bits 7-4 = Reserved, must be 0
