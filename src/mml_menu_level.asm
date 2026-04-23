@@ -143,7 +143,7 @@ _MoveJet
     LD A, js.SDB_T_KO
     CALL js.ChangeJetSpritePattern
 
-    _AFX dbs.SetupAyFxsBank
+    _AFX af.FX_MENU_MOVE
 
     RET                                         ; ## END of the function ##
 

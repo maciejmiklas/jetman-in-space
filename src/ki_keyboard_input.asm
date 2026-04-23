@@ -83,7 +83,7 @@ ResetKeyboard
     XOR A
     LD (userInputInactiveCnt), A
 
-    LD A, userInputDelay
+    LD A, (userInputDelay)
     LD (userInputDelayCnt), A
     
     LD DE, _DummyFunction
