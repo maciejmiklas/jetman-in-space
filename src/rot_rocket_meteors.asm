@@ -31,7 +31,7 @@ SID                     DB                      ; Sprite ID for the first sprite
 X                       DW
 Y                       DB
 PAT                     DB                      ; Current animation pattern, from 0 to AS_PATTERNS-1
-MOVE_SPD                DB                      ; Number of game loops to skip.
+MOVE_SPD                DB                      ; Number pixels to move meteor.
 MOVE_PAT                DB                      ; MP1, MP2 or MP3
 ACTIVE                  DB
     ENDS
@@ -40,7 +40,7 @@ ACTIVE                  DB
     STRUCT MED
 X                       DW
 Y                       DB
-MOVE_SPD                DB                      ; Number of game loops to skip.
+MOVE_SPD                DB                      ; Number pixels to move meteor.
 MOVE_PAT                DB                      ; MP1, MP2 or MP3
 ACTIVE                  DB                      ; True if has been alrady deplyed
     ENDS
@@ -50,6 +50,8 @@ AS_ACTIVE_NO            = 0
 
 MP1                     = 1                     ; Increment Y
 MP2                     = 2                     ; Increment Y,  decrement X
+
+MAX_MOVE_SPD_D3         = 3
 
 meteors                                         ; Rocket has sprite ID 80-89
 ;       SID  X  Y  PAT MOVE_SPD MOVE_PAT ACTIVE
@@ -241,6 +243,10 @@ ChangeMeteorSpeed
     XOR A                                       ; Sub was negative, reset A to 1.
 .afterMath
 
+    CP MAX_MOVE_SPD_D3+1
+    JR C, .afterResetMax
+    LD A, MAX_MOVE_SPD_D3
+.afterResetMax
     LD (IX + MET.MOVE_SPD), A
 
     ; ##########################################
