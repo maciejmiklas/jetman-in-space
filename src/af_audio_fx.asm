@@ -115,8 +115,6 @@ FX_FREEZE_ENEMIES       = 29
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
 ;----------------------------------------------------------;
-; To use this function: CALL dbs.SetupAyFxsBank
-;
 ; Setup AYFX for playing sound effects.
 SetupAyFx
 
@@ -125,11 +123,25 @@ SetupAyFx
 
     RET                                         ; ## END of the function ##
 
+; You could come up with an idea to remove this function since it's not used. But when you do that, the game will crash after 10-15 minutes 
+; of gameplay. One day, I will figure out what is happening here, but not today ;)
+;----------------------------------------------------------;
+;                       SetAy3ToMono                       ;
+;----------------------------------------------------------;
+; Configure AY3 as mono; call after PlayNextDawSong.
+SetAy3ToMono
+
+    LD A, _PERIPHERAL_04_H09
+    CALL ut.ReadNextReg
+
+    SET 7, A
+    NEXTREG _PERIPHERAL_04_H09, A
+        
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                         AfxFrame                         ;
 ;----------------------------------------------------------;
-; To use this function: CALL dbs.SetupAyFxsBank
-;
 ; Play the current frame.
 AfxFrame
 
@@ -255,8 +267,6 @@ afxNseMix
 ;----------------------------------------------------------;
 ;                        AfxPlay                           ;
 ;----------------------------------------------------------;
-; To use this function: CALL dbs.SetupAyFxsBank
-;
 ; Launch the effect on a free channel. If no free channels, the longest sounding is selected.
 ; Input: 
 ;  - A:  effect number 0..255

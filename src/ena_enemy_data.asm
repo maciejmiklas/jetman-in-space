@@ -281,20 +281,20 @@ ENEMY_FORMATION_SIZE_D7    = 7
 
 singleEnemiesL1
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
-    ENPS {020,        015,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {020,        015,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {040,        025,          movePattern01D2,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
     ENPS {050,        030,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-    ENPS {060,        020,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {060,        020,          movePattern01D2,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {085,        025,          movePattern01D2,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {090,        030,          movePattern01D3,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
     ENPS {105,        020,          movePattern01D2,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {125,        025,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-    ENPS {135,        014,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {135,        014,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {150,        024,          movePattern01D3,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
-    ENPS {160,        024,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-    ENPS {175,        010,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {160,        024,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
+    ENPS {175,        010,          movePattern01D2,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {190,        012,          movePattern01D1,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
-    ENPS {220,        020,          movePattern01D2,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
+    ENPS {220,        020,          movePattern01D3,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT  }
     ENPS {230,        010,          movePattern01D2,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT }
 SINGLE_ENEMIES_L1       = 15
 

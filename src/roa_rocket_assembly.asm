@@ -31,7 +31,7 @@ EXPLODE_TANK_MAX        = 4                     ; The amount of explosion sprite
 EL_TANK1_D4             = 4
 EL_TANK6_D9             = 9
 EL_TANK_SIZE            = EL_TANK6_D9 - EL_TANK1_D4 + 1
-EL_PROGRESS_START       = EL_TANK1_D4+1
+EL_PROGRESS_START       = EL_TANK1_D4
 CARRY_ADJUSTY_D10       = 10
 
 BAR_TILE_START          = 25*2                   ; *2 because each tile takes 2 bytes.
