@@ -88,7 +88,7 @@ menuScoreCursor
 
     ; ##########################################
     ; Clear users name.
-    LD B, SCORE_TX_BYTES_D13 +2                ; +2 for size of #sc.scoreLo
+    LD B, SCORE_TX_BYTES_D13
     LD A, ti.TX_IDX_EMPTY
 .nameLoop
     LD (IX), A
@@ -486,7 +486,6 @@ _JoyRight
     LD A, ASCII_A
     LD (tileChar), A
 
-    ; FX
     _AFX af.FX_MENU_MOVE
 
     CALL _UpdateCursor
@@ -696,9 +695,9 @@ _StoreCurrentChar
     LD (DE), A
 
     ; Repaint score line
-    LD A, (scoreLine)
-    CALL _PrintScoreLine
-
+    ;LD A, (scoreLine)
+    ;CALL _PrintScoreLine
+    _PrintWholeScore
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
