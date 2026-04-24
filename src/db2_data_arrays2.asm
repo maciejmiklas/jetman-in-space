@@ -170,8 +170,8 @@ PICKUPS_L1_SIZE             = 1
 
 ; Pickups for Level 2
 pickupsL2
-    DB pi.PI_SPR_DIAMOND, pi.PI_FREEZE_ENEMIES
-PICKUPS_L2_SIZE             = 2
+    DB pi.PI_SPR_DIAMOND, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND
+PICKUPS_L2_SIZE             = 5
 
 ; Pickups for Level 3
 pickupsL3

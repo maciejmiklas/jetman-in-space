@@ -13,7 +13,7 @@ PI_SPR_DIAMOND          = 39                ; Extra points.
 PI_SPR_JAR              = 40                ; Colls down jetpack's rocket exhaust.
 PI_SPR_STRAWBERRY       = 41                ; Jetman invincible.
 PI_SPR_GRENADE          = 42                ; Collect and expolode.
-PI_FREEZE_ENEMIES       = 43                 ; Freeze enemies.
+PI_FREEZE_ENEMIES       = 43                ; Freeze enemies.
 PI_SPR_GUN              = 44                ; Improve weapon.
 
 ; We want to bring fire speed up quickly. Therefore, at the beginning, there are only weapon drops, but not up to the max firing speed.
@@ -26,7 +26,7 @@ deployedX               DB 0                ; Pickup X postion.
 deployedY               DB 0                ; Pickup Y postion.
 
 deployDelayCnt          DB 0
-DEPLOY_DELAY_D10        = 10
+DEPLOY_DELAY_D15        = 15
 
 pickupsPtr              DW 0
 pickupsSize             DB 0
@@ -36,7 +36,7 @@ LIVE_DEPLOYED_YES       = 1
 LIVE_DEPLOYED_NO        = 1
 
 PICKUP_SPRITE_ID        = 90
-PICKUP_GND_LEVEL        = _GSC_Y_MAX2_D238-5
+PICKUP_GND_LEVEL        = _GSC_Y_MAX2_D238
 
 ;----------------------------------------------------------;
 ;                    SetupPickups                          ;
@@ -246,7 +246,7 @@ PickupDropCounter
     LD A, (deployDelayCnt)
     INC A
     LD (deployDelayCnt), A
-    CP DEPLOY_DELAY_D10
+    CP DEPLOY_DELAY_D15
     RET NZ
 
     ; ##########################################

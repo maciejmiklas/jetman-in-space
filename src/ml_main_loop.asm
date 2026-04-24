@@ -111,6 +111,9 @@
 
     CALL enc.CheckEnemyWeaponHit
 
+    CALL dbs.SetupArrays2Bank
+    CALL pi.AnimateFallingPickup
+
     ; ##########################################
     ; Easy
     LD A, (jt.difLevel)
@@ -141,6 +144,8 @@
     CALL dbs.SetupInGameMusicBank
 .afterPause
     CALL am.MusicLoop
+
+
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -290,6 +295,7 @@
 
     ; ##########################################
     CALL jco.JetInvincible
+
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -333,7 +339,7 @@
 
     CALL enc.MoveEnemies
 .notHard
-
+    
 .end
     ENDM                                        ; ## END of the macro ##
 
@@ -381,9 +387,6 @@
 
     CALL dbs.SetupRocketBank
     CALL roa.RocketElementFallsForAssembly
-
-    CALL dbs.SetupArrays2Bank
-    CALL pi.AnimateFallingPickup
 
 .end
     ENDM                                        ; ## END of the macro ##
