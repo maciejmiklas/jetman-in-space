@@ -31,7 +31,7 @@ JM_RIP_MOVE_R_D3        = 3
 JM_RIP_MOVE_L_D3        = 3
 JM_RIP_MOVE_Y_D4        = 4
 
-JM_INV_BLINK_D100       = 100
+JM_INV_BLINK_D100       = 50
 
 PICK_MARGX_D8           = 8
 PICK_MARGY_D16          = 16

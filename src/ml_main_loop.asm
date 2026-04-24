@@ -518,6 +518,9 @@
 
     CALL enc.AnimateEnemies
 
+    CALL dbs.SetupCode1Bank
+    CALL nv.ChangeVisibility
+
 .end
     ENDM                                        ; ## END of the macro ##
 

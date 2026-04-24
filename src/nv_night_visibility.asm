@@ -10,10 +10,10 @@
 
 VISIBILITY_LIMIT_1      = 140
 VISIBILITY_LIMIT_2      = 80
-VISIBILITY_LIMIT_OFF    = 0
+VISIBILITY_LIMIT_OFF    = 255
 
-visibilityLimit DW VISIBILITY_LIMIT_OFF
-
+visibilityLimit         DW VISIBILITY_LIMIT_OFF ; Current visiblity level.
+visibilityLimitDest     DW VISIBILITY_LIMIT_OFF ; Destination visibility level.
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PUBLIC FUNCTIONS                       ;
@@ -21,12 +21,37 @@ visibilityLimit DW VISIBILITY_LIMIT_OFF
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   UpdateJetVisibility                    ;
+;                      ChangeVisibility                    ;
 ;----------------------------------------------------------;
-UpdateJetVisibility
+ChangeVisibility
+
+    LD A, (visibilityLimitDest)
+    LD B, A
 
     LD A, (visibilityLimit)
-    OR A                                        ; Same as CP 0, but faster.
+    CP B
+    RET Z
+
+    JR C, .inc
+
+    DEC A
+    JR .store
+.inc
+    INC A
+.store
+    LD (visibilityLimit), A
+
+    CALL UpdateVisibilityOnJetMove
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                UpdateVisibilityOnJetMove                 ;
+;----------------------------------------------------------;
+UpdateVisibilityOnJetMove
+
+    LD A, (visibilityLimit)
+    CP VISIBILITY_LIMIT_OFF
     RET Z
 
     ; ##########################################
@@ -114,8 +139,8 @@ UpdateJetVisibility
 ; - A: VISIBILITY_LIMIT_XXX
 LimitJetVisibility
 
-    LD (visibilityLimit), A
-    CALL UpdateJetVisibility
+    LD (visibilityLimitDest), A
+    CALL UpdateVisibilityOnJetMove
 
     RET                                         ; ## END of the function ##
 
@@ -125,9 +150,7 @@ LimitJetVisibility
 LimitJetVisibilityOff
 
     LD A, VISIBILITY_LIMIT_OFF
-    LD (visibilityLimit), A
-
-    CALL sc.ResetClippings
+    LD (visibilityLimitDest), A
 
     RET                                         ; ## END of the function ##
 

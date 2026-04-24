@@ -12,7 +12,7 @@
 gameMusicCnt            DB 0
 
 MUSIC_GAME_OVER_D10     = 10
-MUSIC_MAIN_MENU_D3      = 3
+MUSIC_MAIN_MENU_D3      = $1D
 MUSIC_HIGH_SCORE_D4     = 4
 MUSIC_INTRO_D1          = 1
 

@@ -342,6 +342,7 @@ _Key_Q
 
     CALL dbs.SetupInGameMusicBank
     LD A, (aml.gameMusicCnt)
+    DEC A
     _DEB
 
     RET                                         ; ## END of the function ##

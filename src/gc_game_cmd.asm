@@ -807,7 +807,7 @@ JetMoves
     CALL pi.UpdatePickupsOnJetmanMove
 
     CALL dbs.SetupCode1Bank
-    CALL nv.UpdateJetVisibility 
+    CALL nv.UpdateVisibilityOnJetMove 
 
     RET                                         ; ## END of the function ##
 
