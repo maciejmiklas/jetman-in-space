@@ -64,7 +64,7 @@ ShowGameOver
     ; ##########################################
     ; Music
     CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_GAME_OVER_D10
+    LD A, aml.MUSIC_GAME_OVER_D2
     CALL aml.LoadSong
 
     RET                                         ; ## END of the function ##
