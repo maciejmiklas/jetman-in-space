@@ -145,6 +145,17 @@ LimitJetVisibility
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                LimitJetVisibilityOffNow                  ;
+;----------------------------------------------------------;
+LimitJetVisibilityOffNow
+
+    LD A, VISIBILITY_LIMIT_OFF
+    LD (visibilityLimitDest), A
+    LD (visibilityLimit), A
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                  LimitJetVisibilityOff                   ;
 ;----------------------------------------------------------;
 LimitJetVisibilityOff

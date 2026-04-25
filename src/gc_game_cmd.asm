@@ -107,7 +107,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 
     CALL enc.InitEnemies
 
-    CALL NightLimitVisibilityOff
+    CALL NightLimitVisibilityOffNow
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -190,7 +190,7 @@ LoadMainMenu
     LD B, db1.TILE_PAL_SIZE_1
     CALL ti.LoadTilemapPalette
 
-    CALL NightLimitVisibilityOff
+    CALL NightLimitVisibilityOffNow
 
     RET                                         ; ## END of the function ##
 
@@ -299,7 +299,7 @@ RocketFLyStartPhase1
     CALL enu.DisableFuelThief
     CALL jw.HideShots
 
-    CALL NightLimitVisibilityOff
+    CALL NightLimitVisibilityOffNow
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
@@ -904,6 +904,18 @@ NightLimitVisibility2
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;             NightLimitVisibilityOffNow                   ;
+;----------------------------------------------------------;
+NightLimitVisibilityOffNow
+
+    CALL dbs.SetupCode1Bank
+    CALL nv.LimitJetVisibilityOffNow
+
+    CALL ti.LoadTilemapPaletteForDay
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;              NightLimitVisibilityOff                     ;
 ;----------------------------------------------------------;
 NightLimitVisibilityOff
@@ -1031,7 +1043,7 @@ _HideGame
 
     CALL sc.ResetClippings
 
-    CALL NightLimitVisibilityOff
+    CALL NightLimitVisibilityOffNow
 
     RET                                         ; ## END of the function ##
 

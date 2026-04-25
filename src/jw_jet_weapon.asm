@@ -105,7 +105,7 @@ FIRE_FX_OFF_D0           = 0
 FlipFireFx
 
     LD A, (fireFxOn)
-    CPL
+    XOR 1
     LD (fireFxOn), A
 
     RET                                         ; ## END of the function ##
