@@ -52,6 +52,28 @@ ROC_Y_MAX_HI_H1         = $1
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                    _FlyRocketSound                       ;
+;----------------------------------------------------------;
+    MACRO _FlyRocketSound
+
+    ; Loop rocket sound by repeating it every few game loops.
+    LD A, (soundRepeatDelay)
+    CP FLY_SOUND_REPEAT
+    JR Z, .play
+    INC A
+    LD (soundRepeatDelay), A
+    JR .end
+
+.play
+    XOR A
+    LD (soundRepeatDelay), A
+
+    CALL gc.PlayRocketSound
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                  _UpdateRocketFlyPhase                   ;
 ;----------------------------------------------------------;
 ; Input:
@@ -265,27 +287,6 @@ ResetAndDisableFlyRocket
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    FlyRocketSound                        ;
-;----------------------------------------------------------;
-FlyRocketSound
-
-    ; Loop rocket sound by repeating it every few game loops.
-    LD A, (soundRepeatDelay)
-    CP FLY_SOUND_REPEAT
-    JR Z, .play
-    INC A
-    LD (soundRepeatDelay), A
-    RET
-
-.play
-    XOR A
-    LD (soundRepeatDelay), A
-
-    JP gc.PlayRocketSound                       ; WARNING: call will not return!
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                  RocketFLyStartPhase1                    ;
 ;----------------------------------------------------------;
 RocketFLyStartPhase1
@@ -325,7 +326,7 @@ FlyRocket
     ; Set X/Y coordinates for flames coming out of the exhaust.
     LD A, _EXHAUST_SPRID_D83
     NEXTREG _SPR_REG_NR_H34, A                  ; Set the ID of the sprite for the following commands.
-
+    
     ; Sprite X coordinate.
     CALL ro.SetRocketXSpriteCoordinate
 
@@ -333,6 +334,8 @@ FlyRocket
     LD A, (ro.rocY)
     ADD ro.OFS_FLAME_D16
     NEXTREG _SPR_REG_Y_H36, A
+
+    _FlyRocketSound
 
     RET                                         ; ## END of the function ##
 

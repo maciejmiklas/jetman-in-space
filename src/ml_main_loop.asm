@@ -13,6 +13,7 @@
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+
 ;----------------------------------------------------------;
 ;                       _Loop000                           ;
 ;----------------------------------------------------------;
@@ -53,8 +54,8 @@
     JP NZ, .notInGame
 
     ; ##########################################
-    CALL dbs.SetupInGameMusicBank
-    CALL am.MusicLoop
+    CALL dbs.SetupInGameMusicBank 
+    CALL am.MusicLoop 
 
     ; ##########################################
     ; Process the joystick direction movement to control Jetman in the game. Easy moves 1px, normal 1.5px, hard 2px.
@@ -86,6 +87,7 @@
 .moveOnePixel
     LD A, gid.MOVE_1PX
 .calltMovementInput
+
     CALL gi.JetMovementInput
 
      ; ##########################################
@@ -144,7 +146,6 @@
     CALL dbs.SetupInGameMusicBank
 .afterPause
     CALL am.MusicLoop
-
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -231,8 +232,7 @@
 
     ; ##########################################
     CALL rof.FlyRocket
-    CALL rof.FlyRocketSound
-    
+
     ; ##########################################
     ; Phase 4
     LD A, (ro.rocketFlyPhase)
@@ -721,7 +721,6 @@
 
     ; ##########################################
     ; Phase 4
-    CALL dbs.SetupRocketBank
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4

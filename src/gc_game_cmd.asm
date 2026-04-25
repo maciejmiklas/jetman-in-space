@@ -292,17 +292,18 @@ RocketFLyStartPhase1
     CALL jt.SetJetStateInactive
     CALL js.HideJetSprite
     CALL gb.HideGameBar
-    CALL dbs.SetupArrays2Bank
-    CALL pi.ResetPickups
     CALL ki.ResetKeyboard
-    CALL dbs.SetupPatternEnemyBank
-    CALL enu.DisableFuelThief
     CALL jw.HideShots
-
     CALL NightLimitVisibilityOffNow
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    CALL dbs.SetupArrays2Bank
+    CALL pi.ResetPickups
 
+    CALL dbs.SetupPatternEnemyBank
+    CALL enu.DisableFuelThief
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+ 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -443,6 +444,8 @@ PlayRocketSound
 
     _AFX af.FX_ROCKET_FLY
 
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -478,7 +481,6 @@ JetPlatformTakesOff
     LD A, pl.PLATFORM_WALK_INACTIVE
     LD (pl.platformWalkNumber), A
 
-
     ; Play FX
     _AFX af.FX_JET_TAKE_OFF
 
@@ -513,7 +515,7 @@ PlayFuelThiefFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   RocketHitsMeteor                     ;
+;                     RocketHitsMeteor                     ;
 ;----------------------------------------------------------;
 RocketHitsMeteor
 

@@ -338,14 +338,7 @@ JetPlatformHitOnJoyMove
     ; ##########################################
     ; Check for platform hit.
 
-    ; Params for _AnyPlatformHit.
     LD HL, jpo.jetX
-
-    LD IY, (platformsPtr)
-
-    LD A, (platformsSize)
-    LD B, A
-
     LD IX, db2.jetHitMargin
     CALL _PlatformDirectionHit
 
@@ -682,13 +675,7 @@ PlatformBounceOff
 
     CALL dbs.SetupArrays2Bank
 
-    LD IY, (platformsPtr)
-
-    LD A, (platformsSize)
-    LD B, A
-
     LD IX, db2.bounceMargin
-
     CALL _PlatformDirectionHit
 
     RET                                         ; ## END of the function ##
@@ -806,9 +793,7 @@ JetFallingFromPlatform
 ; Check whether the sprite given by coordinates hits one of the platforms, also provides platform number and side.
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IX: pointer to #PLAM
-;  - IY: pointer to #PLA list
-;  - B:  number of elements in #PLA list
+;  - IX: pointer to #PLAM (margin)
 ; Return:
 ;  - A:  #PL_DHIT_RET_XXX
 ;  - B:  platform counter set to the current platform. The counter starts with the number (inclusive) of platforms and counts toward 1 (inclusive).
@@ -820,14 +805,17 @@ PL_DHIT_BOTTOM_D4       = 4                     ; Sprite hits the platform from 
 
 _PlatformDirectionHit
 
+    LD IY, (platformsPtr)
+
+    LD A, (platformsSize)
+    LD B, A
+
 .loopOverPlatforms
     PUSH BC
 
     ; ##########################################
     ; Quick check if we are close to the platform.
-    PUSH BC
     CALL _PlatformHit
-    POP BC
     JP NZ, .continue
 
     ; ##########################################
@@ -901,12 +889,11 @@ _PlatformDirectionHit
 
     ; We've iterated over all platforms, and there was no hit.
     LD A, PL_DHIT_NO_D0
-    JR .end
+    RET
 
 .endLoopOverPlatforms
     POP BC
 
-.end
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -950,8 +937,7 @@ _AnyPlatformHit
 ; there was a hit. To get directions use #_PlatformDirectionHit.
 ; Input:
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
-;  - IY: set to current platform from #PLA list.
-;  - B:  number of elements in #PLA list.
+;  - IY: current platform from #PLA list.
 ;  - IX: pointer to #PLAM.
 ; Return:
 ;  - YES: Z is reset (JP Z). Sprite hits the platform.

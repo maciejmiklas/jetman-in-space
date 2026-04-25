@@ -233,7 +233,7 @@ AnimateFuelThief
     RET C                                       ; Return if #thiefState < TS_EXPLODES_D20
 
     ; Animate
-    LD IX, ena.fuelThiefSpr
+    _LoadThiefSprToIxIy
     sp.AnimateSprite
 
     ; Switch from TS_EXPLODES_D20 to TS_WAITING_D1 when explosion is over.
@@ -375,7 +375,7 @@ MoveFuelThief
 ;----------------------------------------------------------;
 _SetupFuelThief
 
-    LD IX, ena.fuelThiefSpr
+    _LoadThiefSprToIxIy
     LD B, THIEF_SIZE_D1
     CALL enp.ResetPatternEnemies
 
@@ -388,10 +388,11 @@ _SetupFuelThief
 ;----------------------------------------------------------;
 _HideFuelThief
 
+    _LoadThiefSprToIxIy
+
     LD A, TS_WAITING_D1
     LD (thiefState), A
 
-    LD IX, ena.fuelThiefSpr
     CALL sp.HideSprite
 
     _HideFuelTankSprite
