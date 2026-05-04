@@ -123,8 +123,8 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 ;----------------------------------------------------------;
 StartGameWithIntro
 
-     CALL sc.ResetScore
-     CALL jl.ResetLives
+    CALL sc.ResetScore
+    CALL jl.ResetLives
 
     ; Music
     CALL dbs.SetupMusicCommonBank

@@ -221,7 +221,7 @@ PrintScore
     JR C, .end                                  ; Jump if H < D
 
     LD A, L
-    CP H
+    CP E
     JR C, .end                                  ; Jump if L < E
 
     ; Extra live!
