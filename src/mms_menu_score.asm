@@ -695,9 +695,9 @@ _StoreCurrentChar
     LD (DE), A
 
     ; Repaint score line
-    ;LD A, (scoreLine)
-    ;CALL _PrintScoreLine
-    _PrintWholeScore
+    LD A, (scoreLine)
+    CALL _PrintScoreLine
+    
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -357,7 +357,13 @@ MoveShots
     JR NZ, .afterPlatformHit
     PUSH IX
     CALL sp.SpriteHit
+
+    ; Do to play FX it it's off.
+    LD A, (fireFxOn)
+    OR A                                        ; Same as: CP FIRE_FX_OFF_D0
+    JR Z, .afterPlatformWeaponHit
     CALL gc.PlatformWeaponHit
+.afterPlatformWeaponHit
     POP IX
 .afterPlatformHit
 

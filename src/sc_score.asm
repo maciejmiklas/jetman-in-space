@@ -43,6 +43,8 @@ SCORE_TI_START          = 4
 ;----------------------------------------------------------;
 ResetScore
 
+    _DEB
+
     XOR A
     LD H, A
     LD L, A
@@ -242,7 +244,7 @@ PrintScore
 ;  - B: repeat
 _UpdateScore
 
-    ; This will also update scoreHi due to everflow in ut.Add8To32.
+    ; This will also update scoreHi due to everflow in ut.Add8To32
 .loop
     PUSH BC
     LD HL, scoreLo
