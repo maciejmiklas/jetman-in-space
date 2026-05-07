@@ -727,6 +727,7 @@
     JR NZ, .end
 
     CALL rot.DeployNextMeteor
+    CALL sc.RocketFly
 
 .end
     ENDM                                        ; ## END of the macro ##

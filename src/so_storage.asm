@@ -23,8 +23,8 @@ highScoreEasy
     DB "   FREDUS    "
    
     DW 00000
-    DW 09000
-    DB "   MACIEJ    "
+    DW 65535
+    DB "  +++++ +++  "
 
     DW 00000
     DW 08000
@@ -66,8 +66,8 @@ highScoreNormal
     DB "   FREDUS    "
    
     DW 00000
-    DW 09000
-    DB "   MACIEJ    "
+    DW 65535
+    DB "  +++++ +++  "
 
     DW 00000
     DW 08000
@@ -109,8 +109,8 @@ highScoreHard
     DB "   FREDUS    "
    
     DW 00000
-    DW 09000
-    DB "   MACIEJ    "
+    DW 65535
+    DB "  +++++ +++  "
 
     DW 00000
     DW 08000

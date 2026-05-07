@@ -155,7 +155,7 @@ CopyRam
 ;                       Add8To32                           ;
 ;----------------------------------------------------------;
 ; Input:
-;  - HL: points to the start of the two DW (LO,HI) elements in RAM
+;  - HL: points to the start of the 2 DW (LO,HI,LO,HI) elements in RAM
 ;  - A:  contains the 8-bit value to add
 Add8To32
 

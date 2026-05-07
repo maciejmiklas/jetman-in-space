@@ -7,34 +7,42 @@
 ;----------------------------------------------------------;
     MODULE sc
 
-; Memory layout: LO, HI
-scoreHi                  DW 0
+; Memory layout: LO, HI:
+;  - scoreLo low byte  (bits 0..7)
+;  - scoreLo high byte (bits 8..15)
+;  - scoreHi low byte  (bits 16..23)
+;  - scoreHi high byte (bits 24..31)
 scoreLo                  DW 0
+scoreHi                  DW 0
 
-HIT_ENEMY1              = 20
-HIT_ENEMY2              = 21
-HIT_ENEMY3              = 22
+HIT_ENEMY1              = 40
+HIT_ENEMY2              = 50
+HIT_ENEMY3              = 55
 
-EXTRA_LIVE              = 30000
-nextExtraLive           DW EXTRA_LIVE
+; Points are stored as a 32-bit number. Each life is granted every 65k points, that is, when 3-rd byte value increases by 1.
+nextExtraLive           DB 1
 
 PICKUP_ROCKET           = 200
 
 PICKUP_ROCKET_AIR       = 250
-PICKUP_ROCKET_AIR_REP   = 4
+PICKUP_ROCKET_AIR_REP   = 10
 
 DROP_ROCKET             = 255
 
+ROCKET_FLY              = 255
+
 BOARD_ROCKET            = 250
-BOARD_ROCKET_REP        = 10
+BOARD_ROCKET_REP        = 20
 
 NO_REP                  = 1
 
 PICKUP_IN_AIR           = 200
-PICKUP_REG              = 250
+PICKUP_IN_AIR_REP       = 5
+
+PICKUP_REG              = 255
 
 PICKUP_DIAMOND          = 250
-PICKUP_DIAMOND_REP      = 4
+PICKUP_DIAMOND_REP      = 10
 
 SCORE_TI_START          = 4
 
@@ -42,8 +50,6 @@ SCORE_TI_START          = 4
 ;                        ResetScore                        ;
 ;----------------------------------------------------------;
 ResetScore
-
-    _DEB
 
     XOR A
     LD H, A
@@ -59,7 +65,7 @@ ResetScore
 PickupInAir
 
     LD C, PICKUP_IN_AIR
-    LD B, NO_REP
+    LD B, PICKUP_IN_AIR_REP
     CALL _UpdateScore
 
     RET                                         ; ## END of the function ##
@@ -92,7 +98,7 @@ PickupDiamond
 HitEnemy1
 
     LD C, HIT_ENEMY1
-    LD B, 1
+    LD B, NO_REP
     CALL _UpdateScore
 
     RET                                         ; ## END of the function ##
@@ -103,7 +109,7 @@ HitEnemy1
 HitEnemy2
 
     LD C, HIT_ENEMY2
-    LD B, 1
+    LD B, NO_REP
     CALL _UpdateScore
 
     RET                                         ; ## END of the function ##
@@ -114,9 +120,9 @@ HitEnemy2
 HitEnemy3
 
     LD C, HIT_ENEMY3
-    LD B, 1
+    LD B, NO_REP
     CALL _UpdateScore
-
+ 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -125,7 +131,7 @@ HitEnemy3
 HitRocketTank
 
     LD HL, (scoreLo)
-    
+
     ; Decrement H by 3 and set L to 0 (if possible).
     LD A, H
     CP 3
@@ -160,7 +166,7 @@ PickupRocketElement
 
     LD C, PICKUP_ROCKET
     LD B, NO_REP
-    CALL _UpdateScore 
+    CALL _UpdateScore
 
     RET                                         ; ## END of the function ##
 
@@ -181,6 +187,18 @@ PickupRocketElementInAir
 DropRocketElement
 
     LD C, DROP_ROCKET
+    LD B, NO_REP
+    CALL _UpdateScore
+
+    RET                                         ; ## END of the function ##
+
+
+;----------------------------------------------------------;
+;                        RocketFly                         ;
+;----------------------------------------------------------;
+RocketFly
+
+    LD C, ROCKET_FLY
     LD B, NO_REP
     CALL _UpdateScore
 
@@ -212,25 +230,18 @@ PrintScore
 ;----------------------------------------------------------;
     MACRO _CheckExtraLive
 
-    LD HL, (scoreLo)
-    LD DE, (nextExtraLive)
+    LD A, (scoreHi)                             ; A = current 3rd byte (bits 16..23) of high score.
+    LD B, A
+    LD A, (nextExtraLive)                       ; C = next threshold byte.
 
-    ; Grant extra live if HL > DE, or H > D and L > E
+    CP B
+    JR NZ, .end                                 ; Not at threshold yet.
 
-    ; Check if H > D
-    LD A, H
-    CP D
-    JR C, .end                                  ; Jump if H < D
+    ; We hit a new 65k block – move threshold and award life.
+    INC A
+    LD (nextExtraLive), A
 
-    LD A, L
-    CP E
-    JR C, .end                                  ; Jump if L < E
-
-    ; Extra live!
-    LD DE, EXTRA_LIVE
-    ADD HL, DE
-    LD (nextExtraLive), HL
-
+    _DEB
     CALL gc.JetExtraLife
 
 .end
@@ -253,7 +264,7 @@ _UpdateScore
     POP BC
     DJNZ .loop
 
-     _CheckExtraLive
+    _CheckExtraLive
 
     ; #########################################
     ; Update UI, but return if gamebar is hidden
