@@ -141,6 +141,7 @@ jetSpriteDB
 ;----------------------------------------------------------;
 
 ; Sprites for single shots (#shots), based on #SPR.
+; EXT_DATA_POINTER is being used as counter for RANGE_PX
 shots
     SPR {10/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
     SPR {11/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}

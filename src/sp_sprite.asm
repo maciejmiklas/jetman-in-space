@@ -432,12 +432,13 @@ UpdateSpritePattern
 ;         - 4:   #MVX_IN_D_TOD_DIR_BIT
 MVX_IN_D_HIDE_BIT           = 3                 ; 1 - hide sprite when off-screen, 0 - roll over sprite when off-screen.
 MVX_IN_D_TOD_DIR_BIT        = 4                 ; 1 - move from right side of the screen to the left, 0 - move left -> right.
-MVX_IN_D_1PX_HIDE           = %0000'1001        ; Move the sprite by 1 pixel and hide on the screen end.
-MVX_IN_D_6PX_HIDE           = %0000'1110        ; Move the sprite by 6 pixels and hide on the screen end. 
-MVX_IN_D_1PX_ROL            = %0000'0001        ; Move the sprite by 1 pixel and roll over sprite when off-screen.
-MVX_IN_D_2PX_ROL            = %0000'0010        ; Move the sprite by 2 pixels and roll over sprite when off-screen.
-MVX_IN_D_3PX_ROL            = %0000'0011        ; Move the sprite by 3 pixels and roll over sprite when off-screen.
-MVX_IN_D_MASK_CNT           = %0000'0111 
+MVX_IN_D_1PX_HIDE           = %000'01001        ; Move the sprite by 1 pixel and hide on the screen end. 
+MVX_IN_D_6PX_HIDE           = %000'01110        ; Move the sprite by 6 pixels and hide on the screen end. 
+MVX_IN_D_6PX_ROL            = %000'00110        ; Move the sprite by 6 pixels and roll over sprite when off-screen.
+MVX_IN_D_1PX_ROL            = %000'00001        ; Move the sprite by 1 pixel and roll over sprite when off-screen.
+MVX_IN_D_2PX_ROL            = %000'00010        ; Move the sprite by 2 pixels and roll over sprite when off-screen.
+MVX_IN_D_3PX_ROL            = %000'00011        ; Move the sprite by 3 pixels and roll over sprite when off-screen.
+MVX_IN_D_MASK_CNT           = %000'00111 
 ; Return:
 ;  - YES: sprite still moving, Z is reset (JP Z).
 ;  - NO:  sprite has reached the edge of the screen (roll over or hide), Z is set (JP NZ).

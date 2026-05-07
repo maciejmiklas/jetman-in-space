@@ -32,6 +32,8 @@ fireFxOn                DB 1
 FIRE_FX_ON_D1            = 1
 FIRE_FX_OFF_D0           = 0
 
+RANGE_D6                = 30                    ; Each shoot moves 6 pixels per loop, distance 10 = 60 pixels.
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                        MACROS                            ;
@@ -332,10 +334,21 @@ MoveShots
     BIT sp.SPRITE_ST_ACTIVE_BIT, (IX + SPR.STATE)
     JR Z, .continue
 
+    ; The shot is visible, but has it reached its range?
+    LD A, (IX + SPR.EXT_DATA_POINTER)
+    DEC A
+
+    CP 0
+    JR NZ, .afterRangeCheck
+    CALL sp.HideSprite
+    JR .continue
+.afterRangeCheck
+    LD (IX + SPR.EXT_DATA_POINTER), A
+
     ; Shot is visible, move it and update postion.
     sp.SetSpriteId
     
-    LD A, sp.MVX_IN_D_6PX_HIDE
+    LD A, sp.MVX_IN_D_6PX_ROL
 
     ; Setup move direction for shot.
     BIT STATE_SHOT_DIR_BIT, (IX + SPR.STATE)
@@ -380,7 +393,7 @@ MoveShots
 ;                     FireDelayCounter                     ;
 ;----------------------------------------------------------;
 FireDelayCounter
-    
+
     ; Increment shot counter
     LD A, (fireDelay)
     LD B, A
@@ -453,6 +466,9 @@ FirePress
 
 .afterFound
     ; We are here because free #shotsX has been found, and IX points to it.
+
+    ; Set range counter.
+    LD (IX + SPR.EXT_DATA_POINTER), RANGE_D6
 
     ; Is Jetman moving left or right?
     LD A, (gid.jetDirection)
