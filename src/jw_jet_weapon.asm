@@ -32,8 +32,9 @@ fireFxOn                DB 1
 FIRE_FX_ON_D1            = 1
 FIRE_FX_OFF_D0           = 0
 
-RANGE_D6                = 25                    ; Each shoot moves 6 pixels per loop, distance 10 = 60 pixels.
-68
+RANGE_D25               = 25                    ; Each shoot moves 6 pixels per loop, distance 10 = 60 pixels.
+RANGE_HARD_D20          = 20
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                        MACROS                            ;
@@ -468,7 +469,14 @@ FirePress
     ; We are here because free #shotsX has been found, and IX points to it.
 
     ; Set range counter.
-    LD (IX + SPR.EXT_DATA_POINTER), RANGE_D6
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
+    LD (IX + SPR.EXT_DATA_POINTER), RANGE_HARD_D20
+    JR .afterNorm
+.notHard
+    LD (IX + SPR.EXT_DATA_POINTER), RANGE_D25
+.afterNorm
 
     ; Is Jetman moving left or right?
     LD A, (gid.jetDirection)
