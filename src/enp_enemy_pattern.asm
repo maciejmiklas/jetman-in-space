@@ -134,6 +134,7 @@ SPEED_PX_MIN_D1         = 1
 SPEED_PX_MAX_D3         = 3
 
 BOUNCE_H_MARG_D3        = 3
+MIN_SPEED_HARD_D7       = 7
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -513,11 +514,26 @@ RespawnPatternEnemy
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .afterEnemyRespawnDelay               ; Jump if there is no extra delay for this enemy.
 
-    LD B, A
+    LD B, A                                     ; B holds (IY + ENP.RESPAWN_DELAY)
+
+    LD C, 1
+    ; 2x shorter delay on hard
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR NZ, .notHard
+
+    ; Do not speed up already short time < 7
+    LD A, B
+    CP MIN_SPEED_HARD_D7
+    JR C, .notHard
+
+    INC C: INC C: INC C: INC C: INC C: INC C
+.notHard
+
     LD A, (IY + ENP.RESPAWN_DELAY_CNT)
-    INC A
-    CP B
-    JR Z, .afterEnemyRespawnDelay               ; Jump if the timer reaches respawn delay.
+    ADD C
+    CP B                                         ; B holds (IY + ENP.RESPAWN_DELAY)
+    JR NC, .afterEnemyRespawnDelay               ; Jump if the timer reaches respawn delay.
 
     LD (IY + ENP.RESPAWN_DELAY_CNT), A          ; The delay timer for the enemy is still ticking.
 
