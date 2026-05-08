@@ -32,8 +32,8 @@ fireFxOn                DB 1
 FIRE_FX_ON_D1            = 1
 FIRE_FX_OFF_D0           = 0
 
-RANGE_D6                = 30                    ; Each shoot moves 6 pixels per loop, distance 10 = 60 pixels.
-
+RANGE_D6                = 25                    ; Each shoot moves 6 pixels per loop, distance 10 = 60 pixels.
+68
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                        MACROS                            ;
