@@ -74,6 +74,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL ti.ResetTilemapOffset
     CALL jo.ResetJetpackOverheating
     CALL jl.SetupLives
+    CALL gr.UpdateGranedeGamebar
 
     LD A, ms.MS_GAME_ACTIVE_D1
     CALL ms.SetMainState
@@ -84,6 +85,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
+
 
     ENDM                                        ; ## END of the macro ##
 

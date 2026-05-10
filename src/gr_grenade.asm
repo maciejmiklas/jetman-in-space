@@ -13,6 +13,21 @@ GRENADE_ICON_CHAR       = 'G'
 GRENADE_ICON_TI_POS     = 19
 GRENADE_COUNT_TI_POS    = 20
 
+
+
+;----------------------------------------------------------;
+;                  UpdateGranedeGamebar                    ;
+;----------------------------------------------------------;
+UpdateGranedeGamebar
+
+    LD A, (grenadeCount)
+    OR A                                        ; Same as CP 0, but faster.
+    RET Z
+
+    CALL _UpdateeGamebar
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                     GrenadePickup                        ;
 ;----------------------------------------------------------;
@@ -22,7 +37,7 @@ GrenadePickup
     INC A
     LD (grenadeCount), A
 
-    CALL _UpdateGamebar
+    CALL _UpdateeGamebar
 
     RET                                         ; ## END of the function ##
 
@@ -40,9 +55,11 @@ UseGrenade
 
     CALL enc.KillFewEnemies
     _AFX af.FX_GRENADE_EXPLODE
-    CALL _UpdateGamebar
+    CALL _UpdateeGamebar
 
     RET                                         ; ## END of the function ##
+
+
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -51,9 +68,9 @@ UseGrenade
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                     _UpdateGamebar                       ;
+;                    _UpdateeGamebar                       ;
 ;----------------------------------------------------------;
-_UpdateGamebar
+_UpdateeGamebar
 
     ; Print icon
     LD A, GRENADE_ICON_TI_POS
