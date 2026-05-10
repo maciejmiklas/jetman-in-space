@@ -26,10 +26,10 @@ soundRepeatDelay        DB FLY_SOUND_REPEAT
 DELAY_TILE              = 5
 decTileDelayCnt         DB DELAY_TILE
 
-roctExhaustMax                                 ; Sprite IDs for exhaust at max speed.
+roctExhaustSprirtes                             ; Sprite IDs for exhaust at max speed.
     DB 53,57,62,  57,62,53,  62,53,57,  53,62,57,  62,57,53,  57,53,62
 
-roctExhaustPoint        DW roctExhaustMax
+roctExhaustPoint        DW roctExhaustSprirtes
 
 roctExhaustSlow                                ; Sprite IDs for exhaust at slow speed.
     DB 58,59,63,  58,63,59,  63,58,59,  58,59,63,  58,59,63,  59,58,63
@@ -283,6 +283,8 @@ ResetAndDisableFlyRocket
     LD (soundRepeatDelay), A                    ;Set the count to max so the sound plays immediately when the rocket takes off.
 
     ; ##########################################
+    LD HL, roctExhaustSprirtes
+    LD (roctExhaustPoint), HL
 
     RET                                         ; ## END of the function ##
 
@@ -517,7 +519,7 @@ _RocketFLyStartPhase4
 ;----------------------------------------------------------;
 _ProcessJoystickInput
 
-    LD HL, roctExhaustMax
+    LD HL, roctExhaustSprirtes
     LD (roctExhaustPoint), HL
 
     ; Key Left
