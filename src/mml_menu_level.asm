@@ -80,7 +80,7 @@ LoadMenuLevelSelect
 
     CALL _UpdateJetPos
     CALL js.ShowJetSprite
-    
+
     ; ##########################################
     ; Music on
     CALL dbs.SetupMusicCommonBank

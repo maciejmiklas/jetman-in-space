@@ -726,6 +726,7 @@
     ; ##########################################
     CALL jo.JetpackOverheatFx
     CALL gc.PlayFuelThiefFx
+    CALL js.ShowJetSprite
 
     ; ##########################################
     CALL dbs.SetupRocketBank
