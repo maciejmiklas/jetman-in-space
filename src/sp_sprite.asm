@@ -38,6 +38,8 @@ SPRITE_ST_ALIVE         = %00000011             ; Active and visible.
 ; 1 - X mirror sprite, 0 - do not mirror sprite. This bit corresponds to _SPR_REG_ATR2_H37.
 SPRITE_ST_MIRROR_X_BIT  = 3
 
+COLISION_DEL_D15        = 15
+
 ;----------------------------------------------------------;
 ;                         Sprite DB                        ;
 ;----------------------------------------------------------;
@@ -65,6 +67,34 @@ SDB_SUB                 = 100                   ; 100 for OFF_NX that CPIR finds
 
 SDB_SEARCH_LIMIT_D200   = 200
 
+; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
+; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
+; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
+; containing another animation or a command like #SDB_HIDE that will hide the sprite.
+srSpriteDB
+    SPR_REC {SDB_EXPLODE, SDB_HIDE-SDB_SUB, 04}
+            DB 30, 31, 32, 33
+    SPR_REC {SDB_FIRE,SDB_FIRE-SDB_SUB, 02}
+            DB 54, 55
+    SPR_REC {SDB_ENEMY1, SDB_ENEMY1-SDB_SUB, 24}
+            DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
+    SPR_REC {SDB_ENEMY1A, SDB_ENEMY1A-SDB_SUB, 03}
+            DB 45, 46, 47
+    SPR_REC {SDB_ENEMY2, SDB_ENEMY2-SDB_SUB, 03}
+            DB 48, 49, 50
+    SPR_REC {SDB_ENEMY3, SDB_ENEMY3-SDB_SUB, 03}
+            DB 34, 35, 36
+    SPR_REC {SDB_FUEL_THIEF, SDB_FUEL_THIEF-SDB_SUB, 03}
+            DB 58, 59, 63
+    SPR_REC {SDB_BOUNCE_SIDE, SDB_ENEMY1-SDB_SUB, 7}
+            DB 34, 35, 36, 35, 34, 35, 36
+    SPR_REC {SDB_BOUNCE_TOP, SDB_ENEMY1-SDB_SUB, 7}
+            DB 48, 49, 50, 49, 48, 49, 50
+    SPR_REC {SDB_BOUNCE_SIDEA, SDB_ENEMY1A-SDB_SUB, 6}
+            DB 34, 35, 36, 34, 35, 36
+    SPR_REC {SDB_BOUNCE_TOPA, SDB_ENEMY1A-SDB_SUB, 6}
+            DB 48, 49, 50, 48, 49, 50
+            
 ;----------------------------------------------------------;
 ;             sp.CheckSpriteHiddenOrDaying                 ;
 ;----------------------------------------------------------;
@@ -105,6 +135,16 @@ SDB_SEARCH_LIMIT_D200   = 200
     NEXTREG _SPR_REG_ATR3_H38, _SPR_ATTR3_HIDE
 
     ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 sp.ResetCollicionCnt                     ;
+;----------------------------------------------------------;
+    MACRO sp.ResetCollicionCnt
+
+    LD (IX + SPR.COLLISION_CNT), sp.COLISION_DEL_D15
+
+    ENDM                                        ; ## END of the macro ##
+
 
 ;----------------------------------------------------------;
 ;                    sp.SetSpriteId                        ;
@@ -165,6 +205,8 @@ ResetSprite
     LD (IX + SPR.STATE), A
     LD (IX + SPR.NEXT), A
     LD (IX + SPR.REMAINING), A
+
+    sp.ResetCollicionCnt
 
     RET                                         ; ## END of the function ##
 
@@ -304,7 +346,7 @@ UpdateSpritePosition
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     HideAllSprites                      ;
+;                     HideAllSprites                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: pointer to #SPR.
@@ -659,38 +701,6 @@ LoadSpritePattern
     LD (IX + SPR.SDB_POINTER), HL               ; Update #SPR.SDB_POINTER
 
     RET                                         ; ## END of the function ##
-    
-;----------------------------------------------------------;
-;                  Sprite Animations                       ;
-;----------------------------------------------------------;
-
-; The animation system is based on a state machine. Each state is represented by a single DB record (#SPR_REC). 
-; A single record has an ID that can be used to find it. It has a sequence of sprite patterns that will be played, 
-; and once this sequence is done, it contains the offset to the following command (#OFF_NX). It could be an ID for the following DB record 
-; containing another animation or a command like #SDB_HIDE that will hide the sprite.
-srSpriteDB
-    SPR_REC {SDB_EXPLODE, SDB_HIDE-SDB_SUB, 04}
-            DB 30, 31, 32, 33
-    SPR_REC {SDB_FIRE,SDB_FIRE-SDB_SUB, 02}
-            DB 54, 55
-    SPR_REC {SDB_ENEMY1, SDB_ENEMY1-SDB_SUB, 24}
-            DB 45,46, 45,46,   45,46,47, 45,46,47,   46,47, 46,47,   45,46,47, 45,46,47,   45,47, 45,47
-    SPR_REC {SDB_ENEMY1A, SDB_ENEMY1A-SDB_SUB, 03}
-            DB 45, 46, 47
-    SPR_REC {SDB_ENEMY2, SDB_ENEMY2-SDB_SUB, 03}
-            DB 48, 49, 50
-    SPR_REC {SDB_ENEMY3, SDB_ENEMY3-SDB_SUB, 03}
-            DB 34, 35, 36
-    SPR_REC {SDB_FUEL_THIEF, SDB_FUEL_THIEF-SDB_SUB, 03}
-            DB 58, 59, 63
-    SPR_REC {SDB_BOUNCE_SIDE, SDB_ENEMY1-SDB_SUB, 7}
-            DB 34, 35, 36, 35, 34, 35, 36
-    SPR_REC {SDB_BOUNCE_TOP, SDB_ENEMY1-SDB_SUB, 7}
-            DB 48, 49, 50, 49, 48, 49, 50
-    SPR_REC {SDB_BOUNCE_SIDEA, SDB_ENEMY1A-SDB_SUB, 6}
-            DB 34, 35, 36, 34, 35, 36
-    SPR_REC {SDB_BOUNCE_TOPA, SDB_ENEMY1A-SDB_SUB, 6}
-            DB 48, 49, 50, 48, 49, 50
 
 ;----------------------------------------------------------;
 ;                    ResetAllSprites                       ;

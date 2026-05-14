@@ -526,27 +526,26 @@ RocketHitsMeteor
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                JetmanEnemiesCollision                    ;
+;               gc.JetmanEnemiesCollision                  ;
 ;----------------------------------------------------------;
-    MACRO JetmanEnemiesCollision
+    MACRO gc.JetmanEnemiesCollision
 
     CALL dbs.SetupArrays2Bank
 
     ; ##########################################
     CALL dbs.SetupPatternEnemyBank
-
     LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
     CALL jco.EnemiesCollision
 
     ; ##########################################
+    CALL dbs.SetupPatternEnemyBank
     LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL jco.EnemiesCollision
 
     ; ##########################################
     CALL dbs.SetupFollowingEnemyBank
-
     LD A, (fed.fEnemySize)
     LD IX, fed.fEnemySprites
     CALL jco.EnemiesCollision
@@ -617,8 +616,6 @@ EnemyHit
 ;  - IX:    Pointer enemy's #SPR
 EnemyHitsJet
 
-    CALL dbs.SetupArrays2Bank
-    
     ; Destroy the enemy.
     CALL sp.SpriteHit
 

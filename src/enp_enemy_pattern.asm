@@ -558,6 +558,7 @@ DoRespawnPatternEnemy
    ; Respawn enemy, first mark it as visible.
     LD A, (IX + SPR.STATE)
     CALL sp.SetStateVisible
+    sp.ResetCollicionCnt
 
     ; Reset counters and move pattern.
     LD (IY + ENP.RESPAWN_DELAY_CNT), 0

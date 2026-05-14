@@ -240,39 +240,39 @@ spriteExEf07
 
 ; Single sprites, used by single enemies (#spriteExXX).
 singleEnemySprites
-    ;    ID  SDB_POINTER.  SDB_POINTER X  Y  STATE NEXT REMAINING  EXT_DATA_POINTER
-    SPR {20, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx01}
-    SPR {21, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx02}
-    SPR {22, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx03}
-    SPR {23, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx04}
-    SPR {24, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx05}
-    SPR {25, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx06}
-    SPR {26, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx07}
-    SPR {27, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx08}
-    SPR {28, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx09}
-    SPR {29, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx10}
-    SPR {30, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx11}
-    SPR {31, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx12}
-    SPR {32, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx13}
-    SPR {33, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx14}
-    SPR {34, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx15}
-    SPR {35, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx16}
-    SPR {36, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx17}
-    SPR {37, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx18}
-    SPR {38, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx19}
-    SPR {39, sp.SDB_ENEMY1 0,          0, 0, 0,    0,   0,         spriteEx20}
+    ;    ID  SDB_POINTER    SDB_POINTER X  Y  STATE NEXT REMAINING  COLLISION_CNT EXT_DATA_POINTER
+    SPR {20, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx01}
+    SPR {21, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx02}
+    SPR {22, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx03}
+    SPR {23, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx04}
+    SPR {24, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx05}
+    SPR {25, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx06}
+    SPR {26, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx07}
+    SPR {27, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx08}
+    SPR {28, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx09}
+    SPR {29, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx10}
+    SPR {30, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx11}
+    SPR {31, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx12}
+    SPR {32, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx13}
+    SPR {33, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx14}
+    SPR {34, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx15}
+    SPR {35, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx16}
+    SPR {36, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx17}
+    SPR {37, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx18}
+    SPR {38, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx19}
+    SPR {39, sp.SDB_ENEMY1, 0,          0, 0, 0,    0,   0,         0,            spriteEx20}
 ENEMY_SINGLE_SIZE       = 20
 
 ; Formation sprites used by enemyFormation enemies (#spriteExEfXX).
 formationEnemySprites
-    ;    ID  SDB_INIT       SDB_POINTER X  Y  STATE NEXT REMAINING  EXT_DATA_POINTER
-    SPR {61, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf01}
-    SPR {62, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf02}
-    SPR {63, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf03}
-    SPR {64, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf04}
-    SPR {65, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf05}
-    SPR {66, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf06}
-    SPR {67, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         spriteExEf07}
+    ;    ID  SDB_INIT       SDB_POINTER X  Y  STATE NEXT REMAINING  COLLISION_CNT EXT_DATA_POINTER
+    SPR {61, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         0,            spriteExEf01}
+    SPR {62, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         0,            spriteExEf02}
+    SPR {63, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         0,            spriteExEf03}
+    SPR {64, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         0,            spriteExEf04}
+    SPR {65, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         0,            spriteExEf05}
+    SPR {66, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         0,            spriteExEf06}
+    SPR {67, sp.SDB_ENEMY3, 0,          0, 0, 0,    0,   0,         0,            spriteExEf07}
 ENEMY_FORMATION_SIZE_D7    = 7
 
 ;----------------------------------------------------------;
@@ -374,8 +374,7 @@ enemyFormationL4 ENPS {085/*RESPAWN_Y*/, 8/*RESPAWN_DELAY*/, movePattern23/*MOVE
 ; Level 5
 singleEnemiesL5
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
-
-    ENPS {020,        013,          movePattern25,   sp.SDB_ENEMY1   enp.ENP_LEFT_HIT_RP  }
+    ENPS {020,        016,          movePattern25,   sp.SDB_ENEMY1   enp.ENP_LEFT_HIT_RP     }
     ENPS {030,        020,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {060,        023,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {070,        016,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
@@ -383,13 +382,13 @@ singleEnemiesL5
     ENPS {100,        013,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {120,        023,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {130,        020,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {150,        010,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {150,        015,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {140,        018,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {180,        017,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {190,        013,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {190,        015,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {200,        030,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        011,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {120,        010,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {120,        015,          movePattern07,   sp.SDB_ENEMY1   enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {220,        011,          movePattern20,   sp.SDB_ENEMY1   enp.ENP_RIGHT_BOUNCE_AN }
 SINGLE_ENEMIES_L5       = 15
 enemyFormationL5 ENPS {175/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern25/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY2/*SDB_INIT*/, enp.ENP_LEFT_HIT_RP/*SETUP*/}
@@ -476,7 +475,7 @@ fuelThiefEnp
     ENP {0/*SETUP*/, 0/*MOVE_DELAY*/, 0/*MOVE_DELAY_CNT*/, 0/*MOVE_PX*/, 0/*RESPAWN_DELAY*/, 0/*RESPAWN_DELAY_CNT*/, 233/*RESPAWN_Y*/, movePattern19/*MOVE_PAT_POINTER*/, enp.MOVE_PAT_STEP_OFFSET_D1/*MOVE_PAT_POS*/, 0/*MOVE_PAT_STEP*/, 0/*MOVE_PAT_STEP_RCNT*/}
 
 fuelThiefSpr
-    SPR {96/*ID*/, sp.SDB_FUEL_THIEF/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, fuelThiefEnp/*EXT_DATA_POINTER*/}
+    SPR {96/*ID*/, sp.SDB_FUEL_THIEF/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*COLLISION_CNT*/, fuelThiefEnp/*EXT_DATA_POINTER*/}
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

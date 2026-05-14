@@ -572,6 +572,7 @@ Y                       DB                      ; Y position of the sprite.
 STATE                   DB
 NEXT                    DB                      ; ID in #ssSpriteDB for next animation record/state.
 REMAINING               DB                      ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record.
+COLLISION_CNT           DB                      ; Counts towards 0, once 0 is reached, the enemy can hit Jetman.
 EXT_DATA_POINTER        DW                      ; Pointer to additional data structure for this sprite.
     ENDS
 

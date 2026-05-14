@@ -122,6 +122,19 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     JR Z, .end
 
     ; ################################
+    ; Collision delay counter.
+    
+    LD A, (IX + SPR.COLLISION_CNT)
+    OR A                                        ; Same as CP 0, but faster.
+    JR Z, .afterColisionCounter
+
+    DEC A
+    LD (IX + SPR.COLLISION_CNT), A
+
+    JR .end
+
+.afterColisionCounter
+    ; ################################
     ; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman.
 
     ; It's flying, now check the collision.
@@ -165,7 +178,9 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     JR NZ, .end
 
     ; We have collision!
+    PUSH IX
     CALL gc.EnemyHitsJet
+    POP IX
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -245,9 +260,10 @@ EnemiesCollision
     LD B, A
 .loop
     PUSH BC                                     ; Preserve B for loop counter.
+
     _EnemyCollision
-.continue
-    ; Move HL to the beginning of the next #shotsX.
+
+    ; Move IX to the beginning of the next SPR.
     LD DE, SPR
     ADD IX, DE
     POP BC

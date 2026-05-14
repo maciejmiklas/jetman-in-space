@@ -96,7 +96,7 @@
     CALL jco.JetRip
     CALL jw.MoveShots
     CALL jw.FireDelayCounter
-    JetmanEnemiesCollision
+    gc.JetmanEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
 

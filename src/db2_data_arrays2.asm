@@ -143,21 +143,23 @@ jetSpriteDB
 ; Sprites for single shots (#shots), based on #SPR.
 ; EXT_DATA_POINTER is being used as counter for RANGE_PX
 shots
-    SPR {10/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {11/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {12/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {13/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {14/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {15/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {16/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {17/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {18/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {19/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {91/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {92/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {93/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {94/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
-    SPR {95/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+
+    ;    ID  SDB_INIT     SDB_POINTER X   Y   STATE  NEXT  REMAINING COLLISION_CNT  EXT_DATA_POINTER
+    SPR {10, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {11, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {12, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {13, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {14, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {15, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {16, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {17, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {18, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {19, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {91, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {92, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {93, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {94, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
+    SPR {95, sp.SDB_FIRE, 0,          0,  0,  0,     0,    0,        0,             0}
 SHOTS_SIZE              = 15                   ; Amount of shots that can be simultaneously fired. Max is limited by #shotsXX
 
 ;----------------------------------------------------------;
@@ -408,4 +410,5 @@ MS_BG_IMG_POS           = 16
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;
+
     ENDMODULE

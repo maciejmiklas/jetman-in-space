@@ -46,7 +46,7 @@ tileChar                DB ASCII_A              ; Currently visible character fr
 scoreLine               DB $FF                  ; Score line where user enters the name, 1 - first place, 9 - last place.
 
 menuScoreCursor
-    SPR {10/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0/*EXT_DATA_POINTER*/}
+    SPR {10/*ID*/, sp.SDB_FIRE/*SDB_INIT*/, 0/*SDB_POINTER*/, 0/*X*/, 0/*Y*/, 0/*STATE*/, 0/*NEXT*/, 0/*REMAINING*/, 0, 0/*EXT_DATA_POINTER*/}
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
