@@ -13,7 +13,7 @@ PI_SPR_DIAMOND          = 39                ; Extra points.
 PI_SPR_JAR              = 40                ; Colls down jetpack's rocket exhaust.
 PI_SPR_STRAWBERRY       = 41                ; Jetman invincible.
 PI_SPR_GRENADE          = 42                ; Collect and expolode.
-PI_FREEZE_ENEMIES       = 43                ; Freeze enemies.
+PI_SPR_FREEZE           = 43                ; Freeze enemies.
 PI_SPR_GUN              = 44                ; Improve weapon.
 
 ; We want to bring fire speed up quickly. Therefore, at the beginning, there are only weapon drops, but not up to the max firing speed.
@@ -150,7 +150,7 @@ UpdatePickupsOnJetmanMove
 .afterGun
 
     ; Freeze enemies
-    CP PI_FREEZE_ENEMIES
+    CP PI_SPR_FREEZE
     JR NZ, .afterFreeze
     CALL enc.FreezeEnemies
     JR .nextPickup
@@ -287,7 +287,20 @@ PickupDropCounter
     LD (deployed), A
 
     ; ##########################################
+    ; Do not deply gun if fire speed is at max.
+    CP PI_SPR_GUN
+    JR NZ, .afterGunSpeedCheck
+
+    ; Gun is deplyed, should it?
+    LD A, (jw.fireDelay)
+    CP jw.JM_FIRE_DELAY_MIN_D3
+    JR Z, .deployNext
+    JR C, .deployNext
+.afterGunSpeedCheck
+
+    ; ##########################################
     ; Do not deploy life if it has already been deployed in this round.
+    LD A, (deployed)
     CP PI_SPR_LIFE
     JR NZ, .afterLifeCheck                      ; Jump if not deploying life.
 

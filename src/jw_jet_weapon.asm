@@ -370,7 +370,7 @@ MoveShots
     CALL pl.CheckPlatformWeaponHit
     JR NZ, .afterPlatformHit
     PUSH IX
-    CALL sp.SpriteHit
+    CALL sp.HideSprite
 
     ; Do to play FX it it's off.
     LD A, (fireFxOn)

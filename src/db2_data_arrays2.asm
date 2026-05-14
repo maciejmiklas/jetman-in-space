@@ -173,7 +173,7 @@ PICKUPS_L1_SIZE             = 1
 
 ; Pickups for Level 2
 pickupsL2
-    DB pi.PI_SPR_DIAMOND, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND
+    DB pi.PI_SPR_DIAMOND, pi.PI_SPR_FREEZE, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND, pi.PI_SPR_DIAMOND
 PICKUPS_L2_SIZE             = 5
 
 ; Pickups for Level 3
@@ -193,8 +193,8 @@ PICKUPS_L5_SIZE             = 7
 
 ; Pickups for Level 6-10
 pickupsL6
-    DB pi.PI_FREEZE_ENEMIES, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY,pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE
-    DB pi.PI_SPR_JAR, pi.PI_FREEZE_ENEMIES, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_LIFE
+    DB pi.PI_SPR_FREEZE, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE, pi.PI_SPR_STRAWBERRY,pi.PI_SPR_GUN, pi.PI_SPR_DIAMOND, pi.PI_SPR_GRENADE
+    DB pi.PI_SPR_JAR, pi.PI_SPR_FREEZE, pi.PI_SPR_GRENADE, pi.PI_SPR_GUN, pi.PI_SPR_LIFE
 PICKUPS_L6_SIZE             = 12
 
 ;----------------------------------------------------------;
@@ -312,7 +312,6 @@ platformsL10
     pl.PLA {03*8/*X_LEFT*/, 03*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
     pl.PLA {03*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 
-    pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
     pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
     pl.PLA {08*8/*X_LEFT*/, 08*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 
@@ -321,14 +320,13 @@ platformsL10
     pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
     pl.PLA {13*8/*X_LEFT*/, 13*8/*X_RIGHT*/, 26*8/*Y_TOP*/, 27*8/*Y_BOTTOM*/}
 
-    pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 15*8/*Y_TOP*/, 16*8/*Y_BOTTOM*/}
     pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 18*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
     pl.PLA {25*8/*X_LEFT*/, 25*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
     pl.PLA {25*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 25*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
 
     pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 19*8/*Y_TOP*/, 20*8/*Y_BOTTOM*/}
     pl.PLA {30*8/*X_LEFT*/, 30*8/*X_RIGHT*/, 23*8/*Y_TOP*/, 25*8/*Y_BOTTOM*/}
-PLATFORM_SIZE_L10        = 16
+PLATFORM_SIZE_L10        = 14
 
 ;----------------------------------------------------------;
 ;                           Files                          ;

@@ -408,11 +408,11 @@ singleEnemiesL6
     ENPS {160,        012,          movePattern19,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {070,        010,          movePattern19,    sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {016,        030,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
-    ENPS {016,        020,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
+    ENPS {016,        020,          movePattern01D1,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
     ENPS {110,        015,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
-    ENPS {160,        010,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
+    ENPS {160,        010,          movePattern01D1,  sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
     ENPS {220,        030,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
-    ENPS {220,        025,          movePattern01D0,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
+    ENPS {220,        025,          movePattern01D1,  sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
 SINGLE_ENEMIES_L6       = 16
 enemyFormationL6 ENPS {10/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern31/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT_RP/*SETUP*/}
 
@@ -421,23 +421,23 @@ enemyFormationL6 ENPS {10/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern31/*MOVE_
 singleEnemiesL7
     ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
     ENPS {10,         015,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {10,         010,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {10,         020,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {100,        015,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {100,        015,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
-    ENPS {150,        013,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
+    ENPS {150,        018,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
     ENPS {150,        013,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {220,        010,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {220,        015,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
     ENPS {220,        030,          movePattern01D1, sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
     ENPS {220,        025,          movePattern01D0, sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
     ENPS {070,        030,          movePattern01D1, sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
     ENPS {070,        020,          movePattern01D1, sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
     ENPS {110,        030,          movePattern01D0, sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
-    ENPS {110,        020,          movePattern01D1, sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
+    ENPS {110,        025,          movePattern01D1, sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
     ENPS {170,        030,          movePattern01D0, sp.SDB_ENEMY1 enp.ENP_LEFT_HIT        }
     ENPS {170,        020,          movePattern01D1, sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT       }
     ENPS {220,        013,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_LEFT_BOUNCE_AN  }
-    ENPS {220,        013,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
+    ENPS {220,        023,          movePattern08,   sp.SDB_ENEMY1 enp.ENP_RIGHT_BOUNCE_AN }
 SINGLE_ENEMIES_L7       = 18
 
 enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern19/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
