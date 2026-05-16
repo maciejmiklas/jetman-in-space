@@ -8,7 +8,7 @@
     MODULE ki
 
 INPUT_DELAY_GAME_D30    = 30
-INPUT_DELAY_MENU_D7     = 5
+INPUT_DELAY_MENU_D7     = 8
 
 userInputDelayCnt       DB 0
 userInputDelay          DB INPUT_DELAY_MENU_D7

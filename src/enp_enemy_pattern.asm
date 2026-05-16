@@ -517,7 +517,7 @@ RespawnPatternEnemy
     LD B, A                                     ; B holds (IY + ENP.RESPAWN_DELAY)
 
     LD C, 1
-    ; 2x shorter delay on hard
+    ; shorter delay on hard
     LD A, (jt.difLevel)
     CP jt.DIF_HARD_D3
     JR NZ, .notHard
@@ -527,7 +527,7 @@ RespawnPatternEnemy
     CP MIN_SPEED_HARD_D7
     JR C, .notHard
 
-    INC C: INC C: INC C: INC C: INC C: INC C
+    INC C: INC C: INC C
 .notHard
 
     LD A, (IY + ENP.RESPAWN_DELAY_CNT)

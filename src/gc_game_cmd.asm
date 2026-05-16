@@ -746,6 +746,8 @@ JetPicksGrenade
     CALL sc.PickupRegular
     CALL gr.GrenadePickup
 
+    _AFX af.FX_PICKUP_GUN
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -53,17 +53,16 @@ asDeploy3
     rot.MED {200, 000, 3,       rot.MP1,     rot.AS_ACTIVE_NO} ; 5
     rot.MED {300, 200, 1,       rot.MP2,     rot.AS_ACTIVE_NO} ; 6
 
-
 ; See rotd.randMovAddr
 asDeploy4
 ;            X    Y    MOVE_SPD MOVE_PAT     ACTIVE
     rot.MED {300, 020, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 0
     rot.MED {010, 000, 3,       rot.MP1,     rot.AS_ACTIVE_NO} ; 1
-    rot.MED {300, 050, 5,       rot.MP2,     rot.AS_ACTIVE_NO} ; 2
+    rot.MED {300, 050, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 2
     rot.MED {300, 120, 3,       rot.MP2,     rot.AS_ACTIVE_NO} ; 3
     rot.MED {150, 000, 2,       rot.MP1,     rot.AS_ACTIVE_NO} ; 4
-    rot.MED {200, 000, 5,       rot.MP1,     rot.AS_ACTIVE_NO} ; 5
-    rot.MED {300, 200, 4,       rot.MP2,     rot.AS_ACTIVE_NO} ; 6
+    rot.MED {200, 000, 3,       rot.MP1,     rot.AS_ACTIVE_NO} ; 5
+    rot.MED {300, 200, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 6
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

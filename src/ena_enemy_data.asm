@@ -351,9 +351,9 @@ singleEnemiesL4
     ENPS {020,        015,          movePattern13D1,   sp.SDB_ENEMY3 enp.ENP_LEFT_BOUNCE    }
     ENPS {010,        015,          movePattern13D3,   sp.SDB_ENEMY2 enp.ENP_RIGHT_BOUNCE   }
     ENPS {010,        020,          movePattern18,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG     }
-    ENPS {010,        010,          movePattern18,     sp.SDB_ENEMY1 enp.ENP_RIGHT_ALONG    }
+    ENPS {010,        015,          movePattern18,     sp.SDB_ENEMY1 enp.ENP_RIGHT_ALONG    }
 
-    ENPS {168,        010,          movePattern22,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG_RP  }
+    ENPS {168,        013,          movePattern22,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG_RP  }
     ENPS {128,        015,          movePattern22,     sp.SDB_ENEMY1 enp.ENP_LEFT_ALONG_RP  }
     ENPS {127,        015,          movePattern01D3,   sp.SDB_ENEMY3 enp.ENP_RIGHT_HIT      }
     ENPS {165,        020,          movePattern01D1,   sp.SDB_ENEMY2 enp.ENP_RIGHT_HIT      }
@@ -362,9 +362,9 @@ singleEnemiesL4
     ENPS {144,        012,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT      }
     ENPS {144,        018,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT       }
     ENPS {185,        015,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_RIGHT_HIT      }
-    ENPS {185,        009,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT       }
+    ENPS {185,        011,          movePattern01D0,   sp.SDB_ENEMY1 enp.ENP_LEFT_HIT       }
     
-    ENPS {227,        010,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_RIGHT_ALONG    }
+    ENPS {227,        014,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_RIGHT_ALONG    }
     ENPS {227,        020,          movePattern09  ,   sp.SDB_ENEMY3 enp.ENP_LEFT_HIT       }
 
 SINGLE_ENEMIES_L4       = 17

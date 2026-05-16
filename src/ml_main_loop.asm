@@ -18,7 +18,7 @@
 ;                       _Loop000                           ;
 ;----------------------------------------------------------;
     MACRO _Loop000
-
+    
     ; 1 -> 0 and 0 -> 1
     LD A, (mld.counter000FliFLop)
     XOR 1
@@ -73,12 +73,7 @@
     JR .calltMovementInput
 .notHard
 
-    ; A bit faster movement speed for Jetman on normal (every second frame).
-    LD A, (jt.difLevel)
-    CP jt.DIF_NORMAL_D2
-    JR NZ, .moveOnePixel
-
-    ; It's normal, but speed up only every second frame.
+    ; A bit faster movement speed for Jetman on normal/easy (every second frame).
     LD A, (mld.counter000FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .moveOnePixel
