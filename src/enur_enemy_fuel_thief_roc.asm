@@ -13,7 +13,6 @@
 LoadRocketState
 
     CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
-
     LD A, (ro.rocketState)
 
     CALL dbs.SetupPatternEnemyBank              ; Setup enemy bank jump back there.

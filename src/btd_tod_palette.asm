@@ -7,8 +7,6 @@
 ;----------------------------------------------------------;
     MODULE btd
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupBgPaletteBank ###
-
 palColors               DB 0                    ; Amount of colors in background palette, max 255-40 for stars.
 todPalAddr              DW 0                    ; Pointer to current brightness palette.
 
@@ -211,7 +209,7 @@ PrevTodPalette
 ;                    PrevTodPaletteAddr                    ;
 ;----------------------------------------------------------;
 PrevTodPaletteAddr
-    
+
     CALL dbs.SetupBgPaletteBank
 
     ; Moves #todPalAddr to the previous palette.

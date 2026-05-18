@@ -28,7 +28,7 @@ start
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
 
     NEXTREG _GL_REG_PERIPHERAL2_H06, $10000000  ; Disable NMI menu
-    
+
     CALL dbs.SetupAyFxsBank
     CALL af.SetupAyFx
 
@@ -53,6 +53,7 @@ start
     JR .checksumLoop
 .checksumOk
 
+    CALL dbs.SetupCode1Bank
     CALL so.WriteToSd
 
     ;CALL dbs.SetupMusicCommonBank: CALL aml.MusicOff: CALL aml.PreloadIngameMusic ; set AY_MI_BANKS_40 to 1

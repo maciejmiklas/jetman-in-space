@@ -162,7 +162,7 @@ CheckRocketCollision
     RET
 .collisionFound
 
-    CALL gc.RocketHitsMeteor
+    CALL rof.StartRocketExplosion
 
     RET                                         ; ## END of the function ##
 

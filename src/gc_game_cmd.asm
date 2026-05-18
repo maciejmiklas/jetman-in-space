@@ -312,9 +312,9 @@ RocketFLyStartPhase1
 ;                   RocketFLyStartPhase2                   ;
 ;----------------------------------------------------------;
 ; See #ro.rocketFlyPhase
-; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase2
 
+    ; The dbs.SetupRocketBank is already set
     CALL sc.SetClipTilesHorizontal
     CALL ti.ClearBottomTileLine
 
@@ -326,9 +326,10 @@ RocketFLyStartPhase2
 ;                  RocketFLyStartPhase4                    ;
 ;----------------------------------------------------------;
 ; See #ro.rocketFlyPhase
-; The dbs.SetupRocketBank is already set
 RocketFLyStartPhase4
 
+    ; The dbs.SetupRocketBank is already set
+    
     CALL ros.ResetRocketStars
 
     CALL ti.CleanAllTiles
@@ -356,8 +357,9 @@ RocketFLyStartPhase4
 ;----------------------------------------------------------;
 ;                   RocketFLyPhase2and3                    ;
 ;----------------------------------------------------------;
-; The dbs.SetupRocketBank is already set
 RocketFLyPhase2and3
+
+    ; The dbs.SetupRocketBank is already set
 
     CALL ros.ScrollStarsOnFlyRocket
     CALL bg.UpdateBackgroundOnRocketMove
@@ -370,8 +372,9 @@ RocketFLyPhase2and3
 ;----------------------------------------------------------;
 ;                    RocketFLyPhase4                       ;
 ;----------------------------------------------------------;
-; The dbs.SetupRocketBank is already set
 RocketFLyPhase4
+
+    ; The dbs.SetupRocketBank is already set
 
     CALL ros.ScrollStarsOnFlyRocket
     CALL rot.CheckRocketCollision
@@ -420,7 +423,7 @@ RocketElementPickup
 ;                RocketElementPickupInAir                  ;
 ;----------------------------------------------------------;
 RocketElementPickupInAir
-    
+
     CALL sc.PickupRocketElementInAir
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
@@ -517,15 +520,6 @@ PlayFuelThiefFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     RocketHitsMeteor                     ;
-;----------------------------------------------------------;
-RocketHitsMeteor
-
-    CALL rof.StartRocketExplosion
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;               gc.JetmanEnemiesCollision                  ;
 ;----------------------------------------------------------;
     MACRO gc.JetmanEnemiesCollision
@@ -539,7 +533,6 @@ RocketHitsMeteor
     CALL jco.EnemiesCollision
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
     LD A, (enf.formationSize)
     LD IX, ena.formationEnemySprites
     CALL jco.EnemiesCollision
@@ -598,7 +591,7 @@ EnemyHit
     CP sp.SDB_ENEMY3
     JR Z, .hit3
 
-    CP sp.SDB_ENEMY1A 
+    CP sp.SDB_ENEMY1A
     RET NZ
 
 .hit3
@@ -661,9 +654,10 @@ RespawnJet
     LD A, JM_RESPAWN_Y_D217
     LD (jpo.jetY), A
 
-    ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
     CALL jt.SetJetStateRespawn
     CALL jco.MakeJetInvincible
+
+    ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
     CALL bm.CopyImageData
     CALL bg.UpdateBackgroundOnJetmanMove
 
@@ -1012,18 +1006,10 @@ HighScoreChanged
 _HideGame
 
     CALL ki.SetupKeyboardForMenu
-
-    CALL sp.ResetAllSprites
-
-    CALL dbs.SetupMusicCommonBank
-    CALL aml.MusicOff
-
+    CALL sc.ResetClippings
+    CALL NightLimitVisibilityOffNow
     CALL bm.HideImage
     CALL js.HideJetSprite
-
-    CALL dbs.SetupRocketBank
-    CALL roa.ResetAndDisableRocket
-
     CALL st.HideStars
     CALL jw.HideShots
     CALL jt.SetJetStateInactive
@@ -1031,6 +1017,14 @@ _HideGame
     CALL ti.CleanAllTiles
     CALL ki.ResetKeyboard
     CALL enc.HideEnemies
+    CALL sp.ResetAllSprites
+
+    CALL dbs.SetupMusicCommonBank
+    CALL aml.MusicOff
+
+    CALL dbs.SetupRocketBank
+    CALL roa.ResetAndDisableRocket
+    CALL rof.ResetAndDisableFlyRocket
 
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
@@ -1040,13 +1034,6 @@ _HideGame
 
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
-
-    CALL dbs.SetupRocketBank
-    CALL rof.ResetAndDisableFlyRocket
-
-    CALL sc.ResetClippings
-
-    CALL NightLimitVisibilityOffNow
 
     RET                                         ; ## END of the function ##
 

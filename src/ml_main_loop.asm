@@ -42,6 +42,37 @@
     _Loop000GameInPause
     _Loop000OnFlyRocket
 
+
+/*
+    ; ##########################################
+    ; Key Fire (Z) pressed ?
+    LD A, _KB_T_TO_Q_HFB
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 4, A                                    ; Bit 1 reset -> Z pressed.
+    JR Z, .btn2
+    JR .nbtn2
+.btn2
+    ; restore border to black (color 0)
+    LD A, 2
+    OUT (0xFE), A
+.nbtn2
+
+
+    ; ##########################################
+    ; Key Fire (Z) pressed ?
+    LD A, _KB_T_TO_Q_HFB
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+    BIT 3, A                                    ; Bit 1 reset -> Z pressed.
+    JR Z, .btn2a
+    JR .nbtn2a
+.btn2a
+    ; restore border to black (color 0)
+    LD A, 0
+    OUT (0xFE), A
+.nbtn2a
+*/
+
+
     ENDM                                         ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -776,12 +807,12 @@
 ;----------------------------------------------------------;
     MACRO _Loop150OnRocketPhase4
 
+    CALL dbs.SetupRocketBank
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
     JR NZ, .end
 
     ; ##########################################
-    CALL dbs.SetupRocketBank
     CALL rot.ChangeMeteorSpeed
 
     ; When flying a rocket and avoiding meteors, the score increases with meteor speed change.

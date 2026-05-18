@@ -13,8 +13,6 @@ GRENADE_ICON_CHAR       = 'G'
 GRENADE_ICON_TI_POS     = 19
 GRENADE_COUNT_TI_POS    = 20
 
-
-
 ;----------------------------------------------------------;
 ;                  UpdateGranedeGamebar                    ;
 ;----------------------------------------------------------;

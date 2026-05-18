@@ -361,7 +361,7 @@ _JoyFire
     JR NZ, .enter
 
     ; Read-only mode, exit.
-    CALL mma.LoadMainMenu
+    CALL mma.SwitchToMainMenu
     RET
 .enter
 
