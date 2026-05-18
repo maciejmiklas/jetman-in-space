@@ -8,8 +8,8 @@
     MODULE td
 
 TOD_STEPS_D4            = 4                     ; Total number of steps (times of the day) from day to night.
-TOD_STEP_DURATION_D20   = 30                    ; Duration of a single time of day, except for a full day.
-TOD_DAY_DURATION_D10    = 50                    ; Duration of the full day.
+TOD_STEP_DURATION_D30   = 30                    ; Duration of a single time of day, except for a full day.
+TOD_DAY_DURATION_D50    = 50                    ; Duration of the full day.
 
 ; State for #stepDir indicating the direction of the change: from day to night, night to day, or full day.
 TOD_DIR_DAY_NIGHT_D1    = 1                     ; Environment changes from day to night.
@@ -20,7 +20,7 @@ TOD_LIMITV_1_D1          = 1
 TOD_LIMITV_2_D0          = 0
 
 step                    DB TOD_STEPS_D4         ; Counts from TOD_STEPS_D4 (inclusive) to 0 (exclusive).
-stepDuration            DB TOD_DAY_DURATION_D10 ; Counts toward 0, when reached, the next #step executes.
+stepDuration            DB TOD_DAY_DURATION_D50 ; Counts toward 0, when reached, the next #step executes.
 stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DIR_NIGHT_DAY_D2.
 
 ;----------------------------------------------------------;
@@ -60,7 +60,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     ; Execute the next step, first, reset the counter for its duration.
 
     ; Duration for the next step.
-    LD A, TOD_STEP_DURATION_D20
+    LD A, TOD_STEP_DURATION_D30
     LD (stepDuration), A
 
     CALL gc.NextDayToNight
@@ -121,7 +121,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     LD A, TOD_DIR_FULL_DAY_D3
     LD (stepDir), A
 
-    LD A, TOD_DAY_DURATION_D10
+    LD A, TOD_DAY_DURATION_D50
     LD (stepDuration), A
 
     CALL gc.ChangeToFullDay
@@ -133,7 +133,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     ; Execute the next step, first, reset the counter for its duration.
 
     ; Duration for the next step.
-    LD A, TOD_STEP_DURATION_D20
+    LD A, TOD_STEP_DURATION_D30
     LD (stepDuration), A
 
     CALL gc.NextNightToDay
@@ -164,7 +164,7 @@ ResetTimeOfDay
     LD A, TOD_STEPS_D4
     LD (step), A
 
-    LD A, TOD_DAY_DURATION_D10
+    LD A, TOD_DAY_DURATION_D50
     LD (stepDuration), A
 
     LD A, TOD_DIR_DAY_NIGHT_D1
