@@ -66,11 +66,11 @@ PrintDebug
     LD A, (endLineMax)
     LD L, A
     CALL ut.PrintNumber
-    ENDIF
+    ENDIF                                       ; IFDEF PERFORMANCE
 
     RET                                         ; ## END of the function ##
 
-    ENDIF
+    ENDIF                                       ; IFDEF DEBUG_BAR
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;
 ;----------------------------------------------------------;

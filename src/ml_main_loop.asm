@@ -35,13 +35,13 @@
     CALL dbs.SetupAyFxsBank
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing.
 
+    _Loop000PlayMusic
     _Loop000OnActiveGame
     _Loop000OnMainMenu
     _Loop000OnNotInGame
     _Loop000OnGameIntro
     _Loop000GameInPause
     _Loop000OnFlyRocket
-
 
 /*
     ; ##########################################
@@ -72,8 +72,32 @@
 .nbtn2a
 */
 
+    ENDM                                         ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                  _Loop000PlayMusic                       ;
+;----------------------------------------------------------;
+    MACRO _Loop000PlayMusic
+
+    LD A, (ms.mainState)
+
+    CP ms.MS_PAUSE_D30
+    JP Z, .inGame
+
+    CP ms.MS_GAME_ACTIVE_D1
+    JP Z, .inGame
+
+    CALL dbs.SetupMusicCommonBank
+    JR .play
+
+.inGame
+    CALL dbs.SetupInGameMusicBank
+
+.play
+    CALL am.MusicLoop
 
     ENDM                                         ; ## END of the macro ##
+
 
 ;----------------------------------------------------------;
 ;                 _Loop000OnActiveGame                     ;
@@ -82,11 +106,8 @@
 
     LD A, (ms.mainState)
     CP ms.MS_GAME_ACTIVE_D1
-    JP NZ, .notInGame
+    JP NZ, .end
 
-    ; ##########################################
-    CALL dbs.SetupInGameMusicBank 
-    CALL am.MusicLoop 
 
     ; ##########################################
     ; Process the joystick direction movement to control Jetman in the game. Easy moves 1px, normal 1.5px, hard 2px.
@@ -162,16 +183,7 @@
 .endJoyOn
     JR .end
 
-.notInGame
-    LD A, (ms.mainState)
-    CP ms.MS_PAUSE_D30
-    JP Z, .pause
-    CALL dbs.SetupMusicCommonBank
-    JR .afterPause
-.pause
-    CALL dbs.SetupInGameMusicBank
-.afterPause
-    CALL am.MusicLoop
+
 
 .end
     ENDM                                        ; ## END of the macro ##

@@ -11,7 +11,7 @@ STACK_SIZE              = 50
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
-   ; DEFINE DEBUG_BAR    1                        ; Enable debug bar
+;    DEFINE DEBUG_BAR    1                        ; Enable debug bar
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -27,7 +27,7 @@ start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
 
-    NEXTREG _GL_REG_PERIPHERAL2_H06, $10000000  ; Disable NMI menu
+  ;  NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
 
     CALL dbs.SetupAyFxsBank
     CALL af.SetupAyFx
@@ -128,6 +128,7 @@ mainLoop
     INCLUDE "_constants.asm"
     INCLUDE "_macros.asm"
 
+    INCLUDE "dbs_bank_setup.asm"
     INCLUDE "gid_game_input_data.asm"
     INCLUDE "gi_game_input.asm"
     INCLUDE "tx_text.asm"
@@ -138,7 +139,6 @@ mainLoop
     INCLUDE "er_error.asm"
     INCLUDE "fi_file_io.asm"
     INCLUDE "ar_asset_reader.asm"
-    INCLUDE "dbs_bank_setup.asm"
     INCLUDE "ll_level_loader.asm"
     INCLUDE "st_stars.asm"
     INCLUDE "bm_bitmap.asm"
@@ -215,7 +215,7 @@ mainLoop
     ASSERT $$ == dbs.AY_FX_S6_D32
 
     ; ################ BANK  33 ################
-    ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank
+    ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank or SetupInGameMusicBank or dbs.SetupCodeMusicBank
     MMU _RAM_SLOT6, dbs.AY_MCODE_S6_D33
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "am_audio_music.asm"

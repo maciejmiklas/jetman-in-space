@@ -68,6 +68,7 @@ TI_PAL_DARK2_HC200      = TI_PAL_DARK1_HC000+512 ; RAM start tile map palette fo
 
 paletteBytes            DB 0
 paletteDayAddress       DW 0
+
 ;----------------------------------------------------------;
 ;                         SetupTiles                       ;
 ;----------------------------------------------------------;

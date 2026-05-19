@@ -401,3 +401,117 @@ New level, new look. Every one of the 10 levels has its own style, palette, and 
 
 Text 19: (showing game on hard)
 Hard mode: Jetman sprints, enemies swarm, and hesitation equals decoration. Blink less, dodge more.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Text 1 (introduction):
+Jetman in Space - a brand-new ZX Spectrum Next game, crafted in Assembly by Maciej Miklas.                                                                           Over 200 music tracks by Oleg Nikitin (NQ) and Ilya Abrosimov (EA).
+
+Text 2 (technical info about game, frame known from ZX spectrum bilnks red):
+The game runs in full 320×256 resolution, smooth and borderless. The blinking red border shows how much space a frame would have stolen. No frame. No excuses. Just pixels!
+
+Text 3 (shows in-game manuals):
+Remember to read the in-game manual — it might just save your day. Possibly your spaceship, too!
+
+Text 4 (shows menu option that allows you to play a level that you have already finished):
+Beat a level once, hop back to it anytime. There are 10 levels in total, so buckle up -  the galaxy has a long to-do list!
+
+Text 5 (shows in menu switching between difficulty levels):
+ There are 3 difficulty levels: Normal — for everyday space travelers. Easy — for kiddos, rookies, and pilots who forgot their helmet. Hard — for space cowboys with nerves of steel and questionable life choices.
+
+Text 6 (shows game in fast forward, where Jetman collects 3 rocket parts and fuel that will allow him to fly to the next level through a meteor shower):
+To reach another planet and maybe even get home, collect 3 rocket pieces and enough fuel.
+
+Text 7 (game offers times of the day, at night, visibility is limited):
+At night, visibility is limited — so watch where you're flying. Space is dark, and asteroids don't wear warning lights.
+
+Text 8 (levels are connected with a mini game, where you fly a rocket and have to avoid methoers):
+Try to survive as long as you can in the meteor shower! Every second earns you points, and every 65K points grants an extra life. Trust us — you'll want those later. Space does not get friendlier!
+
+Text 9 (during a game, when you collect fuel, there is a thief who will run towards the rocket and steal one fuel tank if you do not shoot him first):
+Heads up! A sneaky fuel thief sprints for your rocket the moment you refuel. He’s fast, you’ve got lasers. One of you is going home empty‑handed.
+
+Text 10 (game has some drops, you can collect dynamite i throw it later on to kill a few random enemies):
+Dynamite acquired. Pocket it now for a boom later on. When things get crowded, make them less so — decisively, loudly, and with style.
+
+Text 11 (I've just throwed dynamite but second layer my player was killed anywa, now the next picku up drops that gives invincibility):
+If that doesn't help, grab armor for temporary invincibility. Or simply wait for the night to end — sometimes the best strategy is hiding with style.
+
+Text 12 (shows that it's possible to skip to the next music track in the game):
+200+ tracks onboard. Skip on the fly. Be your own DJ while dodging death. I’ll switch through a few tracks in the next few minutes so you can hear it in action.
+
+Text 13 (shows what happens when you pick up a weapon update):
+Picking up the weapon upgrade is also a good idea ;)
+
+Text 14 (Jetman carries a jetpack to be able to fly, you have to land from time to time when it overheats to cool it down):
+Cool your jets — literally. The pack heats up, your speed drops, and only landing cools it down. Touch grass, well… moon dust.
+
+Text 15 (you have to collect fuel tanks for the rocket, but they will explode when shot at):
+Fuel tip: it’s better inside the rocket than all over the landscape. Shooting the tank = cinematic, not efficient.
+
+Text 6 (and again I've shot the fuel tank by mistake):
+and… boom. Perfect shot, wrong target. At least the explosion looked expensive.
+
+yikes - that worked!
+
+Text 17 (this shows the function of another pickup, this time enemies froze and could not move):
+Power‑ups abound. This chilly one freezes enemies in place — they pose, you stroll.
+
+Text 18 (again I've shot the fuel tank, but on easy it's not possible):
+geeee...... on easy, fuel tanks are armored and cannot be destroyed. Even space beginners deserve a little mercy.
+
+Text 19 (shows a different-looking level)
+New level, new look. Every one of the 10 levels has its own style, palette, and mood—and enemies switch tactics too. 
+
+Text 19: (showing game on hard)
+Hard mode: Jetman sprints, enemies swarm, and hesitation equals decoration. Blink less, dodge more.
+

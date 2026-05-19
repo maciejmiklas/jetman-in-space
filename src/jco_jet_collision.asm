@@ -180,6 +180,8 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     ; We have collision!
     PUSH IX
     CALL gc.EnemyHitsJet
+    _AFX af.FX_EXPLODE_ENEMY_3
+    CALL sc.HitEnemy1
     POP IX
 
 .end
@@ -345,9 +347,7 @@ JetInvincible
     LD A, (mld.counter008FliFLop)
     CP _GC_FLIP_ON_D1
     JR NZ, .afterPlayEndSound
-    CALL dbs.SetupAyFxsBank
-    LD A, af.FX_JET_NORMAL
-    CALL af.AfxPlay
+    _AFX af.FX_JET_NORMAL
 .afterPlayEndSound
 
     JR NC, .blinkFast                           ; #invincibleCnt > #JM_INV_BLINK_D100 -> blink fast.

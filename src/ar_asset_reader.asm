@@ -18,6 +18,42 @@ TI16_BYTES_D10240         = ti.TI_MAP_BYTES_D2560*4   ; 10240=(40*32*2)*4 bytes,
 
 ASCII_O                 = $30
 
+
+;----------------------------------------------------------;
+;                  LoadTilemapMenuPalette                  ;
+;----------------------------------------------------------;
+LoadTilemapMenuPalette
+
+    CALL dbs.SetupArrays1Bank
+    LD HL, db1.tilePalette1Bin
+    LD B, db1.TILE_PAL_SIZE_1
+    CALL ti.LoadTilemapPalette
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                    LoadMenuSprites                       ;
+;----------------------------------------------------------;
+LoadMenuSprites
+
+    LD D, "0"
+    LD E, "1"
+    CALL ar.LoadSpritesFile
+    CALL sp.LoadSpritesFPGA
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 LoadMenuTilemapSprites                   ;
+;----------------------------------------------------------;
+LoadMenuTilemapSprites
+
+    LD D, "m"
+    LD E, "a"
+    CALL LoadTilePlatformsSprFile
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;               LoadLevelIntroImageFile                    ;
 ;----------------------------------------------------------;

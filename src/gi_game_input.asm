@@ -39,7 +39,7 @@
 ;----------------------------------------------------------;
     MACRO _NextSong
 
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.NextGameSong
 
     ENDM                                        ; ## END of the macro ##
@@ -382,7 +382,7 @@ _Key_M
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.FlipOnOff
 
     RET                                         ; ## END of the function ##

@@ -30,10 +30,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     LD A, 185                                   ; Total number of lines in intro_0.map and intro_1.map.
     CALL li.LoadLevelIntro
 
-    ; Music on
-    CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_INTRO_D1
-    CALL aml.LoadSong
+    _LoadSong aml.MUSIC_INTRO_D1
 
     ENDM                                        ; ## END of the macro ##
 
@@ -48,10 +45,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     LD A, 8192/80 + 4048/80                     ; Total number of lines in intro_0.map and intro_1.map.
     CALL li.LoadLevelIntro
 
-    ; Music on
-    CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_INTRO_D1
-    CALL aml.LoadSong
+    _LoadSong aml.MUSIC_INTRO_D1
 
     ENDM                                        ; ## END of the macro ##
 
@@ -129,7 +123,7 @@ StartGameWithIntro
     CALL jl.ResetLives
 
     ; Music
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
     CALL aml.PreloadIngameMusic
 
@@ -157,18 +151,22 @@ SetupSystem
     CALL bm.HideImage
     CALL sc.SetupScreen
     CALL ti.SetupTiles
+    CALL ar.LoadMenuSprites
+    CALL ar.LoadTilemapMenuPalette
 
-    ; Load tilemap menu palette.
-    CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette1Bin
-    LD B, db1.TILE_PAL_SIZE_1
-    CALL ti.LoadTilemapPalette
+    RET                                         ; ## END of the function ##
 
-    ; Load sprites from first level for mein menu.
-    LD D, "0"
-    LD E, "1"
-    CALL ar.LoadSpritesFile
-    CALL sp.LoadSpritesFPGA
+
+;----------------------------------------------------------;
+;                      GameOver                            ;
+;----------------------------------------------------------;
+GameOver
+
+    CALL _HideGame
+
+    CALL go.ShowGameOver
+    CALL jl.ResetLives
+
 
     RET                                         ; ## END of the function ##
 
@@ -185,13 +183,7 @@ LoadMainMenu
     CALL _HideGame
     CALL sc.ResetScore
     CALL mma.LoadMainMenu
-
-    ; Load tilemap menu palette.
-    CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette1Bin
-    LD B, db1.TILE_PAL_SIZE_1
-    CALL ti.LoadTilemapPalette
-
+    CALL ar.LoadTilemapMenuPalette
     CALL NightLimitVisibilityOffNow
 
     RET                                         ; ## END of the function ##
@@ -974,17 +966,6 @@ ChangeToFullDay
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      GameOver                            ;
-;----------------------------------------------------------;
-GameOver
-    CALL _HideGame
-
-    CALL go.ShowGameOver
-    CALL jl.ResetLives
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                  HighScoreChanged                        ;
 ;----------------------------------------------------------;
 HighScoreChanged
@@ -1019,7 +1000,7 @@ _HideGame
     CALL enc.HideEnemies
     CALL sp.ResetAllSprites
 
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
     CALL dbs.SetupRocketBank

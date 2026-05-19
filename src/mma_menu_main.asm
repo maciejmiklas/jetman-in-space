@@ -38,22 +38,7 @@ MENU_EL_MAX             = MENU_EL_DIFFICULTY
 ;----------------------------------------------------------;
 LoadMainMenu
 
-    CALL js.HideJetSprite
-    CALL js.InitJetSprite
-
-    ; ##########################################
-    ; Load sprites from any level
-    LD D, "0"
-    LD E, "1"
-    CALL ar.LoadSpritesFile
-    CALL sp.LoadSpritesFPGA
-
-    ; ##########################################
-    ; Music
-    CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_MAIN_MENU_D0
-    CALL aml.LoadSong
-
+    _LoadSong aml.MUSIC_MAIN_MENU_D0
     CALL SwitchToMainMenu
 
     RET                                         ; ## END of the function ##
@@ -66,8 +51,12 @@ SwitchToMainMenu
     LD A, MENU_EL_MIN
     LD (menuPos), A
 
+    CALL js.HideJetSprite
+    CALL ar.LoadMenuSprites
+    CALL js.InitJetSprite
     CALL ti.CleanAllTiles
-
+    CALL ar.LoadMenuTilemapSprites
+    
     ; ##########################################
     ; Update menu state
     LD A, ms.MS_MENU_MAIN_D11
@@ -130,14 +119,8 @@ SwitchToMainMenu
     CALL js.ShowJetSprite
 
     ; ##########################################
-    ; Copy tile definitions (sprite file) to expected memory
-    LD D, "m"
-    LD E, "a"
-    CALL ar.LoadTilePlatformsSprFile
-
-    ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -154,7 +137,7 @@ SwitchToMainMenu
 _LoadMenuEasy
  
     ; Music off
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
     ; ##########################################
@@ -182,7 +165,7 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -193,7 +176,7 @@ _LoadMenuEasy
 _LoadMenuNormal
 
     ; Music off
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
     ; Hide current image
@@ -227,7 +210,7 @@ _LoadMenuNormal
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -238,7 +221,7 @@ _LoadMenuNormal
 _LoadMenuHard
  
     ; Music off
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
     ; Hide current image
@@ -265,7 +248,7 @@ _LoadMenuHard
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##

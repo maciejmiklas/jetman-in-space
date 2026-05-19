@@ -6,7 +6,7 @@
 ;                   Vortex Tracker II                      ;
 ;----------------------------------------------------------;
     MODULE aml
-    ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank
+    ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank or SetupInGameMusicBank or dbs.SetupCodeMusicBank
 
 ; Counter for game music from assets\snd.
 gameMusicCnt            DB 0
@@ -88,11 +88,13 @@ MusicOff
 LoadSong
 
     PUSH AF
-    CALL aml.MusicOff
+    CALL MusicOff
     POP AF
+
     CALL ar.LoadMusicFile
     CALL am.InitMusic
-    CALL aml.MusicOn
+
+    CALL MusicOn
 
     RET                                         ; ## END of the function ##
 
@@ -101,7 +103,7 @@ LoadSong
 ;----------------------------------------------------------;
 NextGameSong
 
-    CALL aml.MusicOff
+    CALL MusicOff
 
     LD A, NEXT_MUSIC_SEC
     LD (nextMusicTimeCnt), A
@@ -113,7 +115,8 @@ NextGameSong
     CALL dbs.NextInGameMusicBank
     CALL dbs.SetupInGameMusicBank
     CALL am.InitMusic
-    CALL aml.MusicOn
+
+    CALL MusicOn
 
     RET                                         ; ## END of the function ##
 
@@ -122,6 +125,11 @@ NextGameSong
 ;----------------------------------------------------------;
 PreloadIngameMusic
     CALL dbs.ResetInGameMusicBank
+
+    ; First, set #gameMusicCnt to a random value. After that, reset music bank to the first one, and load 40 titles starting from the 
+    ; current #gameMusicCnt, without changing #gameMusicCnt. Afterward, again reset the music bank to the first one. Now we have loaded 
+    ; 40 music titles into 40 banks. Starting with title number #gameMusicCnt, we can increase #gameMusicCnt and switch to the next bank 
+    ; to play the next song.
 
     ; Initialize the music counter to a random value if it hasn't already been set.
     LD A, (gameMusicCnt)
@@ -140,6 +148,7 @@ PreloadIngameMusic
     CP MUSIC_RES_MAX
     JR NC, .storeGameMusicCnt
     LD A, MUSIC_RES_MAX
+
 .storeGameMusicCnt
     LD (gameMusicCnt), A
 .afterInitMusicCnt

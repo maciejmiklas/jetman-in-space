@@ -77,7 +77,7 @@ _CLIP_FULL_Y1_D0           = 0
 _CLIP_FULL_FULLY2_D255     = 255
 
 ; Clip window layer 2.
-_DC_REG_L2_CLIP_H18     = $18
+_DC_REG_CLIP_L2_H18     = $18
 
 ; Clip window sprites.
 _GL_REG_CLIP_SPR_H19    = $19
@@ -93,7 +93,7 @@ _GL_REG_CLIP_TI_H1      = $1B
 ;  - 1: reset the sprite clip index.
 ;  - 0: reset the Layer 2 clip index.
 _GL_REG_CLIP_CTR_H1C    = $1C
-_GL_REG_CLIP_ALL        = %0000'1111
+_GL_REG_CLIP_ALL        = %0000'1111 
 
 ;----------------------------------------------------------;
 ;                   Display Control                        ;
@@ -137,7 +137,7 @@ _DC_REG_ULA_Y_H33       = $33
 ; from top to bottom.
 ; The 320x256x8bpp mode is similar, but pixels are stored from top to bottom, then from left to right.
 ; 
-; Don't forget to set up the clip window (_DC_REG_L2_CLIP_H18) for 320x256 mode, to make whole area visible, use 0,159,0,255 settings.
+; Don't forget to set up the clip window (_DC_REG_CLIP_L2_H18) for 320x256 mode, to make whole area visible, use 0,159,0,255 settings.
 _DC_REG_CONTROL1_H69    = $69
 
 ; Bits:

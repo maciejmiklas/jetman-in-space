@@ -16,8 +16,8 @@ TOD_DIR_DAY_NIGHT_D1    = 1                     ; Environment changes from day t
 TOD_DIR_NIGHT_DAY_D2    = 2                     ; Environment changes from night to day.
 TOD_DIR_FULL_DAY_D3     = 3                     ; It's a full day.
 
-TOD_LIMITV_1_D1          = 1
-TOD_LIMITV_2_D0          = 0
+TOD_LIMITV_1_D1         = 1
+TOD_LIMITV_2_D0         = 0
 
 step                    DB TOD_STEPS_D4         ; Counts from TOD_STEPS_D4 (inclusive) to 0 (exclusive).
 stepDuration            DB TOD_DAY_DURATION_D50 ; Counts toward 0, when reached, the next #step executes.

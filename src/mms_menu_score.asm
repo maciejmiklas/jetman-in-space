@@ -225,7 +225,7 @@ menuScoreCursor
 EnterNewScore
 
     ; Music off
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
     XOR A                                       ; Enable user name input
@@ -239,10 +239,7 @@ EnterNewScore
     CALL _PrintScoreLine
 
     ; ##########################################
-    ; Music on
-    CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_HIGH_SCORE_D3
-    CALL aml.LoadSong
+    _LoadSong aml.MUSIC_HIGH_SCORE_D3
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -253,7 +250,7 @@ EnterNewScore
 LoadMenuScore
 
     ; Music off
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
     ; Read only mode.
@@ -264,7 +261,7 @@ LoadMenuScore
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##
@@ -295,8 +292,6 @@ AnimateCursor
 ;----------------------------------------------------------;
 _SetupMenuScore
 
-    ; ##########################################
-    ; Setup joystick
     CALL ki.ResetKeyboard
 
     LD DE, _JoyFire
@@ -347,7 +342,7 @@ _SetupMenuScore
 
     ; ###########################################
    _PrintWholeScore
-    
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -379,11 +374,8 @@ _JoyFire
     ; FX
     _AFX af.MENU_ENTER
 
-    ; ##########################################
     ; Music for main menu
-    CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_MAIN_MENU_D0
-    CALL aml.LoadSong
+    _LoadSong aml.MUSIC_MAIN_MENU_D0
 
     RET                                         ; ## END of the function ##
 

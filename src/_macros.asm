@@ -7,12 +7,24 @@
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                     _LoadSong                            ;
+;----------------------------------------------------------;
+;  - A: song number from "assets/snd/xx.pt3", #GAME_MUSIC_MIN_D1 - #GAME_MUSIC_MAX_D25.
+    MACRO _LoadSong SONG_NR
+
+    CALL dbs.SetupMusicCommonBank
+    LD A, SONG_NR
+    CALL aml.LoadSong
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                        _AFX                              ;
 ;----------------------------------------------------------;
-    MACRO _AFX VAL
+    MACRO _AFX FX_NR
 
     CALL dbs.SetupAyFxsBank
-    LD A, VAL
+    LD A, FX_NR
     CALL af.AfxPlay
 
     ENDM                                        ; ## END of the macro ##

@@ -32,6 +32,7 @@ ChangeVisibility
     CP B
     RET Z
 
+    ; Increment or decrement #visibilityLimit ?
     JR C, .inc
 
     DEC A
@@ -55,7 +56,7 @@ UpdateVisibilityOnJetMove
     RET Z
 
     ; ##########################################
-    ; Store horizontal cipping into DE.
+    ; Store horizontal cipping into DE, D will contain the x-start, E the x-end.
 
     ; X clipping uses only half of the resolution, because we run in 320 mode.
     ; Calculate for horizontal clipping the X-start as D, and the X-end as E. First, store half of the Jetman's X position in L. 
@@ -67,7 +68,7 @@ UpdateVisibilityOnJetMove
     ; Calculate X-start as D.
     LD A, (visibilityLimit)
     SRL A                                       ; Divide A by 2 because x-clipping uses only half of the resolution value.
-    LD C, A
+    LD C, A                                     ; C contains visibilityLimit/2
 
     LD A, L
     SUB C
@@ -79,6 +80,12 @@ UpdateVisibilityOnJetMove
     ; Calculate X-end as E.
     LD A, L
     ADD C
+    JR NC, .noOverflowAC
+
+    ; A + C > 255 -> there was an overflow
+    LD A, _CLIP_FULL_X2_D159
+    JR .storeXE
+.noOverflowAC
 
     ; X-end must be <= 159
     CP _CLIP_FULL_X2_D159
@@ -86,6 +93,8 @@ UpdateVisibilityOnJetMove
     LD A, _CLIP_FULL_X2_D159
 .storeXE
     LD E, A
+
+    ; D contains the x-start, E the x-end.
 
     ; ##########################################
     ; Store vertical cipping into HL, H will contain the y-start, L the y-end.
@@ -108,6 +117,8 @@ UpdateVisibilityOnJetMove
 .storeYL
     LD L, A
 
+    ; D contains the x-start, E the x-end and H contais the y-start, L the y-end.
+
     ; ##########################################
     ; Reset clip index.
     NEXTREG _GL_REG_CLIP_CTR_H1C, _GL_REG_CLIP_ALL
@@ -115,7 +126,7 @@ UpdateVisibilityOnJetMove
     ; Clip window sprites, tilemap and layer 2.
 
     LD A, D
-    NEXTREG _GL_REG_CLIP_SPR_H19, A 
+    NEXTREG _GL_REG_CLIP_SPR_H19, A
     NEXTREG _GL_REG_CLIP_TI_H1, A
 
     LD A, E

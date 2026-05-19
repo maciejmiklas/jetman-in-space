@@ -117,16 +117,8 @@ LoadLevelIntro
     LD (ki.callbackRight), DE
 
     ; ##########################################
-    ; Copy tile definitions (sprite file) to expected memory.
-    LD D, "m"
-    LD E, "a"
-    CALL ar.LoadTilePlatformsSprFile
-
-    ; Load tilemap menu palette.
-    CALL dbs.SetupArrays1Bank
-    LD HL, db1.tilePalette1Bin
-    LD B, db1.TILE_PAL_SIZE_1
-    CALL ti.LoadTilemapPalette
+    CALL ar.LoadMenuTilemapSprites
+    CALL ar.LoadTilemapMenuPalette
 
     RET                                         ; ## END of the function ##
 

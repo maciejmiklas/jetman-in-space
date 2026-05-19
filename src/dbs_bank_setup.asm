@@ -96,13 +96,22 @@ NextInGameMusicBank
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
+;                 dbs.SetupCodeMusicBank                   ;
+;----------------------------------------------------------;
+    MACRO dbs.SetupCodeMusicBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.AY_MCODE_S6_D33 ; Code
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                  SetupInGameMusicBank                    ;
 ;----------------------------------------------------------;
 ; Return:
 ;  - A: current game music bank for pt3.
 SetupInGameMusicBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
+   dbs.SetupCodeMusicBank
 
     LD A, (ingameMusicBank)
     NEXTREG _MMU_REG_SLOT7_H57, A               ; Binary loaded from file
@@ -114,7 +123,7 @@ SetupInGameMusicBank
 ;----------------------------------------------------------;
 SetupMusicCommonBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_MCODE_S6_D33 ; Code
+    dbs.SetupCodeMusicBank
     NEXTREG _MMU_REG_SLOT7_H57, AY_MBIN_S7_D88  ; Binary loaded from file
 
     RET                                         ; ## END of the function ## 

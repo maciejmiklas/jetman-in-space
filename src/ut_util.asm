@@ -188,12 +188,12 @@ Add8To32
 ;  - HL: reslut HL/C
 HLdivC
 
-    LD B,16
+    LD B, 16
     XOR A
-    ADD HL,HL
+    ADD HL, HL
     RLA
     CP C
-    JR C,$+4
+    JR C, $+4
     INC L
     SUB C
     DJNZ $-7

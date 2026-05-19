@@ -21,7 +21,7 @@ currentLevel           DB _LEVEL_MIN_D1
 LoadMenuLevelSelect
 
     ; Music of
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
     LD A, ms.MS_MENU_LEVEL_D14
@@ -83,7 +83,7 @@ LoadMenuLevelSelect
 
     ; ##########################################
     ; Music on
-    CALL dbs.SetupMusicCommonBank
+    dbs.SetupCodeMusicBank
     CALL aml.MusicOn
 
     RET                                         ; ## END of the function ##

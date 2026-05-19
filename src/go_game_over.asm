@@ -23,6 +23,7 @@ GameOverLoop
     LD (fireCnt), A
 
     RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                       ShowGameOver                       ;
 ;----------------------------------------------------------;
@@ -30,24 +31,19 @@ ShowGameOver
 
     XOR A
     LD (fireCnt),A
+
     LD A, ms.MS_GAME_OVER_D20
     CALL ms.SetMainState
 
-    CALL bm.HideImage
-
-    ; Copy tile definitions (sprite file) to expected memory.
-    LD D, "m"
-    LD E, "a"
-    CALL ar.LoadTilePlatformsSprFile
+    CALL ar.LoadMenuTilemapSprites
+    CALL ar.LoadTilemapMenuPalette
 
     ; Load palette
     LD D, "g"
     LD E, "o"
     PUSH DE
-
     CALL ar.LoadBgPaletteFile
     CALL bp.LoadDefaultPalette
-
     POP DE
 
     ; Load background image
@@ -62,13 +58,9 @@ ShowGameOver
     LD (ki.callbackFire), DE
 
     ; ##########################################
-    ; Music
-    CALL dbs.SetupMusicCommonBank
-    LD A, aml.MUSIC_GAME_OVER_D2
-    CALL aml.LoadSong
+    _LoadSong aml.MUSIC_GAME_OVER_D2
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
