@@ -25,6 +25,7 @@
 ;-Variables (VARS) can be located at any address (not only after
 ;code block).
 ;-INIT subroutine detects module version and rightly generates
+
 ; both note and volume tables outside of code block (in VARS).
 ;-Two portamento (spc. command 3xxx) algorithms (depending of
 ; module version).
@@ -946,7 +947,7 @@ MusicLoop
     RET NZ
 PLAY
 
-    LD A, %1'11'111'10                          ; Set FX to AY-2
+    LD A, _GL_REG_SOUND_AY2                     ; Set music to AY-2
     LD BC, _GL_REG_SOUND_HFFFD
     OUT (C), A
 

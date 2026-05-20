@@ -129,6 +129,7 @@ SetupAyFx
 ;                       SetAy3ToMono                       ;
 ;----------------------------------------------------------;
 ; Configure AY3 as mono; call after PlayNextDawSong.
+/*
 SetAy3ToMono
 
     LD A, _PERIPHERAL_04_H09
@@ -138,14 +139,14 @@ SetAy3ToMono
     NEXTREG _PERIPHERAL_04_H09, A
         
     RET                                         ; ## END of the function ##
-
+*/
 ;----------------------------------------------------------;
 ;                         AfxFrame                         ;
 ;----------------------------------------------------------;
 ; Play the current frame.
 AfxFrame
 
-    LD A, %1'11'111'11                          ; Set FX to AY-1
+    LD A, _GL_REG_SOUND_AY1                     ; Set FX to AY-1
     LD BC, _GL_REG_SOUND_HFFFD
     OUT (C), A
 
@@ -393,14 +394,6 @@ _AfxInit
     INC HL
     LD (HL), E
     INC HL
-   /* LD (HL), D
-    INC HL
-    LD (HL), D
-    INC HL
-    LD (HL), D
-    INC HL
-    LD (HL), D
-    INC HL*/
     DJNZ .afxInit0
 
     LD HL, $FFBF                                ; Initialize  AY

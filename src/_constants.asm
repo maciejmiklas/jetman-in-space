@@ -42,6 +42,10 @@ _GL_REG_VL_H1F          = $1F               ; Active video line (LSB).
 ;     - 11: AY1.
 _GL_REG_SOUND_HFFFD     = $FFFD             ; AY reg
 
+_GL_REG_SOUND_AY2       = %1'11'111'10 
+_GL_REG_SOUND_AY1       = %1'11'111'11 
+
+
 ;----------------------------------------------------------;
 ;                 Peripheral Control                       ;
 ;----------------------------------------------------------;
