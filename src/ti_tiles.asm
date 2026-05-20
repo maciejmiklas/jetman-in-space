@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE ti
 
-; Tiles must be stored in 16K bank 5 ($4000 and $7FFF) or 8K slot 2-3.
+; Tiles must be stored in 16K ULA-bank 5 ($4000 and $7FFF) or 8K slot 2-3.
 ; ULA also uses this bank and occupies $4000 - $5AFF. So tiles start at $5AFF + 1 = $5B00.
 TI_MAP_RAM_H5B00        = _ULA_COLOR_END_H5AFF + 1  ; Start of tilemap.
     ASSERT TI_MAP_RAM_H5B00 <= $5B00

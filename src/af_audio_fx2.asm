@@ -73,7 +73,7 @@
 ;   v2.00  27/08/17  Converted Z80 player to Zeus format.       ;
 ; --------------------------------------------------------------;
 
-; Channel descriptors, 4 bytes per channel:
+; Channel descriptors, 8 bytes per channel:
 ; +0 (2) current address (channel is free if high byte=$00)
 ; +2 (2) sound effect time
 ; +2 (2) start address of sustain loop (disabled if high byte=$00)

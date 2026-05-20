@@ -73,7 +73,7 @@
 ;   v2.00  27/08/17  Converted Z80 player to Zeus format.       ;
 ; --------------------------------------------------------------;
 
-; Channel descriptors, 4 bytes per channel:
+; Channel descriptors, 8 bytes per channel:
 ; +0 (2) current address (channel is free if high byte=$00)
 ; +2 (2) sound effect time
 ; +2 (2) start address of sustain loop (disabled if high byte=$00)
@@ -107,7 +107,6 @@ SetupAyFx
 ;                       SetAy3ToMono                       ;
 ;----------------------------------------------------------;
 ; Configure AY3 as mono; call after PlayNextDawSong.
-/*
 SetAy3ToMono
 
     LD A, _PERIPHERAL_04_H09
@@ -117,7 +116,7 @@ SetAy3ToMono
     NEXTREG _PERIPHERAL_04_H09, A
         
     RET                                         ; ## END of the function ##
-*/
+
 ;----------------------------------------------------------;
 ;                         AfxFrame                         ;
 ;----------------------------------------------------------;
