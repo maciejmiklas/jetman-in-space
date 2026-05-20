@@ -138,7 +138,6 @@ LoadMenuScoreImageFile
 
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                   LoadMenuScorePalFile                   ;
 ;----------------------------------------------------------;
@@ -253,6 +252,8 @@ LoadIntroPalFile
 ;----------------------------------------------------------;
 LoadEasyPalFile
 
+    CALL dbs.SetupArrays2Bank
+
     LD HL, db2.easyPalFileName
     CALL _LoadPalFileByName
 
@@ -262,6 +263,8 @@ LoadEasyPalFile
 ;                     LoadHardPalFile                      ;
 ;----------------------------------------------------------;
 LoadHardPalFile
+
+    CALL dbs.SetupArrays2Bank
 
     LD HL, db2.hardPalFileName
     CALL _LoadPalFileByName
@@ -374,6 +377,8 @@ LoadTilePlatformsSprFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadSpritesFile
 
+    CALL dbs.SetupArrays2Bank
+
     LD HL, db2.sprFileName
     CALL _LoadSpritesFile
 
@@ -386,6 +391,8 @@ LoadSpritesFile
 ; Input:
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadMeteorsFile
+
+    CALL dbs.SetupArrays2Bank
 
     LD HL, db2.metFileName
     CALL _LoadSpritesFile
@@ -452,7 +459,6 @@ LoadMenuKeysTilemapFile
 
     ; Open file
     CALL dbs.SetupArrays2Bank
-
     LD HL, db2.mmkTileFileName
     CALL fi.CopyFileName
     CALL fi.FileOpenRead
@@ -493,7 +499,6 @@ LoadMenuHardImageFile
     CALL _LoadImageToTempRam
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;

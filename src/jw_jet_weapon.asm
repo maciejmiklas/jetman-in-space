@@ -252,6 +252,7 @@ ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots
     CALL dbs.SetupArrays2Bank
+
     LD IX, db2.shots                            ; IX points to the shot
     LD B, db2.SHOTS_SIZE
 .shotsLoop
@@ -321,6 +322,7 @@ MoveShots
 
     ; Loop ever all shots# skipping hidden sprites.
     CALL dbs.SetupArrays2Bank
+
     LD IX, db2.shots
     LD B, db2.SHOTS_SIZE
 
@@ -413,6 +415,7 @@ FireDelayCounter
 AnimateShots
 
     CALL dbs.SetupArrays2Bank
+
     LD IX, db2.shots
     LD A, db2.SHOTS_SIZE
     CALL sp.AnimateSprites
@@ -451,6 +454,7 @@ FirePress
 
     ; Find the first inactive (sprite hidden) shot
     CALL dbs.SetupArrays2Bank
+
     LD IX, db2.shots
     LD DE, SPR
     LD B, db2.SHOTS_SIZE

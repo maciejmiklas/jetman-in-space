@@ -207,7 +207,6 @@ _LoadMenuNormal
     LD IX, db2.menuDifNorm
     CALL _PrintMenu
 
-
     ; ##########################################
     ; Music on
     dbs.SetupCodeMusicBank
