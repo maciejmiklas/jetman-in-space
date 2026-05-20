@@ -11,7 +11,7 @@ STACK_SIZE              = 50
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
-;    DEFINE DEBUG_BAR    1                        ; Enable debug bar
+    DEFINE DEBUG_BAR    1                        ; Enable debug bar
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -211,6 +211,8 @@ mainLoop
     ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
     MMU _RAM_SLOT6, dbs.AY_FX_S6_D32
     ORG _RAM_SLOT6_STA_HC000
+    INCLUDE "af_audio_fx1.asm"
+    INCLUDE "af_audio_fx2.asm"
     INCLUDE "af_audio_fx.asm"
     ASSERT $$ == dbs.AY_FX_S6_D32
 

@@ -947,7 +947,7 @@ MusicLoop
     RET NZ
 PLAY
 
-    LD A, _GL_REG_SOUND_AY2                     ; Set music to AY-2
+    LD A, _GL_REG_SOUND_AY3                     ; Set music to AY-3
     LD BC, _GL_REG_SOUND_HFFFD
     OUT (C), A
 
