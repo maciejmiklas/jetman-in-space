@@ -11,7 +11,7 @@ STACK_SIZE              = 50
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
-    DEFINE DEBUG_BAR    1                        ; Enable debug bar
+    ;DEFINE DEBUG_BAR    1                        ; Enable debug bar
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -49,8 +49,8 @@ start
 
     CALL ar.LoadBgImageFile
     CALL bm.CopyImageData
-.checksumLoop
-    JR .checksumLoop
+.checksumDeadLoop
+    JR .checksumDeadLoop
 .checksumOk
 
     CALL dbs.SetupCode1Bank
@@ -60,7 +60,7 @@ start
     ;LD A, 6: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
 
     CALL gc.LoadMainMenu
-    
+
     JR mainLoop
 
 ;----------------------------------------------------------;
@@ -125,8 +125,10 @@ mainLoop
 ;----------------------------------------------------------;
 ;                       Includes                           ;
 ;----------------------------------------------------------;
+
     INCLUDE "_constants.asm"
     INCLUDE "_macros.asm"
+    ;INCLUDE "deb_debugger.asm"
 
     INCLUDE "dbs_bank_setup.asm"
     INCLUDE "gid_game_input_data.asm"
@@ -251,7 +253,6 @@ mainLoop
     INCLUDE "ros_rocket_stars.asm"
     INCLUDE "rot_rocket_meteors.asm"
     INCLUDE "rotd_rocket_meteors_data.asm"
-
     ASSERT $$ == dbs.ROCKET_S6_D36
 
 ;----------------------------------------------------------;

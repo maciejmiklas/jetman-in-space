@@ -59,7 +59,7 @@ TI_DEF_RAM_H6500        = TI_MAP_RAM_H5B00 + TI_MAP_BYTES_D2560 ; Tile definitio
     ASSERT TI_DEF_RAM_H6500 >= _RAM_SLOT2_STA_H4000
     ASSERT TI_DEF_RAM_H6500 <= _RAM_SLOT3_END_H7FFF
 
-; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000.
+; Hardware expects tiles in Bank 5. Therefore, we only have to provide offsets starting from $4000 as multiple of 256 bytes.
 TI_DEF_BANK_OFFSET      = (TI_DEF_RAM_H6500 - _RAM_SLOT2_STA_H4000) >> 8
     ASSERT TI_DEF_BANK_OFFSET = $25
 

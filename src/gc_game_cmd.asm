@@ -79,8 +79,6 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
-
-
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -215,7 +213,7 @@ LoadNextLevel
 
     _LoadGameEndStory
 
-    RET
+    JR .end
 
 .notLastLevel
     CALL ll.UnlockNextLevel
@@ -224,6 +222,8 @@ LoadNextLevel
     CALL dbs.SetupCode1Bank
     CALL so.WriteToSd
 
+    CALL dbs.SetupRocketBank                    ; Coll has to return to ritht bank.
+.end
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -385,6 +385,8 @@ RocketTankHit
     CALL sc.HitRocketTank
     _AFX af.FX_EXPLODE_TANK
 
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -453,6 +455,8 @@ RocketElementDrop
     CALL sc.DropRocketElement
 
    _AFX af.FX_ROCKET_EL_DROP
+
+    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 

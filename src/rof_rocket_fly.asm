@@ -454,7 +454,8 @@ AnimateRocketExplosion
 .explodingEnds
 
     ; sequence is over, load next level.
-    JP gc.LoadNextLevel                         ; WARNING: call will not return!
+    CALL gc.LoadNextLevel
+
     RET                                         ; ## END of the function ##
 ;----------------------------------------------------------;
 ;                  AnimateRocketExhaust                    ;

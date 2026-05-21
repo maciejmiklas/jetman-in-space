@@ -61,26 +61,24 @@ CopyImageData
 ;----------------------------------------------------------;
 ;                   CreateEmptyImageBank                   ;
 ;----------------------------------------------------------;
-; Copies 10x bank with black color over displayed image.
+; Copies a bank with black color.
 CreateEmptyImageBank
 
     CALL dbs.SetupEmptyImageBank
 
     ; Fill this bank with 0 black color
     LD HL, _RAM_SLOT6_STA_HC000                 ; Start of the RAM area to fill (adjust as needed).
-    LD DE, _RAM_SLOT6_STA_HC000 + _BANK_BYTES_D8192 ; End of the RAM area (start + 8192 bytes).
-    
-.fillLoop:
+    LD BC, _BANK_BYTES_D8192
+
+.loop
     XOR A                                       ; _COL_BLACK_D0 is 0 and XOR is faster.
     LD (HL), A                                  ; Store 0 at the current address.
     INC HL                                      ; Move to the next address.
 
-    LD A, H                                     ; Check if HL reached DE
-    CP E
-    JR NZ, .fillLoop
-    LD A, L
-    CP D
-    JR NZ, .fillLoop
+    DEC BC
+    LD A, B
+    OR C
+    JR NZ, .loop
 
     RET                                         ; ## END of the function ##
 

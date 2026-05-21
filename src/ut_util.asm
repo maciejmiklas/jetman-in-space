@@ -391,7 +391,7 @@ CountdownBC
 .loop:
     DEC BC                                      ; DEC BC from 65000 to 0
     LD A, B
-    OR A                                        ; Same as CP 0, but faster.
+    OR C
     JP NZ,.loop
 
     POP IY, IX, HL, DE, BC, AF

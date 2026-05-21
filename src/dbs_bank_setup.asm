@@ -16,16 +16,21 @@
 ;  - 18-27: Game background image
 ;  - 28:    Arrays 1
 ;  - 29:    Arrays 2
-;  - 30:    FREE
-;  - 31:    Layer 2 Palettes
-;  - 32:    AY FX sound
+;  - 30:    Following enemies
+;  - 31:    Pattern enemies
+;  - 32:    FX sound
 ;  - 33:    AY music code
+;  - 34:    Tile animation
+;  - 35:    Game data storage
 ;  - 70:    Layer 2 brightness palettes
 ;  - 71-72: Game sprites. Load sprites (16KB) into 2 banks mapping it to slot 6,7
 ;  - 73-82: Game background
 ;  - 83-84: 16KiB tilemap
 ;  - 85:    Empty image
-;  - 86:    Music binary
+;  - 86:    Layer 2 pallettes
+;  - 87:    Tilemap pallettes
+;  - 88:    music binary
+;  - 80-129 preloaded music
 
 BMB_ST_BANK_S7_D18      = 18                    ; Slot 7. Start of displayed Layer 2 image.
 BMB_END_BANK_S7_D27     = 27                    ; Last background bank (inclusive).

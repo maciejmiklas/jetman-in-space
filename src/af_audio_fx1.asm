@@ -101,22 +101,6 @@ SetupAyFx
 
     RET                                         ; ## END of the function ##
 
-; You could come up with an idea to remove this function since it's not used. But when you do that, the game will crash after 10-15 minutes 
-; of gameplay. One day, I will figure out what is happening here, but not today ;)
-;----------------------------------------------------------;
-;                       SetAy3ToMono                       ;
-;----------------------------------------------------------;
-; Configure AY3 as mono; call after PlayNextDawSong.
-SetAy3ToMono
-
-    LD A, _PERIPHERAL_04_H09
-    CALL ut.ReadNextReg
-
-    SET 7, A
-    NEXTREG _PERIPHERAL_04_H09, A
-        
-    RET                                         ; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                         AfxFrame                         ;
 ;----------------------------------------------------------;
@@ -251,7 +235,7 @@ afxNseMix
 AfxPlay
 
     DEC A                                       ; Number effects from 1 as the ayfxedit.exe does
-    
+
     PUSH AF
     LD A, C
     LD (releaseLoSMC), A                        ; SMC>

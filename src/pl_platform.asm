@@ -58,6 +58,101 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;              _MoveJetOnFallingFromPlatform               ;
+;----------------------------------------------------------;
+    MACRO _MoveJetOnFallingFromPlatform
+
+    ; Is Jetman falling from the platform on the right side?
+    LD A, (jt.jetAir)
+    CP jt.AIR_FALL_RIGHT_D12
+    JR NZ, .afterFallingRight
+
+    ; Yes, Jetman is falling from the platform.
+    LD B, PL_FALL_X_D2
+    CALL jpo.IncJetXbyB
+
+    LD B, PL_FALL_Y_D4
+    CALL jpo.IncJetYbyB
+
+    JR .end                                     ; Do not check falling left  because Jetman is already falling.
+.afterFallingRight  
+
+    ; Is Jetman falling from the platform on the left side?
+    LD A, (jt.jetAir)
+    CP jt.AIR_FALL_LEFT_D13
+    JR NZ, .end
+
+    ; Yes, Jetman is falling from the platform.
+    CALL jpo.DecJetX
+    CALL jpo.DecJetX
+    
+    LD B, PL_FALL_Y_D4
+    CALL jpo.IncJetYbyB
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;               _MoveJetOnHitPlatformBelow                 ;
+;----------------------------------------------------------;
+    MACRO _MoveJetOnHitPlatformBelow
+
+    ; Jetman hits the platform from the bottom?
+    LD A, (jt.jetAir)
+    CP jt.AIR_BUMP_BOTTOM_D16
+    JR NZ, .end
+
+    ; Yes, Jetman hits the platform.
+
+    ; Move down.
+    CALL jpo.IncJetY
+
+    ; Move left/right in the opposite direction to joystick.
+    LD A, (gid.joyDirection)
+
+    ; Joystick points right, move left.
+    BIT gid.MOVE_RIGHT_BIT_D1, A
+    JR Z, .afterRight
+    CALL jpo.IncJetX
+    JR .afterLeft
+.afterRight
+
+    ; Joystick points left, move right.
+    BIT gid.MOVE_LEFT_BIT_D0, A
+    JR Z, .afterLeft
+    CALL jpo.DecJetX
+.afterLeft
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _MoveJetOnPlatformSideHit                ;
+;----------------------------------------------------------;
+    MACRO _MoveJetOnPlatformSideHit
+
+    ; Is Jetman bumping into the platform from the right?
+    LD A, (jt.jetAir)
+    CP jt.AIR_BUMP_RIGHT_D14
+    JR NZ, .afterBumpingRight
+
+    ; Yes
+    CALL jpo.IncJetX
+    JR .end                                     ; Do not check bumping left.
+.afterBumpingRight
+
+    ; Is Jetman bumping into the platform from the left?
+    LD A, (jt.jetAir)
+    CP jt.AIR_BUMP_LEFT_D15
+    JR NZ, .end
+
+    ; Yes
+    CALL jpo.DecJetX
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                    _LoadSpriteYtoA                       ;
 ;----------------------------------------------------------;
 ; Load the sprite's Y coordinate. It's in memory right after X, but HL points to X, so we must move it by size of DW.
@@ -557,77 +652,6 @@ CheckPlatformWeaponHit
     JP _PlatformSpriteHit
 
 ;----------------------------------------------------------;
-;               MoveJetOnFallingFromPlatform               ;
-;----------------------------------------------------------;
-MoveJetOnFallingFromPlatform
-
-    CALL dbs.SetupArrays2Bank
-
-    ; Is Jetman falling from the platform on the right side?
-    LD A, (jt.jetAir)
-    CP jt.AIR_FALL_RIGHT_D12
-    JR NZ, .afterFallingRight
-
-    ; Yes, Jetman is falling from the platform.
-    LD B, PL_FALL_X_D2
-    CALL jpo.IncJetXbyB
-
-    LD B, PL_FALL_Y_D4
-    CALL jpo.IncJetYbyB
-
-    RET                                         ; Do not check falling left  because Jetman is already falling.
-.afterFallingRight  
-
-    ; Is Jetman falling from the platform on the left side?
-    LD A, (jt.jetAir)
-    CP jt.AIR_FALL_LEFT_D13
-    RET NZ
-
-    ; Yes, Jetman is falling from the platform.
-    CALL jpo.DecJetX
-    CALL jpo.DecJetX
-    
-    LD B, PL_FALL_Y_D4
-    CALL jpo.IncJetYbyB
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;               MoveJetOnHitPlatformBelow                  ;
-;----------------------------------------------------------;
-MoveJetOnHitPlatformBelow
-
-    CALL dbs.SetupArrays2Bank
-
-    ; Jetman hits the platform from the bottom?
-    LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_BOTTOM_D16
-    RET NZ
-
-    ; Yes, Jetman hits the platform.
-
-    ; Move down.
-    CALL jpo.IncJetY
-
-    ; Move left/right in the opposite direction to joystick.
-    LD A, (gid.joyDirection)
-
-    ; Joystick points right, move left.
-    BIT gid.MOVE_RIGHT_BIT_D1, A
-    JR Z, .afterRight
-    CALL jpo.IncJetX
-    JR .afterLeft
-.afterRight
-
-    ; Joystick points left, move right.
-    BIT gid.MOVE_LEFT_BIT_D0, A
-    JR Z, .afterLeft
-    CALL jpo.DecJetX
-.afterLeft  
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                       JetLanding                         ;
 ;----------------------------------------------------------;
 JetLanding
@@ -666,6 +690,20 @@ JetLanding
 
     RET                                         ; ## END of the function ##
 
+
+;----------------------------------------------------------;
+;                   MoveJetOnPlatform                      ;
+;----------------------------------------------------------;
+MoveJetOnPlatform
+
+    CALL dbs.SetupArrays2Bank
+
+    _MoveJetOnPlatformSideHit
+    _MoveJetOnFallingFromPlatform
+    _MoveJetOnHitPlatformBelow
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                   PlatformBounceOff                      ;
 ;----------------------------------------------------------;
@@ -677,33 +715,6 @@ PlatformBounceOff
 
     LD IX, db2.bounceMargin
     CALL _PlatformDirectionHit
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
-;                 MoveJetOnPlatformSideHit                 ;
-;----------------------------------------------------------;
-MoveJetOnPlatformSideHit
-
-    CALL dbs.SetupArrays2Bank
-
-    ; Is Jetman bumping into the platform from the right?
-    LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_RIGHT_D14
-    JR NZ, .afterBumpingRight
-
-    ; Yes
-    CALL jpo.IncJetX
-    RET                                     ; Do not check bumping left.
-.afterBumpingRight
-
-    ; Is Jetman bumping into the platform from the left?
-    LD A, (jt.jetAir)
-    CP jt.AIR_BUMP_LEFT_D15
-    RET NZ
-
-    ; Yes
-    CALL jpo.DecJetX
 
     RET                                         ; ## END of the function ##
 

@@ -26,7 +26,6 @@
 
     ; ##########################################
     ; CALL functions that need to be updated every loop.
-    ; First update graphics, logic follows afterwards!
 
         IFDEF DEBUG_BAR
     CALL gb.PrintDebug
@@ -108,7 +107,6 @@
     CP ms.MS_GAME_ACTIVE_D1
     JP NZ, .end
 
-
     ; ##########################################
     ; Process the joystick direction movement to control Jetman in the game. Easy moves 1px, normal 1.5px, hard 2px.
 
@@ -147,6 +145,7 @@
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
 
+
     CALL dbs.SetupRocketBank
     CALL roa.CheckHitTank
     CALL roa.RocketElementFallsForPickup
@@ -172,18 +171,13 @@
 .easy
 
     ; ##########################################
-    ; Bumping from platforms.
+    ; Moving Jemtan on platform.
     LD A, (gid.joyOffCnt)
     CP pl.PL_BUMP_JOY_DEC_D1+1
     JR C, .endJoyOn                             ; Return on the last off loop - this one is used to reset status and not to animate
 
-    CALL pl.MoveJetOnPlatformSideHit
-    CALL pl.MoveJetOnFallingFromPlatform
-    CALL pl.MoveJetOnHitPlatformBelow
+    CALL pl.MoveJetOnPlatform
 .endJoyOn
-    JR .end
-
-
 
 .end
     ENDM                                        ; ## END of the macro ##
