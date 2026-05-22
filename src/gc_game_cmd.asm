@@ -79,6 +79,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
+
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -999,7 +1000,6 @@ _HideGame
     CALL jw.HideShots
     CALL jt.SetJetStateInactive
     CALL ti.ResetTilemapOffset
-    CALL ti.CleanAllTiles
     CALL ki.ResetKeyboard
     CALL enc.HideEnemies
     CALL sp.ResetAllSprites
@@ -1019,6 +1019,8 @@ _HideGame
 
     CALL dbs.SetupFollowingEnemyBank
     CALL fe.DisableFollowingEnemies
+
+    CALL ti.CleanAllTiles
 
     RET                                         ; ## END of the function ##
 

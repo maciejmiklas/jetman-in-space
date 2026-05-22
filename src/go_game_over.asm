@@ -29,6 +29,8 @@ GameOverLoop
 ;----------------------------------------------------------;
 ShowGameOver
 
+    CALL gb.HideGameBar
+
     XOR A
     LD (fireCnt),A
 
