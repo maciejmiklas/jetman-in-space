@@ -66,9 +66,9 @@ AY_MBIN_S7_D88          = 88                   ; Slot 7, music binary, code is i
 
 ; Music preloads 40 titles into 40 banks, for fast switching during the game.
 AY_MIBIN_S7_ST_D89      = 89                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
-AY_MIBIN_S7_EN_D129     = 95;129
+AY_MIBIN_S7_EN_D129     = 129
 AY_MI_BANKS_40          = AY_MIBIN_S7_EN_D129 - AY_MIBIN_S7_ST_D89
-   ; ASSERT AY_MI_BANKS_40 = 40
+    ASSERT AY_MI_BANKS_40 = 40
 ingameMusicBank         DB AY_MIBIN_S7_ST_D89
 
 ;----------------------------------------------------------;
