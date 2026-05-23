@@ -114,7 +114,7 @@ KeyboardInput
     ; ##########################################
     ; Key down pressed ?
     BIT 4, A                                    ; Bit 4 reset -> Down pressed.
-    JR Z, .pressDown
+    JP Z, .pressDown
 
     ; ##########################################
     ; Joystick right pressed ?
@@ -135,13 +135,13 @@ KeyboardInput
 
     ; ##########################################
     ; Joystick fire pressed ?
-    PUSH AF
     AND %01110000                               ; Any of three fires pressed?
     JR NZ, .pressFire
-    POP AF
-    
+
     ; ##########################################
     ; Joystick up pressed ?
+    LD A, _JOY_MASK_H20                         ; Activate joystick register.
+    IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
     BIT 3, A                                    ; Bit 3 set -> Up pressed.
     JR NZ, .pressUp
 
@@ -200,59 +200,49 @@ KeyboardInput
     CALL CanProcessKeyInput
     RET NZ
 
-    LD HL, .pressRightReturn
+    LD HL, .end
     PUSH HL
     LD HL, (callbackRight)
     JP (HL)
-.pressRightReturn
-    RET
 
 .pressLeft
     CALL CanProcessKeyInput
     RET NZ
 
-    LD HL, .pressLeftReturn
+    LD HL, .end
     PUSH HL
     LD HL, (callbackLeft)
     JP (HL)
-.pressLeftReturn
-    RET
 
 .pressUp
     CALL CanProcessKeyInput
     RET NZ
 
-    LD HL, .pressUpReturn
+    LD HL, .end
     PUSH HL
     LD HL, (callbackUp)
     JP (HL)
-.pressUpReturn
-    RET
 
 .pressDown
     CALL CanProcessKeyInput
     RET NZ
 
-    LD HL, .pressDownReturn
+    LD HL, .end
     PUSH HL
     LD HL, (callbackDown)
     JP (HL)
-.pressDownReturn
-    RET
 
 .pressFire
     CALL CanProcessKeyInput
     RET NZ
 
-    LD HL, .pressFireReturn
+    LD HL, .end
     PUSH HL
     LD HL, (callbackFire)
     JP (HL)
-.pressFireReturn
-    RET
 
+.end
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                   CanProcessKeyInput                     ;

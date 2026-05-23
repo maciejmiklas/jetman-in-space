@@ -90,16 +90,12 @@ TEMP_SLOT_D200          = 140
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                       CopyBank                           ;
+;                   SetupTestBank                          ;
 ;----------------------------------------------------------;
-CopyBank
+SetupTestBank
 
-  ;  CALL dbs.SetupAyFxsBank
-   ; deb.Copy8KSlot6To7
-
-    deb.Copy8KSlot2To6
-
-    LD A, $01: CALL CompareBank
+    dbs.SetupCodeMusicBank
+    deb.Copy8KSlot6To7
 
     RET                                         ; ## END of the function ##
 
@@ -112,16 +108,12 @@ CopyBank
 ;  - A: number to print for debugger.
 CompareBank
 
-  ;  LD BC, 990
- ;   LD DE, $1AA
-  ;  CALL CompareBank6to7
-
-    LD BC, 80*10
-    LD DE, $1B00+80
-    CALL CompareBank2to6
+    dbs.SetupCodeMusicBank
+    LD BC, 990
+    LD DE, 0
+    CALL CompareBank6to7
 
     RET                                         ; ## END of the function ##
-
 
 ;----------------------------------------------------------;
 ;                  CompareBank2to6                         ;

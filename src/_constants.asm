@@ -46,6 +46,27 @@ _GL_REG_SOUND_AY1       = %1'11'111'11
 _GL_REG_SOUND_AY2       = %1'11'111'10 
 _GL_REG_SOUND_AY3       = %1'11'111'01 
 
+;----------------------------------------------------------;
+;                 Peripheral Control 1                     ;
+;----------------------------------------------------------;
+
+; (R/W) 0x05 (05) => Peripheral 1 setting:
+; Bits:
+;  - 7-6: joystick 1 mode (LSB)
+;  - 5-4: joystick 2 mode (LSB)
+;  - 3:   joystick 1 mode (MSB)
+;  - 2:   50/60 Hz mode (0 = 50Hz, 1 = 60Hz)(0 after a PoR or Hard-reset)
+;  - 1:  joystick 2 mode (MSB)
+;  - 0:  enable Scandoubler (1 = enabled)(1 after a PoR or Hard-reset)
+; Joystick modes:
+; 000 = Sinclair 2 (67890)
+; 001 = Kempston 1 (port 0x1F)
+; 010 = Cursor (56780)
+; 011 = Sinclair 1 (12345)
+; 100 = Kempston 2 (port 0x37)
+; 101 = MD 1 (3 or 6 button joystick port 0x1F)
+; 110 = MD 2 (3 or 6 button joystick port 0x37)
+_PERIPHERAL_01_H05      = $05
 
 ;----------------------------------------------------------;
 ;                 Peripheral Control                       ;

@@ -60,7 +60,6 @@ start
     ;LD A, 6: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
 
     CALL gc.LoadMainMenu
-
     JR mainLoop
 
 ;----------------------------------------------------------;
@@ -128,8 +127,6 @@ mainLoop
 
     INCLUDE "_constants.asm"
     INCLUDE "_macros.asm"
-    ;INCLUDE "deb_debugger.asm"
-
     INCLUDE "dbs_bank_setup.asm"
     INCLUDE "gid_game_input_data.asm"
     INCLUDE "gi_game_input.asm"
@@ -174,6 +171,7 @@ mainLoop
     INCLUDE "enur_enemy_fuel_thief_roc.asm"
     INCLUDE "enc_enemy_cmd.asm"
     INCLUDE "ml_main_loop.asm"
+  ;  INCLUDE "deb_debugger.asm"
     
     ; Imports below use ORG and dedicated memory bank!
 

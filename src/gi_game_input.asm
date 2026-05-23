@@ -90,8 +90,7 @@
 ;----------------------------------------------------------;
 ;                    JetMovementInput                      ;
 ;----------------------------------------------------------;
-; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from function keys (throw granade, music off)
-; Function keys are always processed at the same speed.
+; Options are active durign pause, movement is not.
 ; Input:
 ; - A: number of movement steps
 JetMovementInput
@@ -140,10 +139,10 @@ JetMovementInput
 
     ; ##########################################
     ; Read Kempston input
-
-    ; Joystick right
     LD A, _JOY_MASK_H20                         ; Activate joystick register.
     IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
+
+    ; Joystick right
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     BIT 0, A                                    ; Bit 0 set -> Right pressed.
     CALL NZ, _JoyRight
@@ -161,29 +160,12 @@ JetMovementInput
     CALL NZ, _JoyDown
     POP AF
 
-    ; Joystick fire B
-    PUSH AF
-    AND %00010000                               ; Any of three fires pressed?
-    CALL NZ, _JoyFireB
-    POP AF
-
     ; Joystick up
     BIT 3, A                                    ; Bit 3 set -> Up pressed.
     CALL NZ, _JoyUp
 
     ; ##########################################
-    ; Row: V, C, X, Z, SHIFT
-    
-    ; Key Fire (Z)
-    LD A, _KB_V_TO_SH_HFE
-    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
-    
-    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
-    CALL Z, _JoyFireB
-
-    ; ##########################################
     ; Row: G, F, D, S, T, A
-
     LD A, _KB_G_TO_A_HFD
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
 
@@ -212,6 +194,7 @@ JetMovementInput
     BIT 1, A                                    ; W
     CALL Z, _JoyUp
 
+
     ; ##########################################
     _JoyMoveEnd
 
@@ -220,24 +203,32 @@ JetMovementInput
 ;----------------------------------------------------------;
 ;                   GameOptionsInput                       ;
 ;----------------------------------------------------------;
-; On hard difficulty, Jetman moves faster. Therefore, movement direction is handled separately from keyboard movement.
-; Keys are always processed at the same speed. Also, only one option key is being processed during a single loop.
+; Options are active durign pause, movement is not.
 GameOptionsInput
 
     ; ##########################################
     ; Read Kempston input
-    LD A, _JOY_MASK_H20                         ; Activate joystick register.
     IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
 
-    ; Joystick fire A
+    ; Joystick fire B
     PUSH AF
-    AND %01000000                               ; Any of three fires pressed?
-    CALL NZ, _JoyFireA
+    BIT 4, A
+    CALL NZ, _JoyFireB
     POP AF
 
     ; Joystick fire C
-    AND %00100000                               ; Any of three fires pressed?
+    BIT 5, A
     CALL NZ, _JoyFireC
+
+    ; ##########################################
+    ; Row: V, C, X, Z, SHIFT
+    
+    ; Key Fire (Z)
+    LD A, _KB_V_TO_SH_HFE
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+
+    BIT 1, A                                    ; Bit 1 reset -> Z pressed.
+    CALL Z, _JoyFireB
 
     ; ##########################################
     ; Row: H, J, K, L, ENTER
@@ -246,7 +237,7 @@ GameOptionsInput
     LD A, _KB_H_TO_ENT_HBF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 0, A                                    ; Bit 0 reset -> ENTER pressed.
-    CALL Z, _JoyFireB 
+    CALL Z, _JoyFireB
 
     ; ##########################################
     ; Row: Y...P
@@ -536,16 +527,6 @@ _JoyDownRelease
 
     RET                                         ; ## END of the function ## 
 
-
-;----------------------------------------------------------;
-;                       _JoyFireA                          ;
-;----------------------------------------------------------;
-_JoyFireA
-
-    _ThrowGranade
-
-    RET                                         ; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                       _JoyFireB                          ;
 ;----------------------------------------------------------;
@@ -563,10 +544,7 @@ _JoyFireB
 ;----------------------------------------------------------;
 _JoyFireC
 
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    _NextSong
+    _ThrowGranade
 
     RET                                         ; ## END of the function ##
 

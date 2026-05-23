@@ -135,7 +135,7 @@
 
     CALL gi.JetMovementInput
 
-     ; ##########################################
+    ; ##########################################
     CALL gi.GameOptionsInput
 
     CALL jco.JetRip
@@ -161,14 +161,7 @@
 
     CALL dbs.SetupArrays2Bank
     CALL pi.AnimateFallingPickup
-
-    ; ##########################################
-    ; Easy
-    LD A, (jt.difLevel)
-    CP jt.DIF_EASY_D1
-    JR Z, .easy
     CALL enc.MoveEnemies
-.easy
 
     ; ##########################################
     ; Moving Jemtan on platform.
@@ -315,15 +308,6 @@
     LD A, (ms.mainState)
     CP ms.MS_GAME_ACTIVE_D1
     JR NZ, .end
-
-    ; ##########################################
-    ; Easy
-    LD A, (jt.difLevel)
-    CP jt.DIF_EASY_D1
-    JR NZ, .notEasy
-
-    CALL enc.MoveEnemies
-.notEasy
 
     ; ##########################################
     CALL jco.JetInvincible

@@ -19,13 +19,11 @@
          MENU
 
 
- JOYSTICK:
+ GAMEPAD (JOYSTICK):
 
- FIRE 1 - FIRE
+ B (FIRE 1) - FIRE
 
- FIRE 2 - THROW A GRENADE
-
- FIRE 3 - NEXT SONG
+ C (FIRE 2) - THROW A GRENADE
 
 ################################################
 gameplay
