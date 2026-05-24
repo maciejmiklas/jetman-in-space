@@ -262,7 +262,7 @@ PLATFORM_SIZE_L5        = 4
 ; Level 6
 platformsL6
     pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 03*8/*Y_TOP*/, 06*8/*Y_BOTTOM*/}
-    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 15*8/*Y_BOTTOM*/}
+    pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 12*8/*Y_TOP*/, 13*8/*Y_BOTTOM*/}
     pl.PLA {05*8/*X_LEFT*/, 06*8/*X_RIGHT*/, 22*8/*Y_TOP*/, 24*8/*Y_BOTTOM*/}
 
     pl.PLA {17*8/*X_LEFT*/, 23*8/*X_RIGHT*/, 17*8/*Y_TOP*/, 17*8/*Y_BOTTOM*/}

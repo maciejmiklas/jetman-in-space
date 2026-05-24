@@ -28,7 +28,7 @@ fireFxDelay             DB FIRE_FX_DELAY_INIT_D2
 FIRE_FX_DELAY_INIT_D2   = 2
 FIRE_FX_DELAY_SND2_D5   = 5                     ; When delay reaches this value play #af.FX_FIRE2.
 
-fireFxOn                DB 1
+fireFxOn                DB 0
 FIRE_FX_ON_D1            = 1
 FIRE_FX_OFF_D0           = 0
 
