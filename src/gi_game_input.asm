@@ -8,43 +8,6 @@
     MODULE gi
 
 ;----------------------------------------------------------;
-;----------------------------------------------------------;
-;                   PRIVATE MACROS                         ;
-;----------------------------------------------------------;
-;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                   _JoyFireReleased                       ;
-;----------------------------------------------------------;
-    MACRO _JoyFireReleased
-
-    CALL jw.FireReleased
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                    _ThrowGranade                         ;
-;----------------------------------------------------------;
-    MACRO _ThrowGranade
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    CALL gr.UseGrenade
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
-;                      _NextSong                           ;
-;----------------------------------------------------------;
-    MACRO _NextSong
-
-    dbs.SetupCodeMusicBank
-    CALL aml.NextGameSong
-
-    ENDM                                        ; ## END of the macro ##
-
-;----------------------------------------------------------;
 ;                        _JoyEnd                           ;
 ;----------------------------------------------------------;
     MACRO _JoyMoveEnd
@@ -77,8 +40,9 @@
     LD A, (gid.fireOffCnt)
     CP gid.FIRE_RELEASED_D5
     JR NZ, .fireNorReleased
-    _JoyFireReleased
+    CALL jw.FireReleased
 .fireNorReleased
+
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
@@ -199,7 +163,6 @@ JetMovementInput
     _JoyMoveEnd
 
     RET                                         ; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                   GameOptionsInput                       ;
 ;----------------------------------------------------------;
@@ -208,17 +171,18 @@ GameOptionsInput
 
     ; ##########################################
     ; Read Kempston input
+    LD A, _JOY_MASK_H20                         ; Activate joystick register.
     IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
 
     ; Joystick fire B
     PUSH AF
     BIT 4, A
-    CALL NZ, _JoyFireB
+    CALL NZ, _Fire
     POP AF
 
     ; Joystick fire C
     BIT 5, A
-    CALL NZ, _JoyFireC
+    CALL NZ, _ThrowGranade
 
     ; ##########################################
     ; Row: V, C, X, Z, SHIFT
@@ -228,7 +192,7 @@ GameOptionsInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
 
     BIT 1, A                                    ; Bit 1 reset -> Z pressed.
-    CALL Z, _JoyFireB
+    CALL Z, _Fire
 
     ; ##########################################
     ; Row: H, J, K, L, ENTER
@@ -237,7 +201,7 @@ GameOptionsInput
     LD A, _KB_H_TO_ENT_HBF
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     BIT 0, A                                    ; Bit 0 reset -> ENTER pressed.
-    CALL Z, _JoyFireB
+    CALL Z, _Fire
 
     ; ##########################################
     ; Row: Y...P
@@ -284,7 +248,7 @@ GameOptionsInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     BIT 3, A                                    ; N
-    CALL Z, _Key_N
+    CALL Z, _NextSong
     POP AF
 
     ; Key M
@@ -297,7 +261,7 @@ GameOptionsInput
     BIT 0, A                                    ; Bit 0 reset -> SPACE pressed.
     JR NZ, .notSpace
 
-    _ThrowGranade
+    CALL _ThrowGranade
 
     ; ##########################################
     ; Key Break = SPACE + SHIFT, space is down, now check SHIFT
@@ -353,15 +317,17 @@ _Key_R
 
     RET                                         ; ## END of the function ##
 */
+
 ;----------------------------------------------------------;
-;                        _Key_N                            ;
+;                      _NextSong                           ;
 ;----------------------------------------------------------;
-_Key_N
+_NextSong
 
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    _NextSong
+    dbs.SetupCodeMusicBank
+    CALL aml.NextGameSong
 
     RET                                         ; ## END of the function ##
 
@@ -419,6 +385,9 @@ _Key_F
 ;----------------------------------------------------------;
 _Key_Break
 
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
     LD A, (gid.breakCnt)
     INC A
     LD (gid.breakCnt), A
@@ -435,6 +404,7 @@ _Key_Break
 ;                        _JoyRight                         ;
 ;----------------------------------------------------------;
 _JoyRight
+
     ; Update temp state
     LD A, (gid.joyDirection)
     SET gid.MOVE_RIGHT_BIT_D1, A
@@ -528,9 +498,9 @@ _JoyDownRelease
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                       _JoyFireB                          ;
+;                         _Fire                            ;
 ;----------------------------------------------------------;
-_JoyFireB
+_Fire
 
     XOR A
     LD (gid.fireOffCnt), A
@@ -539,12 +509,16 @@ _JoyFireB
 
     RET                                         ; ## END of the function ##
 
-;----------------------------------------------------------;
-;                       _JoyFireC                          ;
-;----------------------------------------------------------;
-_JoyFireC
 
-    _ThrowGranade
+;----------------------------------------------------------;
+;                    _ThrowGranade                         ;
+;----------------------------------------------------------;
+_ThrowGranade
+
+    CALL ki.CanProcessKeyInput
+    RET NZ
+
+    CALL gr.UseGrenade
 
     RET                                         ; ## END of the function ##
 
