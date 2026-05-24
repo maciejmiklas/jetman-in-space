@@ -105,7 +105,7 @@ NextInGameMusicBank
 ;----------------------------------------------------------;
     MACRO dbs.SetupCodeMusicBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, dbs.AY_MCODE_S6_D33 ; Code
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.AY_MCODE_S6_D33 ; music ode
 
     ENDM                                        ; ## END of the macro ##
 

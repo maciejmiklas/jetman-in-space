@@ -10,7 +10,7 @@
    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
 
 storageStart
-unlockedLevel           DB 1,1,1                ; There are three difficulty levels, unlocked independently.
+unlockedLevel           DB 10,10,10                ; There are three difficulty levels, unlocked independently.
 UNLOCK_SIZE             = $ - unlockedLevel
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
@@ -150,6 +150,7 @@ checksumEasy            DB 0
 checksumNormal          DB 0
 checksumHard            DB 0
 checksumVerify          DW 0
+gameMusicCnt            DB 3                    ; MUSIC_HIGH_SCORE_D3
 
 STORAGE_BYTES           = $ - storageStart
 
@@ -313,6 +314,8 @@ ReadFromSd
     CALL fi.FileRead
 
     _VerifyChecksums
+
+    LD A, (gameMusicCnt)
 
     RET                                         ; ## END of the function ##
 

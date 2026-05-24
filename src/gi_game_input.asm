@@ -396,7 +396,7 @@ _Key_Break
     RET NZ
 
     ; The break has been pressed long enough to exit the game.
-    CALL gc.ExitGameToMainMenu
+    CALL gc.ExitToLoadMainMenu
 
     RET                                         ; ## END of the function ##
 

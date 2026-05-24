@@ -9,13 +9,12 @@
     ; TO USE THIS MODULE: CALL dbs.SetupMusicCommonBank or SetupInGameMusicBank or dbs.SetupCodeMusicBank
 
 ; Counter for game music from assets\snd.
-gameMusicCnt            DB 0
+gameMusicCnt            DB MUSIC_HIGH_SCORE_D3
 
 MUSIC_MAIN_MENU_D0      = 0
 MUSIC_INTRO_D1          = 1
 MUSIC_GAME_OVER_D2      = 2
 MUSIC_HIGH_SCORE_D3     = 3
-MUSIC_RES_MAX           = MUSIC_HIGH_SCORE_D3+1
 
 NEXT_MUSIC_SEC          = 180
 nextMusicTimeCnt        DB NEXT_MUSIC_SEC
@@ -124,37 +123,12 @@ NextGameSong
 ;                    PreloadIngameMusic                    ;
 ;----------------------------------------------------------;
 PreloadIngameMusic
+
     CALL dbs.ResetInGameMusicBank
 
-    ; First, set #gameMusicCnt to a random value. After that, reset music bank to the first one, and load 40 titles starting from the 
-    ; current #gameMusicCnt, without changing #gameMusicCnt. Afterward, again reset the music bank to the first one. Now we have loaded 
-    ; 40 music titles into 40 banks. Starting with title number #gameMusicCnt, we can increase #gameMusicCnt and switch to the next bank 
-    ; to play the next song.
-
-    ; Initialize the music counter to a random value if it hasn't already been set.
     LD A, (gameMusicCnt)
-    CP 0
-    JR NZ, .afterInitMusicCnt
-
-    ; Makre random more random.
-    LD A, (ll.currentLevel)
-    LD B, A
-.randGameMusicCntLoop
-    LD A, R
-    ADD C
-    LD C, A
-    DJNZ .randGameMusicCntLoop
-
-    CP MUSIC_RES_MAX
-    JR NC, .storeGameMusicCnt
-    LD A, MUSIC_RES_MAX
-
-.storeGameMusicCnt
-    LD (gameMusicCnt), A
-.afterInitMusicCnt
     LD C, A
 
-    ; ##########################################
     LD B, dbs.AY_MI_BANKS_40
 .loop
 

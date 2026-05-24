@@ -74,7 +74,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL ms.SetMainState
 
     ; Music on
-    CALL dbs.SetupInGameMusicBank
+    dbs.SetupCodeMusicBank
     CALL aml.NextGameSong
 
     ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
@@ -122,7 +122,14 @@ StartGameWithIntro
     CALL jl.ResetLives
 
     ; Music
+    CALL dbs.SetupCode1Bank
+    LD A, (so.gameMusicCnt)
+
+    PUSH AF
     dbs.SetupCodeMusicBank
+    POP AF
+    LD (aml.gameMusicCnt), A
+
     CALL aml.MusicOff
     CALL aml.PreloadIngameMusic
 
@@ -170,6 +177,16 @@ GameOver
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  ExitToLoadMainMenu                      ;
+;----------------------------------------------------------;
+ExitToLoadMainMenu
+
+    CALL StoreGameData
+    CALL LoadMainMenu
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      LoadMainMenu                        ;
 ;----------------------------------------------------------;
 LoadMainMenu
@@ -197,6 +214,20 @@ BackgroundPaletteLoaded
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                     StoreGameData                        ;
+;----------------------------------------------------------;
+StoreGameData
+
+    dbs.SetupCodeMusicBank
+    LD A, (aml.gameMusicCnt)
+    
+    CALL dbs.SetupCode1Bank
+    LD (so.gameMusicCnt), A
+    CALL so.WriteToSd
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      LoadNextLevel                       ;
 ;----------------------------------------------------------;
 LoadNextLevel
@@ -219,10 +250,7 @@ LoadNextLevel
 .notLastLevel
     CALL ll.UnlockNextLevel
     CALL LoadCurrentLevel
-
-    CALL dbs.SetupCode1Bank
-    CALL so.WriteToSd
-
+    CALL StoreGameData
     CALL dbs.SetupRocketBank                    ; Coll has to return to ritht bank.
 .end
     RET                                         ; ## END of the function ##
@@ -861,16 +889,6 @@ JoyWillEnable
 
     RET                                         ; ## END of the function ##
 
-
-;----------------------------------------------------------;
-;                   ExitGameToMainMenu                     ;
-;----------------------------------------------------------;
-ExitGameToMainMenu
-
-    CALL LoadMainMenu
-
-    RET                                         ; ## END of the function ##
-
 ;----------------------------------------------------------;
 ;                 NightLimitVisibility1                    ;
 ;----------------------------------------------------------;
@@ -975,8 +993,7 @@ ChangeToFullDay
 ;----------------------------------------------------------;
 HighScoreChanged
 
-    CALL dbs.SetupCode1Bank
-    CALL so.WriteToSd
+    CALL StoreGameData
 
     RET                                         ; ## END of the function ##
 
