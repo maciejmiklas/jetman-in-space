@@ -16,11 +16,11 @@ spritesBankStart
 mainMenuEl
     mma.MENU {mma.TOP_OFS+mma.LOF+5                  /*TILE_OFFSET*/, menuTextSg/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 032/*JET_Y*/}  ; START GAME
     mma.MENU {mma.TOP_OFS+(1*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextLs/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 208/*JET_X*/, 055/*JET_Y*/}  ; LEVEL SELECT
-    mma.MENU {mma.TOP_OFS+(2*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 13/*TEXT_SIZE*/, 200/*JET_X*/, 080/*JET_Y*/}  ; HIGH SCORES
-    mma.MENU {mma.TOP_OFS+(3*mma.EL_DIST)+mma.LOF+6  /*TILE_OFFSET*/, menuTextIg/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 180/*JET_X*/, 112/*JET_Y*/}  ; CONTROLS
+    mma.MENU {mma.TOP_OFS+(2*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextHs/*TEXT_POINT*/, 13/*TEXT_SIZE*/, 208/*JET_X*/, 080/*JET_Y*/}  ; HIGH SCORES
+    mma.MENU {mma.TOP_OFS+(3*mma.EL_DIST)+mma.LOF+6  /*TILE_OFFSET*/, menuTextIg/*TEXT_POINT*/, 10/*TEXT_SIZE*/, 190/*JET_X*/, 104/*JET_Y*/}  ; CONTROLS
     mma.MENU {mma.TOP_OFS+(4*mma.EL_DIST)+mma.LOF+4  /*TILE_OFFSET*/, menuTextGp/*TEXT_POINT*/, 14/*TEXT_SIZE*/, 206/*JET_X*/, 128/*JET_Y*/}  ; INSTRUCTIONS
     mma.MENU {mma.TOP_OFS+(5*mma.EL_DIST)+mma.LOF+5  /*TILE_OFFSET*/, menuTextDi/*TEXT_POINT*/, 12/*TEXT_SIZE*/, 200/*JET_X*/, 152/*JET_Y*/}  ; DIFFICULTY
-    mma.MENU {mma.TOP_OFS+(7*mma.EL_DIST)+mma.LOF+8  /*TILE_OFFSET*/, menuTextAb/*TEXT_POINT*/, 07/*TEXT_SIZE*/, 208/*JET_X*/, 200/*JET_Y*/}  ; ABOUT
+    mma.MENU {mma.TOP_OFS+(7*mma.EL_DIST)+mma.LOF+8  /*TILE_OFFSET*/, menuTextAb/*TEXT_POINT*/, 07/*TEXT_SIZE*/, 184/*JET_X*/, 200/*JET_Y*/}  ; ABOUT
 MAIN_MENU_EL_SIZE       = 7
 
 menuTextSg DB "START GAME ",ti.TX_IDX_ENTER
