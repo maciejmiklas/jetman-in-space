@@ -251,8 +251,9 @@ LoadNextLevel
     CALL ll.UnlockNextLevel
     CALL LoadCurrentLevel
     CALL StoreGameData
-    CALL dbs.SetupRocketBank                    ; Coll has to return to ritht bank.
+
 .end
+    CALL dbs.SetupRocketBank                    ; Coll has to return to ritht bank.
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
