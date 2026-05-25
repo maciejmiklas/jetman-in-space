@@ -22,23 +22,23 @@ highScoreEasy
     DW $FFFF
     DB "   FREDUS    "
    
-    DW 00005
+    DW 00000
     DW 65535
     DB "  +++++ +++  "
 
-    DW 00004
+    DW 00000
     DW 08000
     DB "   ARTUR     "
 
-    DW 00003
+    DW 00000
     DW 07000
     DB "   MARCIN    "
 
-    DW 00002
+    DW 00000
     DW 06000
     DB "   MACIEJ    "
 
-    DW 00001
+    DW 00000
     DW 05000
     DB "   JUREK     "
 
@@ -65,23 +65,23 @@ highScoreNormal
     DW $FFFF
     DB "   FREDUS    "
    
-    DW 00006
+    DW 00000
     DW 65535
     DB "  +++++ +++  "
 
-    DW 00005
+    DW 00000
     DW 08000
     DB "   ARTUR     "
 
-    DW 00004
+    DW 00000
     DW 07000
     DB "   MARCIN    "
 
-    DW 00003
+    DW 00000
     DW 06000
     DB "   MACIEJ    "
 
-    DW 00002
+    DW 00000
     DW 05000
     DB "   JUREK     "
 
@@ -108,27 +108,27 @@ highScoreHard
     DW $FFFF
     DB "   FREDUS    "
    
-    DW 00006
+    DW 00000
     DW 65535
     DB "  +++++ +++  "
 
-    DW 00005
+    DW 00000
     DW 08000
     DB "   ARTUR     "
 
-    DW 00004
+    DW 00000
     DW 07000
     DB "   MARCIN    "
 
-    DW 00003
+    DW 00000
     DW 06000
     DB "   MACIEJ    "
 
-    DW 00002
+    DW 00000
     DW 05000
     DB "   JUREK     "
 
-    DW 00001
+    DW 00000
     DW 04000
     DB "   FRANEK    "
 
