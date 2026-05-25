@@ -165,6 +165,7 @@ mainLoop
     INCLUDE "mmn_menu_manual.asm"
     INCLUDE "mml_menu_level.asm"
     INCLUDE "mms_menu_score.asm"
+    INCLUDE "mmb_menu_about.asm"
     INCLUDE "sc_score.asm"
     INCLUDE "pi_pickups.asm"
     INCLUDE "jl_jetman_lives.asm"

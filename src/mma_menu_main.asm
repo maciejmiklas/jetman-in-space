@@ -29,9 +29,10 @@ MENU_EL_SCORE           = 3                     ; HIGH SCORE
 MENU_EL_KEYS            = 4                     ; IN GAME KEYS
 MENU_EL_GAMEPLAY        = 5                     ; GAMEPLAY
 MENU_EL_DIFFICULTY      = 6                     ; DIFFICULTY
+MENU_EL_ABOUT           = 7                     ; MENU_EL_ABOUT
 
 MENU_EL_MIN             = MENU_EL_START
-MENU_EL_MAX             = MENU_EL_DIFFICULTY
+MENU_EL_MAX             = MENU_EL_ABOUT
 
 ;----------------------------------------------------------;
 ;                      LoadMainMenu                        ;
@@ -427,26 +428,26 @@ _JoyFire
     ; ##########################################
     ; Show high score
     CP MENU_EL_SCORE
-    JR NZ, .notShowScore
+    JR NZ, .notScore
     CALL mms.LoadMenuScore
     RET
-.notShowScore
+.notScore
 
     ; ##########################################
     ; Show game keys
     CP MENU_EL_KEYS
-    JR NZ, .notShowKeys
+    JR NZ, .notKeys
     CALL mmn.LoadMenuKeys
     RET
-.notShowKeys
+.notKeys
 
     ; ##########################################
     ; Show gameplay
     CP MENU_EL_GAMEPLAY
-    JR NZ, .notShowGameplay
+    JR NZ, .notGameplay
     CALL mmn.LoadMenuGameplay
     RET
-.notShowGameplay
+.notGameplay
 
     ; ##########################################
     ; Difficulty up
@@ -455,6 +456,14 @@ _JoyFire
     CALL _DifficultyUp
     RET
 .notDifficulty
+
+    ; ##########################################
+    ; Show about
+    CP MENU_EL_ABOUT
+    JR NZ, .notAbout
+    CALL mmb.LoadMenuAbout
+    RET
+.notAbout
 
     ; ##########################################
     ; Wrong key hit, play sound
