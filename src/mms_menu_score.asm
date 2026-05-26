@@ -7,8 +7,8 @@
 ;----------------------------------------------------------;
     MODULE mms
 
-LINES_D10               = 10                    ; There are 10 score lines, but we display only 9, skipping first one in #db2.highScore.
-LINE_INDICATION_TI_D10  = 10
+LINES_D9                = 9                     ; There are 10 score lines, but we display only 9, skipping first one in #db2.highScore.
+LINE_INDICATION_TI_D10  = LINES_D9+1
 
 ASCII_A                 = 64                    ; 64 is space, it's not proper ASCII code, but tiles are set so.
 ASCII_Z                 = 90
@@ -60,19 +60,8 @@ menuScoreCursor
 ; Store the last user's high score into #db2.highScore, position is given by #scoreLine.
     MACRO _StoreNewScore
 
-    ; Set IX to #db2.highScore that will be updated.
-    CALL dbs.SetupCode1Bank
     LD A, (scoreLine)
-
-    ; Does the user qualify for the scoreboard?
-    CP LINES_D10
-    JR C, .prepareEdit
-    
-    CALL _SetScoreToReadOnly
-    JR .end
-.prepareEdit
-
-    CALL _LineToIX
+    CALL _LineToIX                              ; Set IX to #db2.highScore that will be updated.
 
     ; ##########################################
     ; Copy score from game to the line.
@@ -118,26 +107,69 @@ menuScoreCursor
     LD A, ti.TI_ENTER
     LD (DE), A
 
+    ; ##########################################
+    ; Clan score line for entering new value
+    LD A, (scoreLine)
+    CALL _PrintScoreLine
+
 .end
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                     _PrintWholeScore                     ;
+;                    _SortScoreBoard                       ;
 ;----------------------------------------------------------;
-; Prints structure from #db2.highScore
-    MACRO _PrintWholeScore
+; The user enters a high score at position X, and we have to move the scores from X down one line, starting from line 8 (9 lines total).
+; For example, when he enters the score at line 7, we move line 9 to 10, line 8 to 9, and line 7 to 8.
+    MACRO _SortScoreBoard
 
     CALL dbs.SetupCode1Bank
 
-    LD B, LINES_D10
-.placesLoop
-    PUSH BC
+    ; Calculate the number of lines that have to be moved down.
+    LD A, (scoreLine)
+    LD B, A
 
-    LD A, B
-    CALL _PrintScoreLine
+    LD A, LINES_D9
+    SUB B
+    LD B, A                                     ; Loop count.
 
-    POP BC
-    DJNZ .placesLoop
+    LD A, LINES_D9-1
+
+.loop
+    PUSH AF,BC
+    _CopyScoreLineToNext
+    POP BC,AF
+    SUB 1
+    DJNZ .loop
+
+.end
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                 _CopyScoreLineToNext                     ;
+;----------------------------------------------------------;
+; Input: 
+;  - A: score line to copy to the next one
+    MACRO _CopyScoreLineToNext
+
+    ; DE will contain the source line, HL the destination
+    PUSH AF
+    CALL _LineToIX
+    LD DE, IX
+    POP AF
+
+    INC A
+    PUSH DE
+    CALL _LineToIX
+    POP DE
+    LD HL, IX
+
+    LD B, LINE_BYTES_D15
+.loop
+    LD A, (DE)
+    LD (HL), A
+    INC DE
+    INC HL
+    DJNZ .loop
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -152,7 +184,7 @@ menuScoreCursor
     CALL dbs.SetupCode1Bank
 
     ; Compare the new score starting from the bottom line (nr 9) until we find a line in the score that is larger than the current score.
-    LD B, LINES_D10-1
+    LD B, LINES_D9
 .linesLoop                                      ; Loop over score lines, starting from the bottom.
 
     ; ##########################################
@@ -228,16 +260,26 @@ EnterNewScore
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
+    CALL dbs.SetupCode1Bank
+
     XOR A                                       ; Enable user name input
     LD (nameChPos), A
 
     CALL _SetupMenuScore
     _CalculateScoreLine
+
+    ; Does the user qualify for the scoreboard?
+    CP LINES_D9+1
+    JR C, .edit
+    
+    CALL _SetScoreToReadOnly
+    JP .afterEdit
+.edit
+    _SortScoreBoard
     _StoreNewScore
+.afterEdit
 
-    LD A, (scoreLine)
-    CALL _PrintScoreLine
-
+    CALL _PrintWholeScore
     ; ##########################################
     _LoadSong aml.MUSIC_HIGH_SCORE_D3
     CALL aml.MusicOn
@@ -253,11 +295,14 @@ LoadMenuScore
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
+    CALL dbs.SetupCode1Bank
+
     ; Read only mode.
     LD A, NAME_CH_POS_OFF
     LD (nameChPos), A
 
     CALL _SetupMenuScore
+    CALL _PrintWholeScore
 
     ; ##########################################
     ; Music on
@@ -340,9 +385,6 @@ _SetupMenuScore
     CALL ar.LoadMenuScoreImageFile
     CALL bm.CopyImageData
 
-    ; ###########################################
-   _PrintWholeScore
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -405,6 +447,26 @@ _JoyDown
 
     ; FX
     _AFX af.FX_FIRE2
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                     _PrintWholeScore                     ;
+;----------------------------------------------------------;
+; Prints structure from #db2.highScore
+_PrintWholeScore
+
+    CALL dbs.SetupCode1Bank
+
+    LD B, LINES_D9+1
+.placesLoop
+    PUSH BC
+
+    LD A, B
+    CALL _PrintScoreLine
+
+    POP BC
+    DJNZ .placesLoop
 
     RET                                         ; ## END of the function ##
 

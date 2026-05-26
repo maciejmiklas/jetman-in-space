@@ -14,13 +14,13 @@ unlockedLevel           DB 1,1,1                ; There are three difficulty lev
 UNLOCK_SIZE             = $ - unlockedLevel
 
 ; User can enter 10 character, but we display 13: [3xSPACE][10 characters for user name]
-highScore                                       ; This score does not show on screen, it's only there for the sorting ;)
+highScore
 
 ; Easy
 highScoreEasy
     DW $FFFF
     DW $FFFF
-    DB "   FREDUS    "
+    DB "   FREDUS    "                           ; This score does not show on screen, it's only there for the sorting ;)
    
     DW 00000
     DW 65535
