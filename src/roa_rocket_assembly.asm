@@ -16,7 +16,7 @@ dropMinY                DB RO_DROP_Y_MIN_D130
 RO_DOWN_SPR_ID_D80      = 80                    ; Sprite ID is used to lower the rocket part, which has the engine and fuel.
 
 ; Number of seconds to drop next rocket module.
-RO_DROP_NEXT_D20        = 20                    ; Drop next element delay in seconds.
+RO_DROP_NEXT_D20        = 15                    ; Drop next element delay in seconds.
 dropNextDelay           DB 0
 
 ; It counts from EL_EXH_D1 to EL_TANK6_D9, both inclusive. After the rocket is ready for takeoff, it is set to EL_TANK6_D9+1 to light up

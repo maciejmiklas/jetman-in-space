@@ -18,12 +18,19 @@
  BREAK - HOLD TO RETURN TO THE MAIN 
          MENU
 
+JOYSTICK:
+ FIRE 1 - FIRE
 
- GAMEPAD (JOYSTICK):
+ FIRE 2 - THROW A GRENADE
 
- B (FIRE 1) - FIRE
+ GAMEPAD:
+ A - NEXT SONG
 
- C (FIRE 2) - THROW A GRENADE
+ B - FIRE
+
+ C - THROW A GRENADE
+
+ START - PAUSE
 
 ################################################
 gameplay

@@ -163,6 +163,7 @@ JetMovementInput
     _JoyMoveEnd
 
     RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                   GameOptionsInput                       ;
 ;----------------------------------------------------------;
@@ -173,11 +174,20 @@ GameOptionsInput
     ; Read Kempston input
     LD A, _JOY_MASK_H20                         ; Activate joystick register.
     IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
-
     ; Joystick fire B
     PUSH AF
     BIT 4, A
     CALL NZ, _Fire
+    POP AF
+
+    PUSH AF
+    CP 64
+    CALL Z, _NextSong
+    POP AF
+
+    PUSH AF
+    CP 128
+    CALL Z, _Pause
     POP AF
 
     ; Joystick fire C
@@ -211,7 +221,7 @@ GameOptionsInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
     PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
     BIT 0, A                                    ; P
-    CALL Z, _Key_P
+    CALL Z, _Pause
     POP AF
 
     ; ##########################################
@@ -345,10 +355,10 @@ _Key_M
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        _Key_P                            ;
+;                        _Pause                            ;
 ;----------------------------------------------------------;
 ; Pause game
-_Key_P
+_Pause
 
     CALL ki.CanProcessKeyInput
     RET NZ
