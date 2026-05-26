@@ -29,7 +29,7 @@ start
 
   ;  NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
     
-    ;NEXTREG _PERIPHERAL_01_H05, %01'01'1'0'1'1  ; MD1 on port 1 and 2, 50 Hz, scandoubler on.
+    NEXTREG _PERIPHERAL_01_H05, %01'01'1'0'1'1  ; MD1 on port 1 and 2, 50 Hz, scandoubler on.
 
     CALL dbs.SetupAyFxsBank
     CALL af.SetupAyFx
