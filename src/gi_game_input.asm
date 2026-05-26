@@ -360,10 +360,15 @@ _Key_P
 
     LD A, ms.MS_PAUSE_D30
     CALL ms.SetMainStateAndBackup
+    
+    dbs.SetupCodeMusicBank
+    CALL aml.MusicOff
     RET
 
 .pause
 
+    dbs.SetupCodeMusicBank
+    CALL aml.MusicOn
     CALL ms.RestoreMainState
 
     RET                                         ; ## END of the function ##
