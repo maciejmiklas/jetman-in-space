@@ -85,7 +85,7 @@ highScoreNormal
     DW 05000
     DB "   JUREK     "
 
-    DW 00001
+    DW 00000
     DW 04000
     DB "   FRANEK    "
 

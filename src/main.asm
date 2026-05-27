@@ -27,7 +27,7 @@ start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
 
-  ;  NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
+    NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
     
     NEXTREG _PERIPHERAL_01_H05, %01'01'1'0'1'1  ; MD1 on port 1 and 2, 50 Hz, scandoubler on.
 

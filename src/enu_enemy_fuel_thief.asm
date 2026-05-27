@@ -323,7 +323,7 @@ MoveFuelThief
     CALL enur.LoadRocAssemblyX
 
     SUB C                                       ; Ignore B because X < 255, rocket assembly X is 8bit.
-    CP roa.DROP_MARGX_D8
+    CP roa.DROP_MARGX_D12
     JR NC, .notAtRocket
  
     ; ##########################################

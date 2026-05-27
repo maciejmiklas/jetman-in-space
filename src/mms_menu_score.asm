@@ -446,7 +446,7 @@ _JoyDown
     CALL _StoreCurrentChar
 
     ; FX
-    _AFX af.FX_FIRE2
+    _AFX af.FX_FIRE1
 
     RET                                         ; ## END of the function ##
 

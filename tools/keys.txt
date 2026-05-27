@@ -1,0 +1,32 @@
+  KEYBOARD:
+     Z, ENTER - FIRE
+
+     ARROWS OR W, A, S, D - MOVE JETMAN
+
+     P - PAUSE THE GAME
+
+     F - TURN ON/OFF LASER SOUND
+
+     M - PAUSE THE MUSIC
+
+     N - NEXT SONG
+
+     SPACE - THROW A GRENADE
+
+     BREAK - HOLD TO RETURN TO THE 
+             MAIN MENU
+
+ JOYSTICK:
+     FIRE 1 - FIRE
+
+     FIRE 2 - THROW A GRENADE
+
+ GAMEPAD:
+     A - NEXT SONG
+
+     B - FIRE
+
+     C - THROW A GRENADE
+
+     START - PAUSE
+ 

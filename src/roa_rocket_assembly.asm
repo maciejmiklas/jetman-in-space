@@ -41,7 +41,7 @@ BAR_TILE_PAL_H30        = $60
 BAR_ICON_D38            = 36
 BAR_ICON_RAM_START      = BAR_RAM_START - 2
 BAR_ICON_PAL_H00        = $00
-DROP_MARGX_D8           = 8
+DROP_MARGX_D12           = 12
 
 EL_EXH_Y_POS_D234       = 234                     ; Assembly height of the rocket's exhaust.
 
@@ -62,7 +62,7 @@ rocAssemblyX            DB 0
     LD BC, (jpo.jetX)
     LD A, (rocAssemblyX)
     SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit.
-    CP DROP_MARGX_D8
+    CP DROP_MARGX_D12
     JR NC, .end
 
     ; ##########################################
