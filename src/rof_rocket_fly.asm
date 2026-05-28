@@ -211,23 +211,14 @@ ROC_Y_MAX_HI_H1         = $1
     ; Did the rocket reach the middle of the screen, and should it stop moving?
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_3
-    JR C, .keepMoving
+    JR NC, .updateSprites
 
-    ; Do not move the rocket anymore, but keep updating the lower part to keep blinking animation.
-    LD D, (IX + ro.RO.SPRITE_REF)
-    CALL ro.UpdateRocketSpritePattern
-
-    JR .end
-
-    ; Keep moving
-.keepMoving
-
-    ; ##########################################
-    ; Update Y position.
+    ; Keep moving, update Y position.
     LD A, (ro.rocY)
     DEC A
     LD (ro.rocY), A
 
+.updateSprites
     CALL ro.UpdateRocketPosition
 
 .end
