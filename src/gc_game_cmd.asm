@@ -471,8 +471,16 @@ RocketExpolodes
 ;----------------------------------------------------------;
 PlayRocketSound
 
+    LD A, (rof.joyDown)
+    OR A
+    JR Z, .fastFly
+    _AFX af.FX_ROCKET_FLY_SLOW
+    JR .afterFly
+
+.fastFly
     _AFX af.FX_ROCKET_FLY
 
+.afterFly
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##

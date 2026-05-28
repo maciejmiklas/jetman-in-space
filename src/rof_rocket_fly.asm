@@ -20,9 +20,6 @@ rocketDelayDistance     DB 0                    ; Counts from 0 to RO_FLY_DELAY_
 rocketFlyDelay          DB RO_FLY_DELAY_D8      ; Counts from #rocketFlyDelayCnt to 0, decrement with every skipped rocket move.
 rocketFlyDelayCnt       DB RO_FLY_DELAY_D8      ; Counts from RO_FLY_DELAY_D8 to 0, decrements when #rocketDelayDistance resets.
 
-FLY_SOUND_REPEAT        = 20
-soundRepeatDelay        DB FLY_SOUND_REPEAT
-
 DELAY_TILE              = 5
 decTileDelayCnt         DB DELAY_TILE
 
@@ -45,33 +42,15 @@ ROC_X_MIN_D10           = 15
 ROC_Y_MAX_LO_H36        = $2C
 ROC_Y_MAX_HI_H1         = $1
 
+joyDown                 DB 0
+JOY_DOWN_NO_D0          = 0
+JOY_DOWN_YES_D1         = 1
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                        MACROS                            ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
-;----------------------------------------------------------;
-;                    _FlyRocketSound                       ;
-;----------------------------------------------------------;
-    MACRO _FlyRocketSound
-
-    ; Loop rocket sound by repeating it every few game loops.
-    LD A, (soundRepeatDelay)
-    CP FLY_SOUND_REPEAT
-    JR Z, .play
-    INC A
-    LD (soundRepeatDelay), A
-    JR .end
-
-.play
-    XOR A
-    LD (soundRepeatDelay), A
-
-    CALL gc.PlayRocketSound
-
-.end
-    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  _UpdateRocketFlyPhase                   ;
@@ -260,6 +239,7 @@ ResetAndDisableFlyRocket
     LD (rocketDelayDistance), A
     LD (rocketExhaustCnt), A
     LD (ro.rocketFlyPhase), A
+    LD (joyDown), A
 
     LD HL, 0
     LD (rocketDistance), HL
@@ -268,10 +248,6 @@ ResetAndDisableFlyRocket
     LD A, RO_FLY_DELAY_D8
     LD (rocketFlyDelay), A
     LD (rocketFlyDelayCnt), A
-    
-    ; ##########################################
-    LD A, FLY_SOUND_REPEAT
-    LD (soundRepeatDelay), A                    ;Set the count to max so the sound plays immediately when the rocket takes off.
 
     ; ##########################################
     LD HL, roctExhaustSprirtes
@@ -328,7 +304,7 @@ FlyRocket
     ADD ro.OFS_FLAME_D16
     NEXTREG _SPR_REG_Y_H36, A
 
-    _FlyRocketSound
+    CALL gc.PlayRocketSound
 
     RET                                         ; ## END of the function ##
 
@@ -511,6 +487,9 @@ _RocketFLyStartPhase4
 ;----------------------------------------------------------;
 _ProcessJoystickInput
 
+    XOR A
+    LD (joyDown), A
+    ; ##########################################
     LD HL, roctExhaustSprirtes
     LD (roctExhaustPoint), HL
 
@@ -614,6 +593,10 @@ _JoyUp
     DEC A
     LD (ro.rocY), A
 
+    XOR A
+    LD (joyDown), A
+
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -633,6 +616,9 @@ _JoyDown
 
     LD HL, roctExhaustSlow
     LD (roctExhaustPoint), HL
+
+    LD A, JOY_DOWN_YES_D1
+    LD (joyDown), A
 
     RET                                         ; ## END of the function ##
 
