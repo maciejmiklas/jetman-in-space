@@ -412,6 +412,8 @@ RocketFLyPhase4
 ;----------------------------------------------------------;
 RocketTankHit
 
+    CALL enc.KillFewEnemies
+
     CALL sc.HitRocketTank
     _AFX af.FX_EXPLODE_TANK
 
