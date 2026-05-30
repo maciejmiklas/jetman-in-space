@@ -234,7 +234,7 @@ GameOptionsInput
     BIT 3, A                                    ; F
     CALL Z, _Key_F
 
-/*
+    IFDEF DEBUG_KEYS
     ; ##########################################
     ; Row T...Q
     LD A, _KB_T_TO_Q_HFB
@@ -249,7 +249,8 @@ GameOptionsInput
     ; Key Q
     BIT 0, A                                    ; Q
     CALL Z, _Key_Q
-*/
+    ENDIF
+
     ; ##########################################
     ; Row: B, M, M, FULL-STOP, SPACE
 
@@ -301,10 +302,10 @@ GameOptionsInput
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
+    IFDEF DEBUG_KEYS
 ;----------------------------------------------------------;
 ;                        _Key_Q                            ;
 ;----------------------------------------------------------;
-/*
 _Key_Q
 
     CALL dbs.SetupInGameMusicBank
@@ -326,7 +327,7 @@ _Key_R
     CALL roa.AssemblyRocketForDebug
 
     RET                                         ; ## END of the function ##
-*/
+    ENDIF
 
 ;----------------------------------------------------------;
 ;                      _NextSong                           ;

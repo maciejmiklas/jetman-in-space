@@ -78,10 +78,11 @@ RAND_MOVE_SIZE_D30      = 30                    ; 30 elements, 60 bytes.
 RAND_MOVE_EL_D2         = 2
 RAND_SIGN_BIT_D7        = 7
 
-COL_MARGIN_Y_D35        = 35
+COL_MARGIN_Y_D35        = 45
 COL_ADD_Y_N30           = -30
-COL_MARGIN_X_D26        = 25
-COL_ADD_X_N22           = -22
+
+COL_ADD_X_N22           = -18
+COL_MARGIN_X_D26        = 28
 
 ;----------------------------------------------------------;
 ;                CheckRocketCollision                      ;
