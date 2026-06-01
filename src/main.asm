@@ -11,8 +11,8 @@ STACK_SIZE              = 50
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
-  ;  DEFINE DEBUG_BAR    1                        ; Enable debug bar
-    DEFINE DEBUG_KEYS    1
+    ;DEFINE DEBUG_BAR    1                        ; Enable debug bar
+    ;DEFINE DEBUG_KEYS    1
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -28,7 +28,7 @@ start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
 
-    ;NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
+    NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
     
     NEXTREG _PERIPHERAL_01_H05, %01'01'1'0'1'1  ; MD1 on port 1 and 2, 50 Hz, scandoubler on.
 
@@ -195,21 +195,21 @@ mainLoop
 
     ; ################ BANK 30 ################
     ; TO USE THIS MODULE: CALL dbs.SetupFollowingEnemyBank
-    MMU _RAM_SLOT6, dbs.ENEMY_DATA_BANK_S6_B30
+    MMU _RAM_SLOT6, dbs.F_ENEMY_BANK_S6_B30
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "fe_following_enemy.asm"
     INCLUDE "fed_following_enemy_data.asm"
 
     ; ################ BANK 31 ################
     ; TO USE THIS MODULE: CALL dbs.SetupEnemyDataBank
-    MMU _RAM_SLOT6, dbs.P_ENEMY_BANK_S6_B31
+    MMU _RAM_SLOT6, dbs.ENEMY_BANK_S6_B31
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "ena_enemy_data.asm"
     INCLUDE "enf_enemy_formation.asm"
     INCLUDE "enp_enemy_pattern.asm"
     INCLUDE "ens_enemy_single.asm"
     INCLUDE "enu_enemy_fuel_thief.asm"
-    ASSERT $$ == dbs.P_ENEMY_BANK_S6_B31
+    ASSERT $$ == dbs.ENEMY_BANK_S6_B31
 
     ; ################ BANK 32 #################
     ; TO USE THIS MODULE: dbs.SetupAyFxsBank

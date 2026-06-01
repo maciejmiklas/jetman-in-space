@@ -36,10 +36,10 @@ BMB_ST_BANK_S7_D18      = 18                    ; Slot 7. Start of displayed Lay
 BMB_END_BANK_S7_D27     = 27                    ; Last background bank (inclusive).
 
 ; ################## Game Code #################
-ARR1_BANK_S7_D28        = 28                    ; Slot 7. Bank for arrays, slot 6.
-ARR2_BANK_S7_D29        = 29                    ; Slot 7. Bank for arrays, slot 6.
-ENEMY_DATA_BANK_S6_B30     = 30                    ; Slot 6, Following Enemies.
-P_ENEMY_BANK_S6_B31     = 31                    ; Slot 6, Pattern Enemies.
+ARR1_BANK_S7_D28        = 28                    ; Slot 7, bank for arrays, slot 6.
+ARR2_BANK_S7_D29        = 29                    ; Slot 7, bank for arrays, slot 6.
+F_ENEMY_BANK_S6_B30     = 30                    ; Slot 6, following Enemies.
+ENEMY_BANK_S6_B31       = 31                    ; Slot 6, pattern/single/thief enemy.
 AY_FX_S6_D32            = 32                    ; Slot 6, FX sound.
 AY_MCODE_S6_D33         = 33                    ; Slot 6, music code, music binary is in AY_MCODE_S6_D33.
 TILE_ANIMATION_D34      = 34                    ; Slot 6, tile animation.
@@ -71,7 +71,7 @@ AY_MI_BANKS_40          = AY_MIBIN_S7_EN_D129 - AY_MIBIN_S7_ST_D89
     ASSERT AY_MI_BANKS_40 = 40
 ingameMusicBank         DB AY_MIBIN_S7_ST_D89
 
-currentEnemyBank        DB P_ENEMY_BANK_S6_B31
+currentEnemyBank        DB ENEMY_BANK_S6_B31
 
 ;----------------------------------------------------------;
 ;                  ResetInGameMusicBank                    ;
@@ -177,7 +177,7 @@ SetupCurrentEnemyBank
 ;----------------------------------------------------------;
 SetupFollowingEnemyBank
 
-    LD A, ENEMY_DATA_BANK_S6_B30
+    LD A, F_ENEMY_BANK_S6_B30
     NEXTREG _MMU_REG_SLOT6_H56, A
     LD (currentEnemyBank), A
 
@@ -188,7 +188,7 @@ SetupFollowingEnemyBank
 ;----------------------------------------------------------;
 SetupEnemyDataBank
 
-    LD A, P_ENEMY_BANK_S6_B31
+    LD A, ENEMY_BANK_S6_B31
     NEXTREG _MMU_REG_SLOT6_H56, A
     LD (currentEnemyBank), A
 

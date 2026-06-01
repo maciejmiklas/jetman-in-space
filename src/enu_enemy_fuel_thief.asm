@@ -18,6 +18,7 @@ TS_EXPLODES_D20         = 20
 TS_RUNS_EMPTY_D30       = 30
 TS_CARRIES_FUEL_D31     = 31
 thiefState              DB TS_DISABLED_D0
+
 THIEF_SIZE_D1           = 1
 FUEL_SPRITE_ID_D97      = 97                    ; Sprite ID for the fuel tank.
 FUEL_SPRITE_REF_D17     = 17                    ; Sprite id from sprite file.
@@ -27,8 +28,8 @@ DEPLOY_SIDE_RND_H30     = $30
 thiefRespawnDelayCnt    DB 0
 
 ; Repown delay in seconds, MUST me be > RO_DROP_NEXT_D20 (theif respown resets #dropNextDelay)
-RESPAWN_DELAY_D30       = 30
-RESPAWN_DEPLOYING_D25   = 25
+RESPAWN_DELAY_D25       = 25
+RESPAWN_DEPLOYING_D20   = 21
 
 MIN_FUEL_LEVEL_D6       = 6
 
@@ -141,6 +142,7 @@ ThiefWeaponHit
 
     RET                                         ; ## END of the function ##
 
+tmp db 0
 ;----------------------------------------------------------;
 ;                     RespawnFuelThief                     ;
 ;----------------------------------------------------------;
@@ -179,7 +181,7 @@ RespawnFuelThief
 
     ; ##########################################
     ; Deploying starts few loops before running, and it's used to play sound before thief starts running.
-    CP RESPAWN_DEPLOYING_D25
+    CP RESPAWN_DEPLOYING_D20
     JR NZ, .afterRespawn
 
     LD A, TS_DEPLOYING_D2
@@ -193,7 +195,7 @@ RespawnFuelThief
     ; Respawn thief.
 
     LD A, (thiefRespawnDelayCnt)
-    CP RESPAWN_DELAY_D30
+    CP RESPAWN_DELAY_D25
     RET NZ
 
     LD A, TS_RUNS_EMPTY_D30
