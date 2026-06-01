@@ -138,20 +138,29 @@ SetupMusicCommonBank
 ;----------------------------------------------------------;
 ;                    SetupRocketBank                       ;
 ;----------------------------------------------------------;
-SetupRocketBank
+    MACRO dbs.SetupRocketBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, ROCKET_S6_D36
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.ROCKET_S6_D36
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
+;                    SetupCode1Bank                        ;
+;----------------------------------------------------------;
+    MACRO dbs.SetupCode1Bank
+
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.CODE1_S6_D35
+
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                    SetupCode1Bank                        ;
 ;----------------------------------------------------------;
 SetupCode1Bank
 
-    NEXTREG _MMU_REG_SLOT6_H56, CODE1_S6_D35
+    dbs.SetupCode1Bank
 
-    RET                                         ; ## END of the function ##
+    RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
 ;                  SetupCurrentEnemyBank                   ;
@@ -188,27 +197,36 @@ SetupEnemyDataBank
 ;----------------------------------------------------------;
 ;                  SetupEmptyImageBank                     ;
 ;----------------------------------------------------------;
-SetupEmptyImageBank
+    MACRO dbs.SetupEmptyImageBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, EMPTY_IMG_S6_D85
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.EMPTY_IMG_S6_D85
 
-    RET                                         ; ## END of the function ## 
+    ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
 ;                  SetupTileAnimationBank                  ;
 ;----------------------------------------------------------;
-SetupTileAnimationBank
+    MACRO dbs.SetupTileAnimationBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, TILE_ANIMATION_D34
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.TILE_ANIMATION_D34
 
-    RET                                         ; ## END of the function ## 
+    ENDM                                        ; ## END of the macro ## 
+
+;----------------------------------------------------------;
+;                     SetupAyFxsBank                       ;
+;----------------------------------------------------------;
+    MACRO dbs.SetupAyFxsBank
+
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.AY_FX_S6_D32 ; Code and effects.afb
+
+    ENDM                                        ; ## END of the macro ## 
 
 ;----------------------------------------------------------;
 ;                     SetupAyFxsBank                       ;
 ;----------------------------------------------------------;
 SetupAyFxsBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, AY_FX_S6_D32    ; Code and effects.afb
+    dbs.SetupAyFxsBank
 
     RET                                         ; ## END of the function ## 
 
@@ -225,11 +243,11 @@ Setup16KTilemapBank
 ;----------------------------------------------------------;
 ;                  Setup8KTilemapBank                      ;
 ;----------------------------------------------------------;
-Setup8KTilemapBank
+    MACRO dbs.Setup8KTilemapBank
 
-    NEXTREG _MMU_REG_SLOT7_H57, LONG_TI_BANK2_S7_D84
+    NEXTREG _MMU_REG_SLOT7_H57, dbs.LONG_TI_BANK2_S7_D84
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ## 
 
 ;----------------------------------------------------------;
 ;                   SetupSpritesBank                       ;
@@ -244,20 +262,20 @@ SetupSpritesBank
 ;----------------------------------------------------------;
 ;                     SetupArrays1Bank                     ;
 ;----------------------------------------------------------;
-SetupArrays1Bank
+    MACRO dbs.SetupArrays1Bank
 
-    NEXTREG _MMU_REG_SLOT7_H57, ARR1_BANK_S7_D28
+    NEXTREG _MMU_REG_SLOT7_H57, dbs.ARR1_BANK_S7_D28
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ## 
 
 ;----------------------------------------------------------;
 ;                   SetupArrays2Bank                       ;
 ;----------------------------------------------------------;
-SetupArrays2Bank
+    MACRO dbs.SetupArrays2Bank
 
-    NEXTREG _MMU_REG_SLOT7_H57, ARR2_BANK_S7_D29
+    NEXTREG _MMU_REG_SLOT7_H57, dbs.ARR2_BANK_S7_D29
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ## 
 
 ;----------------------------------------------------------;
 ;                  SetupBgPaletteBank                      ;
@@ -275,11 +293,11 @@ SetupBgPaletteBank
 ;----------------------------------------------------------;
 ;                  SetupTiPaletteBank                      ;
 ;----------------------------------------------------------;
-SetupTiPaletteBank
+    MACRO dbs.SetupTiPaletteBank
 
-    NEXTREG _MMU_REG_SLOT6_H56, PAL_TI_BANK_S6_D87
+    NEXTREG _MMU_REG_SLOT6_H56, dbs.PAL_TI_BANK_S6_D87
 
-    RET                                         ; ## END of the function ##
+    ENDM                                        ; ## END of the macro ## 
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

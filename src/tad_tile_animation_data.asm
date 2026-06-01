@@ -5,7 +5,7 @@
 ;----------------------------------------------------------;
 ;                   Tile Animation Data                    ;
 ;----------------------------------------------------------;
-    ; ### TO USE THIS MODULE: CALL dbs.SetupTileAnimationBank ###
+    ; ### TO USE THIS MODULE: dbs.SetupTileAnimationBank ###
 
     MODULE tad
 EMP                     = 198

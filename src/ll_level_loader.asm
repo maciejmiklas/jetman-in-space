@@ -152,7 +152,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Load stars
     PUSH IX
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
     LD A, (IX + LL.STARS_PAL)
     LD DE, (IX + LL.STARS_D1)
     LD HL, (IX + LL.STARS_D2)
@@ -173,7 +173,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Setup Platforms
     PUSH IX
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     LD HL, (IX + LL.PLAT_DATA)
     LD A, (IX + LL.PLAT_SIZE)
     CALL pl.SetupPlatforms
@@ -182,7 +182,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Load rocket
     PUSH IX
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     LD HL, (IX + LL.ROC_DATA)
     LD A, (IX + LL.ROC_X)
     CALL roa.SetupRocket
@@ -242,7 +242,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Load tile animation
     PUSH IX
-    CALL dbs.SetupTileAnimationBank
+    dbs.SetupTileAnimationBank
     LD A, (IX + LL.TIA_SIZE)
     LD HL, (IX + LL.TIA_DATA)
     CALL ta.SetupTileAnimation
@@ -251,7 +251,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Load tilemap palette
     PUSH IX
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
     LD HL, (IX + LL.TIP_DATA)
     LD B, (IX + LL.TIP_SIZE)
     CALL ti.LoadTilemapPaletteWithTimesOfDay
@@ -260,7 +260,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Setup Pickups
     PUSH IX
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     LD A, (IX + LL.PIC_SIZE)
     LD DE, (IX + LL.PIC_DATA)
     CALL pi.SetupPickups
@@ -287,7 +287,7 @@ LoadUnlockLevel
     LD A, (jt.difLevel)
     DEC A                                       ; Diff level counts 1-3, for offset we need 0-2
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     LD DE, so.unlockedLevel
     ADD DE, A
     LD A, (DE)
@@ -331,7 +331,7 @@ UnlockNextLevel
     ; ##########################################
     ; Update the unlock level
     PUSH AF
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
     ; Move DE to the #unlockedLevel for the current difficulty.
     LD DE, so.unlockedLevel

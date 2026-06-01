@@ -24,7 +24,7 @@ ASCII_O                 = $30
 ;----------------------------------------------------------;
 LoadTilemapMenuPalette
 
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
     LD HL, db1.tilePalette1Bin
     LD B, db1.TILE_PAL_SIZE_1
     CALL ti.LoadTilemapPalette
@@ -62,7 +62,7 @@ LoadMenuTilemapSprites
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroImageFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.liBgFileName
     PUSH HL                                     ; Keep the address in HL to point to the beginning of the string (for fi.CopyFileName).
@@ -82,7 +82,7 @@ LoadLevelIntroImageFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelSelectImageFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Prepare file name for Level given by DE.
     LD HL, db2.levelSelectBgFileName
@@ -102,7 +102,7 @@ LoadLevelSelectImageFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelSelectPalFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Prepare file name for Level given by DE.
     LD HL, db2.levelSelectPalFileName
@@ -125,7 +125,7 @@ LoadLevelSelectPalFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="2"
 LoadMenuScoreImageFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Prepare file name for Level given by DE.
     LD HL, db2.menuScoreBgFileName
@@ -145,7 +145,7 @@ LoadMenuScoreImageFile
 ;  - DE: difficulty number as ASCII, for example for level 4: D="0", E="1"
 LoadMenuScorePalFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Prepare file name for Level given by DE.
     LD HL, db2.menuScorePalFileName
@@ -178,7 +178,7 @@ LoadMusicFile
 LoadMusicBankFile
 
     PUSH BC
-    CALL dbs.SetupArrays2Bank                   ; Setup slot 7 to load arrays.
+    dbs.SetupArrays2Bank                   ; Setup slot 7 to load arrays.
 
     CALL ut.NumTo999Str                         ; C,D,E now contains ASCII of value from A.
 
@@ -216,7 +216,7 @@ LoadMusicBankFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadBgImageFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.lbFileName
     PUSH HL
@@ -237,7 +237,7 @@ LoadBgImageFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadIntroPalFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.introPalFileName
     PUSH HL
@@ -252,7 +252,7 @@ LoadIntroPalFile
 ;----------------------------------------------------------;
 LoadEasyPalFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.easyPalFileName
     CALL _LoadPalFileByName
@@ -264,7 +264,7 @@ LoadEasyPalFile
 ;----------------------------------------------------------;
 LoadHardPalFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.hardPalFileName
     CALL _LoadPalFileByName
@@ -278,7 +278,7 @@ LoadHardPalFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadBgPaletteFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.lbpFileName
     PUSH HL
@@ -304,7 +304,7 @@ LoadBgPaletteFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadPlatformsTilemapFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.plTileFileName
     PUSH HL
@@ -328,7 +328,7 @@ LoadPlatformsTilemapFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadTileStarsSprFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.strTileFileName
     PUSH DE
@@ -352,7 +352,7 @@ LoadTileStarsSprFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadTilePlatformsSprFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.sprTileFileName
     PUSH DE
@@ -377,7 +377,7 @@ LoadTilePlatformsSprFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadSpritesFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.sprFileName
     CALL _LoadSpritesFile
@@ -392,7 +392,7 @@ LoadSpritesFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadMeteorsFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.metFileName
     CALL _LoadSpritesFile
@@ -406,7 +406,7 @@ LoadMeteorsFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 LoadRocketStarsTilemapFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.stTilesFileName
     CALL fi.CopyFileName
@@ -422,7 +422,7 @@ LoadRocketStarsTilemapFile
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4"
 LoadLevelIntroTilemapFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.introTilesFileName
     CALL fi.CopyFileName
@@ -437,7 +437,7 @@ LoadLevelIntroTilemapFile
 ;----------------------------------------------------------;
 LoadMenuGameplayTilemapFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.mmgTileFileName
     CALL fi.CopyFileName
@@ -458,7 +458,7 @@ LoadMenuGameplayTilemapFile
 LoadMenuKeysTilemapFile
 
     ; Open file
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     LD HL, db2.mmkTileFileName
     CALL fi.CopyFileName
     CALL fi.FileOpenRead
@@ -475,7 +475,7 @@ LoadMenuKeysTilemapFile
 ;----------------------------------------------------------;
 LoadMenuEasyImageFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.menuEasyBgFileName
     CALL fi.CopyFileName
@@ -490,7 +490,7 @@ LoadMenuEasyImageFile
 ;----------------------------------------------------------;
 LoadMenuHardImageFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, db2.menuHardBgFileName
     CALL fi.CopyFileName
@@ -515,7 +515,7 @@ LoadMenuHardImageFile
 ;  - HL: ponter to file name
 _LoadSpritesFile
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Load first file
     PUSH DE
@@ -667,7 +667,7 @@ _SetupMenuScoreFileName
 ;  - HL: pointer to file name.
 _LoadPalFileByName
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     CALL fi.CopyFileName
     CALL fi.FileOpenRead
@@ -688,7 +688,7 @@ _LoadPalFileByName
 ;  - DE: level number as ASCII, for example for level 4: D="0", E="4".
 _Load8KTilemap
 
-    CALL dbs.Setup8KTilemapBank
+    dbs.Setup8KTilemapBank
 
     ; Read file.
     LD HL, fi.fileNameBuf

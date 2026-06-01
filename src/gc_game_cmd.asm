@@ -11,7 +11,7 @@
 JM_RESPAWN_X_D100       = 100
 JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
-FUEL_THIEF_ACTIVE_LEV   = 5
+FUEL_THIEF_ACTIVE_LEV   = 4
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -62,7 +62,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL gb.ShowGameBar
     CALL sc.PrintScore
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.StartRocketAssembly
 
     CALL ti.ResetTilemapOffset
@@ -91,13 +91,13 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL gid.ResetKeysState
     CALL td.ResetTimeOfDay
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL ros.ResetRocketStars
 
     CALL dbs.SetupEnemyDataBank
     CALL enu.EnableFuelThief
 
-    CALL dbs.SetupTileAnimationBank
+    dbs.SetupTileAnimationBank
     CALL ta.DisableTileAnimation
 
     CALL enc.InitEnemies
@@ -122,7 +122,7 @@ StartGameWithIntro
     CALL jl.ResetLives
 
     ; Music
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     LD A, (so.gameMusicCnt)
 
     PUSH AF
@@ -221,7 +221,7 @@ StoreGameData
     dbs.SetupCodeMusicBank
     LD A, (aml.gameMusicCnt)
     
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     LD (so.gameMusicCnt), A
     CALL so.WriteToSd
 
@@ -253,7 +253,7 @@ LoadNextLevel
     CALL StoreGameData
 
 .end
-    CALL dbs.SetupRocketBank                    ; Coll has to return to ritht bank.
+    dbs.SetupRocketBank                    ; Coll has to return to ritht bank.
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -320,13 +320,13 @@ RocketFLyStartPhase1
     CALL jw.HideShots
     CALL NightLimitVisibilityOffNow
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
     CALL dbs.SetupEnemyDataBank
     CALL enu.DisableFuelThief
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
  
     RET                                         ; ## END of the function ##
 
@@ -340,7 +340,7 @@ RocketFLyStartPhase2
     CALL sc.SetClipTilesHorizontal
     CALL ti.ClearBottomTileLine
 
-    CALL dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
+    dbs.SetupRocketBank                    ; Code must return to rof_rocket_fly.asm
 
     RET                                         ; ## END of the function ##
 
@@ -365,14 +365,14 @@ RocketFLyStartPhase4
     CALL sp.LoadSpritesFPGA
 
     ; Load tilemap palette
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
     LD HL, (ll.tilePaletteStarsAddr)
     LD B, db1.STARS_PAL_BYTES
     CALL ti.LoadTilemapPalette
 
     CALL sc.SetClipTop50
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -387,7 +387,7 @@ RocketFLyPhase2and3
     CALL bg.UpdateBackgroundOnRocketMove
     CALL bg.HideBackgroundBehindHorizon
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -403,7 +403,7 @@ RocketFLyPhase4
 
     CALL st.MoveStarsDownFast
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -417,7 +417,7 @@ RocketTankHit
     CALL sc.HitRocketTank
     _AFX af.FX_EXPLODE_TANK
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -430,7 +430,7 @@ RocketElementPickup
 
     ; ##########################################
     ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element.
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.IsFuelDeployed
     JR NZ, .notFuelTank
 
@@ -441,7 +441,7 @@ RocketElementPickup
     _AFX af.FX_PICKUP_ROCKET_EL
 .afterFuelFx
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
@@ -452,7 +452,7 @@ RocketElementPickupInAir
 
     CALL sc.PickupRocketElementInAir
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
@@ -463,7 +463,7 @@ RocketExpolodes
 
     _AFX af.FX_EXPLODE_ENEMY_2
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -482,7 +482,7 @@ PlayRocketSound
     _AFX af.FX_ROCKET_FLY
 
 .afterFly
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -495,7 +495,7 @@ RocketElementDrop
 
    _AFX af.FX_ROCKET_EL_DROP
 
-    CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
@@ -559,7 +559,7 @@ PlayFuelThiefFx
 ;----------------------------------------------------------;
     MACRO gc.JetmanEnemiesCollision
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; ##########################################
     CALL dbs.SetupEnemyDataBank
@@ -588,7 +588,7 @@ PlayFuelThiefFx
 ;    A:  Sprite ID of the enemy.
 ;  - IX: Pointer to enemy's #SPR.
 EnemyHit
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     CALL sp.SpriteHit
 
     ; Checkt what enemy has been hit.
@@ -700,7 +700,7 @@ RespawnJet
     CALL bm.CopyImageData
     CALL bg.UpdateBackgroundOnJetmanMove
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.ResetCarryingRocketElement
 
     CALL jw.HideShots
@@ -834,15 +834,15 @@ JetLanding
 ; Called on any Jetman movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
 JetMoves
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.UpdateRocketOnJetmanMove
 
     CALL jl.UpdateLifeFaceOnJetMove
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     CALL pi.UpdatePickupsOnJetmanMove
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     CALL nv.UpdateVisibilityOnJetMove 
 
     RET                                         ; ## END of the function ##
@@ -908,7 +908,7 @@ JoyWillEnable
 ;----------------------------------------------------------;
 NightLimitVisibility1
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     LD A, nv.VISIBILITY_LIMIT_1
     CALL nv.LimitJetVisibility
 
@@ -921,7 +921,7 @@ NightLimitVisibility1
 ;----------------------------------------------------------;
 NightLimitVisibility2
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     LD A, nv.VISIBILITY_LIMIT_2
     CALL nv.LimitJetVisibility
 
@@ -934,7 +934,7 @@ NightLimitVisibility2
 ;----------------------------------------------------------;
 NightLimitVisibilityOffNow
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     CALL nv.LimitJetVisibilityOffNow
 
     CALL ti.LoadTilemapPaletteForDay
@@ -946,7 +946,7 @@ NightLimitVisibilityOffNow
 ;----------------------------------------------------------;
 NightLimitVisibilityOff
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     CALL nv.LimitJetVisibilityOff
 
     CALL ti.LoadTilemapPaletteForDay
@@ -1038,11 +1038,11 @@ _HideGame
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.ResetAndDisableRocket
     CALL rof.ResetAndDisableFlyRocket
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
     CALL dbs.SetupEnemyDataBank

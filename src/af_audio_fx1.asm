@@ -9,7 +9,7 @@
 
     MODULE af1
 
-    ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
+    ; TO USE THIS MODULE: dbs.SetupAyFxsBank
 
 ; Based on: https://github.com/robgmoran/DougieDoSource
 

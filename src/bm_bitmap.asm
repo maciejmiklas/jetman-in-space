@@ -64,7 +64,7 @@ CopyImageData
 ; Copies a bank with black color.
 CreateEmptyImageBank
 
-    CALL dbs.SetupEmptyImageBank
+    dbs.SetupEmptyImageBank
 
     ; Fill this bank with 0 black color
     LD HL, _RAM_SLOT6_STA_HC000                 ; Start of the RAM area to fill (adjust as needed).
@@ -88,7 +88,7 @@ CreateEmptyImageBank
 ; Copies 10x bank with black color over displayed image.
 HideImage
 
-    CALL dbs.SetupEmptyImageBank
+    dbs.SetupEmptyImageBank
 
     ; ##########################################
     ; Reset image offset

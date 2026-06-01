@@ -388,7 +388,7 @@ starsMode               DB STARSM_HIDE
     CP ST_C_HIDDEN
     RET C
 
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
 
     ENDM                                        ; ## END of the macro ##
 
@@ -418,7 +418,7 @@ SetupStars
 ;----------------------------------------------------------;
 LoadStarsPalette
 
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
 
     ; Palettes for L1/L2 are stored as a continuous array. The pointer to the start of this array is given by #starsPalL1/L2.
     ; A gives the palette number. To load L1: #starsPalL1+A*32.
@@ -483,7 +483,7 @@ MoveStarsUp
     CP ST_C_HIDDEN
     RET C
 
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
 
     ;###########################################
     ; Update state

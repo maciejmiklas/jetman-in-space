@@ -122,7 +122,7 @@ menuScoreCursor
 ; For example, when he enters the score at line 7, we move line 9 to 10, line 8 to 9, and line 7 to 8.
     MACRO _SortScoreBoard
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
     ; Calculate the number of lines that have to be moved down.
     LD A, (scoreLine)
@@ -181,7 +181,7 @@ menuScoreCursor
 ;  A: contains line number for high score based on new users' game score. Values 0-9, 10+ means not qualified.
     MACRO _CalculateScoreLine
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
     ; Compare the new score starting from the bottom line (nr 9) until we find a line in the score that is larger than the current score.
     LD B, LINES_D9
@@ -260,7 +260,7 @@ EnterNewScore
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
     XOR A                                       ; Enable user name input
     LD (nameChPos), A
@@ -295,7 +295,7 @@ LoadMenuScore
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
     ; Read only mode.
     LD A, NAME_CH_POS_OFF
@@ -456,7 +456,7 @@ _JoyDown
 ; Prints structure from #db2.highScore
 _PrintWholeScore
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
     LD B, LINES_D9+1
 .placesLoop
@@ -583,7 +583,7 @@ _SetScoreToReadOnly
 ;----------------------------------------------------------;
 _UpdateCursor
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
     ; Calculate X postion
     LD DE, (nameChPos)
@@ -734,7 +734,7 @@ _SetDeToEnterTiRam
 ;----------------------------------------------------------;
 _StoreCurrentChar
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
 
      ; DE will point to RAM containing the character the user currently enters.
     LD A, (scoreLine)

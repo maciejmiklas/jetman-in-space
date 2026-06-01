@@ -6,7 +6,7 @@
 ;                     Building the Rocket                  ;
 ;----------------------------------------------------------;
     MODULE roa
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
 
 RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element.
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element.

@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     module db1
 
-; Before using it: CALL dbs.SetupArrays1Bank
+; Before using it: dbs.SetupArrays1Bank
 db1BankStart
 
 ;----------------------------------------------------------;

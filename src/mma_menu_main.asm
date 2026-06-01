@@ -160,7 +160,7 @@ _LoadMenuEasy
     LD (jt.difLevel), A
 
     ; ##########################################
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     LD IX, db2.menuDifEasy
     CALL _PrintMenu
 
@@ -204,7 +204,7 @@ _LoadMenuNormal
     LD (jt.difLevel), A
 
     ; ##########################################
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     LD IX, db2.menuDifNorm
     CALL _PrintMenu
 
@@ -242,7 +242,7 @@ _LoadMenuHard
     LD (jt.difLevel), A
 
     ; ##########################################
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     LD IX, db2.menuDifHard
     CALL _PrintMenu
 
@@ -271,7 +271,7 @@ _PrintMenu
 ;                   _SetIXToActiveMenu                     ;
 ;----------------------------------------------------------;
 _SetIXToActiveMenu
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Load into DE "current position" * "menu size"
     LD A, (menuPos)
@@ -323,7 +323,7 @@ _UpdateJetPostion
 ;----------------------------------------------------------;
 _LoadStaticMenuText
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD B, db2.MAIN_MENU_EL_SIZE
     LD IX, db2.mainMenuEl

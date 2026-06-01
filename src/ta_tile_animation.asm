@@ -5,7 +5,7 @@
 ;----------------------------------------------------------;
 ;                     Tile Animation                       ;
 ;----------------------------------------------------------;
-    ; ### TO USE THIS MODULE: CALL dbs.SetupTileAnimationBank ###
+    ; ### TO USE THIS MODULE: dbs.SetupTileAnimationBank ###
 
     MODULE ta
 

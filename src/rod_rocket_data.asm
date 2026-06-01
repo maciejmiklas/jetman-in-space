@@ -6,7 +6,7 @@
 ;                      Rocket Data                         ;
 ;----------------------------------------------------------;
     MODULE rod
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
 
 AGND                    = 30*8
 TASM                    = 200

@@ -72,7 +72,7 @@ LoadLevelIntro
     ; Tilemap with story
 
     PUSH DE
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD (db2.introSecondFileSize), HL
     CALL sc.SetClipTilesHorizontal

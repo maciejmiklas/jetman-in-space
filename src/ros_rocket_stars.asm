@@ -6,7 +6,7 @@
 ;                     Rocket Stars                         ;
 ;----------------------------------------------------------;
     MODULE ros
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
 
 ; Moves the tilemap with platforms, then animates the stars.
 
@@ -64,7 +64,7 @@ slowDownScrollY         DB 0
 ; position of the bottom row (#tilesRow). We also need to read the next row from the starts tilemap (#sourceTilesRow).
     MACRO _NextStarsTileRow
 
-    CALL dbs.Setup8KTilemapBank
+    dbs.Setup8KTilemapBank
 
     ; ##########################################
     ; Decrement counters

@@ -23,7 +23,7 @@
 ;----------------------------------------------------------;
     MACRO _AFX FX_NR
 
-    CALL dbs.SetupAyFxsBank
+    dbs.SetupAyFxsBank
     LD A, FX_NR
     CALL af.AfxPlay
 

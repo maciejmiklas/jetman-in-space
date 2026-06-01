@@ -26,7 +26,7 @@ InitEnemies
 ;----------------------------------------------------------;
 CheckEnemyWeaponHit
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; ##########################################
     CALL dbs.SetupEnemyDataBank

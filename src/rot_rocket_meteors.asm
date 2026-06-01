@@ -6,7 +6,7 @@
 ;                      Meteors Shower                      ;
 ;----------------------------------------------------------;
     MODULE rot
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
 
 ; Meteor sprite takes almost a complete 16K sprite file (asteroi_0.spr/asteroi_1.spr). Each meteor sprite is a matrix of 3x3 sprites 
 ; (a composite sprite with an anchor). A single animation frame (pattern) occupies 6 slots (3*2=6) in the sprite file. 

@@ -6,7 +6,7 @@
 ;                       Game Pickups                       ;
 ;----------------------------------------------------------;
     MODULE pi
-    ; Before using it CALL dbs.SetupArrays2Bank
+    ; Before using it dbs.SetupArrays2Bank
 
 PI_SPR_LIFE             = 3                 ; Exta life.
 PI_SPR_DIAMOND          = 39                ; Extra points.

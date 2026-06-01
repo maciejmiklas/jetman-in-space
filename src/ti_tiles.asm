@@ -92,7 +92,7 @@ SetupTiles
 ;----------------------------------------------------------;
 LoadTilemapPaletteForDay
 
-    CALL dbs.SetupArrays1Bank
+    dbs.SetupArrays1Bank
     LD A, (paletteBytes)
     CP 0
     RET Z
@@ -107,7 +107,7 @@ LoadTilemapPaletteForDay
 ;----------------------------------------------------------;
 LoadTilemapPaletteForNight1
 
-    CALL dbs.SetupTiPaletteBank
+    dbs.SetupTiPaletteBank
     LD A, (paletteBytes)
     LD B, A
     LD HL, TI_PAL_DARK1_HC000
@@ -120,7 +120,7 @@ LoadTilemapPaletteForNight1
 ;----------------------------------------------------------;
 LoadTilemapPaletteForNight2
 
-    CALL dbs.SetupTiPaletteBank
+    dbs.SetupTiPaletteBank
     LD A, (paletteBytes)
     LD B, A
     LD HL, TI_PAL_DARK2_HC200
@@ -140,7 +140,7 @@ LoadTilemapPaletteWithTimesOfDay
     LD (paletteBytes), A
     LD (paletteDayAddress), HL
 
-    CALL dbs.SetupTiPaletteBank
+    dbs.SetupTiPaletteBank
     LD IX, TI_PAL_DARK1_HC000
     LD IY, TI_PAL_DARK2_HC200
     PUSH BC, HL

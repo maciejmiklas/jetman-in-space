@@ -6,7 +6,7 @@
 ;                 Common Rocket Stuff.                     ;
 ;----------------------------------------------------------;
     MODULE ro
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
 
     STRUCT RO
 DROP_X                  DB                      ; X coordinate to drop the given element/tank, max 255.

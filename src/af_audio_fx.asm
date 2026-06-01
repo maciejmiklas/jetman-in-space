@@ -9,7 +9,7 @@
 
     MODULE af
 
-    ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
+    ; TO USE THIS MODULE: dbs.SetupAyFxsBank
 
 FX_JET_LAND             = 1
 FX_FIRE2                = 2

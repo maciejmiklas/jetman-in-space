@@ -422,7 +422,7 @@ _JoystickMoves
 
     CALL pl.ResetJoyOffBump
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.UpdateRocketOnJetmanMove
     
     CALL pl.JetPlatformHitOnJoyMove

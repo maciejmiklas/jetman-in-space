@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     module db2
 
-    ; Before using it CALL dbs.SetupArrays2Bank
+    ; Before using it dbs.SetupArrays2Bank
 spritesBankStart
 
 ;----------------------------------------------------------;

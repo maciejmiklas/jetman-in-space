@@ -6,7 +6,7 @@
 ;                     Meteor Shower                        ;
 ;----------------------------------------------------------;
     MODULE rotd
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
 
 
 asDeploy1

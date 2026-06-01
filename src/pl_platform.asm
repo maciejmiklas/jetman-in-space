@@ -422,7 +422,7 @@ JetPlatformHitOnJoyMove
     CP MAX_PLATFORM_Y
     RET NC
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; ##########################################
     ; Collision only possible when flying.
@@ -570,7 +570,7 @@ JetPlatformHitOnJoyMove
 ;----------------------------------------------------------;
 ResetJoyOffBump
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Do not reset if already done.
     LD A, (joyOffBump)
@@ -614,7 +614,7 @@ ResetJoyOffBump
 ;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteHit
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IY, db2.spriteHitMargin
     JP _PlatformSpriteHit
@@ -630,7 +630,7 @@ PlatformSpriteHit
 ;  - NO:  Z is set (JP NZ). No collision.
 PlatformSpriteClose
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IY, db2.closeMargin
     JP _PlatformSpriteHit
@@ -646,7 +646,7 @@ PlatformSpriteClose
 ;  - NO:  Z is set (JP NZ). No collision.
 CheckPlatformWeaponHit
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IY, db2.shotHitMargin
     JP _PlatformSpriteHit
@@ -656,7 +656,7 @@ CheckPlatformWeaponHit
 ;----------------------------------------------------------;
 JetLanding
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Ignore landing if Jetman is already on the ground.
     LD A, (jt.jetGnd)
@@ -696,7 +696,7 @@ JetLanding
 ;----------------------------------------------------------;
 MoveJetOnPlatform
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     _MoveJetOnPlatformSideHit
     _MoveJetOnFallingFromPlatform
@@ -711,7 +711,7 @@ MoveJetOnPlatform
 ;  - HL: pointer to memory containing (X[DW],Y[DB]) coordinates to check for the collision.
 PlatformBounceOff
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IX, db2.bounceMargin
     CALL _PlatformDirectionHit
@@ -729,7 +729,7 @@ JetFallingFromPlatform
     CP MAX_PLATFORM_Y
     RET NC
     
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Does Jetman walk on any platform?
     LD A, (platformWalkNumber)

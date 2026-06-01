@@ -75,7 +75,7 @@ InitJetSprite
 ;----------------------------------------------------------;
 UpdateJetSpritePositionRotation
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands.
 
@@ -146,7 +146,7 @@ ChangeJetSpritePattern
 ; Update sprite pattern for the next animation frame
 AnimateJetSprite
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Delay animation.
     LD A, (sprDBDelay)
@@ -327,7 +327,7 @@ ChangeJetSpriteOnFlyUp
 ;  - B: _SPR_ATTR3_SHOW_EXT or _SPR_ATTR3_HIDE_EXT
 _ShowOrHideJetSprite
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD HL, (sprDBIdx)                           ; Load current sprite pattern.
 

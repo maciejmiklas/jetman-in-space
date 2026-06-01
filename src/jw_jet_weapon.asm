@@ -84,7 +84,7 @@ RANGE_HARD_D20          = 20
     LD A, af.FX_FIRE2
 .afterNewSound
 
-    CALL dbs.SetupAyFxsBank
+    dbs.SetupAyFxsBank
     CALL af.AfxPlay
 
     JR .afterFireFx
@@ -215,11 +215,11 @@ CheckHitEnemies
 ;                        HideShots                         ;
 ;----------------------------------------------------------;
 HideShots
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     XOR A
     LD (fireDelayCnt), A
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     ; Loop ever all #shots skipping hidden shots.
     LD IX, db2.shots                            ; IX points to the shot.
@@ -251,7 +251,7 @@ HideShots
 ShotsCollision
 
     ; Loop ever all #shots skipping hidden shots
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IX, db2.shots                            ; IX points to the shot
     LD B, db2.SHOTS_SIZE
@@ -321,7 +321,7 @@ ShotsCollision
 MoveShots
 
     ; Loop ever all shots# skipping hidden sprites.
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IX, db2.shots
     LD B, db2.SHOTS_SIZE
@@ -414,7 +414,7 @@ FireDelayCounter
 ;----------------------------------------------------------;
 AnimateShots
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IX, db2.shots
     LD A, db2.SHOTS_SIZE
@@ -439,7 +439,7 @@ FireReleased
 ;----------------------------------------------------------;
 FirePress
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     
     ; Check delay to limit fire speed
     LD A, (fireDelay)
@@ -453,7 +453,7 @@ FirePress
     LD (fireDelayCnt), A
 
     ; Find the first inactive (sprite hidden) shot
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD IX, db2.shots
     LD DE, SPR

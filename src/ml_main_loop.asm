@@ -31,7 +31,7 @@
     CALL gb.PrintDebug
         ENDIF
     
-    CALL dbs.SetupAyFxsBank
+    dbs.SetupAyFxsBank
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing.
 
     _Loop000PlayMusic
@@ -145,7 +145,7 @@
     CALL js.AnimateJetSprite
 
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.CheckHitTank
     CALL roa.RocketElementFallsForPickup
 
@@ -158,7 +158,7 @@
 
     CALL enc.CheckEnemyWeaponHit
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     CALL pi.AnimateFallingPickup
     CALL enc.MoveEnemies
 
@@ -245,7 +245,7 @@
 ;----------------------------------------------------------;
     MACRO _Loop000OnFlyRocket
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
 
     ; Return if rocket is not flying. #ms.mainState has also similar state: #MS_FLY_ROCKET_D3, but its not the same!
     ; Rocket is also exploding, in this case #ms.mainState == #Fms.LY_ROCKET but 
@@ -356,7 +356,7 @@
     ; ##########################################
     CALL jo.UpdateJetpackOverheating
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.RocketElementFallsForAssembly
 
 .end
@@ -399,7 +399,7 @@
 ;----------------------------------------------------------;
     MACRO _Loop008OnRocketExplosion
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
 
     ; Is rocket exploding ?
     LD A, (ro.rocketState)
@@ -409,7 +409,7 @@
     ; ##########################################
     CALL st.BlinkStars
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL rot.AnimateMeteors
     CALL rof.AnimateRocketExplosion
 
@@ -437,7 +437,7 @@
     MACRO _Loop008OnFlayingRocket
 
     ; Return if rocket is not flying.
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     LD A, (ro.rocketState)
     CP ro.ROST_FLY_D101
     JR NZ, .end
@@ -445,7 +445,7 @@
     ; ##########################################
     CALL st.BlinkStars
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL rof.AnimateRocketExhaust
     CALL rof.BlinkFlyingRocket
 
@@ -453,7 +453,7 @@
 
     ; ##########################################
     ; Phase 4
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
 
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
@@ -477,14 +477,14 @@
     ; ##########################################
     CALL jw.AnimateShots
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.BlinkRocketReadyForTakeoff
     CALL roa.AnimateTankExplode
     CALL roa.BlinkRocketElementForPickup
 
     CALL jo.AnimateJetpackOverheat
 
-    CALL dbs.SetupTileAnimationBank
+    dbs.SetupTileAnimationBank
     CALL ta.NextTileAnimationFrame 
 
     CALL dbs.SetupEnemyDataBank
@@ -492,7 +492,7 @@
 
     CALL enc.AnimateEnemies
 
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     CALL nv.ChangeVisibility
 
 .end
@@ -667,13 +667,13 @@
     dbs.SetupCodeMusicBank
     CALL aml.MusicTimerTick
 
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
     CALL pi.PickupDropCounter
 
     CALL dbs.SetupEnemyDataBank
     CALL enu.RespawnFuelThief
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.DropNextRocketElement
 
 .end
@@ -685,7 +685,7 @@
     MACRO _Loop050OnFlayingRocket
 
     ; Return if rocket is not flying.
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     LD A, (ro.rocketState)
     CP ro.ROST_FLY_D101
     JR NZ, .end
@@ -744,7 +744,7 @@
     CALL js.ShowJetSprite
 
     ; ##########################################
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL ro.IsReadyForTakeoff
     CALL Z, gc.RocketReady
 
@@ -796,7 +796,7 @@
 ;----------------------------------------------------------;
     MACRO _Loop150OnRocketPhase4
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     LD A, (ro.rocketFlyPhase)
     CP ro.PHASE_4
     JR NZ, .end
@@ -826,7 +826,7 @@
 ;----------------------------------------------------------;
     MACRO _LastLoopOnRocketPhase2_3
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
 
     LD A, (ro.rocketFlyPhase)
     AND ro.PHASE_2_3

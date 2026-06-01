@@ -6,7 +6,7 @@
 ;                   Night Visibility                       ;
 ;----------------------------------------------------------;
     MODULE nv
-   ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
+   ; TO USE THIS MODULE: dbs.SetupCode1Bank
 
 VISIBILITY_LIMIT_1      = 140
 VISIBILITY_LIMIT_2      = 80

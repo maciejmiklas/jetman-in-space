@@ -212,7 +212,7 @@ mainLoop
     ASSERT $$ == dbs.P_ENEMY_BANK_S6_B31
 
     ; ################ BANK 32 #################
-    ; TO USE THIS MODULE: CALL dbs.SetupAyFxsBank
+    ; TO USE THIS MODULE: dbs.SetupAyFxsBank
     MMU _RAM_SLOT6, dbs.AY_FX_S6_D32
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "af_audio_fx1.asm"
@@ -229,7 +229,7 @@ mainLoop
     ASSERT $$ == dbs.AY_MCODE_S6_D33
 
     ; ################ BANK  34 ################
-    ; TO USE THIS MODULE: CALL dbs.SetupTileAnimationBank
+    ; TO USE THIS MODULE: dbs.SetupTileAnimationBank
     MMU _RAM_SLOT6, dbs.TILE_ANIMATION_D34
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "ta_tile_animation.asm"
@@ -237,7 +237,7 @@ mainLoop
     ASSERT $$ == dbs.TILE_ANIMATION_D34
 
     ; ################ BANK  35 ################
-    ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
+    ; TO USE THIS MODULE: dbs.SetupCode1Bank
     MMU _RAM_SLOT6, dbs.CODE1_S6_D35
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "so_storage.asm"
@@ -245,7 +245,7 @@ mainLoop
     ASSERT $$ == dbs.CODE1_S6_D35
 
     ; ################ BANK  36 ################
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
     MMU _RAM_SLOT6, dbs.ROCKET_S6_D36
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "roa_rocket_assembly.asm"

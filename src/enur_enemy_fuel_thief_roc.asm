@@ -12,7 +12,7 @@
 ;----------------------------------------------------------;
 LoadRocketState
 
-    CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
+    dbs.SetupRocketBank                    ; Setup rocket bank to load data.
     LD A, (ro.rocketState)
 
     CALL dbs.SetupEnemyDataBank              ; Setup enemy bank jump back there.
@@ -24,7 +24,7 @@ LoadRocketState
 ;----------------------------------------------------------;
 LoadRocketElementCnt
 
-    CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
+    dbs.SetupRocketBank                    ; Setup rocket bank to load data.
 
     LD A, (roa.rocketElementCnt)
 
@@ -37,7 +37,7 @@ LoadRocketElementCnt
 ;----------------------------------------------------------;
 LoadDropNextDelay
 
-    CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
+    dbs.SetupRocketBank                    ; Setup rocket bank to load data.
 
     LD A, (roa.dropNextDelay)
 
@@ -50,7 +50,7 @@ LoadDropNextDelay
 ;----------------------------------------------------------;
 LoadRocAssemblyX
 
-    CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
+    dbs.SetupRocketBank                    ; Setup rocket bank to load data.
 
     LD A, (roa.rocAssemblyX)
 
@@ -63,7 +63,7 @@ LoadRocAssemblyX
 ;----------------------------------------------------------;
 RemoveRocketElement
 
-    CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
+    dbs.SetupRocketBank                    ; Setup rocket bank to load data.
 
     CALL roa.RemoveRocketElement
 
@@ -76,7 +76,7 @@ RemoveRocketElement
 ;----------------------------------------------------------;
 ResetDropNextDelay
 
-    CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
+    dbs.SetupRocketBank                    ; Setup rocket bank to load data.
 
     XOR A
     LD (roa.dropNextDelay), A

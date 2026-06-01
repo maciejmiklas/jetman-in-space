@@ -37,7 +37,7 @@ LoadMenuLevelSelect
     
     ; ##########################################
     ; Load background palette
-    CALL dbs.SetupCode1Bank
+    dbs.SetupCode1Bank
     CALL ll.LoadUnlockLevel
 
     CALL ut.NumTo99Str                          ; Load A into DE as Text
@@ -112,7 +112,7 @@ _ConfirmSelection
 _UpdateJetPos
 
     ; Set IX to the position in #MLS that corresponds to the currently selected level.
-    CALL dbs.SetupArrays2Bank
+    dbs.SetupArrays2Bank
 
     LD A, (currentLevel)
     DEC A

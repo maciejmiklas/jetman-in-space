@@ -6,7 +6,7 @@
 ;                      Flying the Rocket                   ;
 ;----------------------------------------------------------;
     MODULE rof
-    ; TO USE THIS MODULE: CALL dbs.SetupRocketBank
+    ; TO USE THIS MODULE: dbs.SetupRocketBank
 
 RO_FLY_DELAY_D8         = 8
 RO_FLY_DELAY_DIST_D5    = 5

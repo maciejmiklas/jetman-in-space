@@ -323,7 +323,7 @@ _Key_R
     CALL ki.CanProcessKeyInput
     RET NZ
 
-    CALL dbs.SetupRocketBank
+    dbs.SetupRocketBank
     CALL roa.AssemblyRocketForDebug
 
     RET                                         ; ## END of the function ##

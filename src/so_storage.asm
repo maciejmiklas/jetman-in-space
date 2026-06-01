@@ -7,7 +7,7 @@
 ;                Persistant Game Storage                   ;
 ;----------------------------------------------------------;
     module so
-   ; TO USE THIS MODULE: CALL dbs.SetupCode1Bank
+   ; TO USE THIS MODULE: dbs.SetupCode1Bank
 
 storageStart
 unlockedLevel           DB 1,1,1                ; There are three difficulty levels, unlocked independently.
