@@ -149,7 +149,7 @@
     CALL roa.CheckHitTank
     CALL roa.RocketElementFallsForPickup
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enu.MoveFuelThief
     CALL enu.ThiefWeaponHit
 
@@ -487,7 +487,7 @@
     CALL dbs.SetupTileAnimationBank
     CALL ta.NextTileAnimationFrame 
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enu.AnimateFuelThief
 
     CALL enc.AnimateEnemies
@@ -533,7 +533,7 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enf.RespawnFormation
     CALL enc.RespawnEnemy
     CALL st.BlinkStars
@@ -670,7 +670,7 @@
     CALL dbs.SetupArrays2Bank
     CALL pi.PickupDropCounter
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enu.RespawnFuelThief
 
     CALL dbs.SetupRocketBank

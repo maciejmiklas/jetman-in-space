@@ -199,7 +199,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Load single enemies
     PUSH IX
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     LD A, (IX + LL.SE_SIZE)
     LD B,(IX + LL.SE_DEL)
     LD HL, (IX + LL.SE_DATA)
@@ -210,7 +210,7 @@ LoadCurrentLevel
     ; ##########################################
     ; Load formation
     PUSH IX
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
 
     LD A, (IX + LL.FORM_SIZE)
     LD B, (IX + LL.FORM_DEL)

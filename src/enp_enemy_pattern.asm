@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE enp
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyDataBank ###
 
 ; Enemies moves by a given hardcoded pattern. This file contains generic logic for such enemies 
 ; In general, there are two kinds of enemies: 

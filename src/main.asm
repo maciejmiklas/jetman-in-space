@@ -175,7 +175,7 @@ mainLoop
     INCLUDE "enur_enemy_fuel_thief_roc.asm"
     INCLUDE "enc_enemy_cmd.asm"
     INCLUDE "ml_main_loop.asm"
-  ;  INCLUDE "deb_debugger.asm"
+    INCLUDE "deb_debugger.asm"
     
     ; Imports below use ORG and dedicated memory bank!
 
@@ -195,13 +195,13 @@ mainLoop
 
     ; ################ BANK 30 ################
     ; TO USE THIS MODULE: CALL dbs.SetupFollowingEnemyBank
-    MMU _RAM_SLOT6, dbs.F_ENEMY_BANK_S6_B30
+    MMU _RAM_SLOT6, dbs.ENEMY_DATA_BANK_S6_B30
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "fe_following_enemy.asm"
     INCLUDE "fed_following_enemy_data.asm"
 
     ; ################ BANK 31 ################
-    ; TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank
+    ; TO USE THIS MODULE: CALL dbs.SetupEnemyDataBank
     MMU _RAM_SLOT6, dbs.P_ENEMY_BANK_S6_B31
     ORG _RAM_SLOT6_STA_HC000
     INCLUDE "ena_enemy_data.asm"

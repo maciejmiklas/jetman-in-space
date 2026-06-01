@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE enf
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyDataBank ###
 
 ; The enemy formation consists of multiple sprites. #formationEnemySprites gives the first sprite, and #ENEMY_FORMATION_SIZE_D7
 ; determines the amount. The deployment starts when #respawnDelayCnt will reach #respawnDelay. 

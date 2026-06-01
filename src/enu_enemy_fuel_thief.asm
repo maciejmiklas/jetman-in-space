@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE enu
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyDataBank ###
 
 TS_DISABLED_D0          = 0
 TS_WAITING_D1           = 1

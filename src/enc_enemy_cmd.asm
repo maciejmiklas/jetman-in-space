@@ -29,7 +29,7 @@ CheckEnemyWeaponHit
     CALL dbs.SetupArrays2Bank
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
 
     LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
@@ -55,7 +55,7 @@ CheckEnemyWeaponHit
 HideEnemies
 
     ; Hide single enemies.
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
 
     LD A, ena.ENEMY_SINGLE_SIZE
     LD IX, ena.singleEnemySprites
@@ -83,7 +83,7 @@ HideEnemies
 AnimateEnemies
 
     ; Animate single enemy
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
 
     LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
@@ -126,7 +126,7 @@ KillFewEnemies
 KillOneEnemy
 
     ; Kill single enemy
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
     CALL sp.KillOneSprite
@@ -176,7 +176,7 @@ RespawnEnemy
     RET NZ
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL ens.RespawnNextSingleEnemy
 
     CALL dbs.SetupFollowingEnemyBank
@@ -209,7 +209,7 @@ MoveEnemies
 .afterFreeze
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL ens.MoveSingleEnemies
     CALL enf.MoveFormationEnemies
 

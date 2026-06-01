@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE ens
 
-    ; ### TO USE THIS MODULE: CALL dbs.SetupPatternEnemyBank ###
+    ; ### TO USE THIS MODULE: CALL dbs.SetupEnemyDataBank ###
 
 ; The timer ticks with every game loop. When it reaches #ENP_RESPAWN_DELAY, a single enemy will respawn, and the timer starts from 0,
 ; counting again.

@@ -94,7 +94,7 @@ FUEL_THIEF_ACTIVE_LEV   = 5
     CALL dbs.SetupRocketBank
     CALL ros.ResetRocketStars
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enu.EnableFuelThief
 
     CALL dbs.SetupTileAnimationBank
@@ -269,7 +269,7 @@ LoadCurrentLevel
     CP FUEL_THIEF_ACTIVE_LEV
     RET NC
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enu.DisableFuelThief
 
     RET                                         ; ## END of the function ##
@@ -283,7 +283,7 @@ FuelThiefHit
 
     CALL sc.HitEnemy3
 
-    CALL dbs.SetupPatternEnemyBank              ; Function was called from this bank and must return there.
+    CALL dbs.SetupCurrentEnemyBank              ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -323,7 +323,7 @@ RocketFLyStartPhase1
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enu.DisableFuelThief
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
@@ -465,7 +465,6 @@ RocketExpolodes
 
     CALL dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
 
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -541,7 +540,7 @@ PlatformWeaponHit
 ;----------------------------------------------------------;
 PlayFuelThiefFx
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     LD A, (enu.thiefState)
 
     CP enu.TS_DEPLOYING_D2
@@ -563,7 +562,7 @@ PlayFuelThiefFx
     CALL dbs.SetupArrays2Bank
 
     ; ##########################################
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     LD A, (ens.singleEnemySize)
     LD IX, ena.singleEnemySprites
     CALL jco.EnemiesCollision
@@ -636,6 +635,8 @@ EnemyHit
 
     CALL sc.HitEnemy3
 
+    CALL dbs.SetupCurrentEnemyBank
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
@@ -673,6 +674,8 @@ EnemyHitsJet
 
     ; Remove one life.
     CALL jl.LifeDown
+
+    CALL dbs.SetupCurrentEnemyBank
 
     RET                                         ; ## END of the function ##
 
@@ -1042,7 +1045,7 @@ _HideGame
     CALL dbs.SetupArrays2Bank
     CALL pi.ResetPickups
 
-    CALL dbs.SetupPatternEnemyBank
+    CALL dbs.SetupEnemyDataBank
     CALL enu.DisableFuelThief
 
     CALL dbs.SetupFollowingEnemyBank

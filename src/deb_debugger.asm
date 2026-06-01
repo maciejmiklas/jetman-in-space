@@ -94,10 +94,7 @@ TEMP_SLOT_D200          = 140
 ;----------------------------------------------------------;
 SetupTestBank
 
-    ;CALL dbs.SetupAyFxsBank
-    ;deb.Copy8KSlot6To7
-
-    CALL dbs.SetupEnemyDataBank
+    CALL dbs.SetupAyFxsBank
     deb.Copy8KSlot6To7
 
     RET                                         ; ## END of the function ##
@@ -114,14 +111,9 @@ SetupTestBank
 ;  - A: number to print for debugger.
 CompareSlot
 
-    ;CALL dbs.SetupAyFxsBank
-    ;LD BC, 990
-    ;LD DE, $166
-    ;CALL CompareSlot6to7
-
-    CALL dbs.SetupEnemyDataBank
-    LD BC, 190
-    LD DE, $C65
+    CALL dbs.SetupAyFxsBank
+    LD BC, 990
+    LD DE, $166
     CALL CompareSlot6to7
 
     RET                                         ; ## END of the function ##

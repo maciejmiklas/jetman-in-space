@@ -184,6 +184,8 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     CALL sc.HitEnemy1
     POP IX
 
+    CALL dbs.SetupCurrentEnemyBank
+
 .end
     ENDM                                        ; ## END of the macro ##
 

@@ -15,7 +15,7 @@ LoadRocketState
     CALL dbs.SetupRocketBank                    ; Setup rocket bank to load data.
     LD A, (ro.rocketState)
 
-    CALL dbs.SetupPatternEnemyBank              ; Setup enemy bank jump back there.
+    CALL dbs.SetupEnemyDataBank              ; Setup enemy bank jump back there.
 
     RET                                         ; ## END of the function ##
 
@@ -28,7 +28,7 @@ LoadRocketElementCnt
 
     LD A, (roa.rocketElementCnt)
 
-    CALL dbs.SetupPatternEnemyBank              ; Setup enemy bank jump back there.
+    CALL dbs.SetupEnemyDataBank              ; Setup enemy bank jump back there.
 
     RET                                         ; ## END of the function ##
 
@@ -41,7 +41,7 @@ LoadDropNextDelay
 
     LD A, (roa.dropNextDelay)
 
-    CALL dbs.SetupPatternEnemyBank              ; Setup enemy bank jump back there.
+    CALL dbs.SetupEnemyDataBank              ; Setup enemy bank jump back there.
 
     RET                                         ; ## END of the function ##
 
@@ -54,7 +54,7 @@ LoadRocAssemblyX
 
     LD A, (roa.rocAssemblyX)
 
-    CALL dbs.SetupPatternEnemyBank              ; Setup enemy bank jump back there.
+    CALL dbs.SetupEnemyDataBank              ; Setup enemy bank jump back there.
 
     RET                                         ; ## END of the function ##
 
@@ -67,7 +67,7 @@ RemoveRocketElement
 
     CALL roa.RemoveRocketElement
 
-    CALL dbs.SetupPatternEnemyBank              ; Setup enemy bank jump back there.
+    CALL dbs.SetupEnemyDataBank              ; Setup enemy bank jump back there.
 
     RET                                         ; ## END of the function ##
 
@@ -81,7 +81,7 @@ ResetDropNextDelay
     XOR A
     LD (roa.dropNextDelay), A
 
-    CALL dbs.SetupPatternEnemyBank              ; Setup enemy bank jump back there.
+    CALL dbs.SetupEnemyDataBank              ; Setup enemy bank jump back there.
 
     RET                                         ; ## END of the function ##
 
