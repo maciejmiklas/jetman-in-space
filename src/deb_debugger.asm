@@ -94,36 +94,47 @@ TEMP_SLOT_D200          = 140
 ;----------------------------------------------------------;
 SetupTestBank
 
-    dbs.SetupCodeMusicBank
+    ;CALL dbs.SetupAyFxsBank
+    ;deb.Copy8KSlot6To7
+
+    CALL dbs.SetupEnemyDataBank
     deb.Copy8KSlot6To7
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     CompareBank                          ;
+;                     CompareSlot                          ;
 ;----------------------------------------------------------;
+
+
 ; debugBuffer    BLOCK 1000, $FF      ; 1000 bytes filled with $FF
-; :LD A, $02: CALL deb.CompareBank
+; :LD A, $02: CALL deb.CompareSlot
+
 ; Input:
 ;  - A: number to print for debugger.
-CompareBank
+CompareSlot
 
-    dbs.SetupCodeMusicBank
-    LD BC, 990
-    LD DE, 0
-    CALL CompareBank6to7
+    ;CALL dbs.SetupAyFxsBank
+    ;LD BC, 990
+    ;LD DE, $166
+    ;CALL CompareSlot6to7
+
+    CALL dbs.SetupEnemyDataBank
+    LD BC, 190
+    LD DE, $C65
+    CALL CompareSlot6to7
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  CompareBank2to6                         ;
+;                  CompareSlot2to6                         ;
 ;----------------------------------------------------------;
 ; Remember to call #dbs function to map slot 6 bank.
 ; Input:
 ;  - A: number to print for debugger.
 ;  - BC: amount of bytes to compare.
 ;  - DE: amount of bytes to skip.
-CompareBank2to6
+CompareSlot2to6
 
     PUSH AF
     NEXTREG _MMU_REG_SLOT6_H56, TEMP_SLOT_D200
@@ -165,14 +176,14 @@ CompareBank2to6
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  CompareBank6to7                         ;
+;                  CompareSlot6to7                         ;
 ;----------------------------------------------------------;
 ; Remember to call #dbs function to map slot 6 bank.
 ; Input:
 ;  - A: number to print for debugger.
 ;  - BC: amount of bytes to compare.
 ;  - DE: amount of bytes to skip.
-CompareBank6to7
+CompareSlot6to7
 
     PUSH AF
     NEXTREG _MMU_REG_SLOT7_H57, TEMP_SLOT_D200

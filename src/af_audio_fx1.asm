@@ -373,6 +373,7 @@ _AfxInit
 ;----------------------------------------------------------;
 ;                     Effects file                         ;
 ;----------------------------------------------------------;
+debugBuffer    BLOCK 1000, $FF      ; 1000 bytes filled with $FF
 effectsFileAddr
     INCBIN  "assets/com/effects.afb",0
 
