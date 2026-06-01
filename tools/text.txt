@@ -18,7 +18,7 @@ Text 4 (shows menu option that allows you to play a level that you have already 
 Beat a level once, hop back to it anytime. There are 10 levels in total, so buckle up -  the galaxy has a long to-do list!
 
 Text 5 (shows in menu switching between difficulty levels):
- There are 3 difficulty levels: Normal — for everyday space travelers. Easy — for kiddos, rookies, and pilots who forgot their helmet. Hard — for space cowboys with nerves of steel and questionable life choices.
+There are 3 difficulty levels: Normal — for everyday space travelers. Easy — for kiddos, rookies, and pilots who forgot their helmet. Hard — for space cowboys with nerves of steel and questionable life choices.
 
 Text 6 (shows game in fast forward, where Jetman collects 3 rocket parts and fuel that will allow him to fly to the next level through a meteor shower):
 To reach another planet and maybe even get home, collect 3 rocket pieces and enough fuel.
@@ -27,7 +27,7 @@ Text 7 (game offers times of the day, at night, visibility is limited):
 At night, visibility is limited — so watch where you're flying. Space is dark, and asteroids don't wear warning lights.
 
 Text 8 (levels are connected with a mini game, where you fly a rocket and have to avoid methoers):
-Try to survive as long as you can in the meteor shower! Every second earns you 1,000 points, and every 65K points grants an extra life. Trust us — you'll want those later. Space does not get friendlier!
+Try to survive as long as you can in the meteor shower! Every second earns you 250 points, and every 65K points grants an extra life. Trust us — you'll want those later. Space does not get friendlier!
 
 Text 9 (during a game, when you collect fuel, there is a thief who will run towards the rocket and steal one fuel tank if you do not shoot him first):
 Heads up! A sneaky fuel thief sprints for your rocket the moment you refuel. He’s fast, you’ve got lasers. One of you is going home empty‑handed.

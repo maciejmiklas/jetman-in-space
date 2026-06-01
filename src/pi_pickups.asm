@@ -293,7 +293,7 @@ PickupDropCounter
 
     ; Gun is deplyed, should it?
     LD A, (jw.fireDelay)
-    CP jw.JM_FIRE_DELAY_MIN_D3
+    CP jw.JM_FIRE_DELAY_MIN_D5
     JR Z, .deployNext
     JR C, .deployNext
 .afterGunSpeedCheck

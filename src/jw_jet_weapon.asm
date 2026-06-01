@@ -16,7 +16,7 @@ FIRE_THICKNESS_D10      = 10
 ; The counter is incremented with each animation frame and reset when the fire is pressed. Fire can only be pressed when the counter .
 ; reaches #JM_FIRE_DELAY
 JM_FIRE_DELAY_MAX_D15   = 16
-JM_FIRE_DELAY_MIN_D3    = 2
+JM_FIRE_DELAY_MIN_D5    = 5
 JM_FIRE_SPEED_UP_D3     = 5
 fireDelayCnt            DB 0
 fireDelay               DB JM_FIRE_DELAY_MAX_D15
@@ -47,7 +47,7 @@ RANGE_HARD_D20          = 20
     MACRO _FireDelayDown
 
     LD A, (fireDelay)
-    CP JM_FIRE_DELAY_MIN_D3
+    CP JM_FIRE_DELAY_MIN_D5
     JR Z, .end
 
     DEC A
@@ -149,7 +149,7 @@ FireSpeedUp
 
     ; Do not speed up the fire (by decreasing the delay) if it's already at max firing speed.
     LD A, (fireDelay)
-    CP JM_FIRE_DELAY_MIN_D3
+    CP JM_FIRE_DELAY_MIN_D5
     RET Z
 
     LD A, JM_FIRE_SPEED_UP_D3
