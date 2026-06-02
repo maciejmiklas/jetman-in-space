@@ -1,7 +1,7 @@
 <img src="/img/cover.jpg" width="800px"/>
 
 > [!NOTE]
-> Click on the image below to play the video
+> Click on the image below to play the video 
 
 [![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
    
