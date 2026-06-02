@@ -1,4 +1,4 @@
-<img src="/img/cover.jpg" width="800px"/>
+<img src="/img/game_cover.jpg" width="800px"/>
 
 > [!NOTE]
 > Click on the image below to play the video 
