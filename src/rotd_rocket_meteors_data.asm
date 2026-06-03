@@ -39,15 +39,15 @@ asDeploy2
 ; See rotd.randMovAddr
 randMov2
     DB 02,1|$00, 03,1|$80, 01,1|$00, 03,1|$80, 01,1|$00, 06,1|$80, 0,1|$00, 02,1|$80, 06,1|$00, 01,1|$00, 05,1|$00, 04,1|$00, 00,1|$00
-    DB 02,1|$00, 04,1|$00, 05,1|$00, 06,1|$80, 00,1|$80, 02,1|$80, 04,1|$00, 00,1|$80, 05,1|$00, 00,1|$80, 03,1|$00, 03,1|$00, 02,1|$00
-    DB 05,1|$00, 06,1|$00, 01,1|$00, 04,1|$00
+    DB 02,1|$00, 04,1|$00, 05,1|$00, 06,1|$10, 00,1|$10, 02,1|$80, 04,1|$00, 00,1|$10, 05,1|$00, 00,1|$10, 06,1|$00, 05,1|$00, 00,1|$00
+    DB 01,1|$00, 02,1|$00, 03,1|$00, 04,1|$00
     ASSERT $ - randMov2 == 2 * rot.RAND_MOVE_SIZE_D30
 
 asDeploy3
 ;            X    Y    MOVE_SPD MOVE_PAT     ACTIVE
     rot.MED {300, 020, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 0
     rot.MED {010, 000, 3,       rot.MP1,     rot.AS_ACTIVE_NO} ; 1
-    rot.MED {300, 050, 1,       rot.MP2,     rot.AS_ACTIVE_NO} ; 2
+    rot.MED {300, 050, 1,       rot.MP1,     rot.AS_ACTIVE_NO} ; 2
     rot.MED {300, 120, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 3
     rot.MED {150, 000, 1,       rot.MP1,     rot.AS_ACTIVE_NO} ; 4
     rot.MED {200, 000, 3,       rot.MP1,     rot.AS_ACTIVE_NO} ; 5
@@ -56,13 +56,13 @@ asDeploy3
 ; See rotd.randMovAddr
 asDeploy4
 ;            X    Y    MOVE_SPD MOVE_PAT     ACTIVE
-    rot.MED {300, 020, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 0
-    rot.MED {010, 000, 3,       rot.MP1,     rot.AS_ACTIVE_NO} ; 1
-    rot.MED {300, 050, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 2
-    rot.MED {300, 120, 3,       rot.MP2,     rot.AS_ACTIVE_NO} ; 3
-    rot.MED {150, 000, 2,       rot.MP1,     rot.AS_ACTIVE_NO} ; 4
-    rot.MED {200, 000, 3,       rot.MP1,     rot.AS_ACTIVE_NO} ; 5
-    rot.MED {300, 200, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 6
+    rot.MED {020, 000, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 0
+    rot.MED {060, 000, 3,       rot.MP2,     rot.AS_ACTIVE_NO} ; 1
+    rot.MED {100, 000, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 2
+    rot.MED {140, 000, 3,       rot.MP2,     rot.AS_ACTIVE_NO} ; 3
+    rot.MED {180, 000, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 4
+    rot.MED {220, 000, 3,       rot.MP2,     rot.AS_ACTIVE_NO} ; 5
+    rot.MED {260, 000, 2,       rot.MP2,     rot.AS_ACTIVE_NO} ; 6
 
 ;----------------------------------------------------------;
 ;                       ENDMODULE                          ;

@@ -11,8 +11,8 @@ STACK_SIZE              = 50
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
-    ;DEFINE DEBUG_BAR    1                        ; Enable debug bar
-    ;DEFINE DEBUG_KEYS    1
+   ; DEFINE DEBUG_BAR    1                        ; Enable debug bar
+   ; DEFINE DEBUG_KEYS    1
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -60,7 +60,7 @@ start
     CALL so.WriteToSd
 
     ;CALL dbs.SetupMusicCommonBank: CALL aml.MusicOff: CALL aml.PreloadIngameMusic ; set AY_MI_BANKS_40 to 1
-    ;LD A, 6: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
+    ;LD A, 8: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
 
     CALL gc.LoadMainMenu
     JR mainLoop

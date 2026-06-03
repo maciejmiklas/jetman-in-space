@@ -20,7 +20,8 @@ HIT_ENEMY2              = 30
 HIT_ENEMY3              = 35
 
 ; Points are stored as a 32-bit number. Each life is granted every 65k points, that is, when 3-rd byte value increases by 1.
-nextExtraLive           DB 1
+NEXT_EXTRA_LIVE_INIT_D1 = 1
+nextExtraLive           DB NEXT_EXTRA_LIVE_INIT_D1
 
 PICKUP_ROCKET           = 200
 
@@ -56,6 +57,9 @@ ResetScore
     LD L, A
     LD (scoreHi), HL
     LD (scoreLo), HL
+
+    LD A, NEXT_EXTRA_LIVE_INIT_D1
+    LD (nextExtraLive), A
 
     RET                                         ; ## END of the function ##
 
@@ -224,6 +228,7 @@ PrintScore
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
+
 
 ;----------------------------------------------------------;
 ;                 _CheckExtraLive                          ;

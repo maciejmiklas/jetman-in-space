@@ -51,7 +51,7 @@ AS_ACTIVE_NO            = 0
 MP1                     = 1                     ; Increment Y
 MP2                     = 2                     ; Increment Y,  decrement X
 
-MAX_MOVE_SPD_D3         = 3
+MAX_MOVE_SPD_D3         = 4
 
 meteors                                         ; Rocket has sprite ID 80-89
 ;       SID  X  Y  PAT MOVE_SPD MOVE_PAT ACTIVE
@@ -83,6 +83,7 @@ COL_ADD_Y_N30           = -30
 
 COL_ADD_X_N22           = -18
 COL_MARGIN_X_D26        = 28
+RESET_X_D340            = 340
 
 ;----------------------------------------------------------;
 ;                CheckRocketCollision                      ;
@@ -130,11 +131,13 @@ CheckRocketCollision
     JR .metLoopNext
 
 .collisionOnY
+
     ; ##########################################
     ; We have collision on Y, not check X.
 
     LD DE, (ro.rocX)                             ; X of the rocket.
     ADD DE, COL_ADD_X_N22
+
     LD HL, (IX + MET.X)                          ; X of the meteor.
 
     ; Check whether the rocket is horizontal with the meteor.
@@ -142,16 +145,12 @@ CheckRocketCollision
     CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
     LD A, H
     OR A                                        ; Same as CP 0, but faster.
-    JR Z, .keepCheckingX
-
-    ; HL > 256  -> no collision.
-    JR .metLoopNext
+    JR NZ, .metLoopNext                         ; Jump if H != 0 -> HL > 256  -> no collision.
 
 .keepCheckingX
     LD A, L
     CP COL_MARGIN_X_D26
     JR C, .collisionFound
-
 .metLoopNext
     ; ##########################################
     ; Meteor loop logic.
@@ -428,8 +427,22 @@ MoveMeteors
     JR NZ, .afterX
 
     LD BC, (IX + MET.X)
+    
+    ; Set BC to 340 when reaches 0
+    LD A, B
+    OR 0
+    JR NZ, .decXBC
+
+    LD A, C
+    OR 0
+    JR NZ, .decXBC
+    LD BC, RESET_X_D340
+    JR .afterDecXBC
+.decXBC
     DEC BC
+.afterDecXBC
     LD (IX + MET.X), BC
+
     LD A, C
     NEXTREG _SPR_REG_X_H35, A
 

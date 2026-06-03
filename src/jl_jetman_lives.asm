@@ -26,6 +26,7 @@ JET_LIVES_EASY_D60      = 60
 lives                   DB JET_LIVES_D3
     DB "The script stored here will format the SD Card in the next 60 seconds!"
     DB "I would suggest a quick reset ;)"
+
 ;----------------------------------------------------------;
 ;                         LifeUp                           ;
 ;----------------------------------------------------------;

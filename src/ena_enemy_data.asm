@@ -415,6 +415,17 @@ SINGLE_ENEMIES_L7       = 18
 
 enemyFormationL7 ENPS {20/*RESPAWN_Y*/, 3/*RESPAWN_DELAY*/, movePattern19/*MOVE_PAT_POINTER*/, sp.SDB_ENEMY1/*SDB_INIT*/, enp.ENP_LEFT_HIT/*SETUP*/}
 
+
+; ##############################################
+; Level 8
+singleEnemiesL8
+    ;     RESPAWN_Y   RESPAWN_DELAY MOVE_PAT_ADDR      SDB_INIT      SETUP
+    ENPS {200,        013,          movePattern01D2,   sp.SDB_ENEMY1   enp.ENP_LEFT_HIT  }
+    ENPS {220,        010,          movePattern01D2,   sp.SDB_ENEMY1   enp.ENP_RIGHT_HIT }
+    ENPS {050,        014,          movePattern01D2,   sp.SDB_ENEMY1   enp.ENP_LEFT_HIT  }
+    ENPS {070,        015,          movePattern01D2,   sp.SDB_ENEMY1   enp.ENP_RIGHT_HIT }
+SINGLE_ENEMIES_L8       = 4
+
 ; ##############################################
 ; Level 9
 singleEnemiesL9

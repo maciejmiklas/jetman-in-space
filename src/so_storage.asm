@@ -315,8 +315,6 @@ ReadFromSd
 
     _VerifyChecksums
 
-    LD A, (gameMusicCnt)
-
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
