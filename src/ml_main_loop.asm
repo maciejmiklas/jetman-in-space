@@ -30,7 +30,7 @@
         IFDEF DEBUG_BAR
     CALL gb.PrintDebug
         ENDIF
-    
+
     dbs.SetupAyFxsBank
     CALL af.AfxFrame                            ; Keep AYFX sound effect playing.
 
