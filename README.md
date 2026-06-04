@@ -35,8 +35,8 @@ I want to give a shout-out to the following, without them, I would have been los
 * [RPG Icons](https://merchant-shade.itch.io/16x16-mixed-rpg-icons)
 
 # Licensing
-- Source code in /src is licensed under Apache-2.0 (see LICENSE).
-- Game assets in /assets are NOT open source. They are licensed under a restrictive license (see /assets/LICENSE-ASSETS.txt).
+- Source code in `/src` is licensed under Apache-2.0 (see LICENSE).
+- Game assets in `/assets` are NOT open source. They are licensed under a restrictive license (see `/assets/LICENSE-ASSETS.txt`).
 - You may build the game for personal, non-commercial use.
-- You may not redistribute binaries or any assets from /assets without written permission.
+- You may not redistribute binaries or any assets from `/assets` without written permission.
 - For permissions beyond this license, contact jetman@miklas.biz
