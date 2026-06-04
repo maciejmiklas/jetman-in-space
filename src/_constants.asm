@@ -7,8 +7,8 @@
 ;----------------------------------------------------------;
 ; Lots of documentation copied from https://wiki.specnext.dev
 
-gameVersion             DB "V1.9"
-GAME_VERSION_SIZE       = 4
+gameVersion             DB "V1.11"
+GAME_VERSION_SIZE       = 5
 
 ;----------------------------------------------------------;
 ;                  General Registers                       ;
@@ -499,7 +499,6 @@ _BANK_BYTES_D8192       = 8*1024
 _SPR_SIZE_D16           = 16
 _GC_FLIP_ON_D1          = 1
 _GC_FLIP_OFF_D0         = 0
-_16BIT_CHARS_D5         = 5
 _OVERFLOW_BIT           =  %00000001
 
 ; ##############################################

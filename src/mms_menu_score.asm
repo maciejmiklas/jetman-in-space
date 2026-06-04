@@ -646,32 +646,22 @@ _PrintScoreLine
     ADD DE, LINE_INDICATION_TI_D10              ; Add line indication.
 
     ; ##########################################
-    ; Print HI byte from current score line.  HL points to HI byte.
-    LD HL, (IX)
+    ; Print current score line
     LD BC, DE
-    PUSH DE
-    CALL tx.PrintNum16
-    POP DE
-
-    ; ##########################################
-    ; Print LO byte.
-
-    ; Move IX from HI byte to LO byte.
+    LD HL, (IX)                                 ; HL = high 16 bits
     INC IX
     INC IX
-    LD HL, (IX)
-    ADD DE, _16BIT_CHARS_D5                     ; DE points to LO byte from high score.
-    LD BC, DE
     PUSH DE
-    CALL tx.PrintNum16
+    LD DE, (IX)                                 ; DE = low 16 bits
+    CALL tx.PrintNum32
     POP DE
-    
+
     ; ##########################################
     ; Print name
     ; Move IX and DE from LO byte to text
     INC IX
     INC IX
-    ADD DE, _16BIT_CHARS_D5                     ; DE points to text line with players name.
+    ADD DE, tx.FORMATTED32_SIZE_D10             ; DE points to text line with players name.
 
     LD BC, DE
     LD A, SCORE_TX_BYTES_D13

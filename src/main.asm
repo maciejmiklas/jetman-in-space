@@ -12,7 +12,7 @@ STACK_SIZE              = 50
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
    ; DEFINE DEBUG_BAR    1                        ; Enable debug bar
-   ; DEFINE DEBUG_KEYS    1
+    DEFINE DEBUG_KEYS    1
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -28,7 +28,7 @@ start
     DI                                          ; Disable Interrupts, use wait_for_scanline instead.
     NEXTREG _GL_REG_TURBO_H07, %00000011        ; Switch to 28MHz.
 
-    NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
+   ; NEXTREG _GL_REG_PERIPHERAL2_H06, %10000000  ; Disable NMI menu
     
     NEXTREG _PERIPHERAL_01_H05, %01'01'1'0'1'1  ; MD1 on port 1 and 2, 50 Hz, scandoubler on.
 

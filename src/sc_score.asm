@@ -213,13 +213,10 @@ RocketFly
 ;----------------------------------------------------------;
 PrintScore
 
+    LD DE, (scoreLo)                    ; DE = low 16 bits
+    LD HL, (scoreHi)                    ; HL = high 16 bits
     LD BC, SCORE_TI_START
-    LD HL, (scoreHi)
-    CALL tx.PrintNum16
-
-    LD BC, SCORE_TI_START+_16BIT_CHARS_D5
-    LD HL, (scoreLo)
-    CALL tx.PrintNum16
+    CALL tx.PrintNum32
 
     RET                                         ; ## END of the function ##
 
@@ -228,7 +225,6 @@ PrintScore
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
-
 
 ;----------------------------------------------------------;
 ;                 _CheckExtraLive                          ;
