@@ -3,8 +3,11 @@
 > [!NOTE]
 > Click on the image below to play the video 
 
-[![Youtube](/img/youtube_en.jpg)](https://youtu.be/aa8tRvNHfRo)
-   
+[![Youtube](/img/youtube.png)](https://youtu.be/Zw5AR7A05WI)
+
+> [!TIP]
+> [DOWNLOAD SECTION](https://maciej3322.itch.io/jetma-in-space)
+
 <img src="/img/scr1.jpg" width="640px"/>
    
 <img src="/img/scr2.jpg" width="640px"/>

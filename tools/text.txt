@@ -1,5 +1,4 @@
-> [!TIP]
-> [DOWNLOAD SECTION](https://github.com/maciejmiklas/jetman-in-space/releases)
+
 
 
  I'm working on a game similar to Jetpack on the ZX Spectrum. You can find information about gameplay and the game's text in the attached file. Now I'm working on a video to promote the game. The video shows clips from the game and short comments for each clip. I would like you to help me improve the comments for those clips. It should be short and funny.
