@@ -6,7 +6,7 @@
 [![Youtube](/img/youtube.png)](https://youtu.be/xZHrYfIvjUI)
 
 > [!TIP]
-> [DOWNLOAD SECTION](https://maciej3322.itch.io/jetma-in-space)
+> [DOWNLOAD SECTION (5€ on itch)](https://maciej3322.itch.io/jetma-in-space)
 
 <img src="/img/scr1.jpg" width="640px"/>
    

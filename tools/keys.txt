@@ -1,7 +1,7 @@
   KEYBOARD:
      Z, ENTER - FIRE
 
-     ARROWS OR W, A, S, D - MOVE JETMAN
+     ARROWS OR Q, A, K, L - MOVE JETMAN
 
      P - PAUSE THE GAME
 

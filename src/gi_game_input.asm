@@ -134,30 +134,32 @@ JetMovementInput
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
 
     ; Key A
-    BIT 0, A                                    ; A
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
-    CALL Z, _JoyLeft
-    POP AF
-
-    ; Key S
-    BIT 1, A                                    ; A
-    PUSH AF                                     ; Keep A on the stack to avoid rereading the same input.
+    BIT 0, A
     CALL Z, _JoyDown
-    POP AF
-
-    ; Key D
-    BIT 2, A                                    ; D
-    CALL Z, _JoyRight
 
     ; ##########################################
     ; Row T...Q
     LD A, _KB_T_TO_Q_HFB
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
 
-    ; Key W
-    BIT 1, A                                    ; W
+    ; Key Q
+    BIT 0, A
     CALL Z, _JoyUp
 
+    ; ##########################################
+    ; Row H, J, K, L, ENTER
+    LD A, _KB_H_TO_ENT_HBF
+    IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
+
+    ; Key L
+    BIT 1, A
+    PUSH AF
+    CALL Z, _JoyRight
+    POP AF
+
+    ; Key K
+    BIT 2, A
+    CALL Z, _JoyLeft
 
     ; ##########################################
     _JoyMoveEnd
