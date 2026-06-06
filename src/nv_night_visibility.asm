@@ -14,6 +14,7 @@ VISIBILITY_LIMIT_OFF    = 255
 
 visibilityLimit         DW VISIBILITY_LIMIT_OFF ; Current visiblity level.
 visibilityLimitDest     DW VISIBILITY_LIMIT_OFF ; Destination visibility level.
+
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PUBLIC FUNCTIONS                       ;
@@ -21,9 +22,29 @@ visibilityLimitDest     DW VISIBILITY_LIMIT_OFF ; Destination visibility level.
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                       FlipVisibility                     ;
+;----------------------------------------------------------;
+FlipVisibility
+
+    LD A, (so.visibilityLimitOn)
+    AND %00000001
+    XOR 1
+    LD (so.visibilityLimitOn), A
+    OR A                                        ; Same as CP 0, but faster.
+    RET NZ
+
+    CALL LimitJetVisibilityOffNow
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                      ChangeVisibility                    ;
 ;----------------------------------------------------------;
 ChangeVisibility
+
+    LD A, (so.visibilityLimitOn)
+    OR A                                        ; Same as CP 0, but faster.
+    RET Z
 
     LD A, (visibilityLimitDest)
     LD B, A
@@ -163,6 +184,8 @@ LimitJetVisibilityOffNow
     LD A, VISIBILITY_LIMIT_OFF
     LD (visibilityLimitDest), A
     LD (visibilityLimit), A
+
+    CALL sc.ResetClippings
 
     RET                                         ; ## END of the function ##
 
