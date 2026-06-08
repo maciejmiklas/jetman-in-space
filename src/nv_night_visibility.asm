@@ -22,29 +22,9 @@ visibilityLimitDest     DW VISIBILITY_LIMIT_OFF ; Destination visibility level.
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                       FlipVisibility                     ;
-;----------------------------------------------------------;
-FlipVisibility
-
-    LD A, (so.visibilityLimitOn)
-    AND %00000001
-    XOR 1
-    LD (so.visibilityLimitOn), A
-    OR A                                        ; Same as CP 0, but faster.
-    RET NZ
-
-    CALL LimitJetVisibilityOffNow
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                      ChangeVisibility                    ;
 ;----------------------------------------------------------;
 ChangeVisibility
-
-    LD A, (so.visibilityLimitOn)
-    OR A                                        ; Same as CP 0, but faster.
-    RET Z
 
     LD A, (visibilityLimitDest)
     LD B, A
@@ -171,6 +151,15 @@ UpdateVisibilityOnJetMove
 ; - A: VISIBILITY_LIMIT_XXX
 LimitJetVisibility
 
+    PUSH AF
+    LD A, (jt.difLevel)
+    CP jt.DIF_HARD_D3
+    JR Z, .onHard
+    POP AF
+    RET
+
+.onHard
+    POP AF
     LD (visibilityLimitDest), A
     CALL UpdateVisibilityOnJetMove
 

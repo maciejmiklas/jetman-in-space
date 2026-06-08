@@ -203,12 +203,6 @@ GameOptionsInput
     LD A, _KB_V_TO_SH_HFE
     IN A, (_KB_REG_HFE)                         ; Read keyboard input into A.
 
-    ; Key V
-    PUSH AF
-    BIT 4, A
-    CALL Z, _FlipVisibility
-    POP AF
-    
     ; Key Z
     BIT 1, A
     CALL Z, _Fire
@@ -523,19 +517,6 @@ _JoyDownRelease
 
     RET                                         ; ## END of the function ## 
 
-
-;----------------------------------------------------------;
-;                  _FlipVisibility                         ;
-;----------------------------------------------------------;
-_FlipVisibility
-
-    CALL ki.CanProcessKeyInput
-    RET NZ
-
-    dbs.SetupCode1Bank
-    CALL nv.FlipVisibility
-
-    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                         _Fire                            ;

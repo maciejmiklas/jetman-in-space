@@ -152,8 +152,6 @@ checksumHard            DB 0
 checksumVerify          DW 0
 gameMusicCnt            DB 3                    ; MUSIC_HIGH_SCORE_D3
 
-visibilityLimitOn       DW 0
-
 STORAGE_BYTES           = $ - storageStart
 
 fileName                DB "jetman.sav",0
