@@ -144,6 +144,8 @@
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
 
+    dbs.SetupArrays2Bank
+    CALL pi.CheckJetmanPickupCollision
 
     dbs.SetupRocketBank
     CALL roa.CheckHitTank

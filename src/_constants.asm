@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
 ; Lots of documentation copied from https://wiki.specnext.dev
 
-gameVersion             DB "V1.12"
+gameVersion             DB "V1.13"
 GAME_VERSION_SIZE       = 5
 
 ;----------------------------------------------------------;

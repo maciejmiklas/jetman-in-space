@@ -71,9 +71,9 @@ ResetPickups
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 UpdatePickupsOnJetmanMove                ;
+;                 CheckJetmanPickupCollision                ;
 ;----------------------------------------------------------;
-UpdatePickupsOnJetmanMove
+CheckJetmanPickupCollision
 
     LD A, (jt.jetState)
     CP jt.JETST_RIP_D103

@@ -839,9 +839,6 @@ JetMoves
 
     CALL jl.UpdateLifeFaceOnJetMove
 
-    dbs.SetupArrays2Bank
-    CALL pi.UpdatePickupsOnJetmanMove
-
     dbs.SetupCode1Bank
     CALL nv.UpdateVisibilityOnJetMove 
 
