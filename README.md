@@ -1,12 +1,12 @@
 <img src="/img/game_cover.jpg" width="800px"/>
 
+> [!TIP]
+> [DOWNLOAD SECTION (5€ on itch)](https://maciej3322.itch.io/jetma-in-space)
+
 > [!NOTE]
 > Click on the image below to play the video 
 
 [![Youtube](/img/youtube.png)](https://youtu.be/xZHrYfIvjUI)
-
-> [!TIP]
-> [DOWNLOAD SECTION (5€ on itch)](https://maciej3322.itch.io/jetma-in-space)
 
 <img src="/img/scr1.jpg" width="640px"/>
    
