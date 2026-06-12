@@ -5,8 +5,7 @@
 
 [![Youtube](/img/youtube.png)](https://youtu.be/xZHrYfIvjUI)
 
-> [!TIP]
-> [DOWNLOAD SECTION (5€ on itch)](https://maciej3322.itch.io/jetma-in-space)
+<iframe frameborder="0" src="https://itch.io/embed/4646970" width="552" height="167"><a href="https://maciej3322.itch.io/jetman-in-space">Jetman in Space by maciej3322</a></iframe>
 
 <img src="/img/scr1.jpg" width="640px"/>
    
