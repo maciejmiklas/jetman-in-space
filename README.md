@@ -8,15 +8,25 @@
 
 [![Youtube](/img/youtube.png)](https://youtu.be/xZHrYfIvjUI)
 
-<img src="/img/scr1.jpg" width="640px"/>
+<img src="/img/main.png" width="640px"/>
    
-<img src="/img/scr2.jpg" width="640px"/>
+<img src="/img/intro.png" width="640px"/>
    
-<img src="/img/scr3.png" width="640px"/>
+<img src="/img/level_select.png" width="640px"/>
    
-<img src="/img/scr4.png" width="640px"/>
+<img src="/img/level4.png" width="640px"/>
     
-<img src="/img/scr5.png" width="640px"/>
+<img src="/img/stars1.png" width="640px"/>
+
+<img src="/img/level4.png" width="640px"/>
+
+<img src="/img/level5.png" width="640px"/>
+
+<img src="/img/level6.png" width="640px"/>
+
+<img src="/img/level8.png" width="640px"/>
+
+<img src="/img/stars8.png" width="640px"/>
    
 I want to give a shout-out to the following, without them, I would have been lost in space!
 * [Oleg Nikitin (NQ)](https://zxart.ee/eng/authors/n/nq)
