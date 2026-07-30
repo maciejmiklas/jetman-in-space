@@ -324,6 +324,10 @@ UnlockNextLevel
     INC A
     LD (currentLevel), A
 
+    IFDEF DEMO_MODE
+    RET
+    ENDIF
+
     ; Player has finished the last level, restart at  1, but do not store the unlock level.
     CP _LEVEL_MAX_D10 + 1
     JR Z, .resetCurrentLevel

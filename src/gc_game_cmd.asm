@@ -162,7 +162,6 @@ SetupSystem
 
     RET                                         ; ## END of the function ##
 
-
 ;----------------------------------------------------------;
 ;                      GameOver                            ;
 ;----------------------------------------------------------;
@@ -173,9 +172,21 @@ GameOver
     CALL go.ShowGameOver
     CALL jl.ResetLives
 
-
     RET                                         ; ## END of the function ##
 
+;----------------------------------------------------------;
+;                      DemoOver                            ;
+;----------------------------------------------------------;
+    IFDEF DEMO_MODE
+DemoOver
+
+    CALL _HideGame
+
+    CALL dr.ShowDemoOver
+    CALL jl.ResetLives
+
+    RET                                         ; ## END of the function ##
+    ENDIF
 ;----------------------------------------------------------;
 ;                  ExitToLoadMainMenu                      ;
 ;----------------------------------------------------------;
@@ -232,8 +243,18 @@ StoreGameData
 ;----------------------------------------------------------;
 LoadNextLevel
 
-    ; Last level done?
     LD A, (ll.currentLevel)
+
+    ; Demo over?
+    IFDEF DEMO_MODE
+    CP DEMO_LEVELS_D3
+    JR NZ, .notDemoOver
+    CALL DemoOver
+    JR .end
+.notDemoOver
+    ENDIF
+
+    ; Last level done?
     CP _LEVEL_MAX_D10
     JR NZ, .notLastLevel
 
@@ -244,7 +265,6 @@ LoadNextLevel
     LD (ll.currentLevel), A
 
     _LoadGameEndStory
-
     JR .end
 
 .notLastLevel
@@ -253,7 +273,7 @@ LoadNextLevel
     CALL StoreGameData
 
 .end
-    dbs.SetupRocketBank                    ; Coll has to return to ritht bank.
+    dbs.SetupRocketBank                         ; Call has to return to ritht bank.
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

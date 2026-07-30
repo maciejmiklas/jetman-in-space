@@ -173,7 +173,8 @@ HideImageLine
 ;----------------------------------------------------------;
 ;                    ReplaceImageLine                      ;
 ;----------------------------------------------------------;
-; Replaces the line of the displayed layer 2 image with the corresponding line of the given image.
+; Replaces the line of the displayed layer 2 image with the corresponding line of the given image. The source image is stored in bank 6,
+; destination image in bank 7.
 ; Input:
 ;  - A: line number
 ReplaceImageLine
