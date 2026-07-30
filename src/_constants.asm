@@ -5,10 +5,19 @@
 ;----------------------------------------------------------;
 ;                     Global Constants                     ;
 ;----------------------------------------------------------;
-; Lots of documentation copied from https://wiki.specnext.dev
+; Some documentation copied from https://wiki.specnext.dev
 
-gameVersion             DB "V1.13"
+    DEFINE DEMO_MODE  1                          ; Demo release, level 4 and 8.
+
+    IFDEF DEMO_MODE
+gameVersion             DB "V1.14 - DEMO"
+GAME_VERSION_SIZE       = 12
+    ELSE
+gameVersion             DB "V1.14"
 GAME_VERSION_SIZE       = 5
+    ENDIF 
+
+DEMO_LEVELS_D3          = 3
 
 ;----------------------------------------------------------;
 ;                  General Registers                       ;

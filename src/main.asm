@@ -12,7 +12,7 @@ STACK_SIZE              = 50
 
 ;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
     ;DEFINE DEBUG_BAR    1                        ; Enable debug bar
-    ;DEFINE DEBUG_KEYS    1
+    DEFINE DEBUG_KEYS    1
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
@@ -171,6 +171,7 @@ mainLoop
     INCLUDE "pi_pickups.asm"
     INCLUDE "jl_jetman_lives.asm"
     INCLUDE "go_game_over.asm"
+    INCLUDE "dr_demo_over.asm"
     INCLUDE "gr_grenade.asm"
     INCLUDE "enur_enemy_fuel_thief_roc.asm"
     INCLUDE "enc_enemy_cmd.asm"
