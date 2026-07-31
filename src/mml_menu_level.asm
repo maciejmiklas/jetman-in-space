@@ -29,7 +29,7 @@ LoadMenuLevelSelect
 
     CALL js.HideJetSprite
     CALL ti.CleanAllTiles
-    CALL bm.HideImage
+    CALL bm.HideImageEffect
 
     ; ##########################################
     LD A, (ll.currentLevel)

@@ -87,6 +87,7 @@ FUEL_THIEF_ACTIVE_LEV   = 4
 ;----------------------------------------------------------;
     MACRO _InitLevelLoad
 
+    CALL bm.HideImageEffect
     CALL _HideGame
     CALL gid.ResetKeysState
     CALL td.ResetTimeOfDay
@@ -143,6 +144,7 @@ StartGameWithIntro
 .intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
+    CALL bm.HideImageEffect
     CALL _HideGame
     _LoadLevel1Intro
 
@@ -167,6 +169,7 @@ SetupSystem
 ;----------------------------------------------------------;
 GameOver
 
+    CALL bm.HideImageEffect
     CALL _HideGame
 
     CALL go.ShowGameOver
@@ -180,6 +183,7 @@ GameOver
     IFDEF DEMO_MODE
 DemoOver
 
+    CALL bm.HideImageEffect
     CALL _HideGame
 
     CALL dr.ShowDemoOver
@@ -192,6 +196,7 @@ DemoOver
 ;----------------------------------------------------------;
 ExitToLoadMainMenu
 
+    CALL bm.HideImageEffect
     CALL StoreGameData
     CALL LoadMainMenu
 
@@ -1042,7 +1047,6 @@ _HideGame
     CALL ki.SetupKeyboardForMenu
     CALL sc.ResetClippings
     CALL NightLimitVisibilityOffNow
-    CALL bm.HideImage
     CALL js.HideJetSprite
     CALL st.HideStars
     CALL jw.HideShots

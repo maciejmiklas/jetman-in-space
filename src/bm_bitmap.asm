@@ -10,6 +10,12 @@
 ; bytes tall. There are 32 such columns per bank (8192 / 256 = 32). 10 banks × 32 columns = 320 columns total.
 ; Each bank is 256 pixels tall and has 32 columns. 10 banks give us: 256x320, because the image is rotated by 90 degrees. 
 
+; Inside any given bank, pixels are arranged top-to-bottom, then left-to-right within that bank's 64-pixel vertical slice:
+; - Byte 0: Top-left pixel of the bank slice ($X = 0, Y = 0$)
+; - Byte 1: Pixel directly below it ($X = 0, Y = 1$)
+; - Byte 255: Bottom pixel of that same first column ($X = 0, Y = 255$)
+; - Byte 256: Top pixel of the second column in that bank ($X = 1, Y = 0$)
+
     MODULE bm
 
 imageBank               DB 0                    ; Bank containing the image.
@@ -83,6 +89,23 @@ CreateEmptyImageBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                       HideImageEffect                    ;
+;----------------------------------------------------------;
+HideImageEffect
+
+    LD B, 6
+.loop
+    PUSH BC
+    CALL bp.CurrentPalBrightnessDown
+    CALL ut.Pause65K
+    POP BC
+    DJNZ .loop
+
+    CALL HideImage
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                         HideImage                        ;
 ;----------------------------------------------------------;
 ; Copies 10x bank with black color over displayed image.
@@ -109,7 +132,7 @@ HideImage
     LD B, dbs.BM_BANKS_D10                      ; Amount of banks occupied by the image. 320x256 has 10, 256x192 has 6, 256x128 has 4.
 .bankLoop                                       ; Each loop copies single bank, there are 10 iterations.
     PUSH BC
-
+  
     ; ##########################################
     ; Assign banks to slots
     LD A, D

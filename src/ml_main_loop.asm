@@ -766,10 +766,6 @@
     ; ##########################################
     CALL go.GameOverLoop
 
-    IFDEF DEMO_MODE
-    CALL dr.DemoOverLoop
-    ENDIF
-
 .end
     ENDM                                        ; ## END of the macro ##
 

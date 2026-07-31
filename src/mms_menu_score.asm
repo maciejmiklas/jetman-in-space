@@ -365,7 +365,7 @@ _SetupMenuScore
     CALL ms.SetMainState
 
     CALL js.HideJetSprite
-    CALL bm.HideImage
+    CALL bm.HideImageEffect
     CALL ti.CleanAllTiles
 
     ; ###########################################

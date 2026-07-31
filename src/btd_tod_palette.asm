@@ -29,7 +29,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
 ;----------------------------------------------------------;
 ;                 _DecrementPaletteColors                  ;
 ;----------------------------------------------------------;
-; This function will decrease palette brighteners given by #todPalAddr.
+; This function will decrement palette brighteners given by #todPalAddr.
     MACRO _DecrementPaletteColors
 
     ; ##########################################
