@@ -107,22 +107,6 @@ HideImageFadeSlow
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        ShowImageFade                     ;
-;----------------------------------------------------------;
-HideImageFade
-
-    LD B, 6
-.loop
-    PUSH BC
-    CALL bp.CurrentPalBrightnessDown
-    CALL ut.Pause65K
-    POP BC
-    DJNZ .loop
-
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                        HideImageFade                     ;
 ;----------------------------------------------------------;
 HideImageFade
