@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -144,7 +144,7 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Hide current image.
-    CALL bm.HideImageEffect
+    CALL bm.HideImageFade
     ; ##########################################
     ; Load palette.
     CALL ar.LoadEasyPalFile
@@ -181,7 +181,7 @@ _LoadMenuNormal
     CALL aml.MusicOff
 
     ; Hide current image
-    CALL bm.HideImageEffect
+    CALL bm.HideImageFade
 
     ; ##########################################
     ; Load palette
@@ -225,7 +225,7 @@ _LoadMenuHard
     CALL aml.MusicOff
 
     ; Hide current image
-    CALL bm.HideImageEffect
+    CALL bm.HideImageFade
 
     ; ##########################################
     ; Load palette

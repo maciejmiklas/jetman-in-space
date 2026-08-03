@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -19,7 +19,7 @@ TI_RAM_START            = ti.TI_MAP_RAM_H5B00 + FACE_TI_POS_BYTE_D30
 RED_FACE_LIVES_D1       = 2                     ; Show face when #lives < than this value.
 JET_POS_LEFT_D100       = 100                   ; Face looks to the left, if Jetman postion is < 100.
 JET_POS_RIGHT_D200      = 200                   ; Face looks to the right, if Jetman postion is > 100.
-JET_LIVES_D3            = 3
+JET_LIVES_D3            = 1
 JET_LIVES_EASY_D60      = 60
 
     DB "If you read this text, it means that you have reached forbidden memory space."
@@ -47,12 +47,6 @@ LifeDown
     LD A, (lives)
     DEC A
     LD (lives), A
-
-    OR A                                        ; Same as CP 0, but faster.
-    JR NZ, .keepPlaying
-    CALL gc.GameOver
-    RET
-.keepPlaying
 
     CALL _UpdateJetLives
 

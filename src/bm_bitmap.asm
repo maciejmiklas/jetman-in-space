@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -89,9 +89,43 @@ CreateEmptyImageBank
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       HideImageEffect                    ;
+;                      HideImageFadeSlow                   ;
 ;----------------------------------------------------------;
-HideImageEffect
+HideImageFadeSlow
+
+    LD B, 6
+.loop
+    PUSH BC
+    CALL bp.CurrentPalBrightnessDown
+    CALL ut.Pause65K
+    CALL ut.Pause65K
+    POP BC
+    DJNZ .loop
+
+    CALL HideImage
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        ShowImageFade                     ;
+;----------------------------------------------------------;
+HideImageFade
+
+    LD B, 6
+.loop
+    PUSH BC
+    CALL bp.CurrentPalBrightnessDown
+    CALL ut.Pause65K
+    POP BC
+    DJNZ .loop
+
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        HideImageFade                     ;
+;----------------------------------------------------------;
+HideImageFade
 
     LD B, 6
 .loop
