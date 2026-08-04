@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -75,6 +75,7 @@
 
     ENDM                                        ; ## END of the macro ##
 
+   IFDEF DEBUG
 ;----------------------------------------------------------;
 ;                        _DEB                              ;
 ;----------------------------------------------------------;
@@ -93,3 +94,4 @@
     NEXTREG 2,8
 
     ENDM                                        ; ## END of the macro ##
+    ENDIF

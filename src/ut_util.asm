@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -350,13 +350,27 @@ ReadNextReg
     RET
 
 ;----------------------------------------------------------;
-;                        PauseShort                        ;
+;                         Pause30K                         ;
 ;----------------------------------------------------------;
-PauseShort
+Pause30K
 
+    PUSH BC
+    LD BC, 30000
+    CALL CountdownBC
+    POP BC
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                        Pause65K                          ;
+;----------------------------------------------------------;
+Pause65K
+
+    PUSH BC
     LD BC, 65000
     CALL CountdownBC
-    
+    POP BC
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;

@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -133,6 +133,36 @@ SetupPaletteLoad
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                CurrentPalBrightnessDown                  ;
+;----------------------------------------------------------;
+CurrentPalBrightnessDown
+
+    CALL dbs.SetupBgPaletteBank
+    LD HL, DEFAULT_PAL_ADDR
+
+    LD B, PAL_COLORS_D252
+.colorLoop
+    PUSH BC
+
+    ; Decrement the brightness of the current color.
+    LD DE, (HL)                                 ; DE contains color that will be changed.
+    CALL BrightnessDown
+    LD (HL), DE                                 ; Update temp color.
+
+    ; Move to the next color.
+    INC HL
+    INC HL
+
+    POP BC
+    DJNZ .colorLoop
+
+    LD HL, DEFAULT_PAL_ADDR
+    LD B, PAL_COLORS_D252
+    CALL LoadPalette
+    
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                     BrightnessDown                       ;
 ;----------------------------------------------------------;
 ; Input
@@ -188,7 +218,7 @@ BrightnessDown
 
     ; Prepare BBB for decrement operation: xxx'xxx'BB xxxxxxx'B-> 00000BBB.
     LD A, E
-    AND PAL2_BB_MASK                        ; A contains 000'000'BB.
+    AND PAL2_BB_MASK                            ; A contains 000'000'BB.
     RR D                                        ; Rotate D right, if xxxxxxx'B is set, it will set CF.
     RLA                                         ; Rotate left A. It will set CF from the previous operation on bit 0: 000000'BB -> 00000'BB'CF.
 
@@ -205,10 +235,10 @@ BrightnessDown
     
     LD B, A                                     ; Backup A containing BB.
     LD A, E
-    AND PAL2_BB_MASKN                       ; Load RRR'GGG'BB into A and reset BB, because we will set it to new value with XOR.
+    AND PAL2_BB_MASKN                           ; Load RRR'GGG'BB into A and reset BB, because we will set it to new value with XOR.
     XOR B
     LD E, A
-.afterDecrementBlue 
+.afterDecrementBlue
 
     RET                                         ; ## END of the function ##
 

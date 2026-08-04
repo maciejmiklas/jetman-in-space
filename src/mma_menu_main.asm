@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -40,6 +40,10 @@ MENU_EL_MAX             = MENU_EL_ABOUT
 LoadMainMenu
 
     _LoadSong aml.MUSIC_MAIN_MENU_D0
+
+    LD A, MENU_EL_MIN
+    LD (menuPos), A
+
     CALL SwitchToMainMenu
 
     RET                                         ; ## END of the function ##
@@ -48,9 +52,6 @@ LoadMainMenu
 ;                    SwitchToMainMenu                      ;
 ;----------------------------------------------------------;
 SwitchToMainMenu
-
-    LD A, MENU_EL_MIN
-    LD (menuPos), A
 
     CALL js.HideJetSprite
     CALL ar.LoadMenuSprites
@@ -143,8 +144,7 @@ _LoadMenuEasy
 
     ; ##########################################
     ; Hide current image.
-    CALL bm.HideImage
-
+    CALL bm.HideImageFade
     ; ##########################################
     ; Load palette.
     CALL ar.LoadEasyPalFile
@@ -181,7 +181,7 @@ _LoadMenuNormal
     CALL aml.MusicOff
 
     ; Hide current image
-    CALL bm.HideImage
+    CALL bm.HideImageFade
 
     ; ##########################################
     ; Load palette
@@ -225,7 +225,7 @@ _LoadMenuHard
     CALL aml.MusicOff
 
     ; Hide current image
-    CALL bm.HideImage
+    CALL bm.HideImageFade
 
     ; ##########################################
     ; Load palette

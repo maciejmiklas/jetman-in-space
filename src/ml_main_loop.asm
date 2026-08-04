@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -765,10 +765,6 @@
 
     ; ##########################################
     CALL go.GameOverLoop
-
-    IFDEF DEMO_MODE
-    CALL dr.DemoOverLoop
-    ENDIF
 
 .end
     ENDM                                        ; ## END of the macro ##

@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
 ; Some documentation copied from https://wiki.specnext.dev
 
-    DEFINE DEMO_MODE  1                          ; Demo release, level 4 and 8.
+ ;   DEFINE DEMO_MODE  1                          ; Demo release, level 4 and 8.
 
     IFDEF DEMO_MODE
 gameVersion             DB "V1.14 - DEMO"

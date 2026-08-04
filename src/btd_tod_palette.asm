@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -29,7 +29,7 @@ TOD_PALETTES_ADDR      = bp.DEFAULT_PAL_ADDR+bp.PAL_BYTES_D512
 ;----------------------------------------------------------;
 ;                 _DecrementPaletteColors                  ;
 ;----------------------------------------------------------;
-; This function will decrease palette brighteners given by #todPalAddr.
+; This function will decrement palette brighteners given by #todPalAddr.
     MACRO _DecrementPaletteColors
 
     ; ##########################################

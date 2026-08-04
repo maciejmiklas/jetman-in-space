@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -87,6 +87,7 @@ FUEL_THIEF_ACTIVE_LEV   = 4
 ;----------------------------------------------------------;
     MACRO _InitLevelLoad
 
+    CALL bm.HideImageFade
     CALL _HideGame
     CALL gid.ResetKeysState
     CALL td.ResetTimeOfDay
@@ -143,6 +144,7 @@ StartGameWithIntro
 .intro
     CALL js.HideJetSprite
     CALL jt.SetJetStateInactive
+    CALL bm.HideImageFade
     CALL _HideGame
     _LoadLevel1Intro
 
@@ -167,6 +169,7 @@ SetupSystem
 ;----------------------------------------------------------;
 GameOver
 
+    CALL bm.HideImageFadeSlow
     CALL _HideGame
 
     CALL go.ShowGameOver
@@ -180,6 +183,7 @@ GameOver
     IFDEF DEMO_MODE
 DemoOver
 
+    CALL bm.HideImageFadeSlow
     CALL _HideGame
 
     CALL dr.ShowDemoOver
@@ -192,6 +196,7 @@ DemoOver
 ;----------------------------------------------------------;
 ExitToLoadMainMenu
 
+    CALL bm.HideImageFade
     CALL StoreGameData
     CALL LoadMainMenu
 
@@ -704,6 +709,13 @@ EnemyHitsJet
 ;----------------------------------------------------------;
 RespawnJet
 
+    LD A, (jl.lives)
+    OR A
+    JR NZ, .keepPlaying
+    CALL gc.GameOver
+    RET
+.keepPlaying
+
     CALL js.InitJetSprite
 
     ; Set respawn coordinates.
@@ -1042,7 +1054,6 @@ _HideGame
     CALL ki.SetupKeyboardForMenu
     CALL sc.ResetClippings
     CALL NightLimitVisibilityOffNow
-    CALL bm.HideImage
     CALL js.HideJetSprite
     CALL st.HideStars
     CALL jw.HideShots

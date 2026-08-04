@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -237,7 +237,7 @@ GameOptionsInput
     BIT 3, A                                    ; F
     CALL Z, _Key_F
 
-    IFDEF DEBUG_KEYS
+    IFDEF DEBUG
     ; ##########################################
     ; Row T...Q
     LD A, _KB_T_TO_Q_HFB
@@ -305,7 +305,7 @@ GameOptionsInput
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
 
-    IFDEF DEBUG_KEYS
+    IFDEF DEBUG
 ;----------------------------------------------------------;
 ;                        _Key_Q                            ;
 ;----------------------------------------------------------;

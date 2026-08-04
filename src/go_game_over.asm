@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2025 Maciej Miklas
+  Copyright (c) 2027 Maciej Miklas
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
@@ -8,19 +8,19 @@
     MODULE go
 
 GAME_OVER_CNT_D2        = 2
-fireCnt                 DB 0
+showDelay               DB 0                    ; Minimum time to show the game over screen before the user can exit it.
 
 ;----------------------------------------------------------;
 ;                       GameOverLoop                       ;
 ;----------------------------------------------------------;
 GameOverLoop
 
-    LD A, (fireCnt)
+    LD A, (showDelay)
     CP GAME_OVER_CNT_D2
     RET Z
 
     INC A
-    LD (fireCnt), A
+    LD (showDelay), A
 
     RET                                         ; ## END of the function ##
 
@@ -32,7 +32,7 @@ ShowGameOver
     CALL gb.HideGameBar
 
     XOR A
-    LD (fireCnt),A
+    LD (showDelay),A
 
     LD A, ms.MS_GAME_OVER_D20
     CALL ms.SetMainState
@@ -76,7 +76,7 @@ ShowGameOver
 _OnFirePressed
 
     ; Player should not be able to exit the game over screen too quickly, for example, when the auto fire is enabled.
-    LD A, (fireCnt)
+    LD A, (showDelay)
     CP GAME_OVER_CNT_D2
     RET NZ
 
