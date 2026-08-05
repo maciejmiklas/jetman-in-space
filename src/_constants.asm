@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
 ; Some documentation copied from https://wiki.specnext.dev
 
- ;   DEFINE DEMO_MODE  1                          ; Demo release, level 4 and 8.
+    ;DEFINE DEMO_MODE  1                          ; Demo release, level 1 -3.
 
     IFDEF DEMO_MODE
 gameVersion             DB "V1.14 - DEMO"
