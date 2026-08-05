@@ -154,7 +154,7 @@ gameMusicCnt            DB 3                    ; MUSIC_HIGH_SCORE_D3
 
 STORAGE_BYTES           = $ - storageStart
 
-fileName                DB "jetman.sav",0
+fileName                DB "fred.sav",0
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;

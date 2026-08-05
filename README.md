@@ -8,7 +8,6 @@
 
 [![Youtube](/img/youtube.png)](https://youtu.be/xZHrYfIvjUI)
    
-<img src="/img/intro.png" width="640px"/>
    
 <img src="/img/level_select.png" width="640px"/>
    
@@ -50,4 +49,4 @@ I want to give a shout-out to the following, without them, I would have been los
 - Game assets in `/assets` are NOT open source. They are licensed under a restrictive license (see `/assets/LICENSE-ASSETS.txt`).
 - You may build the game for personal, non-commercial use.
 - You may not redistribute binaries or any assets from `/assets` without written permission.
-- For permissions beyond this license, contact jetman@miklas.biz
+- For permissions beyond this license, contact fred@miklas.biz

@@ -261,10 +261,10 @@ mainLoop
 ;----------------------------------------------------------;
 ; https://z00m128.github.io/sjasmplus/documentation.html
 
-    CSPECTMAP "jetman.map"                      ; Generate a map file for use with Cspect.
+    CSPECTMAP "fred.map"                      ; Generate a map file for use with Cspect.
 
     ; This sets the name of the project, the start address, and the initial stack pointer.
-    SAVENEX OPEN "jetman.nex", start, _RAM_SLOT4_STA_H8000
+    SAVENEX OPEN "fred.nex", start, _RAM_SLOT4_STA_H8000
 
     ; This asserts the minimum core version.
     SAVENEX CORE 3,0,0

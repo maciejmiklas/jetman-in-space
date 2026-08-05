@@ -473,7 +473,7 @@ _CheckCollision
 
     ; Is Fred above or below the enemy?
     CP B
-    JR C, .jetmanAboveEnemy                     ; Jump if "Fred Y" < "enemy Y". Fred is above enemy (0 is at the top, 256 bottom).
+    JR C, .fredAboveEnemy                     ; Jump if "Fred Y" < "enemy Y". Fred is above enemy (0 is at the top, 256 bottom).
 
     ; Fred is below enemy
     SUB B
@@ -481,7 +481,7 @@ _CheckCollision
     JR C, .collision                            ; Jump if A - B < E
     JR .noCollision
 
-.jetmanAboveEnemy
+.fredAboveEnemy
     ; Fred is above enemy
 
     ; TODO do not load X/Y again, reuse already loaded values!

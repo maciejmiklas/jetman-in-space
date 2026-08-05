@@ -31,4 +31,4 @@ Limitation of Liability
 - In no event shall the copyright holder be liable for any damages arising from the use of the Assets.
 
 Contact
-- For permissions beyond this license, contact jetman@miklas.biz
+- For permissions beyond this license, contact fred@miklas.biz

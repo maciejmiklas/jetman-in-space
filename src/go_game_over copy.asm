@@ -11,7 +11,7 @@
 GAME_OVER_CNT_D2        = 2
 showDelay               DB 0
 
-; Delays showing the game over image - the game is still active and plays the animation of the dying jetman.
+; Delays showing the game over image - the game is still active and plays the animation of the dying fred.
 GAME_OVER_DELAY         = 5
 startDelay              DB 0
 
