@@ -288,9 +288,7 @@ starsMode               DB STARSM_HIDE
     MACRO _MoveStarsL1Up
 
     ; Delay movement
-    LD A, (starsMoveL1Delay)
-    DEC A
-    LD (starsMoveL1Delay), A
+    DECA starsMoveL1Delay
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Do not move yet, wait for 0.
 
@@ -312,9 +310,7 @@ starsMode               DB STARSM_HIDE
     MACRO _MoveStarsL2Up
 
     ; Delay movement
-    LD A, (starsMoveL2Delay)
-    DEC A
-    LD (starsMoveL2Delay), A
+    DECA starsMoveL2Delay
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Do not move yet, wait for 0.
 
@@ -336,9 +332,7 @@ starsMode               DB STARSM_HIDE
     MACRO _MoveStarsL1Down
 
     ; Delay movement
-    LD A, (starsMoveL1Delay)
-    DEC A
-    LD (starsMoveL1Delay), A
+    DECA starsMoveL1Delay
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Do not move yet, wait for 0.
 
@@ -360,9 +354,7 @@ starsMode               DB STARSM_HIDE
     MACRO _MoveStarsL2Down
 
     ; Delay movement
-    LD A, (starsMoveL2Delay)
-    DEC A
-    LD (starsMoveL2Delay), A
+    DECA starsMoveL2Delay
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                      ; Do not move yet, wait for 0.
 

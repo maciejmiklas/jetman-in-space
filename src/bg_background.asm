@@ -109,6 +109,23 @@ ShowBackgroundAboveHorizon
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                  MoveBackgroundBack                      ;
+;----------------------------------------------------------;
+MoveBackgroundBack
+
+    LD A, (bgOffset)
+    OR A                                        ; Same as CP 0, but faster.
+    RET Z
+
+    CALL ShowBackgroundAboveHorizon
+
+    DECA bgOffset
+
+    CALL _MoveBackground
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;----------------------------------------------------------;
 ;                   PRIVATE FUNCTIONS                      ;
 ;----------------------------------------------------------;

@@ -15,14 +15,20 @@ MARG_VERT_KICK_D25      = 25                    ; Start kicking (Jetman is right
 
 RIP_MOVE_LEFT_D0        = 0
 RIP_MOVE_RIGHT_D1       = 1
-ripMoveState            DB 0                    ; 1 - move right, 0 - move left
+ripMoveDir              DB 0                    ; 1 - move right, 0 - move left
 
-; Amount of steps to move in a direction is given by #ripMoveState. This counter counts down to 0. When that happens, 
-; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveState).
+; Amount of steps to move in a direction is given by #ripMoveDir. This counter counts down to 0. When that happens, 
+; the counter gets initialized from #ripMoveMul, and the direction changes (#ripMoveDir).
 ripMoveCnt              DB RIP_MOVE_MUL_INC
 
 RIP_MOVE_MUL_INC        = 5
 ripMoveMul              DB RIP_MOVE_MUL_INC
+
+PAUSE_AFTER_RIP_MOVE    = 70
+pauseAfterRipMoveCnt    DB PAUSE_AFTER_RIP_MOVE
+
+AFTER_RIP_TICK_CNT      = 10
+afterRipEffectTickCnt    DB AFTER_RIP_TICK_CNT
 
 invincibleCnt           DW 0                    ; Makes Jetman invincible when > 0.
 
@@ -52,7 +58,7 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     MACRO _RipMove
 
     ; Move left or right.
-    LD A, (ripMoveState)
+    LD A, (ripMoveDir)
     OR A                                        ; Same as: CP RIP_MOVE_LEFT_D0
     JR Z, .moveLeft
 
@@ -71,16 +77,14 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     CALL jpo.DecJetYbyB
 
     ; Decrement move counter.
-    LD A, (ripMoveCnt)
-    DEC A
-    LD (ripMoveCnt), A
+    DECA ripMoveCnt
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .end                                 ; Counter is still > 0 - keep going
 
     ; Counter has reached 0 - change direction.
-    LD A, (ripMoveState)
+    LD A, (ripMoveDir)
     XOR 1
-    LD (ripMoveState), A
+    LD (ripMoveDir), A
 
     ; Increment zig-zag distance (gets bigger with every direction change).
     LD A, (ripMoveMul)
@@ -94,6 +98,16 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
+;            _ResetAfterRipEffectTickCnt                   ;
+;----------------------------------------------------------;
+    MACRO _ResetAfterRipEffectTickCnt
+
+    LD A, AFTER_RIP_TICK_CNT
+    LD (afterRipEffectTickCnt), A
+
+    ENDM                                        ; ## END of the macro ##
+
+;----------------------------------------------------------;
 ;                     _ResetRipMove                        ;
 ;----------------------------------------------------------;
     MACRO _ResetRipMove
@@ -101,6 +115,11 @@ JM_INV_D400             = 400                   ; Number of loops to keep Jetman
     LD A, RIP_MOVE_MUL_INC
     LD (ripMoveMul), A
     LD (ripMoveCnt), A
+
+    LD A, PAUSE_AFTER_RIP_MOVE
+    LD (pauseAfterRipMoveCnt), A
+
+    _ResetAfterRipEffectTickCnt
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -284,16 +303,45 @@ JetRip
     CP jt.JETST_RIP_D103
     RET NZ                                      ; Exit if not RiP.
 
-    _RipMove
-
     ; Did Jetman reach the top of the screen (the RIP sequence is over)?
     LD A, (jpo.jetY)
     CP 4                                        ; Going up is incremented by 2.
-    RET NC                                      ; Nope, still going up (#jetY >= 4).
+    JR C, .afterMove
+    _RipMove
+    RET
+
+.afterMove
+    ; Delay after move is end.
+
+    DECA pauseAfterRipMoveCnt
+
+    CALL js.HideJetSprite
+
+    CALL bg.MoveBackgroundBack
+    CALL bg.MoveBackgroundBack
+    CALL enc.KillOneEnemy
+
+    ; last live?
+    LD A, (jl.lives)
+    OR 0
+    JR NZ, .notAfterRipEffect
+
+    DECA afterRipEffectTickCnt
+    OR A
+    JR NZ, .notAfterRipEffect
+    _ResetAfterRipEffectTickCnt
+
+    CALL bp.CurrentPalBrightnessDown
+    CALL ti.TilemapPaletteBrightnessDown
+.notAfterRipEffect
+
+    LD A, (pauseAfterRipMoveCnt)
+    OR A
+    RET NZ
 
     ; Sequence is over, respawn new live.
     _ResetRipMove
-    CALL gc.RespawnJet 
+    CALL gc.RespawnJet
 
     RET                                         ; ## END of the function ##
 

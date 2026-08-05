@@ -279,9 +279,7 @@
     MACRO _Loop002
 
     ; Increment the counter.
-    LD A, (mld.counter002)
-    DEC A
-    LD (mld.counter002), A
+    DECA mld.counter002
     JR NZ, .end
 
     ; Reset the counter.
@@ -323,9 +321,7 @@
     MACRO _Loop005
 
     ; Increment the counter.
-    LD A, (mld.counter005)
-    DEC A
-    LD (mld.counter005), A
+    DECA mld.counter005
     JR NZ, .end
 
     ; Reset the counter.
@@ -371,9 +367,7 @@
     MACRO _Loop008
 
     ; Increment the counter.
-    LD A, (mld.counter008)
-    DEC A
-    LD (mld.counter008), A
+    DECA mld.counter008
     JP NZ, .end
 
     ; Reset the counter.
@@ -507,9 +501,7 @@
     MACRO _Loop010
 
     ; Increment the counter
-    LD A, (mld.counter010)
-    DEC A
-    LD (mld.counter010), A
+    DECA mld.counter010
     JR NZ, .end
 
     ; Reset the counter
@@ -550,9 +542,7 @@
     MACRO _Loop025
 
     ; Increment the counter.
-    LD A, (mld.counter025)
-    DEC A
-    LD (mld.counter025), A
+    DECA mld.counter025
     JR NZ, .end
 
     ; ##########################################
@@ -590,9 +580,7 @@
     MACRO _Loop040
 
     ; Increment the counter.
-    LD A, (mld.counter040)
-    DEC A
-    LD (mld.counter040), A
+    DECA mld.counter040
     JR NZ, .end
 
     ; ##########################################
@@ -635,9 +623,7 @@
     MACRO _Loop050
 
     ; Increment the counter.
-    LD A, (mld.counter050)
-    DEC A
-    LD (mld.counter050), A
+    DECA mld.counter050
     JR NZ, .end
 
     ; ##########################################
@@ -712,9 +698,7 @@
     MACRO _Loop075
 
     ; Increment the counter.
-    LD A, (mld.counter075)
-    DEC A
-    LD (mld.counter075), A
+    DECA mld.counter075
     JR NZ, .end
 
     ; ##########################################
@@ -743,7 +727,10 @@
     ; ##########################################
     CALL jo.JetpackOverheatFx
     CALL gc.PlayFuelThiefFx
-    CALL js.ShowJetSprite
+
+    LD A, (jt.jetState)
+    CP jt.JETST_RIP_D103
+    CALL NZ, js.ShowJetSprite
 
     ; ##########################################
     dbs.SetupRocketBank
@@ -776,9 +763,7 @@
     MACRO _Loop150
 
     ; Increment the counter.
-    LD A, (mld.counter150)
-    DEC A
-    LD (mld.counter150), A
+    DECA mld.counter150
     JR NZ, .end
 
     ; ##########################################

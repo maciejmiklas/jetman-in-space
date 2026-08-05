@@ -66,9 +66,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     CALL gc.NextDayToNight
 
     ; Decrement step
-    LD A, (step)
-    DEC A
-    LD (step), A
+    DECA step
 
     ; ##########################################
     ; Limit visibility
@@ -139,9 +137,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     CALL gc.NextNightToDay
 
     ; Decrement step
-    LD A, (step)
-    DEC A
-    LD (step), A
+    DECA step
 
     CP TOD_DIR_NIGHT_DAY_D2
     JR NZ, .end
@@ -178,9 +174,7 @@ ResetTimeOfDay
 NextTimeOfDayPhase
 
     ; Decrement count and return if not reached 0
-    LD A, (stepDuration)
-    DEC A
-    LD (stepDuration), A
+    DECA stepDuration
 
     OR A                                        ; Same as CP 0, but faster.
     RET NZ                                      ; Keep counting down.

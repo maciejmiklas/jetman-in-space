@@ -109,9 +109,7 @@ IncJetY
 ;----------------------------------------------------------;
 DecJetY
 
-    LD A, (jetY)
-    DEC A
-    LD (jetY), A
+    DECA jetY
 
     CALL gc.JetMoves
     CALL gc.JetMovesUp

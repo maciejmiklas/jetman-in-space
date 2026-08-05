@@ -165,19 +165,6 @@ SetupSystem
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      GameOver                            ;
-;----------------------------------------------------------;
-GameOver
-
-    CALL bm.HideImageFadeSlow
-    CALL _HideGame
-
-    CALL go.ShowGameOver
-    CALL jl.ResetLives
-
-    RET                                         ; ## END of the function ##
-
-;----------------------------------------------------------;
 ;                      DemoOver                            ;
 ;----------------------------------------------------------;
     IFDEF DEMO_MODE
@@ -192,13 +179,37 @@ DemoOver
     RET                                         ; ## END of the function ##
     ENDIF
 ;----------------------------------------------------------;
-;                  ExitToLoadMainMenu                      ;
+;                     ExitToMainMenu                       ;
 ;----------------------------------------------------------;
-ExitToLoadMainMenu
+ExitToMainMenu
 
-    CALL bm.HideImageFade
+    dbs.SetupCodeMusicBank
+    CALL aml.MusicOff
+
+    dbs.SetupAyFxsBank
+    CALL af.AfxOff
+
+    CALL HideScreenFade
     CALL StoreGameData
     CALL LoadMainMenu
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                       HideScreenFade                     ;
+;----------------------------------------------------------;
+HideScreenFade
+
+    LD B, 6
+.loop
+    PUSH BC
+    CALL bp.CurrentPalBrightnessDown
+    CALL ti.TilemapPaletteBrightnessDown
+    CALL ut.Pause65K
+    POP BC
+    DJNZ .loop
+
+    CALL bm.HideImage
 
     RET                                         ; ## END of the function ##
 
@@ -285,6 +296,9 @@ LoadNextLevel
 ;                   LoadCurrentLevel                       ;
 ;----------------------------------------------------------;
 LoadCurrentLevel
+
+    dbs.SetupCodeMusicBank
+    CALL aml.MusicOff
 
     _InitLevelLoad
     CALL ll.LoadCurrentLevel
@@ -466,7 +480,7 @@ RocketElementPickup
     _AFX af.FX_PICKUP_ROCKET_EL
 .afterFuelFx
 
-    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                         ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
@@ -477,7 +491,7 @@ RocketElementPickupInAir
 
     CALL sc.PickupRocketElementInAir
 
-    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                         ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
@@ -488,7 +502,7 @@ RocketExpolodes
 
     _AFX af.FX_EXPLODE_ENEMY_2
 
-    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                         ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -507,7 +521,7 @@ PlayRocketSound
     _AFX af.FX_ROCKET_FLY
 
 .afterFly
-    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                         ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ##
 
@@ -520,7 +534,7 @@ RocketElementDrop
 
    _AFX af.FX_ROCKET_EL_DROP
 
-    dbs.SetupRocketBank                    ; Function was called from this bank and must return there.
+    dbs.SetupRocketBank                         ; Function was called from this bank and must return there.
 
     RET                                         ; ## END of the function ## 
 
@@ -712,7 +726,7 @@ RespawnJet
     LD A, (jl.lives)
     OR A
     JR NZ, .keepPlaying
-    CALL gc.GameOver
+    CALL _GameOver
     RET
 .keepPlaying
 
@@ -728,7 +742,6 @@ RespawnJet
     CALL jt.SetJetStateRespawn
     CALL jco.MakeJetInvincible
 
-    ; Reload the image because it has moved with the Jetman, and now he respawns on the ground.
     CALL bm.CopyImageData
     CALL bg.UpdateBackgroundOnJetmanMove
 
@@ -1047,6 +1060,22 @@ HighScoreChanged
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
+;                      _GameOver                           ;
+;----------------------------------------------------------;
+_GameOver
+
+    dbs.SetupCodeMusicBank
+    CALL aml.MusicOff
+
+    CALL bm.HideImage
+    CALL _HideGame
+
+    CALL go.ShowGameOver
+    CALL jl.ResetLives
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        _HideGame                         ;
 ;----------------------------------------------------------;
 _HideGame
@@ -1065,6 +1094,9 @@ _HideGame
 
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
+
+    CALL dbs.SetupAyFxsBank
+    CALL af.AfxOff
 
     dbs.SetupRocketBank
     CALL roa.ResetAndDisableRocket

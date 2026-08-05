@@ -88,6 +88,38 @@ SetupTiles
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;              TilemapPaletteBrightnessDown                ;
+;----------------------------------------------------------;
+; We will reuse TI_PAL_DARK1_HC000, so it won't be usable for times of day afterward.
+TilemapPaletteBrightnessDown
+
+    CALL LoadTilemapPaletteForNight1
+
+    LD A, B
+    LD (paletteBytes), A
+    LD (paletteDayAddress), HL
+
+    LD IX, TI_PAL_DARK1_HC000
+    PUSH BC, HL
+.loop
+    PUSH BC
+
+    LD DE, (HL)
+    CALL bp.BrightnessDown
+    LD (IX), DE
+
+    INC HL
+    INC HL
+    INC IX
+    INC IX
+
+    POP BC
+    DJNZ .loop                                  ; Repeat until B=0.
+    POP HL, BC
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                 LoadTilemapPaletteForDay                 ;
 ;----------------------------------------------------------;
 LoadTilemapPaletteForDay
@@ -191,10 +223,10 @@ LoadTilemapPalette
     INC HL
     INC HL
 
-    LD A, E                                  ; Load RRRGGGBB into A.
+    LD A, E                                     ; Load RRRGGGBB into A.
     NEXTREG _DC_REG_LA2_PAL_VAL_H44, A          ; First byte of palette.
 
-    LD A, D                                  ; Load 0000000B into A.
+    LD A, D                                     ; Load 0000000B into A.
     NEXTREG _DC_REG_LA2_PAL_VAL_H44, A          ; Second byte of palette.
     DJNZ .loop                                  ; Repeat until B=0.
 

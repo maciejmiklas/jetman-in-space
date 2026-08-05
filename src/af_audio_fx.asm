@@ -44,6 +44,23 @@ FX_ROCKET_FLY_SLOW      = 30
 
 fxFlipFlop              DB 0
 
+FX_ON_D1                = 1
+FX_OFF_D0               = 0
+fxState                 DB FX_ON_D1
+
+;----------------------------------------------------------;
+;                           AfxOff                          ;
+;----------------------------------------------------------;
+AfxOff
+
+    XOR A
+    LD (fxState), A
+
+    CALL af1.AfxStop
+    CALL af2.AfxStop
+
+    RET                                         ; ## END of the function ##
+
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
 ;----------------------------------------------------------;
@@ -61,6 +78,10 @@ SetupAyFx
 ; Play the current frame.
 AfxFrame
 
+    LD A, (fxState)
+    OR A                                        ; Same as CP 0, but faster.
+    RET Z
+
     CALL af1.AfxFrame
     CALL af2.AfxFrame
 
@@ -75,6 +96,9 @@ AfxFrame
 AfxPlay
 
     PUSH AF
+
+    LD A, FX_ON_D1
+    LD (fxState), A
 
     ; 1 -> 0 and 0 -> 1
     LD A, (fxFlipFlop)

@@ -138,7 +138,6 @@ SwitchToMainMenu
 ;----------------------------------------------------------;
 _LoadMenuEasy
  
-    ; Music off
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
 

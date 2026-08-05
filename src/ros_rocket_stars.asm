@@ -68,13 +68,8 @@ slowDownScrollY         DB 0
 
     ; ##########################################
     ; Decrement counters
-    LD A, (tilesRow)
-    DEC A
-    LD (tilesRow), A
-
-    LD A, (sourceTilesRow)
-    DEC A
-    LD (sourceTilesRow), A                          ; A is used below.
+    DECA tilesRow
+    DECA sourceTilesRow                             ; A is used below.
 
     ; ##########################################
     ; Prepare tile copy fom temp RAM to screen RAM
@@ -230,10 +225,8 @@ ScrollStarsOnFlyRocket
 
     ; ##########################################
     ; Move tiles by 1 pixel.
+    DECA tileOffsetY
 
-    LD A, (tileOffsetY)
-    DEC A
-    LD (tileOffsetY), A
     NEXTREG _DC_REG_TI_Y_H31, A                 ; Y tile offset.
 
     RET                                         ; ## END of the function ##

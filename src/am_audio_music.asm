@@ -405,16 +405,16 @@ M3
     JP ROUT_A0
 
 ;pattern decoder
-PD_OrSm	
+PD_OrSm
     LD (IX-12+CHP.Env_En),0
     CALL SETORN
     LD A,(BC)
     INC BC
     RRCA
 
-PD_SAM	
+PD_SAM
     ADD A,A
-PD_SAM_	
+PD_SAM_
     LD E,A
     LD D,0
 ;SamPtrs = $+1
@@ -432,7 +432,7 @@ PD_SAM_
     LD (IX-12+CHP.SamPtr+1),H
     JR PD_LOOP
 
-PD_VOL	
+PD_VOL
     RLCA
     RLCA
     RLCA
@@ -440,12 +440,12 @@ PD_VOL
     LD (IX-12+CHP.Volume),A
     JR PD_LP2
 	
-PD_EOff	
+PD_EOff
     LD (IX-12+CHP.Env_En),A
     LD (IX-12+CHP.PsInOr),A
     JR PD_LP2
 
-PD_SorE	
+PD_SorE
     DEC A
     JR NZ,PD_ENV
     LD A,(BC)
@@ -453,15 +453,15 @@ PD_SorE
     LD (IX-12+CHP.NNtSkp),A
     JR PD_LP2
 
-PD_ENV	
+PD_ENV
     CALL SETENV
     JR PD_LP2
 
-PD_ORN	
+PD_ORN
     CALL SETORN
     JR PD_LOOP
 
-PD_ESAM	
+PD_ESAM
     LD (IX-12+CHP.Env_En),A
     LD (IX-12+CHP.PsInOr),A
     CALL NZ,SETENV
@@ -469,7 +469,7 @@ PD_ESAM
     INC BC
     JR PD_SAM_
 
-PTDECOD 
+PTDECOD
     LD A,(IX-12+CHP.Note)
     ;	LD (PrNote+1),A
     LD (PrNote),A
@@ -478,7 +478,7 @@ PTDECOD
     ;	LD (PrSlide+1),HL
     LD (PrSlide),HL
 
-PD_LOOP	
+PD_LOOP
     LD DE,#2010
 PD_LP2	
     LD A,(BC)
@@ -771,7 +771,7 @@ CH_NTP
     CP 96
     JR C,CH_NOK
     LD A,95
-CH_NOK	
+CH_NOK
     ADD A,A
     EX AF,AF'
     LD L,(IX+CHP.SamPtr)
@@ -791,7 +791,7 @@ CH_NOK
     CP D
     JR C,CH_SMPS
     LD A,E
-CH_SMPS	
+CH_SMPS
     LD (IX+CHP.PsInSm),A
     POP BC
     POP HL
@@ -802,7 +802,7 @@ CH_SMPS
     JR Z,CH_NOAC
     LD (IX+CHP.TnAcc),L
     LD (IX+CHP.TnAcc+1),H
-CH_NOAC 
+CH_NOAC
     EX DE,HL
     EX AF,AF'
     LD L,A
@@ -838,7 +838,7 @@ CH_NOAC
     AND A
     JR Z,CH_STPP
     EX DE,HL
-CH_STPP 
+CH_STPP
     SBC HL,DE
     JP M,CH_AMP
     LD A,(IX+CHP.SlToNt)
@@ -847,7 +847,7 @@ CH_STPP
     LD (IX+CHP.TSlCnt),A
     LD (IX+CHP.CrTnSl),A
     LD (IX+CHP.CrTnSl+1),A
-CH_AMP	
+CH_AMP
     LD A,(IX+CHP.CrAmSl)
     BIT 7,C
     JR Z,CH_NOAM
@@ -857,35 +857,35 @@ CH_AMP
     JR Z,CH_NOAM
     INC A
     JR CH_SVAM
-CH_AMIN	
+CH_AMIN
     CP -15
     JR Z,CH_NOAM
     DEC A
-CH_SVAM	
+CH_SVAM
     LD (IX+CHP.CrAmSl),A
-CH_NOAM	
+CH_NOAM
     LD L,A
     LD A,B
     AND 15
     ADD A,L
     JP P,CH_APOS
     XOR A
-CH_APOS	
+CH_APOS
     CP 16
     JR C,CH_VOL
     LD A,15
-CH_VOL	
+CH_VOL
     OR (IX+CHP.Volume)
     LD L,A
     LD H,0
     LD DE,VT_
     ADD HL,DE
     LD A,(HL)
-CH_ENV	
+CH_ENV
     BIT 0,C
     JR NZ,CH_NOEN
     OR (IX+CHP.Env_En)
-CH_NOEN	
+CH_NOEN
     LD (Ampl),A
     BIT 7,B
     LD A,C
@@ -899,13 +899,13 @@ CH_NOEN
     BIT 5,B
     JR Z,NO_ENAC
     LD (IX+CHP.CrEnSl),A
-NO_ENAC	
+NO_ENAC
     LD HL,AddToEn
     ADD A,(HL) ;BUG IN PT3 - NEED WORD HERE.
             ;FIX IT IN NEXT VERSION?
     LD (HL),A
     JR CH_MIX
-NO_ENSL 
+NO_ENSL
     RRA
     ADD A,(IX+CHP.CrNsSl)
     LD (AddToNs),A
@@ -933,7 +933,7 @@ CH_EXIT
     LD A,(IX+CHP.OnOffD)
     JR C,CH_ONDL
     LD A,(IX+CHP.OffOnD)
-CH_ONDL	
+CH_ONDL
     LD (IX+CHP.COnOff),A
     RET
 
@@ -943,8 +943,8 @@ CH_ONDL
 MusicLoop
 
     LD A, (musicState)
-    CP MUSIC_ST_ON_D1
-    RET NZ
+    OR A
+    RET Z
 PLAY
 
     LD A, _GL_REG_SOUND_AY3                     ; Set music to AY-3

@@ -219,6 +219,34 @@ afxNseMix
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
+;                        AfxStop                           ;
+;----------------------------------------------------------;
+; Stop all channels immediately.
+; Clobbers: HL, B
+AfxStop
+
+    LD   HL, afxChDesc
+    LD   B, AFX_CH_DESC_COUNT
+
+.stopLoop
+    XOR  A
+    LD   (HL), A                            ; current addr LSB = 0 (optional)
+    INC  HL
+    LD   (HL), A                            ; current addr MSB = 0 → free
+
+    ; skip rest of descriptor (6 bytes)
+    INC  HL
+    INC  HL
+    INC  HL
+    INC  HL
+    INC  HL
+    INC  HL
+
+    DJNZ .stopLoop
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
 ;                        AfxPlay                           ;
 ;----------------------------------------------------------;
 ; Launch the effect on a free channel. If no free channels, the longest sounding is selected.

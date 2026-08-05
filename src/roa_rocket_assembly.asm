@@ -734,9 +734,7 @@ DropNextRocketElement
 ;----------------------------------------------------------;
 RemoveRocketElement
 
-    LD A, (rocketElementCnt)
-    DEC A
-    LD (rocketElementCnt), A
+    DECA rocketElementCnt
     
     CALL _UpdateFuelProgressBar
 

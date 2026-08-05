@@ -10,7 +10,7 @@ STACK_SIZE              = 50
     DEVICE ZXSPECTRUMNEXT                       ; Allow the Next paging and instructions.
     ORG _RAM_SLOT4_STA_H8000 + STACK_SIZE       ; Stack starts at 8000.
 
-;    DEFINE PERFORMANCE  1                        ; Enable perofrmance info
+    ;DEFINE PERFORMANCE  1                        ; Enable perofrmance info
     ;DEFINE DEBUG_BAR    1                        ; Enable debug bar
     DEFINE DEBUG         1
 
@@ -61,8 +61,8 @@ start
     CALL dbs.SetupCode1Bank
     CALL so.WriteToSd
 
-    ;CALL dbs.SetupMusicCommonBank: CALL aml.MusicOff: CALL aml.PreloadIngameMusic ; set AY_MI_BANKS_40 to 1
-    ;LD A, 8: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
+    ; CALL dbs.SetupMusicCommonBank: CALL aml.MusicOff: CALL aml.PreloadIngameMusic ; set AY_MI_BANKS_40 to 3
+    ; LD A, 3: LD (ll.currentLevel), A: CALL gc.LoadCurrentLevel
 
     CALL gc.LoadMainMenu
     JR mainLoop
@@ -75,17 +75,13 @@ start
     IFDEF PERFORMANCE
 
     ; Update #endLine every few loops
-    LD A, (endLineCnt)
-    DEC A
-    LD (endLineCnt), A
+    DECA endLineCnt
     JR NZ, .endPer                              ; Jump if A != 0
     LD A, UPDATE_REFRESH
     LD (endLineCnt), A
 
     ; Reset #endLineMax to 0 every few loops
-    LD A, (endLineMaxCnt)
-    DEC A
-    LD (endLineMaxCnt), A
+    DECA endLineMaxCnt
     JR NZ, .afterMaxReset                       ; Jump if A != 0
     LD A, UPDATE_REFRESH_MAX
     LD (endLineMaxCnt), A

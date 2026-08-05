@@ -85,9 +85,7 @@ BAR_ICON_PAL_H00       = $00
 
     ; ##########################################
     ; Decrease jetpack temp
-    LD A, (jetTempLevel)
-    DEC A
-    LD (jetTempLevel),A
+    DECA jetTempLevel
 
     CP TEMP_NORM_D4
     JR NZ, .afterNormTempCheck

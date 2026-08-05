@@ -126,9 +126,7 @@ JOY_DOWN_YES_D1         = 1
     JR Z, .afterDelay
 
     ; Decrement delay counter.
-    LD A, (rocketFlyDelay)
-    DEC A
-    LD (rocketFlyDelay), A
+    DECA rocketFlyDelay
 
     OR A                                        ; Same as CP 0, but faster.
     JP NZ, .end                                 ; Return if delay counter has not been reached.
@@ -145,9 +143,7 @@ JOY_DOWN_YES_D1         = 1
     JR NZ, .afterDelay                          ; Jump if rocket should still move with current delay.
 
     ; The rocket traveled far enough, decrement the delay for the next section.
-    LD A, (rocketFlyDelayCnt)
-    DEC A
-    LD (rocketFlyDelayCnt), A
+    DECA rocketFlyDelayCnt
     LD (rocketFlyDelay), A
 
     XOR A

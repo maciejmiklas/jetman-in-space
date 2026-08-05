@@ -378,6 +378,10 @@ _Pause
     
     dbs.SetupCodeMusicBank
     CALL aml.MusicOff
+
+    dbs.SetupAyFxsBank
+    CALL af.AfxOff
+
     RET
 
 .pause
@@ -416,7 +420,7 @@ _Key_Break
     RET NZ
 
     ; The break has been pressed long enough to exit the game.
-    CALL gc.ExitToLoadMainMenu
+    CALL gc.ExitToMainMenu
 
     RET                                         ; ## END of the function ##
 
