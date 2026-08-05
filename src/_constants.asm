@@ -522,7 +522,7 @@ _SC_RESY1_D255          = _SC_RESY_D256 -1
 
 _SC_L2_MAX_OFFSET_D191  = 191                   ; Max value for _DC_REG_L2_OFFSET_Y_H17.
 
-; Ground level from Jetman's sprite perspective
+; Ground level from Fred's sprite perspective
 _GSC_X_MIN_D0           = 0
 _GSC_X_MAX_D315         = 315
 _GSC_Y_MIN_D15          = 15
@@ -606,7 +606,7 @@ Y                       DB                      ; Y position of the sprite.
 STATE                   DB
 NEXT                    DB                      ; ID in #ssSpriteDB for next animation record/state.
 REMAINING               DB                      ; Amount of animation frames (bytes) that still need to be processed within current #srSpriteDB record.
-COLLISION_CNT           DB                      ; Counts towards 0, once 0 is reached, the enemy can hit Jetman.
+COLLISION_CNT           DB                      ; Counts towards 0, once 0 is reached, the enemy can hit Fred.
 EXT_DATA_POINTER        DW                      ; Pointer to additional data structure for this sprite.
     ENDS
 
@@ -623,7 +623,7 @@ MOVE_DELAY              DB
 ; Values changed during runtime
 MOVE_DELAY_CNT          DB                      ; Counts down from #FE.MOVE_DELAY to 0.
 RESPAWN_DELAY_CNT       DB                      ; Respawn delay counter, counts up from 0 to #FE.RESPAWN_DELAY.
-FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Jetman) for a few loops.
+FOLLOW_OFF_CNT          DB                      ; Disables following (direction change towards Fred) for a few loops.
 SKIP_XY_CNT             DB                      ; Holds skip counters for x/y, same bits as on #FE.STATE (1-2 for x and 5-6 for y).
 ANGLES_IDX              DB                      ; Current offset to #angles, set after direction change.
 ANGLES_IDX_END          DB                      ; End offset to #angles, inclusive.

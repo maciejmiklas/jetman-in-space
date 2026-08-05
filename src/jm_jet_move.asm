@@ -3,13 +3,13 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                     Jetman Movement                      ;
+;                     Fred Movement                      ;
 ;----------------------------------------------------------;
     MODULE jm
 
 ; Hovering/Standing
 ; The counter increments with each frame when no up/down is pressed.
-; When it reaches #HOVER_START_D250, Jetman will start hovering.
+; When it reaches #HOVER_START_D250, Fred will start hovering.
 jetInactivityCnt        DB 0
 
 ; Start times to change animations.
@@ -26,7 +26,7 @@ JSTAND_START_D15        = 15
 ;----------------------------------------------------------;
 ;                     _JoyCntEnabled                       ;
 ;----------------------------------------------------------;
-; Disable joystick and, therefore, control over the Jetman.
+; Disable joystick and, therefore, control over the Fred.
 ; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
@@ -50,13 +50,13 @@ JSTAND_START_D15        = 15
 .afterEnableCheck
 
     ; ##########################################
-    ; Allow input processing if Jetman is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when
+    ; Allow input processing if Fred is close to the platform and #joyOffCnt is > 0. It allows, for example, to move left/right when
     ; hitting the platform from below and pressing up + left (or right). 
-    ; We can have the following situation: Jetman is below the platform and is not bumping off anymore because it's close long enough.
+    ; We can have the following situation: Fred is below the platform and is not bumping off anymore because it's close long enough.
     ; The player still keeps pressing up and simultaneously, let's say, left. We want to allow movement to the left, but not up.
-    ; Because #joyOffCnt > 0, the function #_MainLoop000OnDisabledJoy will be executed. It will move Jetman one pixel down, which is good
+    ; Because #joyOffCnt > 0, the function #_MainLoop000OnDisabledJoy will be executed. It will move Fred one pixel down, which is good
     ; because pressing up has moved him one pixel up. To allow movement left, we ignore #joyOffBump because it is so small that we know
-    ; that Jetman is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
+    ; that Fred is right below the platform. Keeping #joyOffCnt > 0 reverses Joystick's movement up, ignoring #joyOffBump allows movement to the left.
 
     LD A, (pl.joyOffBump)
     CP pl.PL_BUMP_JOY_DEC_D1+1
@@ -83,21 +83,21 @@ JSTAND_START_D15        = 15
     LD (jetInactivityCnt), A 
 
     ; ##########################################
-    ; Should Jetman hover?
+    ; Should Fred hover?
     LD A, (jt.jetAir)
-    OR A                                        ; Is Jetman in the air (same as CP jt.JT_STATE_INACTIVE_D0 but faster) ?
+    OR A                                        ; Is Fred in the air (same as CP jt.JT_STATE_INACTIVE_D0 but faster) ?
     JR Z, .afterHoover                          ; Jump if not flaying.
 
     LD A, (jt.jetAir)
-    CP jt.AIR_HOOVER_D11                            ; Jetman is in the air, but is he hovering already?
+    CP jt.AIR_HOOVER_D11                            ; Fred is in the air, but is he hovering already?
     JR Z, .afterHoover                          ; Jump if already hovering.
 
-    ; Jetman is in the air, not hovering, but is he not moving long enough?
+    ; Fred is in the air, not hovering, but is he not moving long enough?
     LD A, (jetInactivityCnt)
     CP HOVER_START_D250
-    JR NZ, .afterHoover                         ; Jetman is not moving, by sill not long enough to start hovering.
+    JR NZ, .afterHoover                         ; Fred is not moving, by sill not long enough to start hovering.
 
-    ; Jetman starts to hover!
+    ; Fred starts to hover!
     LD A, jt.AIR_HOOVER_D11
     CALL jt.SetJetStateAir
 
@@ -107,20 +107,20 @@ JSTAND_START_D15        = 15
 .afterHoover
 
     ; ##########################################
-    ; Jetman is not hovering, but should he stand?
+    ; Fred is not hovering, but should he stand?
     LD A, (jt.jetGnd)
-    CP jt.JT_STATE_INACTIVE_D0                  ; Is Jetman on the ground already?
+    CP jt.JT_STATE_INACTIVE_D0                  ; Is Fred on the ground already?
     JR Z, .end                                  ; Jump if not on the ground.
 
     LD A, (jt.jetGnd)
-    CP jt.GND_STAND_D53                         ; Jetman is on the ground, but is he standing already?
+    CP jt.GND_STAND_D53                         ; Fred is on the ground, but is he standing already?
     JR Z, .end                                  ; Jump if already standing.
 
     ; ##########################################
-    ; Jetman is on the ground and does not move, but is he not moving long enough?
+    ; Fred is on the ground and does not move, but is he not moving long enough?
     LD A, (jetInactivityCnt)
     CP STAND_START_D30
-    JR NZ, .afterStand                          ; Jump if Jetman stands for too short to trigger standing.
+    JR NZ, .afterStand                          ; Jump if Fred stands for too short to trigger standing.
     
     ; Transition from walking to standing.
     LD A, jt.GND_STAND_D53
@@ -132,7 +132,7 @@ JSTAND_START_D15        = 15
 .afterStand
 
     ; We are here because: jetInactivityCnt > 0 and jetInactivityCnt < STAND_START_D30 
-    ; Jetman stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
+    ; Fred stands still for a short time, not long enough, to play standing animation, but at least we should stop walking animation.
     LD A, (jt.jetGnd)
     CP jt.GND_WALK_D51
     JR NZ, .end                                 ; Jump if not walking.
@@ -142,7 +142,7 @@ JSTAND_START_D15        = 15
 
     LD A, (jetInactivityCnt)
     CP JSTAND_START_D15
-    JR NC, .end                                 ; Jump if Jetman stands for too short to trigger j-standing.
+    JR NC, .end                                 ; Jump if Fred stands for too short to trigger j-standing.
 
     ; Stop walking immediately and stand still.
     LD A, jt.GND_JSTAND_D52
@@ -193,7 +193,7 @@ JoyMoveUp
     ; ##########################################
     ; Decrement Y position.
     LD A, (jpo.jetY)    
-    CP _GSC_Y_MIN_D15                           ; Do not decrement if Jetman has reached the top of the screen.
+    CP _GSC_Y_MIN_D15                           ; Do not decrement if Fred has reached the top of the screen.
     JR Z, .afterDec
     CALL jpo.DecJetY
 .afterDec
@@ -253,7 +253,7 @@ JoyMoveLeft
     LD A, (gid.jetDirection)
     AND gid.MOVE_LEFT_MASK                      ; Are we moving left already?
     CP gid.MOVE_LEFT_MASK
-    JR Z, .afterDirectionChange                 ; Jetman is moving left already -> end.
+    JR Z, .afterDirectionChange                 ; Fred is moving left already -> end.
 
     ; We have direction change! 
     LD A, (gid.jetDirection)                    ; Reset right and set left.
@@ -317,16 +317,16 @@ JoyMoveDown
     ; ##########################################
     ; Increment Y position
     LD A, (jpo.jetY)
-    CP _GSC_JET_GND_D217                        ; Do not increment if Jetman has reached the ground.
+    CP _GSC_JET_GND_D217                        ; Do not increment if Fred has reached the ground.
     JR Z, .afterInc
-    CALL jpo.IncJetY                            ; Move Jetman 1px down.
+    CALL jpo.IncJetY                            ; Move Fred 1px down.
 .afterInc   
 
     ; ##########################################
     ; Landing on the ground
     LD A, (jpo.jetY)
     CP _GSC_JET_GND_D217
-    CALL Z, pl.JetLanding                       ; Execute landing on the ground if Jetman has reached the ground.
+    CALL Z, pl.JetLanding                       ; Execute landing on the ground if Fred has reached the ground.
 
     RET                                         ; ## END of the function ##
 
@@ -349,15 +349,15 @@ JoystickMoveProcessed
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
-    ; Ignore the situation when Jetman stands on the ground and only down is present. This does not count as movement.
+    ; Ignore the situation when Fred stands on the ground and only down is present. This does not count as movement.
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE_D0
     JR Z, .afterDownOnGround
 
-    ; Jetman is on the ground, but is only down key pressed (without left/right)?
+    ; Fred is on the ground, but is only down key pressed (without left/right)?
     LD A, (gid.joyDirection)
     CP gid.MOVE_DOWN_MASK
-    JR Z, .inactive                             ; Jump if, Jetman is on the ground and only down is pressed, we have inactivity, skip other checks.
+    JR Z, .inactive                             ; Jump if, Fred is on the ground and only down is pressed, we have inactivity, skip other checks.
 
 .afterDownOnGround
     
@@ -382,7 +382,7 @@ JoystickMoveProcessed
 ;----------------------------------------------------------;
 ;               _SholdProcessJoyOnOverheat                 ;
 ;----------------------------------------------------------;
-; Slow down joystick input and, therefore, the speed of Jetman's movement when jetpack has overheated.
+; Slow down joystick input and, therefore, the speed of Fred's movement when jetpack has overheated.
 ; Return:
 ;  - YES: Process joystick input, Z is reset (JP Z).
 ;  - NO:  Disable joystick input processing for this loop, Z is set (JP NZ).
@@ -435,10 +435,10 @@ _JoystickMoves
     ; ##########################################
     ; Transition from hovering to flying?
     LD A, (jt.jetAir)
-    CP jt.AIR_HOOVER_D11                            ; Is Jetman hovering?
+    CP jt.AIR_HOOVER_D11                            ; Is Fred hovering?
     JR NZ, .afterHovering                       ; Jump if not hovering.
 
-    ; Jetman is hovering, but we have movement, so switch state to fly.
+    ; Fred is hovering, but we have movement, so switch state to fly.
     LD A, jt.AIR_FLY_D10
     CALL jt.SetJetStateAir
     
@@ -457,14 +457,14 @@ _StandToWalk
 
     LD A, (jt.jetGnd)
     OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0
-    RET Z                                       ; Exit if Jetman is not on the ground.
+    RET Z                                       ; Exit if Fred is not on the ground.
 
-    ; Jetman is on the ground, is he already walking?
+    ; Fred is on the ground, is he already walking?
     LD A, (jt.jetGnd)   
     CP jt.GND_WALK_D51
-    RET Z                                       ; Exit if Jetman is already walking.
+    RET Z                                       ; Exit if Fred is already walking.
 
-    ; Jetman is standing and starts walking now.
+    ; Fred is standing and starts walking now.
     LD A, jt.GND_WALK_D51
     CALL jt.SetJetStateGnd
     
@@ -485,7 +485,7 @@ _CanJetMove
     RET NZ
 
     ; ##########################################
-    ; Joystick disabled if Jetman is inactive.
+    ; Joystick disabled if Fred is inactive.
     LD A, (jt.jetState)
     OR A                                    ; Sama as: CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .jetActive
@@ -498,7 +498,7 @@ _CanJetMove
     ; ##########################################
     LD A, (jt.jetState)
     CP jt.JETST_RIP_D103
-    JR NZ, .afterRip                            ; Do not process input if Jetman is dying.
+    JR NZ, .afterRip                            ; Do not process input if Fred is dying.
 
     ; Do not process input, Jet is dying.
     _NO

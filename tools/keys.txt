@@ -1,7 +1,7 @@
   KEYBOARD:
      Z, ENTER - FIRE
 
-     ARROWS OR Q, A, K, L - MOVE JETMAN
+     ARROWS OR Q, A, K, L - MOVE FRED
 
      P - PAUSE THE GAME
 

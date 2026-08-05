@@ -9,7 +9,7 @@
     ; ### TO USE THIS MODULE: CALL dbs.SetupFollowingEnemyBank ###
 
 ; Different moving angles/speeds are achieved by skipping 0-3 pixels on x/y axis (bis 1-2 and 5-6).
-; Generally, enemies follow the Jetman at a 45-degree angle. To randomize this angle, we skip pixels in one direction. For example, when
+; Generally, enemies follow the Fred at a 45-degree angle. To randomize this angle, we skip pixels in one direction. For example, when
 ; the enemy moves one pixel in the X and Y direction, this gives us a perfect 45-degree angle. However, when we move one pixel on the X-axis
 ; and two on the Y-axis, this changes the angle to 67 degrees. Instead of adding pixels, we skip pixels. The current setup for skipping
 ; pixels is stored in the state as #STATE_SKIP_X_MASK and #STATE_SKIP_Y_MASK. It allows us to skip up to 3 pixels in one direction.
@@ -380,7 +380,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 ;----------------------------------------------------------;
 ;                _UpdateFollowingEnemy                     ;
 ;----------------------------------------------------------;
-; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Jetman's position
+; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Fred's position
 ; Input
 ;  - IX: pointer to #SPR holding data for single sprite that will be moved
 ;  - IY: pointer to #FE
@@ -404,11 +404,11 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     ; ##########################################
     ; Move X
 
-    ; Decide whether we should move enemy lef/right to get closer to the Jetman
-    ; (Jetman X) - (Enemy X) > 0 -> move enemy left
-    ; (Jetman X) - (Enemy X) < 0 -> move enemy right
+    ; Decide whether we should move enemy lef/right to get closer to the Fred
+    ; (Fred X) - (Enemy X) > 0 -> move enemy left
+    ; (Fred X) - (Enemy X) < 0 -> move enemy right
     LD BC, (IX + SPR.X)                         ; X of the enemy
-    LD HL, (jpo.jetX)                           ; X of the Jetman
+    LD HL, (jpo.jetX)                           ; X of the Fred
     OR A
     SBC HL, BC
     JP M, .moveEnemyLeft                        ; #jetY -#SPR.X < 0 -> move enemy left
@@ -432,11 +432,11 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
     ; ##########################################
     ; Move Y
 
-    ; Decide whether we should move enemy up/down to get closer to the Jetman
-    ; (Jetman Y)  > (Enemy Y) -> move enemy down
-    ; (Jetman Y)  < (Enemy Y) -> move enemy up
+    ; Decide whether we should move enemy up/down to get closer to the Fred
+    ; (Fred Y)  > (Enemy Y) -> move enemy down
+    ; (Fred Y)  < (Enemy Y) -> move enemy up
     LD B, (IX + SPR.Y)                          ; Y of the enemy
-    LD A, (jpo.jetY)                            ; Y of the Jetman
+    LD A, (jpo.jetY)                            ; Y of the Fred
     CP B
     JP C, .moveEnemyUp                          ; Jump if  #jetY - #SPR.Y < 0
 
@@ -452,7 +452,7 @@ anglesLineIdx           DB 0                     ; Runs from 0 to ANGLE_LINES_D1
 .moveEnemyUp
 
     LD B, (IX + SPR.Y)                          ; Y of the enemy 3e
-    LD A, (jpo.jetY)                            ; Y of the Jetman e1
+    LD A, (jpo.jetY)                            ; Y of the Fred e1
 
     SET STATE_DIR_Y_BIT, (IY + FE.STATE)
 
@@ -566,7 +566,7 @@ NextFollowingAngle
 ;----------------------------------------------------------;
 ;                  UpdateFollowingJetman                   ;
 ;----------------------------------------------------------;
-; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Jetman's position
+; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Fred's position
 UpdateFollowingJetman
 
     ; Iterate over all enemies

@@ -107,7 +107,7 @@
     JP NZ, .end
 
     ; ##########################################
-    ; Process the joystick direction movement to control Jetman in the game. Easy moves 1px, normal 1.5px, hard 2px.
+    ; Process the joystick direction movement to control Fred in the game. Easy moves 1px, normal 1.5px, hard 2px.
 
     ; Do not speed up animations, like falling from the platform.
     LD A, (gid.joyOffCnt)
@@ -122,7 +122,7 @@
     JR .calltMovementInput
 .notHard
 
-    ; A bit faster movement speed for Jetman on normal/easy (every second frame).
+    ; A bit faster movement speed for Fred on normal/easy (every second frame).
     LD A, (mld.counter000FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .moveOnePixel

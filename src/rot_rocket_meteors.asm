@@ -142,7 +142,7 @@ CheckRocketCollision
 
     ; Check whether the rocket is horizontal with the meteor.
     SBC HL, DE
-    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
+    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Fred.
     LD A, H
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .metLoopNext                         ; Jump if H != 0 -> HL > 256  -> no collision.

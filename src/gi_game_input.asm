@@ -280,7 +280,7 @@ GameOptionsInput
     ; ##########################################
     ; Key Break = SPACE + SHIFT, space is down, now check SHIFT
 
-    ; Do not detect a break when Jetman is moving.
+    ; Do not detect a break when Fred is moving.
     LD A, (gid.joyDirection)
     OR A                                        ; Same as CP 0, but faster.
     JR NZ, .notBreak

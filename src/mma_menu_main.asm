@@ -18,8 +18,8 @@ LOF                     = 7                     ; Menu entry offset from the lef
 TILE_OFFSET             DW                      ; Tile offset.
 TEXT_POINT              DW                      ; Text pointer.
 TEXT_SIZE               DB                      ; Length of menu text.
-JET_X                   DB                      ; X postion of Jetman pointing to active element.
-JET_Y                   DB                      ; Y postion of Jetman pointing to active element.
+JET_X                   DB                      ; X postion of Fred pointing to active element.
+JET_Y                   DB                      ; Y postion of Fred pointing to active element.
     ENDS
 
 menuPos                 DB MENU_EL_MIN
@@ -102,10 +102,10 @@ SwitchToMainMenu
     CALL ti.PrintText
 
     ; ##########################################
-    ; Setup Jetman sprite
+    ; Setup Fred sprite
     CALL jt.SetJetStateInactive
 
-    ; Jetman is facing left
+    ; Fred is facing left
     XOR A
     SET gid.MOVE_LEFT_BIT_D0, A
     LD (gid.jetDirection), A

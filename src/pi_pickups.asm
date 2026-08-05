@@ -11,7 +11,7 @@
 PI_SPR_LIFE             = 3                 ; Exta life.
 PI_SPR_DIAMOND          = 39                ; Extra points.
 PI_SPR_JAR              = 40                ; Colls down jetpack's rocket exhaust.
-PI_SPR_STRAWBERRY       = 41                ; Jetman invincible.
+PI_SPR_STRAWBERRY       = 41                ; Fred invincible.
 PI_SPR_GRENADE          = 42                ; Collect and expolode.
 PI_SPR_FREEZE           = 43                ; Freeze enemies.
 PI_SPR_GUN              = 44                ; Improve weapon.
@@ -86,7 +86,7 @@ CheckJetmanPickupCollision
     RET Z
 
     ; ##########################################
-    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
+    ; Check the collision (pickup possibility) between Fred and the element, return if there is none.
     LD BC, (deployedX)                          ; X of the element.
     LD B, 0
     LD A, (deployedY)                           ; Y of the element.
@@ -95,7 +95,7 @@ CheckJetmanPickupCollision
     RET NZ
 
     ; ##########################################
-    ; Jetman got a pickup! Now call the right callback.
+    ; Fred got a pickup! Now call the right callback.
 
     ; ##########################################
     ; Pickup in the air?

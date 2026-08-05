@@ -9,8 +9,8 @@
 
     STRUCT MLS                                  ; Menu Level Select
 TILE_OFFSET             DW                      ; Tile offset.
-JET_X                   DB                      ; X postion of Jetman pointing to active element.
-JET_Y                   DB                      ; Y postion of Jetman pointing to active element.
+JET_X                   DB                      ; X postion of Fred pointing to active element.
+JET_Y                   DB                      ; Y postion of Fred pointing to active element.
     ENDS
 
 currentLevel           DB _LEVEL_MIN_D1
@@ -67,10 +67,10 @@ LoadMenuLevelSelect
     LD (ki.callbackUp), DE
 
     ; ##########################################
-    ; Setup Jetman sprite
+    ; Setup Fred sprite
     CALL jt.SetJetStateInactive
 
-    ; Jetman is facing left
+    ; Fred is facing left
     XOR A
     SET gid.MOVE_LEFT_BIT_D0, A
     LD (gid.jetDirection), A

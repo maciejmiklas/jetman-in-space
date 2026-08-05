@@ -3,13 +3,13 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                      Jetman Position                     ;
+;                      Fred Position                     ;
 ;----------------------------------------------------------;
     MODULE jpo
 
-JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Fred must respond by standing on the ground. Otherwise, the background will be off.
 
-; Jetman sprite consists of two spires, each 16x16px. Coordinates relate to the left top corner of the upper sprite. 
+; Fred sprite consists of two spires, each 16x16px. Coordinates relate to the left top corner of the upper sprite. 
 ; For example, corner positions to display the whole spirit are as follows: (X,Y) given by (0,0) would display a complete sprite in the 
 ; left corner. The most right position on X is 320-16, and the bottom on Y is 256 - 32.
 jetX                    DW 0                    ; 0-320px
@@ -61,7 +61,7 @@ IncJetX
     LD A, C                                     ; Load MSB from X into A.
     CP 59                                       ; MSB > 59
     JR C, .lessThanMaxX
-    LD BC, 1                                    ; Jetman is above 315 -> set to 1.
+    LD BC, 1                                    ; Fred is above 315 -> set to 1.
 .lessThanMaxX
     LD (jetX), BC                               ; Update new X position.
 
@@ -73,7 +73,7 @@ IncJetX
 ;                          IncJetXbyB                      ;
 ;----------------------------------------------------------;
 ; Input 
-; - B: number of pixels to move Jetman Up.
+; - B: number of pixels to move Fred Up.
 IncJetXbyB
 
 .loop
@@ -111,7 +111,7 @@ DecJetX
 ;                          DecJetXbyB                      ;
 ;----------------------------------------------------------;
 ; Input 
-; - B: number of pixels to move Jetman up.
+; - B: number of pixels to move Fred up.
 DecJetXbyB
 
 .loop
@@ -151,7 +151,7 @@ DecJetY
 ;                          IncJetYbyB                      ;
 ;----------------------------------------------------------;
 ; Input:
-; - B: number of pixels to move Jetman donw.
+; - B: number of pixels to move Fred donw.
 IncJetYbyB
 
 .loop
@@ -166,7 +166,7 @@ IncJetYbyB
 ;                          DecJetYbyB                      ;
 ;----------------------------------------------------------;
 ; Input:
-; - B: number of pixels to move Jetman up
+; - B: number of pixels to move Fred up
 DecJetYbyB
 
 .loop

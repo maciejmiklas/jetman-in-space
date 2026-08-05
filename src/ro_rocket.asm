@@ -24,10 +24,10 @@ ROST_WAIT_DROP_D1       = 1                     ; Rocket element (or fuel tank) 
 ROST_FALL_PICKUP_D10    = 10                    ; Rocket element (or fuel tank) is falling down for pickup.
 ROST_FALL_ASSEMBLY_D11  = 11                    ; Rocket element (or fuel tank) falls towards the rocket for assembly.
 ROST_WAIT_PICKUP_D12    = 12                    ; Rocket element (or fuel tank) is waiting for pickup.
-ROST_CARRY_D13          = 13                    ; Jetman carries rocket element (or fuel tank).
+ROST_CARRY_D13          = 13                    ; Fred carries rocket element (or fuel tank).
 ROST_TANK_EXPLODE_D14   = 14
 
-ROST_READY_D100         = 100                   ; Rocket is ready to start and waits only for Jetman.
+ROST_READY_D100         = 100                   ; Rocket is ready to start and waits only for Fred.
 ROST_FLY_D101           = 101                   ; Rocket is flying towards an unknown planet. See also #ro.rocketFlyPhase
 ROST_EXPLODE_D102       = 102                   ; Rocket explodes after hitting something.
 
@@ -43,7 +43,7 @@ OFS_FLAME_D16            = 16
 SPR_PAT_READY1_D60      = 60                    ; Once the rocket is ready, it will start blinking using #SPR_PAT_READY1_D60 and #SPR_PAT_READY2_D61.
 SPR_PAT_READY2_D61      = 61
 
-; When assembling the rocket, this is the current element that is being dropped for pickup or Jetman carrying. 
+; When assembling the rocket, this is the current element that is being dropped for pickup or Fred carrying. 
 ; When the rocket is flying, it's the bottom sprite position (EL_EXH_D1).
 rocX                    DW 0                    ; 0-320px
 rocY                    DB 0                    ; 0-256px

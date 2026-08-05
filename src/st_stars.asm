@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     module st
 
-; The starfield is grouped into columns (#SC). When Jetman moves, the whole starfield and, respectively, all columns move in the
+; The starfield is grouped into columns (#SC). When Fred moves, the whole starfield and, respectively, all columns move in the
 ; opposite direction.
 ; The image on Layer 2 splits over 10 banks, each containing 32 columns, 256 pixels long. 
 ; Each star column (#SC) is assigned to a concrete bank and contains precisely one column with starts that will be injected into the picture.
@@ -15,7 +15,7 @@
 ; the screen.
 ; #SC.X_OFFSET defines the placement of a star column within the memory bank -  this is the image column within this particular bank where
 ; stars will be injected.
-; Because starfield moves together with Jetman, a new position for each star in this row is calculated by adding an offset value to each
+; Because starfield moves together with Fred, a new position for each star in this row is calculated by adding an offset value to each
 ; start position with every move.
 ; Each column rolls from the bottom to the top when its position byte overflows. Each column also has a maximal horizontal position 
 ; (#SC.Y_MAX), after which the starts will not be painted to avoid overlapping with the background image.

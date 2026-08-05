@@ -3,38 +3,38 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                     Jetman State Logic                   ;
+;                     Fred State Logic                   ;
 ;----------------------------------------------------------;
     MODULE jt
 
 JT_STATE_INACTIVE_D0    = 0                 ; Must be 0, because we reset it with "XOR A"
 
-; States for Jetman in the air, 0 for not in the air
-AIR_FLY_D10             = 10                    ; Jetman is flaying.
-AIR_HOOVER_D11          = 11                    ; Jetman is hovering.
-AIR_FALL_RIGHT_D12      = 12                    ; Jetman falls from platform on the right.
-AIR_FALL_LEFT_D13       = 13                    ; Jetman falls from platform on the left.
-AIR_BUMP_RIGHT_D14      = 14                    ; Jetman bumps into a platform from the right, he faces/moves left.
-AIR_BUMP_LEFT_D15       = 15                    ; Jetman bumps into a platform from the left, he faces/moves right.
-AIR_BUMP_BOTTOM_D16     = 16                    ; Jetman bumps into a platform from the bottom.
-AIR_ENEMY_KICK_D17      = 17                    ; Jetman flies above the enemy and kicks.
+; States for Fred in the air, 0 for not in the air
+AIR_FLY_D10             = 10                    ; Fred is flaying.
+AIR_HOOVER_D11          = 11                    ; Fred is hovering.
+AIR_FALL_RIGHT_D12      = 12                    ; Fred falls from platform on the right.
+AIR_FALL_LEFT_D13       = 13                    ; Fred falls from platform on the left.
+AIR_BUMP_RIGHT_D14      = 14                    ; Fred bumps into a platform from the right, he faces/moves left.
+AIR_BUMP_LEFT_D15       = 15                    ; Fred bumps into a platform from the left, he faces/moves right.
+AIR_BUMP_BOTTOM_D16     = 16                    ; Fred bumps into a platform from the bottom.
+AIR_ENEMY_KICK_D17      = 17                    ; Fred flies above the enemy and kicks.
 
-jetAir                  DB JT_STATE_INACTIVE_D0    ; Game start, Jetman standing on the ground (see _JM_RESPAWN_Y_D217).
+jetAir                  DB JT_STATE_INACTIVE_D0    ; Game start, Fred standing on the ground (see _JM_RESPAWN_Y_D217).
 
-; States for Jetman on the platform/ground
-GND_WALK_D51            = 51                    ; Jetman walks on the ground.
-GND_JSTAND_D52          = 52                    ; Jetman stands on the ground for a very short time, not enough to switch to #GND_STAND_D53.
-GND_STAND_D53           = 53                    ; Jetman stands on the ground.
+; States for Fred on the platform/ground
+GND_WALK_D51            = 51                    ; Fred walks on the ground.
+GND_JSTAND_D52          = 52                    ; Fred stands on the ground for a very short time, not enough to switch to #GND_STAND_D53.
+GND_STAND_D53           = 53                    ; Fred stands on the ground.
 
 jetGnd                  DB GND_STAND_D53
 
-; Jetman states
-JETST_NORMAL_D101       = 101                   ; Jetman is alive, could be flying (#jetAir != JT_STATE_INACTIVE_D0) or walking (#jetGnd != JT_STATE_INACTIVE_D0).
-JETST_INV_D102          = 102                   ; Jetman is invincible.
-JETST_RIP_D103          = 103                   ; Jetman got hit by enemy.
-JETST_OVERHEAT_D104     = 104                   ; Jetpack is overheating, and Jetman flays slowly.
+; Fred states
+JETST_NORMAL_D101       = 101                   ; Fred is alive, could be flying (#jetAir != JT_STATE_INACTIVE_D0) or walking (#jetGnd != JT_STATE_INACTIVE_D0).
+JETST_INV_D102          = 102                   ; Fred is invincible.
+JETST_RIP_D103          = 103                   ; Fred got hit by enemy.
+JETST_OVERHEAT_D104     = 104                   ; Jetpack is overheating, and Fred flays slowly.
 
-jetState                DB JETST_NORMAL_D101         ; Game start, Jetman in the air.
+jetState                DB JETST_NORMAL_D101         ; Game start, Fred in the air.
 
 DIF_EASY_D1             = 1
 DIF_NORMAL_D2           = 2

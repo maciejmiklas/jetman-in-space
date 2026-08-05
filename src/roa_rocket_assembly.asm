@@ -8,7 +8,7 @@
     MODULE roa
     ; TO USE THIS MODULE: dbs.SetupRocketBank
 
-RO_DROP_Y_MAX_D180      = 180                   ; Jetman has to be above the rocket to drop the element.
+RO_DROP_Y_MAX_D180      = 180                   ; Fred has to be above the rocket to drop the element.
 RO_DROP_Y_MIN_D130      = 130                   ; Maximal height above ground (min y) to drop rocket element.
 RO_DROP_Y_MIN_EASY_D30  = 30
 dropMinY                DB RO_DROP_Y_MIN_D130
@@ -58,7 +58,7 @@ rocAssemblyX            DB 0
 ;----------------------------------------------------------;
     MACRO _JetmanDropsRocketElement
 
-    ; Is Jetman over the drop location (+/- #PICK_MARGX_D8)?
+    ; Is Fred over the drop location (+/- #PICK_MARGX_D8)?
     LD BC, (jpo.jetX)
     LD A, (rocAssemblyX)
     SUB C                                       ;  Ignore B because X < 255, rocket assembly X is 8bit.
@@ -66,7 +66,7 @@ rocAssemblyX            DB 0
     JR NC, .end
 
     ; ##########################################
-    ; To drop rocket element Jetman's height has to be within bounds: #dropMinY < #jpo.jetY < #RO_DROP_Y_MAX_D180.
+    ; To drop rocket element Fred's height has to be within bounds: #dropMinY < #jpo.jetY < #RO_DROP_Y_MAX_D180.
     LD A, (dropMinY)
     LD B, A
     LD A, (jpo.jetY)
@@ -77,7 +77,7 @@ rocAssemblyX            DB 0
     JR C, .end
 
     ; ##########################################
-    ; Jetman drops rocket element.
+    ; Fred drops rocket element.
     LD A, ro.ROST_FALL_ASSEMBLY_D11
     LD (ro.rocketState), A
 
@@ -96,7 +96,7 @@ rocAssemblyX            DB 0
 ;----------------------------------------------------------;
 ;                    _MoveWithJetman                       ;
 ;----------------------------------------------------------;
-; Move the element to the current Jetman's position.
+; Move the element to the current Fred's position.
     MACRO _MoveWithJetman
 
     ; Set the ID of the sprite for the following commands.
@@ -107,7 +107,7 @@ rocAssemblyX            DB 0
     ; Set sprite X coordinate.
     LD BC, (jpo.jetX)
     LD A, C     
-    NEXTREG _SPR_REG_X_H35, A                   ; Set _SPR_REG_NR_H34 with LDB from Jetman's X postion.
+    NEXTREG _SPR_REG_X_H35, A                   ; Set _SPR_REG_NR_H34 with LDB from Fred's X postion.
     
     ; Set _SPR_REG_ATR2_H37 containing overflow bit from X position.
     LD A, B                                     ; Load MSB from X into A.
@@ -133,7 +133,7 @@ rocAssemblyX            DB 0
     JR NZ, .end
 
     ; ##########################################
-    ; Jetman collision with first (lowest) rocket element triggers liftoff.
+    ; Fred collision with first (lowest) rocket element triggers liftoff.
     LD BC, (rocAssemblyX)                       ; X of the element.
     LD B, 0
     LD D, EL_EXH_Y_POS_D234                     ; Y of the element.
@@ -141,7 +141,7 @@ rocAssemblyX            DB 0
     JR NZ, .end
 
     ; ##########################################
-    ; Jetman boards the rocket!
+    ; Fred boards the rocket!
     LD A, ro.ROST_FLY_D101
     LD (ro.rocketState), A
 
@@ -203,7 +203,7 @@ rocAssemblyX            DB 0
     CALL _SetIXtoCurrentRocketElement
 
     ; ##########################################
-    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
+    ; Check the collision (pickup possibility) between Fred and the element, return if there is none.
     LD BC, (IX + ro.RO.DROP_X)                     ; X of the element.
     LD B, 0
     LD DE, (ro.rocY)                               ; Y of the element.
@@ -228,7 +228,7 @@ rocAssemblyX            DB 0
     CALL gc.RocketElementPickup
 
     ; ##########################################
-    ; Jetman picks up element/tank. Update state to reflect it and return.
+    ; Fred picks up element/tank. Update state to reflect it and return.
     LD A, ro.ROST_CARRY_D13
     LD (ro.rocketState), A
 
@@ -403,7 +403,7 @@ CheckHitTank
     CALL _SetIXtoCurrentRocketElement
 
     ; The X coordinate of the rocket element is stored in two locations: 
-    ;  1) #ro.RO.DROP_X: when elements drop for pickup by Jetman.
+    ;  1) #ro.RO.DROP_X: when elements drop for pickup by Fred.
     ;  2) #roxX when building the rocket.
     LD A, (ro.rocketState)
     CP ro.ROST_FALL_ASSEMBLY_D11
@@ -579,7 +579,7 @@ BlinkRocketReadyForTakeoff
     LD A, RO_DOWN_SPR_ID_D80
     NEXTREG _SPR_REG_NR_H34, A
 
-    ; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Jetman.
+    ; Set sprite pattern - one for flip, one for flop -> rocket will blink waiting for Fred.
     LD A, (mld.counter008FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .flip

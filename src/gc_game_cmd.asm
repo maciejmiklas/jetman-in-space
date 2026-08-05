@@ -74,7 +74,7 @@ FUEL_THIEF_ACTIVE_LEV   = 4
     dbs.SetupCodeMusicBank
     CALL aml.NextGameSong
 
-    ; Respawn Jetman as the last step, this will set the status to active, all procedures will run afterward and need correct data.
+    ; Respawn Fred as the last step, this will set the status to active, all procedures will run afterward and need correct data.
     CALL RespawnJet
 
     ENDM                                        ; ## END of the macro ##
@@ -469,7 +469,7 @@ RocketElementPickup
     CALL sc.PickupRocketElement
 
     ; ##########################################
-    ; Play different FX depending on whether Jetman picks up the fuel tank or the rocket element.
+    ; Play different FX depending on whether Fred picks up the fuel tank or the rocket element.
     dbs.SetupRocketBank
     CALL roa.IsFuelDeployed
     JR NZ, .notFuelTank
@@ -546,10 +546,10 @@ JetPlatformTakesOff
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
-    OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0. Check if Jetman is on the ground/platform.
+    OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0. Check if Fred is on the ground/platform.
     RET Z
 
-    ; Jetman is taking off.
+    ; Fred is taking off.
     LD A, jt.AIR_FLY_D10
     CALL jt.SetJetStateAir
 
@@ -690,13 +690,13 @@ EnemyHitsJet
     CALL sp.SpriteHit
 
     ; ##########################################
-    ; Is Jetman already dying? If so, do not start the RiP sequence again, just kill the enemy.
+    ; Is Fred already dying? If so, do not start the RiP sequence again, just kill the enemy.
     LD A, (jt.jetState)                         
     CP jt.JETST_RIP_D103
     RET Z                                       ; Exit if RIP.
 
     ; ##########################################
-    ; Is Jetman invincible? If so, just kill the enemy.
+    ; Is Fred invincible? If so, just kill the enemy.
     CP jt.JETST_INV_D102
     RET Z                                       ; Exit if invincible.
 
@@ -870,7 +870,7 @@ JetLanding
 ;----------------------------------------------------------;
 ;                         JetMoves                         ;
 ;----------------------------------------------------------;
-; Called on any Jetman movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
+; Called on any Fred movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
 JetMoves
 
     dbs.SetupRocketBank

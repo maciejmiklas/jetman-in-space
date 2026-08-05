@@ -60,7 +60,7 @@ UpdateVisibilityOnJetMove
     ; Store horizontal cipping into DE, D will contain the x-start, E the x-end.
 
     ; X clipping uses only half of the resolution, because we run in 320 mode.
-    ; Calculate for horizontal clipping the X-start as D, and the X-end as E. First, store half of the Jetman's X position in L. 
+    ; Calculate for horizontal clipping the X-start as D, and the X-end as E. First, store half of the Fred's X position in L. 
     ; Afterwards, use L to calculate D and E, including overflows. 
     LD HL, (jpo.jetX)
     LD C, 2

@@ -3,7 +3,7 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                      Jetman Data                         ;
+;                      Fred Data                         ;
 ;----------------------------------------------------------;
     MODULE gid
 
@@ -14,26 +14,26 @@ joyOffCnt           DB 0
 ; Possible move directions##
 MOVE_INACTIVE_D0        = 0                     ; No movement.
 
-MOVE_LEFT_BIT_D0        = 0                     ; Bit 0 - Jetman moving left, facing left.
+MOVE_LEFT_BIT_D0        = 0                     ; Bit 0 - Fred moving left, facing left.
 MOVE_LEFT_MASK          = %0000'0001
 
-MOVE_RIGHT_BIT_D1       = 1                     ; Bit 1 - Jetman moving right, facing right.
+MOVE_RIGHT_BIT_D1       = 1                     ; Bit 1 - Fred moving right, facing right.
 MOVE_RIGHT_MASK         = %0000'0010
 
-MOVE_UP_BIT_D2          = 2                     ; Bit 2 - Jetman moving up, facing up.
+MOVE_UP_BIT_D2          = 2                     ; Bit 2 - Fred moving up, facing up.
 MOVE_UP_MASK            = %0000'0100
 
-MOVE_DOWN_BIT_D3        = 3                     ; Bit 3 - Jetman moving down, facing up.
+MOVE_DOWN_BIT_D3        = 3                     ; Bit 3 - Fred moving down, facing up.
 MOVE_DOWN_MASK          = %0000'1000
 
 MOVE_MSK_LR             = %0000'0011            ; Left + Right
 
-; This byte holds the direction in which Jetman is facing(#MOVE_XXX_MASK). It takes movement bits as arguments but gets updated only when 
+; This byte holds the direction in which Fred is facing(#MOVE_XXX_MASK). It takes movement bits as arguments but gets updated only when 
 ; the opposite direction changes. Pressing left will reset the right bit and set left; pressing up will reset the down bit and set up. 
-; However, only opposite directions are reset, so for example, when Jetman is facing right, and the right button is released, 
+; However, only opposite directions are reset, so for example, when Fred is facing right, and the right button is released, 
 ; it still looks right; now, when up is pressed, it will look upright, and the right will be reset only when left is pressed. 
 ; Prolonged inactivity resets #jetDirection to #MOVE_INACTIVE_D0.
-jetDirection            DB MOVE_INACTIVE_D0  ; Jetman initially hovers, no movement.
+jetDirection            DB MOVE_INACTIVE_D0  ; Fred initially hovers, no movement.
 
 ; Holds currently pressed direction button. State will be updated right at the beginning of each joystick loop.
 joyDirection            DB MOVE_INACTIVE_D0
@@ -41,7 +41,7 @@ joyDirection            DB MOVE_INACTIVE_D0
 ; Holds #joyDirection from previous loop
 joyPrevDirection        DB MOVE_INACTIVE_D0
 
-joyOverheatDelayCnt     DB 0                    ; The delay counter for joystick input and Jetman movement speed when jetpack overheats.
+joyOverheatDelayCnt     DB 0                    ; The delay counter for joystick input and Fred movement speed when jetpack overheats.
 
 breakCnt                DB 0
 BREAK_CNT_D3            = 3

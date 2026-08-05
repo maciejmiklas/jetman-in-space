@@ -6,14 +6,14 @@
 ;                     Jetpack Overheating                  ;
 ;----------------------------------------------------------;
     MODULE jo 
-; During the flight, the Jetpack heats up. When it overheats, the Jetman can only fly slowly. To cool down the Jetpack,
-; the Jetman needs to land.
+; During the flight, the Jetpack heats up. When it overheats, the Fred can only fly slowly. To cool down the Jetpack,
+; the Fred needs to land.
 
-; Jetpack temperature and the temp bar in UI increase in two steps. First, when Jetman is flying, the #jetHeatCnt will increase.
-; When it reaches JM_HEAT_CNT_D60, the jetpack temperature will increase (#jetTempLevel) until it reaches MAX_TEMP. Then, it will update Jetman
+; Jetpack temperature and the temp bar in UI increase in two steps. First, when Fred is flying, the #jetHeatCnt will increase.
+; When it reaches JM_HEAT_CNT_D60, the jetpack temperature will increase (#jetTempLevel) until it reaches MAX_TEMP. Then, it will update Fred
 ; state to #JETST_OVERHEAT_D104 and slow flying down. 
-; When Jetman lands, the #jetCoolCnt decreases. When it reaches JM_COOL_CNT_D15, the jetpack temperature decreases,
-; until it reaches #TEMP_NORM_D4. At this point, the Jetman state changes to #JETST_NORMAL_D101, and Jetman can fly at a full speed.
+; When Fred lands, the #jetCoolCnt decreases. When it reaches JM_COOL_CNT_D15, the jetpack temperature decreases,
+; until it reaches #TEMP_NORM_D4. At this point, the Fred state changes to #JETST_NORMAL_D101, and Fred can fly at a full speed.
 
 ; Jetpack heats up/cools down during the flight
 jetHeatCnt              DB 0                    ; Runs from 0 to JM_HEAT_CNT_D60
@@ -25,7 +25,7 @@ TEMP_MAX_D6             = 6                     ; The heat bar in UI (H) has 5 e
 TEMP_RED_D4             = 4
 TEMP_MIN_D0             = 0
 
-TEMP_NORM_D4            = 4                     ; Jetman can move at full speed when Jetpack cools down, and this level is reached.
+TEMP_NORM_D4            = 4                     ; Fred can move at full speed when Jetpack cools down, and this level is reached.
 
 ; The Jetpack heating up / cooling down thresholds.
 JM_HEAT_RED_CNT_D100    = 100
@@ -183,7 +183,7 @@ BAR_ICON_PAL_H00       = $00
 ; Replace last two tiles in heat bar for blinking effect: _BAR_RED_A1_SPR_D180,_BAR_RED_A2_SPR_D181 -> _BAR_RED_B1_SPR_D188,_BAR_RED_B2_SPR_D189
 AnimateJetpackOverheat
 
-    ; Animate only when overheated, and Jetman slows down.
+    ; Animate only when overheated, and Fred slows down.
     LD A, (jt.jetState)
     CP jt.JETST_OVERHEAT_D104
     RET NZ
@@ -243,23 +243,23 @@ ResetJetpackOverheating
 ;----------------------------------------------------------;
 UpdateJetpackOverheating
 
-    ; Increase the overheating timer if Jetman is flying.
+    ; Increase the overheating timer if Fred is flying.
     LD A, (jt.jetAir)
     OR A                                        ; Same as: CP jt.JT_STATE_INACTIVE_D0
     JR Z, .afterFlaying
 
-    ; Jetman is flying
+    ; Fred is flying
     _JetpackTempUp
     RET
 .afterFlaying
 
     ; ##########################################
-    ; Increase the cool down timer if Jetman is walking.
+    ; Increase the cool down timer if Fred is walking.
     LD A, (jt.jetGnd)
     CP jt.JT_STATE_INACTIVE_D0
     RET Z
     
-    ; Jetman is walking.
+    ; Fred is walking.
     _JetpackTempDown
 
     RET                                         ; ## END of the function ##

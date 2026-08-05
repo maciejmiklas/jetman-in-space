@@ -10,13 +10,13 @@
 ;----------------------------------------------------------;
 ;                   Reserved Sprite IDs                    ;
 ;----------------------------------------------------------;
-; Jetman:               00-09
-; Jetman's Weapon:      10-19
+; Fred:               00-09
+; Fred's Weapon:      10-19
 ; Single Enemy:         20-59
 ; Enemy Formation:      60-69
 ; Rocket:               80-89
 ; Pickups:              90
-; Jetman's Weapon:      91-95
+; Fred's Weapon:      91-95
 ; Fuel thief:           96-97
 ; Following Enemy:      98-113
 

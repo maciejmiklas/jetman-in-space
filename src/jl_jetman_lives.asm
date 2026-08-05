@@ -17,8 +17,8 @@ SCORE_NR_TI_POS_D16     = 16
 TI_RAM_START            = ti.TI_MAP_RAM_H5B00 + FACE_TI_POS_BYTE_D30
 
 RED_FACE_LIVES_D1       = 2                     ; Show face when #lives < than this value.
-JET_POS_LEFT_D100       = 100                   ; Face looks to the left, if Jetman postion is < 100.
-JET_POS_RIGHT_D200      = 200                   ; Face looks to the right, if Jetman postion is > 100.
+JET_POS_LEFT_D100       = 100                   ; Face looks to the left, if Fred postion is < 100.
+JET_POS_RIGHT_D200      = 200                   ; Face looks to the right, if Fred postion is > 100.
 JET_LIVES_D3            = 3
 JET_LIVES_EASY_D60      = 60
 
@@ -82,7 +82,7 @@ SetupLives
 ;----------------------------------------------------------;
 UpdateLifeFaceOnJetMove
 
-    ; This method is called only when the gamer is active. However, there is one exception. When Jetman boards the rocket, it still counts 
+    ; This method is called only when the gamer is active. However, there is one exception. When Fred boards the rocket, it still counts 
     ; as movement, but the state has already changed to rocket fly.
     LD A, (ms.mainState)
     CP ms.MS_GAME_ACTIVE_D1
@@ -93,14 +93,14 @@ UpdateLifeFaceOnJetMove
     LD DE, (jpo.jetX)
     LD A, E
 
-    ; Is Jetman facing left?
+    ; Is Fred facing left?
     CP JET_POS_LEFT_D100
     JR NC, .notLeft
     LD B, FACE_NORM_LEFT_D192
     JR .loaded
 .notLeft
 
-    ; Is Jetman facing right?
+    ; Is Fred facing right?
     CP JET_POS_RIGHT_D200
     JR C, .notRight
     LD B, FACE_NORM_RIGHT_D194
