@@ -61,11 +61,11 @@ UpdateStateOnJoyWillEnable
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      SetJetStateAir                      ;
+;                      SetFredStateAir                      ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:                                         ; Air State: #AIR_XXX.
-SetJetStateAir
+SetFredStateAir
 
     LD (jetAir), A                              ; Update Air from param.
 
@@ -75,9 +75,9 @@ SetJetStateAir
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     SetJetStateGnd                       ;
+;                     SetFredStateGnd                       ;
 ;----------------------------------------------------------;
-SetJetStateGnd
+SetFredStateGnd
 
     LD (jetGnd), A
 
@@ -87,9 +87,9 @@ SetJetStateGnd
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     SetJetStateRip                       ;
+;                     SetFredStateRip                       ;
 ;----------------------------------------------------------;
-SetJetStateRip
+SetFredStateRip
 
     XOR A
     LD (jetAir), A
@@ -101,9 +101,9 @@ SetJetStateRip
     RET                                         ; ## END of the function ##
     
 ;----------------------------------------------------------;
-;                   SetJetStateRespawn                     ;
+;                   SetFredStateRespawn                     ;
 ;----------------------------------------------------------;
-SetJetStateRespawn
+SetFredStateRespawn
 
     LD A, GND_STAND_D53
     LD (jetGnd), A
@@ -117,9 +117,9 @@ SetJetStateRespawn
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   SetJetStateInactive                    ;
+;                   SetFredStateInactive                    ;
 ;----------------------------------------------------------;
-SetJetStateInactive
+SetFredStateInactive
 
     XOR A
     LD (jetAir), A
@@ -144,11 +144,11 @@ ResetOverheat
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       SetJetState                        ;
+;                       SetFredState                        ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - A:                                         ; Air State: #JETST_XXX
-SetJetState
+SetFredState
 
     LD (jetState), A
 

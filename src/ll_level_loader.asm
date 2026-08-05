@@ -188,7 +188,7 @@ LoadCurrentLevel
     PUSH AF
     CALL roa.SetupRocket
     POP AF
-    CALL jpo.SetupJetRespawnPosition
+    CALL jpo.SetupFredRespawnPosition
     POP IX
 
     ; ##########################################

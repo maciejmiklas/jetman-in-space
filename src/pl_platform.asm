@@ -58,9 +58,9 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;              _MoveJetOnFallingFromPlatform               ;
+;              _MoveFredOnFallingFromPlatform               ;
 ;----------------------------------------------------------;
-    MACRO _MoveJetOnFallingFromPlatform
+    MACRO _MoveFredOnFallingFromPlatform
 
     ; Is Fred falling from the platform on the right side?
     LD A, (jt.jetAir)
@@ -69,10 +69,10 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
 
     ; Yes, Fred is falling from the platform.
     LD B, PL_FALL_X_D2
-    CALL jpo.IncJetXbyB
+    CALL jpo.IncFredXbyB
 
     LD B, PL_FALL_Y_D4
-    CALL jpo.IncJetYbyB
+    CALL jpo.IncFredYbyB
 
     JR .end                                     ; Do not check falling left  because Fred is already falling.
 .afterFallingRight  
@@ -83,19 +83,19 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     JR NZ, .end
 
     ; Yes, Fred is falling from the platform.
-    CALL jpo.DecJetX
-    CALL jpo.DecJetX
+    CALL jpo.DecFredX
+    CALL jpo.DecFredX
     
     LD B, PL_FALL_Y_D4
-    CALL jpo.IncJetYbyB
+    CALL jpo.IncFredYbyB
 
 .end
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;               _MoveJetOnHitPlatformBelow                 ;
+;               _MoveFredOnHitPlatformBelow                 ;
 ;----------------------------------------------------------;
-    MACRO _MoveJetOnHitPlatformBelow
+    MACRO _MoveFredOnHitPlatformBelow
 
     ; Fred hits the platform from the bottom?
     LD A, (jt.jetAir)
@@ -105,7 +105,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     ; Yes, Fred hits the platform.
 
     ; Move down.
-    CALL jpo.IncJetY
+    CALL jpo.IncFredY
 
     ; Move left/right in the opposite direction to joystick.
     LD A, (gid.joyDirection)
@@ -113,23 +113,23 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     ; Joystick points right, move left.
     BIT gid.MOVE_RIGHT_BIT_D1, A
     JR Z, .afterRight
-    CALL jpo.IncJetX
+    CALL jpo.IncFredX
     JR .afterLeft
 .afterRight
 
     ; Joystick points left, move right.
     BIT gid.MOVE_LEFT_BIT_D0, A
     JR Z, .afterLeft
-    CALL jpo.DecJetX
+    CALL jpo.DecFredX
 .afterLeft
 
 .end
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                 _MoveJetOnPlatformSideHit                ;
+;                 _MoveFredOnPlatformSideHit                ;
 ;----------------------------------------------------------;
-    MACRO _MoveJetOnPlatformSideHit
+    MACRO _MoveFredOnPlatformSideHit
 
     ; Is Fred bumping into the platform from the right?
     LD A, (jt.jetAir)
@@ -137,7 +137,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     JR NZ, .afterBumpingRight
 
     ; Yes
-    CALL jpo.IncJetX
+    CALL jpo.IncFredX
     JR .end                                     ; Do not check bumping left.
 .afterBumpingRight
 
@@ -147,7 +147,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
     JR NZ, .end
 
     ; Yes
-    CALL jpo.DecJetX
+    CALL jpo.DecFredX
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -413,9 +413,9 @@ SetupPlatforms
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 JetPlatformHitOnJoyMove                  ;
+;                 FredPlatformHitOnJoyMove                  ;
 ;----------------------------------------------------------;
-JetPlatformHitOnJoyMove
+FredPlatformHitOnJoyMove
 
     ; Return if Fred is below all platforms.
     LD A, (jpo.jetY)
@@ -462,7 +462,7 @@ JetPlatformHitOnJoyMove
     SUB B
     LD (platformWalkNumber), A
     
-    CALL JetLanding
+    CALL FredLanding
     RET
 .afterLanding
 
@@ -479,9 +479,9 @@ JetPlatformHitOnJoyMove
     
     ; Fred hits the platform.
     LD A, jt.AIR_BUMP_LEFT_D15
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
-    CALL _JetHitsPlatform
+    CALL _FredHitsPlatform
 
     ; When Fred bumps away from the platform, he has to move left at least one pixel to compensate for Joystick's movement,
     ; or a few pixels to really bump off.
@@ -490,10 +490,10 @@ JetPlatformHitOnJoyMove
     JR C, .bumpLeftOnPixel
 
     LD B, PL_BUMP_X_D4
-    CALL jpo.DecJetXbyB
+    CALL jpo.DecFredXbyB
     RET
 .bumpLeftOnPixel
-    CALL jpo.DecJetX
+    CALL jpo.DecFredX
 
     RET
 .afterHitLeft
@@ -511,9 +511,9 @@ JetPlatformHitOnJoyMove
     
     ; Fred hits the platform from the right side and bumps off to the right.
     LD A, jt.AIR_BUMP_RIGHT_D14
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
-    CALL _JetHitsPlatform
+    CALL _FredHitsPlatform
 
     ; When Fred bumps away from the platform, he has to move right at least one pixel to compensate for Joystick's movement or a 
     ; few pixels to really bump off.
@@ -522,10 +522,10 @@ JetPlatformHitOnJoyMove
     JR C, .bumpRightOnPixel
 
     LD B, PL_BUMP_X_D4
-    CALL jpo.IncJetXbyB
+    CALL jpo.IncFredXbyB
     RET
 .bumpRightOnPixel
-    CALL jpo.IncJetX
+    CALL jpo.IncFredX
 
     RET
 .afterHitRight
@@ -543,9 +543,9 @@ JetPlatformHitOnJoyMove
     
     ; Fred hits the platform from the bottom.
     LD A, jt.AIR_BUMP_BOTTOM_D16
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
-    CALL _JetHitsPlatform
+    CALL _FredHitsPlatform
 
     ; When Fred bumps away from the platform, he has to move down at least one pixel to compensate for Joystick's movement or a 
     ; few pixels to really bump off.
@@ -554,11 +554,11 @@ JetPlatformHitOnJoyMove
     JR C, .bumpDownOnPixel
 
     LD B, PL_BUMP_Y_D4
-    CALL jpo.IncJetYbyB
+    CALL jpo.IncFredYbyB
     RET
 
 .bumpDownOnPixel
-    CALL jpo.IncJetY
+    CALL jpo.IncFredY
 
     RET
 .afterHitBottom 
@@ -652,9 +652,9 @@ CheckPlatformWeaponHit
     JP _PlatformSpriteHit
 
 ;----------------------------------------------------------;
-;                       JetLanding                         ;
+;                       FredLanding                         ;
 ;----------------------------------------------------------;
-JetLanding
+FredLanding
 
     dbs.SetupArrays2Bank
 
@@ -665,7 +665,7 @@ JetLanding
 
     ; Update state as we are walking.
     LD A, jt.GND_WALK_D51
-    CALL jt.SetJetStateGnd
+    CALL jt.SetFredStateGnd
     
     ; Fred is landing, trigger transition: flying -> standing/walking.
     LD A, (gid.joyDirection)
@@ -674,33 +674,33 @@ JetLanding
     JR C, .afterMoveLR                          ; Jump, if there is no movement right/left (A >= 1) -> Fred lands horizontally and stands still.
     
     LD A, js.SDB_T_FW                           ; Play transition from landing -> walking.
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     JR .afterStand                              ; The animation is already loaded, do not overwrite it with standing.
 .afterMoveLR
 
     LD A, jt.GND_STAND_D53
-    CALL jt.SetJetStateGnd                      ; Update state as we are standing.
+    CALL jt.SetFredStateGnd                      ; Update state as we are standing.
 
     LD A, js.SDB_T_FS                           ; Play transition from landing -> standing.
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 .afterStand
 
-    CALL gc.JetLanding
+    CALL gc.FredLanding
 
     RET                                         ; ## END of the function ##
 
 
 ;----------------------------------------------------------;
-;                   MoveJetOnPlatform                      ;
+;                   MoveFredOnPlatform                      ;
 ;----------------------------------------------------------;
-MoveJetOnPlatform
+MoveFredOnPlatform
 
     dbs.SetupArrays2Bank
 
-    _MoveJetOnPlatformSideHit
-    _MoveJetOnFallingFromPlatform
-    _MoveJetOnHitPlatformBelow
+    _MoveFredOnPlatformSideHit
+    _MoveFredOnFallingFromPlatform
+    _MoveFredOnHitPlatformBelow
 
     RET                                         ; ## END of the function ##
 
@@ -719,10 +719,10 @@ PlatformBounceOff
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 JetFallingFromPlatform                   ;
+;                 FredFallingFromPlatform                   ;
 ;----------------------------------------------------------;
 ; Fred walks to the edge of the platform and falls.
-JetFallingFromPlatform
+FredFallingFromPlatform
 
     ; Return if Fred is below all platforms.
     LD A, (jpo.jetY)
@@ -774,11 +774,11 @@ JetFallingFromPlatform
 .afterFallingRight
     
     ; Fred if falling, in the air - A contains proper air state.
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
     ; Trigger transition: walking -> falling.
     LD A, js.SDB_T_KF
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     ; Disable joystick, because Fred loses control for #PL_FALL_JOY_OFF_D10 frames.
     LD A, PL_FALL_JOY_OFF_D10
@@ -1170,12 +1170,12 @@ _PlatformSpriteHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   _JetHitsPlatform                       ;
+;                   _FredHitsPlatform                       ;
 ;----------------------------------------------------------;
-_JetHitsPlatform
+_FredHitsPlatform
 
     LD A, js.SDB_T_KF                           ; Play animation.
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
     
     ; Disable joystick, because Fred looses control for a few frames.
     LD A, (joyOffBump)
@@ -1191,7 +1191,7 @@ _JetHitsPlatform
     LD (joyOffBump), A
 
     ; ##########################################
-    CALL gc.JetBumpsIntoPlatform
+    CALL gc.FredBumpsIntoPlatform
 
     RET                                         ; ## END of the function ##
 

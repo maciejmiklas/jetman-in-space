@@ -63,7 +63,7 @@ FUEL_THIEF_ACTIVE_LEV   = 4
     CALL roa.StartRocketAssembly
 
     CALL ti.ResetTilemapOffset
-    CALL jo.ResetJetpackOverheating
+    CALL jo.ResetFredpackOverheating
     CALL jl.SetupLives
     CALL gr.UpdateGranedeGamebar
 
@@ -75,7 +75,7 @@ FUEL_THIEF_ACTIVE_LEV   = 4
     CALL aml.NextGameSong
 
     ; Respawn Fred as the last step, this will set the status to active, all procedures will run afterward and need correct data.
-    CALL RespawnJet
+    CALL RespawnFred
 
     ENDM                                        ; ## END of the macro ##
 
@@ -139,8 +139,8 @@ StartGameWithIntro
     RET
 
 .intro
-    CALL js.HideJetSprite
-    CALL jt.SetJetStateInactive
+    CALL js.HideFredSprite
+    CALL jt.SetFredStateInactive
     CALL bm.HideImageFade
     CALL _HideGame
     _LoadLevel1Intro
@@ -353,8 +353,8 @@ RocketFLyStartPhase1
     CALL aml.MusicOff
 
     CALL sc.BoardRocket
-    CALL jt.SetJetStateInactive
-    CALL js.HideJetSprite
+    CALL jt.SetFredStateInactive
+    CALL js.HideFredSprite
     CALL gb.HideGameBar
     CALL ki.ResetKeyboard
     CALL jw.HideShots
@@ -540,9 +540,9 @@ RocketElementDrop
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                     JetPlatformTakesOff                  ;
+;                     FredPlatformTakesOff                  ;
 ;----------------------------------------------------------;
-JetPlatformTakesOff
+FredPlatformTakesOff
 
     ; Transition from walking to flaying.
     LD A, (jt.jetGnd)
@@ -551,11 +551,11 @@ JetPlatformTakesOff
 
     ; Fred is taking off.
     LD A, jt.AIR_FLY_D10
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
     ; Play takeoff animation.
     LD A, js.SDB_T_WF
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     ; Not walking on platform anymore.
     LD A, pl.PLATFORM_WALK_INACTIVE
@@ -680,11 +680,11 @@ EnemyHit
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       EnemyHitsJet                       ;
+;                       EnemyHitsFred                       ;
 ;----------------------------------------------------------;
 ; Input
 ;  - IX:    Pointer enemy's #SPR
-EnemyHitsJet
+EnemyHitsFred
 
     ; Destroy the enemy.
     CALL sp.SpriteHit
@@ -702,12 +702,12 @@ EnemyHitsJet
 
     ; ##########################################
     ; This is the first enemy hit.
-    CALL jt.SetJetStateRip
+    CALL jt.SetFredStateRip
     CALL jw.ResetWeapon
     
     ; Change animation.
     LD A, js.SDB_RIP
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     ; Play FX.
     _AFX af.FX_JET_KILL
@@ -720,9 +720,9 @@ EnemyHitsJet
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       RespawnJet                         ;
+;                       RespawnFred                         ;
 ;----------------------------------------------------------;
-RespawnJet
+RespawnFred
 
     LD A, (jl.lives)
     OR A
@@ -731,10 +731,10 @@ RespawnJet
     RET
 .keepPlaying
 
-    CALL js.InitJetSprite
-    CALL jpo.SetJetRespawnPosition
-    CALL jt.SetJetStateRespawn
-    CALL jco.MakeJetInvincible
+    CALL js.InitFredSprite
+    CALL jpo.SetFredRespawnPosition
+    CALL jt.SetFredStateRespawn
+    CALL jco.MakeFredInvincible
 
     CALL bm.CopyImageData
     CALL bg.UpdateBackgroundOnFredMove
@@ -743,52 +743,52 @@ RespawnJet
     CALL roa.ResetCarryingRocketElement
 
     CALL jw.HideShots
-    CALL jo.ResetJetpackOverheating
+    CALL jo.ResetFredpackOverheating
 
     ; Show stars after loading the background image.
     CALL st.ShowStars
 
     ; Switch to flaying animation.
     LD A, js.SDB_STAND
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
-    CALL js.ShowJetSprite
+    CALL js.ShowFredSprite
 
-    CALL JetMoves
+    CALL FredMoves
 
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                    JetpackOverheat                       ;
+;                    FredpackOverheat                       ;
 ;----------------------------------------------------------;
-JetpackOverheat
+FredpackOverheat
 
     _AFX af.FX_JET_OVERHEAT
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   JetpackTempNormal                      ;
+;                   FredpackTempNormal                      ;
 ;----------------------------------------------------------;
-JetpackTempNormal
+FredpackTempNormal
 
     _AFX af.FX_JET_NORMAL
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      JetPicksInAir                       ;
+;                      FredPicksInAir                       ;
 ;----------------------------------------------------------;
-JetPicksInAir
+FredPicksInAir
 
     CALL sc.PickupInAir
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       JetPicksGun                        ;
+;                       FredPicksGun                        ;
 ;----------------------------------------------------------;
-JetPicksGun
+FredPicksGun
 
     CALL sc.PickupRegular
     CALL jw.FireSpeedUp
@@ -798,9 +798,9 @@ JetPicksGun
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      JetExtraLife                        ;
+;                      FredExtraLife                        ;
 ;----------------------------------------------------------;
-JetExtraLife
+FredExtraLife
 
     CALL sc.PickupRegular
 
@@ -811,9 +811,9 @@ JetExtraLife
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     JetPicksGrenade                      ;
+;                     FredPicksGrenade                      ;
 ;----------------------------------------------------------;
-JetPicksGrenade
+FredPicksGrenade
 
     CALL sc.PickupRegular
     CALL gr.GrenadePickup
@@ -823,22 +823,22 @@ JetPicksGrenade
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   JetPicksStrawberry                     ;
+;                   FredPicksStrawberry                     ;
 ;----------------------------------------------------------;
-JetPicksStrawberry
+FredPicksStrawberry
 
     CALL sc.PickupRegular
 
     _AFX af.FX_PICKUP_STRAWBERRY
 
-    CALL jco.MakeJetInvincible
+    CALL jco.MakeFredInvincible
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    JetPicksDiamond                       ;
+;                    FredPicksDiamond                       ;
 ;----------------------------------------------------------;
-JetPicksDiamond
+FredPicksDiamond
 
     CALL sc.PickupDiamond
 
@@ -847,46 +847,46 @@ JetPicksDiamond
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       JetPicksJar                        ;
+;                       FredPicksJar                        ;
 ;----------------------------------------------------------;
-JetPicksJar
+FredPicksJar
 
     CALL sc.PickupRegular
-    CALL jo.ResetJetpackOverheating
+    CALL jo.ResetFredpackOverheating
 
     _AFX af.FX_PICKUP_JAR
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       JetLanding                         ;
+;                       FredLanding                         ;
 ;----------------------------------------------------------;
-JetLanding
+FredLanding
 
     _AFX af.FX_JET_LAND
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         JetMoves                         ;
+;                         FredMoves                         ;
 ;----------------------------------------------------------;
-; Called on any Fred movement, always before the method indicating concrete movement (#JetMovesUp,#JetMovesDown).
-JetMoves
+; Called on any Fred movement, always before the method indicating concrete movement (#FredMovesUp,#FredMovesDown).
+FredMoves
 
     dbs.SetupRocketBank
     CALL roa.UpdateRocketOnFredMove
 
-    CALL jl.UpdateLifeFaceOnJetMove
+    CALL jl.UpdateLifeFaceOnFredMove
 
     dbs.SetupCode1Bank
-    CALL nv.UpdateVisibilityOnJetMove 
+    CALL nv.UpdateVisibilityOnFredMove 
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        JetMovesUp                        ;
+;                        FredMovesUp                        ;
 ;----------------------------------------------------------;
-JetMovesUp
+FredMovesUp
 
     ; The #UpdateBackgroundOnFredMove calculates #bgOffset, which is used to hide the background line behind the horizon.
     ; To avoid glitches, like not hidden lines, we always have to first hide the line and then calculate the #bgOffset. This will introduce 
@@ -902,9 +902,9 @@ JetMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      JetMovesDown                        ;
+;                      FredMovesDown                        ;
 ;----------------------------------------------------------;
-JetMovesDown
+FredMovesDown
 
     CALL bg.ShowBackgroundAboveHorizon
     CALL bg.UpdateBackgroundOnFredMove
@@ -922,9 +922,9 @@ RocketReady
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   JetBumpsIntoPlatform                   ;
+;                   FredBumpsIntoPlatform                   ;
 ;----------------------------------------------------------;
-JetBumpsIntoPlatform
+FredBumpsIntoPlatform
 
     _AFX af.FX_BUMP_PLATFORM
 
@@ -946,7 +946,7 @@ NightLimitVisibility1
 
     dbs.SetupCode1Bank
     LD A, nv.VISIBILITY_LIMIT_1
-    CALL nv.LimitJetVisibility
+    CALL nv.LimitFredVisibility
 
     CALL ti.LoadTilemapPaletteForNight1
 
@@ -959,7 +959,7 @@ NightLimitVisibility2
 
     dbs.SetupCode1Bank
     LD A, nv.VISIBILITY_LIMIT_2
-    CALL nv.LimitJetVisibility
+    CALL nv.LimitFredVisibility
 
     CALL ti.LoadTilemapPaletteForNight2
 
@@ -971,7 +971,7 @@ NightLimitVisibility2
 NightLimitVisibilityOffNow
 
     dbs.SetupCode1Bank
-    CALL nv.LimitJetVisibilityOffNow
+    CALL nv.LimitFredVisibilityOffNow
 
     CALL ti.LoadTilemapPaletteForDay
 
@@ -983,7 +983,7 @@ NightLimitVisibilityOffNow
 NightLimitVisibilityOff
 
     dbs.SetupCode1Bank
-    CALL nv.LimitJetVisibilityOff
+    CALL nv.LimitFredVisibilityOff
 
     CALL ti.LoadTilemapPaletteForDay
 
@@ -1077,10 +1077,10 @@ _HideGame
     CALL ki.SetupKeyboardForMenu
     CALL sc.ResetClippings
     CALL NightLimitVisibilityOffNow
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
     CALL st.HideStars
     CALL jw.HideShots
-    CALL jt.SetJetStateInactive
+    CALL jt.SetFredStateInactive
     CALL ti.ResetTilemapOffset
     CALL ki.ResetKeyboard
     CALL enc.HideEnemies

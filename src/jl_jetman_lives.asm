@@ -35,7 +35,7 @@ LifeUp
     LD A, (lives)
     INC A
     LD (lives), A
-    CALL _UpdateJetLives
+    CALL _UpdateFredLives
 
     RET                                         ; ## END of the function ##
 
@@ -45,7 +45,7 @@ LifeUp
 LifeDown
 
     DECA lives
-    CALL _UpdateJetLives
+    CALL _UpdateFredLives
 
     RET                                         ; ## END of the function ##
 
@@ -72,15 +72,15 @@ ResetLives
 ;----------------------------------------------------------;
 SetupLives
 
-    CALL UpdateLifeFaceOnJetMove
-    CALL _UpdateJetLives
+    CALL UpdateLifeFaceOnFredMove
+    CALL _UpdateFredLives
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 UpdateLifeFaceOnJetMove                  ;
+;                 UpdateLifeFaceOnFredMove                  ;
 ;----------------------------------------------------------;
-UpdateLifeFaceOnJetMove
+UpdateLifeFaceOnFredMove
 
     ; This method is called only when the gamer is active. However, there is one exception. When Fred boards the rocket, it still counts 
     ; as movement, but the state has already changed to rocket fly.
@@ -134,9 +134,9 @@ UpdateLifeFaceOnJetMove
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    _UpdateJetLives                       ;
+;                    _UpdateFredLives                       ;
 ;----------------------------------------------------------;
-_UpdateJetLives
+_UpdateFredLives
 
     LD A, (lives)
     LD BC, SCORE_NR_TI_POS_D16

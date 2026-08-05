@@ -101,7 +101,7 @@ CheckFredPickupCollision
     ; Pickup in the air?
     LD A, (deployedY)
     CP PICKUP_GND_LEVEL
-    CALL NZ, gc.JetPicksInAir
+    CALL NZ, gc.FredPicksInAir
 
     ; ##########################################
     ; Callbacks
@@ -110,42 +110,42 @@ CheckFredPickupCollision
     ; Diamond
     CP PI_SPR_DIAMOND
     JR NZ, .afterDiamond
-    CALL gc.JetPicksDiamond
+    CALL gc.FredPicksDiamond
     JR .nextPickup
 .afterDiamond
 
     ; Jar
     CP PI_SPR_JAR
     JR NZ, .afterJar
-    CALL gc.JetPicksJar
+    CALL gc.FredPicksJar
     JR .nextPickup
 .afterJar
 
     ; Strawberry
     CP PI_SPR_STRAWBERRY
     JR NZ, .afterStrawberry
-    CALL gc.JetPicksStrawberry
+    CALL gc.FredPicksStrawberry
     JR .nextPickup
 .afterStrawberry
 
     ; Grenade
     CP PI_SPR_GRENADE
     JR NZ, .afterGrenade
-    CALL gc.JetPicksGrenade
+    CALL gc.FredPicksGrenade
     JR .nextPickup
 .afterGrenade
 
     ; Life
     CP PI_SPR_LIFE
     JR NZ, .afterLife
-    CALL gc.JetExtraLife
+    CALL gc.FredExtraLife
     JR .nextPickup
 .afterLife
 
     ; Gun
     CP PI_SPR_GUN
     JR NZ, .afterGun
-    CALL gc.JetPicksGun
+    CALL gc.FredPicksGun
     JR .nextPickup
 .afterGun
 

@@ -364,7 +364,7 @@ _SetupMenuScore
     LD A, ms.MS_MENU_SCORE_D13
     CALL ms.SetMainState
 
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
     CALL bm.HideImageFade
     CALL ti.CleanAllTiles
 

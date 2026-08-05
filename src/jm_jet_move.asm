@@ -99,10 +99,10 @@ JSTAND_START_D15        = 15
 
     ; Fred starts to hover!
     LD A, jt.AIR_HOOVER_D11
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
     LD A, js.SDB_HOVER
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
     JR .end                                     ; Already hovering, do not check standing.
 .afterHoover
 
@@ -124,10 +124,10 @@ JSTAND_START_D15        = 15
     
     ; Transition from walking to standing.
     LD A, jt.GND_STAND_D53
-    CALL jt.SetJetStateGnd
+    CALL jt.SetFredStateGnd
 
     LD A, js.SDB_STAND                          ; Change animation.
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
     JR .end
 .afterStand
 
@@ -146,10 +146,10 @@ JSTAND_START_D15        = 15
 
     ; Stop walking immediately and stand still.
     LD A, jt.GND_JSTAND_D52
-    CALL jt.SetJetStateGnd
+    CALL jt.SetFredStateGnd
 
     LD A, js.SDB_JSTAND                         ; Change animation.
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
 .end
     ENDM                                        ; ## END of the macro #
@@ -166,7 +166,7 @@ JSTAND_START_D15        = 15
 ;----------------------------------------------------------;
 JoyMoveUp
 
-    CALL _CanJetMove
+    CALL _CanFredMove
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -195,11 +195,11 @@ JoyMoveUp
     LD A, (jpo.jetY)    
     CP _GSC_Y_MIN_D15                           ; Do not decrement if Fred has reached the top of the screen.
     JR Z, .afterDec
-    CALL jpo.DecJetY
+    CALL jpo.DecFredY
 .afterDec
 
     ; ##########################################
-    CALL gc.JetPlatformTakesOff                 ; Transition from walking to flaying.
+    CALL gc.FredPlatformTakesOff                 ; Transition from walking to flaying.
 
     RET                                         ; ## END of the function ##
 
@@ -208,7 +208,7 @@ JoyMoveUp
 ;----------------------------------------------------------;
 JoyMoveRight
 
-    CALL _CanJetMove
+    CALL _CanFredMove
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -232,11 +232,11 @@ JoyMoveRight
     ; ##########################################
     CALL _JoystickMoves
     CALL _StandToWalk
-    CALL jpo.IncJetX
+    CALL jpo.IncFredX
 
     ; ##########################################
     ; Fall from the platform?
-    CALL pl.JetFallingFromPlatform
+    CALL pl.FredFallingFromPlatform
 
     RET                                         ; ## END of the function ##
 
@@ -245,7 +245,7 @@ JoyMoveRight
 ;----------------------------------------------------------;
 JoyMoveLeft
 
-    CALL _CanJetMove
+    CALL _CanFredMove
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -269,11 +269,11 @@ JoyMoveLeft
     ; ##########################################
     CALL _JoystickMoves 
     CALL _StandToWalk
-    CALL jpo.DecJetX
+    CALL jpo.DecFredX
 
     ; ##########################################
     ; Fall from the platform?
-    CALL pl.JetFallingFromPlatform
+    CALL pl.FredFallingFromPlatform
 
     RET                                         ; ## END of the function ##
 
@@ -282,7 +282,7 @@ JoyMoveLeft
 ;----------------------------------------------------------;
 JoyMoveDown
 
-    CALL _CanJetMove
+    CALL _CanFredMove
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -304,7 +304,7 @@ JoyMoveDown
     SET gid.MOVE_DOWN_BIT_D3, A
     LD (gid.jetDirection), A
     
-    CALL js.ChangeJetSpriteOnFlyDown
+    CALL js.ChangeFredSpriteOnFlyDown
 .afterDirectionChange
 
     ; ##########################################
@@ -319,14 +319,14 @@ JoyMoveDown
     LD A, (jpo.jetY)
     CP _GSC_JET_GND_D217                        ; Do not increment if Fred has reached the ground.
     JR Z, .afterInc
-    CALL jpo.IncJetY                            ; Move Fred 1px down.
+    CALL jpo.IncFredY                            ; Move Fred 1px down.
 .afterInc   
 
     ; ##########################################
     ; Landing on the ground
     LD A, (jpo.jetY)
     CP _GSC_JET_GND_D217
-    CALL Z, pl.JetLanding                       ; Execute landing on the ground if Fred has reached the ground.
+    CALL Z, pl.FredLanding                       ; Execute landing on the ground if Fred has reached the ground.
 
     RET                                         ; ## END of the function ##
 
@@ -335,7 +335,7 @@ JoyMoveDown
 ;----------------------------------------------------------;
 JoyMoveDownRelease
 
-    CALL js.ChangeJetSpriteOnFlyUp
+    CALL js.ChangeFredSpriteOnFlyUp
 
     RET                                         ; ## END of the function ##
 
@@ -345,7 +345,7 @@ JoyMoveDownRelease
 ; It gets executed as a last procedure after the input has been processed, regardless of whether there was movement, or not.
 JoystickMoveProcessed
 
-    CALL _CanJetMove
+    CALL _CanFredMove
     RET NZ                                      ; Do not process input on disabled joystick.
 
     ; ##########################################
@@ -425,7 +425,7 @@ _JoystickMoves
     dbs.SetupRocketBank
     CALL roa.UpdateRocketOnFredMove
     
-    CALL pl.JetPlatformHitOnJoyMove
+    CALL pl.FredPlatformHitOnJoyMove
 
     ; ##########################################
     ; Reset inactivity counter as we have movement.
@@ -440,11 +440,11 @@ _JoystickMoves
 
     ; Fred is hovering, but we have movement, so switch state to fly.
     LD A, jt.AIR_FLY_D10
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
     
     ; Switch to flaying animation
     LD A, js.SDB_FLY
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 .afterHovering  
 
     RET                                         ; ## END of the function ##
@@ -466,20 +466,20 @@ _StandToWalk
 
     ; Fred is standing and starts walking now.
     LD A, jt.GND_WALK_D51
-    CALL jt.SetJetStateGnd
+    CALL jt.SetFredStateGnd
     
     LD A, js.SDB_WALK_ST
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      _CanJetMove                         ;
+;                      _CanFredMove                         ;
 ;----------------------------------------------------------;
 ; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
-_CanJetMove
+_CanFredMove
 
     _JoyCntEnabled
     RET NZ
@@ -500,7 +500,7 @@ _CanJetMove
     CP jt.JETST_RIP_D103
     JR NZ, .afterRip                            ; Do not process input if Fred is dying.
 
-    ; Do not process input, Jet is dying.
+    ; Do not process input, Fred is dying.
     _NO
     RET
 .afterRip

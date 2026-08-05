@@ -42,9 +42,9 @@ sprState                DB SPR_STATE_SHOW
 
 
 ;----------------------------------------------------------;
-;                      InitJetSprite                       ;
+;                      InitFredSprite                       ;
 ;----------------------------------------------------------;
-InitJetSprite
+InitFredSprite
 
     ; Setup anchor sprite (head)
     NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Fred's sprite for the following commands
@@ -71,9 +71,9 @@ InitJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              UpdateJetSpritePositionRotation             ;
+;              UpdateFredSpritePositionRotation             ;
 ;----------------------------------------------------------;
-UpdateJetSpritePositionRotation
+UpdateFredSpritePositionRotation
 
     dbs.SetupArrays2Bank
 
@@ -109,18 +109,18 @@ UpdateJetSpritePositionRotation
 
     NEXTREG _SPR_REG_ATR2_H37, A
 
-    ; Anchor with relative sprite (see #InitJetSprite)
+    ; Anchor with relative sprite (see #InitFredSprite)
     NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_ANCHOR
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 ChangeJetSpritePattern                   ;
+;                 ChangeFredSpritePattern                   ;
 ;----------------------------------------------------------;
 ; Switches immediately to the given animation, breaking the currently running one.
 ; Input:
 ;   - A: ID for #jesSprites, to switch to the next animation record
-ChangeJetSpritePattern
+ChangeFredSpritePattern
 
     ; Do not change the animation if the same animation is already playing, it will restart it
     LD B, A
@@ -136,15 +136,15 @@ ChangeJetSpritePattern
     XOR A                                       ; Set A to 0
     LD (sprDBRemain), A                         ; No more bytes to process within the current DB record will cause the fast switch to the next
 
-    CALL AnimateJetSprite                       ; Update the next animation frame immediately
+    CALL AnimateFredSprite                       ; Update the next animation frame immediately
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   AnimateJetSprite                       ;
+;                   AnimateFredSprite                       ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
-AnimateJetSprite
+AnimateFredSprite
 
     dbs.SetupArrays2Bank
 
@@ -239,54 +239,54 @@ AnimateJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     BlinkJetSprite                       ;
+;                     BlinkFredSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
 ; - A: flip flop counter, ie: #counter002FliFLop
-BlinkJetSprite
+BlinkFredSprite
 
     CP _GC_FLIP_ON_D1
     JR NZ, .flipOff
     
     ; Show sprite
-    CALL HideJetSprite
+    CALL HideFredSprite
     RET
 .flipOff
     ; Hide sprite
-    CALL ShowJetSprite
+    CALL ShowFredSprite
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      ShowJetSprite                       ;
+;                      ShowFredSprite                       ;
 ;----------------------------------------------------------;
-ShowJetSprite
+ShowFredSprite
 
     LD A, SPR_STATE_SHOW
     LD (sprState), A
 
     LD B, _SPR_ATTR3_SHOW_EXT
-    CALL _ShowOrHideJetSprite
+    CALL _ShowOrHideFredSprite
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      HideJetSprite                       ;
+;                      HideFredSprite                       ;
 ;----------------------------------------------------------;
-HideJetSprite
+HideFredSprite
 
     LD A, SPR_STATE_HIDE
     LD (sprState), A
 
     LD B, _SPR_ATTR3_HIDE_EXT
-    CALL _ShowOrHideJetSprite
+    CALL _ShowOrHideFredSprite
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 ChangeJetSpriteOnFlyDown                 ;
+;                 ChangeFredSpriteOnFlyDown                 ;
 ;----------------------------------------------------------;
-ChangeJetSpriteOnFlyDown
+ChangeFredSpriteOnFlyDown
 
     ; Change animation only if Fred is flying
     LD A, (jt.jetAir)
@@ -295,14 +295,14 @@ ChangeJetSpriteOnFlyDown
 
     ; Switch to flaying down animation
     LD A, SDB_FLYD
-    CALL ChangeJetSpritePattern
+    CALL ChangeFredSpritePattern
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                ChangeJetSpriteOnFlyUp                    ;
+;                ChangeFredSpriteOnFlyUp                    ;
 ;----------------------------------------------------------;
-ChangeJetSpriteOnFlyUp
+ChangeFredSpriteOnFlyUp
 
     ; Change animation only if Fred is flying.
     LD A, (jt.jetAir)
@@ -311,7 +311,7 @@ ChangeJetSpriteOnFlyUp
 
     ; Switch to flaying animation.
     LD A, SDB_FLY
-    CALL ChangeJetSpritePattern
+    CALL ChangeFredSpritePattern
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
@@ -321,11 +321,11 @@ ChangeJetSpriteOnFlyUp
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                  _ShowOrHideJetSprite                    ;
+;                  _ShowOrHideFredSprite                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - B: _SPR_ATTR3_SHOW_EXT or _SPR_ATTR3_HIDE_EXT
-_ShowOrHideJetSprite
+_ShowOrHideFredSprite
 
     dbs.SetupArrays2Bank
 

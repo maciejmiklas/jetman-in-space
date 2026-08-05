@@ -27,7 +27,7 @@ LoadMenuLevelSelect
     LD A, ms.MS_MENU_LEVEL_D14
     CALL ms.SetMainState
 
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
     CALL ti.CleanAllTiles
     CALL bm.HideImageFade
 
@@ -68,7 +68,7 @@ LoadMenuLevelSelect
 
     ; ##########################################
     ; Setup Fred sprite
-    CALL jt.SetJetStateInactive
+    CALL jt.SetFredStateInactive
 
     ; Fred is facing left
     XOR A
@@ -76,10 +76,10 @@ LoadMenuLevelSelect
     LD (gid.jetDirection), A
 
     LD A, js.SDB_HOVER
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
-    CALL _UpdateJetPos
-    CALL js.ShowJetSprite
+    CALL _UpdateFredPos
+    CALL js.ShowFredSprite
 
     ; ##########################################
     ; Music on
@@ -107,9 +107,9 @@ _ConfirmSelection
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       _UpdateJetPos                      ;
+;                       _UpdateFredPos                      ;
 ;----------------------------------------------------------;
-_UpdateJetPos
+_UpdateFredPos
 
     ; Set IX to the position in #MLS that corresponds to the currently selected level.
     dbs.SetupArrays2Bank
@@ -124,24 +124,24 @@ _UpdateJetPos
     ADD IX, DE                                  ; Now IX points to current #MLS
 
     ; ##########################################
-    ; Set X Jet position.
+    ; Set X Fred position.
     LD D, 0
     LD E, (IX + MLS.JET_X)
     LD (jpo.jetX), DE
  
-    ; Set Y Jet position.
+    ; Set Y Fred position.
     LD A, (IX + MLS.JET_Y)
     LD (jpo.jetY), A
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         _MoveJet                         ;
+;                         _MoveFred                         ;
 ;----------------------------------------------------------;
-_MoveJet
+_MoveFred
 
     LD A, js.SDB_T_KO
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     _AFX af.FX_MENU_MOVE
 
@@ -164,8 +164,8 @@ _NextLevel
     LD (currentLevel), A
 
     ; ##########################################
-    CALL _UpdateJetPos
-    CALL _MoveJet
+    CALL _UpdateFredPos
+    CALL _MoveFred
 
     RET                                         ; ## END of the function ##
 
@@ -183,8 +183,8 @@ _PreviousLevel
     LD (currentLevel), A
 
     ; ##########################################
-    CALL _UpdateJetPos
-    CALL _MoveJet
+    CALL _UpdateFredPos
+    CALL _MoveFred
 
     RET                                         ; ## END of the function ##
 

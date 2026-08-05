@@ -64,17 +64,17 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Fre
 
     ; Move right.
     LD B, JM_RIP_MOVE_L_D3
-    CALL jpo.DecJetXbyB
+    CALL jpo.DecFredXbyB
     JR .afterMove
 
 .moveLeft
     ; Move left.
     LD B, JM_RIP_MOVE_R_D3
-    CALL jpo.IncJetXbyB
+    CALL jpo.IncFredXbyB
 .afterMove
 
     LD B, JM_RIP_MOVE_Y_D4                      ; Going up
-    CALL jpo.DecJetYbyB
+    CALL jpo.DecFredYbyB
 
     ; Decrement move counter.
     DECA ripMoveCnt
@@ -169,10 +169,10 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Fre
 
     ; Play animation and set state
     LD A, jt.AIR_ENEMY_KICK_D17
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
     LD A, js.SDB_T_KF
-    CALL js.ChangeJetSpritePattern              ; Play the animation and keep checking for RiP collision.
+    CALL js.ChangeFredSpritePattern              ; Play the animation and keep checking for RiP collision.
 
 .noKicking
 
@@ -184,7 +184,7 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Fre
 
     ; Reset kick state.
     LD A, jt.AIR_FLY_D10
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
     JR NZ, .afterKickReset
 .afterKickReset
@@ -198,7 +198,7 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Fre
 
     ; We have collision!
     PUSH IX
-    CALL gc.EnemyHitsJet
+    CALL gc.EnemyHitsFred
     _AFX af.FX_EXPLODE_ENEMY_3
     CALL sc.HitEnemy1
     POP IX
@@ -295,9 +295,9 @@ EnemiesCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         JetRip                           ;
+;                         FredRip                           ;
 ;----------------------------------------------------------;
-JetRip
+FredRip
 
     LD A, (jt.jetState)
     CP jt.JETST_RIP_D103
@@ -315,7 +315,7 @@ JetRip
 
     DECA pauseAfterRipMoveCnt
 
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
 
     CALL bg.MoveBackgroundBack
     CALL bg.MoveBackgroundBack
@@ -344,14 +344,14 @@ JetRip
 
     ; Sequence is over, respawn new live.
     _ResetRipMove
-    CALL gc.RespawnJet
+    CALL gc.RespawnFred
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    MakeJetInvincible                     ;
+;                    MakeFredInvincible                     ;
 ;----------------------------------------------------------;
-MakeJetInvincible
+MakeFredInvincible
 
     ; Store invincibility duration.
     LD BC, JM_INV_D400
@@ -359,14 +359,14 @@ MakeJetInvincible
     
     ; Update state
     LD A, jt.JETST_INV_D102
-    CALL jt.SetJetState
+    CALL jt.SetFredState
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    JetInvincible                         ;
+;                    FredInvincible                         ;
 ;----------------------------------------------------------;
-JetInvincible
+FredInvincible
 
     LD A, (jt.jetState)
     CP jt.JETST_INV_D102
@@ -412,16 +412,16 @@ JetInvincible
     LD A, (mld.counter002FliFLop)
 .afterBlinkSet
 
-    CALL js.BlinkJetSprite
+    CALL js.BlinkFredSprite
     RET
 
 .endInvincibility
     ; ##########################################
     ; It is the last iteration, remove invincibility.
     LD A, jt.JETST_NORMAL_D101
-    CALL jt.SetJetState
+    CALL jt.SetFredState
 
-    CALL js.ShowJetSprite
+    CALL js.ShowFredSprite
 
     RET                                         ; ## END of the function ##
 
@@ -473,7 +473,7 @@ _CheckCollision
 
     ; Is Fred above or below the enemy?
     CP B
-    JR C, .jetmanAboveEnemy                     ; Jump if "Jet Y" < "enemy Y". Jet is above enemy (0 is at the top, 256 bottom).
+    JR C, .jetmanAboveEnemy                     ; Jump if "Fred Y" < "enemy Y". Fred is above enemy (0 is at the top, 256 bottom).
 
     ; Fred is below enemy
     SUB B

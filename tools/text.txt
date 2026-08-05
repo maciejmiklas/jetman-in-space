@@ -1,4 +1,4 @@
-Jetan in Space - a brand-new ZX Spectrum Next game, crafted in Assembly with over 200 music tracks.
+Fredan in Space - a brand-new ZX Spectrum Next game, crafted in Assembly with over 200 music tracks.
 
 The game runs in full 320×256 resolution. The blinking red border shows how much space a frame would have taken.
 

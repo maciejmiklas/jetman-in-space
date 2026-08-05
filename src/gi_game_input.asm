@@ -52,12 +52,12 @@
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    JetMovementInput                      ;
+;                    FredMovementInput                      ;
 ;----------------------------------------------------------;
 ; Options are active durign pause, movement is not.
 ; Input:
 ; - A: number of movement steps
-JetMovementInput
+FredMovementInput
 
     LD (gid.moveDistance), A
 

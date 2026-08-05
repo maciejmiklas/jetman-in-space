@@ -61,9 +61,9 @@ BAR_ICON_PAL_H00       = $00
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                    _JetpackTempDown                      ;
+;                    _FredpackTempDown                      ;
 ;----------------------------------------------------------;
-    MACRO _JetpackTempDown
+    MACRO _FredpackTempDown
 
     ; Exit if jetpack is cold
     LD A, (jetTempLevel)
@@ -100,7 +100,7 @@ BAR_ICON_PAL_H00       = $00
     LD A, jt.JETST_NORMAL_D101
     LD (jt.jetState), A
 
-    CALL gc.JetpackTempNormal
+    CALL gc.FredpackTempNormal
 .afterNormTempCheck
 
     CALL _UpdateUiHeatBar
@@ -109,9 +109,9 @@ BAR_ICON_PAL_H00       = $00
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                     _JetpackTempUp                       ;
+;                     _FredpackTempUp                       ;
 ;----------------------------------------------------------;
-    MACRO _JetpackTempUp
+    MACRO _FredpackTempUp
 
     ; Check if Kurabura has overheated already.
     LD A, (jetTempLevel)
@@ -159,7 +159,7 @@ BAR_ICON_PAL_H00       = $00
 
     ; Kurabura has overhated.
     LD A, jt.JETST_OVERHEAT_D104
-    CALL jt.SetJetState
+    CALL jt.SetFredState
     LD (jt.jetState), A
 
     _AFX af.FX_JET_OVERHEAT
@@ -178,10 +178,10 @@ BAR_ICON_PAL_H00       = $00
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                  AnimateJetpackOverheat                  ;
+;                  AnimateFredpackOverheat                  ;
 ;----------------------------------------------------------;
 ; Replace last two tiles in heat bar for blinking effect: _BAR_RED_A1_SPR_D180,_BAR_RED_A2_SPR_D181 -> _BAR_RED_B1_SPR_D188,_BAR_RED_B2_SPR_D189
-AnimateJetpackOverheat
+AnimateFredpackOverheat
 
     ; Animate only when overheated, and Fred slows down.
     LD A, (jt.jetState)
@@ -223,9 +223,9 @@ AnimateJetpackOverheat
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  ResetJetpackOverheating                 ;
+;                  ResetFredpackOverheating                 ;
 ;----------------------------------------------------------;
-ResetJetpackOverheating
+ResetFredpackOverheating
 
     XOR A
     LD (jetHeatCnt), A
@@ -239,9 +239,9 @@ ResetJetpackOverheating
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 UpdateJetpackOverheating                 ;
+;                 UpdateFredpackOverheating                 ;
 ;----------------------------------------------------------;
-UpdateJetpackOverheating
+UpdateFredpackOverheating
 
     ; Increase the overheating timer if Fred is flying.
     LD A, (jt.jetAir)
@@ -249,7 +249,7 @@ UpdateJetpackOverheating
     JR Z, .afterFlaying
 
     ; Fred is flying
-    _JetpackTempUp
+    _FredpackTempUp
     RET
 .afterFlaying
 
@@ -260,14 +260,14 @@ UpdateJetpackOverheating
     RET Z
     
     ; Fred is walking.
-    _JetpackTempDown
+    _FredpackTempDown
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   JetpackOverheatFx                      ;
+;                   FredpackOverheatFx                      ;
 ;----------------------------------------------------------;
-JetpackOverheatFx
+FredpackOverheatFx
 
     LD A, (jt.jetState)
     CP jt.JETST_OVERHEAT_D104

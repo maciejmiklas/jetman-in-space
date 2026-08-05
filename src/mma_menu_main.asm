@@ -53,9 +53,9 @@ LoadMainMenu
 ;----------------------------------------------------------;
 SwitchToMainMenu
 
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
     CALL ar.LoadMenuSprites
-    CALL js.InitJetSprite
+    CALL js.InitFredSprite
     CALL ti.CleanAllTiles
     CALL ar.LoadMenuTilemapSprites
     
@@ -103,7 +103,7 @@ SwitchToMainMenu
 
     ; ##########################################
     ; Setup Fred sprite
-    CALL jt.SetJetStateInactive
+    CALL jt.SetFredStateInactive
 
     ; Fred is facing left
     XOR A
@@ -111,14 +111,14 @@ SwitchToMainMenu
     LD (gid.jetDirection), A
 
     LD A, js.SDB_HOVER
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     ; ##########################################
     CALL _LoadStaticMenuText
     CALL _SetIXToActiveMenu
-    CALL _UpdateJetPostion
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.ShowJetSprite
+    CALL _UpdateFredPostion
+    CALL js.UpdateFredSpritePositionRotation
+    CALL js.ShowFredSprite
 
     ; ##########################################
     ; Music on
@@ -290,28 +290,28 @@ _SetIXToActiveMenu
 _UpdateSelection
 
     CALL _SetIXToActiveMenu
-    CALL _UpdateJetPostion
+    CALL _UpdateFredPostion
 
     LD A, js.SDB_T_KO
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     _AFX af.FX_MENU_MOVE
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  _UpdateJetPostion                       ;
+;                  _UpdateFredPostion                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to currently selected #MENU
-_UpdateJetPostion
+_UpdateFredPostion
 
-    ; Set X Jet position.
+    ; Set X Fred position.
     LD D, 0
     LD E, (IX + MENU.JET_X)
     LD (jpo.jetX), DE
  
-    ; Set Y Jet position.
+    ; Set Y Fred position.
     LD A, (IX + MENU.JET_Y)
     LD (jpo.jetY), A
 
@@ -515,7 +515,7 @@ _SetupDifficulty
     CALL gc.DifficultyChange
 
     LD A, js.SDB_T_KO
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     LD A, (jt.difLevel)
     CP jt.DIF_EASY_D1

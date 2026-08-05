@@ -242,7 +242,7 @@ PrintScore
     INC A
     LD (nextExtraLive), A
 
-    CALL gc.JetExtraLife
+    CALL gc.FredExtraLife
 
 .end
     ENDM                                        ; ## END of the macro ##

@@ -43,14 +43,14 @@ ChangeVisibility
 .store
     LD (visibilityLimit), A
 
-    CALL UpdateVisibilityOnJetMove
+    CALL UpdateVisibilityOnFredMove
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                UpdateVisibilityOnJetMove                 ;
+;                UpdateVisibilityOnFredMove                 ;
 ;----------------------------------------------------------;
-UpdateVisibilityOnJetMove
+UpdateVisibilityOnFredMove
 
     LD A, (visibilityLimit)
     CP VISIBILITY_LIMIT_OFF
@@ -145,11 +145,11 @@ UpdateVisibilityOnJetMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    LimitJetVisibility                    ;
+;                    LimitFredVisibility                    ;
 ;----------------------------------------------------------;
 ; Imput:
 ; - A: VISIBILITY_LIMIT_XXX
-LimitJetVisibility
+LimitFredVisibility
 
     PUSH AF
     LD A, (jt.difLevel)
@@ -161,14 +161,14 @@ LimitJetVisibility
 .onHard
     POP AF
     LD (visibilityLimitDest), A
-    CALL UpdateVisibilityOnJetMove
+    CALL UpdateVisibilityOnFredMove
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                LimitJetVisibilityOffNow                  ;
+;                LimitFredVisibilityOffNow                  ;
 ;----------------------------------------------------------;
-LimitJetVisibilityOffNow
+LimitFredVisibilityOffNow
 
     LD A, VISIBILITY_LIMIT_OFF
     LD (visibilityLimitDest), A
@@ -179,9 +179,9 @@ LimitJetVisibilityOffNow
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  LimitJetVisibilityOff                   ;
+;                  LimitFredVisibilityOff                   ;
 ;----------------------------------------------------------;
-LimitJetVisibilityOff
+LimitFredVisibilityOff
 
     LD A, VISIBILITY_LIMIT_OFF
     LD (visibilityLimitDest), A
