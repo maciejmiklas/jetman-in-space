@@ -7,11 +7,43 @@
 ;----------------------------------------------------------;
     MODULE jpo
 
+JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+
 ; Jetman sprite consists of two spires, each 16x16px. Coordinates relate to the left top corner of the upper sprite. 
 ; For example, corner positions to display the whole spirit are as follows: (X,Y) given by (0,0) would display a complete sprite in the 
 ; left corner. The most right position on X is 320-16, and the bottom on Y is 256 - 32.
 jetX                    DW 0                    ; 0-320px
 jetY                    DB 0                    ; 0-256px
+
+respawnX                DB 0
+
+;----------------------------------------------------------;
+;                SetupJetRespawnPosition                   ;
+;----------------------------------------------------------;
+; Input:
+; - A: respawn X
+SetupJetRespawnPosition
+
+    LD (respawnX), A
+    CALL SetJetRespawnPosition
+
+    RET                                         ; ## END of the function ##
+
+;----------------------------------------------------------;
+;                 SetJetRespawnPosition                    ;
+;----------------------------------------------------------;
+SetJetRespawnPosition
+
+    ; Set respawn coordinates.
+    LD A, (respawnX)
+    LD C, A
+    LD B, 0
+    LD (jpo.jetX), BC
+
+    LD A, JM_RESPAWN_Y_D217
+    LD (jpo.jetY), A
+
+    RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
 ;                           IncJetX                        ;
@@ -31,7 +63,7 @@ IncJetX
     JR C, .lessThanMaxX
     LD BC, 1                                    ; Jetman is above 315 -> set to 1.
 .lessThanMaxX
-    LD (jetX), BC                           ; Update new X position.
+    LD (jetX), BC                               ; Update new X position.
 
     CALL gc.JetMoves
 

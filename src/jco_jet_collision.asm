@@ -43,7 +43,7 @@ PICK_MARGX_D8           = 8
 PICK_MARGY_D16          = 16
 
 ; Invincibility
-JM_INV_D400             = 400                   ; Number of loops to keep Jetman invincible.
+JM_INV_D400             = 60;400                   ; Number of loops to keep Jetman invincible.
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -331,6 +331,9 @@ JetRip
     JR NZ, .notAfterRipEffect
     _ResetAfterRipEffectTickCnt
 
+    dbs.SetupRocketBank
+    CALL roa.ResetAndDisableRocket
+    
     CALL bp.CurrentPalBrightnessDown
     CALL ti.TilemapPaletteBrightnessDown
 .notAfterRipEffect

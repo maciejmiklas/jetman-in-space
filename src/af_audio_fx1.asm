@@ -230,29 +230,69 @@ afxNseMix
 ;                        AfxStop                           ;
 ;----------------------------------------------------------;
 ; Stop all channels immediately.
-; Clobbers: HL, B
 AfxStop
 
+    ; 1) Mark channels as free (your existing code)
     LD   HL, afxChDesc
     LD   B, AFX_CH_DESC_COUNT
 
 .stopLoop
-    XOR  A
-    LD   (HL), A                            ; current addr LSB = 0 (optional)
-    INC  HL
-    LD   (HL), A                            ; current addr MSB = 0 → free
+    XOR A
+    LD (HL), A                            ; current addr LSB = 0
+    INC HL
+    LD (HL), A                            ; current addr MSB = 0 → free
 
     ; skip rest of descriptor (6 bytes)
-    INC  HL
-    INC  HL
-    INC  HL
-    INC  HL
-    INC  HL
-    INC  HL
+    INC HL
+    INC HL
+    INC HL
+    INC HL
+    INC HL
+    INC HL
 
     DJNZ .stopLoop
 
-    RET                                         ; ## END of the function ##
+    ; 2) Hard‑mute AY-1
+
+    ; select AY-1
+    LD A, _GL_REG_SOUND_AY1
+    LD BC, _GL_REG_SOUND_HFFFD
+    OUT (C), A
+
+    ; H/L = $FF/$BF as in AfxFrame/_AfxInit
+    LD HL, $FFBF
+
+    ; --- set mixer (reg 7) to disable tone+noise on all channels ---
+    LD A, 7
+    LD B, H
+    OUT (C), A          ; select reg 7
+    LD B, L
+    LD A, %00111000     ; bits 0–2=1 -> tone off; bits 3–5=1 -> noise off
+    OUT (C), A
+
+    ; --- set volumes (regs 8,9,10) to 0 ---
+    LD A, 8
+    LD B, H
+    OUT (C), A          ; select reg 8
+    LD B, L
+    XOR A               ; A = 0
+    OUT (C), A          ; vol A = 0
+
+    LD A, 9
+    LD B, H
+    OUT (C), A          ; select reg 9
+    LD B, L
+    XOR A
+    OUT (C), A          ; vol B = 0
+
+    LD A, 10
+    LD B, H
+    OUT (C), A          ; select reg 10
+    LD B, L
+    XOR A
+    OUT (C), A          ; vol C = 0
+
+    RET
 
 ;----------------------------------------------------------;
 ;                        AfxPlay                           ;

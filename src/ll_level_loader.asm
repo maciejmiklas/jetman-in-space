@@ -185,7 +185,10 @@ LoadCurrentLevel
     dbs.SetupRocketBank
     LD HL, (IX + LL.ROC_DATA)
     LD A, (IX + LL.ROC_X)
+    PUSH AF
     CALL roa.SetupRocket
+    POP AF
+    CALL jpo.SetupJetRespawnPosition
     POP IX
 
     ; ##########################################

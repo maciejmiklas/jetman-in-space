@@ -7,9 +7,6 @@
 ;----------------------------------------------------------;
     MODULE gc
 
-; Respawn location.
-JM_RESPAWN_X_D100       = 100
-JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
 
 FUEL_THIEF_ACTIVE_LEV   = 4
 
@@ -170,6 +167,9 @@ SetupSystem
     IFDEF DEMO_MODE
 DemoOver
 
+    dbs.SetupCodeMusicBank
+    CALL aml.MusicOff
+
     CALL bm.HideImageFadeSlow
     CALL _HideGame
 
@@ -178,6 +178,7 @@ DemoOver
 
     RET                                         ; ## END of the function ##
     ENDIF
+
 ;----------------------------------------------------------;
 ;                     ExitToMainMenu                       ;
 ;----------------------------------------------------------;
@@ -731,14 +732,7 @@ RespawnJet
 .keepPlaying
 
     CALL js.InitJetSprite
-
-    ; Set respawn coordinates.
-    LD BC, JM_RESPAWN_X_D100
-    LD (jpo.jetX), BC
-
-    LD A, JM_RESPAWN_Y_D217
-    LD (jpo.jetY), A
-
+    CALL jpo.SetJetRespawnPosition
     CALL jt.SetJetStateRespawn
     CALL jco.MakeJetInvincible
 
