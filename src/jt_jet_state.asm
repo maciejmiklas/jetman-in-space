@@ -32,7 +32,7 @@ jetGnd                  DB GND_STAND_D53
 JETST_NORMAL_D101       = 101                   ; Fred is alive, could be flying (#jetAir != JT_STATE_INACTIVE_D0) or walking (#jetGnd != JT_STATE_INACTIVE_D0).
 JETST_INV_D102          = 102                   ; Fred is invincible.
 JETST_RIP_D103          = 103                   ; Fred got hit by enemy.
-JETST_OVERHEAT_D104     = 104                   ; Kurabura is overheating, and Fred flays slowly.
+JETST_OVERHEAT_D104     = 104                   ; Jetpack is overheating, and Fred flays slowly.
 
 jetState                DB JETST_NORMAL_D101         ; Game start, Fred in the air.
 

@@ -3,19 +3,19 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                     Kurabura Overheating                  ;
+;                     Jetpack Overheating                  ;
 ;----------------------------------------------------------;
     MODULE jo 
-; During the flight, the Kurabura heats up. When it overheats, the Fred can only fly slowly. To cool down the Kurabura,
+; During the flight, the Jetpack heats up. When it overheats, the Fred can only fly slowly. To cool down the Jetpack,
 ; the Fred needs to land.
 
-; Kurabura temperature and the temp bar in UI increase in two steps. First, when Fred is flying, the #jetHeatCnt will increase.
+; Jetpack temperature and the temp bar in UI increase in two steps. First, when Fred is flying, the #jetHeatCnt will increase.
 ; When it reaches JM_HEAT_CNT_D60, the jetpack temperature will increase (#jetTempLevel) until it reaches MAX_TEMP. Then, it will update Fred
 ; state to #JETST_OVERHEAT_D104 and slow flying down. 
 ; When Fred lands, the #jetCoolCnt decreases. When it reaches JM_COOL_CNT_D15, the jetpack temperature decreases,
 ; until it reaches #TEMP_NORM_D4. At this point, the Fred state changes to #JETST_NORMAL_D101, and Fred can fly at a full speed.
 
-; Kurabura heats up/cools down during the flight
+; Jetpack heats up/cools down during the flight
 jetHeatCnt              DB 0                    ; Runs from 0 to JM_HEAT_CNT_D60
 jetCoolCnt              DB 0                    ; Runs from 0 to JM_COOL_CNT_D15
 
@@ -25,9 +25,9 @@ TEMP_MAX_D6             = 6                     ; The heat bar in UI (H) has 5 e
 TEMP_RED_D4             = 4
 TEMP_MIN_D0             = 0
 
-TEMP_NORM_D4            = 4                     ; Fred can move at full speed when Kurabura cools down, and this level is reached.
+TEMP_NORM_D4            = 4                     ; Fred can move at full speed when Jetpack cools down, and this level is reached.
 
-; The Kurabura heating up / cooling down thresholds.
+; The Jetpack heating up / cooling down thresholds.
 JM_HEAT_RED_CNT_D100    = 100
 JM_HEAT_CNT_D60         = 60
 JM_COOL_CNT_D15         = 15
@@ -91,12 +91,12 @@ BAR_ICON_PAL_H00       = $00
     JR NZ, .afterNormTempCheck
 
     ; #########################################
-    ; Is Kurabura going to temp normal from overheated?
+    ; Is Jetpack going to temp normal from overheated?
     LD A, (jt.jetState)
     CP jt.JETST_OVERHEAT_D104
     JR NZ, .afterNormTempCheck
 
-    ; Kurabura is coll again
+    ; Jetpack is coll again
     LD A, jt.JETST_NORMAL_D101
     LD (jt.jetState), A
 
@@ -113,7 +113,7 @@ BAR_ICON_PAL_H00       = $00
 ;----------------------------------------------------------;
     MACRO _FredpackTempUp
 
-    ; Check if Kurabura has overheated already.
+    ; Check if Jetpack has overheated already.
     LD A, (jetTempLevel)
     CP TEMP_MAX_D6
     JR Z, .end
@@ -157,7 +157,7 @@ BAR_ICON_PAL_H00       = $00
     CP TEMP_MAX_D6
     JR NZ, .afterTempCheck
 
-    ; Kurabura has overhated.
+    ; Jetpack has overhated.
     LD A, jt.JETST_OVERHEAT_D104
     CALL jt.SetFredState
     LD (jt.jetState), A

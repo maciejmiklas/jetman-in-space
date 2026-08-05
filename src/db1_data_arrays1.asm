@@ -78,7 +78,7 @@ tilePaletteStars10Bin
 ;  0:   Text
 ;  1:   Ground and brown platforms
 ;  2:   Trees
-;  3:   Kurabura temp
+;  3:   Jetpack temp
 ;  4-5: Colored platforms
 ;  6:   Rocket progress bar
 
@@ -126,7 +126,7 @@ TILE_PAL_SIZE_1        = $ - tilePalette1Bin
 ; 0: Text
 ; 1: Tilemap
 ; 2: Game bar
-; 3: Kurabura temp
+; 3: Jetpack temp
 ; 6: Rocket progress bar
 /*
   $1C7    $0    $5   $27   $2F   $6F   $B7  $13F   $10   $13   $15   $17   $18   $1B   $1D   $1F
@@ -171,7 +171,7 @@ TILE_PAL_SIZE_2        = $ - tilePalette2Bin
 ;  0:   Text
 ;  1:   Ground and brown platforms
 ;  2:   Trees
-;  3:   Kurabura overheat
+;  3:   Jetpack overheat
 ;  4-5: Colored platforms
 ;  6:   Rocket progress bar
 ;  7-8: Tilemap for levels 8
@@ -222,7 +222,7 @@ TILE_PAL_SIZE_3        = $ - tilePalette3Bin
 ;  0:   Text
 ;  1:   Ground
 ;  2:   Bridge
-;  3:   Kurabura temp
+;  3:   Jetpack temp
 ;  4:   Jumping robots
 ;  5:   empty
 ;  6:   Rocket progress bar
@@ -271,7 +271,7 @@ TILE_PAL_SIZE_4        = $ - tilePalette4Bin
 ;  0:   Text
 ;  1:   ?
 ;  2:   ?
-;  3:   Kurabura temp
+;  3:   Jetpack temp
 ;  4-5: Colored platforms
 ;  6:   Rocket progress bar
 
@@ -319,7 +319,7 @@ TILE_PAL_SIZE_5        = $ - tilePalette5Bin
 ;  0:   Text
 ;  1:   ?
 ;  2:   ?
-;  3:   Kurabura temp
+;  3:   Jetpack temp
 ;  4-5: Colored platforms
 ;  6:   Rocket progress bar
 
