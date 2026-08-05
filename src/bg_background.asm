@@ -10,27 +10,27 @@
 bgOffset                DB 0                    ; Offset of the background image.
 GB_OFFSET_D6            = _GND_THICK_D8-2
 
-GB_MOVE_SLOW_D2         = 2                     ; Slows down background movement (when Jetman moves).
+GB_MOVE_SLOW_D2         = 2                     ; Slows down background movement (when Fred moves).
 
 ;----------------------------------------------------------;
-;             UpdateBackgroundOnJetmanMove                 ;
+;             UpdateBackgroundOnFredMove                 ;
 ;----------------------------------------------------------;
 ; The background starts at the bottom of the screen with offset 8. That is the height of the ground. The background should begin where
 ; the ground ends (2 pixels overlap). From the bottom of the screen, there is ground, 8 pixels high, and the background follows after it.
-; When Jetman moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset.
-; It starts with 8 (Jetman stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
-UpdateBackgroundOnJetmanMove
+; When Fred moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset.
+; It starts with 8 (Fred stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
+UpdateBackgroundOnFredMove
 
-    ; Divide the Jetman's position by GB_MOVE_SLOW_D2 to slow down the movement of the background.
+    ; Divide the Fred's position by GB_MOVE_SLOW_D2 to slow down the movement of the background.
     LD A, (jpo.jetY)
     LD C, A
     LD D, GB_MOVE_SLOW_D2
     CALL ut.CdivD
     LD B, C                                     ; B contains #jetY/GB_MOVE_SLOW_D2.
 
-    ; Take Jemtan's ground position and subtract it from its current position (half of it). If Jetman is on the ground, it should be 0.
+    ; Take Jemtan's ground position and subtract it from its current position (half of it). If Fred is on the ground, it should be 0.
     LD A, _GSC_JET_GND_D217/GB_MOVE_SLOW_D2
-    SUB B                                       ; A contains _GSC_JET_GND_D217 - #jetY. It's 0 when Jetman stands on the ground.
+    SUB B                                       ; A contains _GSC_JET_GND_D217 - #jetY. It's 0 when Fred stands on the ground.
     LD B, A
     LD (bgOffset), A
 
@@ -82,7 +82,7 @@ HideBackgroundBehindHorizon
 
     CALL _GetGroundImageLine
 
-    ; Do not remove the line if the Jetman is on the ground (offset is 255).
+    ; Do not remove the line if the Fred is on the ground (offset is 255).
     CP _BM_YRES_D255
     RET Z
 
@@ -99,7 +99,7 @@ ShowBackgroundAboveHorizon
 
     CALL _GetGroundImageLine
 
-    ; Do not remove the line if the Jetman is on the ground (offset is 255).
+    ; Do not remove the line if the Fred is on the ground (offset is 255).
     CP _BM_YRES_D255
     RET Z
 

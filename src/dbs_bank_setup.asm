@@ -9,7 +9,7 @@
 
 ; We hold two background images in RAM: Image A and Image B. Image A is the original image read from the file. Image B is the image being 
 ; displayed. It was set using: "NEXTREG _DC_REG_L2_BANK_H12, BM_16KBANK_D9" (16K bank 9 = 8k bank 18).
-; This is necessary because Image B moves with Jetman and hides behind the horizon. We replace image lines with black. Once Jetman moves in 
+; This is necessary because Image B moves with Fred and hides behind the horizon. We replace image lines with black. Once Fred moves in 
 ; the opposite direction, we have to copy the original image line from A to B.
 
 ; Bank organization:

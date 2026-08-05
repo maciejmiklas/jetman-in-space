@@ -107,7 +107,7 @@
     JP NZ, .end
 
     ; ##########################################
-    ; Process the joystick direction movement to control Jetman in the game. Easy moves 1px, normal 1.5px, hard 2px.
+    ; Process the joystick direction movement to control Fred in the game. Easy moves 1px, normal 1.5px, hard 2px.
 
     ; Do not speed up animations, like falling from the platform.
     LD A, (gid.joyOffCnt)
@@ -122,7 +122,7 @@
     JR .calltMovementInput
 .notHard
 
-    ; A bit faster movement speed for Jetman on normal/easy (every second frame).
+    ; A bit faster movement speed for Fred on normal/easy (every second frame).
     LD A, (mld.counter000FliFLop)
     CP _GC_FLIP_ON_D1
     JR Z, .moveOnePixel
@@ -132,20 +132,20 @@
     LD A, gid.MOVE_1PX
 .calltMovementInput
 
-    CALL gi.JetMovementInput
+    CALL gi.FredMovementInput
 
     ; ##########################################
     CALL gi.GameOptionsInput
 
-    CALL jco.JetRip
+    CALL jco.FredRip
     CALL jw.MoveShots
     CALL jw.FireDelayCounter
-    gc.JetmanEnemiesCollision
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.AnimateJetSprite
+    gc.FredEnemiesCollision
+    CALL js.UpdateFredSpritePositionRotation
+    CALL js.AnimateFredSprite
 
     dbs.SetupArrays2Bank
-    CALL pi.CheckJetmanPickupCollision
+    CALL pi.CheckFredPickupCollision
 
     dbs.SetupRocketBank
     CALL roa.CheckHitTank
@@ -156,7 +156,7 @@
     CALL enu.ThiefWeaponHit
 
     CALL dbs.SetupFollowingEnemyBank
-    CALL fe.UpdateFollowingJetman
+    CALL fe.UpdateFollowingFred
 
     CALL enc.CheckEnemyWeaponHit
 
@@ -170,7 +170,7 @@
     CP pl.PL_BUMP_JOY_DEC_D1+1
     JR C, .endJoyOn                             ; Return on the last off loop - this one is used to reset status and not to animate
 
-    CALL pl.MoveJetOnPlatform
+    CALL pl.MoveFredOnPlatform
 .endJoyOn
 
 .end
@@ -193,8 +193,8 @@
     JR .end
 
 .executeMainMenu
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.AnimateJetSprite
+    CALL js.UpdateFredSpritePositionRotation
+    CALL js.AnimateFredSprite
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -309,7 +309,7 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL jco.JetInvincible
+    CALL jco.FredInvincible
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -352,7 +352,7 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL jo.UpdateJetpackOverheating
+    CALL jo.UpdateFredpackOverheating
 
     dbs.SetupRocketBank
     CALL roa.RocketElementFallsForAssembly
@@ -478,7 +478,7 @@
     CALL roa.AnimateTankExplode
     CALL roa.BlinkRocketElementForPickup
 
-    CALL jo.AnimateJetpackOverheat
+    CALL jo.AnimateFredpackOverheat
 
     dbs.SetupTileAnimationBank
     CALL ta.NextTileAnimationFrame 
@@ -725,12 +725,12 @@
     JR NZ, .end
 
     ; ##########################################
-    CALL jo.JetpackOverheatFx
+    CALL jo.FredpackOverheatFx
     CALL gc.PlayFuelThiefFx
 
     LD A, (jt.jetState)
     CP jt.JETST_RIP_D103
-    CALL NZ, js.ShowJetSprite
+    CALL NZ, js.ShowFredSprite
 
     ; ##########################################
     dbs.SetupRocketBank

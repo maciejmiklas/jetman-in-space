@@ -18,8 +18,8 @@ LOF                     = 7                     ; Menu entry offset from the lef
 TILE_OFFSET             DW                      ; Tile offset.
 TEXT_POINT              DW                      ; Text pointer.
 TEXT_SIZE               DB                      ; Length of menu text.
-JET_X                   DB                      ; X postion of Jetman pointing to active element.
-JET_Y                   DB                      ; Y postion of Jetman pointing to active element.
+JET_X                   DB                      ; X postion of Fred pointing to active element.
+JET_Y                   DB                      ; Y postion of Fred pointing to active element.
     ENDS
 
 menuPos                 DB MENU_EL_MIN
@@ -53,9 +53,9 @@ LoadMainMenu
 ;----------------------------------------------------------;
 SwitchToMainMenu
 
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
     CALL ar.LoadMenuSprites
-    CALL js.InitJetSprite
+    CALL js.InitFredSprite
     CALL ti.CleanAllTiles
     CALL ar.LoadMenuTilemapSprites
     
@@ -102,23 +102,23 @@ SwitchToMainMenu
     CALL ti.PrintText
 
     ; ##########################################
-    ; Setup Jetman sprite
-    CALL jt.SetJetStateInactive
+    ; Setup Fred sprite
+    CALL jt.SetFredStateInactive
 
-    ; Jetman is facing left
+    ; Fred is facing left
     XOR A
     SET gid.MOVE_LEFT_BIT_D0, A
     LD (gid.jetDirection), A
 
     LD A, js.SDB_HOVER
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     ; ##########################################
     CALL _LoadStaticMenuText
     CALL _SetIXToActiveMenu
-    CALL _UpdateJetPostion
-    CALL js.UpdateJetSpritePositionRotation
-    CALL js.ShowJetSprite
+    CALL _UpdateFredPostion
+    CALL js.UpdateFredSpritePositionRotation
+    CALL js.ShowFredSprite
 
     ; ##########################################
     ; Music on
@@ -290,28 +290,28 @@ _SetIXToActiveMenu
 _UpdateSelection
 
     CALL _SetIXToActiveMenu
-    CALL _UpdateJetPostion
+    CALL _UpdateFredPostion
 
     LD A, js.SDB_T_KO
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     _AFX af.FX_MENU_MOVE
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  _UpdateJetPostion                       ;
+;                  _UpdateFredPostion                       ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - IX: Pointer to currently selected #MENU
-_UpdateJetPostion
+_UpdateFredPostion
 
-    ; Set X Jet position.
+    ; Set X Fred position.
     LD D, 0
     LD E, (IX + MENU.JET_X)
     LD (jpo.jetX), DE
  
-    ; Set Y Jet position.
+    ; Set Y Fred position.
     LD A, (IX + MENU.JET_Y)
     LD (jpo.jetY), A
 
@@ -515,7 +515,7 @@ _SetupDifficulty
     CALL gc.DifficultyChange
 
     LD A, js.SDB_T_KO
-    CALL js.ChangeJetSpritePattern
+    CALL js.ChangeFredSpritePattern
 
     LD A, (jt.difLevel)
     CP jt.DIF_EASY_D1

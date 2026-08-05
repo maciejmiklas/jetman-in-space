@@ -7,8 +7,6 @@
 > Click on the image below to play the video 
 
 [![Youtube](/img/youtube.png)](https://youtu.be/xZHrYfIvjUI)
-
-<img src="/img/main.png" width="640px"/>
    
 <img src="/img/intro.png" width="640px"/>
    

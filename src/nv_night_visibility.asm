@@ -43,14 +43,14 @@ ChangeVisibility
 .store
     LD (visibilityLimit), A
 
-    CALL UpdateVisibilityOnJetMove
+    CALL UpdateVisibilityOnFredMove
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                UpdateVisibilityOnJetMove                 ;
+;                UpdateVisibilityOnFredMove                 ;
 ;----------------------------------------------------------;
-UpdateVisibilityOnJetMove
+UpdateVisibilityOnFredMove
 
     LD A, (visibilityLimit)
     CP VISIBILITY_LIMIT_OFF
@@ -60,7 +60,7 @@ UpdateVisibilityOnJetMove
     ; Store horizontal cipping into DE, D will contain the x-start, E the x-end.
 
     ; X clipping uses only half of the resolution, because we run in 320 mode.
-    ; Calculate for horizontal clipping the X-start as D, and the X-end as E. First, store half of the Jetman's X position in L. 
+    ; Calculate for horizontal clipping the X-start as D, and the X-end as E. First, store half of the Fred's X position in L. 
     ; Afterwards, use L to calculate D and E, including overflows. 
     LD HL, (jpo.jetX)
     LD C, 2
@@ -145,11 +145,11 @@ UpdateVisibilityOnJetMove
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    LimitJetVisibility                    ;
+;                    LimitFredVisibility                    ;
 ;----------------------------------------------------------;
 ; Imput:
 ; - A: VISIBILITY_LIMIT_XXX
-LimitJetVisibility
+LimitFredVisibility
 
     PUSH AF
     LD A, (jt.difLevel)
@@ -161,14 +161,14 @@ LimitJetVisibility
 .onHard
     POP AF
     LD (visibilityLimitDest), A
-    CALL UpdateVisibilityOnJetMove
+    CALL UpdateVisibilityOnFredMove
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                LimitJetVisibilityOffNow                  ;
+;                LimitFredVisibilityOffNow                  ;
 ;----------------------------------------------------------;
-LimitJetVisibilityOffNow
+LimitFredVisibilityOffNow
 
     LD A, VISIBILITY_LIMIT_OFF
     LD (visibilityLimitDest), A
@@ -179,9 +179,9 @@ LimitJetVisibilityOffNow
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  LimitJetVisibilityOff                   ;
+;                  LimitFredVisibilityOff                   ;
 ;----------------------------------------------------------;
-LimitJetVisibilityOff
+LimitFredVisibilityOff
 
     LD A, VISIBILITY_LIMIT_OFF
     LD (visibilityLimitDest), A

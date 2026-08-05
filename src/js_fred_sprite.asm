@@ -3,22 +3,22 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                      Jetman Sprite                       ;
+;                      Fred Sprite                       ;
 ;----------------------------------------------------------;
     MODULE js
 
-SPR_ID_JET_UP           = 0                     ; ID of Jetman upper sprite
-SPR_ID_JET_LW           = 1                     ; ID of Jetman lower sprite
+SPR_ID_JET_UP           = 0                     ; ID of Fred upper sprite
+SPR_ID_JET_LW           = 1                     ; ID of Fred lower sprite
 
 ; IDs for #jetSpriteDB.
-SDB_FLY                 = 201                   ; Jetman is flaying
-SDB_FLYD                = 202                   ; Jetman is flaying down
-SDB_WALK                = 203                   ; Jetman is walking
-SDB_WALK_ST             = 204                   ; Jetman starts walking with raised feet to avoid moving over the ground and standing still
-SDB_HOVER               = 205                   ; Jetman hovers
-SDB_STAND               = 206                   ; Jetman stands in place
-SDB_JSTAND              = 207                   ; Jetman quickly stops walking
-SDB_RIP                 = 208                   ; Jetman got hit
+SDB_FLY                 = 201                   ; Fred is flaying
+SDB_FLYD                = 202                   ; Fred is flaying down
+SDB_WALK                = 203                   ; Fred is walking
+SDB_WALK_ST             = 204                   ; Fred starts walking with raised feet to avoid moving over the ground and standing still
+SDB_HOVER               = 205                   ; Fred hovers
+SDB_STAND               = 206                   ; Fred stands in place
+SDB_JSTAND              = 207                   ; Fred quickly stops walking
+SDB_RIP                 = 208                   ; Fred got hit
 
 SDB_T_WF                = 220                   ; Transition: walking -> flaying
 SDB_T_FS                = 221                   ; Transition: flaying -> standing
@@ -42,12 +42,12 @@ sprState                DB SPR_STATE_SHOW
 
 
 ;----------------------------------------------------------;
-;                      InitJetSprite                       ;
+;                      InitFredSprite                       ;
 ;----------------------------------------------------------;
-InitJetSprite
+InitFredSprite
 
     ; Setup anchor sprite (head)
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Fred's sprite for the following commands
     NEXTREG _SPR_REG_X_H35, 0                   ; Set X position
     NEXTREG _SPR_REG_Y_H36, 0                   ; Set Y position
     NEXTREG _SPR_REG_ATR2_H37, 0
@@ -71,22 +71,22 @@ InitJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;              UpdateJetSpritePositionRotation             ;
+;              UpdateFredSpritePositionRotation             ;
 ;----------------------------------------------------------;
-UpdateJetSpritePositionRotation
+UpdateFredSpritePositionRotation
 
     dbs.SetupArrays2Bank
 
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands.
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Fred's sprite for the following commands.
 
-    ; Move Jetman Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
+    ; Move Fred Sprite to the current X position, the 9-bit value requires two writes (8 bit from C + 1 bit from B)
     LD BC, (jpo.jetX)
 
-    ; Set Jetman's X postion.
+    ; Set Fred's X postion.
     LD A, C
     NEXTREG _SPR_REG_X_H35, A                   ; Set LSB from BC (X)
 
-    ; Move Jetman sprite to current Y postion, 8-bit value is simple
+    ; Move Fred sprite to current Y postion, 8-bit value is simple
     LD A, (jpo.jetY)
     NEXTREG _SPR_REG_Y_H36, A                   ; Set Y position
 
@@ -109,18 +109,18 @@ UpdateJetSpritePositionRotation
 
     NEXTREG _SPR_REG_ATR2_H37, A
 
-    ; Anchor with relative sprite (see #InitJetSprite)
+    ; Anchor with relative sprite (see #InitFredSprite)
     NEXTREG _SPR_REG_ATR4_H39, _SPR_ATR4_ANCHOR
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 ChangeJetSpritePattern                   ;
+;                 ChangeFredSpritePattern                   ;
 ;----------------------------------------------------------;
 ; Switches immediately to the given animation, breaking the currently running one.
 ; Input:
 ;   - A: ID for #jesSprites, to switch to the next animation record
-ChangeJetSpritePattern
+ChangeFredSpritePattern
 
     ; Do not change the animation if the same animation is already playing, it will restart it
     LD B, A
@@ -136,15 +136,15 @@ ChangeJetSpritePattern
     XOR A                                       ; Set A to 0
     LD (sprDBRemain), A                         ; No more bytes to process within the current DB record will cause the fast switch to the next
 
-    CALL AnimateJetSprite                       ; Update the next animation frame immediately
+    CALL AnimateFredSprite                       ; Update the next animation frame immediately
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   AnimateJetSprite                       ;
+;                   AnimateFredSprite                       ;
 ;----------------------------------------------------------;
 ; Update sprite pattern for the next animation frame
-AnimateJetSprite
+AnimateFredSprite
 
     dbs.SetupArrays2Bank
 
@@ -199,7 +199,7 @@ AnimateJetSprite
     LD (sprDBIdx), HL                           ; Database offset points to be bytes containing sprite offsets from sprite file
 .afterRecordChange
 
-    ; 2 bytes will be consumed from current DB record -> upper and lower sprite for Jetman.
+    ; 2 bytes will be consumed from current DB record -> upper and lower sprite for Fred.
     LD A, (sprDBRemain)
     ADD -SDB_FRAME_SIZE
     LD (sprDBRemain), A
@@ -218,14 +218,14 @@ AnimateJetSprite
 .afterShow
 
     ; Update upper sprite
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands.
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Fred's sprite for the following commands.
     LD A, (HL)                                  ; Store pattern number into sprite attribute
     OR B                                        ; Store visibility sprite attribute
     SET _SPR_ATTR3_EX_BIT_6, A                  ; Set extendet attribue to keep anchor/relative sprite.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     ; Update lower sprite
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands.
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Fred's sprite for the following commands.
     INC HL
     LD A, (HL)                                  ; Store pattern number into sprite attribute
     OR B                                        ; Store visibility sprite attribute
@@ -239,79 +239,79 @@ AnimateJetSprite
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     BlinkJetSprite                       ;
+;                     BlinkFredSprite                       ;
 ;----------------------------------------------------------;
 ; Input:
 ; - A: flip flop counter, ie: #counter002FliFLop
-BlinkJetSprite
+BlinkFredSprite
 
     CP _GC_FLIP_ON_D1
     JR NZ, .flipOff
     
     ; Show sprite
-    CALL HideJetSprite
+    CALL HideFredSprite
     RET
 .flipOff
     ; Hide sprite
-    CALL ShowJetSprite
+    CALL ShowFredSprite
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      ShowJetSprite                       ;
+;                      ShowFredSprite                       ;
 ;----------------------------------------------------------;
-ShowJetSprite
+ShowFredSprite
 
     LD A, SPR_STATE_SHOW
     LD (sprState), A
 
     LD B, _SPR_ATTR3_SHOW_EXT
-    CALL _ShowOrHideJetSprite
+    CALL _ShowOrHideFredSprite
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      HideJetSprite                       ;
+;                      HideFredSprite                       ;
 ;----------------------------------------------------------;
-HideJetSprite
+HideFredSprite
 
     LD A, SPR_STATE_HIDE
     LD (sprState), A
 
     LD B, _SPR_ATTR3_HIDE_EXT
-    CALL _ShowOrHideJetSprite
+    CALL _ShowOrHideFredSprite
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 ChangeJetSpriteOnFlyDown                 ;
+;                 ChangeFredSpriteOnFlyDown                 ;
 ;----------------------------------------------------------;
-ChangeJetSpriteOnFlyDown
+ChangeFredSpriteOnFlyDown
 
-    ; Change animation only if Jetman is flying
+    ; Change animation only if Fred is flying
     LD A, (jt.jetAir)
     CP jt.AIR_FLY_D10
     RET NZ
 
     ; Switch to flaying down animation
     LD A, SDB_FLYD
-    CALL ChangeJetSpritePattern
+    CALL ChangeFredSpritePattern
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                ChangeJetSpriteOnFlyUp                    ;
+;                ChangeFredSpriteOnFlyUp                    ;
 ;----------------------------------------------------------;
-ChangeJetSpriteOnFlyUp
+ChangeFredSpriteOnFlyUp
 
-    ; Change animation only if Jetman is flying.
+    ; Change animation only if Fred is flying.
     LD A, (jt.jetAir)
     CP jt.AIR_FLY_D10
     RET NZ
 
     ; Switch to flaying animation.
     LD A, SDB_FLY
-    CALL ChangeJetSpritePattern
+    CALL ChangeFredSpritePattern
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
@@ -321,11 +321,11 @@ ChangeJetSpriteOnFlyUp
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                  _ShowOrHideJetSprite                    ;
+;                  _ShowOrHideFredSprite                    ;
 ;----------------------------------------------------------;
 ; Input:
 ;  - B: _SPR_ATTR3_SHOW_EXT or _SPR_ATTR3_HIDE_EXT
-_ShowOrHideJetSprite
+_ShowOrHideFredSprite
 
     dbs.SetupArrays2Bank
 
@@ -335,13 +335,13 @@ _ShowOrHideJetSprite
     ADD HL, -SDB_FRAME_SIZE
 
     ; Update upper sprite
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Jetman's sprite for the following commands.
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_UP      ; Set the ID of the Fred's sprite for the following commands.
     LD A, (HL)                                  ; Store pattern number into Sprite Attribute.
     OR B                                        ; Add show/hide bit and ext.
     NEXTREG _SPR_REG_ATR3_H38, A
 
     ; Update lower sprite
-    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Jetman's sprite for the following commands.
+    NEXTREG _SPR_REG_NR_H34, SPR_ID_JET_LW      ; Set the ID of the Fred's sprite for the following commands.
     INC HL
     LD A, (HL)                                  ; Store pattern number into Sprite Attribute.
     OR B                                        ; Add show/hide bit and ext.

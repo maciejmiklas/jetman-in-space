@@ -58,7 +58,7 @@ _PreLoadMenu
     LD A, ms.MS_MENU_MANUAL_D12
     CALL ms.SetMainState
 
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
     CALL ti.CleanAllTiles
     CALL bm.HideImageFade
     

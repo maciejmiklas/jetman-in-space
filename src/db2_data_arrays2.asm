@@ -61,7 +61,7 @@ menuLevelEl
     mml.MLS  {/*TILE_OFFSET*/, 180/*JET_X*/, 215/*JET_Y*/}  ; Level 10
 
 ;----------------------------------------------------------;
-;                     Jetman Sprite Data                   ;
+;                     Fred Sprite Data                   ;
 ;----------------------------------------------------------;
 
 ; The animation system is based on a state machine. Its database is divided into records, each containing a list of frames to be played and 
@@ -73,48 +73,48 @@ menuLevelEl
 ;   - OFF_NX:       ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID
 ;   - SIZE:         Amount of bytes in this record
 ;   - DELAY:        Amount animation calls to skip (slows down animation)
-;   - FRAME_UP:     Offset for the upper part of the Jetman
-;   - FRAME_LW:     Offset for the lower part of the Jetman
+;   - FRAME_UP:     Offset for the upper part of the Fred
+;   - FRAME_LW:     Offset for the lower part of the Fred
 jetSpriteDB
-    ; Jetman is flaying
+    ; Fred is flaying
     DB js.SDB_FLY,      js.SDB_FLY - js.SDB_SUB,        48, 5
                                             DB 00,10, 00,11, 01,12, 01,13, 02,11, 02,12, 03,10, 03,11, 04,12, 04,13
                                             DB 05,12, 05,11, 03,10, 03,11, 04,12, 04,13, 05,10, 05,12, 03,10, 03,11
                                             DB 04,12, 04,13, 05,12, 05,10
 
-    ; Jetman is flaying down
+    ; Fred is flaying down
     DB js.SDB_FLYD,     js.SDB_FLYD - js.SDB_SUB,       48, 5
                                             DB 00,12, 00,37, 01,38, 01,37, 02,12, 02,38, 03,12, 03,37, 04,38, 04,12
                                             DB 05,38, 05,37, 03,37, 03,12, 04,38, 04,12, 05,37, 05,38, 03,37, 03,12
                                             DB 04,12, 04,37, 05,38, 05,37
 
-    ; Jetman hovers
+    ; Fred hovers
     DB js.SDB_HOVER,    js.SDB_HOVER - js.SDB_SUB,      48, 10
                                             DB 00,14, 00,15, 01,16, 01,10, 02,11, 02,12, 03,13, 03,10, 04,11, 04,12 
                                             DB 05,13, 05,14, 03,15, 03,16, 04,10, 04,11, 05,12, 05,13, 03,10, 03,11
                                             DB 04,12, 04,13, 05,10, 05,11
 
-    ; Jetman starts walking with raised feet to avoid moving over the ground and standing still
+    ; Fred starts walking with raised feet to avoid moving over the ground and standing still
     DB js.SDB_WALK_ST,  js.SDB_WALK - js.SDB_SUB,       02, 3
                                             DB 03,07
 
-    ; Jetman is walking
+    ; Fred is walking
     DB js.SDB_WALK,     js.SDB_WALK - js.SDB_SUB,       48, 3
                                             DB 03,06, 03,07, 04,08, 04,09, 05,06, 05,06, 03,08, 03,09, 04,06, 04,07
                                             DB 05,08, 05,09, 00,06, 00,07, 01,08, 01,09, 02,06, 02,07, 03,08, 03,09 
                                             DB 04,06, 04,07, 05,08, 05,09
 
-    ; Jetman stands in place
+    ; Fred stands in place
     DB js.SDB_STAND,    js.SDB_STAND - js.SDB_SUB,      46, 5
                                             DB 03,06, 03,18, 04,19, 04,18, 05,06, 05,19, 03,06, 03,18, 04,19, 04,06
                                             DB 05,19, 05,18, 00,19, 00,18, 01,06, 01,18, 02,06, 02,19, 03,18, 03,18
                                             DB 04,19, 05,06, 05,18
 
-    ; Jetman stands on the ground for a very short time
+    ; Fred stands on the ground for a very short time
     DB js.SDB_JSTAND,   js.SDB_STAND - js.SDB_SUB,      02, 3
                                             DB 03,18
 
-    ; Jetman got hit
+    ; Fred got hit
     DB js.SDB_RIP,      js.SDB_RIP - js.SDB_SUB,        08, 5 
                                             DB 00,27, 01,28, 02,15, 03,29
 
@@ -139,7 +139,7 @@ jetSpriteDB
                                             DB 03,15, 04,16, 05,27, 03,28, 04,29
 
 ;----------------------------------------------------------;
-;                      Jetman Weapon                       ;
+;                      Fred Weapon                       ;
 ;----------------------------------------------------------;
 
 ; Sprites for single shots (#shots), based on #SPR.
@@ -215,7 +215,7 @@ shotHitMargin   pl.PLAM { 10/*X_LEFT*/, 10/*X_RIGHT*/, 09/*Y_TOP*/, 02/*Y_BOTTOM
 jetHitMargin    pl.PLAM { 15/*X_LEFT*/, 07/*X_RIGHT*/, 23/*Y_TOP*/, 10/*Y_BOTTOM*/}
 bounceMargin    pl.PLAM { 18/*X_LEFT*/, 13/*X_RIGHT*/, 18/*Y_TOP*/, 09/*Y_BOTTOM*/}
 
-; Be careful - Jetman bumps into a platform and gets pushed away, which counts as movement. When Jetman gets pushed too far,
+; Be careful - Fred bumps into a platform and gets pushed away, which counts as movement. When Fred gets pushed too far,
 ; it exceeds the margin defined here, resetting #joyOffBump.
 jetAwayMargin   pl.PLAM { 30/*X_LEFT*/, 20/*X_RIGHT*/, 30/*Y_TOP*/, 20/*Y_BOTTOM*/}
 

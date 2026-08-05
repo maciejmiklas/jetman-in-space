@@ -11,7 +11,7 @@
 PI_SPR_LIFE             = 3                 ; Exta life.
 PI_SPR_DIAMOND          = 39                ; Extra points.
 PI_SPR_JAR              = 40                ; Colls down jetpack's rocket exhaust.
-PI_SPR_STRAWBERRY       = 41                ; Jetman invincible.
+PI_SPR_STRAWBERRY       = 41                ; Fred invincible.
 PI_SPR_GRENADE          = 42                ; Collect and expolode.
 PI_SPR_FREEZE           = 43                ; Freeze enemies.
 PI_SPR_GUN              = 44                ; Improve weapon.
@@ -71,9 +71,9 @@ ResetPickups
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 CheckJetmanPickupCollision                ;
+;                 CheckFredPickupCollision                ;
 ;----------------------------------------------------------;
-CheckJetmanPickupCollision
+CheckFredPickupCollision
 
     LD A, (jt.jetState)
     CP jt.JETST_RIP_D103
@@ -86,22 +86,22 @@ CheckJetmanPickupCollision
     RET Z
 
     ; ##########################################
-    ; Check the collision (pickup possibility) between Jetman and the element, return if there is none.
+    ; Check the collision (pickup possibility) between Fred and the element, return if there is none.
     LD BC, (deployedX)                          ; X of the element.
     LD B, 0
     LD A, (deployedY)                           ; Y of the element.
     LD D, A
-    CALL jco.JetmanElementCollision
+    CALL jco.FredElementCollision
     RET NZ
 
     ; ##########################################
-    ; Jetman got a pickup! Now call the right callback.
+    ; Fred got a pickup! Now call the right callback.
 
     ; ##########################################
     ; Pickup in the air?
     LD A, (deployedY)
     CP PICKUP_GND_LEVEL
-    CALL NZ, gc.JetPicksInAir
+    CALL NZ, gc.FredPicksInAir
 
     ; ##########################################
     ; Callbacks
@@ -110,42 +110,42 @@ CheckJetmanPickupCollision
     ; Diamond
     CP PI_SPR_DIAMOND
     JR NZ, .afterDiamond
-    CALL gc.JetPicksDiamond
+    CALL gc.FredPicksDiamond
     JR .nextPickup
 .afterDiamond
 
     ; Jar
     CP PI_SPR_JAR
     JR NZ, .afterJar
-    CALL gc.JetPicksJar
+    CALL gc.FredPicksJar
     JR .nextPickup
 .afterJar
 
     ; Strawberry
     CP PI_SPR_STRAWBERRY
     JR NZ, .afterStrawberry
-    CALL gc.JetPicksStrawberry
+    CALL gc.FredPicksStrawberry
     JR .nextPickup
 .afterStrawberry
 
     ; Grenade
     CP PI_SPR_GRENADE
     JR NZ, .afterGrenade
-    CALL gc.JetPicksGrenade
+    CALL gc.FredPicksGrenade
     JR .nextPickup
 .afterGrenade
 
     ; Life
     CP PI_SPR_LIFE
     JR NZ, .afterLife
-    CALL gc.JetExtraLife
+    CALL gc.FredExtraLife
     JR .nextPickup
 .afterLife
 
     ; Gun
     CP PI_SPR_GUN
     JR NZ, .afterGun
-    CALL gc.JetPicksGun
+    CALL gc.FredPicksGun
     JR .nextPickup
 .afterGun
 

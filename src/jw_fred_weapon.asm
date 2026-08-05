@@ -3,12 +3,12 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                      Jetman Weapon                       ;
+;                      Fred Weapon                       ;
 ;----------------------------------------------------------;
     MODULE jw
 
 
-; Adjustment to place the first laser beam next to Jetman so that it looks like it has been fired from the laser gun.
+; Adjustment to place the first laser beam next to Fred so that it looks like it has been fired from the laser gun.
 FIRE_ADJUST_X_D7        = 4
 FIRE_ADJUST_Y_D4        = 4
 FIRE_THICKNESS_D10      = 10
@@ -482,14 +482,14 @@ FirePress
     LD (IX + SPR.EXT_DATA_POINTER), RANGE_D25
 .afterNorm
 
-    ; Is Jetman moving left or right?
+    ; Is Fred moving left or right?
     LD A, (gid.jetDirection)
     BIT gid.MOVE_LEFT_BIT_D0, A
-    JR NZ, .movingLeft                          ; Jump if Jetman is moving left.
+    JR NZ, .movingLeft                          ; Jump if Fred is moving left.
 
     XOR A                                       ; A will hold SPR.STATE.
 
-    ; Jetman is moving right, shot will move right also.
+    ; Fred is moving right, shot will move right also.
     SET STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state.
 
     ; Set X coordinate for laser beam
@@ -500,7 +500,7 @@ FirePress
 .movingLeft
 
     XOR A                                       ; A will hold SPR.STATE.
-    ; Jetman is moving left
+    ; Fred is moving left
     RES STATE_SHOT_DIR_BIT, A                   ; Store shot direction in state.
 
     ; Set X coordinate for laser beam
@@ -509,7 +509,7 @@ FirePress
 
     PUSH AF                                     ; Keep A for #SetStateVisible below.
 
-    ; When Jetman is close to the left screen edge, subtracting FIRE_ADJUST_X_D7 causes overflow, because X is close to 0.
+    ; When Fred is close to the left screen edge, subtracting FIRE_ADJUST_X_D7 causes overflow, because X is close to 0.
     LD A, H
     CP $FF
     JR NZ, .hlNotNegative

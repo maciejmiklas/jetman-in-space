@@ -3,15 +3,15 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                    Jetman Collision                      ;
+;                    Fred Collision                      ;
 ;----------------------------------------------------------;
     MODULE jco
 
-; Margins for collision Jetman <-> enemy
+; Margins for collision Fred <-> enemy
 MARG_HORIZ_D10          = 10                    ; Left/right margin.
 MARG_VERT_UP_D15        = 15                    ; Upper maring.
 MARG_VERT_LOW_D11       = 11                    ; Lowwer maring.
-MARG_VERT_KICK_D25      = 25                    ; Start kicking (Jetman is right above the enemy).
+MARG_VERT_KICK_D25      = 25                    ; Start kicking (Fred is right above the enemy).
 
 RIP_MOVE_LEFT_D0        = 0
 RIP_MOVE_RIGHT_D1       = 1
@@ -30,7 +30,7 @@ pauseAfterRipMoveCnt    DB PAUSE_AFTER_RIP_MOVE
 AFTER_RIP_TICK_CNT      = 10
 afterRipEffectTickCnt    DB AFTER_RIP_TICK_CNT
 
-invincibleCnt           DW 0                    ; Makes Jetman invincible when > 0.
+invincibleCnt           DW 0                    ; Makes Fred invincible when > 0.
 
 ; RIP movement.
 JM_RIP_MOVE_R_D3        = 3
@@ -43,7 +43,7 @@ PICK_MARGX_D8           = 8
 PICK_MARGY_D16          = 16
 
 ; Invincibility
-JM_INV_D400             = 60;400                   ; Number of loops to keep Jetman invincible.
+JM_INV_D400             = 60;400                   ; Number of loops to keep Fred invincible.
 
 ;----------------------------------------------------------;
 ;----------------------------------------------------------;
@@ -54,7 +54,7 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Jet
 ;----------------------------------------------------------;
 ;                      _RipMove                            ;
 ;----------------------------------------------------------;
-; Jetman moves in zig-zac towards the upper side of the screen
+; Fred moves in zig-zac towards the upper side of the screen
     MACRO _RipMove
 
     ; Move left or right.
@@ -64,17 +64,17 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Jet
 
     ; Move right.
     LD B, JM_RIP_MOVE_L_D3
-    CALL jpo.DecJetXbyB
+    CALL jpo.DecFredXbyB
     JR .afterMove
 
 .moveLeft
     ; Move left.
     LD B, JM_RIP_MOVE_R_D3
-    CALL jpo.IncJetXbyB
+    CALL jpo.IncFredXbyB
 .afterMove
 
     LD B, JM_RIP_MOVE_Y_D4                      ; Going up
-    CALL jpo.DecJetYbyB
+    CALL jpo.DecFredYbyB
 
     ; Decrement move counter.
     DECA ripMoveCnt
@@ -154,7 +154,7 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Jet
 
 .afterColisionCounter
     ; ################################
-    ; At first, check if Jetman is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Jetman.
+    ; At first, check if Fred is close to the enemy from above, enough to play "kick legs" animation, but still insufficient to kill the Fred.
 
     ; It's flying, now check the collision.
     LD E, 0
@@ -162,17 +162,17 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Jet
     CALL _CheckCollision
     JR NZ, .noKicking
     
-    ; Jetman is close enough to start kicking (to far to die), but first check if the animation does not play already.
+    ; Fred is close enough to start kicking (to far to die), but first check if the animation does not play already.
     LD A, (jt.jetAir)
     CP jt.AIR_ENEMY_KICK_D17
     JR Z, .end                                  ; Animation plays already.
 
     ; Play animation and set state
     LD A, jt.AIR_ENEMY_KICK_D17
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
     LD A, js.SDB_T_KF
-    CALL js.ChangeJetSpritePattern              ; Play the animation and keep checking for RiP collision.
+    CALL js.ChangeFredSpritePattern              ; Play the animation and keep checking for RiP collision.
 
 .noKicking
 
@@ -184,13 +184,13 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Jet
 
     ; Reset kick state.
     LD A, jt.AIR_FLY_D10
-    CALL jt.SetJetStateAir
+    CALL jt.SetFredStateAir
 
     JR NZ, .afterKickReset
 .afterKickReset
 
     ; ################################
-    ; The distance to the enemy is not large enough for Jetman to start kicking. Now, check whether Jetman is close enough to the enemy to die.
+    ; The distance to the enemy is not large enough for Fred to start kicking. Now, check whether Fred is close enough to the enemy to die.
     LD D, MARG_VERT_UP_D15
     LD E, MARG_VERT_LOW_D11
     CALL _CheckCollision
@@ -198,7 +198,7 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Jet
 
     ; We have collision!
     PUSH IX
-    CALL gc.EnemyHitsJet
+    CALL gc.EnemyHitsFred
     _AFX af.FX_EXPLODE_ENEMY_3
     CALL sc.HitEnemy1
     POP IX
@@ -215,24 +215,24 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Jet
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   JetmanElementCollision                 ;
+;                   FredElementCollision                 ;
 ;----------------------------------------------------------;
-; Checks whether Jetman overlaps with given element.
+; Checks whether Fred overlaps with given element.
 ; Input:
 ;  - BC: X postion of the element.
 ;  - D:  Y postion of the element.
 ; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
-JetmanElementCollision
+FredElementCollision
 
-    ; Compare X coordinate of element and Jetman.
+    ; Compare X coordinate of element and Fred.
     LD B, 0                                     ; X is 8bit -> reset MSB.
-    LD HL, (jpo.jetX)                           ; X of the Jetman.
+    LD HL, (jpo.jetX)                           ; X of the Fred.
 
-    ; Check whether Jetman is horizontal with the element.
+    ; Check whether Fred is horizontal with the element.
     SBC HL, BC  
-    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
+    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Fred.
     LD A, H
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .keepCheckingHorizontal               ; HL > 256 -> no collision.
@@ -248,8 +248,8 @@ JetmanElementCollision
     RET
 .checkVertical
     
-    ; We are here because Jetman's horizontal position matches that of the element, now check vertical.
-    LD A, (jpo.jetY)                            ; Y of the Jetman.
+    ; We are here because Fred's horizontal position matches that of the element, now check vertical.
+    LD A, (jpo.jetY)                            ; Y of the Fred.
 
     ; Subtracts B from A and check whether the result is less than or equal to #PICK_MARGY_D16.
     SUB D                                       ; D is method param (Y postion of rocket element).
@@ -295,15 +295,15 @@ EnemiesCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         JetRip                           ;
+;                         FredRip                           ;
 ;----------------------------------------------------------;
-JetRip
+FredRip
 
     LD A, (jt.jetState)
     CP jt.JETST_RIP_D103
     RET NZ                                      ; Exit if not RiP.
 
-    ; Did Jetman reach the top of the screen (the RIP sequence is over)?
+    ; Did Fred reach the top of the screen (the RIP sequence is over)?
     LD A, (jpo.jetY)
     CP 4                                        ; Going up is incremented by 2.
     JR C, .afterMove
@@ -315,7 +315,7 @@ JetRip
 
     DECA pauseAfterRipMoveCnt
 
-    CALL js.HideJetSprite
+    CALL js.HideFredSprite
 
     CALL bg.MoveBackgroundBack
     CALL bg.MoveBackgroundBack
@@ -344,14 +344,14 @@ JetRip
 
     ; Sequence is over, respawn new live.
     _ResetRipMove
-    CALL gc.RespawnJet
+    CALL gc.RespawnFred
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    MakeJetInvincible                     ;
+;                    MakeFredInvincible                     ;
 ;----------------------------------------------------------;
-MakeJetInvincible
+MakeFredInvincible
 
     ; Store invincibility duration.
     LD BC, JM_INV_D400
@@ -359,14 +359,14 @@ MakeJetInvincible
     
     ; Update state
     LD A, jt.JETST_INV_D102
-    CALL jt.SetJetState
+    CALL jt.SetFredState
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    JetInvincible                         ;
+;                    FredInvincible                         ;
 ;----------------------------------------------------------;
-JetInvincible
+FredInvincible
 
     LD A, (jt.jetState)
     CP jt.JETST_INV_D102
@@ -383,7 +383,7 @@ JetInvincible
     JR Z, .endInvincibility
 
     ; ##########################################
-    ; Still invincible - blink Jetman sprite (at first blink fast, last few seconds blink slow).
+    ; Still invincible - blink Fred sprite (at first blink fast, last few seconds blink slow).
     ; Should blink slow or fast?
     LD A, H                                     ; H should be 0 because the last blink phase (slow blink) is 8 bits.
     OR A                                        ; Same as CP 0, but faster.
@@ -412,16 +412,16 @@ JetInvincible
     LD A, (mld.counter002FliFLop)
 .afterBlinkSet
 
-    CALL js.BlinkJetSprite
+    CALL js.BlinkFredSprite
     RET
 
 .endInvincibility
     ; ##########################################
     ; It is the last iteration, remove invincibility.
     LD A, jt.JETST_NORMAL_D101
-    CALL jt.SetJetState
+    CALL jt.SetFredState
 
-    CALL js.ShowJetSprite
+    CALL js.ShowFredSprite
 
     RET                                         ; ## END of the function ##
 
@@ -437,20 +437,20 @@ JetInvincible
 ; Checks whether a given enemy has been hit by the laser beam and eventually destroys it.
 ; Input:
 ;  - IX: pointer to concrete single enemy, single #SPR.
-;  - D:  upper thickness of the enemy (enemy above Jetman).
-;  - E:  lower thickness of the enemy (enemy below Jetman).
+;  - D:  upper thickness of the enemy (enemy above Fred).
+;  - E:  lower thickness of the enemy (enemy below Fred).
 ; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
 _CheckCollision
 
-    ; Compare X coordinate of enemy and Jetman
+    ; Compare X coordinate of enemy and Fred
     LD BC, (IX + SPR.X)                         ; X of the enemy.
-    LD HL, (jpo.jetX)                           ; X of the Jetman.
+    LD HL, (jpo.jetX)                           ; X of the Fred.
 
-    ; Check whether Jetman is horizontal with the enemy.
+    ; Check whether Fred is horizontal with the enemy.
     SBC HL, BC
-    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Jetman.
+    CALL ut.AbsHL                               ; HL contains a positive distance between the enemy and Fred.
     LD A, H
     OR A                                        ; Same as CP 0, but faster.
     JR Z, .keepCheckingX                        ; HL > 256 -> no collision.
@@ -467,27 +467,27 @@ _CheckCollision
     RET
 .checkX
 
-    ; We are here because Jetman's horizontal position matches that of the enemy, now check vertical.
+    ; We are here because Fred's horizontal position matches that of the enemy, now check vertical.
     LD B, (IX + SPR.Y)                          ; Y of the enemy.
-    LD A, (jpo.jetY)                            ; Y of the Jetman.
+    LD A, (jpo.jetY)                            ; Y of the Fred.
 
-    ; Is Jetman above or below the enemy?
+    ; Is Fred above or below the enemy?
     CP B
-    JR C, .jetmanAboveEnemy                     ; Jump if "Jet Y" < "enemy Y". Jet is above enemy (0 is at the top, 256 bottom).
+    JR C, .jetmanAboveEnemy                     ; Jump if "Fred Y" < "enemy Y". Fred is above enemy (0 is at the top, 256 bottom).
 
-    ; Jetman is below enemy
+    ; Fred is below enemy
     SUB B
     CP E
     JR C, .collision                            ; Jump if A - B < E
     JR .noCollision
 
 .jetmanAboveEnemy
-    ; Jetman is above enemy
+    ; Fred is above enemy
 
     ; TODO do not load X/Y again, reuse already loaded values!
     ; Swap A and B to avoid negative value.
     LD A, (jpo.jetY)
-    LD B, A                                     ; B: Y of the Jetman
+    LD B, A                                     ; B: Y of the Fred
     LD A, (IX + SPR.Y)                          ; A: Y of the enemy
     SUB B
     CP D

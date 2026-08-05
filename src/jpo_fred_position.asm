@@ -3,13 +3,13 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                      Jetman Position                     ;
+;                      Fred Position                     ;
 ;----------------------------------------------------------;
     MODULE jpo
 
-JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Jetman must respond by standing on the ground. Otherwise, the background will be off.
+JM_RESPAWN_Y_D217       = _GSC_JET_GND_D217     ; Fred must respond by standing on the ground. Otherwise, the background will be off.
 
-; Jetman sprite consists of two spires, each 16x16px. Coordinates relate to the left top corner of the upper sprite. 
+; Fred sprite consists of two spires, each 16x16px. Coordinates relate to the left top corner of the upper sprite. 
 ; For example, corner positions to display the whole spirit are as follows: (X,Y) given by (0,0) would display a complete sprite in the 
 ; left corner. The most right position on X is 320-16, and the bottom on Y is 256 - 32.
 jetX                    DW 0                    ; 0-320px
@@ -18,21 +18,21 @@ jetY                    DB 0                    ; 0-256px
 respawnX                DB 0
 
 ;----------------------------------------------------------;
-;                SetupJetRespawnPosition                   ;
+;                SetupFredRespawnPosition                   ;
 ;----------------------------------------------------------;
 ; Input:
 ; - A: respawn X
-SetupJetRespawnPosition
+SetupFredRespawnPosition
 
     LD (respawnX), A
-    CALL SetJetRespawnPosition
+    CALL SetFredRespawnPosition
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 SetJetRespawnPosition                    ;
+;                 SetFredRespawnPosition                    ;
 ;----------------------------------------------------------;
-SetJetRespawnPosition
+SetFredRespawnPosition
 
     ; Set respawn coordinates.
     LD A, (respawnX)
@@ -46,9 +46,9 @@ SetJetRespawnPosition
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                           IncJetX                        ;
+;                           IncFredX                        ;
 ;----------------------------------------------------------;
-IncJetX
+IncFredX
 
     LD BC, (jetX)
     INC BC
@@ -61,33 +61,33 @@ IncJetX
     LD A, C                                     ; Load MSB from X into A.
     CP 59                                       ; MSB > 59
     JR C, .lessThanMaxX
-    LD BC, 1                                    ; Jetman is above 315 -> set to 1.
+    LD BC, 1                                    ; Fred is above 315 -> set to 1.
 .lessThanMaxX
     LD (jetX), BC                               ; Update new X position.
 
-    CALL gc.JetMoves
+    CALL gc.FredMoves
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          IncJetXbyB                      ;
+;                          IncFredXbyB                      ;
 ;----------------------------------------------------------;
 ; Input 
-; - B: number of pixels to move Jetman Up.
-IncJetXbyB
+; - B: number of pixels to move Fred Up.
+IncFredXbyB
 
 .loop
     PUSH BC
-    CALL IncJetX
+    CALL IncFredX
     POP BC
     DJNZ .loop
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         DecJetX                          ;
+;                         DecFredX                          ;
 ;----------------------------------------------------------;
-DecJetX
+DecFredX
 
     LD BC, (jetX)
     DEC BC
@@ -103,75 +103,75 @@ DecJetX
 .afterResetX
     LD (jetX), BC
 
-    CALL gc.JetMoves
+    CALL gc.FredMoves
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          DecJetXbyB                      ;
+;                          DecFredXbyB                      ;
 ;----------------------------------------------------------;
 ; Input 
-; - B: number of pixels to move Jetman up.
-DecJetXbyB
+; - B: number of pixels to move Fred up.
+DecFredXbyB
 
 .loop
     PUSH BC
-    CALL DecJetX
+    CALL DecFredX
     POP BC
     DJNZ .loop
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                           IncJetY                        ;
+;                           IncFredY                        ;
 ;----------------------------------------------------------;
-IncJetY
+IncFredY
 
     LD A, (jetY)
     INC A
     LD (jetY), A
 
-    CALL gc.JetMoves
-    CALL gc.JetMovesDown
+    CALL gc.FredMoves
+    CALL gc.FredMovesDown
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                           DecJetY                        ;
+;                           DecFredY                        ;
 ;----------------------------------------------------------;
-DecJetY
+DecFredY
 
     DECA jetY
 
-    CALL gc.JetMoves
-    CALL gc.JetMovesUp
+    CALL gc.FredMoves
+    CALL gc.FredMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          IncJetYbyB                      ;
+;                          IncFredYbyB                      ;
 ;----------------------------------------------------------;
 ; Input:
-; - B: number of pixels to move Jetman donw.
-IncJetYbyB
+; - B: number of pixels to move Fred donw.
+IncFredYbyB
 
 .loop
     PUSH BC
-    CALL IncJetY
+    CALL IncFredY
     POP BC
     DJNZ .loop
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                          DecJetYbyB                      ;
+;                          DecFredYbyB                      ;
 ;----------------------------------------------------------;
 ; Input:
-; - B: number of pixels to move Jetman up
-DecJetYbyB
+; - B: number of pixels to move Fred up
+DecFredYbyB
 
 .loop
     PUSH BC
-    CALL DecJetY
+    CALL DecFredY
     POP BC
     DJNZ .loop
 
