@@ -8,8 +8,6 @@
 
 [![Youtube](/img/youtube.png)](https://youtu.be/xZHrYfIvjUI)
    
-<img src="/img/intro.png" width="640px"/>
-   
 <img src="/img/level_select.png" width="640px"/>
    
 <img src="/img/level4.png" width="640px"/>
