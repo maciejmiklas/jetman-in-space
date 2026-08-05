@@ -12,7 +12,7 @@ STACK_SIZE              = 50
 
     ;DEFINE PERFORMANCE  1                        ; Enable perofrmance info
     ;DEFINE DEBUG_BAR    1                        ; Enable debug bar
-    DEFINE DEBUG         1
+    ;DEFINE DEBUG         1
 
 ; When enabled, the #endLine will contain the scan line after the game has been rendered. Rendering always starts at line 0.
     IFDEF PERFORMANCE
