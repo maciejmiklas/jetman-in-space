@@ -71,9 +71,9 @@ ResetPickups
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 CheckJetmanPickupCollision                ;
+;                 CheckFredPickupCollision                ;
 ;----------------------------------------------------------;
-CheckJetmanPickupCollision
+CheckFredPickupCollision
 
     LD A, (jt.jetState)
     CP jt.JETST_RIP_D103
@@ -91,7 +91,7 @@ CheckJetmanPickupCollision
     LD B, 0
     LD A, (deployedY)                           ; Y of the element.
     LD D, A
-    CALL jco.JetmanElementCollision
+    CALL jco.FredElementCollision
     RET NZ
 
     ; ##########################################

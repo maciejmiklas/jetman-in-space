@@ -140,12 +140,12 @@
     CALL jco.JetRip
     CALL jw.MoveShots
     CALL jw.FireDelayCounter
-    gc.JetmanEnemiesCollision
+    gc.FredEnemiesCollision
     CALL js.UpdateJetSpritePositionRotation
     CALL js.AnimateJetSprite
 
     dbs.SetupArrays2Bank
-    CALL pi.CheckJetmanPickupCollision
+    CALL pi.CheckFredPickupCollision
 
     dbs.SetupRocketBank
     CALL roa.CheckHitTank
@@ -156,7 +156,7 @@
     CALL enu.ThiefWeaponHit
 
     CALL dbs.SetupFollowingEnemyBank
-    CALL fe.UpdateFollowingJetman
+    CALL fe.UpdateFollowingFred
 
     CALL enc.CheckEnemyWeaponHit
 

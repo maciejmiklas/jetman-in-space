@@ -215,7 +215,7 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Fre
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   JetmanElementCollision                 ;
+;                   FredElementCollision                 ;
 ;----------------------------------------------------------;
 ; Checks whether Fred overlaps with given element.
 ; Input:
@@ -224,7 +224,7 @@ JM_INV_D400             = 60;400                   ; Number of loops to keep Fre
 ; Return:
 ;  - YES: Z is reset (JP Z).
 ;  - NO:  Z is set (JP NZ).
-JetmanElementCollision
+FredElementCollision
 
     ; Compare X coordinate of element and Fred.
     LD B, 0                                     ; X is 8bit -> reset MSB.

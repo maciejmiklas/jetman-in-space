@@ -13,13 +13,13 @@ GB_OFFSET_D6            = _GND_THICK_D8-2
 GB_MOVE_SLOW_D2         = 2                     ; Slows down background movement (when Fred moves).
 
 ;----------------------------------------------------------;
-;             UpdateBackgroundOnJetmanMove                 ;
+;             UpdateBackgroundOnFredMove                 ;
 ;----------------------------------------------------------;
 ; The background starts at the bottom of the screen with offset 8. That is the height of the ground. The background should begin where
 ; the ground ends (2 pixels overlap). From the bottom of the screen, there is ground, 8 pixels high, and the background follows after it.
 ; When Fred moves upwards, the background should move down and hide behind the ground. For that, we are decreasing the background offset.
 ; It starts with 8 (Fred stands on the ground), counts down to 0, then rolls over to 255, and counts towards 0.
-UpdateBackgroundOnJetmanMove
+UpdateBackgroundOnFredMove
 
     ; Divide the Fred's position by GB_MOVE_SLOW_D2 to slow down the movement of the background.
     LD A, (jpo.jetY)

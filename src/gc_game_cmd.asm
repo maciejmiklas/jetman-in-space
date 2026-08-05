@@ -595,9 +595,9 @@ PlayFuelThiefFx
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;               gc.JetmanEnemiesCollision                  ;
+;               gc.FredEnemiesCollision                  ;
 ;----------------------------------------------------------;
-    MACRO gc.JetmanEnemiesCollision
+    MACRO gc.FredEnemiesCollision
 
     dbs.SetupArrays2Bank
 
@@ -737,7 +737,7 @@ RespawnJet
     CALL jco.MakeJetInvincible
 
     CALL bm.CopyImageData
-    CALL bg.UpdateBackgroundOnJetmanMove
+    CALL bg.UpdateBackgroundOnFredMove
 
     dbs.SetupRocketBank
     CALL roa.ResetCarryingRocketElement
@@ -874,7 +874,7 @@ JetLanding
 JetMoves
 
     dbs.SetupRocketBank
-    CALL roa.UpdateRocketOnJetmanMove
+    CALL roa.UpdateRocketOnFredMove
 
     CALL jl.UpdateLifeFaceOnJetMove
 
@@ -888,7 +888,7 @@ JetMoves
 ;----------------------------------------------------------;
 JetMovesUp
 
-    ; The #UpdateBackgroundOnJetmanMove calculates #bgOffset, which is used to hide the background line behind the horizon.
+    ; The #UpdateBackgroundOnFredMove calculates #bgOffset, which is used to hide the background line behind the horizon.
     ; To avoid glitches, like not hidden lines, we always have to first hide the line and then calculate the #bgOffset. This will introduce 
     ; a one pixel delay, but at the same time, it ensures that the previously hidden line will get repainted by direction change.
 
@@ -896,7 +896,7 @@ JetMovesUp
     OR A
     CALL NZ, bg.HideBackgroundBehindHorizon
 
-    CALL bg.UpdateBackgroundOnJetmanMove
+    CALL bg.UpdateBackgroundOnFredMove
     CALL st.MoveStarsDown
 
     RET                                         ; ## END of the function ##
@@ -907,7 +907,7 @@ JetMovesUp
 JetMovesDown
 
     CALL bg.ShowBackgroundAboveHorizon
-    CALL bg.UpdateBackgroundOnJetmanMove
+    CALL bg.UpdateBackgroundOnFredMove
     CALL st.MoveStarsUp
 
     RET                                         ; ## END of the function ##

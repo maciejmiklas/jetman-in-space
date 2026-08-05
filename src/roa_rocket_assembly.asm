@@ -54,9 +54,9 @@ rocAssemblyX            DB 0
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                 _JetmanDropsRocketElement                ;
+;                 _FredDropsRocketElement                ;
 ;----------------------------------------------------------;
-    MACRO _JetmanDropsRocketElement
+    MACRO _FredDropsRocketElement
 
     ; Is Fred over the drop location (+/- #PICK_MARGX_D8)?
     LD BC, (jpo.jetX)
@@ -94,10 +94,10 @@ rocAssemblyX            DB 0
     ENDM                                        ; ## END of the macro ##
 
 ;----------------------------------------------------------;
-;                    _MoveWithJetman                       ;
+;                    _MoveWithFred                       ;
 ;----------------------------------------------------------;
 ; Move the element to the current Fred's position.
-    MACRO _MoveWithJetman
+    MACRO _MoveWithFred
 
     ; Set the ID of the sprite for the following commands.
     LD A, (IX + ro.RO.SPRITE_ID)
@@ -137,7 +137,7 @@ rocAssemblyX            DB 0
     LD BC, (rocAssemblyX)                       ; X of the element.
     LD B, 0
     LD D, EL_EXH_Y_POS_D234                     ; Y of the element.
-    CALL jco.JetmanElementCollision
+    CALL jco.FredElementCollision
     JR NZ, .end
 
     ; ##########################################
@@ -171,8 +171,8 @@ rocAssemblyX            DB 0
     JR NZ, .end
 
     CALL _SetIXtoCurrentRocketElement
-    _MoveWithJetman
-    _JetmanDropsRocketElement
+    _MoveWithFred
+    _FredDropsRocketElement
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -208,7 +208,7 @@ rocAssemblyX            DB 0
     LD B, 0
     LD DE, (ro.rocY)                               ; Y of the element.
     LD D, E
-    CALL jco.JetmanElementCollision
+    CALL jco.FredElementCollision
     JR NZ, .end
 
     ; ##########################################
@@ -336,9 +336,9 @@ StartRocketAssembly
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 UpdateRocketOnJetmanMove                 ;
+;                 UpdateRocketOnFredMove                 ;
 ;----------------------------------------------------------;
-UpdateRocketOnJetmanMove
+UpdateRocketOnFredMove
 
     _PickupRocketElement
     _CarryRocketElement

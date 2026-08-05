@@ -564,10 +564,10 @@ NextFollowingAngle
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                  UpdateFollowingJetman                   ;
+;                  UpdateFollowingFred                   ;
 ;----------------------------------------------------------;
 ; Updates #STATE_DIR_X_BIT and #STATE_DIR_Y_BIT based on Fred's position
-UpdateFollowingJetman
+UpdateFollowingFred
 
     ; Iterate over all enemies
     LD IX, fed.fEnemySprites
