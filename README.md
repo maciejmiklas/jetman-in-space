@@ -1,7 +1,7 @@
 <img src="/img/game_cover.jpg" width="800px"/>
 
 > [!TIP]
-> [DOWNLOAD SECTION (5€ on itch)](https://maciej3322.itch.io/jetma-in-space)
+> [DOWNLOAD SECTION (5€ on itch)](https://maciej3322.itch.io/fred-in-space)
 
 > [!NOTE]
 > Click on the image below to play the video 
