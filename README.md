@@ -27,6 +27,7 @@
 
 Game: 
 * Maciej Miklas   
+
 Music:
 * [Oleg Nikitin (NQ)](https://zxart.ee/eng/authors/n/nq)
 * [Ilya Abrosimov (EA)](https://zxart.ee/eng/authors/e/ea)   
