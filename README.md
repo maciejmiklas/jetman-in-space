@@ -26,11 +26,11 @@
 <img src="/img/stars8.png" width="640px"/>
 
 Game: 
-* Maciej Miklas
+* Maciej Miklas   
 Music:
 * [Oleg Nikitin (NQ)](https://zxart.ee/eng/authors/n/nq)
-* [Ilya Abrosimov (EA)](https://zxart.ee/eng/authors/e/ea)
-<p/>
+* [Ilya Abrosimov (EA)](https://zxart.ee/eng/authors/e/ea)   
+
 I want to give a shout-out to the following, without them, I would have been lost in space!
 * [Vortex Tracker II Volutar](https://volutar.myds.me/vortextracker)
 * [ZX Spectrum Next Assembly Developer Guide](https://github.com/tomaz/zx-next-dev-guide)
