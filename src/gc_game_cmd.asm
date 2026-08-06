@@ -260,6 +260,12 @@ StoreGameData
 ;----------------------------------------------------------;
 LoadNextLevel
 
+    dbs.SetupAyFxsBank
+    CALL af.AfxOff
+
+    CALL bm.HideImage
+    CALL ti.CleanAllTiles
+
     LD A, (ll.currentLevel)
 
     ; Demo over?
@@ -291,6 +297,7 @@ LoadNextLevel
 
 .end
     dbs.SetupRocketBank                         ; Call has to return to ritht bank.
+
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
