@@ -2,9 +2,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "make fred ",
+			"label": "make fred",
 			"type": "shell",
-			"command": "sjasmplus src/main.asm --lst=bin/jetmal.lst --zxnext=cspectpwd --outprefix=bin/",
+			"command": "sjasmplus src/main.asm --lst=bin/FredInSpace.lst --zxnext=cspectpwd --outprefix=bin/",
 			"presentation": {
 				"reveal": "always"
 			},
