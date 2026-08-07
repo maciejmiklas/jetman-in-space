@@ -6,7 +6,7 @@
 ;                    Enemy Command                         ;
 ;----------------------------------------------------------;
     MODULE enc
-KILL_FEW                = 7
+KILL_FEW                = 5
 
 freezeEnemiesCnt        DW 0
 FREEZE_ENEMIES_CNT      = 60 * 10               ; Freeze for 10 Seconds
