@@ -280,7 +280,7 @@ EnterNewScore
 .afterEdit
 
     CALL _PrintWholeScore
-    ; ##########################################
+
     _LoadSong aml.MUSIC_HIGH_SCORE_D3
     CALL aml.MusicOn
 
@@ -412,12 +412,6 @@ _JoyFire
     CALL _SetScoreToReadOnly
 
     CALL gc.HighScoreChanged
-
-    ; FX
-    _AFX af.MENU_ENTER
-
-    ; Music for main menu
-    _LoadSong aml.MUSIC_MAIN_MENU_D0
 
     RET                                         ; ## END of the function ##
 

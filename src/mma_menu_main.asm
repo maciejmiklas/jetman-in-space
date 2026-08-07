@@ -53,6 +53,9 @@ LoadMainMenu
 ;----------------------------------------------------------;
 SwitchToMainMenu
 
+    dbs.SetupCodeMusicBank
+    CALL aml.MusicOff
+    
     CALL js.HideFredSprite
     CALL ar.LoadMenuSprites
     CALL js.InitFredSprite
