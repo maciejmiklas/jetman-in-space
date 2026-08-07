@@ -178,7 +178,7 @@ LoadMusicFile
 LoadMusicBankFile
 
     PUSH BC
-    dbs.SetupArrays2Bank                   ; Setup slot 7 to load arrays.
+    dbs.SetupArrays2Bank                        ; Setup slot 7 to load arrays.
 
     CALL ut.NumTo999Str                         ; C,D,E now contains ASCII of value from A.
 

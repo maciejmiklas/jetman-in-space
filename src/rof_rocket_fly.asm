@@ -180,7 +180,7 @@ JOY_DOWN_YES_D1         = 1
     ; The current position of rocket elements is stored in #ro.rocAssemblyX and #ro.RO.Y 
     ; It was set when elements were falling towards the platform. Now, we need to decrement Y to animate the rocket.
 
-    LD IX, (ro.rocketElPtr)                               ; Load the pointer to rocket into IX.
+    LD IX, (ro.rocketElPtr)                     ; Load the pointer to rocket into IX.
 
     ; ##########################################
     ; Did the rocket reach the middle of the screen, and should it stop moving?

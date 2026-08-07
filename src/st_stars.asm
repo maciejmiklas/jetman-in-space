@@ -197,7 +197,7 @@ starsMode               DB STARSM_HIDE
     ; In this loop, we will copy one column of the stars from the source data (HL) into the layer 2 image (DE) column.
 
 .starsLoop
-    PUSH DE, BC                                     ;  Keep DE so it always points to the top of the column in the image.
+    PUSH DE, BC                                 ;  Keep DE so it always points to the top of the column in the image.
 
     ; ##########################################
     ; Move star up/down or just show it.
@@ -262,7 +262,7 @@ starsMode               DB STARSM_HIDE
     POP BC                                      ; Restore B, and keep it for the main loop.
     PUSH BC
     PUSH DE
-    _GetStarColor                          ; Load star color
+    _GetStarColor                               ; Load star color
     POP DE
     LD (DE), A
 
@@ -356,7 +356,7 @@ starsMode               DB STARSM_HIDE
     ; Delay movement
     DECA starsMoveL2Delay
     OR A                                        ; Same as CP 0, but faster.
-    JR NZ, .end                                      ; Do not move yet, wait for 0.
+    JR NZ, .end                                 ; Do not move yet, wait for 0.
 
     ; Reset delay
     LD A, ST_L2_MOVE_DEL_D2

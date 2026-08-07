@@ -173,9 +173,9 @@ BrightnessDown
 
     ; Decrement red color (RRR'xxx'xx)
     LD A, E
-    AND PAL2_RRR_MASK                       ; Reset all bits but red.
+    AND PAL2_RRR_MASK                           ; Reset all bits but red.
 
-    OR A                                    ; Do not decrement if red is already at 0
+    OR A                                        ; Do not decrement if red is already at 0
     JR Z, .afterDecrementRed
 
     ; Red is above 0, decrement it.

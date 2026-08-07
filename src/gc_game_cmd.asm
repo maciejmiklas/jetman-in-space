@@ -547,7 +547,7 @@ RocketElementDrop
     RET                                         ; ## END of the function ## 
 
 ;----------------------------------------------------------;
-;                     FredPlatformTakesOff                  ;
+;                    FredPlatformTakesOff                  ;
 ;----------------------------------------------------------;
 FredPlatformTakesOff
 
@@ -699,12 +699,12 @@ EnemyHitsFred
     ; ##########################################
     ; Is Fred already dying? If so, do not start the RiP sequence again, just kill the enemy.
     LD A, (jt.jetState)                         
-    CP jt.JETST_RIP_D103
+    CP jt.FREDST_RIP_D103
     RET Z                                       ; Exit if RIP.
 
     ; ##########################################
     ; Is Fred invincible? If so, just kill the enemy.
-    CP jt.JETST_INV_D102
+    CP jt.FREDST_INV_D102
     RET Z                                       ; Exit if invincible.
 
     ; ##########################################
@@ -727,7 +727,7 @@ EnemyHitsFred
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       RespawnFred                         ;
+;                       RespawnFred                        ;
 ;----------------------------------------------------------;
 RespawnFred
 
@@ -775,7 +775,7 @@ FredpackOverheat
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   FredpackTempNormal                      ;
+;                   FredpackTempNormal                     ;
 ;----------------------------------------------------------;
 FredpackTempNormal
 
@@ -784,7 +784,7 @@ FredpackTempNormal
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      FredPicksInAir                       ;
+;                      FredPicksInAir                      ;
 ;----------------------------------------------------------;
 FredPicksInAir
 
@@ -793,7 +793,7 @@ FredPicksInAir
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       FredPicksGun                        ;
+;                       FredPicksGun                       ;
 ;----------------------------------------------------------;
 FredPicksGun
 
@@ -805,7 +805,7 @@ FredPicksGun
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      FredExtraLife                        ;
+;                      FredExtraLife                       ;
 ;----------------------------------------------------------;
 FredExtraLife
 
@@ -818,7 +818,7 @@ FredExtraLife
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                     FredPicksGrenade                      ;
+;                     FredPicksGrenade                     ;
 ;----------------------------------------------------------;
 FredPicksGrenade
 
@@ -830,7 +830,7 @@ FredPicksGrenade
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   FredPicksStrawberry                     ;
+;                   FredPicksStrawberry                    ;
 ;----------------------------------------------------------;
 FredPicksStrawberry
 
@@ -843,7 +843,7 @@ FredPicksStrawberry
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    FredPicksDiamond                       ;
+;                    FredPicksDiamond                      ;
 ;----------------------------------------------------------;
 FredPicksDiamond
 
@@ -854,7 +854,7 @@ FredPicksDiamond
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       FredPicksJar                        ;
+;                       FredPicksJar                       ;
 ;----------------------------------------------------------;
 FredPicksJar
 
@@ -866,7 +866,7 @@ FredPicksJar
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                       FredLanding                         ;
+;                       FredLanding                        ;
 ;----------------------------------------------------------;
 FredLanding
 
@@ -875,7 +875,7 @@ FredLanding
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         FredMoves                         ;
+;                         FredMoves                        ;
 ;----------------------------------------------------------;
 ; Called on any Fred movement, always before the method indicating concrete movement (#FredMovesUp,#FredMovesDown).
 FredMoves
@@ -891,7 +891,7 @@ FredMoves
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                        FredMovesUp                        ;
+;                        FredMovesUp                       ;
 ;----------------------------------------------------------;
 FredMovesUp
 
@@ -909,7 +909,7 @@ FredMovesUp
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                      FredMovesDown                        ;
+;                      FredMovesDown                       ;
 ;----------------------------------------------------------;
 FredMovesDown
 
@@ -929,7 +929,7 @@ RocketReady
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                   FredBumpsIntoPlatform                   ;
+;                   FredBumpsIntoPlatform                  ;
 ;----------------------------------------------------------;
 FredBumpsIntoPlatform
 

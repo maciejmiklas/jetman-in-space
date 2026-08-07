@@ -213,8 +213,8 @@ RocketFly
 ;----------------------------------------------------------;
 PrintScore
 
-    LD DE, (scoreLo)                    ; DE = low 16 bits
-    LD HL, (scoreHi)                    ; HL = high 16 bits
+    LD DE, (scoreLo)                            ; DE = low 16 bits
+    LD HL, (scoreHi)                            ; HL = high 16 bits
     LD BC, SCORE_TI_START
     CALL tx.PrintNum32
 

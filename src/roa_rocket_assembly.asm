@@ -195,7 +195,7 @@ rocAssemblyX            DB 0
     ; ##########################################
     ;  Exit if RiP.
     LD A, (jt.jetState)
-    CP jt.JETST_RIP_D103
+    CP jt.FREDST_RIP_D103
     JR Z, .end
 
     ; ##########################################
@@ -336,7 +336,7 @@ StartRocketAssembly
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                 UpdateRocketOnFredMove                 ;
+;                  UpdateRocketOnFredMove                  ;
 ;----------------------------------------------------------;
 UpdateRocketOnFredMove
 
@@ -410,7 +410,7 @@ CheckHitTank
     JR Z, .assembly
     
     ; Falling rocket element for pickup
-    LD DE, (IX + ro.RO.DROP_X)                     ; X param for #ShotsCollision.
+    LD DE, (IX + ro.RO.DROP_X)                  ; X param for #ShotsCollision.
     JR .afterAssembly
 .assembly
     ; The rocket is already assembled and waiting for fuel.
@@ -517,7 +517,7 @@ RocketElementFallsForPickup
 
     ; Update rocket sprite.
     LD HL, 0
-    LD L, (IX + ro.RO.DROP_X)                      ; Sprite X coordinate, do not change value - element is falling down.
+    LD L, (IX + ro.RO.DROP_X)                   ; Sprite X coordinate, do not change value - element is falling down.
     LD (ro.rocX), HL
 
     XOR A
@@ -687,7 +687,7 @@ DropNextRocketElement
     ; The counter has reached the required value, reset it first.
     XOR A                                       ; Set A to 0
     LD (dropNextDelay), A
-    LD (ro.rocY), A                                ; Set the element's position to the top.
+    LD (ro.rocY), A                             ; Set the element's position to the top.
 
     ; Check whether rocket element counter has already reached max value.
     LD A, (rocketElementCnt)
@@ -828,7 +828,7 @@ _UpdateFuelProgressBar
     
     LD (HL), A                                  ; Set tile id.
     INC HL
-    LD (HL), BAR_TILE_PAL_H30                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL_H30                   ; Set palette for tile.
     INC HL
 
     ; ##########################################

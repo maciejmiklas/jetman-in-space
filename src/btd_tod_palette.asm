@@ -240,9 +240,9 @@ LoadCurrentTodPalette
 ; Method called after setting: #palBytes and #palAdr.
 CreateTodPalettes
 
-    _VariablesSet                          ; Palette global variables are set.
-    _LoadTodPalette                        ; Load original palette into hardware.
-    _CreateTodPalettes                     ; Create palettes for different times of day.
+    _VariablesSet                               ; Palette global variables are set.
+    _LoadTodPalette                             ; Load original palette into hardware.
+    _CreateTodPalettes                          ; Create palettes for different times of day.
 
     RET                                         ; ## END of the function ##
 

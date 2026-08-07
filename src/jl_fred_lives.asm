@@ -122,7 +122,7 @@ UpdateLifeFaceOnFredMove
 
     LD (HL), B                                  ; Set tile id.
     INC HL
-    LD (HL), FACE_PAL_H30                           ; Set palette for tile.
+    LD (HL), FACE_PAL_H30                       ; Set palette for tile.
     INC HL
 
     RET                                         ; ## END of the function ##
@@ -134,7 +134,7 @@ UpdateLifeFaceOnFredMove
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    _UpdateFredLives                       ;
+;                    _UpdateFredLives                      ;
 ;----------------------------------------------------------;
 _UpdateFredLives
 

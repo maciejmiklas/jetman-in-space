@@ -52,7 +52,7 @@
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                    FredMovementInput                      ;
+;                    FredMovementInput                     ;
 ;----------------------------------------------------------;
 ; Options are active durign pause, movement is not.
 ; Input:
@@ -70,6 +70,10 @@ FredMovementInput
     INC A
     LD (gid.fireOffCnt), A
 .afterFireOffCnt
+
+    LD A, (jt.jetState)
+    CP jt.FREDST_RIP_D103
+    RET Z
 
     ; ##########################################
     ; Row: 1, 2, 3, 4, 5, read left arrow key
@@ -172,10 +176,15 @@ FredMovementInput
 ; Options are active durign pause, movement is not.
 GameOptionsInput
 
+    LD A, (jt.jetState)
+    CP jt.FREDST_RIP_D103
+    RET Z
+    
     ; ##########################################
     ; Read Kempston input
     LD A, _JOY_MASK_H20                         ; Activate joystick register.
     IN A, (_JOY_REG_H1F)                        ; Read joystick input into A.
+
     ; Joystick fire B
     PUSH AF
     BIT 4, A

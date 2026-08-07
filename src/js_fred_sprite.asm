@@ -94,7 +94,7 @@ UpdateFredSpritePositionRotation
     LD A, (gid.jetDirection)
     LD D, A
     XOR A                                       ; Clear A to set only rotation/mirror bits
-    BIT gid.MOVE_LEFT_BIT_D0, D                    ; Moving left bit set?
+    BIT gid.MOVE_LEFT_BIT_D0, D                 ; Moving left bit set?
     JR Z, .rotateRight
     SET _SPR_REG_ATR2_MIRX_BIT, A               ; Rotate sprite left
     JR .afterRotate 
@@ -211,10 +211,10 @@ AnimateFredSprite
     LD A, (sprState)
     CP SPR_STATE_HIDE
     JR Z, .hide
-    LD B, _SPR_ATTR3_SHOW                     ; Sprite is visible
+    LD B, _SPR_ATTR3_SHOW                       ; Sprite is visible
     JR .afterShow
 .hide
-    LD B, _SPR_ATTR3_HIDE                     ; Sprite is hidden
+    LD B, _SPR_ATTR3_HIDE                       ; Sprite is hidden
 .afterShow
 
     ; Update upper sprite

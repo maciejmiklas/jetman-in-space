@@ -114,7 +114,7 @@ IsReadyForTakeoff
 ;----------------------------------------------------------;
 UpdateRocketPosition
 
-     LD IX, (rocketElPtr)                               ; Load the pointer to rocket into IX.
+     LD IX, (rocketElPtr)                       ; Load the pointer to rocket into IX.
      
     ; Move bottom rocket element.
     XOR A

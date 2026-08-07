@@ -272,7 +272,7 @@ MoveFuelThief
     ; ##########################################
     ; Hide if the thief has reached the left side of the screen, if he deployed right.
     BIT enp.ENP_BIT_DEPLOY_D1, (IY + ENP.SETUP)
-    JR NZ, .hideNotDeplyedRight                ; Jump if bit is 0 -> deploy left.
+    JR NZ, .hideNotDeplyedRight                 ; Jump if bit is 0 -> deploy left.
 
     LD BC, (IX + SPR.X)
     LD A, B

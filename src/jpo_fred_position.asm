@@ -18,7 +18,7 @@ jetY                    DB 0                    ; 0-256px
 respawnX                DB 0
 
 ;----------------------------------------------------------;
-;                SetupFredRespawnPosition                   ;
+;                SetupFredRespawnPosition                  ;
 ;----------------------------------------------------------;
 ; Input:
 ; - A: respawn X

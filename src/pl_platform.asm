@@ -34,14 +34,14 @@ Y_BOTTOM                DB
 
 ; Coordinates for a platform
     STRUCT PLA
-X_LEFT                  DW                    ; X start of the platform.
-X_RIGHT                 DW                    ; X end of the platform.
-Y_TOP                   DB                    ; Y start of the platform.
-Y_BOTTOM                DB                    ; Y end of the platform.
+X_LEFT                  DW                      ; X start of the platform.
+X_RIGHT                 DW                      ; X end of the platform.
+Y_TOP                   DB                      ; Y start of the platform.
+Y_BOTTOM                DB                      ; Y end of the platform.
     ENDS
 
 ; [amount of platforms], #PLA,..., #PLA]. Platforms are tiles. Each tile has 8x8 pixels.
-platformsPtr            DW 0                  ; Pointer value to platforms.
+platformsPtr            DW 0                    ; Pointer value to platforms.
 platformsSize           DB 0
 
 ; A number of the platform that Fred walks on. This byte is only set to the proper value when jt.jetGnd == jt.GND_WALK_D51.
@@ -58,7 +58,7 @@ joyOffBump              DB PL_BUMP_JOY_D15; The amount of pixels to bump off the
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;              _MoveFredOnFallingFromPlatform               ;
+;              _MoveFredOnFallingFromPlatform              ;
 ;----------------------------------------------------------;
     MACRO _MoveFredOnFallingFromPlatform
 
@@ -680,7 +680,7 @@ FredLanding
 .afterMoveLR
 
     LD A, jt.GND_STAND_D53
-    CALL jt.SetFredStateGnd                      ; Update state as we are standing.
+    CALL jt.SetFredStateGnd                     ; Update state as we are standing.
 
     LD A, js.SDB_T_FS                           ; Play transition from landing -> standing.
     CALL js.ChangeFredSpritePattern

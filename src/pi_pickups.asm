@@ -76,7 +76,7 @@ ResetPickups
 CheckFredPickupCollision
 
     LD A, (jt.jetState)
-    CP jt.JETST_RIP_D103
+    CP jt.FREDST_RIP_D103
     RET Z
 
     ; ##########################################

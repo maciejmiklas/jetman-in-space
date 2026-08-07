@@ -578,12 +578,12 @@ DoRespawnPatternEnemy
 
     ; Deploy right
     LD BC, _GSC_X_MAX_D315
-    SET sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Mirror sprite, because it deploys on the right and moves to the left side.
+    SET sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE) ; Mirror sprite, because it deploys on the right and moves to the left side.
     JR .afterLR
 
     ; Deploy left
 .deployLeft
-    RES sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE)  ; Do not mirror sprite (this could be set if in another level it was moving right).
+    RES sp.SPRITE_ST_MIRROR_X_BIT, (IX + SPR.STATE) ; Do not mirror sprite (this could be set if in another level it was moving right).
     LD BC, _GSC_X_MIN_D0
 
 .afterLR
@@ -751,7 +751,7 @@ _MoveEnemy
 
 .bounceHorizontal
     ; Enemy bounces from the platform's top/bottom, reverse movement
-    CALL _FlipReverseY                        ; Revert reverse
+    CALL _FlipReverseY                          ; Revert reverse
     JR .moveEnemy
 .bounceL
     ; Enemy bounces from the platform's left side, reverse deploy bit, and as a result, the enemy will change direction.

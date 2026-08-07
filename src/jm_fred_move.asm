@@ -199,7 +199,7 @@ JoyMoveUp
 .afterDec
 
     ; ##########################################
-    CALL gc.FredPlatformTakesOff                 ; Transition from walking to flaying.
+    CALL gc.FredPlatformTakesOff                ; Transition from walking to flaying.
 
     RET                                         ; ## END of the function ##
 
@@ -326,7 +326,7 @@ JoyMoveDown
     ; Landing on the ground
     LD A, (jpo.jetY)
     CP _GSC_JET_GND_D217
-    CALL Z, pl.FredLanding                       ; Execute landing on the ground if Fred has reached the ground.
+    CALL Z, pl.FredLanding                      ; Execute landing on the ground if Fred has reached the ground.
 
     RET                                         ; ## END of the function ##
 
@@ -388,7 +388,7 @@ JoystickMoveProcessed
 ;  - NO:  Disable joystick input processing for this loop, Z is set (JP NZ).
 _SholdProcessJoyOnOverheat
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT_D104
+    CP jt.FREDST_OVERHEAT_D104
     JR NZ, .yes
 
     LD A, (jt.jetGnd)
@@ -435,7 +435,7 @@ _JoystickMoves
     ; ##########################################
     ; Transition from hovering to flying?
     LD A, (jt.jetAir)
-    CP jt.AIR_HOOVER_D11                            ; Is Fred hovering?
+    CP jt.AIR_HOOVER_D11                        ; Is Fred hovering?
     JR NZ, .afterHovering                       ; Jump if not hovering.
 
     ; Fred is hovering, but we have movement, so switch state to fly.
@@ -487,7 +487,7 @@ _CanFredMove
     ; ##########################################
     ; Joystick disabled if Fred is inactive.
     LD A, (jt.jetState)
-    OR A                                    ; Sama as: CP jt.JT_STATE_INACTIVE_D0
+    OR A                                        ; Sama as: CP jt.JT_STATE_INACTIVE_D0
     JR NZ, .jetActive
 
     ; Do not process input.
@@ -497,7 +497,7 @@ _CanFredMove
 
     ; ##########################################
     LD A, (jt.jetState)
-    CP jt.JETST_RIP_D103
+    CP jt.FREDST_RIP_D103
     JR NZ, .afterRip                            ; Do not process input if Fred is dying.
 
     ; Do not process input, Fred is dying.

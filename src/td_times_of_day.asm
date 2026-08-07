@@ -49,7 +49,7 @@ stepDir                 DB TOD_DIR_DAY_NIGHT_D1 ; TOD_DIR_DAY_NIGHT_D1 or TOD_DI
     LD A, TOD_DIR_NIGHT_DAY_D2
     LD (stepDir), A
 
-    LD A, 1                                 ; Switching should be short.
+    LD A, 1                                     ; Switching should be short.
     LD (stepDuration), A
 
     CALL gc.NightEnds

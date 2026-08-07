@@ -144,10 +144,10 @@ NumTo99Str
 ;  - #dmaTransferSize: Number of bytes to copy
 CopyRam
 
-    LD HL, dmaProgram                          ; HL = pointer to DMA program
-    LD B, dmaProgramSize                       ; B = size of the code
-    LD C, _DMA_PORT_H6B                        ; C = $6B (zxnDMA port)
-    OTIR                                       ; Upload DMA program
+    LD HL, dmaProgram                           ; HL = pointer to DMA program
+    LD B, dmaProgramSize                        ; B = size of the code
+    LD C, _DMA_PORT_H6B                         ; C = $6B (zxnDMA port)
+    OTIR                                        ; Upload DMA program
 
     RET                                         ; ## END of the function ##
 

@@ -7,7 +7,7 @@
 ;----------------------------------------------------------;
     MODULE jt
 
-JT_STATE_INACTIVE_D0    = 0                 ; Must be 0, because we reset it with "XOR A"
+JT_STATE_INACTIVE_D0    = 0                     ; Must be 0, because we reset it with "XOR A"
 
 ; States for Fred in the air, 0 for not in the air
 AIR_FLY_D10             = 10                    ; Fred is flaying.
@@ -29,12 +29,12 @@ GND_STAND_D53           = 53                    ; Fred stands on the ground.
 jetGnd                  DB GND_STAND_D53
 
 ; Fred states
-JETST_NORMAL_D101       = 101                   ; Fred is alive, could be flying (#jetAir != JT_STATE_INACTIVE_D0) or walking (#jetGnd != JT_STATE_INACTIVE_D0).
-JETST_INV_D102          = 102                   ; Fred is invincible.
-JETST_RIP_D103          = 103                   ; Fred got hit by enemy.
-JETST_OVERHEAT_D104     = 104                   ; Jetpack is overheating, and Fred flays slowly.
+FREDST_NORMAL_D101       = 101                  ; Fred is alive, could be flying (#jetAir != JT_STATE_INACTIVE_D0) or walking (#jetGnd != JT_STATE_INACTIVE_D0).
+FREDST_INV_D102          = 102                  ; Fred is invincible.
+FREDST_RIP_D103          = 103                  ; Fred got hit by enemy.
+FREDST_OVERHEAT_D104     = 104                  ; Jetpack is overheating, and Fred flays slowly.
 
-jetState                DB JETST_NORMAL_D101         ; Game start, Fred in the air.
+jetState                DB FREDST_NORMAL_D101   ; Game start, Fred in the air.
 
 DIF_EASY_D1             = 1
 DIF_NORMAL_D2           = 2
@@ -95,7 +95,7 @@ SetFredStateRip
     LD (jetAir), A
     LD (jetGnd), A
 
-    LD A, JETST_RIP_D103
+    LD A, FREDST_RIP_D103
     LD (jetState), A
 
     RET                                         ; ## END of the function ##
@@ -111,7 +111,7 @@ SetFredStateRespawn
     XOR A
     LD (jetAir), A
     
-    LD A, JETST_NORMAL_D101
+    LD A, FREDST_NORMAL_D101
     LD (jetState), A
     
     RET                                         ; ## END of the function ##
@@ -135,10 +135,10 @@ ResetOverheat
 
     ; Reset overheat only if it's active.
     LD A, (jetState)
-    CP JETST_OVERHEAT_D104
+    CP FREDST_OVERHEAT_D104
     RET NZ
 
-    LD A, JETST_NORMAL_D101
+    LD A, FREDST_NORMAL_D101
     LD (jetState), A
     
     RET                                         ; ## END of the function ##
@@ -147,7 +147,7 @@ ResetOverheat
 ;                       SetFredState                        ;
 ;----------------------------------------------------------;
 ; Input:
-;  - A:                                         ; Air State: #JETST_XXX
+;  - A:                                         ; Air State: #FREDST_XXX
 SetFredState
 
     LD (jetState), A

@@ -10,13 +10,13 @@
 ;----------------------------------------------------------;
 ;                   Reserved Sprite IDs                    ;
 ;----------------------------------------------------------;
-; Fred:               00-09
-; Fred's Weapon:      10-19
+; Fred:                 00-09
+; Fred's Weapon:        10-19
 ; Single Enemy:         20-59
 ; Enemy Formation:      60-69
 ; Rocket:               80-89
 ; Pickups:              90
-; Fred's Weapon:      91-95
+; Fred's Weapon:        91-95
 ; Fuel thief:           96-97
 ; Following Enemy:      98-113
 
@@ -44,9 +44,9 @@ COLISION_DEL_D15        = 15
 ;                         Sprite DB                        ;
 ;----------------------------------------------------------;
     STRUCT SPR_REC
-ID                      DB                    ; Entry ID for lookup via CPIR.
-OFF_NX                  DB                    ; ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
-SIZE                    DB                    ; Amount of frames/sprite patterns in this record.
+ID                      DB                      ; Entry ID for lookup via CPIR.
+OFF_NX                  DB                      ; ID of the following animation DB record. We subtract from this ID the 100 so that CPIR does not find OFF_NX but ID.
+SIZE                    DB                      ; Amount of frames/sprite patterns in this record.
     ENDS
 
 ; DB IDs
@@ -228,9 +228,9 @@ KillOneSprite
     ; ##########################################
     ; Ignore this enemy if it's hidden/exploding
     LD A, (IX + SPR.STATE)
-    AND SPRITE_ST_ALIVE                     ; Reset all bits but hidden/exploding.
+    AND SPRITE_ST_ALIVE                         ; Reset all bits but hidden/exploding.
     CP SPRITE_ST_ALIVE
-    JR NZ, .continue                        ; Jump if this enemy is already dead or exploding.
+    JR NZ, .continue                            ; Jump if this enemy is already dead or exploding.
 
     ; ##########################################
     CALL SpriteHit

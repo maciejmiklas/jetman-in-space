@@ -3,7 +3,7 @@
   Licensed under the Apache License, Version 2.0. See the LICENSE file for details.
 */
 ;----------------------------------------------------------;
-;                    Fred Collision                      ;
+;                      Fred Collision                      ;
 ;----------------------------------------------------------;
     MODULE jco
 
@@ -215,7 +215,7 @@ JM_INV_D400             = 400                   ; Number of loops to keep Fred i
 ;----------------------------------------------------------;
 
 ;----------------------------------------------------------;
-;                   FredElementCollision                 ;
+;                   FredElementCollision                   ;
 ;----------------------------------------------------------;
 ; Checks whether Fred overlaps with given element.
 ; Input:
@@ -295,12 +295,12 @@ EnemiesCollision
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                         FredRip                           ;
+;                         FredRip                          ;
 ;----------------------------------------------------------;
 FredRip
 
     LD A, (jt.jetState)
-    CP jt.JETST_RIP_D103
+    CP jt.FREDST_RIP_D103
     RET NZ                                      ; Exit if not RiP.
 
     ; Did Fred reach the top of the screen (the RIP sequence is over)?
@@ -321,6 +321,9 @@ FredRip
     CALL bg.MoveBackgroundBack
     CALL enc.KillOneEnemy
 
+    dbs.SetupRocketBank
+    CALL roa.ResetCarryingRocketElement
+
     ; last live?
     LD A, (jl.lives)
     OR 0
@@ -331,9 +334,6 @@ FredRip
     JR NZ, .notAfterRipEffect
     _ResetAfterRipEffectTickCnt
 
-    dbs.SetupRocketBank
-    CALL roa.ResetAndDisableRocket
-    
     CALL bp.CurrentPalBrightnessDown
     CALL ti.TilemapPaletteBrightnessDown
 .notAfterRipEffect
@@ -349,7 +349,7 @@ FredRip
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    MakeFredInvincible                     ;
+;                    MakeFredInvincible                    ;
 ;----------------------------------------------------------;
 MakeFredInvincible
 
@@ -358,18 +358,18 @@ MakeFredInvincible
     LD (invincibleCnt), BC
     
     ; Update state
-    LD A, jt.JETST_INV_D102
+    LD A, jt.FREDST_INV_D102
     CALL jt.SetFredState
 
     RET                                         ; ## END of the function ##
 
 ;----------------------------------------------------------;
-;                    FredInvincible                         ;
+;                    FredInvincible                        ;
 ;----------------------------------------------------------;
 FredInvincible
 
     LD A, (jt.jetState)
-    CP jt.JETST_INV_D102
+    CP jt.FREDST_INV_D102
     RET NZ
 
     ; ##########################################
@@ -418,7 +418,7 @@ FredInvincible
 .endInvincibility
     ; ##########################################
     ; It is the last iteration, remove invincibility.
-    LD A, jt.JETST_NORMAL_D101
+    LD A, jt.FREDST_NORMAL_D101
     CALL jt.SetFredState
 
     CALL js.ShowFredSprite
@@ -473,7 +473,7 @@ _CheckCollision
 
     ; Is Fred above or below the enemy?
     CP B
-    JR C, .fredAboveEnemy                     ; Jump if "Fred Y" < "enemy Y". Fred is above enemy (0 is at the top, 256 bottom).
+    JR C, .fredAboveEnemy                       ; Jump if "Fred Y" < "enemy Y". Fred is above enemy (0 is at the top, 256 bottom).
 
     ; Fred is below enemy
     SUB B

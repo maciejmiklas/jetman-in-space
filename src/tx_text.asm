@@ -36,8 +36,8 @@ PrintNum16
     POP BC
 
     ; Print text from #formatted8 on screen using tiles.
-    LD DE, formatted32                              ; Contains 16-bit number as ASCII.
-    LD A, FORMATTED16_SIZE_D5                       ; Print 5 characters.
+    LD DE, formatted32                          ; Contains 16-bit number as ASCII.
+    LD A, FORMATTED16_SIZE_D5                   ; Print 5 characters.
     CALL ti.PrintText
 
     RET                                         ; ## END of the function ##
@@ -231,7 +231,7 @@ Num32ToString
     RET
 
 ;----------------------------------------------------------;
-;                      _Format32Digit                       ;
+;                     _Format32Digit                       ;
 ;----------------------------------------------------------;
 ; Computes one decimal digit for current divisor BC:DE.
 ; Uses num32tmp as the working 32-bit number.

@@ -13,7 +13,7 @@ GB_OFFSET_D6            = _GND_THICK_D8-2
 GB_MOVE_SLOW_D2         = 2                     ; Slows down background movement (when Fred moves).
 
 ;----------------------------------------------------------;
-;             UpdateBackgroundOnFredMove                 ;
+;              UpdateBackgroundOnFredMove                  ;
 ;----------------------------------------------------------;
 ; The background starts at the bottom of the screen with offset 8. That is the height of the ground. The background should begin where
 ; the ground ends (2 pixels overlap). From the bottom of the screen, there is ground, 8 pixels high, and the background follows after it.

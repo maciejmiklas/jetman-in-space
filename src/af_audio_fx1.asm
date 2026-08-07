@@ -82,14 +82,6 @@ AFX_CH_DESC_COUNT       = 3
 afxChDesc               DS AFX_CH_DESC_COUNT*8
 AFX_SMC                 = 0
 
-FX_FIRE1                = 15
-FX_FIRE2                = 2
-FX_BUMP_PLATFORM        = 13
-FX_EXPLODE_ENEMY_1      = 16
-FX_EXPLODE_ENEMY_2      = 18
-FX_EXPLODE_ENEMY_3      = 19
-FX_JET_TAKE_OFF         = 27
-
 ;----------------------------------------------------------;
 ;                         SetupAyFx                        ;
 ;----------------------------------------------------------;

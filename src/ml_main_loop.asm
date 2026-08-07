@@ -729,7 +729,7 @@
     CALL gc.PlayFuelThiefFx
 
     LD A, (jt.jetState)
-    CP jt.JETST_RIP_D103
+    CP jt.FREDST_RIP_D103
     CALL NZ, js.ShowFredSprite
 
     ; ##########################################

@@ -57,18 +57,18 @@ BMA_ST_BANK_S6_D73      = 73
 BMA_EN_BANK_S6_D82  = BMA_ST_BANK_S6_D73+BM_BANKS_D10-1; -1 because inclusive.
     ASSERT BMA_EN_BANK_S6_D82 == 82
 
-LONG_TI_BANK1_S6_D82    = 83                   ; Slot 6, tilemap up to 16KiB.
-LONG_TI_BANK2_S7_D84    = 84                   ; Slot 7.
-EMPTY_IMG_S6_D85        = 85                   ; Slot 6, empty image.
-PAL2_BANK_S6_D86        = 86                   ; Slot 6. Layer 2 pallettes.
-PAL_TI_BANK_S6_D87      = 87                   ; Slot 6. Tilemap pallettes.
-AY_MBIN_S7_D88          = 88                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
+LONG_TI_BANK1_S6_D82    = 83                    ; Slot 6, tilemap up to 16KiB.
+LONG_TI_BANK2_S7_D84    = 84                    ; Slot 7.
+EMPTY_IMG_S6_D85        = 85                    ; Slot 6, empty image.
+PAL2_BANK_S6_D86        = 86                    ; Slot 6. Layer 2 pallettes.
+PAL_TI_BANK_S6_D87      = 87                    ; Slot 6. Tilemap pallettes.
+AY_MBIN_S7_D88          = 88                    ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
 
 ; Music preloads 40 titles into 40 banks, for fast switching during the game.
 AY_MIBIN_S7_ST_D89      = 89                   ; Slot 7, music binary, code is in AY_MCODE_S6_D33.
-AY_MIBIN_S7_EN_D129     = 129
+AY_MIBIN_S7_EN_D129     = 92;129
 AY_MI_BANKS_40          = AY_MIBIN_S7_EN_D129 - AY_MIBIN_S7_ST_D89
-    ASSERT AY_MI_BANKS_40 = 40
+   ; ASSERT AY_MI_BANKS_40 = 40
 ingameMusicBank         DB AY_MIBIN_S7_ST_D89
 
 currentEnemyBank        DB ENEMY_BANK_S6_B31

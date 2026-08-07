@@ -19,11 +19,11 @@ _TI_H_BYTES_D80       = 320/8 * 2
 
 ; In-game tilemap has 40x32 tiles, and stars have 40*64, therefore, there are two different counters.
 tilesRow                DB ti.TI_VTILES_D32     ; Current tiles row, runs from TI_VTILES_D32-1 to 0.
-sourceTilesRow          DB TI_ROWS_D96         ; Current tiles row in source file (RAM), runs from from TI_ROWS_D96 to 0.
+sourceTilesRow          DB TI_ROWS_D96          ; Current tiles row in source file (RAM), runs from from TI_ROWS_D96 to 0.
 
 tileOffsetY             DB _SC_RESY1_D255       ; Runs from 255 to 0, see also "NEXTREG _DC_REG_TI_Y_H31, _SC_RESY1_D255" in sc.SetupScreen.
 tileOffsetX             DW 0
-tilePixelCnt            DB ti._TI_PIXELS_D8      ; Runs from 0 to 7 (ti._TI_PIXELS_D8-1).
+tilePixelCnt            DB ti._TI_PIXELS_D8     ; Runs from 0 to 7 (ti._TI_PIXELS_D8-1).
 
 ; There are 32 tile lines. We insert the black tile line starting from 32 to 1. However, the first black line is inserted when the rocket 
 ; takes off, so this counter runs not from 32 but from 31.
@@ -69,7 +69,7 @@ slowDownScrollY         DB 0
     ; ##########################################
     ; Decrement counters
     DECA tilesRow
-    DECA sourceTilesRow                             ; A is used below.
+    DECA sourceTilesRow                         ; A is used below.
 
     ; ##########################################
     ; Prepare tile copy fom temp RAM to screen RAM
@@ -93,7 +93,7 @@ slowDownScrollY         DB 0
     LD DE, HL
     POP HL
 
-    LD BC, _TI_H_BYTES_D80                    ; Number of bytes to copy, it's one row.
+    LD BC, _TI_H_BYTES_D80                      ; Number of bytes to copy, it's one row.
     LDIR 
 
     ; ##########################################

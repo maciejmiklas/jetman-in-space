@@ -11,9 +11,9 @@
 
 ; Jetpack temperature and the temp bar in UI increase in two steps. First, when Fred is flying, the #jetHeatCnt will increase.
 ; When it reaches JM_HEAT_CNT_D60, the jetpack temperature will increase (#jetTempLevel) until it reaches MAX_TEMP. Then, it will update Fred
-; state to #JETST_OVERHEAT_D104 and slow flying down. 
+; state to #FREDST_OVERHEAT_D104 and slow flying down. 
 ; When Fred lands, the #jetCoolCnt decreases. When it reaches JM_COOL_CNT_D15, the jetpack temperature decreases,
-; until it reaches #TEMP_NORM_D4. At this point, the Fred state changes to #JETST_NORMAL_D101, and Fred can fly at a full speed.
+; until it reaches #TEMP_NORM_D4. At this point, the Fred state changes to #FREDST_NORMAL_D101, and Fred can fly at a full speed.
 
 ; Jetpack heats up/cools down during the flight
 jetHeatCnt              DB 0                    ; Runs from 0 to JM_HEAT_CNT_D60
@@ -53,9 +53,9 @@ BAR_ICON_PAL_H00       = $00
 
     LD HL, BAR_ICON_RAM_START
 
-    LD (HL), BAR_ICON_D38                           ; Set tile id.
+    LD (HL), BAR_ICON_D38                       ; Set tile id.
     INC HL
-    LD (HL), BAR_ICON_PAL_H00                       ; Set palette for tile.
+    LD (HL), BAR_ICON_PAL_H00                   ; Set palette for tile.
 
 .end
     ENDM                                        ; ## END of the macro ##
@@ -93,11 +93,11 @@ BAR_ICON_PAL_H00       = $00
     ; #########################################
     ; Is Jetpack going to temp normal from overheated?
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT_D104
+    CP jt.FREDST_OVERHEAT_D104
     JR NZ, .afterNormTempCheck
 
     ; Jetpack is coll again
-    LD A, jt.JETST_NORMAL_D101
+    LD A, jt.FREDST_NORMAL_D101
     LD (jt.jetState), A
 
     CALL gc.FredpackTempNormal
@@ -158,7 +158,7 @@ BAR_ICON_PAL_H00       = $00
     JR NZ, .afterTempCheck
 
     ; Jetpack has overhated.
-    LD A, jt.JETST_OVERHEAT_D104
+    LD A, jt.FREDST_OVERHEAT_D104
     CALL jt.SetFredState
     LD (jt.jetState), A
 
@@ -185,7 +185,7 @@ AnimateFredpackOverheat
 
     ; Animate only when overheated, and Fred slows down.
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT_D104
+    CP jt.FREDST_OVERHEAT_D104
     RET NZ
 
     ; Move HL so that it points to first read tile.
@@ -203,22 +203,22 @@ AnimateFredpackOverheat
     JR Z, .on
 
 .normal
-    LD (HL), _BAR_RED_A1_SPR_D180                    ; Set tile id.
+    LD (HL), _BAR_RED_A1_SPR_D180               ; Set tile id.
     INC HL
-    LD (HL), BAR_TILE_PAL_H30                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL_H30                   ; Set palette for tile.
     INC HL
-    LD (HL), _BAR_RED_A2_SPR_D181                    ; Set tile id.
+    LD (HL), _BAR_RED_A2_SPR_D181               ; Set tile id.
     INC HL
-    LD (HL), BAR_TILE_PAL_H30                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL_H30                   ; Set palette for tile.
     RET
 .on
-    LD (HL), _BAR_RED_B1_SPR_D188                    ; Set tile id.
+    LD (HL), _BAR_RED_B1_SPR_D188               ; Set tile id.
     INC HL
-    LD (HL), BAR_TILE_PAL_H30                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL_H30                   ; Set palette for tile.
     INC HL
-    LD (HL), _BAR_RED_B2_SPR_D189                    ; Set tile id.
+    LD (HL), _BAR_RED_B2_SPR_D189               ; Set tile id.
     INC HL
-    LD (HL), BAR_TILE_PAL_H30                       ; Set palette for tile.
+    LD (HL), BAR_TILE_PAL_H30                   ; Set palette for tile.
 
     RET                                         ; ## END of the function ##
 
@@ -270,7 +270,7 @@ UpdateFredpackOverheating
 FredpackOverheatFx
 
     LD A, (jt.jetState)
-    CP jt.JETST_OVERHEAT_D104
+    CP jt.FREDST_OVERHEAT_D104
     RET NZ
 
     ; Do not beep when walking.
